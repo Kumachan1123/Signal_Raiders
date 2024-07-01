@@ -1,0 +1,378 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Common">
+      <UniqueIdentifier>953a950d-8f23-49c6-b64f-5e4a032f2f13</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets">
+      <UniqueIdentifier>1c4a63d8-8be7-4206-8e9b-c5c8bc272bb0</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dds;dlg;fbx;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{81e0afe9-ad4e-4f63-95a0-f6d4011481d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{e07fced4-d323-4665-a6ef-0da58b0f46f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Fonts">
+      <UniqueIdentifier>{582b0255-bd7f-4fbc-a35d-f8c13d2fbf14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Textures">
+      <UniqueIdentifier>{3c9cae57-ef8e-4d89-9ce8-daa682d325ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Icon">
+      <UniqueIdentifier>{53043c45-2397-49b9-97e7-98faee0b0a41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Models">
+      <UniqueIdentifier>{4bb7f6ff-9803-4a2b-a0e8-bacbe656715d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libraries">
+      <UniqueIdentifier>{c309d520-e3d0-40ec-859f-98ab4d9a9fd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libraries\MyLib">
+      <UniqueIdentifier>{a327e5ae-7623-4c97-9ac8-1d10ca95e8ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libraries\Microsoft">
+      <UniqueIdentifier>{3ad90921-3d35-490e-837c-bc326a24aeed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene">
+      <UniqueIdentifier>{644b32a7-7d84-4f61-a3f0-3872a592dcfb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\FPS_Camera">
+      <UniqueIdentifier>{419faa13-03bd-49b8-ba12-37106ae340f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\SkyBox">
+      <UniqueIdentifier>{e1e10cc9-cb99-40a7-9dbe-472fc6526614}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders">
+      <UniqueIdentifier>{daaf45c3-eff6-4b71-875a-a648f29324a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Player">
+      <UniqueIdentifier>{ba4433f7-e15b-4385-b487-edbb2f4714cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Player\PlayerController">
+      <UniqueIdentifier>{6aa86b9c-13f7-4dda-8843-96383998e0ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Player\PlayerBullet">
+      <UniqueIdentifier>{ee27529e-dcba-46a1-b442-ef6299f93df6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Interface">
+      <UniqueIdentifier>{43b34b07-350b-48af-a347-df170d60a990}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Wi-Fi">
+      <UniqueIdentifier>{997fcb7d-bcc6-4d18-a1e0-de13abcaa82b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Wi-Fi\CheckVersion">
+      <UniqueIdentifier>{03309d10-2e3b-4f69-931f-ce86999c0983}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Wi-Fi\GetListOfInterfaces">
+      <UniqueIdentifier>{5edbd58f-a77f-4e58-9501-78d13622da0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Wi-Fi\GetScanResults">
+      <UniqueIdentifier>{9114827f-6f92-483d-8b9f-79b9ac71a9b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Wi-Fi\InitHandle">
+      <UniqueIdentifier>{46b7c3cd-0ebb-4688-90ed-624abff784fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Wi-Fi\IWifiParts">
+      <UniqueIdentifier>{fd421c0b-ef19-4c40-8ea9-8f50a1ab4096}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Wi-Fi\Output">
+      <UniqueIdentifier>{b4210de0-d0ac-4f2a-9419-fd6f4e826feb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Wi-Fi\Preparation">
+      <UniqueIdentifier>{e7fe1812-629f-46fc-a706-9c7feeca425a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Wi-Fi\ProcessingScanResults">
+      <UniqueIdentifier>{843c9605-84c4-401b-8e95-6d649129a0de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Wi-Fi\ReleaseMemory">
+      <UniqueIdentifier>{d5d301a6-a9de-487f-bfda-4d1df3a9a586}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Wi-Fi\StartScan">
+      <UniqueIdentifier>{b2e1c4c9-107f-4d14-8515-d1712bc153eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Wi-Fi\UpdateInfo">
+      <UniqueIdentifier>{2111cef6-2222-42c3-bc94-076e8c7327e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Enemy">
+      <UniqueIdentifier>{34143f10-e586-4a50-824e-482b9185c040}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Enemy\EnemyAI">
+      <UniqueIdentifier>{1c69fed7-de83-469d-84fb-1681f1a256ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Enemy\EnemyAI\EnemyIdling">
+      <UniqueIdentifier>{49e943c3-48a2-4785-8487-92be0699578e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Enemy\EnemyAI\EnemyAttack">
+      <UniqueIdentifier>{e606e82d-0776-4768-9ece-1f1a4f121660}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Enemy\EnemyHPBar">
+      <UniqueIdentifier>{b26dec0e-848e-4cf9-a53b-4a24403bb6ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Enemy\EnemyBullet">
+      <UniqueIdentifier>{408a3d11-0284-4340-8a9c-a4a6d5744ca9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Template">
+      <UniqueIdentifier>{473a9cc0-35bc-49b6-9fe3-d98789a447d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Ground">
+      <UniqueIdentifier>{7dfce6cb-94be-4779-b40e-f9887c0c0dff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Ground\Stage1">
+      <UniqueIdentifier>{4e72cd52-1a78-4da7-bb54-a6dd44b25217}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\KumachiLib">
+      <UniqueIdentifier>{81386581-e33a-4cd3-80bf-db0635a25c55}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="StepTimer.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="DeviceResources.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\CommonResources.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\Microsoft\DebugDraw.h">
+      <Filter>Libraries\Microsoft</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Screen.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\MyLib\DebugCamera.h">
+      <Filter>Libraries\MyLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\MyLib\DebugString.h">
+      <Filter>Libraries\MyLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\MyLib\GridFloor.h">
+      <Filter>Libraries\MyLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\MyLib\InputManager.h">
+      <Filter>Libraries\MyLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\MyLib\MemoryLeakDetector.h">
+      <Filter>Libraries\MyLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\IScene.h">
+      <Filter>Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\TitleScene.h">
+      <Filter>Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\PlayScene.h">
+      <Filter>Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\SceneManager.h">
+      <Filter>Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\FPS_Camera\FPS_Camera.h">
+      <Filter>Game\FPS_Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\SkyBox\SkyBox.h">
+      <Filter>Game\SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Player\PlayerController\PlayerController.h">
+      <Filter>Game\Player\PlayerController</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Player\PlayerBullet\PlayerBullet.h">
+      <Filter>Game\Player\PlayerBullet</Filter>
+    </ClInclude>
+    <ClInclude Include="IBullet.h">
+      <Filter>Game\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Wifi\CheckVersion\CheckVersion.h">
+      <Filter>Game\Wi-Fi\CheckVersion</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Wifi\GetListOfInterfaces\GetListOfInterfaces.h">
+      <Filter>Game\Wi-Fi\GetListOfInterfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Wifi\GetScanResults\GetScanResults.h">
+      <Filter>Game\Wi-Fi\GetScanResults</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Wifi\InitHandle\InitHandle.h">
+      <Filter>Game\Wi-Fi\InitHandle</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Wifi\Interface\IWifiParts.h">
+      <Filter>Game\Wi-Fi\IWifiParts</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Wifi\Output\Output.h">
+      <Filter>Game\Wi-Fi\Output</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Wifi\Preparation\Preparation.h">
+      <Filter>Game\Wi-Fi\Preparation</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Wifi\ProcessingScanResults\ProcessingScanResults.h">
+      <Filter>Game\Wi-Fi\ProcessingScanResults</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Wifi\ReleaseMemory\ReleaseMemory.h">
+      <Filter>Game\Wi-Fi\ReleaseMemory</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Wifi\StartScan\StartScan.h">
+      <Filter>Game\Wi-Fi\StartScan</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Wifi\UpdateInfo\UpdateInfo.h">
+      <Filter>Game\Wi-Fi\UpdateInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Wifi\Wifi.h">
+      <Filter>Game\Wi-Fi</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy\Enemy.h">
+      <Filter>Game\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy\EnemyAI\EnemyAI.h">
+      <Filter>Game\Enemy\EnemyAI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy\EnemyAI\EnemyAttack\EnemyAttack.h">
+      <Filter>Game\Enemy\EnemyAI\EnemyAttack</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy\EnemyAI\EnemyIdling\EnemyIdling.h">
+      <Filter>Game\Enemy\EnemyAI\EnemyIdling</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Interface\IStateh.h">
+      <Filter>Game\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy\EnemyHPBar\EnemyHPBar.h">
+      <Filter>Game\Enemy\EnemyHPBar</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy\EnemyBullet\EnemyBullet.h">
+      <Filter>Game\Enemy\EnemyBullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Template\Template.h">
+      <Filter>Game\Template</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\KumachiLib\BinaryFile.h">
+      <Filter>Game\KumachiLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\Microsoft\ReadData.h">
+      <Filter>Libraries\Microsoft</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="DeviceResources.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\CommonResources.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\Microsoft\DebugDraw.cpp">
+      <Filter>Libraries\Microsoft</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\MyLib\DebugCamera.cpp">
+      <Filter>Libraries\MyLib</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\MyLib\DebugString.cpp">
+      <Filter>Libraries\MyLib</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\MyLib\GridFloor.cpp">
+      <Filter>Libraries\MyLib</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\MyLib\InputManager.cpp">
+      <Filter>Libraries\MyLib</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\TitleScene.cpp">
+      <Filter>Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\PlayScene.cpp">
+      <Filter>Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\SceneManager.cpp">
+      <Filter>Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\FPS_Camera\FPS_Camera.cpp">
+      <Filter>Game\FPS_Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\SkyBox\SkyBox.cpp">
+      <Filter>Game\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Player\PlayerController\PlayerController.cpp">
+      <Filter>Game\Player\PlayerController</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Player\PlayerBullet\PlayerBullet.cpp">
+      <Filter>Game\Player\PlayerBullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Wifi\CheckVersion\CheckVersion.cpp">
+      <Filter>Game\Wi-Fi\CheckVersion</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Wifi\GetListOfInterfaces\GetListOfInterfaces.cpp">
+      <Filter>Game\Wi-Fi\GetListOfInterfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Wifi\GetScanResults\GetScanResults.cpp">
+      <Filter>Game\Wi-Fi\GetScanResults</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Wifi\InitHandle\InitHandle.cpp">
+      <Filter>Game\Wi-Fi\InitHandle</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Wifi\Output\Output.cpp">
+      <Filter>Game\Wi-Fi\Output</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Wifi\Preparation\Preparation.cpp">
+      <Filter>Game\Wi-Fi\Preparation</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Wifi\ProcessingScanResults\ProcessingScanResults.cpp">
+      <Filter>Game\Wi-Fi\ProcessingScanResults</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Wifi\ReleaseMemory\ReleaseMemory.cpp">
+      <Filter>Game\Wi-Fi\ReleaseMemory</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Wifi\StartScan\StartScan.cpp">
+      <Filter>Game\Wi-Fi\StartScan</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Wifi\UpdateInfo\UpdateInfo.cpp">
+      <Filter>Game\Wi-Fi\UpdateInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Wifi\Wifi.cpp">
+      <Filter>Game\Wi-Fi</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Enemy\Enemy.cpp">
+      <Filter>Game\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Enemy\EnemyAI\EnemyAI.cpp">
+      <Filter>Game\Enemy\EnemyAI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Enemy\EnemyAI\EnemyAttack\EnemyAttack.cpp">
+      <Filter>Game\Enemy\EnemyAI\EnemyAttack</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Enemy\EnemyAI\EnemyIdling\EnemyIdling.cpp">
+      <Filter>Game\Enemy\EnemyAI\EnemyIdling</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Enemy\EnemyHPBar\EnemyHPBar.cpp">
+      <Filter>Game\Enemy\EnemyHPBar</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Enemy\EnemyBullet\EnemyBullet.cpp">
+      <Filter>Game\Enemy\EnemyBullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\KumachiLib\BinaryFile.cpp">
+      <Filter>Game\KumachiLib</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="directx.ico">
+      <Filter>Assets</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="settings.manifest">
+      <Filter>Assets</Filter>
+    </Manifest>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Resources\Shaders\PS_EnemyShadow.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>
