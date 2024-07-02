@@ -23,16 +23,16 @@
 
 // コンストラクタ
 Enemy::Enemy()
-	: m_enemyBoundingSphere() 
+	: m_enemyBoundingSphere()
 	, m_commonResources{}
 	, m_currentHP{}
 {}
 // デストラクタ
-Enemy::~Enemy(){}
+Enemy::~Enemy() {}
 //---------------------------------------------------------
 // 初期化する
 //---------------------------------------------------------
-void Enemy::Initialize(CommonResources* resources,int hp)
+void Enemy::Initialize(CommonResources* resources, int hp)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
@@ -100,13 +100,14 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	enemyWorld *= Matrix::CreateFromQuaternion(m_enemyAI->GetRotation());
 	enemyWorld *= Matrix::CreateTranslation(m_position);
 	enemyWorld *= Matrix::CreateTranslation(Vector3{ 0,-2,0 });
-	
+
 
 	// モデルのエフェクト情報を更新する
 	m_model->UpdateEffects([](DirectX::IEffect* effect)
 						   {
 							   // ベーシックエフェクトを設定する
 							   BasicEffect* basicEffect = dynamic_cast<BasicEffect*>(effect);
+
 							   if (basicEffect)
 							   {
 								   // 個別のライトをすべて無効化する
@@ -116,14 +117,24 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 
 								   // モデルを自発光させる
 								   basicEffect->SetAmbientLightColor(Colors::White);
-								  
 							   }
+							   /*NormalMapEffect* normal = dynamic_cast<NormalMapEffect*>(effect);
+							   if (normal)
+							   {
+								   normal->SetLightEnabled(0, false);
+								   normal->SetLightEnabled(1, false);
+								   normal->SetLightEnabled(2, false);
+
+
+
+							   }*/
+
 						   }
 	);
 	// HPBar描画
 	m_HPBar->Render(view, proj, m_position, m_rotate);
 
-	
+
 	// 敵描画
 	m_model->Draw(context, *states, enemyWorld, view, proj);
 	// ライトの方向
@@ -149,13 +160,13 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	m_basicEffect->SetView(view);
 	m_basicEffect->SetProjection(proj);
 	m_basicEffect->Apply(context);
-	
+
 	for (const auto& bullet : m_bullets)bullet->Render(view, proj);
 
 	m_primitiveBatch->Begin();
 	if (!m_isHit)
 	{
-		if(!m_isHitToOtherEnemy)DX::Draw(m_primitiveBatch.get(), m_enemyBoundingSphere, Colors::Black);
+		if (!m_isHitToOtherEnemy)DX::Draw(m_primitiveBatch.get(), m_enemyBoundingSphere, Colors::Black);
 		else					DX::Draw(m_primitiveBatch.get(), m_enemyBoundingSphere, Colors::White);
 	}
 	else
@@ -165,13 +176,13 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 
 	}
 	m_primitiveBatch->End();
-	
+
 }
 // 更新
 void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 {
-	
-	m_enemyAI->Update(elapsedTime,m_position, playerPos,m_isHit);
+
+	m_enemyAI->Update(elapsedTime, m_position, playerPos, m_isHit);
 	if (m_enemyAI->GetNowState() == m_enemyAI->GetEnemyAttack())// 攻撃態勢なら
 	{
 		// 攻撃のクールダウンタイムを管理
@@ -228,15 +239,15 @@ void Enemy::UpdateBullets(float elapsedTime)
 	for (auto& bullet : m_bullets)
 	{
 		bullet->Update(m_position, elapsedTime); // 弾の更新
-		SetBulletBoundingSphere( bullet->GetBoundingSphere());
+		SetBulletBoundingSphere(bullet->GetBoundingSphere());
 		m_isBullethit = GetBulletBoundingSphere().Intersects(GetPlayerBoundingSphere());
 		if (m_isBullethit)
 		{
 			SetBulletHitToPlayer(m_isBullethit);
 			newBullets.push_back(std::move(bullet));
-			
+
 		}
-		else if(!bullet->IsExpired())//寿命を迎えた弾はローカル変数に葬る
+		else if (!bullet->IsExpired())//寿命を迎えた弾はローカル変数に葬る
 		{
 			newBullets.push_back(std::move(bullet));
 
