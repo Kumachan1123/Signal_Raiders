@@ -54,7 +54,7 @@ void PlayScene::Initialize(CommonResources* resources)
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
 
-	
+
 	m_wifi = std::make_unique<Wifi>();
 	m_wifi->Initialize();
 	// グリッド床を作成する
@@ -66,7 +66,7 @@ void PlayScene::Initialize(CommonResources* resources)
 	// モデルを読み込む
 	m_model = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy.cmo", *fx);
 	// FPSカメラを作成する
-	m_camera = std::make_unique<FPS_Camera>();	
+	m_camera = std::make_unique<FPS_Camera>();
 	// コントローラー生成
 	m_playerController = std::make_unique<PlayerController>();
 	m_playerController->Initialize(resources);
@@ -74,7 +74,7 @@ void PlayScene::Initialize(CommonResources* resources)
 	// 回転角を初期化する（度）
 	m_angle = 0;
 	// シーン変更フラグを初期化する
-	m_isChangeScene = false;	
+	m_isChangeScene = false;
 	// スカイボックス生成
 	m_skybox = std::make_unique<SkyBox>();
 	m_skybox->Initialize(resources);
@@ -113,7 +113,7 @@ void PlayScene::Update(float elapsedTime)
 	auto& mstate = m_commonResources->GetInputManager()->GetMouseState();
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
 
-	
+
 	// カメラが向いている方向を取得する
 	DirectX::SimpleMath::Vector3 cameraDirection = m_camera->GetDirection();
 	m_playerController->Update(kb, cameraDirection, elapsedTime);
@@ -148,7 +148,7 @@ void PlayScene::Update(float elapsedTime)
 	// 生成可能なら
 	if (m_isEnemyBorn && !m_isBorned)
 	{
-		for (int it = 0;it < m_wifi->GetWifiLevels().size();it++)// m_wifi->GetWifiLevels().size()
+		for (int it = 0; it < m_wifi->GetWifiLevels().size(); it++)// m_wifi->GetWifiLevels().size()
 		{
 			auto enemy = std::make_unique<Enemy>();// 敵を生成
 			enemy->Initialize(m_commonResources, m_wifi->GetWifiLevels()[it]);  // 初期化
@@ -158,7 +158,7 @@ void PlayScene::Update(float elapsedTime)
 		m_isEnemyBorn = false;
 		m_isBorned = true;
 	}
-	
+
 }
 
 //---------------------------------------------------------
@@ -166,7 +166,7 @@ void PlayScene::Update(float elapsedTime)
 //---------------------------------------------------------
 void PlayScene::Render()
 {
-	
+
 
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
@@ -174,11 +174,11 @@ void PlayScene::Render()
 	Matrix view = m_camera->GetViewMatrix();
 	Matrix projection = m_camera->GetProjectionMatrix();
 	Matrix skyWorld = Matrix::CreateRotationY(XMConvertToRadians(m_angle));
-		   skyWorld *= Matrix::CreateScale(10);
+	skyWorld *= Matrix::CreateScale(10);
 	// 格子床を描画する
 	m_gridFloor->Render(context, view, projection);
 	// スカイボックス描画
-	m_skybox->Render(view, projection, skyWorld,m_playerController->GetPlayerPosition());
+	m_skybox->Render(view, projection, skyWorld, m_playerController->GetPlayerPosition());
 	// 各パラメータを設定する
 	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
 	context->OMSetDepthStencilState(states->DepthRead(), 0);
@@ -201,19 +201,19 @@ void PlayScene::Render()
 
 	if (m_enemy.size() > 0)
 	{
-		for (const auto& enemy : m_enemy) 
+		for (const auto& enemy : m_enemy)
 		{
-			
+
 			enemy->Render(view, projection);
-			
-			
+
+
 		}
 	}
 	// デバッグ情報を「DebugString」で表示する
 	auto debugString = m_commonResources->GetDebugString();
-	
+
 	debugString->AddString("Play Scene");
-	debugString->AddString("X:%f" ,m_playerController->GetPlayerPosition().x);
+	debugString->AddString("X:%f", m_playerController->GetPlayerPosition().x);
 	debugString->AddString("Z:%f", m_playerController->GetPlayerPosition().z);
 	m_wifi->Render(debugString);
 }
@@ -266,13 +266,13 @@ void PlayScene::UpdateBullets(float elapsedTime)
 					isHit = true;
 					m_count++;//debug
 					enemy->SetEnemyHP(enemy->GetHP() - (*it)->Damage());
-					
+
 					break;
 				}
 			}
 			if (isHit)
 			{
-				
+
 				it = m_playerBullets.erase(it);
 			}
 			else
@@ -311,7 +311,7 @@ void PlayScene::UpdateEnemies(float elapsedTime)
 	for (auto& enemy : m_enemy)
 	{
 		m_isHitPlayerToEnemy = false;
-		enemy->Update(elapsedTime,m_playerController->GetPlayerPosition());
+		enemy->Update(elapsedTime, m_playerController->GetPlayerPosition());
 
 		bool hit = enemy->GetBulletHitToPlayer();
 		if (hit)
@@ -321,8 +321,8 @@ void PlayScene::UpdateEnemies(float elapsedTime)
 		}
 
 		if (enemy->GetBoundingSphere().Intersects(m_inPlayerArea))	m_isHitPlayerToEnemy = true;
-		
-		
+
+
 		enemy->SetHitToPlayer(m_isHitPlayerToEnemy);
 		enemy->SetPlayerBoundingSphere(m_PlayerSphere);
 	}
@@ -341,7 +341,7 @@ void PlayScene::UpdateEnemies(float elapsedTime)
 
 			// 削除対象に追加
 			enemiesToRemove.push_back(std::move(*it));
-			
+
 			it = m_enemy.erase(it);  // 削除してイテレータを更新
 		}
 		else
