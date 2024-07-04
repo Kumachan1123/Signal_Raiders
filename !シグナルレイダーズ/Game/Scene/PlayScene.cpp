@@ -53,18 +53,13 @@ void PlayScene::Initialize(CommonResources* resources)
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
-
+	auto DR = m_commonResources->GetDeviceResources();
 
 	m_wifi = std::make_unique<Wifi>();
 	m_wifi->Initialize();
 	// グリッド床を作成する
 	m_gridFloor = std::make_unique<mylib::GridFloor>(device, context, states);
 	m_gridFloor->SetColor(DirectX::Colors::Yellow);
-	// モデルを読み込む準備
-	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);
-	fx->SetDirectory(L"Resources/Models");
-	// モデルを読み込む
-	m_model = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy.cmo", *fx);
 	// FPSカメラを作成する
 	m_camera = std::make_unique<FPS_Camera>();
 	// コントローラー生成
@@ -82,7 +77,9 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_primitiveBatch = std::make_unique<DX11::PrimitiveBatch<DX11::VertexPositionColor>>(context);
 	m_inPlayerArea.Radius = 20.0f;
 	m_PlayerSphere.Radius = 2.0f;
-
+	// HPゲージ作成
+	m_pPlayerHP = std::make_unique<PlayerHP>();
+	m_pPlayerHP->Initialize(DR, 1280, 720);
 	/*
 		デバッグドローの表示用オブジェクトを生成する
 	*/
@@ -125,7 +122,7 @@ void PlayScene::Update(float elapsedTime)
 	// FPSカメラ位置を更新する
 	m_camera->Update(m_playerController->GetPlayerPosition(), m_playerController->GetYawX());
 	m_camera->SetTargetPositionY(m_playerController->GetYawY());
-
+	m_pPlayerHP->Update(m_playerHP);
 
 	// 左クリックで弾発射
 	if (mtracker->GetLastState().leftButton && !m_isBullet)
@@ -148,7 +145,7 @@ void PlayScene::Update(float elapsedTime)
 	// 生成可能なら
 	if (m_isEnemyBorn && !m_isBorned)
 	{
-		for (int it = 0; it < 1; it++)// m_wifi->GetWifiLevels().size()
+		for (int it = 0; it < m_wifi->GetWifiLevels().size(); it++)// m_wifi->GetWifiLevels().size()
 		{
 			auto enemy = std::make_unique<Enemy>();// 敵を生成
 			enemy->Initialize(m_commonResources, m_wifi->GetWifiLevels()[it]);  // 初期化
@@ -216,6 +213,7 @@ void PlayScene::Render()
 	debugString->AddString("X:%f", m_playerController->GetPlayerPosition().x);
 	debugString->AddString("Z:%f", m_playerController->GetPlayerPosition().z);
 	m_wifi->Render(debugString);
+	m_pPlayerHP->Render();
 }
 //---------------------------------------------------------
 // 後始末する
@@ -247,7 +245,7 @@ void PlayScene::UpdateBullets(float elapsedTime)
 {
 	auto debugString = m_commonResources->GetDebugString();
 	DirectX::SimpleMath::Vector3 dir = m_camera->GetDirection();
-	debugString->AddString("HP:%i", m_playerHP);
+	debugString->AddString("HP:%f", m_playerHP);
 	for (auto it = m_playerBullets.begin(); it != m_playerBullets.end(); )
 	{
 		(*it)->Update(dir, elapsedTime);

@@ -31,13 +31,13 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState>m_depthStencilState;
 	// 敵の情報
-	DirectX::SimpleMath::Vector3 m_position		;		// 座標
-	DirectX::SimpleMath::Vector3 m_velocity		;		// 速度
-	DirectX::SimpleMath::Vector3 m_rotate		;		// 回転
-	DirectX::SimpleMath::Vector3 m_accele		;		// 加速度
-	DirectX::SimpleMath::Vector3 m_nowScale		;		// 現在スケール
-	DirectX::SimpleMath::Vector3 m_startScale	;		// 初期スケール
-	DirectX::SimpleMath::Vector3 m_endScale		;		// 最終スケール
+	DirectX::SimpleMath::Vector3 m_position;		// 座標
+	DirectX::SimpleMath::Vector3 m_velocity;		// 速度
+	DirectX::SimpleMath::Vector3 m_rotate;		// 回転
+	DirectX::SimpleMath::Vector3 m_accele;		// 加速度
+	DirectX::SimpleMath::Vector3 m_nowScale;		// 現在スケール
+	DirectX::SimpleMath::Vector3 m_startScale;		// 初期スケール
+	DirectX::SimpleMath::Vector3 m_endScale;		// 最終スケール
 	DirectX::SimpleMath::Quaternion m_rotation; // クォータニオン (追加)
 	// 砲塔境界球
 	DirectX::BoundingSphere m_enemyBoundingSphere;	//敵の境界球
@@ -55,7 +55,7 @@ private:
 	float m_attackCooldown;  // 攻撃のクールダウンタイム
 
 	// Player
-	const int PLAYER_DAMAGE = 2;;
+	const float PLAYER_DAMAGE = 0.05f;
 public:
 	//	getter
 	DirectX::BoundingSphere& GetBoundingSphere() { return m_enemyBoundingSphere; }
@@ -81,13 +81,13 @@ public:
 	void SetHitToOtherEnemy(bool isHitToOtherEnemy) { m_isHitToOtherEnemy = isHitToOtherEnemy; }
 	void SetBulletBoundingSphere(DirectX::BoundingSphere& bs) { m_enemyBulletBS = bs; }
 	void SetPlayerBoundingSphere(DirectX::BoundingSphere& playerBS) { m_playerBS = playerBS; }
-	void SetPlayerHP(int& HP) const { HP -= PLAYER_DAMAGE; }
+	void SetPlayerHP(float& HP) const { HP -= PLAYER_DAMAGE; }
 	void SetBulletHitToPlayer(bool hit) { m_isBullethit = hit; }
 public:
 	// 初期ステータスを設定
 	Enemy();
 	~Enemy();
-	void Initialize(CommonResources* resources,int hp);
+	void Initialize(CommonResources* resources, int hp);
 	void Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos);
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 

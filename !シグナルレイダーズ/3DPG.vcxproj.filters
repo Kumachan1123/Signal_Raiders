@@ -254,6 +254,7 @@
     </ClInclude>
     <ClInclude Include="Game\Player\PlayerUI\PlayerUI.h" />
     <ClInclude Include="Game\KumachiLib\Anchor.h" />
+    <ClInclude Include="Game\Player\PlayerUI\PlayerHP\PlayerHP.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -356,6 +357,7 @@
       <Filter>Game\KumachiLib</Filter>
     </ClCompile>
     <ClCompile Include="Game\Player\PlayerUI\PlayerUI.cpp" />
+    <ClCompile Include="Game\Player\PlayerUI\PlayerHP\PlayerHP.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -372,10 +374,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Resources\Shaders\PlayerHP\PlayerHP.hlsli" />
+    <None Include="Resources\Shaders\PlayerHP\GS_PlayerHP.cso" />
+    <None Include="Resources\Shaders\PlayerHP\PS_PlayerHP.cso" />
+    <None Include="Resources\Shaders\PlayerHP\VS_PlayerHP.cso" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\PS_EnemyShadow.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\Shaders\PlayerHP\GS_PlayerHP.hlsl" />
+    <FxCompile Include="Resources\Shaders\PlayerHP\PS_PlayerHP.hlsl" />
+    <FxCompile Include="Resources\Shaders\PlayerHP\VS_PlayerHP.hlsl" />
   </ItemGroup>
 </Project>

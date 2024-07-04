@@ -15,6 +15,7 @@
 #include "Game/Wifi/UpdateInfo/UpdateInfo.h"
 #include "Game/Wifi/Wifi.h"
 #include "Mouse.h"
+#include "Game/Player/PlayerUI/PlayerHP/PlayerHP.h"
 // 前方宣言
 class CommonResources;
 
@@ -28,7 +29,7 @@ namespace mylib
 class FPS_Camera;
 
 class PlayScene final :
-    public IScene
+	public IScene
 {
 public:
 	// Wi-Fiの強さの可変長配列を渡す
@@ -40,14 +41,15 @@ private:
 	// デバッグカメラ
 	//std::unique_ptr<mylib::DebugCamera> m_debugCamera;
 	// FPSカメラ
-	std::unique_ptr<FPS_Camera> m_camera;	
+	std::unique_ptr<FPS_Camera> m_camera;
 	std::unique_ptr<DirectX::Mouse> m_mouse;
 	// プレイヤーコントローラー
 	std::unique_ptr<PlayerController>m_playerController;
 	// プレイヤーの弾
 	std::vector<std::unique_ptr<PlayerBullet>> m_playerBullets;
 	// プレイヤーのHP
-	int m_playerHP = 100;
+	float m_playerHP = 100.0f;
+	std::unique_ptr <PlayerHP> m_pPlayerHP;
 	// スカイボックス用のメンバ変数
 	std::unique_ptr<SkyBox> m_skybox;
 	// 敵
@@ -76,7 +78,7 @@ private:
 	float m_angle;
 	// 弾の移動
 	DirectX::SimpleMath::Vector3 m_ballPos;
-	DirectX::SimpleMath::Vector3 m_ballDirection;							
+	DirectX::SimpleMath::Vector3 m_ballDirection;
 	DirectX::SimpleMath::Vector3 m_ballVel;
 	// wi-fi関連の変数
 		// クラスいろいろ
@@ -102,5 +104,5 @@ public:
 	void UpdateBullets(float elapsedTime);
 	void UpdateEnemies(float elapsedTime);
 	SceneID GetNextSceneID() const;
-	
+
 };
