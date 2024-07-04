@@ -194,6 +194,8 @@
     <ClInclude Include="Game\KumachiLib\BinaryFile.h" />
     <ClInclude Include="Game\Player\PlayerBullet\PlayerBullet.h" />
     <ClInclude Include="Game\Player\PlayerController\PlayerController.h" />
+    <ClInclude Include="Game\KumachiLib\Anchor.h" />
+    <ClInclude Include="Game\Player\PlayerUI\PlayerUI.h" />
     <ClInclude Include="Game\Scene\IScene.h" />
     <ClInclude Include="Game\Scene\PlayScene.h" />
     <ClInclude Include="Game\Scene\SceneManager.h" />
@@ -238,6 +240,7 @@
     <ClCompile Include="Game\KumachiLib\BinaryFile.cpp" />
     <ClCompile Include="Game\Player\PlayerBullet\PlayerBullet.cpp" />
     <ClCompile Include="Game\Player\PlayerController\PlayerController.cpp" />
+    <ClCompile Include="Game\Player\PlayerUI\PlayerUI.cpp" />
     <ClCompile Include="Game\Scene\PlayScene.cpp" />
     <ClCompile Include="Game\Scene\SceneManager.cpp" />
     <ClCompile Include="Game\Scene\TitleScene.cpp" />
