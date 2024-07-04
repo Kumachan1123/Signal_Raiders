@@ -7,7 +7,7 @@
 //前方宣言
 class CommonResources;
 #include "Game/CommonResources.h"
-class PlayerBullet 
+class PlayerBullet
 {
 	//変数
 public:
@@ -28,6 +28,8 @@ private:
 	// 「弾」境界ボックス
 	DirectX::BoundingSphere m_boundingSphere;
 
+	// 弾の自転
+	float m_angle;
 
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
 
@@ -45,10 +47,10 @@ public:
 	~PlayerBullet();
 
 	void MoveStop();
-	void Initialize(CommonResources* resources) ;
-	void Update(DirectX::SimpleMath::Vector3& Direction, float elapsedTime) ;
+	void Initialize(CommonResources* resources);
+	void Update(DirectX::SimpleMath::Vector3& Direction, float elapsedTime);
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
-	void MakeBall(const DirectX::SimpleMath::Vector3& pos,DirectX::SimpleMath::Vector3& dir);
+	void MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir);
 	//Getter
 	DirectX::SimpleMath::Vector3 GetBulletPosition()const { return m_position; }
 	DirectX::BoundingSphere& GetBoundingSphere() { return m_boundingSphere; }
@@ -57,7 +59,7 @@ public:
 	//Setter
 	void SetBulletPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }
 	// 弾が生成されてからの経過時間が寿命を超えたかどうかを判定する
-	bool IsExpired() const{ return m_time >= BULLET_LIFETIME; }
+	bool IsExpired() const { return m_time >= BULLET_LIFETIME; }
 	// 敵にダメージを与える
 	int Damage()const { return DAMAGE; }
 };

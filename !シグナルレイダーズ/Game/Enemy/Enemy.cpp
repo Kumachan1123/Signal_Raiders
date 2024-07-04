@@ -26,6 +26,7 @@ Enemy::Enemy()
 	: m_enemyBoundingSphere()
 	, m_commonResources{}
 	, m_currentHP{}
+	, m_attackCooldown{}
 {}
 // デストラクタ
 Enemy::~Enemy() {}
@@ -117,17 +118,9 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 
 								   // モデルを自発光させる
 								   basicEffect->SetAmbientLightColor(Colors::White);
+								   basicEffect->SetFogStart(1);
 							   }
-							   /*NormalMapEffect* normal = dynamic_cast<NormalMapEffect*>(effect);
-							   if (normal)
-							   {
-								   normal->SetLightEnabled(0, false);
-								   normal->SetLightEnabled(1, false);
-								   normal->SetLightEnabled(2, false);
 
-
-
-							   }*/
 
 						   }
 	);

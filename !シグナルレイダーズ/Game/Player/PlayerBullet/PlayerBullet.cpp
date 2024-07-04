@@ -19,10 +19,11 @@
 //-------------------------------------------------------------------
 PlayerBullet::PlayerBullet()
 	:m_position{}
-	,m_velocity{}
-	,m_commonResources{}
-	,m_time(0.0f)
-{ 
+	, m_velocity{}
+	, m_commonResources{}
+	, m_time(0.0f)
+	, m_angle{ 0.0f }
+{
 }
 //-------------------------------------------------------------------
 // デストラクタ
@@ -41,7 +42,7 @@ void PlayerBullet::Initialize(CommonResources* resources)
 	m_commonResources = resources;
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-	
+
 	// プリミティブバッチを作成する
 	m_primitiveBatch = std::make_unique<DirectX::DX11::PrimitiveBatch<DirectX::DX11::VertexPositionColor>>(context);
 	/*
@@ -86,6 +87,9 @@ void PlayerBullet::Initialize(CommonResources* resources)
 // 更新
 void PlayerBullet::Update(DirectX::SimpleMath::Vector3& Direction, float elapsedTime)
 {
+	m_angle += 6.0f;
+	if (m_angle > 360)m_angle = 0;
+
 	// カメラが向いている方向に速度を与える
 	m_velocity += m_direction;
 	// 移動量を正規化する
@@ -100,10 +104,10 @@ void PlayerBullet::Update(DirectX::SimpleMath::Vector3& Direction, float elapsed
 
 	// 時間計測
 	m_time += elapsedTime;
-	
+
 }
 // 弾の初期位置を設定
-void PlayerBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir)							
+void PlayerBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir)
 {
 	using namespace DirectX::SimpleMath;
 	m_position = pos;
@@ -116,9 +120,13 @@ void PlayerBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 	using namespace DirectX::SimpleMath;
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
+
 	// 弾のサイズを設定
-	Matrix bulletWorld  = Matrix::CreateScale(SIZE);
+	Matrix bulletWorld = Matrix::CreateScale(SIZE);
 	Matrix boundingbulletWorld = Matrix::CreateScale(Vector3::One);
+	bulletWorld *= Matrix::CreateRotationX(DirectX::XMConvertToRadians(m_angle));
+
+	// 弾の自転
 	// 弾の座標を設定
 	bulletWorld *= Matrix::CreateTranslation(m_position);
 	boundingbulletWorld *= Matrix::CreateTranslation(m_position);

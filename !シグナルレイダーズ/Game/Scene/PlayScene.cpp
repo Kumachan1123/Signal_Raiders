@@ -148,7 +148,7 @@ void PlayScene::Update(float elapsedTime)
 	// ¶¬‰Â”\‚È‚ç
 	if (m_isEnemyBorn && !m_isBorned)
 	{
-		for (int it = 0; it < m_wifi->GetWifiLevels().size(); it++)// m_wifi->GetWifiLevels().size()
+		for (int it = 0; it < 1; it++)// m_wifi->GetWifiLevels().size()
 		{
 			auto enemy = std::make_unique<Enemy>();// “G‚ğ¶¬
 			enemy->Initialize(m_commonResources, m_wifi->GetWifiLevels()[it]);  // ‰Šú‰»

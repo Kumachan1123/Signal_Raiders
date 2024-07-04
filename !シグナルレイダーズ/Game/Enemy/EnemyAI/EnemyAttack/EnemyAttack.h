@@ -32,14 +32,14 @@ private:
 
 public:
 	//	getter
-	DirectX::SimpleMath::Vector3 GetPosition()   { return m_position; }
-	DirectX::SimpleMath::Quaternion GetRotation()  { return m_rotation; }
+	DirectX::SimpleMath::Vector3 GetPosition() { return m_position; }
+	DirectX::SimpleMath::Quaternion GetRotation() { return m_rotation; }
 	//  setter
 	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }
 	void SetRotation(DirectX::SimpleMath::Quaternion rot) { m_rotation = rot; }
 	void SetScale(DirectX::SimpleMath::Vector3 sca) { m_scale = sca; }
-
-public :
+	void SetCoolTime(float coolTime) { m_attackCooldown = coolTime; }
+public:
 	EnemyAttack(EnemyAI* enemy);
 	~EnemyAttack();
 

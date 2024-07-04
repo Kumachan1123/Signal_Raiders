@@ -16,6 +16,7 @@ EnemyBullet::EnemyBullet()
 	, m_velocity{}
 	, m_commonResources{}
 	, m_time(0.0f)
+	, m_angle{ 0.0f }
 {
 }
 //-------------------------------------------------------------------
@@ -59,13 +60,9 @@ void EnemyBullet::Initialize(CommonResources* resources)
 							   // ベイシックエフェクトを取得する
 							   auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);
 							   // ディフューズカラーを設定する
-							   basicEffect->SetDiffuseColor(DirectX::Colors::Tomato);
-							   // スペキュラカラーを設定する
-							   basicEffect->SetSpecularColor(DirectX::Colors::Tomato);
-							   // スペキュラパワーを設定する
-							   basicEffect->SetSpecularPower(500.0f);
-							   // エミッションカラーを設定する
-							   basicEffect->SetEmissiveColor(DirectX::XMVECTOR{ 0.3, 0.3, 0.3, 1 });
+							   basicEffect->SetDiffuseColor(DirectX::Colors::Violet);
+							   basicEffect->SetFogStart(0.5);
+
 						   });
 	m_direction = Vector3::Zero;
 	m_velocity = Vector3{ 0.0f,0.0f,0.0f };
@@ -86,10 +83,11 @@ void EnemyBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::Sim
 // 更新
 void EnemyBullet::Update(DirectX::SimpleMath::Vector3& pos, float elapsedTime)
 {
-	
+	m_angle += 6.0f;
+	if (m_angle > 360)m_angle = 0;
 	// プレイヤーの方向ベクトルを計算
 	DirectX::SimpleMath::Vector3 toPlayer = m_target - pos;
-	
+
 	if (toPlayer.LengthSquared() > 0)
 	{
 		toPlayer.Normalize();
@@ -113,6 +111,8 @@ void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	// 弾のサイズを設定
 	Matrix bulletWorld = Matrix::CreateScale(SIZE);
 	Matrix boundingbulletWorld = Matrix::CreateScale(Vector3::One);
+	// 弾の自転
+	bulletWorld *= Matrix::CreateRotationX(DirectX::XMConvertToRadians(m_angle));
 	// 弾の座標を設定
 	bulletWorld *= Matrix::CreateTranslation(m_position);
 	boundingbulletWorld *= Matrix::CreateTranslation(m_position);

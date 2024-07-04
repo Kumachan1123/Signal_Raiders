@@ -32,6 +32,8 @@ private:
 	DirectX::SimpleMath::Vector3 m_target;
 
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
+	// 弾の自転
+	float m_angle;
 
 	// 「弾」境界ボックス
 	//DirectX::BoundingSphere m_boundingSphere;
@@ -56,7 +58,7 @@ public:
 	//Setter
 	void SetBulletPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }
 	// 弾が生成されてからの経過時間が寿命を超えたかどうかを判定する
-	bool IsExpired() const 
+	bool IsExpired() const
 	{
 		const float BULLET_LIFETIME = 5.0f;				// 寿命
 

@@ -71,7 +71,7 @@ void PlayerController::Initialize(CommonResources* resources)
 	m_commonResources = resources;
 }
 
-void PlayerController::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>& kb, 
+void PlayerController::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>& kb,
 							  DirectX::SimpleMath::Vector3& Direction, float elapsedTime)
 {
 	MoveStop();
@@ -141,25 +141,6 @@ void PlayerController::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardS
 		m_dash = 0.3f;
 	}
 
-	// ¶‰E‰ñ“]iƒL[j
-	if (kb->lastState.Left)
-	{
-		yawX += XMConvertToRadians(1.5f); // ¶‚É‰ñ“]
-	}
-	if (kb->lastState.Right)
-	{
-		yawX -= XMConvertToRadians(1.5f); // ‰E‚É‰ñ“]
-	}
-
-	// ã‰º‰ñ“]iƒL[j
-	if (kb->lastState.Up)
-	{
-		yawY += .30f; // ã‚É‰ñ“]
-	}
-	if (kb->lastState.Down)
-	{
-		yawY -= .30f; // ‰º‚É‰ñ“]
-	}
 
 	// ˆÚ“®—Ê‚ð³‹K‰»‚·‚é
 	if (m_velocity.LengthSquared() > 0) m_velocity.Normalize();
