@@ -19,7 +19,7 @@
 #include <vector>
 #include "Keyboard.h"
 
-class PlayerHP
+class PlayerPointer
 {
 public:
 
@@ -29,12 +29,8 @@ private:
 	unsigned int m_menuIndex;
 	DX::DeviceResources* m_pDR;
 
-	//std::vector<std::unique_ptr<tito::UserInterface>> m_userInterface;
-	//std::vector<std::unique_ptr<tito::UserInterface>> m_base;
 
-	std::unique_ptr<PlayerUI> m_gauge;
-	std::unique_ptr<PlayerUI> m_frame;
-	std::unique_ptr<PlayerUI> m_base;
+	std::unique_ptr<PlayerUI> m_pointer;
 
 
 	const wchar_t* m_baseTexturePath;
@@ -48,11 +44,11 @@ private:
 
 	//ä÷êî
 public:
-	PlayerHP();
-	~PlayerHP();
+	PlayerPointer();
+	~PlayerPointer();
 
 	void Initialize(DX::DeviceResources* pDR, int width, int height);
-	void Update(float playerHP);
+	void Update();
 	void Render();
 
 	void Add(const wchar_t* path

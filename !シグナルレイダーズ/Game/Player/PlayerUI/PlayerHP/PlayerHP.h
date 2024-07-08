@@ -29,8 +29,6 @@ private:
 	unsigned int m_menuIndex;
 	DX::DeviceResources* m_pDR;
 
-	//std::vector<std::unique_ptr<tito::UserInterface>> m_userInterface;
-	//std::vector<std::unique_ptr<tito::UserInterface>> m_base;
 
 	std::unique_ptr<PlayerUI> m_gauge;
 	std::unique_ptr<PlayerUI> m_frame;

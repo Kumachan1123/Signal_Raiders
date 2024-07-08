@@ -66,6 +66,25 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 	fx->SetDirectory(L"Resources/Models");
 	// モデルを読み込む
 	m_model = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy.cmo", *fx);
+
+	// 加算合成
+	CD3D11_DEFAULT defaultSettings{};
+	CD3D11_BLEND_DESC blendDesc(defaultSettings);
+	blendDesc.RenderTarget[0].BlendEnable = TRUE;
+	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_COLOR;
+	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_DEST_COLOR;
+	// ブレンドステートを作成する
+	DX::ThrowIfFailed(device->CreateBlendState(&blendDesc, m_blendState.ReleaseAndGetAddressOf()));
+	// アウトラインシェーダーを作成する
+	std::vector<uint8_t> psBlob = DX::ReadData(L"Resources/Shaders/PS_Outline.cso"); // 事前にコンパイルされたシェーダーバイナリ
+	DX::ThrowIfFailed(
+		device->CreatePixelShader(
+			psBlob.data(),
+			psBlob.size(),
+			nullptr,
+			m_outlinePS.ReleaseAndGetAddressOf()
+		)
+	);
 	// HPBar生成
 	m_HPBar = std::make_unique<EnemyHPBar>();
 	m_HPBar->Initialize(resources);
@@ -95,12 +114,13 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	using namespace DirectX::SimpleMath;
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
+	// 基準となる座標やら回転やら
+	Matrix world = Matrix::CreateFromQuaternion(m_enemyAI->GetRotation()) * Matrix::CreateTranslation(m_position) * Matrix::CreateTranslation(Vector3{ 0,-2,0 });
+
 	// 敵のサイズを設定
 	Matrix enemyWorld = Matrix::CreateScale(m_enemyAI->GetScale());
 	// 敵の座標を設定
-	enemyWorld *= Matrix::CreateFromQuaternion(m_enemyAI->GetRotation());
-	enemyWorld *= Matrix::CreateTranslation(m_position);
-	enemyWorld *= Matrix::CreateTranslation(Vector3{ 0,-2,0 });
+	enemyWorld *= world;
 
 
 	// モデルのエフェクト情報を更新する
@@ -126,7 +146,20 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	);
 	// HPBar描画
 	m_HPBar->Render(view, proj, m_position, m_rotate);
+	// 敵描画
+	m_model->Draw(context, *states, enemyWorld, view, proj);
 
+
+	// アウトライン描画用の大きなスケールでモデルを描画する
+	Matrix outlineWorld = Matrix::CreateScale(1.02f);
+	outlineWorld *= world;
+	m_model->Draw(context, *states, outlineWorld, view, proj, false, [&]()
+				  {
+					  context->OMSetBlendState(states->AlphaBlend(), nullptr, 0xffffffff);
+					  context->OMSetDepthStencilState(states->DepthNone(), 0);
+					  context->RSSetState(states->CullNone());
+					  context->PSSetShader(m_outlinePS.Get(), nullptr, 0);
+				  });
 
 	// 敵描画
 	m_model->Draw(context, *states, enemyWorld, view, proj);
@@ -136,6 +169,7 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	lightDir.Normalize();
 	Matrix shadowMatrix = Matrix::CreateShadow(lightDir, Plane(0, 1, 0, -0.01f));
 	Matrix mat = enemyWorld * shadowMatrix;
+	// 影描画
 	m_model->Draw(context, *states, mat, view, proj, false, [&]()
 				  {
 					  context->OMSetBlendState(states->AlphaBlend(), nullptr, 0xffffffff);
@@ -155,7 +189,7 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	m_basicEffect->Apply(context);
 
 	for (const auto& bullet : m_bullets)bullet->Render(view, proj);
-
+#ifdef _DEBUG
 	m_primitiveBatch->Begin();
 	if (!m_isHit)
 	{
@@ -169,6 +203,7 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 
 	}
 	m_primitiveBatch->End();
+#endif
 
 }
 // 更新

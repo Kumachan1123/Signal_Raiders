@@ -80,6 +80,9 @@ void PlayScene::Initialize(CommonResources* resources)
 	// HPゲージ作成
 	m_pPlayerHP = std::make_unique<PlayerHP>();
 	m_pPlayerHP->Initialize(DR, 1280, 720);
+	// 照準作成
+	m_pPlayerPointer = std::make_unique<PlayerPointer>();
+	m_pPlayerPointer->Initialize(DR, 1280, 720);
 	/*
 		デバッグドローの表示用オブジェクトを生成する
 	*/
@@ -123,6 +126,7 @@ void PlayScene::Update(float elapsedTime)
 	m_camera->Update(m_playerController->GetPlayerPosition(), m_playerController->GetYawX());
 	m_camera->SetTargetPositionY(m_playerController->GetYawY());
 	m_pPlayerHP->Update(m_playerHP);
+	m_pPlayerPointer->Update();
 
 	// 左クリックで弾発射
 	if (mtracker->GetLastState().leftButton && !m_isBullet)
@@ -214,6 +218,7 @@ void PlayScene::Render()
 	debugString->AddString("Z:%f", m_playerController->GetPlayerPosition().z);
 	m_wifi->Render(debugString);
 	m_pPlayerHP->Render();
+	m_pPlayerPointer->Render();
 }
 //---------------------------------------------------------
 // 後始末する

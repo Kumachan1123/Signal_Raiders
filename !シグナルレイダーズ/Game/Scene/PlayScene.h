@@ -16,6 +16,7 @@
 #include "Game/Wifi/Wifi.h"
 #include "Mouse.h"
 #include "Game/Player/PlayerUI/PlayerHP/PlayerHP.h"
+#include "Game/Player/PlayerUI/PlayerPointer/PlayerPointer.h"
 // 前方宣言
 class CommonResources;
 
@@ -50,6 +51,8 @@ private:
 	// プレイヤーのHP
 	float m_playerHP = 100.0f;
 	std::unique_ptr <PlayerHP> m_pPlayerHP;
+	// 照準
+	std::unique_ptr<PlayerPointer> m_pPlayerPointer;
 	// スカイボックス用のメンバ変数
 	std::unique_ptr<SkyBox> m_skybox;
 	// 敵

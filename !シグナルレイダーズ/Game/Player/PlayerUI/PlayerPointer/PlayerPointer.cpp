@@ -1,11 +1,11 @@
 //--------------------------------------------------------------------------------------
-// File: PlayerHP.cpp
+// File: PlayerPointer.cpp
 //
-// HPゲージクラス
+// 照準クラス
 //
 //-------------------------------------------------------------------------------------
 #include "pch.h"
-#include "PlayerHP.h"
+#include "PlayerPointer.h"
 #include "Game/Player/PlayerUI/PlayerUI.h"
 #include "Game/KumachiLib/BinaryFile.h"
 #include "DeviceResources.h"
@@ -19,92 +19,57 @@
 using namespace DirectX;
 
 
-PlayerHP::PlayerHP()
+PlayerPointer::PlayerPointer()
 	: m_menuIndex(0)
 	, m_windowHeight(0)
 	, m_windowWidth(0)
 	, m_pDR(nullptr)
 	, m_baseTexturePath(nullptr)
-	, m_gauge(nullptr)
-	, m_frame(nullptr)
+	, m_pointer(nullptr)
 {
 }
 
-PlayerHP::~PlayerHP()
+PlayerPointer::~PlayerPointer()
 {
 }
 
-void PlayerHP::Initialize(DX::DeviceResources* pDR, int width, int height)
+void PlayerPointer::Initialize(DX::DeviceResources* pDR, int width, int height)
 {
 	m_pDR = pDR;
 	m_windowWidth = width;
 	m_windowHeight = height;
 
-	m_baseTexturePath = L"Resources/Textures/Hearts.png";
 
-	Add(L"Resources/Textures/HeartsFrame.png"
-		, SimpleMath::Vector2(75, 75)
-		, SimpleMath::Vector2(1.5f, 1.5f)
+	Add(L"Resources/Textures/pointer.png"
+		, SimpleMath::Vector2(640, 360)
+		, SimpleMath::Vector2(0.25f, 0.25f)
 		, kumachi::ANCHOR::MIDDLE_CENTER);
 }
 
-void PlayerHP::Update(float PlayerHP)
+void PlayerPointer::Update()
 {
 
 	auto keystate = Keyboard::Get().GetState();
 	m_tracker.Update(keystate);
-	float ratio = m_gauge->GetRenderRatio();
 
-	float hp = PlayerHP * 0.0125f;
-	/*if (m_tracker.pressed.Right)
-	{
-		ratio += 0.01f;
-		ratio = std::min(hp, ratio);
-	}
-	if (m_tracker.pressed.Left)
-	{
-		ratio -= 0.01f;
-		ratio = std::max(0.1f, ratio);
-	}*/
-	hp = std::max(-0.1f, hp);
-	m_gauge->SetRenderRatio(hp);
 
 }
 
-void PlayerHP::Render()
+void PlayerPointer::Render()
 {
-	m_base->Render();
-	m_gauge->Render();
-	m_frame->Render();
+	m_pointer->Render();
 }
 
-void PlayerHP::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, kumachi::ANCHOR anchor)
+void PlayerPointer::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, kumachi::ANCHOR anchor)
 {
-	m_base = std::make_unique<PlayerUI>();
-	m_base->Create(m_pDR
-				   , L"Resources/Textures/HeartsBase.png"
-				   , position
-				   , scale
-				   , anchor);
-	m_base->SetWindowSize(m_windowWidth, m_windowHeight);
 
-
-	m_gauge = std::make_unique<PlayerUI>();
-	m_gauge->Create(m_pDR
-					, m_baseTexturePath
-					, position
-					, scale
-					, anchor);
-	m_gauge->SetWindowSize(m_windowWidth, m_windowHeight);
-	m_gauge->SetRenderRatioOffset(0.3f);
-
-	m_frame = std::make_unique<PlayerUI>();
-	m_frame->Create(m_pDR
-					, path
-					, position
-					, scale
-					, anchor);
-	m_frame->SetWindowSize(m_windowWidth, m_windowHeight);
+	m_pointer = std::make_unique<PlayerUI>();
+	m_pointer->Create(m_pDR
+					  , path
+					  , position
+					  , scale
+					  , anchor);
+	m_pointer->SetWindowSize(m_windowWidth, m_windowHeight);
 
 
 }

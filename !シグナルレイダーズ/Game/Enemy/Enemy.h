@@ -30,6 +30,10 @@ private:
 	// モデルの影
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState>m_depthStencilState;
+	// 輪郭（仮）
+	Microsoft::WRL::ComPtr<ID3D11BlendState> m_blendState;	// ブレンドステート
+	// 追加：アウトライン用のシェーダー
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_outlinePS;
 	// 敵の情報
 	DirectX::SimpleMath::Vector3 m_position;		// 座標
 	DirectX::SimpleMath::Vector3 m_velocity;		// 速度
