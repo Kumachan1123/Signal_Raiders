@@ -39,6 +39,7 @@ public:
 	void SetRotation(DirectX::SimpleMath::Quaternion rot) { m_rotation = rot; }
 	void SetScale(DirectX::SimpleMath::Vector3 sca) { m_scale = sca; }
 	void SetCoolTime(float coolTime) { m_attackCooldown = coolTime; }
+	void SetRotationSpeed(float speed) { m_rotationSpeed = speed; }
 public:
 	EnemyAttack(EnemyAI* enemy);
 	~EnemyAttack();

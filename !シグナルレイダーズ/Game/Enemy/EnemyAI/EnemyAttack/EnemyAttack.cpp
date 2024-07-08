@@ -34,7 +34,7 @@ void EnemyAttack::Initialize()
 	m_velocity = m_enemy->GetVelocity();
 	m_scale = m_enemy->GetScale();
 
-	m_rotationSpeed = 0.12f; // 回転速度
+	m_rotationSpeed = 1; // 回転速度
 
 }
 
@@ -42,7 +42,11 @@ void EnemyAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, D
 {
 	UNREFERENCED_PARAMETER(isHitToPlayer);
 	using namespace DirectX::SimpleMath;
-
+	m_rotationSpeed -= (elapsedTime / 10);
+	if (m_rotationSpeed <= 0.24f)
+	{
+		m_rotationSpeed = 0.24f;
+	}
 	// プレイヤーへのベクトルを計算
 	Vector3 toPlayer = playerPos - pos;
 	if (toPlayer.LengthSquared() > 0.0f) {
@@ -72,7 +76,7 @@ void EnemyAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, D
 	// 目標角度と現在の角度が非常に小さい場合、振動を防ぐために補間を止める
 	const float angleThreshold = 0.1f; // 閾値の調整
 	if (std::abs(angle) > angleThreshold) {
-		m_rotation = Quaternion::Slerp(m_rotation, toPlayerRotation * m_rotation, elapsedTime * (m_rotationSpeed * 2));
+		m_rotation = Quaternion::Slerp(m_rotation, toPlayerRotation * m_rotation, elapsedTime * (m_rotationSpeed));
 		m_rotation.Normalize();
 	}
 
@@ -81,7 +85,8 @@ void EnemyAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, D
 
 	// 敵がプレイヤーの方向を向いているかをチェック
 	const float directionThreshold = -0.93f; // 内積が1に近いかどうかの閾値
-	if (dot <= directionThreshold) {
+	if (dot <= directionThreshold)
+	{
 		// 攻撃のクールダウンタイムを管理
 		m_attackCooldown -= elapsedTime;
 		if (m_attackCooldown <= 0.0f)
