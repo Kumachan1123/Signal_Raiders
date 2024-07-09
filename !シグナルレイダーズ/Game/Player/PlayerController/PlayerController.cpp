@@ -43,8 +43,8 @@ PlayerController::PlayerController()
 	m_point = { centerX, centerY };
 	SetCursorPos(m_point.x, m_point.y);
 
-	m_lastMouseX = m_point.x;
-	m_lastMouseY = m_point.y;
+	m_lastMouseX = (float)(m_point.x);
+	m_lastMouseY = (float)(m_point.y);
 }
 
 //-------------------------------------------------------------------
@@ -75,7 +75,7 @@ void PlayerController::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardS
 							  DirectX::SimpleMath::Vector3& Direction, float elapsedTime)
 {
 	MoveStop();
-	ShowCursor(TRUE);//カーソルを見えないようにする
+	ShowCursor(FALSE);//カーソルを見えないようにする
 	// マウスの現在の位置を取得
 	POINT point;
 	GetCursorPos(&point);

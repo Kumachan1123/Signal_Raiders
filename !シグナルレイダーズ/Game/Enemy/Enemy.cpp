@@ -123,46 +123,14 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	enemyWorld *= world;
 
 
-	// モデルのエフェクト情報を更新する
-	m_model->UpdateEffects([](DirectX::IEffect* effect)
-						   {
-							   // ベーシックエフェクトを設定する
-							   BasicEffect* basicEffect = dynamic_cast<BasicEffect*>(effect);
 
-							   if (basicEffect)
-							   {
-								   // 個別のライトをすべて無効化する
-								   basicEffect->SetLightEnabled(0, false);
-								   basicEffect->SetLightEnabled(1, false);
-								   basicEffect->SetLightEnabled(2, false);
-
-								   // モデルを自発光させる
-								   basicEffect->SetAmbientLightColor(Colors::White);
-								   basicEffect->SetFogStart(1);
-							   }
-
-
-						   }
-	);
 	// HPBar描画
 	m_HPBar->Render(view, proj, m_position, m_rotate);
 	// 敵描画
 	m_model->Draw(context, *states, enemyWorld, view, proj);
 
 
-	// アウトライン描画用の大きなスケールでモデルを描画する
-	Matrix outlineWorld = Matrix::CreateScale(1.02f);
-	outlineWorld *= world;
-	m_model->Draw(context, *states, outlineWorld, view, proj, false, [&]()
-				  {
-					  context->OMSetBlendState(states->AlphaBlend(), nullptr, 0xffffffff);
-					  context->OMSetDepthStencilState(states->DepthNone(), 0);
-					  context->RSSetState(states->CullNone());
-					  context->PSSetShader(m_outlinePS.Get(), nullptr, 0);
-				  });
 
-	// 敵描画
-	m_model->Draw(context, *states, enemyWorld, view, proj);
 	// ライトの方向
 	Vector3 lightDir = Vector3::UnitY;
 	//Vector3 lightDir = Vector3{ 0.5f,1.0f,-0.5f };
