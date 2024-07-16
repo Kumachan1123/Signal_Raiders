@@ -54,7 +54,16 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return 1;
 
 	g_game = std::make_unique<Game>();
-
+	static bool s_fullscreen = false;
+	// 画面モード選択
+	if (MessageBox(NULL, L"フルスクリーンにしますか？", L"画面モード設定", MB_YESNO) == IDYES)
+	{
+		s_fullscreen = true;
+	}
+	else
+	{
+		s_fullscreen = false;
+	}
 	// Register class and create window
 	{
 		// Register class
@@ -107,6 +116,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		GetClientRect(hwnd, &rc);
 
 		g_game->Initialize(hwnd, rc.right - rc.left, rc.bottom - rc.top);
+		if (s_fullscreen) g_game->SetFullscreenState(TRUE);
 	}
 
 	// Main message loop
@@ -123,7 +133,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 			g_game->Tick();
 		}
 	}
-
+	if (s_fullscreen) g_game->SetFullscreenState(FALSE);
 	g_game.reset();
 
 	CoUninitialize();
@@ -170,31 +180,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 
-		case WM_SIZE:
-			if (wParam == SIZE_MINIMIZED)
-			{
-				if (!s_minimized)
-				{
-					s_minimized = true;
-					if (!s_in_suspend && game)
-						game->OnSuspending();
-					s_in_suspend = true;
-				}
-			}
-			else if (s_minimized)
-			{
-				s_minimized = false;
-				if (s_in_suspend && game)
-					game->OnResuming();
-				s_in_suspend = false;
-			}
-			// フルスクリーン切り替え時にコメント化すると、画面サイズがリサイズされずに最大化できる
-			// フルスクリーン時でも、見た目の1280x720サイズを保持する
-			//else if (!s_in_sizemove && game)
-			//{
-			//    game->OnWindowSizeChanged(LOWORD(lParam), HIWORD(lParam));
-			//}
-			break;
+			//case WM_SIZE:
+			//	if (wParam == SIZE_MINIMIZED)
+			//	{
+			//		if (!s_minimized)
+			//		{
+			//			s_minimized = true;
+			//			if (!s_in_suspend && game)
+			//				game->OnSuspending();
+			//			s_in_suspend = true;
+			//		}
+			//	}
+			//	else if (s_minimized)
+			//	{
+			//		s_minimized = false;
+			//		if (s_in_suspend && game)
+			//			game->OnResuming();
+			//		s_in_suspend = false;
+			//	}
+			//	// フルスクリーン切り替え時にコメント化すると、画面サイズがリサイズされずに最大化できる
+			//	// フルスクリーン時でも、見た目の1280x720サイズを保持する
+			//	//else if (!s_in_sizemove && game)
+			//	//{
+			//	//    game->OnWindowSizeChanged(LOWORD(lParam), HIWORD(lParam));
+			//	//}
+			//	break;
 
 		case WM_ENTERSIZEMOVE:
 			s_in_sizemove = true;
@@ -287,45 +297,45 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 			// ★追記ココまで★
 
-		case WM_SYSKEYDOWN:
-			if (wParam == VK_RETURN && (lParam & 0x60000000) == 0x20000000)
-			{
-				// Implements the classic ALT+ENTER fullscreen toggle
-				if (s_fullscreen)
-				{
-					SetWindowLongPtr(hWnd, GWL_STYLE, WS_MY_WINDOW);    // ★変更::WS_OVERLAPPEDWINDOW->WS_MY_WINDOW
-					SetWindowLongPtr(hWnd, GWL_EXSTYLE, 0);
+		//case WM_SYSKEYDOWN:
+		//	if (wParam == VK_RETURN && (lParam & 0x60000000) == 0x20000000)
+		//	{
+		//		// Implements the classic ALT+ENTER fullscreen toggle
+		//		if (s_fullscreen)
+		//		{
+		//			SetWindowLongPtr(hWnd, GWL_STYLE, WS_MY_WINDOW);    // ★変更::WS_OVERLAPPEDWINDOW->WS_MY_WINDOW
+		//			SetWindowLongPtr(hWnd, GWL_EXSTYLE, 0);
 
-					int width = 800;
-					int height = 600;
-					if (game)
-						game->GetDefaultSize(width, height);
+		//			int width = 800;
+		//			int height = 600;
+		//			if (game)
+		//				game->GetDefaultSize(width, height);
 
-					ShowWindow(hWnd, SW_SHOWNORMAL);
+		//			ShowWindow(hWnd, SW_SHOWNORMAL);
 
-					// ウィンドウを元のサイズに戻すときにサイズを補正する
-					RECT rc{};
-					AdjustWindowRect(&rc, WS_MY_WINDOW, FALSE);
-					SetWindowPos(
-						hWnd, HWND_TOP,
-						0, 0,
-						width + rc.right - rc.left, height + rc.bottom - rc.top,
-						SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED
-					);
-				}
-				else
-				{
-					SetWindowLongPtr(hWnd, GWL_STYLE, WS_POPUP);
-					SetWindowLongPtr(hWnd, GWL_EXSTYLE, WS_EX_TOPMOST);
+		//			// ウィンドウを元のサイズに戻すときにサイズを補正する
+		//			RECT rc{};
+		//			AdjustWindowRect(&rc, WS_MY_WINDOW, FALSE);
+		//			SetWindowPos(
+		//				hWnd, HWND_TOP,
+		//				0, 0,
+		//				width + rc.right - rc.left, height + rc.bottom - rc.top,
+		//				SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED
+		//			);
+		//		}
+		//		else
+		//		{
+		//			SetWindowLongPtr(hWnd, GWL_STYLE, WS_POPUP);
+		//			SetWindowLongPtr(hWnd, GWL_EXSTYLE, WS_EX_TOPMOST);
 
-					SetWindowPos(hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+		//			SetWindowPos(hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 
-					ShowWindow(hWnd, SW_SHOWMAXIMIZED);
-				}
+		//			ShowWindow(hWnd, SW_SHOWMAXIMIZED);
+		//		}
 
-				s_fullscreen = !s_fullscreen;
-			}
-			break;
+		//		s_fullscreen = !s_fullscreen;
+		//	}
+		//	break;
 
 		case WM_MENUCHAR:
 			// A menu is active and the user presses a key that does not correspond
