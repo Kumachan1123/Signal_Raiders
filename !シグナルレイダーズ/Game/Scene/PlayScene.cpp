@@ -356,7 +356,7 @@ void PlayScene::UpdateEnemies(float elapsedTime)
 		if (hit)
 		{
 			enemy->SetPlayerHP(m_playerHP);
-
+			enemy->SetBulletHitToPlayer(false);
 		}
 
 		if (enemy->GetBoundingSphere().Intersects(m_inPlayerArea))	m_isHitPlayerToEnemy = true;

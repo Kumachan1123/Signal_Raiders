@@ -235,31 +235,26 @@ void Enemy::CheckHitOtherEnemy(DirectX::BoundingSphere& A, DirectX::BoundingSphe
 void Enemy::UpdateBullets(float elapsedTime)
 {
 	std::vector<std::unique_ptr<EnemyBullet>> newBullets;
-	std::vector < std::unique_ptr<EnemyBullet>> dead;
+
 	// 弾の更新と有効な弾を新しいリストに移動する
 	for (auto& bullet : m_bullets)
 	{
-		if (bullet->IsExpired())// 寿命が来たら
+		bullet->Update(m_position, elapsedTime); // 弾の更新
+
+		// 寿命を迎えていない弾だけを新しいリストに追加する
+		if (!bullet->IsExpired() && !m_isBullethit)
 		{
-			dead.push_back(std::move(bullet));//弾を消す貯めの配列に格納
-		}
-		else// 寿命がまだだったら
-		{
-			bullet->Update(m_position, elapsedTime); // 弾の更新
 			SetBulletBoundingSphere(bullet->GetBoundingSphere());
 			m_isBullethit = GetBulletBoundingSphere().Intersects(GetPlayerBoundingSphere());
-			if (m_isBullethit)//当たったら弾を消す貯めの配列に格納
+			if (m_isBullethit)
 			{
 				SetBulletHitToPlayer(m_isBullethit);
-				dead.push_back(std::move(bullet));
 				continue;
 			}
 			newBullets.push_back(std::move(bullet));
 		}
-
 	}
 
 	// m_bullets を新しいリストで置き換える
 	m_bullets = std::move(newBullets);
-	dead.clear();// 死んだ弾を消す
 }

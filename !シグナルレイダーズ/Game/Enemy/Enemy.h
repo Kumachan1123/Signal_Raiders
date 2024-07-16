@@ -62,7 +62,7 @@ private:
 	float m_attackCooldown;  // 攻撃のクールダウンタイム
 
 	// Player
-	const float PLAYER_DAMAGE = 0.1f;
+	const float PLAYER_DAMAGE = 1.0f;
 public:
 	//	getter
 	DirectX::BoundingSphere& GetBoundingSphere() { return m_enemyBoundingSphere; }
