@@ -46,13 +46,15 @@ void EnemyAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, D
 	}
 	// プレイヤーへのベクトルを計算
 	Vector3 toPlayerVector = playerPos - pos;
-	if (toPlayerVector.LengthSquared() > 0.0f) {
+	if (toPlayerVector.LengthSquared() > 0.0f)
+	{
 		toPlayerVector.Normalize();
 	}
 
 	// 現在の前方ベクトルを取得
 	Vector3 forward = Vector3::Transform(Vector3::Forward, m_rotation);
-	if (forward.LengthSquared() > 0.0f) {
+	if (forward.LengthSquared() > 0.0f)
+	{
 		forward.Normalize();
 	}
 
@@ -63,7 +65,8 @@ void EnemyAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, D
 
 	// 外積を使って回転方向を決定
 	Vector3 cross = toPlayerVector.Cross(forward);
-	if (cross.y < 0) {
+	if (cross.y < 0)
+	{
 		angle = -angle;
 	}
 
@@ -72,7 +75,8 @@ void EnemyAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, D
 
 	// 目標角度と現在の角度が非常に小さい場合、振動を防ぐために補間を止める
 	const float angleThreshold = 0.1f; // 閾値の調整
-	if (std::abs(angle) > angleThreshold) {
+	if (std::abs(angle) > angleThreshold)
+	{
 		m_rotation = Quaternion::Slerp(m_rotation, toPlayerRotation * m_rotation, elapsedTime * (m_rotationSpeed));
 		m_rotation.Normalize();
 	}
