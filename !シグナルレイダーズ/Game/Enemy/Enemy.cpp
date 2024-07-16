@@ -183,7 +183,7 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 {
 
-	m_enemyAI->Update(elapsedTime, m_position, playerPos, m_isHit);
+	m_enemyAI->Update(elapsedTime, m_position, playerPos, m_isHit, m_isHitToPlayerBullet);
 	if (m_enemyAI->GetNowState() == m_enemyAI->GetEnemyAttack())// 攻撃態勢なら
 	{
 		// 攻撃のクールダウンタイムを管理

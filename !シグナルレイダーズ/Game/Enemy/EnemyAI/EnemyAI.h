@@ -32,6 +32,9 @@ private:
 	DirectX::SimpleMath::Vector3 m_scale;//サイズ
 	DirectX::SimpleMath::Quaternion m_rotation;//回転
 	DirectX::SimpleMath::Vector3 m_velocity;// 移動速度
+
+	float m_knockTime = 0.0f;// knockBackする時間
+	DirectX::SimpleMath::Vector3 m_knockStartPosition, m_knockEndPosition, m_initialVelocity;
 	float m_rotationSpeed;//回転速度
 	const float RANDOM_MAX = 2.0f;
 	const float RANDOM_MIN = 0.5f;
@@ -42,26 +45,27 @@ public:
 
 	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
 	DirectX::SimpleMath::Vector3 GetInitialPosition() const { return m_initialPosition; }
-	DirectX::SimpleMath::Quaternion GetRotation() const{ return m_rotation; }
+	DirectX::SimpleMath::Quaternion GetRotation() const { return m_rotation; }
 	DirectX::SimpleMath::Vector3 GetVelocity() const { return m_velocity; }
 	DirectX::SimpleMath::Vector3 GetScale() const { return m_scale; }
 	EnemyAttack* GetEnemyAttack()const { return m_enemyAttack.get(); }
 	EnemyIdling* GetEnemyIdling()const { return m_enemyIdling.get(); }
 	IState* GetNowState()const { return m_currentState; }
 	//  setter
-	void SetPosition( DirectX::SimpleMath::Vector3& pos) { m_position = pos; }
+	void SetPosition(DirectX::SimpleMath::Vector3& pos) { m_position = pos; }
 	void SetRotation(DirectX::SimpleMath::Quaternion rot) { m_rotation = rot; }
 	void SetScale(DirectX::SimpleMath::Vector3 sca) { m_scale = sca; }
 	void SetVelocity(DirectX::SimpleMath::Vector3& vel) { m_velocity = vel; }
-
-public :
+	void KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bool& isHitToPlayerBullet, const DirectX::SimpleMath::Vector3& playerPos);
+public:
 	EnemyAI();
 	~EnemyAI();
 	void Initialize();
 	void Update(float elapsedTime,
 				DirectX::SimpleMath::Vector3& pos,
 				DirectX::SimpleMath::Vector3& playerPos,
-				bool& isHitToPlayer);
+				bool& isHitToPlayer,
+				bool& isHitToPlayerBullet);
 	void ChangeState(IState* newState);
 	// 攻撃ロジックを実装
 	template <typename T>

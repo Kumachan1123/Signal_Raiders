@@ -39,7 +39,7 @@ void EnemyAI::Initialize()
 	m_currentState->Initialize();
 }
 // 更新
-void EnemyAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool& isHitToPlayer)
+void EnemyAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool& isHitToPlayer, bool& isHitToPlayerBullet)
 {
 	using namespace DirectX::SimpleMath;
 	// sin波を用いた浮遊動作の実装
@@ -61,6 +61,9 @@ void EnemyAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Direc
 		ChangeState(m_enemyIdling.get());//徘徊態勢にする
 	}
 	m_currentState->Update(elapsedTime, pos, playerPos, isHitToPlayer);
+	if (isHitToPlayerBullet)
+		KnockBack(elapsedTime, pos, isHitToPlayerBullet, playerPos);
+
 	m_position = pos;
 }
 // ステート変更
@@ -92,3 +95,41 @@ T EnemyAI::GenerateRandomMultiplier(T min, T max)
 
 // 明示的なインスタンス化
 template float EnemyAI::GenerateRandomMultiplier(float min, float max);
+
+void EnemyAI::KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bool& isHitToPlayerBullet, const DirectX::SimpleMath::Vector3& playerPos)
+{
+	using namespace DirectX::SimpleMath;
+
+	// ノックバックが始まったばかりなら初期設定を行う
+	if (m_knockTime == 0.0f)
+	{
+		m_knockStartPosition = pos; // ノックバック開始位置
+		Vector3 knockBackDirection = (pos - playerPos); // プレイヤーから敵への方向ベクトル
+		knockBackDirection.Normalize(); // 正規化して方向ベクトルにする
+		m_knockEndPosition = pos + knockBackDirection * 10; // ノックバック終了位置
+		m_initialVelocity = knockBackDirection * 10; // 初期速度
+	}
+
+	// ノックバック時間の更新
+	m_knockTime += elapsedTime;
+
+	// ノックバックの長さ（秒）
+	const float knockBackDuration = 1.5f;
+
+	// ノックバックの進行度（0.0 ～ 1.0）
+	float t = std::min(m_knockTime / knockBackDuration, 3.0f);
+
+	// 減衰係数の計算（指数関数的減衰）
+	float decayFactor = std::exp(-2.0f * t); // 減衰速度を調整するために指数のベースを調整
+
+	// 減衰した速度を使って位置を更新
+	Vector3 velocity = m_initialVelocity * decayFactor;
+	pos += velocity * elapsedTime;
+
+	// ノックバックが終了したかどうかチェック
+	if (t >= 1.0f)
+	{
+		m_knockTime = 0.0f; // ノックバック時間のリセット
+		isHitToPlayerBullet = false; // ノックバック終了
+	}
+}

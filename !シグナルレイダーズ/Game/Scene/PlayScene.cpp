@@ -303,7 +303,7 @@ void PlayScene::UpdateBullets(float elapsedTime)
 					isHit = true;
 					m_count++;//debug
 					enemy->SetEnemyHP(enemy->GetHP() - (*it)->Damage());
-
+					enemy->SetHitToPlayerBullet(true);
 					break;
 				}
 			}

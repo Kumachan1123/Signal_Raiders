@@ -57,6 +57,7 @@ private:
 	bool m_isDead = false;//敵のHPが0になったらTrue
 	bool m_isHit = false;// プレイヤーとの判定
 	bool m_isHitToOtherEnemy = false;// その他の敵との判定
+	bool m_isHitToPlayerBullet = false;// 敵がプレイヤーの弾に当たったか
 	bool m_isBullethit = false;// 敵の弾がプレイヤーに当たったか
 	float m_attackCooldown;  // 攻撃のクールダウンタイム
 
@@ -79,6 +80,7 @@ public:
 	bool GetHitToPlayer()const { return m_isHit; }
 	bool GetHitToOtherEnemy() const { return m_isHitToOtherEnemy; }
 	bool GetBulletHitToPlayer() const { return m_isBullethit; }
+	bool GetHitToPlayerBullet() { return m_isHitToPlayerBullet; }
 	// setter
 	void SetBoundingSphereCenter(DirectX::SimpleMath::Vector3& cen) { m_enemyBoundingSphere.Center = cen; }
 	void SetPosition(DirectX::SimpleMath::Vector3& pos) { m_position = pos; }
@@ -89,6 +91,7 @@ public:
 	void SetPlayerBoundingSphere(DirectX::BoundingSphere& playerBS) { m_playerBS = playerBS; }
 	void SetPlayerHP(float& HP) const { HP -= PLAYER_DAMAGE; }
 	void SetBulletHitToPlayer(bool hit) { m_isBullethit = hit; }
+	void SetHitToPlayerBullet(bool hit) { m_isHitToPlayerBullet = hit; }
 public:
 	// 初期ステータスを設定
 	Enemy();
