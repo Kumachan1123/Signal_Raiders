@@ -22,5 +22,10 @@ public:
 	GetScanResults();
 	// デストラクタ
 	~GetScanResults();
-	void Set(PWLAN_AVAILABLE_NETWORK_LIST& pNetworkList,DWORD& dwResult,HANDLE& hClient, PWLAN_INTERFACE_INFO_LIST& pInterfaceList);
+	void Set(PWLAN_AVAILABLE_NETWORK_LIST& pNetworkList,
+			 DWORD& dwResult,
+			 HANDLE& hClient,
+			 PWLAN_INTERFACE_INFO_LIST& pInterfaceList,
+			 std::vector<NetworkInfo>& networkInfos,
+			 std::vector<int>& preWifilevels);
 };

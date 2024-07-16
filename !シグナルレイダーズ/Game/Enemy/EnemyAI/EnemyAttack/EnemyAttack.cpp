@@ -23,7 +23,6 @@ EnemyAttack::EnemyAttack(EnemyAI* enemy)
 	, m_attackCooldown{ 3.0f }
 	, m_rotationSpeed{}
 {
-
 }
 // デストラクタ
 EnemyAttack::~EnemyAttack() {}
@@ -33,9 +32,7 @@ void EnemyAttack::Initialize()
 	m_rotation = m_enemy->GetRotation();
 	m_velocity = m_enemy->GetVelocity();
 	m_scale = m_enemy->GetScale();
-
 	m_rotationSpeed = 1; // 回転速度
-
 }
 
 void EnemyAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool isHitToPlayer)
@@ -48,9 +45,9 @@ void EnemyAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, D
 		m_rotationSpeed = 0.24f;
 	}
 	// プレイヤーへのベクトルを計算
-	Vector3 toPlayer = playerPos - pos;
-	if (toPlayer.LengthSquared() > 0.0f) {
-		toPlayer.Normalize();
+	Vector3 toPlayerVector = playerPos - pos;
+	if (toPlayerVector.LengthSquared() > 0.0f) {
+		toPlayerVector.Normalize();
 	}
 
 	// 現在の前方ベクトルを取得
@@ -60,12 +57,12 @@ void EnemyAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, D
 	}
 
 	// 内積を使って角度を計算
-	float dot = toPlayer.Dot(forward);
+	float dot = toPlayerVector.Dot(forward);
 	dot = clamp(dot, -1.0f, 1.0f); // acosの引数が範囲外になるのを防ぐため
 	float angle = std::acos(dot);
 
 	// 外積を使って回転方向を決定
-	Vector3 cross = toPlayer.Cross(forward);
+	Vector3 cross = toPlayerVector.Cross(forward);
 	if (cross.y < 0) {
 		angle = -angle;
 	}
@@ -81,7 +78,7 @@ void EnemyAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, D
 	}
 
 	// プレイヤーの方向に移動
-	pos += toPlayer * m_velocity.Length() * elapsedTime * 2;
+	pos += toPlayerVector * m_velocity.Length() * elapsedTime * 2;
 
 	// 敵がプレイヤーの方向を向いているかをチェック
 	const float directionThreshold = -0.93f; // 内積が1に近いかどうかの閾値
@@ -95,9 +92,6 @@ void EnemyAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, D
 			m_attackCooldown = 3.0f; // 次の攻撃までのクールダウンタイムを3秒に設定
 		}
 	}
-
-
-
 	m_enemy->SetRotation(m_rotation);
 	m_enemy->SetVelocity(m_velocity);
 }

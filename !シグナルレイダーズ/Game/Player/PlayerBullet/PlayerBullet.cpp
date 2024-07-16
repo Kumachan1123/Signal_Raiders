@@ -113,7 +113,7 @@ void PlayerBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::Si
 	m_position = pos;
 	m_position += Vector3(0.0f, -1.0f, 0.0f);
 	m_direction = dir;
-	m_direction.y += 0.0275f;
+	m_direction.y += 0.0375f;
 }
 void PlayerBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {

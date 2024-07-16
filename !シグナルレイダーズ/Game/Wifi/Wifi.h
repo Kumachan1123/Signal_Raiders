@@ -8,7 +8,7 @@
  * @date   2024/04/22
  */
 
-// 多重インクルードの防止 =====================================================
+ // 多重インクルードの防止 =====================================================
 #pragma once
 
 
@@ -27,13 +27,13 @@ namespace mylib
 
 class Wifi
 {
-// クラス定数の宣言
+	// クラス定数の宣言
 public:
-	
 
-// データメンバの宣言
+
+	// データメンバの宣言
 private:
-	
+
 	// wi-fi関連の変数
 		// クラスいろいろ
 	std::unique_ptr<UpdateInfo>				 m_UpdateInfo;
@@ -53,7 +53,7 @@ private:
 	// 表示した回数
 	int count;
 	// ネットワーク情報を格納するvector
-	std::vector<NetworkInfo> networkInfos;
+	std::vector<NetworkInfo> m_networkInfos;
 	// スキャン結果の処理に使う変数
 	WLAN_AVAILABLE_NETWORK network;
 	std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
@@ -75,7 +75,7 @@ public:
 	Wifi();
 	// デストラクタ
 	~Wifi();
-// 操作
+	// 操作
 public:
 	// 初期化処理
 	void Initialize();

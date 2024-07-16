@@ -10,7 +10,7 @@ class Mouse;
 
 class PlayerController
 {
-			//変数
+	//変数
 public:
 	DirectX::SimpleMath::Vector3 m_position;		// 一人称視点
 	DirectX::SimpleMath::Vector3 m_velocity;		// 移動ベクトル
@@ -27,7 +27,7 @@ public:
 	float yawY = 0.0f;
 	// ダッシュ
 	float m_dash;
-			//関数
+	//関数
 private:
 	// 共通リソース
 	CommonResources* m_commonResources; float DmouseX = 0;
@@ -37,10 +37,10 @@ public:
 	void Initialize(CommonResources* resources);
 	void MoveStop();
 	void Update(const std::unique_ptr < DirectX::Keyboard::KeyboardStateTracker>& kb, DirectX::SimpleMath::Vector3& Direction, float elapsedTime);
-	
+
 	//Getter
 	float GetYawX()const { return m_yawX; }
-	float GetYawY()const { return m_pitchY; }
+	float GetPitch()const { return m_pitchY; }
 	DirectX::SimpleMath::Vector3 GetPlayerPosition()const { return m_position; }
 	float GetPlayerPositionY()const { return m_position.y; }
 	//Setter
@@ -50,5 +50,5 @@ public:
 template <typename T>
 T clamp(const T& value, const T& min, const T& max)
 {
-    return (value < min) ? min : (value > max) ? max : value;
+	return (value < min) ? min : (value > max) ? max : value;
 }

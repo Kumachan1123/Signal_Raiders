@@ -60,9 +60,9 @@ public:
 	// 弾が生成されてからの経過時間が寿命を超えたかどうかを判定する
 	bool IsExpired() const
 	{
-		const float BULLET_LIFETIME = 5.0f;				// 寿命
+		const float BULLET_LIFETIME = 3.0f;				// 寿命
 
-		return m_time >= BULLET_LIFETIME;
+		return GetTime() >= BULLET_LIFETIME;
 	}
 	// 敵にダメージを与える
 	int Damage()const { return DAMAGE; }

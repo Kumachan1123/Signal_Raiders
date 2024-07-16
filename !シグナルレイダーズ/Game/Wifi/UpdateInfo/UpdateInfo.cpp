@@ -44,17 +44,18 @@ void UpdateInfo::Initialize()
 	m_ProcessingScanResults = std::make_unique< ProcessingScanResults>();
 }
 void UpdateInfo::Set(DWORD& dwResult,
-					 DWORD& dwMaxClient, 
-					 DWORD& dwCurVersion, 
-					 HANDLE& hClient, 
+					 DWORD& dwMaxClient,
+					 DWORD& dwCurVersion,
+					 HANDLE& hClient,
 					 PWLAN_INTERFACE_INFO_LIST& pInterfaceList,
 					 PWLAN_AVAILABLE_NETWORK_LIST& pNetworkList,
-					 std::vector<NetworkInfo>& networkInfos, 
+					 std::vector<NetworkInfo>& networkInfos,
 					 WLAN_AVAILABLE_NETWORK& network,
 					 std::string& ssid,
 					 std::set<std::string>& displayedSSIDs,
 					 std::wstring_convert<std::codecvt_utf8<wchar_t>>& converter,
-					 int& count)
+					 int& count,
+					 std::vector<int>& preWifilevels)
 {
 	// Wi-Fiハンドルの初期化
 	m_handle->Set(dwResult, dwMaxClient, dwCurVersion, hClient);
@@ -65,7 +66,7 @@ void UpdateInfo::Set(DWORD& dwResult,
 	// スキャンの開始
 	m_StartScan->Set(dwResult, hClient, pInterfaceList);
 	// スキャン結果の取得
-	m_GetResults->Set(pNetworkList, dwResult, hClient, pInterfaceList);
+	m_GetResults->Set(pNetworkList, dwResult, hClient, pInterfaceList, networkInfos, preWifilevels);
 	// 表示準備
 	m_Preparation->Set(displayedSSIDs, count, networkInfos);
 	// スキャン結果の処理

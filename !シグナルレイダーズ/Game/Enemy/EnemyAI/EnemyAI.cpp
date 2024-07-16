@@ -27,13 +27,10 @@ EnemyAI::~EnemyAI() {}
 void EnemyAI::Initialize()
 {
 	using namespace DirectX::SimpleMath;
-
 	m_rotation = (GenerateRandomMultiplier(0, 2) <= 1.0f) ? Quaternion::Identity : -Quaternion::Identity;
-
 	m_initialPosition = Vector3::Zero;  // ‰ŠúˆÊ’u‚ð•Û‘¶
 	m_initialPosition.y = 2 * GenerateRandomMultiplier(RANDOM_MIN, RANDOM_MAX) + 5;
 	m_rotation.y = GenerateRandomMultiplier(RANDOM_MIN, RANDOM_MAX);
-
 	m_velocity = Vector3(0.0f, 0.5f, 0.0f); // •‚—V‚Ì‰Šú‘¬“x
 	m_scale = Vector3::One; // ƒXƒP[ƒ‹‰Šú‰»
 	m_time = 0.0f;  // ŽžŠÔ‚Ì‰Šú‰»
@@ -53,7 +50,6 @@ void EnemyAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Direc
 	// “G‚ð‚Ó‚í‚Ó‚í•‚—V‚³‚¹‚é
 	pos.y = m_initialPosition.y + amplitude * std::sin(frequency * m_time);
 	pos.y += m_velocity.y * elapsedTime;
-
 	// “G‚ªƒvƒŒƒCƒ„[‚Ìˆê’è”ÍˆÍ“à‚É“ü‚Á‚½‚ç
 	if (isHitToPlayer)
 	{
@@ -64,7 +60,6 @@ void EnemyAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Direc
 		m_enemyAttack->SetCoolTime(3.0f);
 		ChangeState(m_enemyIdling.get());//œpœj‘Ô¨‚É‚·‚é
 	}
-
 	m_currentState->Update(elapsedTime, pos, playerPos, isHitToPlayer);
 	m_position = pos;
 }

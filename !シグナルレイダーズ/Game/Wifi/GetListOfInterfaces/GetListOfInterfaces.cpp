@@ -27,10 +27,11 @@ GetListOfInterfaces::~GetListOfInterfaces()
 {
 }
 // インターフェースのリスト取得
-void GetListOfInterfaces::Set(PWLAN_INTERFACE_INFO_LIST& pInterfaceList, DWORD&  dwResult, HANDLE& hClient)
+void GetListOfInterfaces::Set(PWLAN_INTERFACE_INFO_LIST& pInterfaceList, DWORD& dwResult, HANDLE& hClient)
 {
 	pInterfaceList = NULL;
 	dwResult = WlanEnumInterfaces(hClient, NULL, &pInterfaceList);
+	
 	if (dwResult != ERROR_SUCCESS)
 	{
 		WlanCloseHandle(hClient, NULL);

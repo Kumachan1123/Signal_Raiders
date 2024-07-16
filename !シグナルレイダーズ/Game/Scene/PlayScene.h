@@ -27,6 +27,12 @@ namespace mylib
 	class GridFloor;
 }
 
+namespace FMOD
+{
+	class System;
+	class Sound;
+	class Channel;
+}
 class FPS_Camera;
 
 class PlayScene final :
@@ -62,6 +68,21 @@ private:
 
 	// 射影行列
 	DirectX::SimpleMath::Matrix m_projection;
+
+	// 追加の変数==========================================
+
+
+	// FMODで使用する変数（ポインタ）
+	FMOD::System* m_system;	// FMODのシステム
+	FMOD::Sound* m_soundSE;	// SE用の音声データ
+	FMOD::Sound* m_soundBGM;	// BGM用の音声データ
+	FMOD::Channel* m_channelSE;	// SEを再生するチャンネル
+	FMOD::Channel* m_channelBGM;// BGMを再生するチャンネル
+
+	// フェードで使用する変数
+	bool m_isFade;		// フェードフラグ
+	float m_volume;		// ボリューム
+	int m_counter;		// フェードカウンタ
 
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
@@ -107,5 +128,7 @@ public:
 	void UpdateBullets(float elapsedTime);
 	void UpdateEnemies(float elapsedTime);
 	SceneID GetNextSceneID() const;
-
+private:
+	// FMODのシステムの初期化と音声データのロード
+	void InitializeFMOD();
 };

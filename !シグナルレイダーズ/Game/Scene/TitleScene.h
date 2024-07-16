@@ -14,9 +14,14 @@ namespace mylib
 	class GridFloor;
 }
 
-
+namespace FMOD
+{
+	class System;
+	class Sound;
+	class Channel;
+}
 class TitleScene final :
-    public IScene
+	public IScene
 {
 private:
 	// 共通リソース
@@ -28,24 +33,37 @@ private:
 	// スプライトフォント
 	std::unique_ptr<DirectX::SpriteFont> m_spriteFont;
 
-	// テクスチャ
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
-
+	// タイトル画像
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_titleTexture;
+	// 指示
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pressKeyTexture;
 	// テクスチャの半分の大きさ
-	DirectX::SimpleMath::Vector2 m_texCenter;
+	DirectX::SimpleMath::Vector2 m_titleTexCenter;
+	DirectX::SimpleMath::Vector2 m_pressKeyTexCenter;
 
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
+	// FMODで使用する変数（ポインタ）
+	FMOD::System* m_system;	// FMODのシステム
+	FMOD::Sound* m_soundSE;	// SE用の音声データ
+	FMOD::Sound* m_soundBGM;	// BGM用の音声データ
+	FMOD::Channel* m_channelSE;	// SEを再生するチャンネル
+	FMOD::Channel* m_channelBGM;// BGMを再生するチャンネル
 
+	// フェードで使用する変数
+	bool m_isFade;		// フェードフラグ
+	float m_volume;		// ボリューム
+	int m_counter;		// フェードカウンタ
 
 public:
-    TitleScene();
-    ~TitleScene() override;
+	TitleScene();
+	~TitleScene() override;
 
-    void Initialize(CommonResources* resources) override;
-    void Update(float elapsedTime)override;
-    void Render() override;
-    void Finalize() override;
+	void Initialize(CommonResources* resources) override;
+	void Update(float elapsedTime)override;
+	void Render() override;
+	void Finalize() override;
 
-    SceneID GetNextSceneID() const;
+	SceneID GetNextSceneID() const;
+	void InitializeFMOD();
 };

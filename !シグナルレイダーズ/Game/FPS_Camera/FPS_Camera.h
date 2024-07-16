@@ -65,13 +65,12 @@ public:
 	void SetTargetPositionY(float target) { m_target.y += target; }
 
 	DirectX::SimpleMath::Vector3 GetDirection() const;
-	DirectX::SimpleMath::Vector3 GetRight() const;
 private:
 	// ビュー行列を計算する
 	void CalculateViewMatrix();
 	// 数値補正
 	//float correctValue(float value);
-	
+
 	// プロジェクション行列を計算する
 	void CalculateProjectionMatrix();
 };

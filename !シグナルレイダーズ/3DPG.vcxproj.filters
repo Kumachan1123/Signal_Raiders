@@ -256,6 +256,8 @@
     <ClInclude Include="Game\KumachiLib\Anchor.h" />
     <ClInclude Include="Game\Player\PlayerUI\PlayerHP\PlayerHP.h" />
     <ClInclude Include="Game\Player\PlayerUI\PlayerPointer\PlayerPointer.h" />
+    <ClInclude Include="Game\Scene\ResultScene.h" />
+    <ClInclude Include="Game\Enemy\EnemyModel\EnemyModel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -360,6 +362,8 @@
     <ClCompile Include="Game\Player\PlayerUI\PlayerUI.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\PlayerHP\PlayerHP.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\PlayerPointer\PlayerPointer.cpp" />
+    <ClCompile Include="Game\Scene\ResultScene.cpp" />
+    <ClCompile Include="Game\Enemy\EnemyModel\EnemyModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

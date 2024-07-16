@@ -10,6 +10,7 @@ class PlayScene;
 class EnemyAI;
 class EnemyHPBar;
 class EnemyBullet;
+class EnemyModel;
 class Enemy
 {
 private:
@@ -24,6 +25,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 	// モデル
 	std::unique_ptr<DirectX::Model> m_model;
+	std::unique_ptr<EnemyModel>		m_enemyModel;
 	std::unique_ptr<EnemyAI>		m_enemyAI;
 	std::unique_ptr<EnemyHPBar>		m_HPBar;
 	std::vector<std::unique_ptr<EnemyBullet>> m_bullets; // 弾のリスト
@@ -59,7 +61,7 @@ private:
 	float m_attackCooldown;  // 攻撃のクールダウンタイム
 
 	// Player
-	const float PLAYER_DAMAGE = 0.05f;
+	const float PLAYER_DAMAGE = 0.1f;
 public:
 	//	getter
 	DirectX::BoundingSphere& GetBoundingSphere() { return m_enemyBoundingSphere; }

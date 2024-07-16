@@ -76,12 +76,16 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(ProjectDir)Libraries\FMOD\inc;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)Libraries\FMOD\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(ProjectDir)Libraries\FMOD\inc;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)Libraries\FMOD\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -121,7 +125,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;dxgi.lib;dxguid.lib;uuid.lib;kernel32.lib;user32.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dxgi.lib;dxguid.lib;uuid.lib;kernel32.lib;user32.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;fmod_vc.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -173,7 +177,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>d3d11.lib;dxgi.lib;dxguid.lib;uuid.lib;kernel32.lib;user32.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dxgi.lib;dxguid.lib;uuid.lib;kernel32.lib;user32.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;fmod_vc.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -187,6 +191,7 @@
     <ClInclude Include="Game\Enemy\EnemyAI\EnemyAI.h" />
     <ClInclude Include="Game\Enemy\EnemyAI\EnemyAttack\EnemyAttack.h" />
     <ClInclude Include="Game\Enemy\EnemyAI\EnemyIdling\EnemyIdling.h" />
+    <ClInclude Include="Game\Enemy\EnemyModel\EnemyModel.h" />
     <ClInclude Include="Game\Enemy\EnemyBullet\EnemyBullet.h" />
     <ClInclude Include="Game\Enemy\EnemyHPBar\EnemyHPBar.h" />
     <ClInclude Include="Game\FPS_Camera\FPS_Camera.h" />
@@ -200,6 +205,7 @@
     <ClInclude Include="Game\Player\PlayerUI\PlayerUI.h" />
     <ClInclude Include="Game\Scene\IScene.h" />
     <ClInclude Include="Game\Scene\PlayScene.h" />
+    <ClInclude Include="Game\Scene\ResultScene.h" />
     <ClInclude Include="Game\Scene\SceneManager.h" />
     <ClInclude Include="Game\Scene\TitleScene.h" />
     <ClInclude Include="Game\Screen.h" />
@@ -236,6 +242,7 @@
     <ClCompile Include="Game\Enemy\EnemyAI\EnemyAI.cpp" />
     <ClCompile Include="Game\Enemy\EnemyAI\EnemyAttack\EnemyAttack.cpp" />
     <ClCompile Include="Game\Enemy\EnemyAI\EnemyIdling\EnemyIdling.cpp" />
+    <ClCompile Include="Game\Enemy\EnemyModel\EnemyModel.cpp" />
     <ClCompile Include="Game\Enemy\EnemyBullet\EnemyBullet.cpp" />
     <ClCompile Include="Game\Enemy\EnemyHPBar\EnemyHPBar.cpp" />
     <ClCompile Include="Game\FPS_Camera\FPS_Camera.cpp" />
@@ -246,6 +253,7 @@
     <ClCompile Include="Game\Player\PlayerUI\PlayerPointer\PlayerPointer.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\PlayerUI.cpp" />
     <ClCompile Include="Game\Scene\PlayScene.cpp" />
+    <ClCompile Include="Game\Scene\ResultScene.cpp" />
     <ClCompile Include="Game\Scene\SceneManager.cpp" />
     <ClCompile Include="Game\Scene\TitleScene.cpp" />
     <ClCompile Include="Game\SkyBox\SkyBox.cpp" />

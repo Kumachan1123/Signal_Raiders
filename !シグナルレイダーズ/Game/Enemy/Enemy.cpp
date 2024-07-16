@@ -10,6 +10,7 @@
 #include "Game/Enemy/EnemyAI/EnemyAI.h"
 #include "Game/Enemy/EnemyHPBar/EnemyHPBar.h"
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
+#include "Game/Enemy/EnemyModel/EnemyModel.h"
 #include "DeviceResources.h"
 #include "Libraries/MyLib/DebugString.h"
 #include "Libraries/MyLib/GridFloor.h"
@@ -27,6 +28,7 @@ Enemy::Enemy()
 	, m_commonResources{}
 	, m_currentHP{}
 	, m_attackCooldown{}
+	, m_enemyModel{}
 {}
 // ƒfƒXƒgƒ‰ƒNƒ^
 Enemy::~Enemy() {}
@@ -63,10 +65,12 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 
 	// ƒ‚ƒfƒ‹‚ğ“Ç‚İ‚Ş€”õ
 	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);
-	fx->SetDirectory(L"Resources/Models");
+	fx->SetDirectory(L"Resources/Models/Enemy");
 	// ƒ‚ƒfƒ‹‚ğ“Ç‚İ‚Ş
 	m_model = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy.cmo", *fx);
 
+	m_enemyModel = std::make_unique<EnemyModel>();
+	m_enemyModel->Initialize(m_commonResources);
 	// ‰ÁZ‡¬
 	CD3D11_DEFAULT defaultSettings{};
 	CD3D11_BLEND_DESC blendDesc(defaultSettings);
@@ -126,8 +130,9 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 
 	// HPBar•`‰æ
 	m_HPBar->Render(view, proj, m_position, m_rotate);
-	// “G•`‰æ
-	m_model->Draw(context, *states, enemyWorld, view, proj);
+	// “G•`‰æ	
+	m_enemyModel->Render(context, states, enemyWorld, view, proj);
+
 
 
 
@@ -230,26 +235,31 @@ void Enemy::CheckHitOtherEnemy(DirectX::BoundingSphere& A, DirectX::BoundingSphe
 void Enemy::UpdateBullets(float elapsedTime)
 {
 	std::vector<std::unique_ptr<EnemyBullet>> newBullets;
-
+	std::vector < std::unique_ptr<EnemyBullet>> dead;
 	// ’e‚ÌXV‚Æ—LŒø‚È’e‚ğV‚µ‚¢ƒŠƒXƒg‚ÉˆÚ“®‚·‚é
 	for (auto& bullet : m_bullets)
 	{
-		bullet->Update(m_position, elapsedTime); // ’e‚ÌXV
-		SetBulletBoundingSphere(bullet->GetBoundingSphere());
-		m_isBullethit = GetBulletBoundingSphere().Intersects(GetPlayerBoundingSphere());
-		if (m_isBullethit)
+		if (bullet->IsExpired())// õ–½‚ª—ˆ‚½‚ç
 		{
-			SetBulletHitToPlayer(m_isBullethit);
-			newBullets.push_back(std::move(bullet));
-
+			dead.push_back(std::move(bullet));//’e‚ğÁ‚·’™‚ß‚Ì”z—ñ‚ÉŠi”[
 		}
-		else if (!bullet->IsExpired())//õ–½‚ğŒ}‚¦‚½’e‚Íƒ[ƒJƒ‹•Ï”‚É‘’‚é
+		else// õ–½‚ª‚Ü‚¾‚¾‚Á‚½‚ç
 		{
+			bullet->Update(m_position, elapsedTime); // ’e‚ÌXV
+			SetBulletBoundingSphere(bullet->GetBoundingSphere());
+			m_isBullethit = GetBulletBoundingSphere().Intersects(GetPlayerBoundingSphere());
+			if (m_isBullethit)//“–‚½‚Á‚½‚ç’e‚ğÁ‚·’™‚ß‚Ì”z—ñ‚ÉŠi”[
+			{
+				SetBulletHitToPlayer(m_isBullethit);
+				dead.push_back(std::move(bullet));
+				continue;
+			}
 			newBullets.push_back(std::move(bullet));
-
 		}
+
 	}
 
 	// m_bullets ‚ğV‚µ‚¢ƒŠƒXƒg‚Å’u‚«Š·‚¦‚é
 	m_bullets = std::move(newBullets);
+	dead.clear();// €‚ñ‚¾’e‚ğÁ‚·
 }

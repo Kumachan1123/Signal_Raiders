@@ -18,6 +18,9 @@
 #include <Effects.h>
 #include <memory>
 
+// FMODのインクルード
+#include "Libraries/FMOD/inc/fmod.hpp"
+#include "Libraries/FMOD/inc/fmod_errors.h"
 #include <Libraries/Microsoft/DebugDraw.h>
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -33,7 +36,15 @@ PlayScene::PlayScene()
 	m_model{},
 	m_angle{},
 	m_camera{},
-	m_wifi{ nullptr }
+	m_wifi{ nullptr },
+	m_system{ nullptr },
+	m_soundSE{ nullptr },
+	m_soundBGM{ nullptr },
+	m_channelSE{ nullptr },
+	m_channelBGM{ nullptr },
+	m_isFade{},
+	m_volume{},
+	m_counter{}
 {
 }
 //---------------------------------------------------------
@@ -100,6 +111,13 @@ void PlayScene::Initialize(CommonResources* resources)
 	);
 
 
+	// Sound用のオブジェクトを初期化する
+	InitializeFMOD();
+
+	// フェードに関する準備
+	m_isFade = false;
+	m_volume = 1.0f;
+	m_counter = 0;
 }
 
 //---------------------------------------------------------
@@ -112,25 +130,32 @@ void PlayScene::Update(float elapsedTime)
 	const auto& kb = m_commonResources->GetInputManager()->GetKeyboardTracker();
 	auto& mstate = m_commonResources->GetInputManager()->GetMouseState();
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
-
+	FMOD_RESULT result;
+	// 二重再生しない
+	if (m_channelBGM == nullptr)
+	{
+		result = m_system->playSound(m_soundBGM, nullptr, false, &m_channelBGM);
+		assert(result == FMOD_OK);
+	}
 
 	// カメラが向いている方向を取得する
 	DirectX::SimpleMath::Vector3 cameraDirection = m_camera->GetDirection();
 	m_playerController->Update(kb, cameraDirection, elapsedTime);
-	// シーンチェンジ
-	//m_isChangeScene = true;
+
 	// 〇〇を回転する
 	m_angle += 0.025f;
 	if (m_angle > 360)m_angle = 0;
 	// FPSカメラ位置を更新する
 	m_camera->Update(m_playerController->GetPlayerPosition(), m_playerController->GetYawX());
-	m_camera->SetTargetPositionY(m_playerController->GetYawY());
+	m_camera->SetTargetPositionY(m_playerController->GetPitch());
 	m_pPlayerHP->Update(m_playerHP);
 	m_pPlayerPointer->Update();
 
 	// 左クリックで弾発射
 	if (mtracker->GetLastState().leftButton && !m_isBullet)
 	{
+		result = m_system->playSound(m_soundSE, nullptr, false, &m_channelSE);
+		assert(result == FMOD_OK);
 		auto bullet = std::make_unique<PlayerBullet>();
 		bullet->Initialize(m_commonResources);
 		bullet->MakeBall(m_playerController->GetPlayerPosition(), cameraDirection);
@@ -234,6 +259,10 @@ void PlayScene::Finalize()
 	m_camera.reset();
 	m_playerController.reset();
 	m_skybox.reset();
+	// Sound用のオブジェクトを解放する
+	m_soundSE->release();
+	m_soundBGM->release();
+	m_system->release();
 }
 //---------------------------------------------------------
 // 次のシーンIDを取得する
@@ -241,7 +270,12 @@ void PlayScene::Finalize()
 IScene::SceneID PlayScene::GetNextSceneID() const
 {
 	// シーン変更がある場合
-	if (m_isChangeScene)return IScene::SceneID::TITLE;
+	if (m_isChangeScene)
+	{
+		m_channelBGM->stop();
+		m_channelSE->stop();
+		return IScene::SceneID::RESULT;
+	}
 	// シーン変更がない場合
 	return IScene::SceneID::NONE;
 }
@@ -288,9 +322,11 @@ void PlayScene::UpdateBullets(float elapsedTime)
 
 void PlayScene::UpdateEnemies(float elapsedTime)
 {
-	if (m_enemy.size() <= 0)
+	if (m_enemy.size() <= 0 && m_isBorned)
 	{
-		m_isBorned = false;
+		//m_isBorned = false;
+		// シーンチェンジ
+		m_isChangeScene = true;
 	}
 
 	// 敵同士の当たり判定
@@ -359,4 +395,27 @@ void PlayScene::UpdateEnemies(float elapsedTime)
 		// 特別な処理を実行
 		//HandleEnemyDeath(enemy.get());
 	}
+}
+
+
+//---------------------------------------------------------
+// FMODのシステムの初期化と音声データのロード
+//---------------------------------------------------------
+void PlayScene::InitializeFMOD()
+{
+	// システムをインスタンス化する
+	FMOD_RESULT result = FMOD::System_Create(&m_system);
+	assert(result == FMOD_OK);
+
+	// システムを初期化する
+	result = m_system->init(32, FMOD_INIT_NORMAL, nullptr);
+	assert(result == FMOD_OK);
+
+	// SEをロードする
+	result = m_system->createSound("Resources/Sounds/playerBullet.mp3", FMOD_DEFAULT, nullptr, &m_soundSE);
+	assert(result == FMOD_OK);
+
+	// BGMをロードする
+	result = m_system->createSound("Resources/Sounds/play.mp3", FMOD_LOOP_NORMAL, nullptr, &m_soundBGM);
+	assert(result == FMOD_OK);
 }
