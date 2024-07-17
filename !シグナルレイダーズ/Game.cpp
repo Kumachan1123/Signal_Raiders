@@ -157,10 +157,10 @@ void Game::Render()
 
 	// シーンマネージャを描画する
 	m_sceneManager->Render();
-
+#ifdef _DEBUG
 	// デバッグ文字列を描画する
 	m_debugString->Render(m_commonStates.get());
-
+#endif
 	// ★追記ココまで↑↑↑★
 
 

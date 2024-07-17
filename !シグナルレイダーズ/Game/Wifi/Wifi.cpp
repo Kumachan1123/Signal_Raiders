@@ -86,11 +86,13 @@ void Wifi::Update(float elapsedTime)
 // 描画処理
 void Wifi::Render(mylib::DebugString* debugString)
 {
+#ifdef _DEBUG
 	debugString->AddString("Size:%i", m_preWifilevels.size());
 	for (const auto& datas : m_wifilevels)
 	{
 		//debugString->AddString("Signal Quality:%i ", datas);
 	}
+#endif
 	// メモリの解放とハンドルのクローズ
 	m_Memory->FreeMemoryAndCloseHandle(pInterfaceList, hClient, m_networkInfos, displayedSSIDs);
 	m_preWifilevels.clear();

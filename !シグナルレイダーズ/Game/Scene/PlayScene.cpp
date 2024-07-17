@@ -201,8 +201,10 @@ void PlayScene::Render()
 	Matrix projection = m_camera->GetProjectionMatrix();
 	Matrix skyWorld = Matrix::CreateRotationY(XMConvertToRadians(m_angle));
 	skyWorld *= Matrix::CreateScale(10);
+#ifdef _DEBUG
 	// 格子床を描画する
 	m_gridFloor->Render(context, view, projection);
+#endif
 	// スカイボックス描画
 	m_skybox->Render(view, projection, skyWorld, m_playerController->GetPlayerPosition());
 	// 各パラメータを設定する
@@ -217,10 +219,11 @@ void PlayScene::Render()
 
 	m_inPlayerArea.Center = m_playerController->GetPlayerPosition();
 	m_PlayerSphere.Center = m_playerController->GetPlayerPosition();
+#ifdef _DEBUG
 	m_primitiveBatch->Begin();
 	DX::Draw(m_primitiveBatch.get(), m_PlayerSphere, DirectX::Colors::PeachPuff);
 	m_primitiveBatch->End();
-
+#endif
 	//m_model->Draw(context, *states, skyWorld, view, projection);
 	// 弾を描画する
 	for (const auto& bullet : m_playerBullets)bullet->Render(view, projection);
@@ -237,10 +240,11 @@ void PlayScene::Render()
 	}
 	// デバッグ情報を「DebugString」で表示する
 	auto debugString = m_commonResources->GetDebugString();
-
+#ifdef _DEBUG
 	debugString->AddString("Play Scene");
 	debugString->AddString("X:%f", m_playerController->GetPlayerPosition().x);
 	debugString->AddString("Z:%f", m_playerController->GetPlayerPosition().z);
+#endif
 	m_wifi->Render(debugString);
 	m_pPlayerHP->Render();
 	m_pPlayerPointer->Render();
@@ -282,9 +286,11 @@ IScene::SceneID PlayScene::GetNextSceneID() const
 
 void PlayScene::UpdateBullets(float elapsedTime)
 {
+#ifdef _DEBUG
 	auto debugString = m_commonResources->GetDebugString();
-	DirectX::SimpleMath::Vector3 dir = m_camera->GetDirection();
 	debugString->AddString("HP:%f", m_playerHP);
+#endif
+	DirectX::SimpleMath::Vector3 dir = m_camera->GetDirection();
 	for (auto it = m_playerBullets.begin(); it != m_playerBullets.end(); )
 	{
 		(*it)->Update(dir, elapsedTime);

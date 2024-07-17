@@ -208,14 +208,14 @@ void ResultScene::Render()
 		SpriteEffects_None,	// エフェクト(effects)
 		0.0f				// レイヤ深度(画像のソートで必要)(layerDepth)
 	);
-
+#ifdef _DEBUG
 	// 純粋にスプライトフォントで文字列を描画する方法
 	m_spriteFont->DrawString(m_spriteBatch.get(), L"Title Scene", Vector2(10, 40));
 
 	wchar_t buf[32];
 	swprintf_s(buf, 32, L"right : %d, bottom : %d", rect.right, rect.bottom);
 	m_spriteFont->DrawString(m_spriteBatch.get(), buf, Vector2(10, 70));
-
+#endif
 	// スプライトバッチの終わり
 	m_spriteBatch->End();
 }

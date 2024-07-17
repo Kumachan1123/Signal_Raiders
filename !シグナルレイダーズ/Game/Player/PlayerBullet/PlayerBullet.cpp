@@ -145,9 +145,10 @@ void PlayerBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 	// 境界球の変換を同じワールドマトリックスに基づいて行う
 	DirectX::BoundingSphere transformedBoundingSphere = m_boundingSphere;
 	m_boundingSphere.Transform(transformedBoundingSphere, boundingbulletWorld);
-
+#ifdef _DEBUG
 	// 描画する
 	m_primitiveBatch->Begin();
 	DX::Draw(m_primitiveBatch.get(), m_boundingSphere, DirectX::Colors::Red);
 	m_primitiveBatch->End();
+#endif
 }
