@@ -42,6 +42,7 @@ PlayScene::PlayScene()
 	m_soundBGM{ nullptr },
 	m_channelSE{ nullptr },
 	m_channelBGM{ nullptr },
+	m_stage1{ nullptr },
 	m_isFade{},
 	m_volume{},
 	m_counter{}
@@ -71,6 +72,10 @@ void PlayScene::Initialize(CommonResources* resources)
 	// グリッド床を作成する
 	m_gridFloor = std::make_unique<mylib::GridFloor>(device, context, states);
 	m_gridFloor->SetColor(DirectX::Colors::Yellow);
+	// 地面（ステージ１生成）
+	m_stage1 = std::make_unique<Stage1>();
+	m_stage1->Initialize(resources);
+
 	// FPSカメラを作成する
 	m_camera = std::make_unique<FPS_Camera>();
 	// コントローラー生成
@@ -200,6 +205,7 @@ void PlayScene::Render()
 	Matrix view = m_camera->GetViewMatrix();
 	Matrix projection = m_camera->GetProjectionMatrix();
 	Matrix skyWorld = Matrix::CreateRotationY(XMConvertToRadians(m_angle));
+	Matrix stageWorld = Matrix::CreateScale(10);
 	skyWorld *= Matrix::CreateScale(10);
 #ifdef _DEBUG
 	// 格子床を描画する
@@ -207,6 +213,8 @@ void PlayScene::Render()
 #endif
 	// スカイボックス描画
 	m_skybox->Render(view, projection, skyWorld, m_playerController->GetPlayerPosition());
+	// 地面描画
+	m_stage1->Render(stageWorld, view, projection);
 	// 各パラメータを設定する
 	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
 	context->OMSetDepthStencilState(states->DepthRead(), 0);

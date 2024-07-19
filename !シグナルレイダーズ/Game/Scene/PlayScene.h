@@ -15,6 +15,7 @@
 #include "Game/Wifi/UpdateInfo/UpdateInfo.h"
 #include "Game/Wifi/Wifi.h"
 #include "Mouse.h"
+#include "Game/Stages/Stage1.h"
 #include "Game/Player/PlayerUI/PlayerHP/PlayerHP.h"
 #include "Game/Player/PlayerUI/PlayerPointer/PlayerPointer.h"
 // 前方宣言
@@ -65,7 +66,8 @@ private:
 	std::vector<std::unique_ptr<Enemy>> m_enemy;
 	// 格子床
 	std::unique_ptr<mylib::GridFloor> m_gridFloor;
-
+	// 地面（ステージ１
+	std::unique_ptr<Stage1> m_stage1;
 	// 射影行列
 	DirectX::SimpleMath::Matrix m_projection;
 

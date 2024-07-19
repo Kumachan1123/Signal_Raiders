@@ -258,6 +258,7 @@
     <ClInclude Include="Game\Player\PlayerUI\PlayerPointer\PlayerPointer.h" />
     <ClInclude Include="Game\Scene\ResultScene.h" />
     <ClInclude Include="Game\Enemy\EnemyModel\EnemyModel.h" />
+    <ClInclude Include="Game\Stages\Stage1.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -364,6 +365,7 @@
     <ClCompile Include="Game\Player\PlayerUI\PlayerPointer\PlayerPointer.cpp" />
     <ClCompile Include="Game\Scene\ResultScene.cpp" />
     <ClCompile Include="Game\Enemy\EnemyModel\EnemyModel.cpp" />
+    <ClCompile Include="Game\Stages\Stage1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
