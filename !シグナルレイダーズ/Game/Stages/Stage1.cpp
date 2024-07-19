@@ -17,7 +17,9 @@ void Stage1::Initialize(CommonResources* resources)
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	//	エフェクトの作成 
-	m_BatchEffect = std::make_unique<NormalMapEffect>(device);
+	m_BatchEffect = std::make_unique<AlphaTestEffect>(device);
+	m_BatchEffect->SetAlphaFunction(D3D11_COMPARISON_EQUAL);
+	m_BatchEffect->SetReferenceAlpha(255);
 	//	入力レイアウト生成 
 	void const* shaderByteCode;
 	size_t byteCodeLength;
@@ -38,14 +40,6 @@ void Stage1::Initialize(CommonResources* resources)
 		nullptr,
 		m_Texture.GetAddressOf()
 	);
-	// ノーマルマップのロード
-	CreateWICTextureFromFile(
-		device,
-		L"Resources/Textures/tile_normal.png",
-		nullptr,
-		m_NormalMap.GetAddressOf()
-	);
-	m_BatchEffect->SetNormalTexture(*m_NormalMap.GetAddressOf());
 
 }
 void Stage1::Update(float elapsedTime)
@@ -60,15 +54,16 @@ void Stage1::Render(DirectX::SimpleMath::Matrix world, DirectX::SimpleMath::Matr
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 
 	//	プリミティブバッチの作成 
-	m_Batch = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(context);
+	m_Batch =
+		std::make_unique<PrimitiveBatch<VertexPositionTexture>>(context);
 
 	//	頂点情報（板ポリゴンの頂点） 
 	VertexPositionTexture vertex[4] =
 	{//												座標					UV座標（ふつうは0～1の間で指定。超えた場合は繰り返す
 		VertexPositionTexture(SimpleMath::Vector3(50.0f, 0.00f, 50.0f),	SimpleMath::Vector2(.0f, 0.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(-50.0f, 0.0f, 50.0f),	SimpleMath::Vector2(50.0f, .0f)),
-		VertexPositionTexture(SimpleMath::Vector3(-50.0f, 0.f, -50.0f),	SimpleMath::Vector2(50.0f,50.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(50.0f,0.f, -50.0f),	SimpleMath::Vector2(0.0f, 50.0f)),
+		VertexPositionTexture(SimpleMath::Vector3(-50.0f, 0.0f, 50.0f),	SimpleMath::Vector2(10.0f, .0f)),
+		VertexPositionTexture(SimpleMath::Vector3(-50.0f, 0.f, -50.0f),	SimpleMath::Vector2(10.0f,10.0f)),
+		VertexPositionTexture(SimpleMath::Vector3(50.0f,0.f, -50.0f),	SimpleMath::Vector2(0.0f, 10.0f)),
 	};
 
 	//	テクスチャサンプラーの設定（クランプテクスチャアドレッシングモード） 
@@ -82,13 +77,12 @@ void Stage1::Render(DirectX::SimpleMath::Matrix world, DirectX::SimpleMath::Matr
 	context->RSSetState(m_States->CullCounterClockwise());
 
 	//	不透明のみ描画する設定 
-
+	m_BatchEffect->SetAlphaFunction(D3D11_COMPARISON_NOT_EQUAL);
+	m_BatchEffect->SetReferenceAlpha(0);
 	m_BatchEffect->SetWorld(SimpleMath::Matrix::Identity);
 	m_BatchEffect->SetView(view);
 	m_BatchEffect->SetProjection(proj);
 	m_BatchEffect->SetTexture(m_Texture.Get());
-	// ノーマルマップのセット
-	context->PSSetShaderResources(1, 1, m_NormalMap.GetAddressOf());
 
 	m_BatchEffect->Apply(context);
 	context->IASetInputLayout(m_InputLayout.Get());

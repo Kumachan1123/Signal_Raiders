@@ -259,6 +259,7 @@
     <ClInclude Include="Game\Scene\ResultScene.h" />
     <ClInclude Include="Game\Enemy\EnemyModel\EnemyModel.h" />
     <ClInclude Include="Game\Stages\Stage1.h" />
+    <ClInclude Include="Game\Stages\VertexTypesEx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -366,6 +367,7 @@
     <ClCompile Include="Game\Scene\ResultScene.cpp" />
     <ClCompile Include="Game\Enemy\EnemyModel\EnemyModel.cpp" />
     <ClCompile Include="Game\Stages\Stage1.cpp" />
+    <ClCompile Include="Game\Stages\VertexTypesEx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

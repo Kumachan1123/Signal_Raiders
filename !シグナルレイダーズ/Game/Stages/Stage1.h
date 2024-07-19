@@ -27,13 +27,13 @@ private:
 	// ノーマルマップハンドル
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_NormalMap;
 
-	std::unique_ptr<DirectX::NormalMapEffect> m_BatchEffect;
+	//std::unique_ptr<DirectX::NormalMapEffect> m_BatchEffect;
 
 	//	共通ステートオブジェクトへのポインタ
 	std::unique_ptr<DirectX::CommonStates> m_States;
 
 	//	エフェクト 
-	//std::unique_ptr<DirectX::AlphaTestEffect> m_BatchEffect;
+	std::unique_ptr<DirectX::AlphaTestEffect> m_BatchEffect;
 
 	//	プリミティブバッチ 
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_Batch;
