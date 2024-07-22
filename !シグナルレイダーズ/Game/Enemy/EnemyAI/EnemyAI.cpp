@@ -107,20 +107,20 @@ void EnemyAI::KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bo
 		Vector3 knockBackDirection = (pos - playerPos); // プレイヤーから敵への方向ベクトル
 		knockBackDirection.Normalize(); // 正規化して方向ベクトルにする
 		m_knockEndPosition = pos + knockBackDirection * 10; // ノックバック終了位置
-		m_initialVelocity = knockBackDirection * 10; // 初期速度
+		m_initialVelocity = knockBackDirection * 15; // 初期速度
 	}
 
 	// ノックバック時間の更新
 	m_knockTime += elapsedTime;
 
 	// ノックバックの長さ（秒）
-	const float knockBackDuration = 1.5f;
+	const float knockBackDuration = 2.0f;
 
 	// ノックバックの進行度（0.0 ～ 1.0）
 	float t = std::min(m_knockTime / knockBackDuration, 3.0f);
 
 	// 減衰係数の計算（指数関数的減衰）
-	float decayFactor = std::exp(-2.0f * t); // 減衰速度を調整するために指数のベースを調整
+	float decayFactor = std::exp(-3.0f * t); // 減衰速度を調整するために指数のベースを調整
 
 	// 減衰した速度を使って位置を更新
 	Vector3 velocity = m_initialVelocity * decayFactor;
