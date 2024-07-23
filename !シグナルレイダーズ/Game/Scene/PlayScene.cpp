@@ -133,7 +133,6 @@ void PlayScene::Update(float elapsedTime)
 	UNREFERENCED_PARAMETER(elapsedTime);
 	// キーボードステートトラッカーを取得する
 	const auto& kb = m_commonResources->GetInputManager()->GetKeyboardTracker();
-	auto& mstate = m_commonResources->GetInputManager()->GetMouseState();
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
 	FMOD_RESULT result;
 	// 二重再生しない
@@ -404,11 +403,11 @@ void PlayScene::UpdateEnemies(float elapsedTime)
 	}
 
 	// 削除対象に対して特別な処理を実行
-	for (auto& enemy : enemiesToRemove)
-	{
-		// 特別な処理を実行
-		//HandleEnemyDeath(enemy.get());
-	}
+	//for (auto& enemy : enemiesToRemove)
+	//{
+	//	// 特別な処理を実行
+	//	//HandleEnemyDeath(enemy.get());
+	//}
 }
 
 

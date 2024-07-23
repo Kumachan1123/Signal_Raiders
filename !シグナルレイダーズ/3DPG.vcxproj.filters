@@ -234,7 +234,7 @@
     <ClInclude Include="Game\Enemy\EnemyAI\EnemyIdling\EnemyIdling.h">
       <Filter>Game\Enemy\EnemyAI\EnemyIdling</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Interface\IStateh.h">
+    <ClInclude Include="Game\Interface\IState.h">
       <Filter>Game\Interface</Filter>
     </ClInclude>
     <ClInclude Include="Game\Enemy\EnemyHPBar\EnemyHPBar.h">

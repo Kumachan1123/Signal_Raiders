@@ -8,7 +8,7 @@
 #ifndef ENEMY_ATTACK_DEFINED
 #define ENEMY_ATTACK_DEFINED
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
-#include "Game/Interface/IStateh.h"
+#include "Game/Interface/IState.h"
 class CommonResources;
 //‘O•ûéŒ¾
 class EnemyAI;

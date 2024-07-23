@@ -146,11 +146,11 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	// 影行列の元を作る
 		//** Plane(法線、距離)：TKの性質上、法線の向きが逆なので、それを考慮する
 	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, -0.01f));
-	Matrix mat = shadowMatrix * enemyWorld;
+	Matrix mat = enemyWorld * shadowMatrix;
 	// 影描画
 	m_model->Draw(context, *states, mat * Matrix::Identity, view, proj, true, [&]()
 				  {
-					  context->OMSetBlendState(states->AlphaBlend(), nullptr, 0xffffffff);
+					  context->OMSetBlendState(states->Opaque(), nullptr, 0xffffffff);
 					  context->OMSetDepthStencilState(m_depthStencilState_Shadow.Get(), 1);
 					  context->RSSetState(states->CullNone());
 					  context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
@@ -187,7 +187,7 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 // 更新
 void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 {
-
+	m_enemyModel->Update(elapsedTime, m_enemyAI->GetState());
 	m_enemyAI->Update(elapsedTime, m_position, playerPos, m_isHit, m_isHitToPlayerBullet);
 	if (m_enemyAI->GetNowState() == m_enemyAI->GetEnemyAttack())// 攻撃態勢なら
 	{

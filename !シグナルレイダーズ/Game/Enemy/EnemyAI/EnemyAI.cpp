@@ -37,6 +37,7 @@ void EnemyAI::Initialize()
 	m_position = m_initialPosition;
 	m_currentState = m_enemyIdling.get();
 	m_currentState->Initialize();
+	m_enemyState = IState::EnemyState::IDLING;// ‘Ò‹@‘Ô¨
 }
 // XV
 void EnemyAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool& isHitToPlayer, bool& isHitToPlayerBullet)
@@ -54,11 +55,14 @@ void EnemyAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Direc
 	if (isHitToPlayer)
 	{
 		ChangeState(m_enemyAttack.get());//UŒ‚‘Ô¨‚É‚·‚é
+		m_enemyState = IState::EnemyState::ATTACK;// œpœj‘Ô¨
+
 	}
 	else
 	{
 		m_enemyAttack->SetCoolTime(3.0f);
 		ChangeState(m_enemyIdling.get());//œpœj‘Ô¨‚É‚·‚é
+		m_enemyState = IState::EnemyState::IDLING;// œpœj‘Ô¨
 	}
 	m_currentState->Update(elapsedTime, pos, playerPos, isHitToPlayer);
 	if (isHitToPlayerBullet)

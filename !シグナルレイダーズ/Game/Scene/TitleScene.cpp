@@ -1,6 +1,6 @@
-/*
+ï»¿/*
 	@file	TitleScene.cpp
-	@brief	ƒ^ƒCƒgƒ‹ƒV[ƒ“ƒNƒ‰ƒX
+	@brief	ã‚¿ã‚¤ãƒˆãƒ«ã‚·ãƒ¼ãƒ³ã‚¯ãƒ©ã‚¹
 */
 #include "pch.h"
 #include "TitleScene.h"
@@ -10,7 +10,7 @@
 #include "Libraries/MyLib/MemoryLeakDetector.h"
 #include "Libraries/MyLib/InputManager.h"
 #include <cassert>
-// FMOD‚ÌƒCƒ“ƒNƒ‹[ƒh
+// FMODã®ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰
 #include "Libraries/FMOD/inc/fmod.hpp"
 #include "Libraries/FMOD/inc/fmod_errors.h"
 #include <Libraries/Microsoft/DebugDraw.h>
@@ -19,7 +19,7 @@ using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 //---------------------------------------------------------
-// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 //---------------------------------------------------------
 TitleScene::TitleScene()
 	:
@@ -43,7 +43,7 @@ TitleScene::TitleScene()
 }
 
 //---------------------------------------------------------
-// ƒfƒXƒgƒ‰ƒNƒ^
+// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 //---------------------------------------------------------
 TitleScene::~TitleScene()
 {
@@ -51,7 +51,7 @@ TitleScene::~TitleScene()
 }
 
 //---------------------------------------------------------
-// ‰Šú‰»‚·‚é
+// åˆæœŸåŒ–ã™ã‚‹
 //---------------------------------------------------------
 void TitleScene::Initialize(CommonResources* resources)
 {
@@ -61,16 +61,16 @@ void TitleScene::Initialize(CommonResources* resources)
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 
-	// ƒXƒvƒ‰ƒCƒgƒoƒbƒ`‚ğì¬‚·‚é
+	// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒãƒƒãƒã‚’ä½œæˆã™ã‚‹
 	m_spriteBatch = std::make_unique<DirectX::SpriteBatch>(context);
 
-	// ƒXƒvƒ‰ƒCƒgƒtƒHƒ“ƒg‚ğì¬‚·‚é
+	// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒ•ã‚©ãƒ³ãƒˆã‚’ä½œæˆã™ã‚‹
 	m_spriteFont = std::make_unique<DirectX::SpriteFont>(
 		device,
 		L"Resources/Fonts/SegoeUI_18.spritefont"
 	);
 
-	// ‰æ‘œ‚ğƒ[ƒh‚·‚é
+	// ç”»åƒã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	DX::ThrowIfFailed(
 		CreateWICTextureFromFile(
 			device,
@@ -80,7 +80,7 @@ void TitleScene::Initialize(CommonResources* resources)
 		)
 	);
 
-	// ‰æ‘œ‚ğƒ[ƒh‚·‚é
+	// ç”»åƒã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	DX::ThrowIfFailed(
 		CreateWICTextureFromFile(
 			device,
@@ -91,9 +91,9 @@ void TitleScene::Initialize(CommonResources* resources)
 	);
 
 	/*
-		ˆÈ‰ºAƒeƒNƒXƒ`ƒƒ‚Ì‘å‚«‚³‚ğ‹‚ß‚é¨ƒeƒNƒXƒ`ƒƒ‚Ì’†SÀ•W‚ğŒvZ‚·‚é
+		ä»¥ä¸‹ã€ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®å¤§ãã•ã‚’æ±‚ã‚ã‚‹â†’ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ä¸­å¿ƒåº§æ¨™ã‚’è¨ˆç®—ã™ã‚‹
 	*/
-	// ˆê“I‚È•Ï”‚ÌéŒ¾
+	// ä¸€æ™‚çš„ãªå¤‰æ•°ã®å®£è¨€
 	Microsoft::WRL::ComPtr<ID3D11Resource> resource{};
 	Microsoft::WRL::ComPtr<ID3D11Resource> resource2{};
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> tex2D{};
@@ -103,54 +103,54 @@ void TitleScene::Initialize(CommonResources* resources)
 	Vector2 texSize{};
 	Vector2 texSize2{};
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ìî•ñ‚ğæ“¾‚·‚é================================
-	// ƒeƒNƒXƒ`ƒƒ‚ğID3D11Resource‚Æ‚µ‚ÄŒ©‚é
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®æƒ…å ±ã‚’å–å¾—ã™ã‚‹================================
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ID3D11Resourceã¨ã—ã¦è¦‹ã‚‹
 	m_titleTexture->GetResource(resource.GetAddressOf());
 	m_pressKeyTexture->GetResource(resource2.GetAddressOf());
-	// ID3D11Resource‚ğID3D11Texture2D‚Æ‚µ‚ÄŒ©‚é
+	// ID3D11Resourceã‚’ID3D11Texture2Dã¨ã—ã¦è¦‹ã‚‹
 	resource.As(&tex2D);
 	resource2.As(&tex2D2);
 
-	// ƒeƒNƒXƒ`ƒƒî•ñ‚ğæ“¾‚·‚é
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£æƒ…å ±ã‚’å–å¾—ã™ã‚‹
 	tex2D->GetDesc(&desc);
 
-	// ƒeƒNƒXƒ`ƒƒƒTƒCƒY‚ğæ“¾‚µAfloatŒ^‚É•ÏŠ·‚·‚é
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚µã‚¤ã‚ºã‚’å–å¾—ã—ã€floatå‹ã«å¤‰æ›ã™ã‚‹
 	texSize.x = static_cast<float>(desc.Width);
 	texSize.y = static_cast<float>(desc.Height);
 
-	// ƒeƒNƒXƒ`ƒƒ‚Ì’†SˆÊ’u‚ğŒvZ‚·‚é
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ä¸­å¿ƒä½ç½®ã‚’è¨ˆç®—ã™ã‚‹
 	m_titleTexCenter = texSize / 2.0f;
 	tex2D2->GetDesc(&desc2);
 
-	// ƒeƒNƒXƒ`ƒƒƒTƒCƒY‚ğæ“¾‚µAfloatŒ^‚É•ÏŠ·‚·‚é
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚µã‚¤ã‚ºã‚’å–å¾—ã—ã€floatå‹ã«å¤‰æ›ã™ã‚‹
 	texSize2.x = static_cast<float>(desc2.Width);
 	texSize2.y = static_cast<float>(desc2.Height);
 	m_pressKeyTexCenter = texSize2 / 2.0f;
 
-	// ƒV[ƒ“•ÏXƒtƒ‰ƒO‚ğ‰Šú‰»‚·‚é
+	// ã‚·ãƒ¼ãƒ³å¤‰æ›´ãƒ•ãƒ©ã‚°ã‚’åˆæœŸåŒ–ã™ã‚‹
 	m_isChangeScene = false;
 
-	// Sound—p‚ÌƒIƒuƒWƒFƒNƒg‚ğ‰Šú‰»‚·‚é
+	// Soundç”¨ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’åˆæœŸåŒ–ã™ã‚‹
 	InitializeFMOD();
 
-	// ƒtƒF[ƒh‚ÉŠÖ‚·‚é€”õ
+	// ãƒ•ã‚§ãƒ¼ãƒ‰ã«é–¢ã™ã‚‹æº–å‚™
 	m_isFade = false;
 	m_volume = 1.0f;
 	m_counter = 0;
 }
 
 //---------------------------------------------------------
-// XV‚·‚é
+// æ›´æ–°ã™ã‚‹
 //---------------------------------------------------------
 void TitleScene::Update(float elapsedTime)
 {
-	// éŒ¾‚ğ‚µ‚½‚ªAÀÛ‚Íg—p‚µ‚Ä‚¢‚È‚¢•Ï”
+	// å®£è¨€ã‚’ã—ãŸãŒã€å®Ÿéš›ã¯ä½¿ç”¨ã—ã¦ã„ãªã„å¤‰æ•°
 	UNREFERENCED_PARAMETER(elapsedTime);
 	FMOD_RESULT result;
-	// ƒL[ƒ{[ƒhƒXƒe[ƒgƒgƒ‰ƒbƒJ[‚ğæ“¾‚·‚é
+	// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã‚¹ãƒ†ãƒ¼ãƒˆãƒˆãƒ©ãƒƒã‚«ãƒ¼ã‚’å–å¾—ã™ã‚‹
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
 
-	// ƒXƒy[ƒXƒL[‚ª‰Ÿ‚³‚ê‚½‚ç
+	// ã‚¹ãƒšãƒ¼ã‚¹ã‚­ãƒ¼ãŒæŠ¼ã•ã‚ŒãŸã‚‰
 	if (kbTracker->pressed.Space)
 	{
 		result = m_system->playSound(m_soundSE, nullptr, false, &m_channelSE);
@@ -159,114 +159,116 @@ void TitleScene::Update(float elapsedTime)
 	}
 
 
-	// “ñdÄ¶‚µ‚È‚¢
+	// äºŒé‡å†ç”Ÿã—ãªã„
 	if (m_channelBGM == nullptr)
 	{
 		result = m_system->playSound(m_soundBGM, nullptr, false, &m_channelBGM);
 		assert(result == FMOD_OK);
 	}
+	// ãƒ•ã‚§ãƒ¼ãƒ‰ã«é–¢ã™ã‚‹æº–å‚™
+	m_time += elapsedTime; // æ™‚é–“ã‚’ã‚«ã‚¦ãƒ³ãƒˆ
+	m_size = (sin(m_time) + 1.0f) * 0.3f + 0.75f; // sinæ³¢ã§0.5ã€œ1.5ã®é–“ã‚’å¤‰å‹•ã•ã›ã‚‹
 }
-
 //---------------------------------------------------------
-// •`‰æ‚·‚é
+// æç”»ã™ã‚‹
 //---------------------------------------------------------
 void TitleScene::Render()
 {
 	auto states = m_commonResources->GetCommonStates();
 
-	// ƒXƒvƒ‰ƒCƒgƒoƒbƒ`‚ÌŠJnFƒIƒvƒVƒ‡ƒ“‚Åƒ\[ƒgƒ‚[ƒhAƒuƒŒƒ“ƒhƒXƒe[ƒg‚ğw’è‚·‚é
+	// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒãƒƒãƒã®é–‹å§‹ï¼šã‚ªãƒ—ã‚·ãƒ§ãƒ³ã§ã‚½ãƒ¼ãƒˆãƒ¢ãƒ¼ãƒ‰ã€ãƒ–ãƒ¬ãƒ³ãƒ‰ã‚¹ãƒ†ãƒ¼ãƒˆã‚’æŒ‡å®šã™ã‚‹
 	m_spriteBatch->Begin(SpriteSortMode_Deferred, states->NonPremultiplied());
 
-	// ƒ^ƒCƒgƒ‹ƒƒS‚Ì•`‰æˆÊ’u‚ğŒˆ‚ß‚é
+	// ã‚¿ã‚¤ãƒˆãƒ«ãƒ­ã‚´ã®æç”»ä½ç½®ã‚’æ±ºã‚ã‚‹
 	RECT rect{ m_commonResources->GetDeviceResources()->GetOutputSize() };
-	// ‰æ‘œ‚Ì’†S‚ğŒvZ‚·‚é
+	// ç”»åƒã®ä¸­å¿ƒã‚’è¨ˆç®—ã™ã‚‹
 	Vector2 titlePos{ rect.right / 2.0f, rect.bottom / 2.0f };
 
-	// ƒ^ƒCƒgƒ‹ƒƒS‚ğ•`‰æ‚·‚é
+	// ã‚¿ã‚¤ãƒˆãƒ«ãƒ­ã‚´ã‚’æç”»ã™ã‚‹
 	m_spriteBatch->Draw(
-		m_titleTexture.Get(),	// ƒeƒNƒXƒ`ƒƒ(SRV)
-		titlePos,				// ƒXƒNƒŠ[ƒ“‚Ì•\¦ˆÊ’u(origin‚Ì•`‰æˆÊ’u)
-		nullptr,			// ‹éŒ`(RECT)
-		Colors::White,		// ”wŒiF
-		0.0f,				// ‰ñ“]Šp(ƒ‰ƒWƒAƒ“)
-		m_titleTexCenter,		// ƒeƒNƒXƒ`ƒƒ‚ÌŠî€‚É‚È‚é•\¦ˆÊ’u(•`‰æ’†S)(origin)
-		1.0f,				// ƒXƒP[ƒ‹(scale)
-		SpriteEffects_None,	// ƒGƒtƒFƒNƒg(effects)
-		0.0f				// ƒŒƒCƒ„[“x(‰æ‘œ‚Ìƒ\[ƒg‚Å•K—v)(layerDepth)
+		m_titleTexture.Get(),	// ãƒ†ã‚¯ã‚¹ãƒãƒ£(SRV)
+		titlePos,				// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã®è¡¨ç¤ºä½ç½®(originã®æç”»ä½ç½®)
+		nullptr,			// çŸ©å½¢(RECT)
+		Colors::White,		// èƒŒæ™¯è‰²
+		0.0f,				// å›è»¢è§’(ãƒ©ã‚¸ã‚¢ãƒ³)
+		m_titleTexCenter,		// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åŸºæº–ã«ãªã‚‹è¡¨ç¤ºä½ç½®(æç”»ä¸­å¿ƒ)(origin)
+		1.3f,				// ã‚¹ã‚±ãƒ¼ãƒ«(scale)
+		SpriteEffects_None,	// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ(effects)
+		0.0f				// ãƒ¬ã‚¤ãƒ¤æ·±åº¦(ç”»åƒã®ã‚½ãƒ¼ãƒˆã§å¿…è¦)(layerDepth)
 	);
-	// ‰æ‘œ‚Ì’†S‚ğŒvZ‚·‚é
+	// ç”»åƒã®ä¸­å¿ƒã‚’è¨ˆç®—ã™ã‚‹
 	Vector2 spacePos{ rect.right / 2.0f, rect.bottom / 1.2f };
 
-	// ƒ^ƒCƒgƒ‹ƒƒS‚ğ•`‰æ‚·‚é
+	// æç”»ã™ã‚‹
 	m_spriteBatch->Draw(
-		m_pressKeyTexture.Get(),	// ƒeƒNƒXƒ`ƒƒ(SRV)
-		spacePos,				// ƒXƒNƒŠ[ƒ“‚Ì•\¦ˆÊ’u(origin‚Ì•`‰æˆÊ’u)
-		nullptr,			// ‹éŒ`(RECT)
-		Colors::White,		// ”wŒiF
-		0.0f,				// ‰ñ“]Šp(ƒ‰ƒWƒAƒ“)
-		m_pressKeyTexCenter,		// ƒeƒNƒXƒ`ƒƒ‚ÌŠî€‚É‚È‚é•\¦ˆÊ’u(•`‰æ’†S)(origin)
-		1.0f,				// ƒXƒP[ƒ‹(scale)
-		SpriteEffects_None,	// ƒGƒtƒFƒNƒg(effects)
-		0.0f				// ƒŒƒCƒ„[“x(‰æ‘œ‚Ìƒ\[ƒg‚Å•K—v)(layerDepth)
+		m_pressKeyTexture.Get(),	// ãƒ†ã‚¯ã‚¹ãƒãƒ£(SRV)
+		spacePos,				// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã®è¡¨ç¤ºä½ç½®(originã®æç”»ä½ç½®)
+		nullptr,			// çŸ©å½¢(RECT)
+		Colors::White,		// èƒŒæ™¯è‰²
+		0.0f,				// å›è»¢è§’(ãƒ©ã‚¸ã‚¢ãƒ³)
+		m_pressKeyTexCenter,		// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åŸºæº–ã«ãªã‚‹è¡¨ç¤ºä½ç½®(æç”»ä¸­å¿ƒ)(origin)
+		m_size,				// ã‚¹ã‚±ãƒ¼ãƒ«(scale)
+		SpriteEffects_None,	// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ(effects)
+		0.0f				// ãƒ¬ã‚¤ãƒ¤æ·±åº¦(ç”»åƒã®ã‚½ãƒ¼ãƒˆã§å¿…è¦)(layerDepth)
 	);
 #ifdef _DEBUG
-	// ƒˆ‚ÉƒXƒvƒ‰ƒCƒgƒtƒHƒ“ƒg‚Å•¶š—ñ‚ğ•`‰æ‚·‚é•û–@
+	// ç´”ç²‹ã«ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒ•ã‚©ãƒ³ãƒˆã§æ–‡å­—åˆ—ã‚’æç”»ã™ã‚‹æ–¹æ³•
 	m_spriteFont->DrawString(m_spriteBatch.get(), L"Title Scene", Vector2(10, 40));
 
 	wchar_t buf[32];
 	swprintf_s(buf, 32, L"right : %d, bottom : %d", rect.right, rect.bottom);
 	m_spriteFont->DrawString(m_spriteBatch.get(), buf, Vector2(10, 70));
 #endif
-	// ƒXƒvƒ‰ƒCƒgƒoƒbƒ`‚ÌI‚í‚è
+	// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒãƒƒãƒã®çµ‚ã‚ã‚Š
 	m_spriteBatch->End();
 }
 
 //---------------------------------------------------------
-// Œãn––‚·‚é
+// å¾Œå§‹æœ«ã™ã‚‹
 //---------------------------------------------------------
 void TitleScene::Finalize()
 {
 	// do nothing.
-		// Sound—p‚ÌƒIƒuƒWƒFƒNƒg‚ğ‰ğ•ú‚·‚é
+		// Soundç”¨ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’è§£æ”¾ã™ã‚‹
 	m_soundSE->release();
 	m_soundBGM->release();
 	m_system->release();
 }
 
 //---------------------------------------------------------
-// Ÿ‚ÌƒV[ƒ“ID‚ğæ“¾‚·‚é
+// æ¬¡ã®ã‚·ãƒ¼ãƒ³IDã‚’å–å¾—ã™ã‚‹
 //---------------------------------------------------------
 IScene::SceneID TitleScene::GetNextSceneID() const
 {
-	// ƒV[ƒ“•ÏX‚ª‚ ‚éê‡
+	// ã‚·ãƒ¼ãƒ³å¤‰æ›´ãŒã‚ã‚‹å ´åˆ
 	if (m_isChangeScene)
 	{
 		m_channelBGM->stop();
 		return IScene::SceneID::PLAY;
 	}
 
-	// ƒV[ƒ“•ÏX‚ª‚È‚¢ê‡
+	// ã‚·ãƒ¼ãƒ³å¤‰æ›´ãŒãªã„å ´åˆ
 	return IScene::SceneID::NONE;
 }
 
 //---------------------------------------------------------
-// FMOD‚ÌƒVƒXƒeƒ€‚Ì‰Šú‰»‚Æ‰¹ºƒf[ƒ^‚Ìƒ[ƒh
+// FMODã®ã‚·ã‚¹ãƒ†ãƒ ã®åˆæœŸåŒ–ã¨éŸ³å£°ãƒ‡ãƒ¼ã‚¿ã®ãƒ­ãƒ¼ãƒ‰
 //---------------------------------------------------------
 void TitleScene::InitializeFMOD()
 {
-	// ƒVƒXƒeƒ€‚ğƒCƒ“ƒXƒ^ƒ“ƒX‰»‚·‚é
+	// ã‚·ã‚¹ãƒ†ãƒ ã‚’ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹åŒ–ã™ã‚‹
 	FMOD_RESULT result = FMOD::System_Create(&m_system);
 	assert(result == FMOD_OK);
 
-	// ƒVƒXƒeƒ€‚ğ‰Šú‰»‚·‚é
+	// ã‚·ã‚¹ãƒ†ãƒ ã‚’åˆæœŸåŒ–ã™ã‚‹
 	result = m_system->init(32, FMOD_INIT_NORMAL, nullptr);
 	assert(result == FMOD_OK);
 
-	// SE‚ğƒ[ƒh‚·‚é
+	// SEã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	result = m_system->createSound("Resources/Sounds/select.mp3", FMOD_DEFAULT, nullptr, &m_soundSE);
 	assert(result == FMOD_OK);
 
-	// BGM‚ğƒ[ƒh‚·‚é
+	// BGMã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
 	result = m_system->createSound("Resources/Sounds/title.mp3", FMOD_LOOP_NORMAL, nullptr, &m_soundBGM);
 	assert(result == FMOD_OK);
 }

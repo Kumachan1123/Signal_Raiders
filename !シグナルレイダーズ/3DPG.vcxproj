@@ -195,7 +195,7 @@
     <ClInclude Include="Game\Enemy\EnemyBullet\EnemyBullet.h" />
     <ClInclude Include="Game\Enemy\EnemyHPBar\EnemyHPBar.h" />
     <ClInclude Include="Game\FPS_Camera\FPS_Camera.h" />
-    <ClInclude Include="Game\Interface\IStateh.h" />
+    <ClInclude Include="Game\Interface\IState.h" />
     <ClInclude Include="Game\KumachiLib\BinaryFile.h" />
     <ClInclude Include="Game\Player\PlayerBullet\PlayerBullet.h" />
     <ClInclude Include="Game\Player\PlayerController\PlayerController.h" />

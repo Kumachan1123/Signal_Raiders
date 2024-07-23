@@ -7,9 +7,10 @@
 #ifndef ENEMY_MODEL_DEFINED
 #define ENEMY_MODEL_DEFINED
 #include "Game/CommonResources.h"
+#include "Game/Interface/IState.h"
 class Enemy;
 class CommonResources;
-
+class IState;
 class EnemyModel
 {
 private:
@@ -32,12 +33,13 @@ private:
 	DirectX::SimpleMath::Vector3 m_startScale;		// 初期スケール
 	DirectX::SimpleMath::Vector3 m_endScale;		// 最終スケール
 	DirectX::SimpleMath::Quaternion m_rotation; // クォータニオン (追加)
+	IState::EnemyState m_nowState;
 public:
 	// 初期ステータスを設定
 	EnemyModel();
 	~EnemyModel();
 	void Initialize(CommonResources* resources);
-	void Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos);
+	void Update(float elapsedTime, IState::EnemyState State);
 	void Render(ID3D11DeviceContext1* context,
 				DirectX::DX11::CommonStates* states,
 				DirectX::SimpleMath::Matrix world,

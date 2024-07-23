@@ -55,6 +55,8 @@ private:
 	float m_volume;		// ボリューム
 	int m_counter;		// フェードカウンタ
 
+	float m_time = 0.0f;// 拡縮に使う時間
+	float m_size = 0.0f;// 画像サイズ
 public:
 	TitleScene();
 	~TitleScene() override;

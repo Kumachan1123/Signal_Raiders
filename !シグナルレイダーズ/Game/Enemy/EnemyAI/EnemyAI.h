@@ -13,7 +13,7 @@ class CommonResources;
 #include "Game/Enemy/EnemyAI/EnemyAttack/EnemyAttack.h"
 #include "Game/Enemy/EnemyAI/EnemyIdling/EnemyIdling.h"
 
-#include "Game/Interface/IStateh.h"
+#include "Game/Interface/IState.h"
 class EnemyAttack;
 class EnemyIdling;
 class EnemyAI
@@ -26,6 +26,7 @@ private:
 
 	// 現在の状態
 	IState* m_currentState;
+	IState::EnemyState m_enemyState;
 	DirectX::SimpleMath::Vector3 m_position;//移動
 	DirectX::SimpleMath::Vector3 m_initialPosition;// 座標初期値
 	DirectX::SimpleMath::Vector3 m_bsPosition;//当たり判定用座標
@@ -51,6 +52,7 @@ public:
 	EnemyAttack* GetEnemyAttack()const { return m_enemyAttack.get(); }
 	EnemyIdling* GetEnemyIdling()const { return m_enemyIdling.get(); }
 	IState* GetNowState()const { return m_currentState; }
+	IState::EnemyState GetState()const { return m_enemyState; }
 	//  setter
 	void SetPosition(DirectX::SimpleMath::Vector3& pos) { m_position = pos; }
 	void SetRotation(DirectX::SimpleMath::Quaternion rot) { m_rotation = rot; }

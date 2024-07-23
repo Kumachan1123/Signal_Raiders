@@ -15,7 +15,7 @@ void Stage1::Initialize(CommonResources* resources)
 	using namespace DirectX::SimpleMath;
 	m_commonResources = resources;
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
+	//auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	//	エフェクトの作成 
 	m_BatchEffect = std::make_unique<AlphaTestEffect>(device);
 	m_BatchEffect->SetAlphaFunction(D3D11_COMPARISON_EQUAL);
@@ -45,6 +45,7 @@ void Stage1::Initialize(CommonResources* resources)
 }
 void Stage1::Update(float elapsedTime)
 {
+	UNREFERENCED_PARAMETER(elapsedTime);
 
 }
 void Stage1::Render(DirectX::SimpleMath::Matrix world, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
