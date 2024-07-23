@@ -37,6 +37,9 @@ private:
 
 	//	プリミティブバッチ 
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_Batch;
+	// 床の深度ステンシルステート
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilState_Floor;
+
 
 public:
 	// 初期ステータスを設定
@@ -45,5 +48,8 @@ public:
 	void Initialize(CommonResources* resources);
 	void Update(float elapsedTime);
 	void Render(DirectX::SimpleMath::Matrix world, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+private:
+	// 深度ステンシルステートを初期化する
+	void InitializeDepthStencilState(ID3D11Device* device);
 
 };

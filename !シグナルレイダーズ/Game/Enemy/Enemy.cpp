@@ -143,10 +143,12 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	Vector3 lightDir = Vector3::UnitY;
 	//Vector3 lightDir = Vector3{ 0.5f,1.0f,-0.5f };
 	lightDir.Normalize();
-	Matrix shadowMatrix = Matrix::CreateShadow(lightDir, Plane(0, 1, 0, -0.01f));
-	Matrix mat = enemyWorld * shadowMatrix;
+	// 影行列の元を作る
+		//** Plane(法線、距離)：TKの性質上、法線の向きが逆なので、それを考慮する
+	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, -0.01f));
+	Matrix mat = shadowMatrix * enemyWorld;
 	// 影描画
-	m_model->Draw(context, *states, mat, view, proj, false, [&]()
+	m_model->Draw(context, *states, mat * Matrix::Identity, view, proj, true, [&]()
 				  {
 					  context->OMSetBlendState(states->AlphaBlend(), nullptr, 0xffffffff);
 					  context->OMSetDepthStencilState(m_depthStencilState_Shadow.Get(), 1);
@@ -293,10 +295,6 @@ void Enemy::InitializeDepthStencilState(ID3D11Device* device)
 	// 裏面も同じ設定
 	desc.BackFace = desc.FrontFace;
 
-	// 深度ステンシルステートを作成する
-	DX::ThrowIfFailed(
-		device->CreateDepthStencilState(&desc, m_depthStencilState_Floor.ReleaseAndGetAddressOf())
-	);
 
 	/*
 		影の設定

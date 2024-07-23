@@ -30,9 +30,6 @@ private:
 	std::unique_ptr<EnemyHPBar>		m_HPBar;
 	std::vector<std::unique_ptr<EnemyBullet>> m_bullets; // 弾のリスト
 
-	// 床の深度ステンシルステート
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilState_Floor;
-
 	// 影の深度ステンシルステート
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilState_Shadow;
 
