@@ -19,7 +19,9 @@ private:
 	std::unique_ptr<DirectX::Model> m_headModel;//胴体
 	std::unique_ptr<DirectX::Model> m_antennaModel;//アンテナ
 	std::unique_ptr<DirectX::Model> m_handModel;//手
-	std::unique_ptr<DirectX::Model> m_faceModel;//顔
+	std::unique_ptr<DirectX::Model> m_attackFaceModel;//攻撃態勢の顔
+	std::unique_ptr<DirectX::Model> m_angryFaceModel;//おこの時の顔
+	std::unique_ptr<DirectX::Model> m_idlingFaceModel;//普段の顔
 
 	// 敵の情報
 	DirectX::SimpleMath::Vector3 m_position;		// 座標
@@ -36,7 +38,11 @@ public:
 	~EnemyModel();
 	void Initialize(CommonResources* resources);
 	void Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos);
-	void Render(ID3D11DeviceContext1* context, DirectX::DX11::CommonStates* states, DirectX::SimpleMath::Matrix world, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+	void Render(ID3D11DeviceContext1* context,
+				DirectX::DX11::CommonStates* states,
+				DirectX::SimpleMath::Matrix world,
+				DirectX::SimpleMath::Matrix view,
+				DirectX::SimpleMath::Matrix proj);
 
 };
 #endif //ENEMY_MODEL_DEFINED

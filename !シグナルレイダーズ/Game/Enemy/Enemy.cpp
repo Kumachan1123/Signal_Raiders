@@ -79,6 +79,9 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_DEST_COLOR;
 	// ブレンドステートを作成する
 	DX::ThrowIfFailed(device->CreateBlendState(&blendDesc, m_blendState.ReleaseAndGetAddressOf()));
+	// 深度ステンシルバッファを初期化する
+	this->InitializeDepthStencilState(device);
+
 	// アウトラインシェーダーを作成する
 	std::vector<uint8_t> psBlob = DX::ReadData(L"Resources/Shaders/PS_Outline.cso"); // 事前にコンパイルされたシェーダーバイナリ
 	DX::ThrowIfFailed(
@@ -146,8 +149,8 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	m_model->Draw(context, *states, mat, view, proj, false, [&]()
 				  {
 					  context->OMSetBlendState(states->AlphaBlend(), nullptr, 0xffffffff);
-					  context->OMSetDepthStencilState(m_depthStencilState.Get(), 1);
-					  context->RSSetState(states->CullCounterClockwise());
+					  context->OMSetDepthStencilState(m_depthStencilState_Shadow.Get(), 1);
+					  context->RSSetState(states->CullNone());
 					  context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
 				  });
 	// 描画する
@@ -257,4 +260,65 @@ void Enemy::UpdateBullets(float elapsedTime)
 
 	// m_bullets を新しいリストで置き換える
 	m_bullets = std::move(newBullets);
+}
+
+//---------------------------------------------------------
+// 深度ステンシルステートを初期化する
+//---------------------------------------------------------
+void Enemy::InitializeDepthStencilState(ID3D11Device* device)
+{
+	assert(device);
+
+	// 深度ステンシルバッファを設定する
+	D3D11_DEPTH_STENCIL_DESC desc{};
+
+	/*
+		床の設定
+	*/
+	// 床（描画時０を１にする）
+	desc.DepthEnable = TRUE;									// 深度テストを行う
+	desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;			// 深度バッファを更新する
+	desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;				// テストの条件：深度値以下なら→手前なら
+
+	desc.StencilEnable = TRUE;									// ステンシルテストを行う
+	desc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;		// 0xff
+	desc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;	// 0xff
+
+	// 表面
+	desc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;		// 参照値がステンシル値と同じなら：ゼロなら
+	desc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_INCR_SAT;	// OK　ステンシル値をインクリメントする
+	desc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;		// NG　何もしない
+	desc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;	// NG　何もしない
+
+	// 裏面も同じ設定
+	desc.BackFace = desc.FrontFace;
+
+	// 深度ステンシルステートを作成する
+	DX::ThrowIfFailed(
+		device->CreateDepthStencilState(&desc, m_depthStencilState_Floor.ReleaseAndGetAddressOf())
+	);
+
+	/*
+		影の設定
+	*/
+	// 影（ステンシル値が１のとき描画する）
+	//desc.DepthEnable = TRUE;									// 深度テストを行う
+	desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;			// 深度バッファは更新しない
+	//desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;				// テストの条件：深度値以下なら→手前なら
+
+	//desc.StencilEnable = TRUE;									// ステンシルテストを行う
+	//desc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;		// 0xff
+	//desc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;	// 0xff
+
+	// 表面
+	//desc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;		// 参照値とステンシル値が同値なら：１なら
+	desc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_INCR_SAT;	// OK　ステンシル値をインクリメントする
+	//desc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;		// NG　何もしない
+	//desc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;	// NG　何もしない
+
+	// 裏面も同じ設定
+	desc.BackFace = desc.FrontFace;
+
+	// 深度ステンシルステートを作成する
+	device->CreateDepthStencilState(&desc, m_depthStencilState_Shadow.ReleaseAndGetAddressOf());
 }

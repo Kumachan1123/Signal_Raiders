@@ -117,6 +117,7 @@ void PlayerBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::Si
 }
 void PlayerBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
+	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
@@ -143,7 +144,8 @@ void PlayerBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 	m_basicEffect->SetProjection(proj);
 	m_basicEffect->Apply(context);
 	// 境界球の変換を同じワールドマトリックスに基づいて行う
-	DirectX::BoundingSphere transformedBoundingSphere = m_boundingSphere;
+	BoundingSphere transformedBoundingSphere = m_boundingSphere;
+
 	m_boundingSphere.Transform(transformedBoundingSphere, boundingbulletWorld);
 #ifdef _DEBUG
 	// 描画する

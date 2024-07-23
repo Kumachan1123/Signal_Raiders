@@ -29,6 +29,13 @@ private:
 	std::unique_ptr<EnemyAI>		m_enemyAI;
 	std::unique_ptr<EnemyHPBar>		m_HPBar;
 	std::vector<std::unique_ptr<EnemyBullet>> m_bullets; // 弾のリスト
+
+	// 床の深度ステンシルステート
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilState_Floor;
+
+	// 影の深度ステンシルステート
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilState_Shadow;
+
 	// モデルの影
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState>m_depthStencilState;
@@ -104,5 +111,8 @@ public:
 public:
 	void AddBullet(std::unique_ptr<EnemyBullet> bullet);
 	void UpdateBullets(float elapsedTime);
+private:
+	// 深度ステンシルステートを初期化する
+	void InitializeDepthStencilState(ID3D11Device* device);
 
 };
