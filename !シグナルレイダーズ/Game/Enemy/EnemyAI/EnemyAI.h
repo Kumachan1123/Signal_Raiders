@@ -59,6 +59,7 @@ public:
 	void SetScale(DirectX::SimpleMath::Vector3 sca) { m_scale = sca; }
 	void SetVelocity(DirectX::SimpleMath::Vector3& vel) { m_velocity = vel; }
 	void KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bool& isHitToPlayerBullet, const DirectX::SimpleMath::Vector3& playerPos);
+	void SetState(IState::EnemyState state) { m_enemyState = state; }
 public:
 	EnemyAI();
 	~EnemyAI();

@@ -31,6 +31,7 @@ void EnemyModel::Initialize(CommonResources* resources)
 	m_attackFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_Face.cmo", *fx);
 	m_handModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_Hand.cmo", *fx);
 	m_idlingFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_IdlingHead.cmo", *fx);
+	m_angryFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_AttackFace.cmo", *fx);
 }
 void EnemyModel::Update(float elapsedTime, IState::EnemyState State)
 {
@@ -60,6 +61,7 @@ void EnemyModel::Render(ID3D11DeviceContext1* context,
 			m_attackFaceModel->Draw(context, *states, world, view, proj);
 			break;
 		case IState::EnemyState::ANGRY:
+			m_angryFaceModel->Draw(context, *states, world, view, proj);
 			break;
 
 	}

@@ -92,8 +92,10 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 			m_outlinePS.ReleaseAndGetAddressOf()
 		)
 	);
+	m_currentHP = hp;
 	// HPBar生成
 	m_HPBar = std::make_unique<EnemyHPBar>();
+	m_HPBar->SetEnemyHP(m_currentHP);
 	m_HPBar->Initialize(resources);
 	// AI生成
 	m_enemyAI = std::make_unique<EnemyAI>();
@@ -108,8 +110,8 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 	m_primitiveBatch = std::make_unique<DirectX::DX11::PrimitiveBatch<DirectX::DX11::VertexPositionColor>>(context);
 
 	m_enemyAI->SetPosition(m_position);
-	m_currentHP = hp;
-	m_HPBar->SetEnemyHP(m_currentHP);
+
+
 	// 境界球の初期化
 	m_enemyBoundingSphere.Center = m_position;
 	m_enemyBoundingSphere.Radius = 1.5f;
@@ -191,9 +193,10 @@ void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 	m_enemyAI->Update(elapsedTime, m_position, playerPos, m_isHit, m_isHitToPlayerBullet);
 	if (m_enemyAI->GetNowState() == m_enemyAI->GetEnemyAttack())// 攻撃態勢なら
 	{
+		m_attackCooldown = m_enemyAI->GetEnemyAttack()->GetCoolTime();
 		// 攻撃のクールダウンタイムを管理
-		m_attackCooldown -= elapsedTime;
-		if (m_attackCooldown <= 0.0f)
+
+		if (m_attackCooldown <= 0.1f)
 		{
 			// 弾を発射
 			auto bullet = std::make_unique<EnemyBullet>();
@@ -203,7 +206,7 @@ void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 			DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_rotation);
 			bullet->MakeBall(GetPosition(), direction, playerPos);
 			m_bullets.push_back(std::move(bullet));
-			m_attackCooldown = 3.0f; // 次の攻撃までのクールダウンタイムを3秒に設定
+			m_enemyAI->GetEnemyAttack()->SetCoolTime(3.0f);
 		}
 	}
 	UpdateBullets(elapsedTime);

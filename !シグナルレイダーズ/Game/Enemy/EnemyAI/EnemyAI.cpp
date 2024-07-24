@@ -60,7 +60,7 @@ void EnemyAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Direc
 	}
 	else
 	{
-		m_enemyAttack->SetCoolTime(3.0f);
+
 		ChangeState(m_enemyIdling.get());//úpújë‘ê®Ç…Ç∑ÇÈ
 		m_enemyState = IState::EnemyState::IDLING;// úpújë‘ê®
 	}

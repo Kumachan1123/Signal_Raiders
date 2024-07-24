@@ -20,9 +20,24 @@
 #include <Libraries/Microsoft/DebugDraw.h>
 #include "Game/Template/Template.h"
 // コンストラクタ
-EnemyHPBar::EnemyHPBar(){}
+EnemyHPBar::EnemyHPBar()
+{
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
+	// ビルボードの頂点情報を設定する
+	m_hpbarVert[0] = { Vector3(-1.0f,3.25f,0.0f),Vector2(0.0f,0.0f) };	// 左上
+	m_hpbarVert[1] = { Vector3(1.0f,3.25f,0.0f),Vector2(1.0f,0.0f) };	// 右上
+	m_hpbarVert[2] = { Vector3(-1.0f,3.0f,0.0f),Vector2(0.0f,1.0f) };	// 左下
+	m_hpbarVert[3] = { Vector3(1.0f,3.0f,0.0f),Vector2(1.0f,1.0f) };	// 右下
+	// ビルボードの頂点情報を設定する
+	m_hpbarBackVert[0] = { Vector3(-1.10f,3.27f,0.0f),Vector2(0.0f,0.0f) };	// 左上
+	m_hpbarBackVert[1] = { Vector3(1.10f,3.27f,0.0f),Vector2(1.0f,0.0f) };	// 右上
+	m_hpbarBackVert[2] = { Vector3(-1.10f,2.98f,0.0f),Vector2(0.0f,1.0f) };	// 左下
+	m_hpbarBackVert[3] = { Vector3(1.10f,2.98f,0.0f),Vector2(1.0f,1.0f) };	// 右下
+
+}
 // デストラクタ
-EnemyHPBar::~EnemyHPBar(){}
+EnemyHPBar::~EnemyHPBar() {}
 //---------------------------------------------------------
 //// 初期化する
 ////---------------------------------------------------------
@@ -33,7 +48,7 @@ void EnemyHPBar::Initialize(CommonResources* resources)
 	m_commonResources = resources;
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-	
+
 	// プリミティブバッチを作成する
 	m_primitiveBatch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>>(context);
 
@@ -65,19 +80,10 @@ void EnemyHPBar::Initialize(CommonResources* resources)
 			m_gaugeTexture.ReleaseAndGetAddressOf()
 		)
 	);
-	// ビルボードの頂点情報を設定する
-	m_hpbarVert[0] = { Vector3(-1.0f,3.25f,0.0f),Vector2(0.0f,0.0f) };	// 左上
-	m_hpbarVert[1] = { Vector3(1.0f,3.25f,0.0f),Vector2(1.0f,0.0f) };	// 右上
-	m_hpbarVert[2] = { Vector3(-1.0f,3.0f,0.0f),Vector2(0.0f,1.0f) };	// 左下
-	m_hpbarVert[3] = { Vector3(1.0f,3.0f,0.0f),Vector2(1.0f,1.0f) };	// 右下
-	// ビルボードの頂点情報を設定する
-	m_hpbarBackVert[0] = { Vector3(-1.10f,3.27f,0.0f),Vector2(0.0f,0.0f) };	// 左上
-	m_hpbarBackVert[1] = { Vector3(1.10f,3.27f,0.0f),Vector2(1.0f,0.0f) };	// 右上
-	m_hpbarBackVert[2] = { Vector3(-1.10f,2.98f,0.0f),Vector2(0.0f,1.0f) };	// 左下
-	m_hpbarBackVert[3] = { Vector3(1.10f,2.98f,0.0f),Vector2(1.0f,1.0f) };	// 右下
+	m_displayedHP = m_maxHP;
 }
 // 描画
-void EnemyHPBar::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj, DirectX::SimpleMath::Vector3 pos ,DirectX::SimpleMath::Vector3 rot)
+void EnemyHPBar::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj, DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 rot)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
@@ -126,7 +132,7 @@ void EnemyHPBar::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::M
 	m_primitiveBatch->End();
 }
 // 更新
-void EnemyHPBar::Update(float elapsedTime,int currentHP)
+void EnemyHPBar::Update(float elapsedTime, int currentHP)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
@@ -134,7 +140,6 @@ void EnemyHPBar::Update(float elapsedTime,int currentHP)
 	// 現在のHPを更新
 	m_currentHP = currentHP;
 
-	
 	// HPを滑らかに更新するための線形補間
 	m_displayedHP = Lerp(m_displayedHP, static_cast<float>(m_currentHP), elapsedTime * m_lerpSpeed);
 
@@ -150,7 +155,7 @@ void EnemyHPBar::Update(float elapsedTime,int currentHP)
 	m_hpbarVert[1].position.x = -1.0f + currentBarWidth;  // 右上
 	m_hpbarVert[2].position.x = -1.0f;                    // 左下
 	m_hpbarVert[3].position.x = -1.0f + currentBarWidth;  // 右下
-	
+
 	if (m_hpbarVert[1].position.x <= -1.0f)
 	{
 		m_isDead = true;

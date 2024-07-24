@@ -86,16 +86,21 @@ void EnemyAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, D
 
 	// 敵がプレイヤーの方向を向いているかをチェック
 	const float directionThreshold = -0.93f; // 内積が1に近いかどうかの閾値
-	if (dot <= directionThreshold)
+
+
+	// 攻撃のクールダウンタイムを管理
+	m_attackCooldown -= elapsedTime;
+	if (m_attackCooldown <= 2.0f)
 	{
-		// 攻撃のクールダウンタイムを管理
-		m_attackCooldown -= elapsedTime;
+		m_enemy->SetState(IState::EnemyState::ANGRY);
 		if (m_attackCooldown <= 0.0f)
 		{
 			// 弾を発射
 			m_attackCooldown = 3.0f; // 次の攻撃までのクールダウンタイムを3秒に設定
+
 		}
 	}
+
 	m_enemy->SetRotation(m_rotation);
 	m_enemy->SetVelocity(m_velocity);
 }
