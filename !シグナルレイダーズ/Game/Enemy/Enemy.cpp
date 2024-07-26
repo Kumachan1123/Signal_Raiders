@@ -13,8 +13,6 @@
 #include "Game/Enemy/EnemyModel/EnemyModel.h"
 #include "DeviceResources.h"
 #include "Libraries/MyLib/DebugString.h"
-#include "Libraries/MyLib/GridFloor.h"
-#include "Libraries/MyLib/InputManager.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
 #include "Libraries/Microsoft/ReadData.h"
 #include <cassert>
@@ -45,8 +43,8 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 	m_attackCooldown = 3.0f;
 	/*
 	デバッグドローの表示用オブジェクトを生成する
-*/
-// ベーシックエフェクトを作成する
+	*/
+	// ベーシックエフェクトを作成する
 	m_basicEffect = std::make_unique<BasicEffect>(device);
 	m_basicEffect->SetVertexColorEnabled(true);
 
