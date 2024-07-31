@@ -12,7 +12,8 @@ public:
 	{
 		IDLING = 0,
 		ATTACK,
-		ANGRY
+		ANGRY,
+		DAMAGE
 	};
 public:
 	virtual ~IState() = default;

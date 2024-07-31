@@ -112,6 +112,7 @@ void EnemyAI::KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bo
 		knockBackDirection.Normalize(); // 正規化して方向ベクトルにする
 		m_knockEndPosition = pos + knockBackDirection * 10; // ノックバック終了位置
 		m_initialVelocity = knockBackDirection * 15; // 初期速度
+
 	}
 
 	// ノックバック時間の更新
@@ -130,10 +131,12 @@ void EnemyAI::KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bo
 	Vector3 velocity = m_initialVelocity * decayFactor;
 	pos += velocity * elapsedTime;
 
+	m_enemyState = IState::EnemyState::DAMAGE;// ダメージ態勢
 	// ノックバックが終了したかどうかチェック
 	if (t >= 1.0f)
 	{
 		m_knockTime = 0.0f; // ノックバック時間のリセット
 		isHitToPlayerBullet = false; // ノックバック終了
+		m_enemyState = IState::EnemyState::IDLING;// 待機態勢
 	}
 }

@@ -23,6 +23,7 @@ private:
 	std::unique_ptr<DirectX::Model> m_attackFaceModel;//UŒ‚‘Ô¨‚ÌŠç
 	std::unique_ptr<DirectX::Model> m_angryFaceModel;//‚¨‚±‚Ì‚ÌŠç
 	std::unique_ptr<DirectX::Model> m_idlingFaceModel;//•’i‚ÌŠç
+	std::unique_ptr<DirectX::Model> m_damageFaceModel;	// UŒ‚‚ğó‚¯‚½‚ÌŠç
 
 	// “G‚Ìî•ñ
 	DirectX::SimpleMath::Vector3 m_position;		// À•W
