@@ -196,6 +196,7 @@ void TitleScene::Render()
 		SpriteEffects_None,	// エフェクト(effects)
 		0.0f				// レイヤ深度(画像のソートで必要)(layerDepth)
 	);
+
 	// 画像の中心を計算する
 	Vector2 spacePos{ rect.right / 2.0f, rect.bottom / 1.2f };
 
@@ -206,15 +207,15 @@ void TitleScene::Render()
 		nullptr,			// 矩形(RECT)
 		Colors::White,		// 背景色
 		0.0f,				// 回転角(ラジアン)
-		m_pressKeyTexCenter,		// テクスチャの基準になる表示位置(描画中心)(origin)
+		m_pressKeyTexCenter,// テクスチャの基準になる表示位置(描画中心)(origin)
 		m_size,				// スケール(scale)
 		SpriteEffects_None,	// エフェクト(effects)
 		0.0f				// レイヤ深度(画像のソートで必要)(layerDepth)
 	);
+
 #ifdef _DEBUG
 	// 純粋にスプライトフォントで文字列を描画する方法
 	m_spriteFont->DrawString(m_spriteBatch.get(), L"Title Scene", Vector2(10, 40));
-
 	wchar_t buf[32];
 	swprintf_s(buf, 32, L"right : %d, bottom : %d", rect.right, rect.bottom);
 	m_spriteFont->DrawString(m_spriteBatch.get(), buf, Vector2(10, 70));
@@ -229,7 +230,7 @@ void TitleScene::Render()
 void TitleScene::Finalize()
 {
 	// do nothing.
-		// Sound用のオブジェクトを解放する
+	// Sound用のオブジェクトを解放する
 	m_soundSE->release();
 	m_soundBGM->release();
 	m_system->release();
