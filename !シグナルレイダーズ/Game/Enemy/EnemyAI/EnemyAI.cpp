@@ -135,6 +135,7 @@ void EnemyAI::KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bo
 	// ノックバックが終了したかどうかチェック
 	if (t >= 1.0f)
 	{
+		m_knockEndPosition = pos;
 		m_knockTime = 0.0f; // ノックバック時間のリセット
 		isHitToPlayerBullet = false; // ノックバック終了
 		m_enemyState = IState::EnemyState::IDLING;// 待機態勢

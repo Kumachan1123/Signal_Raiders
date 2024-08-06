@@ -43,6 +43,7 @@ PlayScene::PlayScene()
 	m_channelSE{ nullptr },
 	m_channelBGM{ nullptr },
 	m_stage1{ nullptr },
+	m_particles{},
 	m_isFade{},
 	m_volume{},
 	m_counter{}
@@ -178,7 +179,7 @@ void PlayScene::Update(float elapsedTime)
 	// 生成可能なら
 	if (m_isEnemyBorn && !m_isBorned)
 	{
-		for (int it = 0; it < m_wifi->GetWifiLevels().size(); it++)// m_wifi->GetWifiLevels().size()
+		for (int it = 0; it < 3; it++)// m_wifi->GetWifiLevels().size()
 		{
 			auto enemy = std::make_unique<Enemy>();// 敵を生成
 			enemy->Initialize(m_commonResources, m_wifi->GetWifiLevels()[it]);  // 初期化
@@ -187,6 +188,18 @@ void PlayScene::Update(float elapsedTime)
 		// 生成不可能にする
 		m_isEnemyBorn = false;
 		m_isBorned = true;
+	}
+
+	// パーティクルの更新
+	for (auto& particle : m_particles)
+	{
+		particle->Update(elapsedTime);
+		// パーティクルが再生終了したら削除する
+		if (particle->IsPlaying() == false)
+		{
+
+
+		}
 	}
 
 }
@@ -231,7 +244,7 @@ void PlayScene::Render()
 	DX::Draw(m_primitiveBatch.get(), m_PlayerSphere, DirectX::Colors::PeachPuff);
 	m_primitiveBatch->End();
 #endif
-	//m_model->Draw(context, *states, skyWorld, view, projection);
+
 	// 弾を描画する
 	for (const auto& bullet : m_playerBullets)bullet->Render(view, projection);
 
@@ -241,17 +254,33 @@ void PlayScene::Render()
 		{
 
 			enemy->Render(view, projection);
-
+			auto debugString = m_commonResources->GetDebugString();
+			debugString->AddString("posX:%f", enemy->GetPosition().x);
+			debugString->AddString("posY:%f", enemy->GetPosition().y);
+			debugString->AddString("posZ:%f", enemy->GetPosition().z);
 
 		}
 	}
+
+	// パーティクルを描画する
+	m_particles.erase(
+		std::remove_if(
+			m_particles.begin(),
+			m_particles.end(),
+			[&](const std::unique_ptr<Particle>& particle)
+			{
+				particle->Render(context, view, projection);
+				auto debugString = m_commonResources->GetDebugString();
+				debugString->AddString("posX:%f", particle->GetPosition().x);
+				debugString->AddString("posY:%f", particle->GetPosition().y);
+				debugString->AddString("posZ:%f", particle->GetPosition().z);
+				return particle->IsPlaying() == false;
+			}
+		),
+		m_particles.end()
+	);
 	// デバッグ情報を「DebugString」で表示する
 	auto debugString = m_commonResources->GetDebugString();
-#ifdef _DEBUG
-	debugString->AddString("Play Scene");
-	debugString->AddString("X:%f", m_playerController->GetPlayerPosition().x);
-	debugString->AddString("Z:%f", m_playerController->GetPlayerPosition().z);
-#endif
 	m_wifi->Render(debugString);
 	m_pPlayerHP->Render();
 	m_pPlayerPointer->Render();
@@ -316,6 +345,7 @@ void PlayScene::UpdateBullets(float elapsedTime)
 					isHit = true;
 					m_count++;//debug
 					enemy->SetEnemyHP(enemy->GetHP() - (*it)->Damage());
+
 					enemy->SetHitToPlayerBullet(true);
 					break;
 				}
@@ -388,8 +418,11 @@ void PlayScene::UpdateEnemies(float elapsedTime)
 		if ((*it)->GetEnemyIsDead())
 		{
 			// ここで削除時の特別な処理を行う
-			// 例えば、敵の消滅エフェクトを再生するなど
-			//HandleEnemyDeath(it->get());
+			// 敵の座標を渡してえげつないエフェクトを再生
+			m_particles.push_back(std::make_unique<Particle>(m_commonResources,
+															 (*it)->GetPosition(),
+															 (*it)->GetRotate(),
+															 (*it)->GetMatrix()));
 
 			// 削除対象に追加
 			enemiesToRemove.push_back(std::move(*it));
@@ -402,12 +435,12 @@ void PlayScene::UpdateEnemies(float elapsedTime)
 		}
 	}
 
-	// 削除対象に対して特別な処理を実行
-	//for (auto& enemy : enemiesToRemove)
+	////  生成したParticleにBillboardを設定する
+	//for (auto& particle : m_particles)
 	//{
-	//	// 特別な処理を実行
-	//	//HandleEnemyDeath(enemy.get());
+	//	particle->CreateBillboard(m_camera->GetTargetPosition(), m_camera->GetEyePosition(), m_camera->GetUpVector());
 	//}
+
 }
 
 

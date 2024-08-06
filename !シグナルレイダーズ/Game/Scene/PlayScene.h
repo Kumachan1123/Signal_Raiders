@@ -18,6 +18,7 @@
 #include "Game/Stages/Stage1.h"
 #include "Game/Player/PlayerUI/PlayerHP/PlayerHP.h"
 #include "Game/Player/PlayerUI/PlayerPointer/PlayerPointer.h"
+#include "Game/Particle/Particle.h"
 // ‘O•ûéŒ¾
 class CommonResources;
 
@@ -70,6 +71,8 @@ private:
 	std::unique_ptr<Stage1> m_stage1;
 	// Ë‰es—ñ
 	DirectX::SimpleMath::Matrix m_projection;
+	// Particle
+	std::vector<std::unique_ptr<Particle>> m_particles;
 
 	// ’Ç‰Á‚Ì•Ï”==========================================
 

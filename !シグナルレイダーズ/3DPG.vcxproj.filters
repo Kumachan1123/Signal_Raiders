@@ -260,6 +260,7 @@
     <ClInclude Include="Game\Enemy\EnemyModel\EnemyModel.h" />
     <ClInclude Include="Game\Stages\Stage1.h" />
     <ClInclude Include="Game\Stages\VertexTypesEx.h" />
+    <ClInclude Include="Game\Particle\Particle.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -368,6 +369,7 @@
     <ClCompile Include="Game\Enemy\EnemyModel\EnemyModel.cpp" />
     <ClCompile Include="Game\Stages\Stage1.cpp" />
     <ClCompile Include="Game\Stages\VertexTypesEx.cpp" />
+    <ClCompile Include="Game\Particle\Particle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

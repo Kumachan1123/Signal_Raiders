@@ -187,6 +187,7 @@
     <ClInclude Include="DeviceResources.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Game\CommonResources.h" />
+    <ClInclude Include="Game\Particle\Particle.h" />
     <ClInclude Include="Game\Enemy\Enemy.h" />
     <ClInclude Include="Game\Enemy\EnemyAI\EnemyAI.h" />
     <ClInclude Include="Game\Enemy\EnemyAI\EnemyAttack\EnemyAttack.h" />
@@ -240,6 +241,7 @@
     <ClCompile Include="DeviceResources.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Game\CommonResources.cpp" />
+    <ClCompile Include="Game\Particle\Particle.cpp" />
     <ClCompile Include="Game\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Enemy\EnemyAI\EnemyAI.cpp" />
     <ClCompile Include="Game\Enemy\EnemyAI\EnemyAttack\EnemyAttack.cpp" />
