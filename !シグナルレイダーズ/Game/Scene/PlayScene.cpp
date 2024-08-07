@@ -179,7 +179,7 @@ void PlayScene::Update(float elapsedTime)
 	// 生成可能なら
 	if (m_isEnemyBorn && !m_isBorned)
 	{
-		for (int it = 0; it < 3; it++)// m_wifi->GetWifiLevels().size()
+		for (int it = 0; it < m_wifi->GetWifiLevels().size(); it++)// m_wifi->GetWifiLevels().size()
 		{
 			auto enemy = std::make_unique<Enemy>();// 敵を生成
 			enemy->Initialize(m_commonResources, m_wifi->GetWifiLevels()[it]);  // 初期化
@@ -263,22 +263,13 @@ void PlayScene::Render()
 	}
 
 	// パーティクルを描画する
-	m_particles.erase(
-		std::remove_if(
-			m_particles.begin(),
-			m_particles.end(),
-			[&](const std::unique_ptr<Particle>& particle)
-			{
-				particle->Render(context, view, projection);
-				auto debugString = m_commonResources->GetDebugString();
-				debugString->AddString("posX:%f", particle->GetPosition().x);
-				debugString->AddString("posY:%f", particle->GetPosition().y);
-				debugString->AddString("posZ:%f", particle->GetPosition().z);
-				return particle->IsPlaying() == false;
-			}
-		),
-		m_particles.end()
-	);
+	m_particles.erase(std::remove_if(m_particles.begin(), m_particles.end(), [&](const std::unique_ptr<Particle>& particle) {
+		particle->Render(context, view, projection);
+		/*	auto debugString = m_commonResources->GetDebugString();
+			debugString->AddString("posX:%f", particle->GetPosition().x);
+			debugString->AddString("posY:%f", particle->GetPosition().y);
+			debugString->AddString("posZ:%f", particle->GetPosition().z);*/
+		return particle->IsPlaying() == false; }), m_particles.end());
 	// デバッグ情報を「DebugString」で表示する
 	auto debugString = m_commonResources->GetDebugString();
 	m_wifi->Render(debugString);
