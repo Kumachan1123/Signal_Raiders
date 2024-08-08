@@ -8,20 +8,31 @@
 using namespace DirectX;
 
 
-Particle::Particle(CommonResources* resources, DirectX::SimpleMath::Vector3 PlayPos, DirectX::SimpleMath::Vector3 rot, DirectX::SimpleMath::Matrix world)
+Particle::Particle(CommonResources* resources, ParticleType type, DirectX::SimpleMath::Vector3 PlayPos, DirectX::SimpleMath::Matrix world)
 	:m_position{ PlayPos }
+	, m_type{ type }
 	, m_scale{ 3.0f }
 	, m_commonResources{ resources }
 	, m_Billboard{ DirectX::SimpleMath::Matrix::Identity }
-	, m_rotation{ rot }
 	, m_world{ world }
 {
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	m_anim = 0;
 	m_animSpeed = 25; // フレーム切り替え速度
 	m_elapsedTime = 0.0f;
-	m_frameRows = 4; // 画像の行数
-	m_frameCols = 5; // 画像の列数
+	const wchar_t* texturePath = nullptr;
+	switch (m_type)
+	{
+		case ParticleType::ENEMY_DEAD:
+			texturePath = L"Resources/Textures/effect.png";
+			m_frameRows = 4; // 画像の行数
+			m_frameCols = 5; // 画像の列数
+			break;
+
+
+	}
+
+
 
 
 	// エフェクトの作成 
@@ -45,7 +56,7 @@ Particle::Particle(CommonResources* resources, DirectX::SimpleMath::Vector3 Play
 	// テクスチャロード
 	CreateWICTextureFromFile(
 		device,
-		L"Resources/Textures/effect.png",
+		texturePath,
 		nullptr,
 		m_Texture.GetAddressOf()
 	);
@@ -66,7 +77,7 @@ void Particle::Update(float elapsedTime)
 	if (m_anim == m_frameRows * m_frameCols)
 	{
 
-		//m_isPlaying = false;// 再生終了
+		m_isPlaying = false;// 再生終了
 	}
 }
 

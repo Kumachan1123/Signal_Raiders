@@ -8,7 +8,17 @@ class CommonResources;
 
 class Particle
 {
+public:
+	enum class ParticleType
+	{
+		ENEMY_DEAD = 0,
+		ENEMY_HIT,
+		ENEMY_SPAWN,
+		NONE
+	};
 private:
+
+
 	// 共通リソース
 	CommonResources* m_commonResources;
 
@@ -37,7 +47,9 @@ private:
 
 	// フレームの頂点情報
 	DirectX::DX11::VertexPositionTexture m_vertices[4];
-	// アニメーション用
+
+	// ParticleType
+	ParticleType m_type;
 	// 今、エフェクトを再生してるか
 	bool m_isPlaying;
 	// フレーム数
@@ -57,7 +69,7 @@ public:
 	static const DirectX::VertexPositionTexture Vertices[4];
 public:
 
-	Particle(CommonResources* resources, DirectX::SimpleMath::Vector3 PlayPos, DirectX::SimpleMath::Vector3 rot, DirectX::SimpleMath::Matrix world);// デバイスと再生位置を受け取る
+	Particle(CommonResources* resources, ParticleType type, DirectX::SimpleMath::Vector3 PlayPos, DirectX::SimpleMath::Matrix world);// デバイスと再生位置を受け取る
 	~Particle();
 	void Update(float elapsedTime);
 	void Render(ID3D11DeviceContext1* context, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);

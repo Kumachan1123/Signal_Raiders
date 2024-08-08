@@ -399,8 +399,8 @@ void PlayScene::UpdateEnemies(float elapsedTime)
 			// ここで削除時の特別な処理を行う
 			// 敵の座標を渡してえげつないエフェクトを再生
 			m_particles.push_back(std::make_unique<Particle>(m_commonResources,
+															 Particle::ParticleType::ENEMY_DEAD,
 															 (*it)->GetPosition(),
-															 (*it)->GetRotate(),
 															 (*it)->GetMatrix()));
 
 			// 削除対象に追加
@@ -414,11 +414,6 @@ void PlayScene::UpdateEnemies(float elapsedTime)
 		}
 	}
 
-	////  生成したParticleにBillboardを設定する
-	//for (auto& particle : m_particles)
-	//{
-	//	particle->CreateBillboard(m_camera->GetTargetPosition(), m_camera->GetEyePosition(), m_camera->GetUpVector());
-	//}
 
 }
 
