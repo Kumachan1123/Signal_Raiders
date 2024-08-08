@@ -10,7 +10,7 @@ using namespace DirectX;
 
 Particle::Particle(CommonResources* resources, DirectX::SimpleMath::Vector3 PlayPos, DirectX::SimpleMath::Vector3 rot, DirectX::SimpleMath::Matrix world)
 	:m_position{ PlayPos }
-	, m_scale{ 1.0f }
+	, m_scale{ 2.0f }
 	, m_commonResources{ resources }
 	, m_Billboard{ DirectX::SimpleMath::Matrix::Identity }
 	, m_rotation{ rot }
@@ -102,49 +102,37 @@ void Particle::Render(ID3D11DeviceContext1* context, SimpleMath::Matrix view, Si
 		billboardVertex[i].position.x *= m_scale;
 		billboardVertex[i].position.y *= m_scale;
 
-		// 設定された座標を足しこむ
-		billboardVertex[i].position.x += m_position.x;
-		billboardVertex[i].position.y += m_position.y;
-		billboardVertex[i].position.z += m_position.z;
 
 	}
-	//	テクスチャサンプラーの設定（クランプテクスチャアドレッシングモード） 
-	ID3D11SamplerState* samplers[1] = { m_States->AnisotropicWrap() };
-	context->PSSetSamplers(0, 1, samplers);
-
-	//	深度バッファに書き込み参照する 
-	context->OMSetDepthStencilState(m_States->DepthNone(), 0);
-	context->OMSetBlendState(m_States->NonPremultiplied(), nullptr, 0xFFFFFFFF);
-
-	//	カリングは左周り（反時計回り） 
-	context->RSSetState(m_States->CullNone());
-
-	//	不透明のみ描画する設定 
-	m_BatchEffect->SetAlphaFunction(D3D11_COMPARISON_NOT_EQUAL);
-	m_BatchEffect->SetReferenceAlpha(0);
-
-
-
 
 	// ビルボード行列を作成
 	Matrix billboardMatrix = view.Invert();
 	billboardMatrix._41 = 0.0f;
 	billboardMatrix._42 = 0.0f;
 	billboardMatrix._43 = 0.0f;
-	billboardMatrix._44 = 1.0f;
-
 
 	// ビルボードをアフィン変換
-	Matrix worldBillboard{};
-	worldBillboard = billboardMatrix;
+	Matrix worldBillboard = m_world * billboardMatrix;
 	worldBillboard *= Matrix::CreateTranslation(m_position);
-	worldBillboard *= Matrix::CreateRotationY(XMConvertToRadians(-m_rotation.y * 2.0f));	// ③
 
-	worldBillboard *= Matrix::CreateRotationY(XMConvertToRadians(m_rotation.y * 2.0f));	// ③
+	// 深度ステンシル状態を設定（深度バッファを有効にする）
+
+	context->OMSetDepthStencilState(m_States->DepthDefault(), 0);
+	context->OMSetBlendState(m_States->NonPremultiplied(), nullptr, 0xFFFFFFFF);
+
+	// カリングは左周り（反時計回り）
+	context->RSSetState(m_States->CullNone());
+
+	// テクスチャサンプラーの設定（クランプテクスチャアドレッシングモード）
+	ID3D11SamplerState* samplers[1] = { m_States->AnisotropicWrap() };
+	context->PSSetSamplers(0, 1, samplers);
+
+	//	不透明のみ描画する設定 
+	m_BatchEffect->SetAlphaFunction(D3D11_COMPARISON_NOT_EQUAL);
+	m_BatchEffect->SetReferenceAlpha(0);
 
 
-
-	m_BatchEffect->SetWorld(m_world);
+	m_BatchEffect->SetWorld(worldBillboard);
 	m_BatchEffect->SetView(view);
 	m_BatchEffect->SetProjection(proj);
 	m_BatchEffect->SetTexture(m_Texture.Get());
@@ -157,34 +145,10 @@ void Particle::Render(ID3D11DeviceContext1* context, SimpleMath::Matrix view, Si
 	m_Batch->End();
 
 	auto debugString = m_commonResources->GetDebugString();
-	/*debugString->AddString("posX:%f", m_position.x);
-	debugString->AddString("posY:%f", m_position.y);
-	debugString->AddString("posZ:%f", m_position.z);*/
+
 }
 
 void Particle::Finalize()
 {
-
-}
-
-void Particle::CreateBillboard(DirectX::SimpleMath::Vector3 target,
-							   DirectX::SimpleMath::Vector3 eye,
-							   DirectX::SimpleMath::Vector3 up)
-{
-	using namespace DirectX::SimpleMath;
-	Vector3 billboardTranslationValue{ 0.0f, 0.0f, 0.0f };
-
-	m_Billboard =
-		SimpleMath::Matrix::CreateBillboard(SimpleMath::Vector3::Zero, eye - target, up);
-
-	SimpleMath::Matrix rot = SimpleMath::Matrix::Identity;
-	rot._11 = -1;
-
-
-	rot._33 = -1;
-
-	m_cameraPosition = eye;
-	m_cameraTarget = target;
-	m_Billboard = rot * m_Billboard * Matrix::CreateTranslation(billboardTranslationValue);
 
 }

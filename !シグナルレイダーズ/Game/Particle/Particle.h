@@ -59,9 +59,7 @@ public:
 	void Update(float elapsedTime);
 	void Render(ID3D11DeviceContext1* context, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 	void Finalize();
-	void CreateBillboard(DirectX::SimpleMath::Vector3 target,
-						 DirectX::SimpleMath::Vector3 eye,
-						 DirectX::SimpleMath::Vector3 up);
+
 
 public:
 	bool IsPlaying() { return m_isPlaying; };

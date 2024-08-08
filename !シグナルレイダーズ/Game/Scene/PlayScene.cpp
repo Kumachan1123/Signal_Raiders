@@ -254,10 +254,6 @@ void PlayScene::Render()
 		{
 
 			enemy->Render(view, projection);
-			auto debugString = m_commonResources->GetDebugString();
-			debugString->AddString("posX:%f", enemy->GetPosition().x);
-			debugString->AddString("posY:%f", enemy->GetPosition().y);
-			debugString->AddString("posZ:%f", enemy->GetPosition().z);
 
 		}
 	}
