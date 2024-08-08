@@ -66,7 +66,7 @@ void Particle::Update(float elapsedTime)
 	if (m_anim == m_frameRows * m_frameCols)
 	{
 
-		m_isPlaying = false;// 再生終了
+		//m_isPlaying = false;// 再生終了
 	}
 }
 
@@ -126,14 +126,14 @@ void Particle::Render(ID3D11DeviceContext1* context, SimpleMath::Matrix view, Si
 	context->OMSetBlendState(m_States->NonPremultiplied(), nullptr, 0xFFFFFFFF);
 
 	// カリングは左周り（反時計回り）
-	context->RSSetState(m_States->CullNone());
+	context->RSSetState(m_States->CullCounterClockwise());
 
 	// テクスチャサンプラーの設定（クランプテクスチャアドレッシングモード）
 	ID3D11SamplerState* samplers[1] = { m_States->AnisotropicWrap() };
 	context->PSSetSamplers(0, 1, samplers);
 
 	//	不透明のみ描画する設定 
-	m_BatchEffect->SetAlphaFunction(D3D11_COMPARISON_NOT_EQUAL);
+	m_BatchEffect->SetAlphaFunction(D3D11_COMPARISON_GREATER);
 	m_BatchEffect->SetReferenceAlpha(0);
 
 
