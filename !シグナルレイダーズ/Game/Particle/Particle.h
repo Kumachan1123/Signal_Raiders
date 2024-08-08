@@ -34,11 +34,14 @@ private:
 
 	//	プリミティブバッチ 
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_Batch;
+
+	// フレームの頂点情報
+	DirectX::DX11::VertexPositionTexture m_vertices[4];
 	// アニメーション用
 	// 今、エフェクトを再生してるか
 	bool m_isPlaying;
 	// フレーム数
-	int anim;
+	int m_anim;
 	// アニメーションスピード
 	float m_animSpeed;
 	// アニメーションの経過時間

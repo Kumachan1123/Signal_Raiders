@@ -191,16 +191,7 @@ void PlayScene::Update(float elapsedTime)
 	}
 
 	// パーティクルの更新
-	for (auto& particle : m_particles)
-	{
-		particle->Update(elapsedTime);
-		// パーティクルが再生終了したら削除する
-		if (particle->IsPlaying() == false)
-		{
-
-
-		}
-	}
+	for (auto& particle : m_particles) particle->Update(elapsedTime);
 
 }
 
@@ -259,13 +250,14 @@ void PlayScene::Render()
 	}
 
 	// パーティクルを描画する
-	m_particles.erase(std::remove_if(m_particles.begin(), m_particles.end(), [&](const std::unique_ptr<Particle>& particle) {
-		particle->Render(context, view, projection);
-		/*	auto debugString = m_commonResources->GetDebugString();
-			debugString->AddString("posX:%f", particle->GetPosition().x);
-			debugString->AddString("posY:%f", particle->GetPosition().y);
-			debugString->AddString("posZ:%f", particle->GetPosition().z);*/
-		return particle->IsPlaying() == false; }), m_particles.end());
+	m_particles.erase(
+		std::remove_if(m_particles.begin(), m_particles.end(), [&](const std::unique_ptr<Particle>& particle)//	再生終了したパーティクルを削除する
+					   {
+						   if (!particle->IsPlaying()) return true;// 再生終了したパーティクルは削除する
+						   particle->Render(context, view, projection);// パーティクルを描画する
+						   return false;//	再生中のパーティクルは削除しない
+					   }), m_particles.end()//	削除対象のパーティクルを削除する
+						   );
 	// デバッグ情報を「DebugString」で表示する
 	auto debugString = m_commonResources->GetDebugString();
 	m_wifi->Render(debugString);

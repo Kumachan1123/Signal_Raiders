@@ -10,18 +10,20 @@ using namespace DirectX;
 
 Particle::Particle(CommonResources* resources, DirectX::SimpleMath::Vector3 PlayPos, DirectX::SimpleMath::Vector3 rot, DirectX::SimpleMath::Matrix world)
 	:m_position{ PlayPos }
-	, m_scale{ 2.0f }
+	, m_scale{ 3.0f }
 	, m_commonResources{ resources }
 	, m_Billboard{ DirectX::SimpleMath::Matrix::Identity }
 	, m_rotation{ rot }
 	, m_world{ world }
 {
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
-	anim = 0;
+	m_anim = 0;
 	m_animSpeed = 25; // フレーム切り替え速度
 	m_elapsedTime = 0.0f;
 	m_frameRows = 4; // 画像の行数
 	m_frameCols = 5; // 画像の列数
+
+
 	// エフェクトの作成 
 	m_BatchEffect = std::make_unique<AlphaTestEffect>(device);
 	m_BatchEffect->SetAlphaFunction(D3D11_COMPARISON_GREATER);
@@ -58,13 +60,13 @@ void Particle::Update(float elapsedTime)
 	m_elapsedTime += elapsedTime * m_animSpeed;
 	if (m_elapsedTime >= 1.0f)
 	{
-		anim++;
+		m_anim++;
 		m_elapsedTime = 0.0f;
 	}
-	if (anim >= m_frameRows * m_frameCols)
+	if (m_anim == m_frameRows * m_frameCols)
 	{
-		anim = 0;
-		//	m_isPlaying = false;// 再生終了
+
+		m_isPlaying = false;// 再生終了
 	}
 }
 
@@ -73,35 +75,38 @@ void Particle::Render(ID3D11DeviceContext1* context, SimpleMath::Matrix view, Si
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 
-
-	int currentRow = anim / m_frameCols;
-	int currentCol = anim % m_frameCols;
+	int currentRow = m_anim / m_frameCols;
+	int currentCol = m_anim % m_frameCols;
 
 	float uMin = static_cast<float>(currentCol) / m_frameCols;
 	float vMin = static_cast<float>(currentRow) / m_frameRows;
 	float uMax = static_cast<float>(currentCol + 1) / m_frameCols;
 	float vMax = static_cast<float>(currentRow + 1) / m_frameRows;
 
-	// プリミティブバッチ作成
-	m_Batch = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(context);
 	// 頂点情報
 	// 頂点情報（板ポリゴンの頂点）を上下反転
-	VertexPositionTexture Vertices[4] =
-	{
-		VertexPositionTexture(SimpleMath::Vector3(-1, 1,0), 	 SimpleMath::Vector2(uMax, vMin)),
-		VertexPositionTexture(SimpleMath::Vector3(1 , 1,0), 	 SimpleMath::Vector2(uMax, vMax)),
-		VertexPositionTexture(SimpleMath::Vector3(1 , -1,0),	 SimpleMath::Vector2(uMin, vMax)),
-		VertexPositionTexture(SimpleMath::Vector3(-1, -1,0),	 SimpleMath::Vector2(uMin, vMin)),
-	};
+
+	m_vertices[0] = { VertexPositionTexture(SimpleMath::Vector3(-1, 1, 0), SimpleMath::Vector2(uMax, vMin)) };
+	m_vertices[1] = { VertexPositionTexture(SimpleMath::Vector3(1, 1, 0), SimpleMath::Vector2(uMax, vMax)) };
+	m_vertices[2] = { VertexPositionTexture(SimpleMath::Vector3(1, -1, 0), SimpleMath::Vector2(uMin, vMax)) };
+	m_vertices[3] = { VertexPositionTexture(SimpleMath::Vector3(-1, -1, 0), SimpleMath::Vector2(uMin, vMin)) };
+
+
+
+	// プリミティブバッチ作成
+	m_Batch = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(context);
+
 	VertexPositionTexture billboardVertex[4];
 	for (int i = 0; i < 4; i++)
 	{
-		billboardVertex[i] = Vertices[i];
+		billboardVertex[i] = m_vertices[i];
 
 		// 大きさを変える場合は最初にかける
 		billboardVertex[i].position.x *= m_scale;
 		billboardVertex[i].position.y *= m_scale;
 
+		// 高さをちょっと下げる
+		billboardVertex[i].position.y -= 2.0f;
 
 	}
 
@@ -144,7 +149,6 @@ void Particle::Render(ID3D11DeviceContext1* context, SimpleMath::Matrix view, Si
 	m_Batch->DrawQuad(billboardVertex[0], billboardVertex[1], billboardVertex[2], billboardVertex[3]);
 	m_Batch->End();
 
-	auto debugString = m_commonResources->GetDebugString();
 
 }
 
