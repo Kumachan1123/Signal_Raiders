@@ -75,7 +75,7 @@ void PlayerController::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardS
 							  DirectX::SimpleMath::Vector3& Direction, float elapsedTime)
 {
 	MoveStop();
-	ShowCursor(FALSE);//カーソルを見えないようにする
+
 	// マウスの現在の位置を取得
 	POINT point;
 	GetCursorPos(&point);

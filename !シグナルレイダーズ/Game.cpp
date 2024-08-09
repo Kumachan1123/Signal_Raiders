@@ -87,6 +87,7 @@ void Game::Initialize(HWND window, int width, int height)
 	m_sceneManager->Initialize(m_commonResources.get());
 
 	// ★追記ココまで↑↑↑★
+	ShowCursor(FALSE);//カーソルを見えないようにする
 }
 
 #pragma region Frame Update

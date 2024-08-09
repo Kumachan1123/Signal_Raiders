@@ -28,12 +28,21 @@ Particle::Particle(CommonResources* resources, ParticleType type, DirectX::Simpl
 	const wchar_t* texturePath = nullptr;
 	switch (m_type)
 	{
-		case ParticleType::ENEMY_DEAD:
+		case ParticleType::ENEMY_DEAD:// 敵死亡エフェクト
 			texturePath = L"Resources/Textures/effect.png";
 			m_frameRows = 4; // 画像の行数
 			m_frameCols = 5; // 画像の列数
 			break;
-
+		case ParticleType::ENEMY_HIT:// 敵ヒットエフェクト
+			texturePath = L"Resources/Textures/hit.png";
+			m_frameRows = 2; // 画像の行数
+			m_frameCols = 4; // 画像の列数
+			break;
+		case ParticleType::ENEMY_SPAWN:// 敵スポーンエフェクト
+			texturePath = L"Resources/Textures/effect.png";
+			m_frameRows = 4; // 画像の行数
+			m_frameCols = 5; // 画像の列数
+			break;
 
 	}
 

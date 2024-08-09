@@ -324,7 +324,10 @@ void PlayScene::UpdateBullets(float elapsedTime)
 					isHit = true;
 					m_count++;//debug
 					enemy->SetEnemyHP(enemy->GetHP() - (*it)->Damage());
-
+					m_particles.push_back(std::make_unique<Particle>(m_commonResources,
+																	 Particle::ParticleType::ENEMY_HIT,
+																	 enemy->GetPosition(),
+																	 enemy->GetMatrix()));
 					enemy->SetHitToPlayerBullet(true);
 					break;
 				}
@@ -396,8 +399,8 @@ void PlayScene::UpdateEnemies(float elapsedTime)
 	{
 		if ((*it)->GetEnemyIsDead())
 		{
-			// ここで削除時の特別な処理を行う
-			// 敵の座標を渡してえげつないエフェクトを再生
+
+			// 敵の座標を渡して爆破エフェクトを再生
 			m_particles.push_back(std::make_unique<Particle>(m_commonResources,
 															 Particle::ParticleType::ENEMY_DEAD,
 															 (*it)->GetPosition(),
