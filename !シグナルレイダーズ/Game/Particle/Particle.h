@@ -24,10 +24,8 @@ private:
 
 	DirectX::SimpleMath::Vector3 m_position;// エフェクトを再生する座標
 	float m_scale;
-	DirectX::SimpleMath::Vector3 m_rotation;
-	DirectX::SimpleMath::Matrix m_Billboard;
-	DirectX::SimpleMath::Vector3 m_cameraPosition;
-	DirectX::SimpleMath::Vector3 m_cameraTarget;
+
+
 	// ワールド行列
 	DirectX::SimpleMath::Matrix m_world;
 	//	入力レイアウト 

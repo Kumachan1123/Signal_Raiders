@@ -13,13 +13,18 @@ Particle::Particle(CommonResources* resources, ParticleType type, DirectX::Simpl
 	, m_type{ type }
 	, m_scale{ 3.0f }
 	, m_commonResources{ resources }
-	, m_Billboard{ DirectX::SimpleMath::Matrix::Identity }
 	, m_world{ world }
+	, m_isPlaying{ true }
+	, m_anim{ 0 }
+	, m_animSpeed{ 25 }
+	, m_elapsedTime{ 0.0f }
+	, m_frameRows{}
+	, m_frameCols{}
+	, m_vertices{}
+
 {
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
-	m_anim = 0;
-	m_animSpeed = 25; // ƒtƒŒ[ƒ€Ø‚è‘Ö‚¦‘¬“x
-	m_elapsedTime = 0.0f;
+
 	const wchar_t* texturePath = nullptr;
 	switch (m_type)
 	{

@@ -15,7 +15,7 @@ class EnemyAttack;
 class EnemyIdling;
 // コンストラクタ
 EnemyAI::EnemyAI()
-	: m_currentState(nullptr), m_rotationSpeed(0.5f), m_attackCooldown(0.0f)
+	: m_currentState(nullptr), m_rotationSpeed(0.5f), m_attackCooldown(0.0f), m_enemyAttack(nullptr), m_enemyIdling(nullptr), m_enemyState(IState::EnemyState::IDLING)
 {
 	m_enemyAttack = std::make_unique<EnemyAttack>(this);
 	m_enemyIdling = std::make_unique<EnemyIdling>(this);
