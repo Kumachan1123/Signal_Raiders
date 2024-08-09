@@ -62,10 +62,10 @@ void Stage1::Render(DirectX::SimpleMath::Matrix world, DirectX::SimpleMath::Matr
 	//	頂点情報（板ポリゴンの頂点） 
 	VertexPositionTexture vertex[4] =
 	{//												座標					UV座標（ふつうは0～1の間で指定。超えた場合は繰り返す
-		VertexPositionTexture(SimpleMath::Vector3(50.0f, 0.00f, 50.0f),	SimpleMath::Vector2(.0f, 0.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(-50.0f, 0.0f, 50.0f),	SimpleMath::Vector2(10.0f, .0f)),
-		VertexPositionTexture(SimpleMath::Vector3(-50.0f, 0.f, -50.0f),	SimpleMath::Vector2(10.0f,10.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(50.0f,0.f, -50.0f),	SimpleMath::Vector2(0.0f, 10.0f)),
+		VertexPositionTexture(SimpleMath::Vector3(100.0f, 0.00f, 100.0f),	SimpleMath::Vector2(.0f, 0.0f)),
+		VertexPositionTexture(SimpleMath::Vector3(-100.0f, 0.0f, 100.0f),	SimpleMath::Vector2(50.0f, .0f)),
+		VertexPositionTexture(SimpleMath::Vector3(-100.0f, 0.f, -100.0f),	SimpleMath::Vector2(50.0f,50.0f)),
+		VertexPositionTexture(SimpleMath::Vector3(100.0f,0.f, -100.0f),	SimpleMath::Vector2(0.0f, 50.0f)),
 	};
 
 

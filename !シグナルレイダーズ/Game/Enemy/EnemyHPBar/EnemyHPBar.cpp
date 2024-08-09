@@ -21,6 +21,7 @@
 #include "Game/Template/Template.h"
 // コンストラクタ
 EnemyHPBar::EnemyHPBar()
+	: m_maxHP(100), m_currentHP(100), m_displayedHP(100), m_lerpSpeed(5.0f), m_isDead(false)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;

@@ -46,7 +46,10 @@ PlayScene::PlayScene()
 	m_particles{},
 	m_isFade{},
 	m_volume{},
-	m_counter{}
+	m_counter{},
+	m_enemyBornTimer{ 0.0f },
+	m_enemyBornInterval{ 0.5f },
+	m_enemyIndex{ 0 }
 {
 }
 //---------------------------------------------------------
@@ -171,24 +174,11 @@ void PlayScene::Update(float elapsedTime)
 	{
 		m_isBullet = false;
 	}
-
-	UpdateBullets(elapsedTime);
-	UpdateEnemies(elapsedTime);
 	m_wifi->Update(elapsedTime);
-	if (!m_isEnemyBorn && m_wifi->GetPreWifiLevels().empty())m_isEnemyBorn = true;//生成可能にする
-	// 生成可能なら
-	if (m_isEnemyBorn && !m_isBorned)
-	{
-		for (int it = 0; it < m_wifi->GetWifiLevels().size(); it++)// m_wifi->GetWifiLevels().size()
-		{
-			auto enemy = std::make_unique<Enemy>();// 敵を生成
-			enemy->Initialize(m_commonResources, m_wifi->GetWifiLevels()[it]);  // 初期化
-			m_enemy.push_back(std::move(enemy));   // 敵配列に登録
-		}
-		// 生成不可能にする
-		m_isEnemyBorn = false;
-		m_isBorned = true;
-	}
+	UpdateBullets(elapsedTime);
+
+
+	UpdateEnemies(elapsedTime);
 
 	// パーティクルの更新
 	for (auto& particle : m_particles) particle->Update(elapsedTime);
@@ -239,6 +229,7 @@ void PlayScene::Render()
 	// 弾を描画する
 	for (const auto& bullet : m_playerBullets)bullet->Render(view, projection);
 
+	// 敵を描画する
 	if (m_enemy.size() > 0)
 	{
 		for (const auto& enemy : m_enemy)
@@ -347,14 +338,37 @@ void PlayScene::UpdateBullets(float elapsedTime)
 
 void PlayScene::UpdateEnemies(float elapsedTime)
 {
-	if (m_enemy.size() <= 0 && m_isBorned)
+	// 敵が全滅したらシーンを変更する・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+	if (m_enemy.size() <= 0 && m_isBorned)m_isChangeScene = true;// シーンチェンジ
+	// 敵生成・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+	// 敵生成タイマーを更新
+	m_enemyBornTimer += elapsedTime;
+	if (!m_isEnemyBorn && m_wifi->GetPreWifiLevels().empty())m_isEnemyBorn = true;//生成可能にする
+	// 生成可能なら
+	if (m_isEnemyBorn && !m_isBorned && m_enemyIndex < m_wifi->GetWifiLevels().size())
 	{
-		//m_isBorned = false;
-		// シーンチェンジ
-		m_isChangeScene = true;
-	}
+		if (m_enemyBornTimer >= m_enemyBornInterval)// 一定時間経過したら
+		{
+			// 敵を生成する
+			auto enemy = std::make_unique<Enemy>();
+			enemy->Initialize(m_commonResources, m_wifi->GetWifiLevels()[m_enemyIndex]);
 
-	// 敵同士の当たり判定
+
+			m_enemy.push_back(std::move(enemy));
+			// タイマーをリセットし、次のWi-Fiレベルのインデックスに進む
+			m_enemyBornTimer = 0.0f;
+			m_enemyIndex++;
+		}
+	}
+	// 生成完了したら
+	if (m_enemyIndex >= m_wifi->GetWifiLevels().size())
+	{
+		m_enemyBornTimer = 0.0f;
+		// 生成不可能にする
+		m_isEnemyBorn = false;
+		m_isBorned = true;
+	}
+	// 敵同士の当たり判定・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
 	// 敵同士が重ならないようにする
 	for (size_t i = 0; i < m_enemy.size(); ++i)
 	{
@@ -365,31 +379,34 @@ void PlayScene::UpdateEnemies(float elapsedTime)
 			m_enemy[j]->SetHitToOtherEnemy(hit);
 			if (hit)
 			{
-				m_enemy[i]->CheckHitOtherEnemy(m_enemy[i]->GetBoundingSphere(),
-											   m_enemy[j]->GetBoundingSphere());
+				m_enemy[i]->CheckHitOtherEnemy(m_enemy[i]->GetBoundingSphere(), m_enemy[j]->GetBoundingSphere());
 			}
 		}
 	}
 
-	// 敵とプレイヤーの一定範囲との当たり判定
+	// 敵とプレイヤーの一定範囲との当たり判定・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
 	for (auto& enemy : m_enemy)
 	{
 		m_isHitPlayerToEnemy = false;
+		// 敵を更新
 		enemy->Update(elapsedTime, m_playerController->GetPlayerPosition());
 
+		// 敵の弾がプレイヤーに当たったら
 		bool hit = enemy->GetBulletHitToPlayer();
 		if (hit)
 		{
 			enemy->SetPlayerHP(m_playerHP);
 			enemy->SetBulletHitToPlayer(false);
 		}
-
+		// 敵がプレイヤーに当たったら
 		if (enemy->GetBoundingSphere().Intersects(m_inPlayerArea))	m_isHitPlayerToEnemy = true;
 
-
+		// プレイヤーの弾が敵に当たったら
 		enemy->SetHitToPlayer(m_isHitPlayerToEnemy);
 		enemy->SetPlayerBoundingSphere(m_PlayerSphere);
 	}
+
+	// 敵の削除・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
 
 	// 削除対象を保持するベクター
 	std::vector<std::unique_ptr<Enemy>> enemiesToRemove;

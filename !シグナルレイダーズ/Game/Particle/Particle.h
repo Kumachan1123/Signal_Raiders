@@ -61,6 +61,8 @@ private:
 	int m_frameRows;
 	int m_frameCols;
 
+	// Particle‚É‚æ‚Á‚Ä‚‚³‚ğ•Ï‚¦‚é
+	float m_offSetY;
 
 
 public:

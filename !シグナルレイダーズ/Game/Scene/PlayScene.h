@@ -95,6 +95,12 @@ private:
 	bool m_isEnemyBorn = false;
 	// “G¶¬Ï‚İ
 	bool m_isBorned = false;
+	// “G‚Ì”
+	int m_enemyIndex = 0;
+	// “G‚Ì¶¬ŠÔŠu
+	float m_enemyBornInterval = 0.0f;
+	// “G‚Ì¶¬ƒ^ƒCƒ~ƒ“ƒO‚ğŠÇ—
+	float m_enemyBornTimer = 0.0f;
 	// ’e¶¬ƒtƒ‰ƒO
 	bool m_isBullet = false;
 	// ’e¶¬Ï‚İ

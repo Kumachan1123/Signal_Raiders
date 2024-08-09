@@ -72,7 +72,7 @@ public:
 	DirectX::BoundingSphere& GetBoundingSphere() { return m_enemyBoundingSphere; }
 	DirectX::BoundingSphere& GetBulletBoundingSphere() { return m_enemyBulletBS; }
 	DirectX::BoundingSphere& GetPlayerBoundingSphere() { return m_playerBS; }
-	DirectX::SimpleMath::Matrix GetMatrix() { return m_matrix; }
+	DirectX::SimpleMath::Matrix GetMatrix() const { return m_matrix; }
 	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
 	DirectX::SimpleMath::Vector3 GetVelocity() const { return m_velocity; }
 	DirectX::SimpleMath::Vector3 GetAccele() const { return m_accele; }

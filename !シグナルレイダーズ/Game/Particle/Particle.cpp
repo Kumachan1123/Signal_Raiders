@@ -16,11 +16,12 @@ Particle::Particle(CommonResources* resources, ParticleType type, DirectX::Simpl
 	, m_world{ world }
 	, m_isPlaying{ true }
 	, m_anim{ 0 }
-	, m_animSpeed{ 25 }
+	, m_animSpeed{ 40 }
 	, m_elapsedTime{ 0.0f }
 	, m_frameRows{}
 	, m_frameCols{}
 	, m_vertices{}
+	, m_offSetY{ 0.0f }
 
 {
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
@@ -32,16 +33,19 @@ Particle::Particle(CommonResources* resources, ParticleType type, DirectX::Simpl
 			texturePath = L"Resources/Textures/effect.png";
 			m_frameRows = 4; // 画像の行数
 			m_frameCols = 5; // 画像の列数
+			m_offSetY = 2.0f;// 高さを変える
 			break;
 		case ParticleType::ENEMY_HIT:// 敵ヒットエフェクト
 			texturePath = L"Resources/Textures/hit.png";
 			m_frameRows = 2; // 画像の行数
 			m_frameCols = 4; // 画像の列数
+			m_offSetY = 2.0f;// 高さを変える
 			break;
 		case ParticleType::ENEMY_SPAWN:// 敵スポーンエフェクト
-			texturePath = L"Resources/Textures/effect.png";
+			texturePath = L"Resources/Textures/Born.png";
 			m_frameRows = 4; // 画像の行数
-			m_frameCols = 5; // 画像の列数
+			m_frameCols = 4; // 画像の列数
+			m_offSetY = 2.0f;// 高さを変える
 			break;
 
 	}
@@ -110,13 +114,10 @@ void Particle::Render(ID3D11DeviceContext1* context, SimpleMath::Matrix view, Si
 
 	// 頂点情報
 	// 頂点情報（板ポリゴンの頂点）を上下反転
-
-	m_vertices[0] = { VertexPositionTexture(SimpleMath::Vector3(-1, 1, 0), SimpleMath::Vector2(uMax, vMin)) };
-	m_vertices[1] = { VertexPositionTexture(SimpleMath::Vector3(1, 1, 0), SimpleMath::Vector2(uMax, vMax)) };
-	m_vertices[2] = { VertexPositionTexture(SimpleMath::Vector3(1, -1, 0), SimpleMath::Vector2(uMin, vMax)) };
-	m_vertices[3] = { VertexPositionTexture(SimpleMath::Vector3(-1, -1, 0), SimpleMath::Vector2(uMin, vMin)) };
-
-
+	m_vertices[0] = { VertexPositionTexture(SimpleMath::Vector3(-1, 1, 0), SimpleMath::Vector2(uMin, vMax)) };
+	m_vertices[1] = { VertexPositionTexture(SimpleMath::Vector3(1, 1, 0), SimpleMath::Vector2(uMin, vMin)) };
+	m_vertices[2] = { VertexPositionTexture(SimpleMath::Vector3(1, -1, 0), SimpleMath::Vector2(uMax, vMin)) };
+	m_vertices[3] = { VertexPositionTexture(SimpleMath::Vector3(-1, -1, 0), SimpleMath::Vector2(uMax, vMax)) };
 
 	// プリミティブバッチ作成
 	m_Batch = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(context);
@@ -131,7 +132,7 @@ void Particle::Render(ID3D11DeviceContext1* context, SimpleMath::Matrix view, Si
 		billboardVertex[i].position.y *= m_scale;
 
 		// 高さをちょっと下げる
-		billboardVertex[i].position.y -= 2.0f;
+		billboardVertex[i].position.y -= m_offSetY;
 
 	}
 
@@ -140,6 +141,7 @@ void Particle::Render(ID3D11DeviceContext1* context, SimpleMath::Matrix view, Si
 	billboardMatrix._41 = 0.0f;
 	billboardMatrix._42 = 0.0f;
 	billboardMatrix._43 = 0.0f;
+
 
 	// ビルボードをアフィン変換
 	Matrix worldBillboard = m_world * billboardMatrix;

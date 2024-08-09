@@ -27,6 +27,32 @@ Enemy::Enemy()
 	, m_currentHP{}
 	, m_attackCooldown{}
 	, m_enemyModel{}
+	, m_enemyAI{}
+	, m_HPBar{}
+	, m_bullets{}
+	, m_depthStencilState_Shadow{}
+	, m_pixelShader{}
+	, m_depthStencilState{}
+	, m_blendState{}
+	, m_outlinePS{}
+	, m_position{}
+	, m_velocity{}
+	, m_rotate{}
+	, m_accele{}
+	, m_nowScale{}
+	, m_startScale{}
+	, m_endScale{}
+	, m_rotation{}
+	, m_enemyBoundingSphereToPlayer{}
+	, m_enemyWBoundingSphere{}
+	, m_enemyBulletBS{}
+	, m_playerBS{}
+	, m_matrix{}
+	, m_isDead{}
+	, m_isHit{}
+	, m_isHitToOtherEnemy{}
+	, m_isHitToPlayerBullet{}
+	, m_isBullethit{}
 {}
 // デストラクタ
 Enemy::~Enemy() {}
@@ -113,6 +139,13 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 	// 境界球の初期化
 	m_enemyBoundingSphere.Center = m_position;
 	m_enemyBoundingSphere.Radius = 1.5f;
+	// マトリクスの初期化
+
+	/*m_matrix = Matrix::CreateScale(1.0f);
+	m_matrix *= Matrix::CreateTranslation(m_position);
+	m_matrix *= Matrix::CreateRotationY(0.0f);*/
+
+
 }
 // 描画
 void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
