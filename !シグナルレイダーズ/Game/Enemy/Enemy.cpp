@@ -139,12 +139,6 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 	// 境界球の初期化
 	m_enemyBoundingSphere.Center = m_position;
 	m_enemyBoundingSphere.Radius = 1.5f;
-	// マトリクスの初期化
-
-	/*m_matrix = Matrix::CreateScale(1.0f);
-	m_matrix *= Matrix::CreateTranslation(m_position);
-	m_matrix *= Matrix::CreateRotationY(0.0f);*/
-
 
 }
 // 描画

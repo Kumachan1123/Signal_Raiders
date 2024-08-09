@@ -154,6 +154,12 @@ void PlayerController::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardS
 	// 地面の高さに制限
 	if (m_position.y <= 2.0f) m_position.y = 2.0f;
 
+	// 地面の面積に制限
+	if (m_position.x <= -100.0f) m_position.x = -100.0f;
+	if (m_position.x >= 100.0f) m_position.x = 100.0f;
+	if (m_position.z <= -100.0f) m_position.z = -100.0f;
+	if (m_position.z >= 100.0f) m_position.z = 100.0f;
+
 	// マウス位置を中央に戻す
 	SetCursorPos(m_point.x, m_point.y);
 }

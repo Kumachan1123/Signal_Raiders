@@ -1,3 +1,8 @@
+/*
+	@file	Particle.cpp
+	@brief	パーティクルクラス
+	作成者：くまち
+*/
 #include "pch.h"
 #include <VertexTypes.h> 
 #include <WICTextureLoader.h> 

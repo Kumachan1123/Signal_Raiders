@@ -198,7 +198,6 @@ void PlayScene::Render()
 	Matrix view = m_camera->GetViewMatrix();
 	Matrix projection = m_camera->GetProjectionMatrix();
 	Matrix skyWorld = Matrix::CreateRotationY(XMConvertToRadians(m_angle));
-	Matrix stageWorld = Matrix::CreateScale(10);
 	skyWorld *= Matrix::CreateScale(10);
 #ifdef _DEBUG
 	// 格子床を描画する
@@ -207,7 +206,7 @@ void PlayScene::Render()
 	// スカイボックス描画
 	m_skybox->Render(view, projection, skyWorld, m_playerController->GetPlayerPosition());
 	// 地面描画
-	m_stage1->Render(stageWorld, view, projection);
+	m_stage1->Render(view, projection);
 	// 各パラメータを設定する
 	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
 	context->OMSetDepthStencilState(states->DepthRead(), 0);
@@ -241,14 +240,15 @@ void PlayScene::Render()
 	}
 
 	// パーティクルを描画する
-	m_particles.erase(
-		std::remove_if(m_particles.begin(), m_particles.end(), [&](const std::unique_ptr<Particle>& particle)//	再生終了したパーティクルを削除する
-					   {
-						   if (!particle->IsPlaying()) return true;// 再生終了したパーティクルは削除する
-						   particle->Render(context, view, projection);// パーティクルを描画する
-						   return false;//	再生中のパーティクルは削除しない
-					   }), m_particles.end()//	削除対象のパーティクルを削除する
-						   );
+	m_particles.erase
+	(std::remove_if(m_particles.begin(), m_particles.end(), [&](const std::unique_ptr<Particle>& particle)//	再生終了したパーティクルを削除する
+					{
+						if (!particle->IsPlaying()) return true;// 再生終了したパーティクルは削除する
+						particle->Render(context, view, projection);// パーティクルを描画する
+						return false;//	再生中のパーティクルは削除しない
+					}),
+	 m_particles.end()//	削除対象のパーティクルを削除する
+	);
 	// デバッグ情報を「DebugString」で表示する
 	auto debugString = m_commonResources->GetDebugString();
 	m_wifi->Render(debugString);
@@ -377,6 +377,7 @@ void PlayScene::UpdateEnemies(float elapsedTime)
 			bool hit = m_enemy[i]->GetBoundingSphere().Intersects(m_enemy[j]->GetBoundingSphere());
 			m_enemy[i]->SetHitToOtherEnemy(hit);
 			m_enemy[j]->SetHitToOtherEnemy(hit);
+
 			if (hit)
 			{
 				m_enemy[i]->CheckHitOtherEnemy(m_enemy[i]->GetBoundingSphere(), m_enemy[j]->GetBoundingSphere());
@@ -401,7 +402,7 @@ void PlayScene::UpdateEnemies(float elapsedTime)
 		// 敵がプレイヤーに当たったら
 		if (enemy->GetBoundingSphere().Intersects(m_inPlayerArea))	m_isHitPlayerToEnemy = true;
 
-		// プレイヤーの弾が敵に当たったら
+		// プレイヤーと敵の当たり判定を設定
 		enemy->SetHitToPlayer(m_isHitPlayerToEnemy);
 		enemy->SetPlayerBoundingSphere(m_PlayerSphere);
 	}
@@ -414,6 +415,7 @@ void PlayScene::UpdateEnemies(float elapsedTime)
 	// 削除対象を収集する
 	for (auto it = m_enemy.begin(); it != m_enemy.end(); )
 	{
+		// 敵が死んでいたら
 		if ((*it)->GetEnemyIsDead())
 		{
 

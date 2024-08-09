@@ -40,17 +40,13 @@ class FPS_Camera;
 class PlayScene final :
 	public IScene
 {
-public:
-	// Wi-Fiの強さの可変長配列を渡す
-	//std::vector<int> GetWifiLevels()const { return m_wifilevels; }
+
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
-
-	// デバッグカメラ
-	//std::unique_ptr<mylib::DebugCamera> m_debugCamera;
 	// FPSカメラ
 	std::unique_ptr<FPS_Camera> m_camera;
+	// マウス
 	std::unique_ptr<DirectX::Mouse> m_mouse;
 	// プレイヤーコントローラー
 	std::unique_ptr<PlayerController>m_playerController;

@@ -4,6 +4,13 @@
 
 
 Stage1::Stage1()
+	: m_commonResources(nullptr)
+	, m_BatchEffect(nullptr)
+	, m_Batch(nullptr)
+	, m_InputLayout(nullptr)
+	, m_States(nullptr)
+	, m_Texture(nullptr)
+	, m_depthStencilState_Floor(nullptr)
 {
 
 }
@@ -48,7 +55,7 @@ void Stage1::Update(float elapsedTime)
 	UNREFERENCED_PARAMETER(elapsedTime);
 
 }
-void Stage1::Render(DirectX::SimpleMath::Matrix world, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void Stage1::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
