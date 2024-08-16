@@ -43,9 +43,9 @@ void PlayerHP::Initialize(DX::DeviceResources* pDR, int width, int height)
 	m_baseTexturePath = L"Resources/Textures/Hearts.png";
 
 	Add(L"Resources/Textures/HeartsFrame.png"
-		, SimpleMath::Vector2(75, 75)
-		, SimpleMath::Vector2(1.5f, 1.5f)
-		, kumachi::ANCHOR::MIDDLE_CENTER);
+		, SimpleMath::Vector2(0, 0)
+		, SimpleMath::Vector2(.50f, .50f)
+		, kumachi::ANCHOR::TOP_LEFT);
 }
 
 void PlayerHP::Update(float PlayerHP)
@@ -55,18 +55,8 @@ void PlayerHP::Update(float PlayerHP)
 	m_tracker.Update(keystate);
 	float ratio = m_gauge->GetRenderRatio();
 
-	float hp = PlayerHP * 0.0125f;
-	/*if (m_tracker.pressed.Right)
-	{
-		ratio += 0.01f;
-		ratio = std::min(hp, ratio);
-	}
-	if (m_tracker.pressed.Left)
-	{
-		ratio -= 0.01f;
-		ratio = std::max(0.1f, ratio);
-	}*/
-	hp = std::max(-0.1f, hp);
+	float hp = PlayerHP * 0.01f;
+	hp = std::max(0.f, hp);
 	m_gauge->SetRenderRatio(hp);
 
 }
@@ -96,7 +86,7 @@ void PlayerHP::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, D
 					, scale
 					, anchor);
 	m_gauge->SetWindowSize(m_windowWidth, m_windowHeight);
-	m_gauge->SetRenderRatioOffset(0.3f);
+	m_gauge->SetRenderRatioOffset(0);
 
 	m_frame = std::make_unique<PlayerUI>();
 	m_frame->Create(m_pDR

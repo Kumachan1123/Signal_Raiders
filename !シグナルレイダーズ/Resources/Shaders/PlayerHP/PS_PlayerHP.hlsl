@@ -16,7 +16,6 @@ float4 main(PS_INPUT input) : SV_TARGET
 	//	どのような値を「smoothValue」に代入すればいいだろう？
 	//	ヒント：一つの値を代入すればOK。計算式まで書く必要性なし！
     float smoothValue = renderRatio;
-    output.a *= lerp(1.0f, 0.0f, smoothstep(smoothValue, smoothValue + 0.3f, input.tex.x));
-	
+    output.a *= lerp(1.0f, 0.0f, smoothstep(smoothValue, smoothValue + 0.00000001f, input.tex.x));
     return output;
 }

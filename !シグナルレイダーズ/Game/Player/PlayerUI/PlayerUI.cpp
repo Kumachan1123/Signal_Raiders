@@ -41,7 +41,7 @@ PlayerUI::PlayerUI()
 	, m_scale(SimpleMath::Vector2::One)
 	, m_position(SimpleMath::Vector2::Zero)
 	, m_anchor(kumachi::ANCHOR::TOP_LEFT)
-	, m_renderRatio(1.1f)
+	, m_renderRatio(1.0f)
 	, m_renderRatioOffset(0.0f)
 {
 
