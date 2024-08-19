@@ -1,9 +1,9 @@
 ﻿/*
-	@file	ResultScene.cpp
-	@brief	リザルトシーンクラス
+	@file	ClearScene.cpp
+	@brief	クリアシーンクラス
 */
 #include "pch.h"
-#include "ResultScene.h"
+#include "ClearScene.h"
 #include "Game/Screen.h"
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
@@ -20,7 +20,7 @@ using namespace DirectX::SimpleMath;
 //---------------------------------------------------------
 // コンストラクタ
 //---------------------------------------------------------
-ResultScene::ResultScene()
+ClearScene::ClearScene()
 	:
 	m_commonResources{},
 	m_spriteBatch{},
@@ -44,7 +44,7 @@ ResultScene::ResultScene()
 //---------------------------------------------------------
 // デストラクタ
 //---------------------------------------------------------
-ResultScene::~ResultScene()
+ClearScene::~ClearScene()
 {
 	// do nothing.
 }
@@ -52,7 +52,7 @@ ResultScene::~ResultScene()
 //---------------------------------------------------------
 // 初期化する
 //---------------------------------------------------------
-void ResultScene::Initialize(CommonResources* resources)
+void ClearScene::Initialize(CommonResources* resources)
 {
 	assert(resources);
 	m_commonResources = resources;
@@ -141,7 +141,7 @@ void ResultScene::Initialize(CommonResources* resources)
 //---------------------------------------------------------
 // 更新する
 //---------------------------------------------------------
-void ResultScene::Update(float elapsedTime)
+void ClearScene::Update(float elapsedTime)
 {
 	// 宣言をしたが、実際は使用していない変数
 	UNREFERENCED_PARAMETER(elapsedTime);
@@ -173,7 +173,7 @@ void ResultScene::Update(float elapsedTime)
 //---------------------------------------------------------
 // 描画する
 //---------------------------------------------------------
-void ResultScene::Render()
+void ClearScene::Render()
 {
 	auto states = m_commonResources->GetCommonStates();
 
@@ -227,7 +227,7 @@ void ResultScene::Render()
 //---------------------------------------------------------
 // 後始末する
 //---------------------------------------------------------
-void ResultScene::Finalize()
+void ClearScene::Finalize()
 {
 	// do nothing.
 		// Sound用のオブジェクトを解放する
@@ -239,7 +239,7 @@ void ResultScene::Finalize()
 //---------------------------------------------------------
 // 次のシーンIDを取得する
 //---------------------------------------------------------
-IScene::SceneID ResultScene::GetNextSceneID() const
+IScene::SceneID ClearScene::GetNextSceneID() const
 {
 	// シーン変更がある場合
 	if (m_isChangeScene)
@@ -255,7 +255,7 @@ IScene::SceneID ResultScene::GetNextSceneID() const
 //---------------------------------------------------------
 // FMODのシステムの初期化と音声データのロード
 //---------------------------------------------------------
-void ResultScene::InitializeFMOD()
+void ClearScene::InitializeFMOD()
 {
 	// システムをインスタンス化する
 	FMOD_RESULT result = FMOD::System_Create(&m_system);

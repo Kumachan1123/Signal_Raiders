@@ -1,6 +1,6 @@
 /*
-	@file	TitleScene.h
-	@brief	タイトルシーンクラス
+	@file	ClearScene.h
+	@brief	クリアシーンクラス
 */
 #pragma once
 #include "IScene.h"
@@ -20,7 +20,7 @@ namespace FMOD
 	class Sound;
 	class Channel;
 }
-class ResultScene final :
+class ClearScene final :
 	public IScene
 {
 private:
@@ -58,8 +58,8 @@ private:
 	float m_size = 0.0f;// 画像サイズ
 	float m_cleatrSize = 0.0f;
 public:
-	ResultScene();
-	~ResultScene() override;
+	ClearScene();
+	~ClearScene() override;
 
 	void Initialize(CommonResources* resources) override;
 	void Update(float elapsedTime)override;

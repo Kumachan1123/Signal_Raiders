@@ -6,7 +6,8 @@
 #include "SceneManager.h"
 #include "TitleScene.h"
 #include "PlayScene.h"
-#include "ResultScene.h"
+#include "ClearScene.h"
+#include "GameOverScene.h"
 #include "Game/Screen.h"
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
@@ -101,8 +102,11 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 		case IScene::SceneID::PLAY:
 			m_currentScene = std::make_unique<PlayScene>();
 			break;
-		case IScene::SceneID::RESULT:
-			m_currentScene = std::make_unique<ResultScene>();
+		case IScene::SceneID::CLEAR:
+			m_currentScene = std::make_unique<ClearScene>();
+			break;
+		case IScene::SceneID::GAMEOVER:
+			m_currentScene = std::make_unique<GameOverScene>();
 			break;
 		default:
 			assert(!"SceneManager::CreateScene::ÉVÅ[ÉìñºÇ™ë∂ç›ÇµÇ‹ÇπÇÒÅI");

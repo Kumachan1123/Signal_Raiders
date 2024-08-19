@@ -16,7 +16,8 @@ public:
 		NONE,
 		TITLE,
 		PLAY,
-		RESULT
+		CLEAR,
+		GAMEOVER
 	};
 
 

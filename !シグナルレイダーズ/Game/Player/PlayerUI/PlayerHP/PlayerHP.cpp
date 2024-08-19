@@ -53,7 +53,6 @@ void PlayerHP::Update(float PlayerHP)
 
 	auto keystate = Keyboard::Get().GetState();
 	m_tracker.Update(keystate);
-	float ratio = m_gauge->GetRenderRatio();
 
 	float hp = PlayerHP * 0.01f;
 	hp = std::max(0.f, hp);

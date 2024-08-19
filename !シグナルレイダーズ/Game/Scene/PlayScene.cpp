@@ -182,6 +182,8 @@ void PlayScene::Update(float elapsedTime)
 
 	// パーティクルの更新
 	for (auto& particle : m_particles) particle->Update(elapsedTime);
+	// プレイヤーのHPが0以下なら
+	if (m_playerHP <= 0.0f)m_isChangeScene = true;// シーンチェンジ
 
 }
 
@@ -282,12 +284,20 @@ IScene::SceneID PlayScene::GetNextSceneID() const
 	// シーン変更がある場合
 	if (m_isChangeScene)
 	{
-		m_channelBGM->stop();
-		m_channelSE->stop();
-		return IScene::SceneID::RESULT;
+		m_channelBGM->stop();// BGMを停止する
+		m_channelSE->stop();// SEを停止する
+		if (m_playerHP <= 0.0f)// プレイヤーのHPが0以下なら
+		{
+			return IScene::SceneID::GAMEOVER;// ゲームオーバーシーンへ
+		}
+		else
+		{
+			return IScene::SceneID::CLEAR;// クリアシーンへ
+		}
+
 	}
 	// シーン変更がない場合
-	return IScene::SceneID::NONE;
+	return IScene::SceneID::NONE;// 何もしない
 }
 
 void PlayScene::UpdateBullets(float elapsedTime)

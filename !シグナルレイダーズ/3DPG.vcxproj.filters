@@ -256,11 +256,12 @@
     <ClInclude Include="Game\KumachiLib\Anchor.h" />
     <ClInclude Include="Game\Player\PlayerUI\PlayerHP\PlayerHP.h" />
     <ClInclude Include="Game\Player\PlayerUI\PlayerPointer\PlayerPointer.h" />
-    <ClInclude Include="Game\Scene\ResultScene.h" />
+    <ClInclude Include="Game\Scene\ClearScene.h" />
     <ClInclude Include="Game\Enemy\EnemyModel\EnemyModel.h" />
     <ClInclude Include="Game\Stages\Stage1.h" />
     <ClInclude Include="Game\Stages\VertexTypesEx.h" />
     <ClInclude Include="Game\Particle\Particle.h" />
+    <ClInclude Include="Game\Scene\GameOverScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -365,11 +366,12 @@
     <ClCompile Include="Game\Player\PlayerUI\PlayerUI.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\PlayerHP\PlayerHP.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\PlayerPointer\PlayerPointer.cpp" />
-    <ClCompile Include="Game\Scene\ResultScene.cpp" />
+    <ClCompile Include="Game\Scene\ClearScene.cpp" />
     <ClCompile Include="Game\Enemy\EnemyModel\EnemyModel.cpp" />
     <ClCompile Include="Game\Stages\Stage1.cpp" />
     <ClCompile Include="Game\Stages\VertexTypesEx.cpp" />
     <ClCompile Include="Game\Particle\Particle.cpp" />
+    <ClCompile Include="Game\Scene\GameOverScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
