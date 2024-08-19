@@ -62,6 +62,10 @@ private:
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_titleTexture;
 	// 指示
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pressKeyTexture;
+	// 背景テクスチャ
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_backgroundTexture;
+
+
 	// テクスチャの半分の大きさ
 	DirectX::SimpleMath::Vector2 m_titleTexCenter;
 	DirectX::SimpleMath::Vector2 m_pressKeyTexCenter;
@@ -109,6 +113,7 @@ public:
 private:
 
 	void CreateShader();
+	void DrawBackground();// 背景描画
 	void DrawSpace();// スペースキー押してってやつ描画
 	void DrawTitle();// タイトル描画
 };

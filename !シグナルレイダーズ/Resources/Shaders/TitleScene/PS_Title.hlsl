@@ -30,7 +30,8 @@ float4 main(PS_INPUT input) : SV_TARGET
     float4 output = tex.Sample(samLinear, input.Tex);
     
     // トレイル効果を加える
-    output.rgb += trail * float3(0.70, 0.7, 1.0);
+    // トレイル効果の色は青系
+    output.rgba += trail * float4(0.25, 0.5, 1.0, 0.0);
     
     // 結果を返す
     return output * color;

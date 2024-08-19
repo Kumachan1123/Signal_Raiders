@@ -43,9 +43,9 @@ void PlayerHP::Initialize(DX::DeviceResources* pDR, int width, int height)
 	m_baseTexturePath = L"Resources/Textures/Hearts.png";
 
 	Add(L"Resources/Textures/HeartsFrame.png"
-		, SimpleMath::Vector2(0, 0)
+		, SimpleMath::Vector2(242, 27)
 		, SimpleMath::Vector2(.50f, .50f)
-		, kumachi::ANCHOR::TOP_LEFT);
+		, kumachi::ANCHOR::MIDDLE_CENTER);
 }
 
 void PlayerHP::Update(float PlayerHP)

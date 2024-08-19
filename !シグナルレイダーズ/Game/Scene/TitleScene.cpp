@@ -150,6 +150,15 @@ void TitleScene::Initialize(CommonResources* resources)
 			m_pressKeyTexture.ReleaseAndGetAddressOf()
 		)
 	);
+	// 背景をロードする
+	DX::ThrowIfFailed(
+		CreateWICTextureFromFile(
+			device,
+			L"Resources/Textures/Black.png",
+			nullptr,
+			m_backgroundTexture.ReleaseAndGetAddressOf()
+		)
+	);
 
 
 
@@ -169,18 +178,23 @@ void TitleScene::Initialize(CommonResources* resources)
 	// テクスチャの情報を取得する================================
 	// テクスチャをID3D11Resourceとして見る
 	m_pressKeyTexture->GetResource(resource2.GetAddressOf());
+	m_backgroundTexture->GetResource(resource.GetAddressOf());
+
 	// ID3D11ResourceをID3D11Texture2Dとして見る
-	//resource.As(&tex2D);
+	resource.As(&tex2D);
 	resource2.As(&tex2D2);
 
 
 
 
 	//// テクスチャの中心位置を計算する
-
+	tex2D->GetDesc(&desc);
 	tex2D2->GetDesc(&desc2);
 
 	// テクスチャサイズを取得し、float型に変換する
+	texSize.x = static_cast<float>(desc.Width);
+	texSize.y = static_cast<float>(desc.Height);
+	m_titleTexCenter = texSize / 2.0f;
 	texSize2.x = static_cast<float>(desc2.Width);
 	texSize2.y = static_cast<float>(desc2.Height);
 	m_pressKeyTexCenter = texSize2 / 2.0f;
@@ -233,6 +247,8 @@ void TitleScene::Update(float elapsedTime)
 void TitleScene::Render()
 {
 
+	// 背景の描画
+	DrawBackground();
 	// タイトルロゴの描画
 	DrawTitle();
 	// スペースキー押してってやつ描画
@@ -292,6 +308,36 @@ void TitleScene::InitializeFMOD()
 	assert(result == FMOD_OK);
 }
 
+// 背景描画
+void TitleScene::DrawBackground()
+{
+	// スプライトバッチの開始：オプションでソートモード、ブレンドステートを指定する
+	m_spriteBatch->Begin(SpriteSortMode_Deferred, m_states->NonPremultiplied());
+
+	// タイトルロゴの描画位置を決める
+	RECT rect{ m_commonResources->GetDeviceResources()->GetOutputSize() };
+	// 画像の中心を計算する
+	Vector2 titlePos{ float(rect.left) ,float(rect.top) };
+
+
+	// 描画する
+	m_spriteBatch->Draw(
+		m_backgroundTexture.Get(),	// テクスチャ(SRV)
+		titlePos,				// スクリーンの表示位置(originの描画位置)
+		nullptr,			// 矩形(RECT)
+		Colors::White,		// 背景色
+		0.0f,				// 回転角(ラジアン)
+		Vector2::Zero,		// テクスチャの基準になる表示位置(描画中心)(origin)
+		Vector2(1.0f, 1.0f),				// スケール(scale)
+		SpriteEffects_None,	// エフェクト(effects)
+		0.0f				// レイヤ深度(画像のソートで必要)(layerDepth)
+	);
+
+	// スプライトバッチの終わり
+	m_spriteBatch->End();
+
+}
+
 // スペースキー押してってやつ描画
 void TitleScene::DrawSpace()
 {
@@ -300,8 +346,6 @@ void TitleScene::DrawSpace()
 
 	// タイトルロゴの描画位置を決める
 	RECT rect{ m_commonResources->GetDeviceResources()->GetOutputSize() };
-	// 画像の中心を計算する
-	Vector2 titlePos{ rect.right / 2.0f, rect.bottom / 2.0f };
 
 
 
