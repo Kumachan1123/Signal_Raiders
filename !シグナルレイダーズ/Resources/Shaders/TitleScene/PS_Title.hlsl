@@ -23,16 +23,17 @@ struct PS_INPUT
 
 float4 main(PS_INPUT input) : SV_TARGET
 {
-    // 時間に基づいてトレイル効果を生成
-    float trail = exp(-abs(sin(time * 1.0 + input.Tex.xy * 1.0)));
+    // 時間に基づいて青系のグラデーションエフェクトを生成
+    float gradient = exp(-abs(sin(time * 1.0 + input.Tex.xy * 5.0)));
     
     // テクスチャをサンプリング
     float4 output = tex.Sample(samLinear, input.Tex);
     
-    // トレイル効果を加える
-    // トレイル効果の色は青系
-    output.rgba += trail * float4(0.25, 0.5, 1.0, 0.0);
+    // グラデーションエフェクトを加える
+    // エフェクトの色は青系
+    output.rgba += gradient * float4(0.25, 0.5, 1.0, 0.0);
     
     // 結果を返す
     return output * color;
 }
+
