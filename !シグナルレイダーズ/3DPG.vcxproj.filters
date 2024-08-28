@@ -262,6 +262,7 @@
     <ClInclude Include="Game\Stages\VertexTypesEx.h" />
     <ClInclude Include="Game\Particle\Particle.h" />
     <ClInclude Include="Game\Scene\GameOverScene.h" />
+    <ClInclude Include="Game\Fade\Fade.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -372,6 +373,7 @@
     <ClCompile Include="Game\Stages\VertexTypesEx.cpp" />
     <ClCompile Include="Game\Particle\Particle.cpp" />
     <ClCompile Include="Game\Scene\GameOverScene.cpp" />
+    <ClCompile Include="Game\Fade\Fade.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -403,5 +405,7 @@
     <FxCompile Include="Resources\Shaders\PS_Outline.hlsl" />
     <FxCompile Include="Resources\Shaders\TitleScene\PS_Title.hlsl" />
     <FxCompile Include="Resources\Shaders\TitleScene\VS_Title.hlsl" />
+    <FxCompile Include="Resources\Shaders\Fade\VS_Fade.hlsl" />
+    <FxCompile Include="Resources\Shaders\Fade\PS_Fade.hlsl" />
   </ItemGroup>
 </Project>

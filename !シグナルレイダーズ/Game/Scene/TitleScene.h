@@ -8,7 +8,7 @@
 
 // 前方宣言
 class CommonResources;
-
+class Fade;
 namespace mylib
 {
 
@@ -75,6 +75,8 @@ private:
 	DirectX::SimpleMath::Matrix m_view;
 	DirectX::SimpleMath::Matrix m_proj;
 
+	// フェード
+	std::unique_ptr<Fade> m_fade;
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
 	// FMODで使用する変数（ポインタ）

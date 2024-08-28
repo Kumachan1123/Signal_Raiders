@@ -4,6 +4,7 @@
 */
 #include "pch.h"
 #include "TitleScene.h"
+#include "Game/Fade/Fade.h"
 #include "Game/Screen.h"
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
@@ -47,7 +48,8 @@ TitleScene::TitleScene()
 	m_volume{},
 	m_counter{},
 	m_camera{},
-	m_pDR{}
+	m_pDR{},
+	m_fade{}
 {
 }
 void  TitleScene::LoadTexture(const wchar_t* path)
@@ -130,6 +132,9 @@ void TitleScene::Initialize(CommonResources* resources)
 	auto DR = m_commonResources->GetDeviceResources();
 	auto device = DR->GetD3DDevice();
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
+	// フェードの初期化
+	m_fade = std::make_unique<Fade>(m_commonResources);
+	m_fade->Create(DR);
 	// FPSカメラを作成する
 	m_camera = std::make_unique<FPS_Camera>();
 	// スプライトバッチを作成する
@@ -154,7 +159,7 @@ void TitleScene::Initialize(CommonResources* resources)
 	DX::ThrowIfFailed(
 		CreateWICTextureFromFile(
 			device,
-			L"Resources/Textures/Black.png",
+			L"Resources/Textures/Back.png",
 			nullptr,
 			m_backgroundTexture.ReleaseAndGetAddressOf()
 		)
@@ -194,7 +199,7 @@ void TitleScene::Initialize(CommonResources* resources)
 	// テクスチャサイズを取得し、float型に変換する
 	texSize.x = static_cast<float>(desc.Width);
 	texSize.y = static_cast<float>(desc.Height);
-	m_titleTexCenter = texSize / 2.0f;
+	m_titleTexCenter = texSize;
 	texSize2.x = static_cast<float>(desc2.Width);
 	texSize2.y = static_cast<float>(desc2.Height);
 	m_pressKeyTexCenter = texSize2 / 2.0f;
@@ -237,9 +242,13 @@ void TitleScene::Update(float elapsedTime)
 		result = m_system->playSound(m_soundBGM, nullptr, false, &m_channelBGM);
 		assert(result == FMOD_OK);
 	}
-	// フェードに関する準備
+
 	m_time += elapsedTime; // 時間をカウント
 	m_size = (sin(m_time) + 1.0f) * 0.3f + 0.75f; // sin波で0.5〜1.5の間を変動させる
+
+	// フェードの更新
+	m_fade->Update(elapsedTime);
+
 }
 //---------------------------------------------------------
 // 描画する
@@ -251,6 +260,8 @@ void TitleScene::Render()
 	DrawBackground();
 	// タイトルロゴの描画
 	DrawTitle();
+	// フェードの描画
+	m_fade->Render();
 	// スペースキー押してってやつ描画
 	DrawSpace();
 
@@ -268,6 +279,8 @@ void TitleScene::Finalize()
 	m_soundSE->release();
 	m_soundBGM->release();
 	m_system->release();
+
+
 }
 
 //---------------------------------------------------------
