@@ -229,7 +229,7 @@ void TitleScene::Update(float elapsedTime)
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
 
 	// スペースキーが押されたら
-	if (kbTracker->pressed.Space)
+	if (m_fade->GetState() == Fade::FadeState::FadeInEnd && kbTracker->pressed.Space)
 	{
 		result = m_system->playSound(m_soundSE, nullptr, false, &m_channelSE);
 		assert(result == FMOD_OK);
@@ -238,7 +238,7 @@ void TitleScene::Update(float elapsedTime)
 	}
 
 	// フェードアウトが終了したら
-	if (m_fadeState == Fade::FadeState::FadeOutEnd)
+	if (m_fade->GetState() == Fade::FadeState::FadeOutEnd)
 	{
 		m_isChangeScene = true;
 	}
@@ -266,12 +266,12 @@ void TitleScene::Render()
 	DrawBackground();
 	// タイトルロゴの描画
 	DrawTitle();
-	// フェードの描画
-	m_fade->Render();
+
 	// スペースキー押してってやつ描画
 	DrawSpace();
 
-
+	// フェードの描画
+	m_fade->Render();
 
 }
 
@@ -384,13 +384,7 @@ void TitleScene::DrawSpace()
 		0.0f				// レイヤ深度(画像のソートで必要)(layerDepth)
 	);
 
-#ifdef _DEBUG
-	// 純粋にスプライトフォントで文字列を描画する方法
-	m_spriteFont->DrawString(m_spriteBatch.get(), L"Title Scene", Vector2(10, 40));
-	wchar_t buf[32];
-	swprintf_s(buf, 32, L"right : %d, bottom : %d", rect.right, rect.bottom);
-	m_spriteFont->DrawString(m_spriteBatch.get(), buf, Vector2(10, 70));
-#endif
+
 	// スプライトバッチの終わり
 	m_spriteBatch->End();
 

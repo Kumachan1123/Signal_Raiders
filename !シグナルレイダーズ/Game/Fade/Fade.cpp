@@ -120,7 +120,7 @@ void Fade::Update(float elapsedTime, FadeState state)
 	{
 		// ŽžŠÔ‚ðŒ¸ŽZ
 		m_time += elapsedTime;
-		m_time = clamp(m_time, 0.0f, 1.0f);
+		m_time = clamp(m_time, -1.0f, 1.0f);
 		if (m_time >= 1.0f)
 		{
 			m_fadeState = FadeState::FadeInEnd;
@@ -132,8 +132,8 @@ void Fade::Update(float elapsedTime, FadeState state)
 	{
 		// ŽžŠÔ‚ð‰ÁŽZ
 		m_time -= elapsedTime;
-		m_time = clamp(m_time, 0.0f, 1.0f);
-		if (m_time <= 0.0f)
+		m_time = clamp(m_time, -1.0f, 1.0f);
+		if (m_time <= -1.0f)
 		{
 			m_fadeState = FadeState::FadeOutEnd;
 		}
