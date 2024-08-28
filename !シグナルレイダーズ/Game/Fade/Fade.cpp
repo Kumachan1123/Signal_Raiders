@@ -10,6 +10,7 @@
 #include <WICTextureLoader.h>
 #include <CommonStates.h>
 #include <vector>
+#include "Game/Template/Template.h"
 #include "Libraries/MyLib/DebugString.h"
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -36,7 +37,8 @@ Fade::Fade(CommonResources* commonResources)
 	m_world{},
 	m_view{},
 	m_proj{},
-	m_time{ 0 }
+	m_time{ 0 },
+	m_fadeState{ FadeState::None }
 {
 	// do nothing.
 }
@@ -109,10 +111,33 @@ void Fade::CreateShader()
 
 }
 // 更新
-void Fade::Update(float elapsedTime)
+void Fade::Update(float elapsedTime, FadeState state)
 {
-	// 時間を加算
-	m_time += elapsedTime;
+	// フェードの状態を設定
+	m_fadeState = state;
+	// フェードイン
+	if (m_fadeState == FadeState::FadeIn)
+	{
+		// 時間を減算
+		m_time += elapsedTime;
+		m_time = clamp(m_time, 0.0f, 1.0f);
+		if (m_time >= 1.0f)
+		{
+			m_fadeState = FadeState::FadeInEnd;
+		}
+	}
+
+	// フェードアウト
+	if (m_fadeState == FadeState::FadeOut)
+	{
+		// 時間を加算
+		m_time -= elapsedTime;
+		m_time = clamp(m_time, 0.0f, 1.0f);
+		if (m_time <= 0.0f)
+		{
+			m_fadeState = FadeState::FadeOutEnd;
+		}
+	}
 
 }
 

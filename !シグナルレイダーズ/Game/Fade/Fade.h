@@ -20,6 +20,19 @@ public:
 		float fadeAmount;                       // フェードの進行度（0.0～1.0）
 		DirectX::SimpleMath::Vector2 padding;// パディング
 	};
+
+	enum class FadeState
+	{
+		None,// なし
+		// 以下、フェードイン・アウトの開始状態
+		FadeIn,// フェードイン
+		FadeOut,// フェードアウト
+		// 以下、フェードイン・アウトの途中状態
+		FadeInEnd,// フェードイン終了
+		FadeOutEnd,// フェードアウト終了
+
+	};
+
 private:
 	//	変数
 	DX::DeviceResources* m_pDR;
@@ -47,7 +60,7 @@ private:
 	DirectX::SimpleMath::Matrix m_world;
 	DirectX::SimpleMath::Matrix m_view;
 	DirectX::SimpleMath::Matrix m_proj;
-
+	FadeState m_fadeState;
 	// 時間
 	float m_time;
 public:
@@ -61,9 +74,11 @@ public:
 
 	void Create(DX::DeviceResources* pDR);
 
-	void Update(float elapsedTime);
+	void Update(float elapsedTime, FadeState state);
 
 	void Render();
+
+	FadeState GetState() const { return m_fadeState; }
 private:
 
 	void CreateShader();

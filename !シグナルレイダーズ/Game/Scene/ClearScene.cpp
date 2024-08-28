@@ -38,6 +38,7 @@ ClearScene::ClearScene()
 	m_isFade{},
 	m_volume{},
 	m_counter{}
+
 {
 }
 

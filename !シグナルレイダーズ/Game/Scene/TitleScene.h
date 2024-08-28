@@ -5,7 +5,7 @@
 #pragma once
 #include "IScene.h"
 #include <DeviceResources.h>
-
+#include "Game/Fade/Fade.h"
 // 前方宣言
 class CommonResources;
 class Fade;
@@ -77,6 +77,8 @@ private:
 
 	// フェード
 	std::unique_ptr<Fade> m_fade;
+	// フェードの状態
+	Fade::FadeState m_fadeState;
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
 	// FMODで使用する変数（ポインタ）

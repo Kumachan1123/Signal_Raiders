@@ -49,7 +49,8 @@ TitleScene::TitleScene()
 	m_counter{},
 	m_camera{},
 	m_pDR{},
-	m_fade{}
+	m_fade{},
+	m_fadeState{ Fade::FadeState::FadeIn }
 {
 }
 void  TitleScene::LoadTexture(const wchar_t* path)
@@ -232,10 +233,15 @@ void TitleScene::Update(float elapsedTime)
 	{
 		result = m_system->playSound(m_soundSE, nullptr, false, &m_channelSE);
 		assert(result == FMOD_OK);
-		m_isChangeScene = true;
+		// フェードアウトに移行
+		m_fadeState = Fade::FadeState::FadeOut;
 	}
 
-
+	// フェードアウトが終了したら
+	if (m_fadeState == Fade::FadeState::FadeOutEnd)
+	{
+		m_isChangeScene = true;
+	}
 	// 二重再生しない
 	if (m_channelBGM == nullptr)
 	{
@@ -247,7 +253,7 @@ void TitleScene::Update(float elapsedTime)
 	m_size = (sin(m_time) + 1.0f) * 0.3f + 0.75f; // sin波で0.5〜1.5の間を変動させる
 
 	// フェードの更新
-	m_fade->Update(elapsedTime);
+	m_fade->Update(elapsedTime, m_fadeState);
 
 }
 //---------------------------------------------------------
