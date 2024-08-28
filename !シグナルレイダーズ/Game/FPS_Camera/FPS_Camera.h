@@ -9,7 +9,7 @@ class FPS_Camera
 {
 private:
 	// ‰æŠp
-	const float FOV = DirectX::XMConvertToRadians(45.0f);
+	const float FOV = DirectX::XMConvertToRadians(60.0f);
 
 	// ‹ß‚¢“Š‰e–Ê
 	const float NEAR_PLANE = 1.0f;

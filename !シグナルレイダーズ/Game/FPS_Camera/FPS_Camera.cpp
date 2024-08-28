@@ -30,7 +30,7 @@ FPS_Camera::FPS_Camera(
 //-------------------------------------------------------------------
 void FPS_Camera::Update(const DirectX::SimpleMath::Vector3& newEye, float yawX)
 {
-	
+
 	// ŒÃ‚¢eye‚ğ•Û‚·‚é
 	DirectX::SimpleMath::Vector3 oldEye = m_eye;
 	// eye‚ÌˆÊ’u‚ğXV‚·‚é
