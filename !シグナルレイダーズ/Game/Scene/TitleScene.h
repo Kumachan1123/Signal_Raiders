@@ -79,6 +79,8 @@ private:
 	std::unique_ptr<Fade> m_fade;
 	// フェードの状態
 	Fade::FadeState m_fadeState;
+	// フェード画像番号
+	int m_fadeTexNum;
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
 	// FMODで使用する変数（ポインタ）

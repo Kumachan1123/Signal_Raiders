@@ -61,7 +61,10 @@ void Fade::Create(DX::DeviceResources* pDR)
 	CreateShader();
 
 	// 画像の読み込み
-	LoadTexture(L"Resources/Textures/fade.png");
+	LoadTexture(L"Resources/Textures/fade.png");//fadeTex
+	LoadTexture(L"Resources/Textures/Ready.png");//readyTex
+	LoadTexture(L"Resources/Textures/Go.png");//goTex
+	LoadTexture(L"Resources/Textures/Black.png");//backTex
 
 	// プリミティブバッチの作成
 	m_batch = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(pDR->GetD3DDeviceContext());
@@ -111,10 +114,9 @@ void Fade::CreateShader()
 
 }
 // 更新
-void Fade::Update(float elapsedTime, FadeState state)
+void Fade::Update(float elapsedTime)
 {
-	// フェードの状態を設定
-	m_fadeState = state;
+
 	// フェードイン
 	if (m_fadeState == FadeState::FadeIn)
 	{
@@ -138,6 +140,8 @@ void Fade::Update(float elapsedTime, FadeState state)
 			m_fadeState = FadeState::FadeOutEnd;
 		}
 	}
+
+
 
 }
 
@@ -163,6 +167,8 @@ void Fade::Render()
 
 	// フェードとディゾルブの設定
 	cbuff.fadeAmount = m_time;
+	// 画像番号
+	cbuff.num = m_fadeTexNum;
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(m_CBuffer.Get(), 0, NULL, &cbuff, 0, 0);
 

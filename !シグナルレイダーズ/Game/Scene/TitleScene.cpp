@@ -50,8 +50,10 @@ TitleScene::TitleScene()
 	m_camera{},
 	m_pDR{},
 	m_fade{},
-	m_fadeState{ Fade::FadeState::FadeIn }
+	m_fadeState{ },
+	m_fadeTexNum{ 0 }
 {
+
 }
 void  TitleScene::LoadTexture(const wchar_t* path)
 {
@@ -69,7 +71,7 @@ void  TitleScene::Create(DX::DeviceResources* pDR)
 	CreateShader();
 
 	//	画像の読み込み（2枚ともデフォルトは読み込み失敗でnullptr)
-	LoadTexture(L"Resources/Textures/Title.png");
+	LoadTexture(L"Resources/Textures/Title_Text.png");
 
 	//	プリミティブバッチの作成
 	m_batch = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(pDR->GetD3DDeviceContext());
@@ -136,6 +138,8 @@ void TitleScene::Initialize(CommonResources* resources)
 	// フェードの初期化
 	m_fade = std::make_unique<Fade>(m_commonResources);
 	m_fade->Create(DR);
+	m_fade->SetState(Fade::FadeState::FadeIn);
+	m_fade->SetTextureNum((int)(Fade::TextureNum::BLACK));
 	// FPSカメラを作成する
 	m_camera = std::make_unique<FPS_Camera>();
 	// スプライトバッチを作成する
@@ -234,7 +238,9 @@ void TitleScene::Update(float elapsedTime)
 		result = m_system->playSound(m_soundSE, nullptr, false, &m_channelSE);
 		assert(result == FMOD_OK);
 		// フェードアウトに移行
-		m_fadeState = Fade::FadeState::FadeOut;
+
+		m_fade->SetState(Fade::FadeState::FadeOut);
+		m_fade->SetTextureNum((int)(Fade::TextureNum::READY));
 	}
 
 	// フェードアウトが終了したら
@@ -253,7 +259,7 @@ void TitleScene::Update(float elapsedTime)
 	m_size = (sin(m_time) + 1.0f) * 0.3f + 0.75f; // sin波で0.5〜1.5の間を変動させる
 
 	// フェードの更新
-	m_fade->Update(elapsedTime, m_fadeState);
+	m_fade->Update(elapsedTime);
 
 }
 //---------------------------------------------------------
@@ -403,17 +409,19 @@ void TitleScene::DrawTitle()
 	VertexPositionTexture vertex[4] =
 	{
 		//	頂点情報													UV情報
-		VertexPositionTexture(SimpleMath::Vector3(-0.5f,  0.25f, 0.0f), SimpleMath::Vector2(0.0f, 0.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(0.5f,  0.25f, 0.0f), SimpleMath::Vector2(1.0f, 0.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(0.5f, -0.25f, 0.0f), SimpleMath::Vector2(1.0f, 1.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(-0.5f, -0.25f, 0.0f), SimpleMath::Vector2(0.0f, 1.0f)),
+		VertexPositionTexture(SimpleMath::Vector3(-0.5f,  0.125f, 0.0f), SimpleMath::Vector2(0.0f, 0.0f)),
+		VertexPositionTexture(SimpleMath::Vector3(0.5f,  0.125f, 0.0f), SimpleMath::Vector2(1.0f, 0.0f)),
+		VertexPositionTexture(SimpleMath::Vector3(0.5f, -0.125f, 0.0f), SimpleMath::Vector2(1.0f, 1.0f)),
+		VertexPositionTexture(SimpleMath::Vector3(-0.5f, -0.125f, 0.0f), SimpleMath::Vector2(0.0f, 1.0f)),
 	};
 
-	// Polygonを拡大
+	// Polygonを拡大・移動する
 	for (int i = 0; i < 4; i++)
 	{
 		vertex[i].position.x *= 12.0f;
 		vertex[i].position.y *= 12.0f;
+		vertex[i].position.x += 0.25f;
+		vertex[i].position.y += 0.75f;
 	}
 
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
@@ -439,7 +447,7 @@ void TitleScene::DrawTitle()
 	context->PSSetConstantBuffers(0, 1, cb);
 
 	//	画像用サンプラーの登録
-	ID3D11SamplerState* sampler[1] = { m_states->LinearWrap() };
+	ID3D11SamplerState* sampler[1] = { m_states->AnisotropicWrap() };
 	context->PSSetSamplers(0, 1, sampler);
 
 	//	半透明描画指定

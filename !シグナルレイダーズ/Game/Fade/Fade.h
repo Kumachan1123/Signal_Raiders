@@ -18,7 +18,9 @@ public:
 	{
 		float power;                             // 強度
 		float fadeAmount;                       // フェードの進行度（0.0～1.0）
-		DirectX::SimpleMath::Vector2 padding;// パディング
+		float padding;							// パディング
+		int num;							   // テクスチャ番号
+
 	};
 
 	enum class FadeState
@@ -33,6 +35,12 @@ public:
 
 	};
 
+	enum class TextureNum
+	{
+		BLACK = 0,
+		READY,
+		GO
+	};
 private:
 	//	変数
 	DX::DeviceResources* m_pDR;
@@ -63,6 +71,8 @@ private:
 	FadeState m_fadeState;
 	// 時間
 	float m_time;
+	// テクスチャ番号
+	int m_fadeTexNum;
 public:
 	//	関数
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
@@ -74,11 +84,13 @@ public:
 
 	void Create(DX::DeviceResources* pDR);
 
-	void Update(float elapsedTime, FadeState state);
+	void Update(float elapsedTime);
 
 	void Render();
 
+	void SetState(FadeState state) { m_fadeState = state; }
 	FadeState GetState() const { return m_fadeState; }
+	void SetTextureNum(int num) { m_fadeTexNum = num; }
 private:
 
 	void CreateShader();

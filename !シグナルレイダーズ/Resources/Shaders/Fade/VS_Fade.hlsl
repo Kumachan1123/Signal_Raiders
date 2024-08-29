@@ -3,7 +3,8 @@ cbuffer ConstBuffer : register(b0)
 {
     float power; // 強度
     float fadeAmount; // フェードの進行度（0.0～1.0）
-    float2 padding; // パディング
+    float padding; // パディング
+    int num; // テクスチャ番号
 };
 
 //	このシェーダが受け取る引数の内容
