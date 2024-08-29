@@ -37,7 +37,7 @@ Fade::Fade(CommonResources* commonResources)
 	m_world{},
 	m_view{},
 	m_proj{},
-	m_time{ 0 },
+	m_time{ -0.75f },
 	m_fadeState{ FadeState::None }
 {
 	// do nothing.

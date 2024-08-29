@@ -81,6 +81,7 @@ private:
 	Fade::FadeState m_fadeState;
 	// フェード画像番号
 	int m_fadeTexNum;
+
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
 	// FMODで使用する変数（ポインタ）

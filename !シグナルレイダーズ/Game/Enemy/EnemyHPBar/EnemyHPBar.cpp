@@ -81,7 +81,7 @@ void EnemyHPBar::Initialize(CommonResources* resources)
 			m_gaugeTexture.ReleaseAndGetAddressOf()
 		)
 	);
-	m_displayedHP = m_maxHP;
+	m_displayedHP = (float)(m_maxHP);
 }
 // •`‰æ
 void EnemyHPBar::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj, DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 rot)

@@ -19,6 +19,7 @@
 #include "Game/Player/PlayerUI/PlayerHP/PlayerHP.h"
 #include "Game/Player/PlayerUI/PlayerPointer/PlayerPointer.h"
 #include "Game/Particle/Particle.h"
+#include "Game/Fade/Fade.h"
 // 前方宣言
 class CommonResources;
 
@@ -36,7 +37,7 @@ namespace FMOD
 	class Channel;
 }
 class FPS_Camera;
-
+class Fade;
 class PlayScene final :
 	public IScene
 {
@@ -69,6 +70,12 @@ private:
 	DirectX::SimpleMath::Matrix m_projection;
 	// Particle
 	std::vector<std::unique_ptr<Particle>> m_particles;
+	// フェード
+	std::unique_ptr<Fade> m_fade;
+	// フェードの状態
+	Fade::FadeState m_fadeState;
+	// フェード画像番号
+	int m_fadeTexNum;
 
 	// 追加の変数==========================================
 

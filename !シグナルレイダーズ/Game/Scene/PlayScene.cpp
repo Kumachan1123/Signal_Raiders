@@ -49,7 +49,10 @@ PlayScene::PlayScene()
 	m_counter{},
 	m_enemyBornTimer{ 0.0f },
 	m_enemyBornInterval{ 0.5f },
-	m_enemyIndex{ 0 }
+	m_enemyIndex{ 0 },
+	m_fade{},
+	m_fadeState{ },
+	m_fadeTexNum{ 2 }
 {
 }
 //---------------------------------------------------------
@@ -103,6 +106,13 @@ void PlayScene::Initialize(CommonResources* resources)
 	// 照準作成
 	m_pPlayerPointer = std::make_unique<PlayerPointer>();
 	m_pPlayerPointer->Initialize(DR, 1280, 720);
+
+	// フェードの初期化
+	m_fade = std::make_unique<Fade>(m_commonResources);
+	m_fade->Create(DR);
+	m_fade->SetState(Fade::FadeState::FadeIn);
+	m_fade->SetTextureNum((int)(Fade::TextureNum::GO));
+
 	/*
 		デバッグドローの表示用オブジェクトを生成する
 	*/
@@ -159,6 +169,19 @@ void PlayScene::Update(float elapsedTime)
 	m_pPlayerHP->Update(m_playerHP);
 	m_pPlayerPointer->Update();
 
+#ifdef _DEBUG
+	// デバッグ用
+   // 右クリックで敵を一掃
+	if (mtracker->GetLastState().rightButton)
+	{
+		for (auto& enemy : m_enemy)
+		{
+			enemy->SetEnemyHP(0);
+		}
+	}
+#endif
+
+
 	// 左クリックで弾発射
 	if (mtracker->GetLastState().leftButton && !m_isBullet)
 	{
@@ -183,8 +206,20 @@ void PlayScene::Update(float elapsedTime)
 	// パーティクルの更新
 	for (auto& particle : m_particles) particle->Update(elapsedTime);
 	// プレイヤーのHPが0以下なら
-	if (m_playerHP <= 0.0f)m_isChangeScene = true;// シーンチェンジ
+	if (m_playerHP <= 0.0f)
+	{
+		m_fade->SetTextureNum((int)(Fade::TextureNum::BLACK));
+		m_fade->SetState(Fade::FadeState::FadeOut);
 
+
+	}
+	// 画面遷移フェード処理
+	m_fade->Update(elapsedTime);
+	// フェードアウトが終了したら
+	if (m_fade->GetState() == Fade::FadeState::FadeOutEnd)
+	{
+		m_isChangeScene = true;
+	}
 }
 
 //---------------------------------------------------------
@@ -256,6 +291,9 @@ void PlayScene::Render()
 	m_wifi->Render(debugString);
 	m_pPlayerHP->Render();
 	m_pPlayerPointer->Render();
+
+	// フェードの描画
+	m_fade->Render();
 }
 //---------------------------------------------------------
 // 後始末する
@@ -349,7 +387,11 @@ void PlayScene::UpdateBullets(float elapsedTime)
 void PlayScene::UpdateEnemies(float elapsedTime)
 {
 	// 敵が全滅したらシーンを変更する・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
-	if (m_enemy.size() <= 0 && m_isBorned)m_isChangeScene = true;// シーンチェンジ
+	if (m_enemy.size() <= 0 && m_isBorned)
+	{
+		m_fade->SetTextureNum((int)(Fade::TextureNum::BLACK));
+		m_fade->SetState(Fade::FadeState::FadeOut);
+	}
 	// 敵生成・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
 	// 敵生成タイマーを更新
 	m_enemyBornTimer += elapsedTime;

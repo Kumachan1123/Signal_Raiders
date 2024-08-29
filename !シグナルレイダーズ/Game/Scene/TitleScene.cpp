@@ -274,7 +274,8 @@ void TitleScene::Render()
 	DrawTitle();
 
 	// スペースキー押してってやつ描画
-	DrawSpace();
+	// 画面遷移中は描画しない
+	if (m_fade->GetState() == Fade::FadeState::FadeInEnd)DrawSpace();
 
 	// フェードの描画
 	m_fade->Render();
