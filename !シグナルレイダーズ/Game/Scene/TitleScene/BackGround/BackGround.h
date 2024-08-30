@@ -1,0 +1,81 @@
+//--------------------------------------------------------------------------------------
+// File: Particle.h
+//
+// パーティクルクラス
+//
+//-------------------------------------------------------------------------------------
+
+#pragma once
+
+#include "StepTimer.h"
+#include "Game/CommonResources.h"
+#include <DeviceResources.h>
+#include <SimpleMath.h>
+#include <Effects.h>
+#include <PrimitiveBatch.h>
+#include <VertexTypes.h>
+#include <WICTextureLoader.h>
+#include <CommonStates.h>
+#include <vector>
+class CommonResources;
+class BackGround
+{
+public:
+	// データ受け渡し用コンスタントバッファ(送信側)
+	struct ConstBuffer
+	{
+		DirectX::SimpleMath::Matrix matWorld;   // ワールド行列
+		DirectX::SimpleMath::Matrix matView;    // ビュー行列
+		DirectX::SimpleMath::Matrix matProj;    // プロジェクション行列
+		DirectX::SimpleMath::Vector4 Colors;    // カラー
+		float time;                             // 強度
+		DirectX::SimpleMath::Vector3 padding;// パディング
+	};
+
+private:
+	//	変数
+	DX::DeviceResources* m_pDR;
+
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
+
+	DX::StepTimer                           m_timer;
+	//	入力レイアウト
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+	// 共通リソース
+	CommonResources* m_commonResources;
+	//	プリミティブバッチ
+	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_batch;
+	//	コモンステート
+	std::unique_ptr<DirectX::CommonStates> m_states;
+	//	テクスチャハンドル
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_texture;
+
+	//	頂点シェーダ
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
+	//	ピクセルシェーダ
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
+
+	DirectX::SimpleMath::Matrix m_world;
+	DirectX::SimpleMath::Matrix m_view;
+	DirectX::SimpleMath::Matrix m_proj;
+
+	// 時間
+	float m_time;
+public:
+	//	関数
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
+
+	BackGround(CommonResources* resources);
+	~BackGround();
+
+	void LoadTexture(const wchar_t* path);
+
+	void Create(DX::DeviceResources* pDR);
+
+	void Update(float elapsedTime);
+
+	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+private:
+
+	void CreateShader();
+};

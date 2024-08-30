@@ -4,10 +4,11 @@
 */
 #pragma once
 #include "IScene.h"
+#include "Game/Fade/Fade.h"
 
 // 前方宣言
 class CommonResources;
-
+class Fade;
 namespace mylib
 {
 	class DebugCamera;
@@ -57,6 +58,8 @@ private:
 	float m_time = 0.0f;// 拡縮に使う時間
 	float m_size = 0.0f;// 画像サイズ
 	float m_cleatrSize = 0.0f;
+
+	// 画面遷移フェード
 public:
 	ClearScene();
 	~ClearScene() override;

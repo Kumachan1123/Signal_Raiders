@@ -212,7 +212,8 @@
     <ClInclude Include="Game\Scene\PlayScene.h" />
     <ClInclude Include="Game\Scene\ClearScene.h" />
     <ClInclude Include="Game\Scene\SceneManager.h" />
-    <ClInclude Include="Game\Scene\TitleScene.h" />
+    <ClInclude Include="Game\Scene\TitleScene\BackGround\BackGround.h" />
+    <ClInclude Include="Game\Scene\TitleScene\TitleScene.h" />
     <ClInclude Include="Game\Screen.h" />
     <ClInclude Include="Game\SkyBox\SkyBox.h" />
     <ClInclude Include="Game\Stages\Stage1.h" />
@@ -265,7 +266,8 @@
     <ClCompile Include="Game\Scene\PlayScene.cpp" />
     <ClCompile Include="Game\Scene\ClearScene.cpp" />
     <ClCompile Include="Game\Scene\SceneManager.cpp" />
-    <ClCompile Include="Game\Scene\TitleScene.cpp" />
+    <ClCompile Include="Game\Scene\TitleScene\BackGround\BackGround.cpp" />
+    <ClCompile Include="Game\Scene\TitleScene\TitleScene.cpp" />
     <ClCompile Include="Game\SkyBox\SkyBox.cpp" />
     <ClCompile Include="Game\Stages\Stage1.cpp" />
     <ClCompile Include="Game\Stages\VertexTypesEx.cpp" />
@@ -396,7 +398,27 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
+    <FxCompile Include="Resources\Shaders\TitleScene\PS_TitleBack.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\TitleScene\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\TitleScene\%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
     <FxCompile Include="Resources\Shaders\TitleScene\VS_Title.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\TitleScene\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\TitleScene\%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\TitleScene\VS_TitleBack.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>

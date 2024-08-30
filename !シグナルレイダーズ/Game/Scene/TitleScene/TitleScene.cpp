@@ -51,7 +51,8 @@ TitleScene::TitleScene()
 	m_pDR{},
 	m_fade{},
 	m_fadeState{ },
-	m_fadeTexNum{ 0 }
+	m_fadeTexNum{ 0 },
+	m_backGround{ nullptr }
 {
 
 }
@@ -140,6 +141,10 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_fade->Create(DR);
 	m_fade->SetState(Fade::FadeState::FadeIn);
 	m_fade->SetTextureNum((int)(Fade::TextureNum::BLACK));
+	// 背景の初期化
+	m_backGround = std::make_unique<BackGround>(m_commonResources);
+	m_backGround->Create(DR);
+
 	// FPSカメラを作成する
 	m_camera = std::make_unique<FPS_Camera>();
 	// スプライトバッチを作成する
@@ -257,7 +262,8 @@ void TitleScene::Update(float elapsedTime)
 
 	m_time += elapsedTime; // 時間をカウント
 	m_size = (sin(m_time) + 1.0f) * 0.3f + 0.75f; // sin波で0.5〜1.5の間を変動させる
-
+	// 背景の更新
+	m_backGround->Update(elapsedTime);
 	// フェードの更新
 	m_fade->Update(elapsedTime);
 
@@ -269,7 +275,8 @@ void TitleScene::Render()
 {
 
 	// 背景の描画
-	DrawBackground();
+	m_backGround->Render(m_view, m_proj);
+
 	// タイトルロゴの描画
 	DrawTitle();
 
@@ -334,35 +341,6 @@ void TitleScene::InitializeFMOD()
 	assert(result == FMOD_OK);
 }
 
-// 背景描画
-void TitleScene::DrawBackground()
-{
-	// スプライトバッチの開始：オプションでソートモード、ブレンドステートを指定する
-	m_spriteBatch->Begin(SpriteSortMode_Deferred, m_states->NonPremultiplied());
-
-	// タイトルロゴの描画位置を決める
-	RECT rect{ m_commonResources->GetDeviceResources()->GetOutputSize() };
-	// 画像の中心を計算する
-	Vector2 titlePos{ float(rect.left) ,float(rect.top) };
-
-
-	// 描画する
-	m_spriteBatch->Draw(
-		m_backgroundTexture.Get(),	// テクスチャ(SRV)
-		titlePos,				// スクリーンの表示位置(originの描画位置)
-		nullptr,			// 矩形(RECT)
-		Colors::White,		// 背景色
-		0.0f,				// 回転角(ラジアン)
-		titlePos,		// テクスチャの基準になる表示位置(描画中心)(origin)
-		Vector2(1.0f, 1.0f),				// スケール(scale)
-		SpriteEffects_None,	// エフェクト(effects)
-		0.0f				// レイヤ深度(画像のソートで必要)(layerDepth)
-	);
-
-	// スプライトバッチの終わり
-	m_spriteBatch->End();
-
-}
 
 // スペースキー押してってやつ描画
 void TitleScene::DrawSpace()
@@ -402,7 +380,7 @@ void TitleScene::DrawTitle()
 {
 
 	Matrix view = m_camera->GetViewMatrix();// ビュー行列
-	Matrix projection = m_camera->GetProjectionMatrix();//	プロジェクション行列
+	Matrix proj = m_camera->GetProjectionMatrix();//	プロジェクション行列
 	// タイトルロゴの描画
 	//	板ポリ描画処理
 	ID3D11DeviceContext1* context = m_pDR->GetD3DDeviceContext();
@@ -410,27 +388,26 @@ void TitleScene::DrawTitle()
 	VertexPositionTexture vertex[4] =
 	{
 		//	頂点情報													UV情報
-		VertexPositionTexture(SimpleMath::Vector3(-0.5f,  0.125f, 0.0f), SimpleMath::Vector2(0.0f, 0.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(0.5f,  0.125f, 0.0f), SimpleMath::Vector2(1.0f, 0.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(0.5f, -0.125f, 0.0f), SimpleMath::Vector2(1.0f, 1.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(-0.5f, -0.125f, 0.0f), SimpleMath::Vector2(0.0f, 1.0f)),
+		VertexPositionTexture(SimpleMath::Vector3(-0.85f,  0.45f, 0.0f), SimpleMath::Vector2(0.0f, 0.0f)),
+		VertexPositionTexture(SimpleMath::Vector3(0.85f,  0.45f, 0.0f), SimpleMath::Vector2(1.0f, 0.0f)),
+		VertexPositionTexture(SimpleMath::Vector3(0.85f, -0.25f, 0.0f), SimpleMath::Vector2(1.0f, 1.0f)),
+		VertexPositionTexture(SimpleMath::Vector3(-0.85f, -0.25f, 0.0f), SimpleMath::Vector2(0.0f, 1.0f)),
 	};
 
-	// Polygonを拡大・移動する
-	for (int i = 0; i < 4; i++)
-	{
-		vertex[i].position.x *= 12.0f;
-		vertex[i].position.y *= 12.0f;
-		vertex[i].position.x += 0.25f;
-		vertex[i].position.y += 0.75f;
-	}
+	//// Polygonを拡大・移動する
+	//for (int i = 0; i < 4; i++)
+	//{
+
+
+	//	vertex[i].position.y += 0.1f;
+	//}
 
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	ConstBuffer cbuff;
 	//	ビュー設定
-	cbuff.matView = view.Transpose();
+	cbuff.matView = m_view.Transpose();
 	//	プロジェクション設定
-	cbuff.matProj = projection.Transpose();
+	cbuff.matProj = m_proj.Transpose();
 	//	ワールド設定
 	cbuff.matWorld = m_world.Transpose();
 	cbuff.Colors = SimpleMath::Vector4(1, 1, 1, 10);

@@ -3,9 +3,10 @@
 	@brief	タイトルシーンクラス
 */
 #pragma once
-#include "IScene.h"
+#include "Game/Scene/IScene.h"
 #include <DeviceResources.h>
 #include "Game/Fade/Fade.h"
+#include "Game/Scene/TitleScene/BackGround/BackGround.h"
 // 前方宣言
 class CommonResources;
 class Fade;
@@ -79,6 +80,8 @@ private:
 	std::unique_ptr<Fade> m_fade;
 	// フェードの状態
 	Fade::FadeState m_fadeState;
+	// 背景
+	std::unique_ptr<BackGround> m_backGround;
 	// フェード画像番号
 	int m_fadeTexNum;
 
@@ -120,7 +123,7 @@ public:
 private:
 
 	void CreateShader();
-	void DrawBackground();// 背景描画
+
 	void DrawSpace();// スペースキー押してってやつ描画
 	void DrawTitle();// タイトル描画
 };
