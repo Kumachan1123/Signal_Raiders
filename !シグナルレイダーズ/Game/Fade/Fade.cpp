@@ -38,7 +38,8 @@ Fade::Fade(CommonResources* commonResources)
 	m_view{},
 	m_proj{},
 	m_time{ -0.75f },
-	m_fadeState{ FadeState::None }
+	m_fadeState{ FadeState::None },
+	m_fadeTexNum{ }
 {
 	// do nothing.
 }
@@ -61,7 +62,7 @@ void Fade::Create(DX::DeviceResources* pDR)
 	CreateShader();
 
 	// 画像の読み込み
-	LoadTexture(L"Resources/Textures/fade.png");//fadeTex
+	LoadTexture(L"Resources/Textures/fade2.png");//fadeTex
 	LoadTexture(L"Resources/Textures/Ready.png");//readyTex
 	LoadTexture(L"Resources/Textures/Go.png");//goTex
 	LoadTexture(L"Resources/Textures/Black.png");//backTex
@@ -149,7 +150,7 @@ void Fade::Update(float elapsedTime)
 void Fade::Render()
 {
 	// 時間
-	auto debugString = m_commonResources->GetDebugString();
+
 	ID3D11DeviceContext1* context = m_pDR->GetD3DDeviceContext();
 	//	頂点情報(板ポリゴンの４頂点の座標情報）
 	VertexPositionTexture vertex[4] =
@@ -163,7 +164,7 @@ void Fade::Render()
 	// シェーダーに渡す追加のバッファを作成する(ConstBuffer)
 	ConstBuffer cbuff;
 
-	cbuff.power = 0.1f;
+	cbuff.power = 0.01f;
 
 	// フェードとディゾルブの設定
 	cbuff.fadeAmount = m_time;

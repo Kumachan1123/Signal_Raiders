@@ -353,7 +353,7 @@ void TitleScene::DrawBackground()
 		nullptr,			// 矩形(RECT)
 		Colors::White,		// 背景色
 		0.0f,				// 回転角(ラジアン)
-		Vector2::Zero,		// テクスチャの基準になる表示位置(描画中心)(origin)
+		titlePos,		// テクスチャの基準になる表示位置(描画中心)(origin)
 		Vector2(1.0f, 1.0f),				// スケール(scale)
 		SpriteEffects_None,	// エフェクト(effects)
 		0.0f				// レイヤ深度(画像のソートで必要)(layerDepth)
