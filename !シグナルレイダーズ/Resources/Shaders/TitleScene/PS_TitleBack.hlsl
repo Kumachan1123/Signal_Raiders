@@ -33,10 +33,10 @@ float4 main(PS_INPUT input) : SV_TARGET
     float4 output = tex.Sample(samLinear, input.Tex);
 
     // 縦線の強度を計算
-    float lineIntensity = sin(input.Tex.y * 400.0 + time * 10.0) * 0.1;
+    float lineIntensity = sin(input.Tex.y * 200.0 + time * 10.0) * 0.05;
 
     // ノイズの強度を計算
-    float noise = (frac(sin(dot(input.Tex.xy * float2(12.9898, 78.233), float2(12.9898, 78.233))) * 43758.5453) - 0.5) * 0.2;
+    float noise = (frac(sin(dot(input.Tex.xy * float2(12.9898, 78.233), float2(12.9898, 78.233))) * 43758.5453) - 0.5) * 0.1;
 
     // ブラウン管効果を適用
     output.rgb += lineIntensity + noise;
