@@ -4,10 +4,10 @@
 */
 #pragma once
 #include "IScene.h"
-
+#include "Game/Fade/Fade.h"
 // 前方宣言
 class CommonResources;
-
+class Fade;
 namespace mylib
 {
 	class DebugCamera;
@@ -36,9 +36,9 @@ private:
 	// タイトル画像
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_gameoverTexture;
 	// 指示
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_clearTexture;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pressKeyTexture;
 	// テクスチャの半分の大きさ
-	DirectX::SimpleMath::Vector2 m_titleTexCenter;
+	DirectX::SimpleMath::Vector2 m_gameoverTexCenter;
 	DirectX::SimpleMath::Vector2 m_pressKeyTexCenter;
 
 	// シーンチェンジフラグ
@@ -56,7 +56,9 @@ private:
 	int m_counter;		// フェードカウンタ
 	float m_time = 0.0f;// 拡縮に使う時間
 	float m_size = 0.0f;// 画像サイズ
-	float m_cleatrSize = 0.0f;
+	float m_pressKeySize = 0.0f;
+	// 画面遷移フェード
+	std::unique_ptr<Fade> m_fade;
 public:
 	GameOverScene();
 	~GameOverScene() override;
@@ -68,4 +70,6 @@ public:
 
 	SceneID GetNextSceneID() const;
 	void InitializeFMOD();
+private:
+	void DrawSpace();// スペースキー押してってやつ描画
 };

@@ -26,9 +26,9 @@ GameOverScene::GameOverScene()
 	m_spriteBatch{},
 	m_spriteFont{},
 	m_gameoverTexture{},
-	m_clearTexture{},
+	m_pressKeyTexture{},
 	m_pressKeyTexCenter{},
-	m_titleTexCenter{},
+	m_gameoverTexCenter{},
 	m_isChangeScene{},
 	m_system{ nullptr },
 	m_soundSE{ nullptr },
@@ -37,7 +37,11 @@ GameOverScene::GameOverScene()
 	m_channelBGM{ nullptr },
 	m_isFade{},
 	m_volume{},
-	m_counter{}
+	m_counter{},
+	m_time{ },
+	m_size{},
+	m_pressKeySize{},
+	m_fade{}
 {
 }
 
@@ -57,7 +61,8 @@ void GameOverScene::Initialize(CommonResources* resources)
 	assert(resources);
 	m_commonResources = resources;
 
-	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
+	auto DR = m_commonResources->GetDeviceResources();
+	auto device = DR->GetD3DDevice();
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 
 	// スプライトバッチを作成する
@@ -68,6 +73,11 @@ void GameOverScene::Initialize(CommonResources* resources)
 		device,
 		L"Resources/Fonts/SegoeUI_18.spritefont"
 	);
+	// フェードの初期化
+	m_fade = std::make_unique<Fade>(m_commonResources);
+	m_fade->Create(DR);
+	m_fade->SetState(Fade::FadeState::FadeIn);
+	m_fade->SetTextureNum((int)(Fade::TextureNum::BLACK));
 
 	// 画像をロードする
 	DX::ThrowIfFailed(
@@ -75,7 +85,7 @@ void GameOverScene::Initialize(CommonResources* resources)
 			device,
 			L"Resources/Textures/Space.png",
 			nullptr,
-			m_clearTexture.ReleaseAndGetAddressOf()
+			m_pressKeyTexture.ReleaseAndGetAddressOf()
 		)
 	);
 
@@ -88,6 +98,7 @@ void GameOverScene::Initialize(CommonResources* resources)
 			m_gameoverTexture.ReleaseAndGetAddressOf()
 		)
 	);
+
 
 	/*
 		以下、テクスチャの大きさを求める→テクスチャの中心座標を計算する
@@ -105,7 +116,7 @@ void GameOverScene::Initialize(CommonResources* resources)
 	// テクスチャの情報を取得する================================
 	// テクスチャをID3D11Resourceとして見る
 	m_gameoverTexture->GetResource(resource.GetAddressOf());
-	m_clearTexture->GetResource(resource2.GetAddressOf());
+	m_pressKeyTexture->GetResource(resource2.GetAddressOf());
 	// ID3D11ResourceをID3D11Texture2Dとして見る
 	resource.As(&tex2D);
 	resource2.As(&tex2D2);
@@ -118,7 +129,7 @@ void GameOverScene::Initialize(CommonResources* resources)
 	texSize.y = static_cast<float>(desc.Height);
 
 	// テクスチャの中心位置を計算する
-	m_titleTexCenter = texSize / 2.0f;
+	m_gameoverTexCenter = texSize / 2.0f;
 	tex2D2->GetDesc(&desc2);
 
 	// テクスチャサイズを取得し、float型に変換する
@@ -151,13 +162,20 @@ void GameOverScene::Update(float elapsedTime)
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
 
 	// スペースキーが押されたら
-	if (kbTracker->pressed.Space)
+	if (m_fade->GetState() == Fade::FadeState::FadeInEnd && kbTracker->pressed.Space)
 	{
 		result = m_system->playSound(m_soundSE, nullptr, false, &m_channelSE);
 		assert(result == FMOD_OK);
+		// フェードアウトに移行
+
+		m_fade->SetState(Fade::FadeState::FadeOut);
+		m_fade->SetTextureNum((int)(Fade::TextureNum::BLACK));
+	}
+	// フェードアウトが終了したら
+	if (m_fade->GetState() == Fade::FadeState::FadeOutEnd)
+	{
 		m_isChangeScene = true;
 	}
-
 	// 二重再生しない
 	if (m_channelBGM == nullptr)
 	{
@@ -167,7 +185,9 @@ void GameOverScene::Update(float elapsedTime)
 	// フェードに関する準備
 	m_time += elapsedTime; // 時間をカウント
 	m_size = (sin(m_time) + 1.0f) * 0.3f + 0.75f; // sin波で0.5〜1.5の間を変動させる
-	m_cleatrSize = (cos(m_time) + 1.0f) * 0.3f + 0.75f; // sin波で0.5〜1.5の間を変動させる
+	m_pressKeySize = (cos(m_time) + 1.0f) * 0.3f + 0.75f; // sin波で0.5〜1.5の間を変動させる
+	// フェードの更新
+	m_fade->Update(elapsedTime);
 }
 
 //---------------------------------------------------------
@@ -175,53 +195,12 @@ void GameOverScene::Update(float elapsedTime)
 //---------------------------------------------------------
 void GameOverScene::Render()
 {
-	auto states = m_commonResources->GetCommonStates();
+	// スペースキー押してってやつ描画
+	DrawSpace();
 
-	// スプライトバッチの開始：オプションでソートモード、ブレンドステートを指定する
-	m_spriteBatch->Begin(SpriteSortMode_Deferred, states->NonPremultiplied());
+	// フェードの描画
+	m_fade->Render();
 
-	// タイトルロゴの描画位置を決める
-	RECT rect{ m_commonResources->GetDeviceResources()->GetOutputSize() };
-	// 画像の中心を計算する
-	Vector2 titlePos{ rect.right / 2.0f, rect.bottom / 2.0f };
-
-	// タイトルロゴを描画する
-	m_spriteBatch->Draw(
-		m_gameoverTexture.Get(),	// テクスチャ(SRV)
-		titlePos,				// スクリーンの表示位置(originの描画位置)
-		nullptr,			// 矩形(RECT)
-		Colors::White,		// 背景色
-		0.0f,				// 回転角(ラジアン)
-		m_titleTexCenter,		// テクスチャの基準になる表示位置(描画中心)(origin)
-		m_size,				// スケール(scale)
-		SpriteEffects_None,	// エフェクト(effects)
-		0.0f				// レイヤ深度(画像のソートで必要)(layerDepth)
-	);
-	// 画像の中心を計算する
-	Vector2 spacePos{ rect.right / 2.0f, rect.bottom / 1.2f };
-
-	// タイトルロゴを描画する
-	m_spriteBatch->Draw(
-		m_clearTexture.Get(),	// テクスチャ(SRV)
-		spacePos,				// スクリーンの表示位置(originの描画位置)
-		nullptr,			// 矩形(RECT)
-		Colors::White,		// 背景色
-		0.0f,				// 回転角(ラジアン)
-		m_pressKeyTexCenter,		// テクスチャの基準になる表示位置(描画中心)(origin)
-		m_cleatrSize,				// スケール(scale)
-		SpriteEffects_None,	// エフェクト(effects)
-		0.0f				// レイヤ深度(画像のソートで必要)(layerDepth)
-	);
-#ifdef _DEBUG
-	// 純粋にスプライトフォントで文字列を描画する方法
-	m_spriteFont->DrawString(m_spriteBatch.get(), L"GameOver Scene", Vector2(10, 40));
-
-	wchar_t buf[32];
-	swprintf_s(buf, 32, L"right : %d, bottom : %d", rect.right, rect.bottom);
-	m_spriteFont->DrawString(m_spriteBatch.get(), buf, Vector2(10, 70));
-#endif
-	// スプライトバッチの終わり
-	m_spriteBatch->End();
 }
 
 //---------------------------------------------------------
@@ -272,4 +251,58 @@ void GameOverScene::InitializeFMOD()
 	// BGMをロードする
 	result = m_system->createSound("Resources/Sounds/result.mp3", FMOD_LOOP_NORMAL, nullptr, &m_soundBGM);
 	assert(result == FMOD_OK);
+}
+
+//---------------------------------------------------------
+// スペースキー押してってやつ描画
+//---------------------------------------------------------
+void GameOverScene::DrawSpace()
+{
+	auto states = m_commonResources->GetCommonStates();
+
+	// スプライトバッチの開始：オプションでソートモード、ブレンドステートを指定する
+	m_spriteBatch->Begin(SpriteSortMode_Deferred, states->NonPremultiplied());
+
+	// タイトルロゴの描画位置を決める
+	RECT rect{ m_commonResources->GetDeviceResources()->GetOutputSize() };
+	// 画像の中心を計算する
+	Vector2 titlePos{ rect.right / 2.0f, rect.bottom / 2.0f };
+
+	// ゲームオーバーを描画する
+	m_spriteBatch->Draw(
+		m_gameoverTexture.Get(),	// テクスチャ(SRV)
+		titlePos,				// スクリーンの表示位置(originの描画位置)
+		nullptr,			// 矩形(RECT)
+		Colors::White,		// 背景色
+		0.0f,				// 回転角(ラジアン)
+		m_gameoverTexCenter,		// テクスチャの基準になる表示位置(描画中心)(origin)
+		Vector2::One,				// スケール(scale)
+		SpriteEffects_None,	// エフェクト(effects)
+		0.0f				// レイヤ深度(画像のソートで必要)(layerDepth)
+	);
+	// 画像の中心を計算する
+	Vector2 spacePos{ rect.right / 2.0f, rect.bottom / 1.2f };
+
+	// 指示を描画する
+	m_spriteBatch->Draw(
+		m_pressKeyTexture.Get(),	// テクスチャ(SRV)
+		spacePos,				// スクリーンの表示位置(originの描画位置)
+		nullptr,			// 矩形(RECT)
+		Colors::White,		// 背景色
+		0.0f,				// 回転角(ラジアン)
+		m_pressKeyTexCenter,		// テクスチャの基準になる表示位置(描画中心)(origin)
+		m_pressKeySize,				// スケール(scale)
+		SpriteEffects_None,	// エフェクト(effects)
+		0.0f				// レイヤ深度(画像のソートで必要)(layerDepth)
+	);
+#ifdef _DEBUG
+	// 純粋にスプライトフォントで文字列を描画する方法
+	m_spriteFont->DrawString(m_spriteBatch.get(), L"GameOver Scene", Vector2(10, 40));
+
+	wchar_t buf[32];
+	swprintf_s(buf, 32, L"right : %d, bottom : %d", rect.right, rect.bottom);
+	m_spriteFont->DrawString(m_spriteBatch.get(), buf, Vector2(10, 70));
+#endif
+	// スプライトバッチの終わり
+	m_spriteBatch->End();
 }

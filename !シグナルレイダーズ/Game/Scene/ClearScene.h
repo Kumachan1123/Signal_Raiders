@@ -35,11 +35,11 @@ private:
 	std::unique_ptr<DirectX::SpriteFont> m_spriteFont;
 
 	// タイトル画像
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_gameoverTexture;
-	// 指示
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_clearTexture;
+	// 指示
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pressKeyTexture;
 	// テクスチャの半分の大きさ
-	DirectX::SimpleMath::Vector2 m_titleTexCenter;
+	DirectX::SimpleMath::Vector2 m_clearTexCenter;
 	DirectX::SimpleMath::Vector2 m_pressKeyTexCenter;
 
 	// シーンチェンジフラグ
@@ -57,9 +57,10 @@ private:
 	int m_counter;		// フェードカウンタ
 	float m_time = 0.0f;// 拡縮に使う時間
 	float m_size = 0.0f;// 画像サイズ
-	float m_cleatrSize = 0.0f;
+	float m_pressKeySize = 0.0f;
 
 	// 画面遷移フェード
+	std::unique_ptr<Fade> m_fade;
 public:
 	ClearScene();
 	~ClearScene() override;
@@ -71,4 +72,6 @@ public:
 
 	SceneID GetNextSceneID() const;
 	void InitializeFMOD();
+private:
+	void DrawSpace();// スペースキー押してってやつ描画
 };

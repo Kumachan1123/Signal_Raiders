@@ -179,6 +179,11 @@ void PlayScene::Update(float elapsedTime)
 			enemy->SetEnemyHP(0);
 		}
 	}
+	// スペースキーでプレイヤーのHPを0にする
+	if (kb->pressed.Space)
+	{
+		m_playerHP = 0.0f;
+	}
 #endif
 
 
@@ -202,7 +207,8 @@ void PlayScene::Update(float elapsedTime)
 
 
 	UpdateEnemies(elapsedTime);
-
+	m_inPlayerArea.Center = m_playerController->GetPlayerPosition();// プレイヤーの位置を取得
+	m_PlayerSphere.Center = m_playerController->GetPlayerPosition();// プレイヤーの位置を取得
 	// パーティクルの更新
 	for (auto& particle : m_particles) particle->Update(elapsedTime);
 	// プレイヤーのHPが0以下なら
@@ -254,8 +260,7 @@ void PlayScene::Render()
 	m_basicEffect->SetProjection(projection);
 	m_basicEffect->Apply(context);
 
-	m_inPlayerArea.Center = m_playerController->GetPlayerPosition();
-	m_PlayerSphere.Center = m_playerController->GetPlayerPosition();
+
 #ifdef _DEBUG
 	m_primitiveBatch->Begin();
 	DX::Draw(m_primitiveBatch.get(), m_PlayerSphere, DirectX::Colors::PeachPuff);
