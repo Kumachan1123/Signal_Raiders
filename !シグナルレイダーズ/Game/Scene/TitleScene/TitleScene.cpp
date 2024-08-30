@@ -72,7 +72,7 @@ void  TitleScene::Create(DX::DeviceResources* pDR)
 	CreateShader();
 
 	//	画像の読み込み（2枚ともデフォルトは読み込み失敗でnullptr)
-	LoadTexture(L"Resources/Textures/Title_Text.png");
+	LoadTexture(L"Resources/Textures/Title.png");
 
 	//	プリミティブバッチの作成
 	m_batch = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(pDR->GetD3DDeviceContext());
@@ -165,15 +165,7 @@ void TitleScene::Initialize(CommonResources* resources)
 			m_pressKeyTexture.ReleaseAndGetAddressOf()
 		)
 	);
-	// 背景をロードする
-	DX::ThrowIfFailed(
-		CreateWICTextureFromFile(
-			device,
-			L"Resources/Textures/Back.png",
-			nullptr,
-			m_backgroundTexture.ReleaseAndGetAddressOf()
-		)
-	);
+
 
 
 
@@ -181,35 +173,25 @@ void TitleScene::Initialize(CommonResources* resources)
 		以下、テクスチャの大きさを求める→テクスチャの中心座標を計算する
 	*/
 	// 一時的な変数の宣言
-	Microsoft::WRL::ComPtr<ID3D11Resource> resource{};
 	Microsoft::WRL::ComPtr<ID3D11Resource> resource2{};
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> tex2D{};
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> tex2D2{};
-	D3D11_TEXTURE2D_DESC desc{};
 	D3D11_TEXTURE2D_DESC desc2{};
-	Vector2 texSize{};
 	Vector2 texSize2{};
 
 	// テクスチャの情報を取得する================================
 	// テクスチャをID3D11Resourceとして見る
 	m_pressKeyTexture->GetResource(resource2.GetAddressOf());
-	m_backgroundTexture->GetResource(resource.GetAddressOf());
 
 	// ID3D11ResourceをID3D11Texture2Dとして見る
-	resource.As(&tex2D);
 	resource2.As(&tex2D2);
 
 
 
 
 	//// テクスチャの中心位置を計算する
-	tex2D->GetDesc(&desc);
 	tex2D2->GetDesc(&desc2);
 
 	// テクスチャサイズを取得し、float型に変換する
-	texSize.x = static_cast<float>(desc.Width);
-	texSize.y = static_cast<float>(desc.Height);
-	m_titleTexCenter = texSize;
 	texSize2.x = static_cast<float>(desc2.Width);
 	texSize2.y = static_cast<float>(desc2.Height);
 	m_pressKeyTexCenter = texSize2 / 2.0f;
@@ -275,7 +257,7 @@ void TitleScene::Render()
 {
 
 	// 背景の描画
-	m_backGround->Render(m_view, m_proj);
+	m_backGround->Render();
 
 	// タイトルロゴの描画
 	DrawTitle();
@@ -388,10 +370,10 @@ void TitleScene::DrawTitle()
 	VertexPositionTexture vertex[4] =
 	{
 		//	頂点情報													UV情報
-		VertexPositionTexture(SimpleMath::Vector3(-0.85f,  0.45f, 0.0f), SimpleMath::Vector2(0.0f, 0.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(0.85f,  0.45f, 0.0f), SimpleMath::Vector2(1.0f, 0.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(0.85f, -0.25f, 0.0f), SimpleMath::Vector2(1.0f, 1.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(-0.85f, -0.25f, 0.0f), SimpleMath::Vector2(0.0f, 1.0f)),
+		VertexPositionTexture(SimpleMath::Vector3(-0.85f,  0.75f, 0.0f), SimpleMath::Vector2(0.0f, 0.0f)),
+		VertexPositionTexture(SimpleMath::Vector3(0.85f,  0.75f, 0.0f), SimpleMath::Vector2(1.0f, 0.0f)),
+		VertexPositionTexture(SimpleMath::Vector3(0.85f, -0.75f, 0.0f), SimpleMath::Vector2(1.0f, 1.0f)),
+		VertexPositionTexture(SimpleMath::Vector3(-0.85f, -0.75f, 0.0f), SimpleMath::Vector2(0.0f, 1.0f)),
 	};
 
 	//// Polygonを拡大・移動する

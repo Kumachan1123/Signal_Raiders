@@ -6,7 +6,7 @@
 #include "Game/Scene/IScene.h"
 #include <DeviceResources.h>
 #include "Game/Fade/Fade.h"
-#include "Game/Scene/TitleScene/BackGround/BackGround.h"
+#include "Game/Scene/BackGround/BackGround.h"
 // ‘O•ûéŒ¾
 class CommonResources;
 class Fade;
@@ -71,7 +71,7 @@ private:
 	DirectX::SimpleMath::Vector2 m_titleTexCenter;
 	DirectX::SimpleMath::Vector2 m_pressKeyTexCenter;
 
-
+	// ‹ó‚Ìs—ñ
 	DirectX::SimpleMath::Matrix m_world;
 	DirectX::SimpleMath::Matrix m_view;
 	DirectX::SimpleMath::Matrix m_proj;

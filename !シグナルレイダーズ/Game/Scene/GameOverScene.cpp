@@ -41,7 +41,8 @@ GameOverScene::GameOverScene()
 	m_time{ },
 	m_size{},
 	m_pressKeySize{},
-	m_fade{}
+	m_fade{},
+	m_backGround{ nullptr }
 {
 }
 
@@ -78,6 +79,9 @@ void GameOverScene::Initialize(CommonResources* resources)
 	m_fade->Create(DR);
 	m_fade->SetState(Fade::FadeState::FadeIn);
 	m_fade->SetTextureNum((int)(Fade::TextureNum::BLACK));
+	// 背景を作成する
+	m_backGround = std::make_unique<BackGround>(m_commonResources);
+	m_backGround->Create(DR);
 
 	// 画像をロードする
 	DX::ThrowIfFailed(
@@ -186,6 +190,9 @@ void GameOverScene::Update(float elapsedTime)
 	m_time += elapsedTime; // 時間をカウント
 	m_size = (sin(m_time) + 1.0f) * 0.3f + 0.75f; // sin波で0.5〜1.5の間を変動させる
 	m_pressKeySize = (cos(m_time) + 1.0f) * 0.3f + 0.75f; // sin波で0.5〜1.5の間を変動させる
+	// 背景の更新
+	m_backGround->Update(elapsedTime);
+
 	// フェードの更新
 	m_fade->Update(elapsedTime);
 }
@@ -195,8 +202,11 @@ void GameOverScene::Update(float elapsedTime)
 //---------------------------------------------------------
 void GameOverScene::Render()
 {
+	// 背景の描画
+	m_backGround->Render();
+
 	// スペースキー押してってやつ描画
-	DrawSpace();
+	if (m_fade->GetState() == Fade::FadeState::FadeInEnd)DrawSpace();
 
 	// フェードの描画
 	m_fade->Render();

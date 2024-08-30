@@ -5,9 +5,11 @@
 #pragma once
 #include "IScene.h"
 #include "Game/Fade/Fade.h"
+#include "Game/Scene/BackGround/BackGround.h"
 // 前方宣言
 class CommonResources;
 class Fade;
+class BackGround;
 namespace mylib
 {
 	class DebugCamera;
@@ -49,7 +51,10 @@ private:
 	FMOD::Sound* m_soundBGM;	// BGM用の音声データ
 	FMOD::Channel* m_channelSE;	// SEを再生するチャンネル
 	FMOD::Channel* m_channelBGM;// BGMを再生するチャンネル
-
+	// 空の行列
+	DirectX::SimpleMath::Matrix m_world;
+	DirectX::SimpleMath::Matrix m_view;
+	DirectX::SimpleMath::Matrix m_proj;
 	// フェードで使用する変数
 	bool m_isFade;		// フェードフラグ
 	float m_volume;		// ボリューム
@@ -59,6 +64,8 @@ private:
 	float m_pressKeySize = 0.0f;
 	// 画面遷移フェード
 	std::unique_ptr<Fade> m_fade;
+	// 背景
+	std::unique_ptr<BackGround> m_backGround;
 public:
 	GameOverScene();
 	~GameOverScene() override;

@@ -138,7 +138,7 @@ void  BackGround::Update(float elapsedTime)
 /// </summary>
 /// <param name="view">ビュー行列</param>
 /// <param name="proj">射影行列</param>
-void  BackGround::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void  BackGround::Render()
 {
 
 	ID3D11DeviceContext1* context = m_pDR->GetD3DDeviceContext();
@@ -156,8 +156,8 @@ void  BackGround::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 
 	// シェーダーに渡す追加のバッファを作成する(ConstBuffer)
 	ConstBuffer cbuff;
-	cbuff.matView = view.Transpose();
-	cbuff.matProj = proj.Transpose();
+	cbuff.matView = m_view.Transpose();
+	cbuff.matProj = m_proj.Transpose();
 	cbuff.matWorld = m_world.Transpose();
 	cbuff.Colors = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	cbuff.time = m_time;

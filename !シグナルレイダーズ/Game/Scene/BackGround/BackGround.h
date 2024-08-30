@@ -74,7 +74,7 @@ public:
 
 	void Update(float elapsedTime);
 
-	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+	void Render();
 private:
 
 	void CreateShader();
