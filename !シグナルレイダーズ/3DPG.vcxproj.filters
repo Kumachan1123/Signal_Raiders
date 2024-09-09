@@ -264,6 +264,7 @@
     <ClInclude Include="Game\Scene\GameOverScene.h" />
     <ClInclude Include="Game\Fade\Fade.h" />
     <ClInclude Include="Game\Scene\BackGround\BackGround.h" />
+    <ClInclude Include="Game\KumachiLib\AudioManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -376,6 +377,7 @@
     <ClCompile Include="Game\Scene\GameOverScene.cpp" />
     <ClCompile Include="Game\Fade\Fade.cpp" />
     <ClCompile Include="Game\Scene\BackGround\BackGround.cpp" />
+    <ClCompile Include="Game\KumachiLib\AudioManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

@@ -190,6 +190,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Game\CommonResources.h" />
     <ClInclude Include="Game\Fade\Fade.h" />
+    <ClInclude Include="Game\KumachiLib\AudioManager.h" />
     <ClInclude Include="Game\Particle\Particle.h" />
     <ClInclude Include="Game\Enemy\Enemy.h" />
     <ClInclude Include="Game\Enemy\EnemyAI\EnemyAI.h" />
@@ -247,6 +248,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Game\CommonResources.cpp" />
     <ClCompile Include="Game\Fade\Fade.cpp" />
+    <ClCompile Include="Game\KumachiLib\AudioManager.cpp" />
     <ClCompile Include="Game\Particle\Particle.cpp" />
     <ClCompile Include="Game\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Enemy\EnemyAI\EnemyAI.cpp" />

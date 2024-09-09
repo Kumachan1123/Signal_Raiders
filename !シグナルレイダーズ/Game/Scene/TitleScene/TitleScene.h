@@ -7,6 +7,7 @@
 #include <DeviceResources.h>
 #include "Game/Fade/Fade.h"
 #include "Game/Scene/BackGround/BackGround.h"
+#include "Game/KumachiLib/AudioManager.h"
 // 前方宣言
 class CommonResources;
 class Fade;
@@ -16,12 +17,7 @@ namespace mylib
 	class GridFloor;
 }
 class FPS_Camera;
-namespace FMOD
-{
-	class System;
-	class Sound;
-	class Channel;
-}
+
 class TitleScene final :
 	public IScene
 {
@@ -87,12 +83,13 @@ private:
 
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
-	// FMODで使用する変数（ポインタ）
-	FMOD::System* m_system;	// FMODのシステム
-	FMOD::Sound* m_soundSE;	// SE用の音声データ
-	FMOD::Sound* m_soundBGM;	// BGM用の音声データ
-	FMOD::Channel* m_channelSE;	// SEを再生するチャンネル
-	FMOD::Channel* m_channelBGM;// BGMを再生するチャンネル
+
+	// オーディオマネージャー
+	AudioManager* m_audioManager = AudioManager::GetInstance();
+	FMOD::Sound* m_soundSE;       // 効果音用の音声データ
+	FMOD::Sound* m_soundBGM;      // 背景音楽用の音声データ
+	FMOD::Channel* m_channelSE;   // 効果音用のチャンネル
+	FMOD::Channel* m_channelBGM;  // 背景音楽用のチャンネル
 	// FPSカメラ
 	std::unique_ptr<FPS_Camera> m_camera;
 	// フェードで使用する変数
