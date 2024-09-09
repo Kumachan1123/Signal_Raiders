@@ -17,10 +17,6 @@
 #include <Model.h>
 #include <Effects.h>
 #include <memory>
-
-// FMODのインクルード
-#include "Libraries/FMOD/inc/fmod.hpp"
-#include "Libraries/FMOD/inc/fmod_errors.h"
 #include <Libraries/Microsoft/DebugDraw.h>
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -61,6 +57,7 @@ PlayScene::PlayScene()
 PlayScene::~PlayScene()
 {
 	// do nothing.
+	Finalize();
 }
 //---------------------------------------------------------
 // 初期化する
@@ -148,13 +145,10 @@ void PlayScene::Update(float elapsedTime)
 	// キーボードステートトラッカーを取得する
 	const auto& kb = m_commonResources->GetInputManager()->GetKeyboardTracker();
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
-	FMOD_RESULT result;
+	// オーディオマネージャーのインスタンスを取得
+	auto audioManager = AudioManager::GetInstance();
 	// 二重再生しない
-	if (m_channelBGM == nullptr)
-	{
-		result = m_system->playSound(m_soundBGM, nullptr, false, &m_channelBGM);
-		assert(result == FMOD_OK);
-	}
+	audioManager->PlaySound("BGM", 0.3);
 
 	// カメラが向いている方向を取得する
 	DirectX::SimpleMath::Vector3 cameraDirection = m_camera->GetDirection();
@@ -190,8 +184,8 @@ void PlayScene::Update(float elapsedTime)
 	// 左クリックで弾発射
 	if (mtracker->GetLastState().leftButton && !m_isBullet)
 	{
-		result = m_system->playSound(m_soundSE, nullptr, false, &m_channelSE);
-		assert(result == FMOD_OK);
+		// SEの再生
+		audioManager->PlaySound("SE", .3);
 		auto bullet = std::make_unique<PlayerBullet>();
 		bullet->Initialize(m_commonResources);
 		bullet->MakeBall(m_playerController->GetPlayerPosition(), cameraDirection);
@@ -305,6 +299,8 @@ void PlayScene::Render()
 //---------------------------------------------------------
 void PlayScene::Finalize()
 {
+	// オーディオマネージャーのインスタンスを取得
+	auto audioManager = AudioManager::GetInstance();;
 	// do nothing.
 	m_playerBullets.clear();
 	m_enemy.clear();
@@ -315,9 +311,17 @@ void PlayScene::Finalize()
 	m_playerController.reset();
 	m_skybox.reset();
 	// Sound用のオブジェクトを解放する
-	m_soundSE->release();
-	m_soundBGM->release();
-	m_system->release();
+	if (m_soundSE)
+	{
+		m_soundSE->release();
+		m_soundSE = nullptr;
+	}
+	if (m_soundBGM)
+	{
+		m_soundBGM->release();
+		m_soundBGM = nullptr;
+	}
+	audioManager->Shutdown();
 }
 //---------------------------------------------------------
 // 次のシーンIDを取得する
@@ -502,19 +506,23 @@ void PlayScene::UpdateEnemies(float elapsedTime)
 //---------------------------------------------------------
 void PlayScene::InitializeFMOD()
 {
-	// システムをインスタンス化する
-	FMOD_RESULT result = FMOD::System_Create(&m_system);
-	assert(result == FMOD_OK);
+	// シングルトンのオーディオマネージャー
+		// AudioManagerのシングルトンインスタンスを取得
+	AudioManager* audioManager = AudioManager::GetInstance();
 
-	// システムを初期化する
-	result = m_system->init(32, FMOD_INIT_NORMAL, nullptr);
-	assert(result == FMOD_OK);
+	// FMODシステムの初期化
+	audioManager->Initialize();
 
-	// SEをロードする
-	result = m_system->createSound("Resources/Sounds/playerBullet.mp3", FMOD_DEFAULT, nullptr, &m_soundSE);
-	assert(result == FMOD_OK);
+	// 音声データのロード
+	// ここで必要な音声データをAudioManagerにロードさせる
+	audioManager->LoadSound("Resources/Sounds/playerBullet.mp3", "SE");
+	audioManager->LoadSound("Resources/Sounds/play.mp3", "BGM");
 
-	// BGMをロードする
-	result = m_system->createSound("Resources/Sounds/play.mp3", FMOD_LOOP_NORMAL, nullptr, &m_soundBGM);
-	assert(result == FMOD_OK);
+	// 音声データの取得
+	m_soundSE = audioManager->GetSound("SE");
+	m_soundBGM = audioManager->GetSound("BGM");
+
+	// 音声チャンネルを設定
+	m_channelSE = nullptr;
+	m_channelBGM = nullptr;
 }

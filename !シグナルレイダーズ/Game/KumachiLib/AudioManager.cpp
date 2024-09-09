@@ -16,7 +16,10 @@ AudioManager* const AudioManager::GetInstance()
 
 // コンストラクタ
 AudioManager::AudioManager()
-	: m_system(nullptr)
+	:
+	m_system(nullptr),
+	m_sounds(),
+	m_channels()
 {
 }
 
@@ -33,8 +36,8 @@ void AudioManager::Initialize()
 	m_system->init(512, FMOD_INIT_NORMAL, nullptr);
 }
 
-// 音を再生する
-// 音を再生する
+
+// 音を再生する(音声の種類key->"BGM","SE") (音量指定:min = 0,max = 1)
 void AudioManager::PlaySound(const std::string& soundKey, float volume)
 {
 	auto soundIt = m_sounds.find(soundKey);

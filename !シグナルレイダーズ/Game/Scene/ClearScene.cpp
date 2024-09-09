@@ -10,9 +10,6 @@
 #include "Libraries/MyLib/MemoryLeakDetector.h"
 #include "Libraries/MyLib/InputManager.h"
 #include <cassert>
-// FMODのインクルード
-#include "Libraries/FMOD/inc/fmod.hpp"
-#include "Libraries/FMOD/inc/fmod_errors.h"
 #include <Libraries/Microsoft/DebugDraw.h>
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -30,7 +27,6 @@ ClearScene::ClearScene()
 	m_pressKeyTexCenter{},
 	m_clearTexCenter{},
 	m_isChangeScene{},
-	m_system{ nullptr },
 	m_soundSE{ nullptr },
 	m_soundBGM{ nullptr },
 	m_channelSE{ nullptr },
@@ -52,6 +48,7 @@ ClearScene::ClearScene()
 ClearScene::~ClearScene()
 {
 	// do nothing.
+	Finalize();
 }
 
 //---------------------------------------------------------
@@ -159,18 +156,17 @@ void ClearScene::Update(float elapsedTime)
 {
 	// 宣言をしたが、実際は使用していない変数
 	UNREFERENCED_PARAMETER(elapsedTime);
-	FMOD_RESULT result;
-
+	// オーディオマネージャーのインスタンスを取得
+	auto audioManager = AudioManager::GetInstance();
 	// キーボードステートトラッカーを取得する
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
 
 	// スペースキーが押されたら
 	if (m_fade->GetState() == Fade::FadeState::FadeInEnd && kbTracker->pressed.Space)
 	{
-		result = m_system->playSound(m_soundSE, nullptr, false, &m_channelSE);
-		assert(result == FMOD_OK);
+		// SEの再生
+		audioManager->PlaySound("SE", .3);
 		// フェードアウトに移行
-
 		m_fade->SetState(Fade::FadeState::FadeOut);
 		m_fade->SetTextureNum((int)(Fade::TextureNum::BLACK));
 	}
@@ -179,13 +175,9 @@ void ClearScene::Update(float elapsedTime)
 	{
 		m_isChangeScene = true;
 	}
+	// BGMの再生
+	audioManager->PlaySound("BGM", 0.3);
 
-	// 二重再生しない
-	if (m_channelBGM == nullptr)
-	{
-		result = m_system->playSound(m_soundBGM, nullptr, false, &m_channelBGM);
-		assert(result == FMOD_OK);
-	}
 	// フェードに関する準備
 	m_time += elapsedTime; // 時間をカウント
 	m_size = (sin(m_time) + 1.0f) * 0.3f + 0.75f; // sin波で0.5〜1.5の間を変動させる
@@ -218,11 +210,22 @@ void ClearScene::Render()
 //---------------------------------------------------------
 void ClearScene::Finalize()
 {
-	// do nothing.
-		// Sound用のオブジェクトを解放する
-	m_soundSE->release();
-	m_soundBGM->release();
-	m_system->release();
+	// オーディオマネージャーのインスタンスを取得
+	auto audioManager = AudioManager::GetInstance();;
+	// Soundオブジェクトのリリース
+	if (m_soundSE)
+	{
+		m_soundSE->release();
+		m_soundSE = nullptr;
+	}
+
+	if (m_soundBGM)
+	{
+		m_soundBGM->release();
+		m_soundBGM = nullptr;
+	}
+
+	audioManager->Shutdown();
 }
 
 //---------------------------------------------------------
@@ -246,21 +249,26 @@ IScene::SceneID ClearScene::GetNextSceneID() const
 //---------------------------------------------------------
 void ClearScene::InitializeFMOD()
 {
-	// システムをインスタンス化する
-	FMOD_RESULT result = FMOD::System_Create(&m_system);
-	assert(result == FMOD_OK);
+	// シングルトンのオーディオマネージャー
+// AudioManagerのシングルトンインスタンスを取得
+	AudioManager* audioManager = AudioManager::GetInstance();
 
-	// システムを初期化する
-	result = m_system->init(32, FMOD_INIT_NORMAL, nullptr);
-	assert(result == FMOD_OK);
+	// FMODシステムの初期化
+	audioManager->Initialize();
 
-	// SEをロードする
-	result = m_system->createSound("Resources/Sounds/select.mp3", FMOD_DEFAULT, nullptr, &m_soundSE);
-	assert(result == FMOD_OK);
+	// 音声データのロード
+	// ここで必要な音声データをAudioManagerにロードさせる
+	audioManager->LoadSound("Resources/Sounds/select.mp3", "SE");
+	audioManager->LoadSound("Resources/Sounds/result.mp3", "BGM");
 
-	// BGMをロードする
-	result = m_system->createSound("Resources/Sounds/result.mp3", FMOD_LOOP_NORMAL, nullptr, &m_soundBGM);
-	assert(result == FMOD_OK);
+	// 音声データの取得
+	m_soundSE = audioManager->GetSound("SE");
+	m_soundBGM = audioManager->GetSound("BGM");
+
+	// 音声チャンネルを設定
+	m_channelSE = nullptr;
+	m_channelBGM = nullptr;
+
 }
 
 // スペースキー押してってやつ描画

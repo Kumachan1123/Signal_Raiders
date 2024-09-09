@@ -12,9 +12,7 @@
 #include "Libraries/MyLib/InputManager.h"
 #include <cassert>
 #include "Game/KumachiLib//BinaryFile.h"
-// FMODのインクルード
-#include "Libraries/FMOD/inc/fmod.hpp"
-#include "Libraries/FMOD/inc/fmod_errors.h"
+
 #include <Libraries/Microsoft/DebugDraw.h>
 // FPSカメラ
 #include "Game/FPS_Camera/FPS_Camera.h"
@@ -47,7 +45,11 @@ TitleScene::TitleScene()
 	m_fade{},
 	m_fadeState{ },
 	m_fadeTexNum{ 0 },
-	m_backGround{ nullptr }
+	m_backGround{ nullptr },
+	m_soundSE{ nullptr },
+	m_soundBGM{ nullptr },
+	m_channelSE{ nullptr },
+	m_channelBGM{ nullptr }
 {
 
 }
@@ -119,6 +121,7 @@ void  TitleScene::CreateShader()
 TitleScene::~TitleScene()
 {
 	// do nothing.
+	Finalize();
 }
 
 //---------------------------------------------------------
@@ -221,7 +224,7 @@ void TitleScene::Update(float elapsedTime)
 	if (m_fade->GetState() == Fade::FadeState::FadeInEnd && kbTracker->pressed.Space)
 	{
 		// SEの再生
-		audioManager->PlaySound("SE", 1);
+		audioManager->PlaySound("SE", .3);
 		// フェードアウトに移行
 
 		m_fade->SetState(Fade::FadeState::FadeOut);
@@ -233,7 +236,7 @@ void TitleScene::Update(float elapsedTime)
 	{
 		m_isChangeScene = true;
 	}
-
+	// BGMの再生
 	audioManager->PlaySound("BGM", 0.3);
 
 	m_time += elapsedTime; // 時間をカウント
@@ -311,7 +314,7 @@ IScene::SceneID TitleScene::GetNextSceneID() const
 void TitleScene::InitializeFMOD()
 {
 	// シングルトンのオーディオマネージャー
-	  // AudioManagerのシングルトンインスタンスを取得
+	// AudioManagerのシングルトンインスタンスを取得
 	AudioManager* audioManager = AudioManager::GetInstance();
 
 	// FMODシステムの初期化

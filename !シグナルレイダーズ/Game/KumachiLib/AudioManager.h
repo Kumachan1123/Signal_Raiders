@@ -54,8 +54,7 @@ private:
 
 	// FMOD関連のオブジェクト
 	FMOD::System* m_system;
-	FMOD::Sound* m_sound;
-	FMOD::Channel* m_channel;
+
 	std::unordered_map<std::string, FMOD::Channel*> m_channels;
 	std::unordered_map<std::string, FMOD::Sound*> m_sounds;
 	// シングルトンインスタンス

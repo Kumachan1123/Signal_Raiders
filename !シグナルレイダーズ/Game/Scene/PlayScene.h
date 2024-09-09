@@ -20,6 +20,7 @@
 #include "Game/Player/PlayerUI/PlayerPointer/PlayerPointer.h"
 #include "Game/Particle/Particle.h"
 #include "Game/Fade/Fade.h"
+#include "Game/KumachiLib/AudioManager.h"
 // 前方宣言
 class CommonResources;
 
@@ -30,12 +31,6 @@ namespace mylib
 	class GridFloor;
 }
 
-namespace FMOD
-{
-	class System;
-	class Sound;
-	class Channel;
-}
 class FPS_Camera;
 class Fade;
 class PlayScene final :
@@ -80,7 +75,8 @@ private:
 	// 追加の変数==========================================
 
 
-	// FMODで使用する変数（ポインタ）
+	// オーディオマネージャー
+	AudioManager* m_audioManager = AudioManager::GetInstance();
 	FMOD::System* m_system;	// FMODのシステム
 	FMOD::Sound* m_soundSE;	// SE用の音声データ
 	FMOD::Sound* m_soundBGM;	// BGM用の音声データ

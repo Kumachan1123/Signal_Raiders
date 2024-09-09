@@ -6,7 +6,7 @@
 #include "IScene.h"
 #include "Game/Fade/Fade.h"
 #include "Game/Scene/BackGround/BackGround.h"
-
+#include "Game/KumachiLib/AudioManager.h"
 // 前方宣言
 class CommonResources;
 class Fade;
@@ -17,12 +17,6 @@ namespace mylib
 	class GridFloor;
 }
 
-namespace FMOD
-{
-	class System;
-	class Sound;
-	class Channel;
-}
 class ClearScene final :
 	public IScene
 {
@@ -46,8 +40,8 @@ private:
 
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
-	// FMODで使用する変数（ポインタ）
-	FMOD::System* m_system;	// FMODのシステム
+	// オーディオマネージャー
+	AudioManager* m_audioManager = AudioManager::GetInstance();
 	FMOD::Sound* m_soundSE;	// SE用の音声データ
 	FMOD::Sound* m_soundBGM;	// BGM用の音声データ
 	FMOD::Channel* m_channelSE;	// SEを再生するチャンネル
