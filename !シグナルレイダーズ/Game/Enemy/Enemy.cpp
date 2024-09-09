@@ -163,6 +163,7 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 
 	// HPBar•`‰æ
 	m_HPBar->Render(view, proj, m_position, m_rotate);
+
 	// “G•`‰æ	
 	m_enemyModel->Render(context, states, enemyWorld, view, proj);
 
@@ -177,6 +178,7 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 		//** Plane(–@üA‹——£)FTK‚Ì«Ž¿ãA–@ü‚ÌŒü‚«‚ª‹t‚È‚Ì‚ÅA‚»‚ê‚ðl—¶‚·‚é
 	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, -0.01f));
 	Matrix mat = enemyWorld * shadowMatrix;
+
 	// ‰e•`‰æ
 	m_model->Draw(context, *states, mat * Matrix::Identity, view, proj, true, [&]()
 				  {
