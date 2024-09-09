@@ -77,11 +77,8 @@ private:
 
 	// オーディオマネージャー
 	AudioManager* m_audioManager = AudioManager::GetInstance();
-	FMOD::System* m_system;	// FMODのシステム
-	FMOD::Sound* m_soundSE;	// SE用の音声データ
-	FMOD::Sound* m_soundBGM;	// BGM用の音声データ
-	FMOD::Channel* m_channelSE;	// SEを再生するチャンネル
-	FMOD::Channel* m_channelBGM;// BGMを再生するチャンネル
+
+
 
 	// フェードで使用する変数
 	bool m_isFade;		// フェードフラグ

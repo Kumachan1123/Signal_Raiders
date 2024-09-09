@@ -44,10 +44,7 @@ private:
 
 	// オーディオマネージャー
 	AudioManager* m_audioManager = AudioManager::GetInstance();
-	FMOD::Sound* m_soundSE;	// SE用の音声データ
-	FMOD::Sound* m_soundBGM;	// BGM用の音声データ
-	FMOD::Channel* m_channelSE;	// SEを再生するチャンネル
-	FMOD::Channel* m_channelBGM;// BGMを再生するチャンネル
+
 	// 空の行列
 	DirectX::SimpleMath::Matrix m_world;
 	DirectX::SimpleMath::Matrix m_view;

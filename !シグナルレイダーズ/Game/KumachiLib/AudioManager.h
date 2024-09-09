@@ -33,9 +33,8 @@ public:
 	// 音を再生する
 	void PlaySound(const std::string& soundKey, float volume);
 
-
-	// 音声が再生中かどうかをチェック
-	bool IsSoundPlaying(const std::string& soundName) const;
+	// 音を停止する
+	void StopSound(const std::string& soundKey);
 
 	// 更新（FMODシステムの更新が必要）
 	void Update();

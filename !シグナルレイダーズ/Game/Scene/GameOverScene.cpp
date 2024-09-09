@@ -27,10 +27,6 @@ GameOverScene::GameOverScene()
 	m_pressKeyTexCenter{},
 	m_gameoverTexCenter{},
 	m_isChangeScene{},
-	m_soundSE{ nullptr },
-	m_soundBGM{ nullptr },
-	m_channelSE{ nullptr },
-	m_channelBGM{ nullptr },
 	m_isFade{},
 	m_volume{},
 	m_counter{},
@@ -213,19 +209,8 @@ void GameOverScene::Render()
 void GameOverScene::Finalize()
 {
 	// オーディオマネージャーのインスタンスを取得
-	auto audioManager = AudioManager::GetInstance();;
+	auto audioManager = AudioManager::GetInstance();
 	// Soundオブジェクトのリリース
-	if (m_soundSE)
-	{
-		m_soundSE->release();
-		m_soundSE = nullptr;
-	}
-
-	if (m_soundBGM)
-	{
-		m_soundBGM->release();
-		m_soundBGM = nullptr;
-	}
 
 	audioManager->Shutdown();
 }
@@ -235,10 +220,12 @@ void GameOverScene::Finalize()
 //---------------------------------------------------------
 IScene::SceneID GameOverScene::GetNextSceneID() const
 {
+	auto audioManager = AudioManager::GetInstance();
 	// シーン変更がある場合
 	if (m_isChangeScene)
 	{
-		m_channelBGM->stop();
+		audioManager->StopSound("SE");
+		audioManager->StopSound("BGM");
 		return IScene::SceneID::TITLE;
 	}
 
@@ -263,13 +250,7 @@ void GameOverScene::InitializeFMOD()
 	audioManager->LoadSound("Resources/Sounds/select.mp3", "SE");
 	audioManager->LoadSound("Resources/Sounds/result.mp3", "BGM");
 
-	// 音声データの取得
-	m_soundSE = audioManager->GetSound("SE");
-	m_soundBGM = audioManager->GetSound("BGM");
 
-	// 音声チャンネルを設定
-	m_channelSE = nullptr;
-	m_channelBGM = nullptr;
 
 }
 

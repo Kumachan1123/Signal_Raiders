@@ -33,11 +33,6 @@ PlayScene::PlayScene()
 	m_angle{},
 	m_camera{},
 	m_wifi{ nullptr },
-	m_system{ nullptr },
-	m_soundSE{ nullptr },
-	m_soundBGM{ nullptr },
-	m_channelSE{ nullptr },
-	m_channelBGM{ nullptr },
 	m_stage1{ nullptr },
 	m_particles{},
 	m_isFade{},
@@ -310,17 +305,7 @@ void PlayScene::Finalize()
 	m_camera.reset();
 	m_playerController.reset();
 	m_skybox.reset();
-	// Sound用のオブジェクトを解放する
-	if (m_soundSE)
-	{
-		m_soundSE->release();
-		m_soundSE = nullptr;
-	}
-	if (m_soundBGM)
-	{
-		m_soundBGM->release();
-		m_soundBGM = nullptr;
-	}
+
 	audioManager->Shutdown();
 }
 //---------------------------------------------------------
@@ -328,11 +313,14 @@ void PlayScene::Finalize()
 //---------------------------------------------------------
 IScene::SceneID PlayScene::GetNextSceneID() const
 {
+	// オーディオマネージャーのインスタンスを取得
+	auto audioManager = AudioManager::GetInstance();
 	// シーン変更がある場合
 	if (m_isChangeScene)
 	{
-		m_channelBGM->stop();// BGMを停止する
-		m_channelSE->stop();// SEを停止する
+		audioManager->StopSound("BGM");// BGMを停止する
+		audioManager->StopSound("SE");// SEを停止する
+
 		if (m_playerHP <= 0.0f)// プレイヤーのHPが0以下なら
 		{
 			return IScene::SceneID::GAMEOVER;// ゲームオーバーシーンへ
@@ -518,11 +506,5 @@ void PlayScene::InitializeFMOD()
 	audioManager->LoadSound("Resources/Sounds/playerBullet.mp3", "SE");
 	audioManager->LoadSound("Resources/Sounds/playbgm.mp3", "BGM");
 
-	// 音声データの取得
-	m_soundSE = audioManager->GetSound("SE");
-	m_soundBGM = audioManager->GetSound("BGM");
 
-	// 音声チャンネルを設定
-	m_channelSE = nullptr;
-	m_channelBGM = nullptr;
 }

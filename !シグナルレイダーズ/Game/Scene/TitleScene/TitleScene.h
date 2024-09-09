@@ -86,10 +86,7 @@ private:
 
 	// オーディオマネージャー
 	AudioManager* m_audioManager = AudioManager::GetInstance();
-	FMOD::Sound* m_soundSE;       // 効果音用の音声データ
-	FMOD::Sound* m_soundBGM;      // 背景音楽用の音声データ
-	FMOD::Channel* m_channelSE;   // 効果音用のチャンネル
-	FMOD::Channel* m_channelBGM;  // 背景音楽用のチャンネル
+
 	// FPSカメラ
 	std::unique_ptr<FPS_Camera> m_camera;
 	// フェードで使用する変数

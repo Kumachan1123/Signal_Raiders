@@ -123,15 +123,13 @@ FMOD::Sound* AudioManager::GetSound(const std::string& key) {
 	return (it != m_sounds.end()) ? it->second : nullptr;
 }
 
-bool AudioManager::IsSoundPlaying(const std::string& soundName) const
+// ‰¹‚ğ’â~‚·‚é
+void AudioManager::StopSound(const std::string& soundKey)
 {
-	auto it = m_channels.find(soundName);
-	if (it != m_channels.end())
+	auto channelIt = m_channels.find(soundKey);
+	if (channelIt != m_channels.end())
 	{
-		FMOD::Channel* channel = it->second;
-		bool isPlaying = false;
-		channel->isPlaying(&isPlaying);
-		return isPlaying;
+		FMOD::Channel* channel = channelIt->second;
+		channel->stop();
 	}
-	return false;
 }
