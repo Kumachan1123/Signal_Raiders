@@ -45,16 +45,19 @@ void AudioManager::PlaySound(const std::string& soundKey, float volume)
 	{
 		FMOD::Sound* sound = soundIt->second;
 
-		// 既に再生中のチャンネルが存在する場合は再生しない
-		auto channelIt = m_channels.find(soundKey);
-		if (channelIt != m_channels.end())
+		// BGMの場合、既に再生中のチャンネルが存在する場合は再生しない
+		if (soundKey == "BGM")
 		{
-			FMOD::Channel* existingChannel = channelIt->second;
-			bool isPlaying = false;
-			existingChannel->isPlaying(&isPlaying);
-			if (isPlaying)
+			auto channelIt = m_channels.find("BGM");
+			if (channelIt != m_channels.end())
 			{
-				return; // 既に再生中のため、何もしない
+				FMOD::Channel* existingChannel = channelIt->second;
+				bool isPlaying = false;
+				existingChannel->isPlaying(&isPlaying);
+				if (isPlaying)
+				{
+					return; // 既に再生中のため、何もしない
+				}
 			}
 		}
 

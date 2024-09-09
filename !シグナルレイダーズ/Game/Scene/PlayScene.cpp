@@ -516,7 +516,7 @@ void PlayScene::InitializeFMOD()
 	// 音声データのロード
 	// ここで必要な音声データをAudioManagerにロードさせる
 	audioManager->LoadSound("Resources/Sounds/playerBullet.mp3", "SE");
-	audioManager->LoadSound("Resources/Sounds/play.mp3", "BGM");
+	audioManager->LoadSound("Resources/Sounds/playbgm.mp3", "BGM");
 
 	// 音声データの取得
 	m_soundSE = audioManager->GetSound("SE");
