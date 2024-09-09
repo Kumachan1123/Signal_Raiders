@@ -32,6 +32,7 @@ public:
 		float time;
 		DirectX::SimpleMath::Vector3 padding;
 	};
+	ConstBuffer m_ConstBuffer;
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
@@ -85,7 +86,7 @@ private:
 	bool m_isChangeScene;
 
 	// オーディオマネージャー
-	AudioManager* m_audioManager = AudioManager::GetInstance();
+	AudioManager* m_audioManager;
 
 	// FPSカメラ
 	std::unique_ptr<FPS_Camera> m_camera;

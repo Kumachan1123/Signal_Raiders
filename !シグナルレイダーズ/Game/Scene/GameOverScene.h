@@ -43,7 +43,7 @@ private:
 	bool m_isChangeScene;
 
 	// オーディオマネージャー
-	AudioManager* m_audioManager = AudioManager::GetInstance();
+	AudioManager* m_audioManager;
 
 	// 空の行列
 	DirectX::SimpleMath::Matrix m_world;

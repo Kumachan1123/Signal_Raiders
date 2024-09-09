@@ -76,7 +76,7 @@ private:
 
 
 	// オーディオマネージャー
-	AudioManager* m_audioManager = AudioManager::GetInstance();
+	AudioManager* m_audioManager;
 
 
 

@@ -83,10 +83,12 @@ void PlayerBullet::Initialize(CommonResources* resources)
 	m_position = Vector3::Zero;
 	m_boundingSphere.Center = m_position;
 	m_boundingSphere.Radius = .25;
+
 }
 // XV
 void PlayerBullet::Update(DirectX::SimpleMath::Vector3& Direction, float elapsedTime)
 {
+
 	m_angle += 6.0f;
 	if (m_angle > 360)m_angle = 0;
 

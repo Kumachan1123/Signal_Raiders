@@ -32,9 +32,6 @@ private:
 	float m_angle;
 
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
-
-	// 「弾」境界ボックス
-	//DirectX::BoundingSphere m_boundingSphere;
 	// 	//デバッグ用
 	// ベーシックエフェクト
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;

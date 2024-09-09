@@ -13,7 +13,15 @@
 
 EnemyModel::EnemyModel()
 	:
-	m_commonResources{}
+	m_commonResources{},
+	m_headModel{},
+	m_antennaModel{},
+	m_attackFaceModel{},
+	m_handModel{},
+	m_idlingFaceModel{},
+	m_angryFaceModel{},
+	m_damageFaceModel{},
+	m_nowState{ IState::EnemyState::IDLING }
 {}
 EnemyModel::~EnemyModel() {}
 
@@ -36,6 +44,7 @@ void EnemyModel::Initialize(CommonResources* resources)
 }
 void EnemyModel::Update(float elapsedTime, IState::EnemyState State)
 {
+	UNREFERENCED_PARAMETER(elapsedTime);
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	m_nowState = State;

@@ -64,6 +64,11 @@ private:
 	// Particle‚É‚æ‚Á‚Ä‚‚³‚ğ•Ï‚¦‚é
 	float m_offSetY;
 
+	// ”Âƒ|ƒŠƒSƒ“‚Ì’¸“_À•W
+	float m_vertexMinX;
+	float m_vertexMaxX;
+	float m_vertexMinY;
+	float m_vertexMaxY;
 
 public:
 	static const DirectX::VertexPositionTexture Vertices[4];

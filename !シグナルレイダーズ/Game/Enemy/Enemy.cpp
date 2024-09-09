@@ -53,6 +53,7 @@ Enemy::Enemy()
 	, m_isHitToOtherEnemy{}
 	, m_isHitToPlayerBullet{}
 	, m_isBullethit{}
+	, m_audioManager{ AudioManager::GetInstance() }
 {}
 // デストラクタ
 Enemy::~Enemy() {}
@@ -135,10 +136,12 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 
 	m_enemyAI->SetPosition(m_position);
 
-
 	// 境界球の初期化
 	m_enemyBoundingSphere.Center = m_position;
 	m_enemyBoundingSphere.Radius = 1.5f;
+
+	// オーディオマネージャー
+	m_audioManager->LoadSound("Resources/Sound/EnemyBullet.mp3", "EnemyBullet");
 
 }
 // 描画
@@ -214,8 +217,9 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 // 更新
 void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 {
-	m_enemyModel->Update(elapsedTime, m_enemyAI->GetState());
-	m_enemyAI->Update(elapsedTime, m_position, playerPos, m_isHit, m_isHitToPlayerBullet);
+	m_enemyModel->Update(elapsedTime, m_enemyAI->GetState());// モデルのアニメーション更新
+	m_enemyAI->Update(elapsedTime, m_position, playerPos, m_isHit, m_isHitToPlayerBullet);// AIの更新
+	m_audioManager->Update();// オーディオマネージャーの更新
 	if (m_enemyAI->GetNowState() == m_enemyAI->GetEnemyAttack())// 攻撃態勢なら
 	{
 		m_attackCooldown = m_enemyAI->GetEnemyAttack()->GetCoolTime();
@@ -226,6 +230,7 @@ void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 			// 弾を発射
 			auto bullet = std::make_unique<EnemyBullet>();
 			bullet->Initialize(m_commonResources);
+			m_audioManager->PlaySound("EnemyBullet", 0.25);
 			m_rotation = m_enemyAI->GetRotation();
 			// クォータニオンから方向ベクトルを計算
 			DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_rotation);

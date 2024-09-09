@@ -4,6 +4,8 @@
 	作成者：くまち
 */
 #pragma once
+#include "Game/KumachiLib/AudioManager.h"
+
 //前方宣言
 class CommonResources;
 class PlayScene;
@@ -67,6 +69,9 @@ private:
 
 	// Player
 	const float PLAYER_DAMAGE = 1.0f;
+
+	// オーディオマネージャー
+	AudioManager* m_audioManager;
 public:
 	//	getter
 	DirectX::BoundingSphere& GetBoundingSphere() { return m_enemyBoundingSphere; }
@@ -85,7 +90,7 @@ public:
 	bool GetHitToPlayer()const { return m_isHit; }
 	bool GetHitToOtherEnemy() const { return m_isHitToOtherEnemy; }
 	bool GetBulletHitToPlayer() const { return m_isBullethit; }
-	bool GetHitToPlayerBullet() { return m_isHitToPlayerBullet; }
+	bool GetHitToPlayerBullet()const { return m_isHitToPlayerBullet; }
 	// setter
 	void SetBoundingSphereCenter(DirectX::SimpleMath::Vector3& cen) { m_enemyBoundingSphere.Center = cen; }
 	void SetPosition(DirectX::SimpleMath::Vector3& pos) { m_position = pos; }

@@ -21,7 +21,7 @@ Particle::Particle(CommonResources* resources, ParticleType type, DirectX::Simpl
 	, m_world{ world }
 	, m_isPlaying{ true }
 	, m_anim{ 0 }
-	, m_animSpeed{ 40 }
+	, m_animSpeed{ 30 }
 	, m_elapsedTime{ 0.0f }
 	, m_frameRows{}
 	, m_frameCols{}
@@ -39,18 +39,30 @@ Particle::Particle(CommonResources* resources, ParticleType type, DirectX::Simpl
 			m_frameRows = 4; // 画像の行数
 			m_frameCols = 5; // 画像の列数
 			m_offSetY = 2.0f;// 高さを変える
+			m_vertexMinX = -2.0f;
+			m_vertexMaxX = 2.0f;
+			m_vertexMinY = -2.0f;
+			m_vertexMaxY = 2.0f;
 			break;
 		case ParticleType::ENEMY_HIT:// 敵ヒットエフェクト
 			texturePath = L"Resources/Textures/hit.png";
 			m_frameRows = 2; // 画像の行数
 			m_frameCols = 4; // 画像の列数
 			m_offSetY = 2.0f;// 高さを変える
+			m_vertexMinX = -1.0f;
+			m_vertexMaxX = 1.0f;
+			m_vertexMinY = -1.0f;
+			m_vertexMaxY = 1.0f;
 			break;
 		case ParticleType::ENEMY_SPAWN:// 敵スポーンエフェクト
 			texturePath = L"Resources/Textures/Born.png";
 			m_frameRows = 4; // 画像の行数
 			m_frameCols = 4; // 画像の列数
 			m_offSetY = 2.0f;// 高さを変える
+			m_vertexMinX = -1.0f;
+			m_vertexMaxX = 1.0f;
+			m_vertexMinY = -1.0f;
+			m_vertexMaxY = 1.0f;
 			break;
 
 	}
@@ -112,6 +124,9 @@ void Particle::Render(ID3D11DeviceContext1* context, SimpleMath::Matrix view, Si
 	int currentRow = m_anim / m_frameCols;
 	int currentCol = m_anim % m_frameCols;
 
+
+
+	// テクスチャ座標の計算
 	float uMin = static_cast<float>(currentCol) / m_frameCols;
 	float vMin = static_cast<float>(currentRow) / m_frameRows;
 	float uMax = static_cast<float>(currentCol + 1) / m_frameCols;
@@ -119,10 +134,10 @@ void Particle::Render(ID3D11DeviceContext1* context, SimpleMath::Matrix view, Si
 
 	// 頂点情報
 	// 頂点情報（板ポリゴンの頂点）を上下反転
-	m_vertices[0] = { VertexPositionTexture(SimpleMath::Vector3(-1, 1, 0), SimpleMath::Vector2(uMin, vMax)) };
-	m_vertices[1] = { VertexPositionTexture(SimpleMath::Vector3(1, 1, 0), SimpleMath::Vector2(uMin, vMin)) };
-	m_vertices[2] = { VertexPositionTexture(SimpleMath::Vector3(1, -1, 0), SimpleMath::Vector2(uMax, vMin)) };
-	m_vertices[3] = { VertexPositionTexture(SimpleMath::Vector3(-1, -1, 0), SimpleMath::Vector2(uMax, vMax)) };
+	m_vertices[0] = { VertexPositionTexture(SimpleMath::Vector3(m_vertexMinX, m_vertexMaxY, 0), SimpleMath::Vector2(uMin, vMax)) };
+	m_vertices[1] = { VertexPositionTexture(SimpleMath::Vector3(m_vertexMaxX, m_vertexMaxY, 0), SimpleMath::Vector2(uMin, vMin)) };
+	m_vertices[2] = { VertexPositionTexture(SimpleMath::Vector3(m_vertexMaxX,m_vertexMinY, 0), SimpleMath::Vector2(uMax, vMin)) };
+	m_vertices[3] = { VertexPositionTexture(SimpleMath::Vector3(m_vertexMinX,m_vertexMinY, 0), SimpleMath::Vector2(uMax, vMax)) };
 
 	// プリミティブバッチ作成
 	m_Batch = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(context);

@@ -34,7 +34,8 @@ GameOverScene::GameOverScene()
 	m_size{},
 	m_pressKeySize{},
 	m_fade{},
-	m_backGround{ nullptr }
+	m_backGround{ nullptr },
+	m_audioManager{ AudioManager::GetInstance() }
 {
 }
 
@@ -153,18 +154,15 @@ void GameOverScene::Update(float elapsedTime)
 {
 	// 宣言をしたが、実際は使用していない変数
 	UNREFERENCED_PARAMETER(elapsedTime);
-	// オーディオマネージャーのインスタンスを取得
-	auto audioManager = AudioManager::GetInstance();
-
-
 	// キーボードステートトラッカーを取得する
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
-
+	// オーディオマネージャーの更新
+	m_audioManager->Update();
 	// スペースキーが押されたら
 	if (m_fade->GetState() == Fade::FadeState::FadeInEnd && kbTracker->pressed.Space)
 	{
 		// SEの再生
-		audioManager->PlaySound("SE", .3);
+		m_audioManager->PlaySound("SE", .3);
 		// フェードアウトに移行
 		m_fade->SetState(Fade::FadeState::FadeOut);
 		m_fade->SetTextureNum((int)(Fade::TextureNum::BLACK));
@@ -175,7 +173,7 @@ void GameOverScene::Update(float elapsedTime)
 		m_isChangeScene = true;
 	}
 	// BGMの再生
-	audioManager->PlaySound("BGM", 0.3);
+	m_audioManager->PlaySound("BGM", 0.3);
 	// フェードに関する準備
 	m_time += elapsedTime; // 時間をカウント
 	m_size = (sin(m_time) + 1.0f) * 0.3f + 0.75f; // sin波で0.5〜1.5の間を変動させる
@@ -208,11 +206,8 @@ void GameOverScene::Render()
 //---------------------------------------------------------
 void GameOverScene::Finalize()
 {
-	// オーディオマネージャーのインスタンスを取得
-	auto audioManager = AudioManager::GetInstance();
-	// Soundオブジェクトのリリース
-
-	audioManager->Shutdown();
+	// オーディオマネージャーのシャットダウン
+	m_audioManager->Shutdown();
 }
 
 //---------------------------------------------------------
@@ -220,12 +215,12 @@ void GameOverScene::Finalize()
 //---------------------------------------------------------
 IScene::SceneID GameOverScene::GetNextSceneID() const
 {
-	auto audioManager = AudioManager::GetInstance();
+
 	// シーン変更がある場合
 	if (m_isChangeScene)
 	{
-		audioManager->StopSound("SE");
-		audioManager->StopSound("BGM");
+		m_audioManager->StopSound("SE");
+		m_audioManager->StopSound("BGM");
 		return IScene::SceneID::TITLE;
 	}
 
@@ -238,17 +233,12 @@ IScene::SceneID GameOverScene::GetNextSceneID() const
 //---------------------------------------------------------
 void GameOverScene::InitializeFMOD()
 {
-	// シングルトンのオーディオマネージャー
-	// AudioManagerのシングルトンインスタンスを取得
-	AudioManager* audioManager = AudioManager::GetInstance();
-
 	// FMODシステムの初期化
-	audioManager->Initialize();
-
+	m_audioManager->Initialize();
 	// 音声データのロード
 	// ここで必要な音声データをAudioManagerにロードさせる
-	audioManager->LoadSound("Resources/Sounds/select.mp3", "SE");
-	audioManager->LoadSound("Resources/Sounds/result.mp3", "BGM");
+	m_audioManager->LoadSound("Resources/Sounds/select.mp3", "SE");
+	m_audioManager->LoadSound("Resources/Sounds/result.mp3", "BGM");
 
 
 

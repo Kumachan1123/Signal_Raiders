@@ -45,7 +45,18 @@ TitleScene::TitleScene()
 	m_fade{},
 	m_fadeState{ },
 	m_fadeTexNum{ 0 },
-	m_backGround{ nullptr }
+	m_backGround{ nullptr },
+	m_audioManager{ AudioManager::GetInstance() },
+	m_world{}, m_view{}, m_proj{},
+	m_batch{},
+	m_states{},
+	m_inputLayout{},
+	m_vertexShader{},
+	m_pixelShader{},
+	m_CBuffer{},
+	m_ConstBuffer{},
+	m_time{},
+	m_size{}
 {
 
 }
@@ -82,10 +93,7 @@ void  TitleScene::CreateShader()
 	kumachi::BinaryFile PSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/TitleScene/PS_Title.cso");
 
 	//	インプットレイアウトの作成
-	device->CreateInputLayout(&INPUT_LAYOUT[0],
-							  static_cast<UINT>(INPUT_LAYOUT.size()),
-							  VSData.GetData(), VSData.GetSize(),
-							  m_inputLayout.GetAddressOf());
+	device->CreateInputLayout(&INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), VSData.GetData(), VSData.GetSize(), m_inputLayout.GetAddressOf());
 
 	//	頂点シェーダ作成
 	if (FAILED(device->CreateVertexShader(VSData.GetData(), VSData.GetSize(), NULL, m_vertexShader.ReleaseAndGetAddressOf())))
@@ -211,8 +219,8 @@ void TitleScene::Update(float elapsedTime)
 {
 	// 宣言をしたが、実際は使用していない変数
 	UNREFERENCED_PARAMETER(elapsedTime);
-	// オーディオマネージャーのインスタンスを取得
-	auto audioManager = AudioManager::GetInstance();
+	// オーディオマネージャーの更新処理
+	m_audioManager->Update();
 	// キーボードステートトラッカーを取得する
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
 
@@ -220,7 +228,7 @@ void TitleScene::Update(float elapsedTime)
 	if (m_fade->GetState() == Fade::FadeState::FadeInEnd && kbTracker->pressed.Space)
 	{
 		// SEの再生
-		audioManager->PlaySound("SE", .3);
+		m_audioManager->PlaySound("SE", .3);
 		// フェードアウトに移行
 
 		m_fade->SetState(Fade::FadeState::FadeOut);
@@ -233,7 +241,7 @@ void TitleScene::Update(float elapsedTime)
 		m_isChangeScene = true;
 	}
 	// BGMの再生
-	audioManager->PlaySound("BGM", 0.3);
+	m_audioManager->PlaySound("BGM", 0.3);
 
 	m_time += elapsedTime; // 時間をカウント
 	m_size = (sin(m_time) + 1.0f) * 0.3f + 0.75f; // sin波で0.5〜1.5の間を変動させる
@@ -269,9 +277,8 @@ void TitleScene::Render()
 //---------------------------------------------------------
 void TitleScene::Finalize()
 {
-	// オーディオマネージャーのインスタンスを取得
-	auto audioManager = AudioManager::GetInstance();
-	audioManager->Shutdown();
+	// オーディオマネージャーの終了処理
+	m_audioManager->Shutdown();
 
 }
 
@@ -280,14 +287,13 @@ void TitleScene::Finalize()
 //---------------------------------------------------------
 IScene::SceneID TitleScene::GetNextSceneID() const
 {
-	// オーディオマネージャーのインスタンスを取得
-	auto audioManager = AudioManager::GetInstance();
+
 	// シーン変更がある場合
 	if (m_isChangeScene)
 	{
 		// BGMとSEの停止
-		audioManager->StopSound("BGM");
-		audioManager->StopSound("SE");
+		m_audioManager->StopSound("BGM");
+		m_audioManager->StopSound("SE");
 		return IScene::SceneID::PLAY;
 	}
 
@@ -300,17 +306,15 @@ IScene::SceneID TitleScene::GetNextSceneID() const
 //---------------------------------------------------------
 void TitleScene::InitializeFMOD()
 {
-	// シングルトンのオーディオマネージャー
-	// AudioManagerのシングルトンインスタンスを取得
-	AudioManager* audioManager = AudioManager::GetInstance();
 
 	// FMODシステムの初期化
-	audioManager->Initialize();
+	m_audioManager->Initialize();
 
 	// 音声データのロード
 	// ここで必要な音声データをAudioManagerにロードさせる
-	audioManager->LoadSound("Resources/Sounds/select.mp3", "SE");
-	audioManager->LoadSound("Resources/Sounds/title.mp3", "BGM");
+	// 例：audioManager->LoadSound("Resources/Sounds/音声.mp3", "チャンネル名");
+	m_audioManager->LoadSound("Resources/Sounds/select.mp3", "SE");
+	m_audioManager->LoadSound("Resources/Sounds/title.mp3", "BGM");
 }
 
 
@@ -375,20 +379,19 @@ void TitleScene::DrawTitle()
 	//}
 
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	ConstBuffer cbuff;
 	//	ビュー設定
-	cbuff.matView = m_view.Transpose();
+	m_ConstBuffer.matView = m_view.Transpose();
 	//	プロジェクション設定
-	cbuff.matProj = m_proj.Transpose();
+	m_ConstBuffer.matProj = m_proj.Transpose();
 	//	ワールド設定
-	cbuff.matWorld = m_world.Transpose();
-	cbuff.Colors = SimpleMath::Vector4(1, 1, 1, 10);
+	m_ConstBuffer.matWorld = m_world.Transpose();
+	m_ConstBuffer.Colors = SimpleMath::Vector4(1, 1, 1, 10);
 	// 時間設定
-	cbuff.time = m_time;
+	m_ConstBuffer.time = m_time;
 	//	パディング
-	cbuff.padding = SimpleMath::Vector3(0, 0, 0);
+	m_ConstBuffer.padding = SimpleMath::Vector3(0, 0, 0);
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(m_CBuffer.Get(), 0, NULL, &cbuff, 0, 0);
+	context->UpdateSubresource(m_CBuffer.Get(), 0, NULL, &m_ConstBuffer, 0, 0);
 
 	//	シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };

@@ -43,7 +43,8 @@ PlayScene::PlayScene()
 	m_enemyIndex{ 0 },
 	m_fade{},
 	m_fadeState{ },
-	m_fadeTexNum{ 2 }
+	m_fadeTexNum{ 2 },
+	m_audioManager{ AudioManager::GetInstance() }
 {
 }
 //---------------------------------------------------------
@@ -140,10 +141,8 @@ void PlayScene::Update(float elapsedTime)
 	// キーボードステートトラッカーを取得する
 	const auto& kb = m_commonResources->GetInputManager()->GetKeyboardTracker();
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
-	// オーディオマネージャーのインスタンスを取得
-	auto audioManager = AudioManager::GetInstance();
 	// 二重再生しない
-	audioManager->PlaySound("BGM", 0.3);
+	m_audioManager->PlaySound("BGM", 0.3);
 
 	// カメラが向いている方向を取得する
 	DirectX::SimpleMath::Vector3 cameraDirection = m_camera->GetDirection();
@@ -180,7 +179,8 @@ void PlayScene::Update(float elapsedTime)
 	if (mtracker->GetLastState().leftButton && !m_isBullet)
 	{
 		// SEの再生
-		audioManager->PlaySound("SE", .3);
+		m_audioManager->PlaySound("SE", .5);
+		// 弾を生成する
 		auto bullet = std::make_unique<PlayerBullet>();
 		bullet->Initialize(m_commonResources);
 		bullet->MakeBall(m_playerController->GetPlayerPosition(), cameraDirection);
@@ -191,11 +191,11 @@ void PlayScene::Update(float elapsedTime)
 	{
 		m_isBullet = false;
 	}
-	m_wifi->Update(elapsedTime);
-	UpdateBullets(elapsedTime);
 
-
-	UpdateEnemies(elapsedTime);
+	m_audioManager->Update();// オーディオマネージャーの更新
+	m_wifi->Update(elapsedTime);// Wi-Fiの更新
+	UpdateBullets(elapsedTime);// 弾の更新
+	UpdateEnemies(elapsedTime);// 敵の更新
 	m_inPlayerArea.Center = m_playerController->GetPlayerPosition();// プレイヤーの位置を取得
 	m_PlayerSphere.Center = m_playerController->GetPlayerPosition();// プレイヤーの位置を取得
 	// パーティクルの更新
@@ -294,8 +294,7 @@ void PlayScene::Render()
 //---------------------------------------------------------
 void PlayScene::Finalize()
 {
-	// オーディオマネージャーのインスタンスを取得
-	auto audioManager = AudioManager::GetInstance();;
+
 	// do nothing.
 	m_playerBullets.clear();
 	m_enemy.clear();
@@ -306,20 +305,20 @@ void PlayScene::Finalize()
 	m_playerController.reset();
 	m_skybox.reset();
 
-	audioManager->Shutdown();
+	m_audioManager->Shutdown();
 }
 //---------------------------------------------------------
 // 次のシーンIDを取得する
 //---------------------------------------------------------
 IScene::SceneID PlayScene::GetNextSceneID() const
 {
-	// オーディオマネージャーのインスタンスを取得
-	auto audioManager = AudioManager::GetInstance();
+
 	// シーン変更がある場合
 	if (m_isChangeScene)
 	{
-		audioManager->StopSound("BGM");// BGMを停止する
-		audioManager->StopSound("SE");// SEを停止する
+		m_audioManager->StopSound("BGM");// BGMを停止する
+		m_audioManager->StopSound("SE");// SEを停止する
+		m_audioManager->StopSound("EnemyDead");// 敵死亡SEを停止する
 
 		if (m_playerHP <= 0.0f)// プレイヤーのHPが0以下なら
 		{
@@ -365,6 +364,7 @@ void PlayScene::UpdateBullets(float elapsedTime)
 																	 enemy->GetPosition(),
 																	 enemy->GetMatrix()));
 					enemy->SetHitToPlayerBullet(true);
+					m_audioManager->PlaySound("Hit", 0.3);// ヒットSEを再生
 					break;
 				}
 			}
@@ -401,8 +401,6 @@ void PlayScene::UpdateEnemies(float elapsedTime)
 			// 敵を生成する
 			auto enemy = std::make_unique<Enemy>();
 			enemy->Initialize(m_commonResources, m_wifi->GetWifiLevels()[m_enemyIndex]);
-
-
 			m_enemy.push_back(std::move(enemy));
 			// タイマーをリセットし、次のWi-Fiレベルのインデックスに進む
 			m_enemyBornTimer = 0.0f;
@@ -447,6 +445,7 @@ void PlayScene::UpdateEnemies(float elapsedTime)
 		{
 			enemy->SetPlayerHP(m_playerHP);
 			enemy->SetBulletHitToPlayer(false);
+			m_audioManager->PlaySound("Damage", 0.5);// ダメージSEを再生
 		}
 		// 敵がプレイヤーに当たったら
 		if (enemy->GetBoundingSphere().Intersects(m_inPlayerArea))	m_isHitPlayerToEnemy = true;
@@ -473,7 +472,8 @@ void PlayScene::UpdateEnemies(float elapsedTime)
 															 Particle::ParticleType::ENEMY_DEAD,
 															 (*it)->GetPosition(),
 															 (*it)->GetMatrix()));
-
+			// 敵のSEを再生
+			m_audioManager->PlaySound("EnemyDead", 2);
 			// 削除対象に追加
 			enemiesToRemove.push_back(std::move(*it));
 
@@ -496,15 +496,20 @@ void PlayScene::InitializeFMOD()
 {
 	// シングルトンのオーディオマネージャー
 		// AudioManagerのシングルトンインスタンスを取得
-	AudioManager* audioManager = AudioManager::GetInstance();
+
 
 	// FMODシステムの初期化
-	audioManager->Initialize();
+	m_audioManager->Initialize();
 
 	// 音声データのロード
 	// ここで必要な音声データをAudioManagerにロードさせる
-	audioManager->LoadSound("Resources/Sounds/playerBullet.mp3", "SE");
-	audioManager->LoadSound("Resources/Sounds/playbgm.mp3", "BGM");
+	// 例：audioManager->LoadSound("Resources/Sounds/音声.mp3", "チャンネル名");
+	m_audioManager->LoadSound("Resources/Sounds/playerBullet.mp3", "SE");
+	m_audioManager->LoadSound("Resources/Sounds/playbgm.mp3", "BGM");
+	m_audioManager->LoadSound("Resources/Sounds/Explosion.mp3", "EnemyDead");
+	m_audioManager->LoadSound("Resources/Sounds/hit.mp3", "Hit");
+	m_audioManager->LoadSound("Resources/Sounds/damage.mp3", "Damage");
+	m_audioManager->LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet");
 
 
 }

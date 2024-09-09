@@ -34,7 +34,8 @@ ClearScene::ClearScene()
 	m_fade{},
 	m_size{},
 	m_pressKeySize{},
-	m_backGround{ nullptr }
+	m_backGround{ nullptr },
+	m_audioManager{ AudioManager::GetInstance() }
 {
 }
 
@@ -152,8 +153,8 @@ void ClearScene::Update(float elapsedTime)
 {
 	// 宣言をしたが、実際は使用していない変数
 	UNREFERENCED_PARAMETER(elapsedTime);
-	// オーディオマネージャーのインスタンスを取得
-	auto audioManager = AudioManager::GetInstance();
+	// オーディオマネージャーの更新
+	m_audioManager->Update();
 	// キーボードステートトラッカーを取得する
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
 
@@ -161,7 +162,7 @@ void ClearScene::Update(float elapsedTime)
 	if (m_fade->GetState() == Fade::FadeState::FadeInEnd && kbTracker->pressed.Space)
 	{
 		// SEの再生
-		audioManager->PlaySound("SE", .3);
+		m_audioManager->PlaySound("SE", .3);
 		// フェードアウトに移行
 		m_fade->SetState(Fade::FadeState::FadeOut);
 		m_fade->SetTextureNum((int)(Fade::TextureNum::BLACK));
@@ -172,7 +173,7 @@ void ClearScene::Update(float elapsedTime)
 		m_isChangeScene = true;
 	}
 	// BGMの再生
-	audioManager->PlaySound("BGM", 0.3);
+	m_audioManager->PlaySound("BGM", 0.3);
 
 	// フェードに関する準備
 	m_time += elapsedTime; // 時間をカウント
@@ -206,9 +207,8 @@ void ClearScene::Render()
 //---------------------------------------------------------
 void ClearScene::Finalize()
 {
-	// オーディオマネージャーのインスタンスを取得
-	auto audioManager = AudioManager::GetInstance();
-	audioManager->Shutdown();
+	// オーディオマネージャーのシャットダウン		
+	m_audioManager->Shutdown();
 }
 
 //---------------------------------------------------------
@@ -216,13 +216,13 @@ void ClearScene::Finalize()
 //---------------------------------------------------------
 IScene::SceneID ClearScene::GetNextSceneID() const
 {
-	auto audioManager = AudioManager::GetInstance();
+
 	// シーン変更がある場合
 	if (m_isChangeScene)
 	{
 		// BGMとSEの停止
-		audioManager->StopSound("BGM");
-		audioManager->StopSound("SE");
+		m_audioManager->StopSound("BGM");
+		m_audioManager->StopSound("SE");
 
 		return IScene::SceneID::TITLE;
 	}
@@ -237,16 +237,13 @@ IScene::SceneID ClearScene::GetNextSceneID() const
 void ClearScene::InitializeFMOD()
 {
 	// シングルトンのオーディオマネージャー
-// AudioManagerのシングルトンインスタンスを取得
-	AudioManager* audioManager = AudioManager::GetInstance();
-
 	// FMODシステムの初期化
-	audioManager->Initialize();
+	m_audioManager->Initialize();
 
 	// 音声データのロード
 	// ここで必要な音声データをAudioManagerにロードさせる
-	audioManager->LoadSound("Resources/Sounds/select.mp3", "SE");
-	audioManager->LoadSound("Resources/Sounds/result.mp3", "BGM");
+	m_audioManager->LoadSound("Resources/Sounds/select.mp3", "SE");
+	m_audioManager->LoadSound("Resources/Sounds/result.mp3", "BGM");
 }
 
 // スペースキー押してってやつ描画
