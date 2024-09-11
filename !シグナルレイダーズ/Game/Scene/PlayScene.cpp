@@ -272,7 +272,7 @@ void PlayScene::Render()
 
 	// パーティクルを描画する
 	m_particles.erase
-	(std::remove_if(m_particles.begin(), m_particles.end(), [&](const std::unique_ptr<Particle>& particle)//	再生終了したパーティクルを削除する
+	(std::remove_if(m_particles.begin(), m_particles.end(), [&](const std::unique_ptr<Effect>& particle)//	再生終了したパーティクルを削除する
 					{
 						if (!particle->IsPlaying()) return true;// 再生終了したパーティクルは削除する
 						particle->Render(context, view, projection);// パーティクルを描画する
@@ -359,10 +359,10 @@ void PlayScene::UpdateBullets(float elapsedTime)
 					isHit = true;
 					m_count++;//debug
 					enemy->SetEnemyHP(enemy->GetHP() - (*it)->Damage());
-					m_particles.push_back(std::make_unique<Particle>(m_commonResources,
-																	 Particle::ParticleType::ENEMY_HIT,
-																	 enemy->GetPosition(),
-																	 enemy->GetMatrix()));
+					m_particles.push_back(std::make_unique<Effect>(m_commonResources,
+																   Effect::ParticleType::ENEMY_HIT,
+																   enemy->GetPosition(),
+																   enemy->GetMatrix()));
 					enemy->SetHitToPlayerBullet(true);
 					m_audioManager->PlaySound("Hit", 0.3);// ヒットSEを再生
 					break;
@@ -468,10 +468,10 @@ void PlayScene::UpdateEnemies(float elapsedTime)
 		{
 
 			// 敵の座標を渡して爆破エフェクトを再生
-			m_particles.push_back(std::make_unique<Particle>(m_commonResources,
-															 Particle::ParticleType::ENEMY_DEAD,
-															 (*it)->GetPosition(),
-															 (*it)->GetMatrix()));
+			m_particles.push_back(std::make_unique<Effect>(m_commonResources,
+														   Effect::ParticleType::ENEMY_DEAD,
+														   (*it)->GetPosition(),
+														   (*it)->GetMatrix()));
 			// 敵のSEを再生
 			m_audioManager->PlaySound("EnemyDead", 2);
 			// 削除対象に追加

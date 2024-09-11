@@ -18,7 +18,7 @@
 #include "Game/Stages/Stage1.h"
 #include "Game/Player/PlayerUI/PlayerHP/PlayerHP.h"
 #include "Game/Player/PlayerUI/PlayerPointer/PlayerPointer.h"
-#include "Game/Particle/Particle.h"
+#include "Game/Effect/Effect.h"
 #include "Game/Fade/Fade.h"
 #include "Game/KumachiLib/AudioManager.h"
 // 前方宣言
@@ -64,7 +64,7 @@ private:
 	// 射影行列
 	DirectX::SimpleMath::Matrix m_projection;
 	// Particle
-	std::vector<std::unique_ptr<Particle>> m_particles;
+	std::vector<std::unique_ptr<Effect>> m_particles;
 	// フェード
 	std::unique_ptr<Fade> m_fade;
 	// フェードの状態

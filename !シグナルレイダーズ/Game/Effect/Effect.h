@@ -6,7 +6,7 @@
 #include "Libraries/MyLib/DebugString.h"
 class CommonResources;
 
-class Particle
+class Effect
 {
 public:
 	enum class ParticleType
@@ -74,8 +74,8 @@ public:
 	static const DirectX::VertexPositionTexture Vertices[4];
 public:
 
-	Particle(CommonResources* resources, ParticleType type, DirectX::SimpleMath::Vector3 PlayPos, DirectX::SimpleMath::Matrix world);// デバイスと再生位置を受け取る
-	~Particle();
+	Effect(CommonResources* resources, ParticleType type, DirectX::SimpleMath::Vector3 PlayPos, DirectX::SimpleMath::Matrix world);// デバイスと再生位置を受け取る
+	~Effect();
 	void Update(float elapsedTime);
 	void Render(ID3D11DeviceContext1* context, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 	void Finalize();

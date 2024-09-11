@@ -6,15 +6,15 @@
 #include "pch.h"
 #include <VertexTypes.h> 
 #include <WICTextureLoader.h> 
-#include "Particle.h"
+#include "Effect.h"
 
 
 
 using namespace DirectX;
 
 
-Particle::Particle(CommonResources* resources, ParticleType type, DirectX::SimpleMath::Vector3 PlayPos, DirectX::SimpleMath::Matrix world)
-	:m_position{ PlayPos }
+Effect::Effect(CommonResources* resources, ParticleType type, DirectX::SimpleMath::Vector3 PlayPos, DirectX::SimpleMath::Matrix world)
+	: m_position{ PlayPos }
 	, m_type{ type }
 	, m_scale{ 3.0f }
 	, m_commonResources{ resources }
@@ -31,7 +31,7 @@ Particle::Particle(CommonResources* resources, ParticleType type, DirectX::Simpl
 {
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 
-	const wchar_t* texturePath = nullptr;
+	const wchar_t* texturePath = L"Resources/Textures/effect.png";// テクスチャパスを仮設定
 	switch (m_type)
 	{
 		case ParticleType::ENEMY_DEAD:// 敵死亡エフェクト
@@ -99,9 +99,9 @@ Particle::Particle(CommonResources* resources, ParticleType type, DirectX::Simpl
 	// アニメーション再生中
 	m_isPlaying = true;
 }
-Particle::~Particle() {}
+Effect::~Effect() {}
 
-void Particle::Update(float elapsedTime)
+void Effect::Update(float elapsedTime)
 {
 	m_elapsedTime += elapsedTime * m_animSpeed;
 	if (m_elapsedTime >= 1.0f)
@@ -116,7 +116,7 @@ void Particle::Update(float elapsedTime)
 	}
 }
 
-void Particle::Render(ID3D11DeviceContext1* context, SimpleMath::Matrix view, SimpleMath::Matrix proj)
+void Effect::Render(ID3D11DeviceContext1* context, SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
@@ -199,7 +199,7 @@ void Particle::Render(ID3D11DeviceContext1* context, SimpleMath::Matrix view, Si
 
 }
 
-void Particle::Finalize()
+void Effect::Finalize()
 {
 
 }
