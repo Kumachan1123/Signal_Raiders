@@ -148,9 +148,8 @@ void PlayScene::Update(float elapsedTime)
 	DirectX::SimpleMath::Vector3 cameraDirection = m_camera->GetDirection();
 	m_playerController->Update(kb, cameraDirection, elapsedTime);
 
-	// ZZ‚ð‰ñ“]‚·‚é
-	m_angle += 0.025f;
-	if (m_angle > 360)m_angle = 0;
+
+
 	// FPSƒJƒƒ‰ˆÊ’u‚ðXV‚·‚é
 	m_camera->Update(m_playerController->GetPlayerPosition(), m_playerController->GetYawX());
 	m_camera->SetTargetPositionY(m_playerController->GetPitch());
@@ -229,13 +228,13 @@ void PlayScene::Render()
 	// ƒJƒƒ‰‚©‚çƒrƒ…[s—ñ‚ÆŽË‰es—ñ‚ðŽæ“¾‚·‚é
 	Matrix view = m_camera->GetViewMatrix();
 	Matrix projection = m_camera->GetProjectionMatrix();
-	Matrix skyWorld = Matrix::CreateRotationY(XMConvertToRadians(m_angle));
+	Matrix skyWorld = Matrix::Identity;
 	skyWorld *= Matrix::CreateScale(10);
 #ifdef _DEBUG
 	// ŠiŽq°‚ð•`‰æ‚·‚é
 	m_gridFloor->Render(context, view, projection);
 #endif
-	// ƒXƒJƒCƒ{ƒbƒNƒX•`‰æ
+	// “V‹…•`‰æ
 	m_skybox->Render(view, projection, skyWorld, m_playerController->GetPlayerPosition());
 	// ’n–Ê•`‰æ
 	m_stage1->Render(view, projection);
