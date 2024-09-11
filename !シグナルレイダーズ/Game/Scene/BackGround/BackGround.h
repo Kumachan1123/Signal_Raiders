@@ -27,10 +27,10 @@ public:
 		DirectX::SimpleMath::Matrix matWorld;   // ワールド行列
 		DirectX::SimpleMath::Matrix matView;    // ビュー行列
 		DirectX::SimpleMath::Matrix matProj;    // プロジェクション行列
-		DirectX::SimpleMath::Vector4 Colors;    // カラー
-		float time;                             // 強度
+		DirectX::SimpleMath::Vector4 colors;    // カラー
+		float time;                             // 時間
 		DirectX::SimpleMath::Vector3 padding;// パディング
-	};
+	}m_cbuff;
 
 private:
 	//	変数

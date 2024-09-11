@@ -36,6 +36,7 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC>  BackGround::INPUT_LAYOUT =
 BackGround::BackGround(CommonResources* resources)
 	:m_pDR(nullptr)
 	, m_time(0.0f)
+	, m_cbuff()
 {
 	m_commonResources = resources;
 }
@@ -155,17 +156,17 @@ void  BackGround::Render()
 
 
 	// シェーダーに渡す追加のバッファを作成する(ConstBuffer)
-	ConstBuffer cbuff;
-	cbuff.matView = m_view.Transpose();
-	cbuff.matProj = m_proj.Transpose();
-	cbuff.matWorld = m_world.Transpose();
-	cbuff.Colors = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	cbuff.time = m_time;
+
+	m_cbuff.matView = m_view.Transpose();
+	m_cbuff.matProj = m_proj.Transpose();
+	m_cbuff.matWorld = m_world.Transpose();
+	m_cbuff.colors = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_cbuff.time = m_time;
 
 
 	// フェード
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(m_CBuffer.Get(), 0, NULL, &cbuff, 0, 0);
+	context->UpdateSubresource(m_CBuffer.Get(), 0, NULL, &m_cbuff, 0, 0);
 
 	//	シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };

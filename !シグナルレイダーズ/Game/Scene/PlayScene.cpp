@@ -68,6 +68,7 @@ void PlayScene::Initialize(CommonResources* resources)
 	auto states = m_commonResources->GetCommonStates();
 	auto DR = m_commonResources->GetDeviceResources();
 
+	// Wi-Fi‚ğ‰Šú‰»‚·‚é
 	m_wifi = std::make_unique<Wifi>();
 	m_wifi->Initialize();
 	// ƒOƒŠƒbƒh°‚ğì¬‚·‚é
@@ -267,9 +268,7 @@ void PlayScene::Render()
 	{
 		for (const auto& enemy : m_enemy)
 		{
-
 			enemy->Render(view, projection);
-
 		}
 	}
 
