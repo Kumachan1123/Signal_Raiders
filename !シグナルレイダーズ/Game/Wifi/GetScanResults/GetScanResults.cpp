@@ -40,12 +40,13 @@ void GetScanResults::Set(PWLAN_AVAILABLE_NETWORK_LIST& pNetworkList, DWORD& dwRe
 									NULL,
 									&pNetworkList);
 	if (dwResult != ERROR_SUCCESS)
-	{  // ネットワーク情報を格納するvectorに適当なデータを追加
+	{
+		// ネットワーク情報を格納するvectorに適当なデータを追加
 
-
-		WlanFreeMemory(pInterfaceList);
-		WlanCloseHandle(hClient, NULL);
 		return;
+		/*WlanFreeMemory(pInterfaceList);
+		WlanCloseHandle(hClient, NULL);*/
+
 	}
 }
 

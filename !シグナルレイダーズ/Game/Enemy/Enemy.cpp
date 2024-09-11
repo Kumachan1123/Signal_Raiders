@@ -175,7 +175,7 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	//Vector3 lightDir = Vector3{ 0.5f,1.0f,-0.5f };
 	lightDir.Normalize();
 	// 影行列の元を作る
-		//** Plane(法線、距離)：TKの性質上、法線の向きが逆なので、それを考慮する
+	// Plane(法線、距離)：TKの性質上、法線の向きが逆なので、それを考慮する
 	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, -0.01f));
 	Matrix mat = enemyWorld * shadowMatrix;
 
@@ -268,6 +268,8 @@ void Enemy::CheckHitOtherEnemy(DirectX::BoundingSphere& A, DirectX::BoundingSphe
 	// ⑥を使用して、Ａの座標とＡのコライダー座標を更新する（実際に押し戻す）
 	m_position += pushBackVec;
 	A.Center = m_position;
+	A.Center.y -= 2.0f;
+
 }
 
 

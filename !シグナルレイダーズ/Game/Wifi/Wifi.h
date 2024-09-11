@@ -36,9 +36,9 @@ private:
 
 	// wi-fi関連の変数
 		// クラスいろいろ
-	std::unique_ptr<UpdateInfo>				 m_UpdateInfo;
-	std::unique_ptr<Output>					 m_Output;
-	std::unique_ptr<ReleaseMemory>			 m_Memory;
+	std::unique_ptr<UpdateInfo>				 m_updateInfo;
+	std::unique_ptr<Output>					 m_output;
+	std::unique_ptr<ReleaseMemory>			 m_memory;
 	// Wi-Fi関連の宣言
 	DWORD  dwMaxClient; // 最大のクライアント数
 	HANDLE hClient;

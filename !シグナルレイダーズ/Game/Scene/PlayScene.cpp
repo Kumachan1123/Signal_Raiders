@@ -41,6 +41,7 @@ PlayScene::PlayScene()
 	m_enemyBornTimer{ 0.0f },
 	m_enemyBornInterval{ 0.5f },
 	m_enemyIndex{ 0 },
+	m_startTime{ 0.0f },
 	m_fade{},
 	m_fadeState{ },
 	m_fadeTexNum{ 2 },
@@ -92,7 +93,7 @@ void PlayScene::Initialize(CommonResources* resources)
 	// プリミティブバッチを作成する
 	m_primitiveBatch = std::make_unique<DX11::PrimitiveBatch<DX11::VertexPositionColor>>(context);
 	m_inPlayerArea.Radius = 20.0f;
-	m_PlayerSphere.Radius = 2.0f;
+	m_playerSphere.Radius = 2.0f;
 	// HPゲージ作成
 	m_pPlayerHP = std::make_unique<PlayerHP>();
 	m_pPlayerHP->Initialize(DR, 1280, 720);
@@ -196,7 +197,7 @@ void PlayScene::Update(float elapsedTime)
 	UpdateBullets(elapsedTime);// 弾の更新
 	UpdateEnemies(elapsedTime);// 敵の更新
 	m_inPlayerArea.Center = m_playerController->GetPlayerPosition();// プレイヤーの位置を取得
-	m_PlayerSphere.Center = m_playerController->GetPlayerPosition();// プレイヤーの位置を取得
+	m_playerSphere.Center = m_playerController->GetPlayerPosition();// プレイヤーの位置を取得
 	// パーティクルの更新
 	for (auto& particle : m_particles) particle->Update(elapsedTime);
 	// プレイヤーのHPが0以下なら
@@ -214,6 +215,9 @@ void PlayScene::Update(float elapsedTime)
 	{
 		m_isChangeScene = true;
 	}
+
+	// 敵を生成するまでの待機時間５秒カウントする
+	m_startTime += elapsedTime;
 }
 
 //---------------------------------------------------------
@@ -251,7 +255,7 @@ void PlayScene::Render()
 
 #ifdef _DEBUG
 	m_primitiveBatch->Begin();
-	DX::Draw(m_primitiveBatch.get(), m_PlayerSphere, DirectX::Colors::PeachPuff);
+	DX::Draw(m_primitiveBatch.get(), m_playerSphere, DirectX::Colors::PeachPuff);
 	m_primitiveBatch->End();
 #endif
 
@@ -391,9 +395,9 @@ void PlayScene::UpdateEnemies(float elapsedTime)
 	// 敵生成・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
 	// 敵生成タイマーを更新
 	m_enemyBornTimer += elapsedTime;
-	if (!m_isEnemyBorn && m_wifi->GetPreWifiLevels().empty())m_isEnemyBorn = true;//生成可能にする
+	if (m_startTime >= 5.0f)m_isEnemyBorn = true;//生成可能にする
 	// 生成可能なら
-	if (m_isEnemyBorn && !m_isBorned && m_enemyIndex < m_wifi->GetWifiLevels().size())
+	if (m_isEnemyBorn && !m_isBorned && m_enemyIndex < m_wifi->GetWifiLevels().size())//m_wifi->GetWifiLevels().size()
 	{
 		if (m_enemyBornTimer >= m_enemyBornInterval)// 一定時間経過したら
 		{
@@ -447,11 +451,22 @@ void PlayScene::UpdateEnemies(float elapsedTime)
 			m_audioManager->PlaySound("Damage", 0.5);// ダメージSEを再生
 		}
 		// 敵がプレイヤーに当たったら
-		if (enemy->GetBoundingSphere().Intersects(m_inPlayerArea))	m_isHitPlayerToEnemy = true;
-
+		if (enemy->GetBoundingSphere().Intersects(m_inPlayerArea))
+		{
+			m_isHitPlayerToEnemy = true;
+			// 押し返し用にプレイヤーの一定範囲境界球をローカル変数にコピー
+			BoundingSphere playerSphere = m_inPlayerArea;
+			// 境界球の範囲を調整
+			playerSphere.Radius /= 3.0f;
+			// プレイヤーの境界球と敵の境界球が重なっていたら
+			if (enemy->GetBoundingSphere().Intersects(playerSphere))
+			{
+				enemy->CheckHitOtherEnemy(enemy->GetBoundingSphere(), playerSphere);
+			}
+		}
 		// プレイヤーと敵の当たり判定を設定
 		enemy->SetHitToPlayer(m_isHitPlayerToEnemy);
-		enemy->SetPlayerBoundingSphere(m_PlayerSphere);
+		enemy->SetPlayerBoundingSphere(m_playerSphere);
 	}
 
 	// 敵の削除・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・

@@ -67,6 +67,10 @@ void UpdateInfo::Set(DWORD& dwResult,
 	m_StartScan->Set(dwResult, hClient, pInterfaceList);
 	// スキャン結果の取得
 	m_GetResults->Set(pNetworkList, dwResult, hClient, pInterfaceList, networkInfos, preWifilevels);
+	if (dwResult != ERROR_SUCCESS)
+	{
+		return;
+	}
 	// 表示準備
 	m_Preparation->Set(displayedSSIDs, count, networkInfos);
 	// スキャン結果の処理

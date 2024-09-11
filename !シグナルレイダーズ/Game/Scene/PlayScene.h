@@ -107,6 +107,8 @@ private:
 	std::unique_ptr<DirectX::Model> m_model;
 	// 回転角(度)
 	float m_angle;
+	// 生成開始時間
+	float m_startTime;
 	// 弾の移動
 	DirectX::SimpleMath::Vector3 m_ballPos;
 	DirectX::SimpleMath::Vector3 m_ballDirection;
@@ -114,9 +116,10 @@ private:
 	// wi-fi関連の変数
 		// クラスいろいろ
 	std::unique_ptr<Wifi> m_wifi;
-	// 「弾」境界球
+	// 境界球
 	DirectX::BoundingSphere m_inPlayerArea;
-	DirectX::BoundingSphere m_PlayerSphere;
+	DirectX::BoundingSphere m_playerSphere;
+
 	//デバッグ用
 	// ベーシックエフェクト
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
