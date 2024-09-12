@@ -130,7 +130,6 @@ void EnemyAI::KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bo
 	// 減衰した速度を使って位置を更新
 	Vector3 velocity = m_initialVelocity * decayFactor;
 	pos += velocity * elapsedTime;
-
 	m_enemyState = IState::EnemyState::DAMAGE;// ダメージ態勢
 	// ノックバックが終了したかどうかチェック
 	if (t >= 1.0f)

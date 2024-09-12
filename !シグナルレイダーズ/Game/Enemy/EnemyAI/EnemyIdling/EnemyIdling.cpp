@@ -15,7 +15,14 @@
 
 using namespace DirectX::SimpleMath;
 // コンストラクタ
-EnemyIdling::EnemyIdling(EnemyAI* enemy) : m_enemy(enemy)
+EnemyIdling::EnemyIdling(EnemyAI* enemy)
+	: m_enemy(enemy),
+	m_rotation(Quaternion::Identity),
+	m_velocity(Vector3::Zero),
+	m_scale(Vector3::One),
+	m_initialPosition(Vector3::Zero),
+	m_time(0.0f),
+	m_rotationSpeed(0.0f)
 {
 }
 // デストラクタ

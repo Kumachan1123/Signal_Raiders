@@ -8,6 +8,7 @@
 #include "Game/Player/PlayerController/PlayerController.h"
 #include "Game/Player/PlayerBullet/PlayerBullet.h"
 #include "Game/Enemy/Enemy.h"
+#include "Game/Enemy/Enemies/Enemies.h"
 #include "Game/Interface/IBullet.h"
 #include "Game/Wifi/ReleaseMemory/ReleaseMemory.h"
 #include "Game/Wifi/Output/Output.h"
@@ -54,6 +55,8 @@ private:
 	std::unique_ptr<PlayerPointer> m_pPlayerPointer;
 	// スカイボックス用のメンバ変数
 	std::unique_ptr<SkyBox> m_skybox;
+	// 敵全体
+	std::unique_ptr<Enemies> m_enemies;
 	// 敵
 	std::vector<std::unique_ptr<Enemy>> m_enemy;
 	// 地面（ステージ１
@@ -98,10 +101,6 @@ private:
 	float m_angle;
 	// 生成開始時間
 	float m_startTime;
-	// 弾の移動
-	DirectX::SimpleMath::Vector3 m_ballPos;
-	DirectX::SimpleMath::Vector3 m_ballDirection;
-	DirectX::SimpleMath::Vector3 m_ballVel;
 	// wi-fi関連の変数
 	std::unique_ptr<Wifi> m_wifi;
 	// 境界球
@@ -129,4 +128,10 @@ public:
 private:
 	// FMODのシステムの初期化と音声データのロード
 	void InitializeFMOD();
+
+public:
+	float GetPlayerHP() { return m_playerHP; }
+	void SetPlayerHP(float hp) { m_playerHP = hp; }
+	DirectX::BoundingSphere GetPlayerSphere() { return m_playerSphere; }
+	DirectX::BoundingSphere GetInPlayerArea() { return m_inPlayerArea; }
 };

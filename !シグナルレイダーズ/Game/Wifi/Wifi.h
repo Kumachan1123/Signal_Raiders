@@ -10,6 +10,13 @@
 
  // 多重インクルードの防止 =====================================================
 #pragma once
+#include "Game/Wifi/Interface/IWifiParts.h"
+#include "Game/Wifi/UpdateInfo/UpdateInfo.h"
+#include "Libraries/MyLib/DebugString.h"
+#include "Game/Wifi/ReleaseMemory/ReleaseMemory.h"
+#include "Game/Wifi/Output/Output.h"
+#include "Game/Wifi/Wifi.h"
+#include "Game/CommonResources.h"
 
 
 

@@ -189,6 +189,7 @@
     <ClInclude Include="DeviceResources.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Game\CommonResources.h" />
+    <ClInclude Include="Game\Enemy\Enemies\Enemies.h" />
     <ClInclude Include="Game\Fade\Fade.h" />
     <ClInclude Include="Game\KumachiLib\AudioManager.h" />
     <ClInclude Include="Game\Effect\Effect.h" />
@@ -249,6 +250,7 @@
     <ClCompile Include="DeviceResources.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Game\CommonResources.cpp" />
+    <ClCompile Include="Game\Enemy\Enemies\Enemies.cpp" />
     <ClCompile Include="Game\Fade\Fade.cpp" />
     <ClCompile Include="Game\KumachiLib\AudioManager.cpp" />
     <ClCompile Include="Game\Effect\Effect.cpp" />

@@ -267,6 +267,7 @@
     <ClInclude Include="Game\KumachiLib\AudioManager.h" />
     <ClInclude Include="Game\Scene\TitleLogo\TitleLogo.h" />
     <ClInclude Include="Game\Scene\PressKey\PressKey.h" />
+    <ClInclude Include="Game\Enemy\Enemies\Enemies.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -382,6 +383,7 @@
     <ClCompile Include="Game\KumachiLib\AudioManager.cpp" />
     <ClCompile Include="Game\Scene\TitleLogo\TitleLogo.cpp" />
     <ClCompile Include="Game\Scene\PressKey\PressKey.cpp" />
+    <ClCompile Include="Game\Enemy\Enemies\Enemies.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
