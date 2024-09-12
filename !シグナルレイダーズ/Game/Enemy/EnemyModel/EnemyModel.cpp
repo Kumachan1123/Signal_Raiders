@@ -23,6 +23,7 @@ EnemyModel::EnemyModel()
 	m_damageFaceModel{},
 	m_nowState{ IState::EnemyState::IDLING }
 {}
+
 EnemyModel::~EnemyModel() {}
 
 void EnemyModel::Initialize(CommonResources* resources)
@@ -33,7 +34,7 @@ void EnemyModel::Initialize(CommonResources* resources)
 	auto device = resources->GetDeviceResources()->GetD3DDevice();
 	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);
 	fx->SetDirectory(L"Resources/Models/Enemy");
-	// モデルを読み込む（今は仮で分解前のモデル）
+	// モデルを読み込む（ 頭、アンテナ、手、表情差分）
 	m_headModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_Head.cmo", *fx);
 	m_antennaModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_Antenna.cmo", *fx);
 	m_attackFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_Face.cmo", *fx);
@@ -57,23 +58,23 @@ void EnemyModel::Render(ID3D11DeviceContext1* context,
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	m_headModel->Draw(context, *states, world, view, proj);
-	m_antennaModel->Draw(context, *states, world, view, proj);
-
+	m_headModel->Draw(context, *states, world, view, proj);// 頭
+	m_antennaModel->Draw(context, *states, world, view, proj);// アンテナ
+	// 手
 	m_handModel->Draw(context, *states, world, view, proj);
-
+	// 表情差分
 	switch (m_nowState)
 	{
-		case IState::EnemyState::IDLING:
+		case IState::EnemyState::IDLING:// アイドリング
 			m_idlingFaceModel->Draw(context, *states, world, view, proj);
 			break;
-		case IState::EnemyState::ATTACK:
+		case IState::EnemyState::ATTACK:// 攻撃
 			m_attackFaceModel->Draw(context, *states, world, view, proj);
 			break;
-		case IState::EnemyState::ANGRY:
+		case IState::EnemyState::ANGRY:// 怒り
 			m_angryFaceModel->Draw(context, *states, world, view, proj);
 			break;
-		case IState::EnemyState::DAMAGE:
+		case IState::EnemyState::DAMAGE:// 被弾
 			m_damageFaceModel->Draw(context, *states, world, view, proj);
 			break;
 

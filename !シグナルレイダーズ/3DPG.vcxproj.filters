@@ -265,6 +265,8 @@
     <ClInclude Include="Game\Fade\Fade.h" />
     <ClInclude Include="Game\Scene\BackGround\BackGround.h" />
     <ClInclude Include="Game\KumachiLib\AudioManager.h" />
+    <ClInclude Include="Game\Scene\TitleLogo\TitleLogo.h" />
+    <ClInclude Include="Game\Scene\PressKey\PressKey.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -378,6 +380,8 @@
     <ClCompile Include="Game\Fade\Fade.cpp" />
     <ClCompile Include="Game\Scene\BackGround\BackGround.cpp" />
     <ClCompile Include="Game\KumachiLib\AudioManager.cpp" />
+    <ClCompile Include="Game\Scene\TitleLogo\TitleLogo.cpp" />
+    <ClCompile Include="Game\Scene\PressKey\PressKey.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

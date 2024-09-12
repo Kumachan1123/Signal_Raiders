@@ -111,8 +111,7 @@ public:
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 
 	void CheckHitOtherEnemy(DirectX::BoundingSphere& A, DirectX::BoundingSphere& B);
-public:
-	void AddBullet(std::unique_ptr<EnemyBullet> bullet);
+
 	void UpdateBullets(float elapsedTime);
 private:
 	// 深度ステンシルステートを初期化する

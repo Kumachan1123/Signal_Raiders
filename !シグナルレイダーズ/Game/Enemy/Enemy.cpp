@@ -172,7 +172,6 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 
 	// ライトの方向
 	Vector3 lightDir = Vector3::UnitY;
-	//Vector3 lightDir = Vector3{ 0.5f,1.0f,-0.5f };
 	lightDir.Normalize();
 	// 影行列の元を作る
 	// Plane(法線、距離)：TKの性質上、法線の向きが逆なので、それを考慮する
