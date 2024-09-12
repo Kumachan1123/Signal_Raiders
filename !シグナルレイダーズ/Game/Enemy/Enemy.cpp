@@ -152,7 +152,9 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
 	// Šî€‚Æ‚È‚éÀ•W‚â‚ç‰ñ“]‚â‚ç
-	Matrix world = Matrix::CreateFromQuaternion(m_enemyAI->GetRotation()) * Matrix::CreateTranslation(m_position) * Matrix::CreateTranslation(Vector3{ 0,-2,0 });
+	Matrix world = Matrix::CreateFromQuaternion(m_enemyAI->GetRotation())
+		* Matrix::CreateTranslation(m_position)
+		* Matrix::CreateTranslation(Vector3{ 0,-2,0 });
 
 	// “G‚ÌƒTƒCƒY‚ðÝ’è
 	Matrix enemyWorld = Matrix::CreateScale(m_enemyAI->GetScale());

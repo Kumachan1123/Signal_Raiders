@@ -27,7 +27,6 @@ void PressKey::Initialize()
 	// デバイスリソースの取得
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-
 	// スプライトバッチを作成する
 	m_spriteBatch = std::make_unique<DirectX::SpriteBatch>(context);
 	// 画像をロードする
@@ -80,28 +79,20 @@ void PressKey::Render()
 // テクスチャの作成
 void PressKey::CreateTexture()
 {
-
-	/*
-		以下、テクスチャの大きさを求める→テクスチャの中心座標を計算する
-	*/
 	// 一時的な変数の宣言
 	Microsoft::WRL::ComPtr<ID3D11Resource> resource{};
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> tex2D{};
 	D3D11_TEXTURE2D_DESC desc{};
 	Vector2 texSize{};
-
 	// テクスチャの情報を取得する================================
 	// テクスチャをID3D11Resourceとして見る
 	m_pressKeyTexture->GetResource(resource.GetAddressOf());
-
 	// ID3D11ResourceをID3D11Texture2Dとして見る
 	resource.As(&tex2D);
 	//// テクスチャの中心位置を計算する
 	tex2D->GetDesc(&desc);
-
 	// テクスチャサイズを取得し、float型に変換する
 	texSize.x = static_cast<float>(desc.Width);
 	texSize.y = static_cast<float>(desc.Height);
 	m_pressKeyTexCenter = texSize / 2.0f;
-
 }

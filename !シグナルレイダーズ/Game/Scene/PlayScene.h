@@ -28,7 +28,6 @@ namespace mylib
 {
 	class InputManager;
 	class DebugCamera;
-	class GridFloor;
 }
 
 class FPS_Camera;
@@ -57,34 +56,24 @@ private:
 	std::unique_ptr<SkyBox> m_skybox;
 	// 敵
 	std::vector<std::unique_ptr<Enemy>> m_enemy;
-	// 格子床
-	std::unique_ptr<mylib::GridFloor> m_gridFloor;
 	// 地面（ステージ１
 	std::unique_ptr<Stage1> m_stage1;
 	// 射影行列
 	DirectX::SimpleMath::Matrix m_projection;
 	// Particle
-	std::vector<std::unique_ptr<Effect>> m_particles;
+	std::vector<std::unique_ptr<Effect>> m_effect;
 	// フェード
 	std::unique_ptr<Fade> m_fade;
 	// フェードの状態
 	Fade::FadeState m_fadeState;
 	// フェード画像番号
 	int m_fadeTexNum;
-
-	// 追加の変数==========================================
-
-
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
-
-
-
 	// フェードで使用する変数
 	bool m_isFade;		// フェードフラグ
 	float m_volume;		// ボリューム
 	int m_counter;		// フェードカウンタ
-
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
 	// 敵生成フラグ
@@ -114,7 +103,6 @@ private:
 	DirectX::SimpleMath::Vector3 m_ballDirection;
 	DirectX::SimpleMath::Vector3 m_ballVel;
 	// wi-fi関連の変数
-		// クラスいろいろ
 	std::unique_ptr<Wifi> m_wifi;
 	// 境界球
 	DirectX::BoundingSphere m_inPlayerArea;

@@ -1,7 +1,7 @@
 //--------------------------------------------------------------------------------------
-// File: Particle.h
+// File: BackGround.cpp
 //
-// パーティクルクラス
+// 背景クラス
 //
 //-------------------------------------------------------------------------------------
 
@@ -129,9 +129,6 @@ void  BackGround::Update(float elapsedTime)
 {
 	//	時間更新（m_timeを0.1ずつ増やし、１を超えたら０からやり直し）
 	m_time += elapsedTime;
-
-
-
 }
 
 /// <summary>
@@ -152,32 +149,22 @@ void  BackGround::Render()
 		VertexPositionTexture(SimpleMath::Vector3(1.0, -1.0f, 0.0f), SimpleMath::Vector2(1.0f, 1.0f)),
 		VertexPositionTexture(SimpleMath::Vector3(-1.0, -1.0f, 0.0f), SimpleMath::Vector2(0.0f, 1.0f)),
 	};
-
-
-
 	// シェーダーに渡す追加のバッファを作成する(ConstBuffer)
-
 	m_cbuff.matView = m_view.Transpose();
 	m_cbuff.matProj = m_proj.Transpose();
 	m_cbuff.matWorld = m_world.Transpose();
 	m_cbuff.colors = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	m_cbuff.time = m_time;
-
-
-	// フェード
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(m_CBuffer.Get(), 0, NULL, &m_cbuff, 0, 0);
-
 	//	シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };
 	//	頂点シェーダもピクセルシェーダも、同じ値を渡す
 	context->VSSetConstantBuffers(0, 1, cb);
 	context->PSSetConstantBuffers(0, 1, cb);
-
 	//	画像用サンプラーの登録
 	ID3D11SamplerState* sampler[1] = { m_states->LinearWrap() };
 	context->PSSetSamplers(0, 1, sampler);
-
 	//	半透明描画指定
 	ID3D11BlendState* blendstate = m_states->NonPremultiplied();
 
@@ -195,9 +182,6 @@ void  BackGround::Render()
 	context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
 
 	//	Create関数で読み込んだ画像をピクセルシェーダに登録する。
-	//	バラバラに読込コードを書く場合は以下
-	//context->PSSetShaderResources(0, 1, m_texture[0].GetAddressOf());
-	//context->PSSetShaderResources(1, 1, m_texture[1].GetAddressOf());
 	for (int i = 0; i < m_texture.size(); i++)
 	{
 		//	for文で一気に設定する

@@ -33,8 +33,7 @@ TitleScene::TitleScene()
 	m_fadeState{ },
 	m_fadeTexNum{ 0 },
 	m_backGround{ nullptr },
-	m_audioManager{ AudioManager::GetInstance() },
-	m_states{}
+	m_audioManager{ AudioManager::GetInstance() }
 {}
 
 

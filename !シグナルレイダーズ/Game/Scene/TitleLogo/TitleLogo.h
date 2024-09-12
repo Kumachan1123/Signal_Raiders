@@ -20,9 +20,7 @@ public:
 		float time;
 		DirectX::SimpleMath::Vector3 padding;
 	};
-
 private:
-
 	// 共通リソース
 	CommonResources* m_commonResources;
 	// 頂点シェーダ
@@ -65,6 +63,6 @@ public:
 	//	描画
 	void Render();
 private:
-
+	//	シェーダーを作成
 	void CreateShader();
 };

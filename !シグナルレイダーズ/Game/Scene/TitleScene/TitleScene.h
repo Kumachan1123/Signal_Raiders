@@ -25,8 +25,6 @@ private:
 	CommonResources* m_commonResources;
 	//	変数
 	DX::DeviceResources* m_pDR;
-	//	コモンステート
-	std::unique_ptr<DirectX::CommonStates> m_states;
 	// フェード
 	std::unique_ptr<Fade> m_fade;
 	// フェードの状態
