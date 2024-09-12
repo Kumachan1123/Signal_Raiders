@@ -52,7 +52,6 @@ public:
 			 std::string& ssid,// スキャン結果の処理に使う変数
 			 std::set<std::string>& displayedSSIDs,// すでに表示したSSIDを管理するためのset
 			 std::wstring_convert<std::codecvt_utf8<wchar_t>>& converter,// スキャン結果の処理に使う変数
-			 int& count,// 表示した回数
-			 std::vector<int>& preWifilevels
+			 int& count// 表示した回数
 	);
 };

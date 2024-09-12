@@ -54,8 +54,7 @@ void UpdateInfo::Set(DWORD& dwResult,
 					 std::string& ssid,
 					 std::set<std::string>& displayedSSIDs,
 					 std::wstring_convert<std::codecvt_utf8<wchar_t>>& converter,
-					 int& count,
-					 std::vector<int>& preWifilevels)
+					 int& count)
 {
 	// Wi-Fiハンドルの初期化
 	m_handle->Set(dwResult, dwMaxClient, dwCurVersion, hClient);
@@ -66,7 +65,7 @@ void UpdateInfo::Set(DWORD& dwResult,
 	// スキャンの開始
 	m_StartScan->Set(dwResult, hClient, pInterfaceList);
 	// スキャン結果の取得
-	m_GetResults->Set(pNetworkList, dwResult, hClient, pInterfaceList, networkInfos, preWifilevels);
+	m_GetResults->Set(pNetworkList, dwResult, hClient, pInterfaceList);
 	if (dwResult != ERROR_SUCCESS)
 	{
 		return;

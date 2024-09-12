@@ -30,7 +30,7 @@ GetScanResults::~GetScanResults()
 {
 }
 // ƒXƒLƒƒƒ“Œ‹‰Ê‚ÌŽæ“¾
-void GetScanResults::Set(PWLAN_AVAILABLE_NETWORK_LIST& pNetworkList, DWORD& dwResult, HANDLE& hClient, PWLAN_INTERFACE_INFO_LIST& pInterfaceList, std::vector<NetworkInfo>& networkInfos, std::vector<int>& preWifilevels)
+void GetScanResults::Set(PWLAN_AVAILABLE_NETWORK_LIST& pNetworkList, DWORD& dwResult, HANDLE& hClient, PWLAN_INTERFACE_INFO_LIST& pInterfaceList)
 {
 	pNetworkList = NULL;
 	dwResult =

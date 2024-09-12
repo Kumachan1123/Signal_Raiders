@@ -63,7 +63,7 @@ void Wifi::Update(float elapsedTime)
 {
 	//pInterfaceList = nullptr;
 	// 全データを更新
-	m_updateInfo->Set(dwResult, dwMaxClient, dwCurVersion, hClient, pInterfaceList, pNetworkList, m_networkInfos, network, ssid, displayedSSIDs, converter, count, m_preWifilevels);
+	m_updateInfo->Set(dwResult, dwMaxClient, dwCurVersion, hClient, pInterfaceList, pNetworkList, m_networkInfos, network, ssid, displayedSSIDs, converter, count);
 	std::sort(m_networkInfos.begin(), m_networkInfos.end(), CompareBySignalQuality());
 	// ソート後の情報を表示
 	m_output->DisplayInformation(m_networkInfos, count, cipherSecurityLevel, authSecurityLevel);
@@ -112,10 +112,7 @@ void Wifi::Render(mylib::DebugString* debugString)
 {
 #ifdef _DEBUG
 	debugString->AddString("Size:%i", m_preWifilevels.size());
-	for (const auto& datas : m_wifilevels)
-	{
-		//debugString->AddString("Signal Quality:%i ", datas);
-	}
+
 #endif
 	if (dwResult != ERROR_SUCCESS)
 	{
