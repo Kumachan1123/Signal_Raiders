@@ -53,6 +53,7 @@ Enemies::~Enemies()
 void Enemies::Initialize(Player* pPlayer)
 {
 	m_pPlayer = pPlayer;
+	InitializeFMOD();
 }
 
 //---------------------------------------------------------

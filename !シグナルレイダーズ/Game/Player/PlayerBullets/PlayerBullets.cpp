@@ -13,7 +13,7 @@ PlayerBullets::PlayerBullets(CommonResources* commonResources)
 PlayerBullets::~PlayerBullets()
 {
 	// do nothing.
-	m_audioManager->StopSound("Hit");
+
 }
 
 void PlayerBullets::Initialize(Player* pPlayer, Enemies* pEnemies)
@@ -23,7 +23,7 @@ void PlayerBullets::Initialize(Player* pPlayer, Enemies* pEnemies)
 	// オーディオマネージャーを初期化する
 	m_audioManager->Initialize();
 	// 効果音の初期化
-	m_audioManager->LoadSound("Resources/Sounds/SE.mp3", "SE");
+	m_audioManager->LoadSound("Resources/Sounds/playerBullet.mp3", "Shoot");
 	m_audioManager->LoadSound("Resources/Sounds/Hit.mp3", "Hit");
 }
 
@@ -64,16 +64,13 @@ void PlayerBullets::Render()
 	using namespace DirectX::SimpleMath;
 	Matrix view = m_pPlayer->GetCamera()->GetViewMatrix();
 	Matrix proj = m_pPlayer->GetCamera()->GetProjectionMatrix();
-	for (auto& bullet : m_playerBullet)
-	{
-		bullet->Render(view, proj);
-	}
+	for (auto& bullet : m_playerBullet)bullet->Render(view, proj);
 }
 
 
 void PlayerBullets::CreateBullet(const DirectX::SimpleMath::Vector3& position, DirectX::SimpleMath::Vector3& direction)
 {	// SEの再生
-	m_audioManager->PlaySound("SE", .5);
+	m_audioManager->PlaySound("Shoot", .5);
 	auto bullet = std::make_unique<PlayerBullet>();
 	bullet->Initialize(m_commonResources);
 	bullet->MakeBall(position, direction);

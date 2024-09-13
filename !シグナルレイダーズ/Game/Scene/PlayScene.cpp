@@ -122,8 +122,6 @@ void PlayScene::Update(float elapsedTime)
 //---------------------------------------------------------
 void PlayScene::Render()
 {
-	//auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-
 	// カメラからビュー行列と射影行列を取得する
 	Matrix view = m_pPlayer->GetCamera()->GetViewMatrix();
 	Matrix projection = m_pPlayer->GetCamera()->GetProjectionMatrix();
@@ -132,19 +130,17 @@ void PlayScene::Render()
 	m_skybox->Render(view, projection, skyWorld, m_pPlayer->GetPlayerController()->GetPlayerPosition());
 	// 地面描画
 	m_stage1->Render(view, projection);
-	// 弾を描画する
-	for (const auto& bullet : m_playerBullet)bullet->Render(view, projection);
 	// 敵を描画する
 	m_pEnemies->Render();
+	// プレイヤーを描画する
+	m_pPlayer->Render();
+	// フェードの描画
+	m_fade->Render();
 #ifdef _DEBUG// プレイヤーのHPを表示する
 	// デバッグ情報を「DebugString」で表示する
 	auto debugString = m_commonResources->GetDebugString();
 	debugString->AddString("HP:%f", m_pPlayer->GetPlayerHP());
 #endif
-	// プレイヤーを描画する
-	m_pPlayer->Render();
-	// フェードの描画
-	m_fade->Render();
 }
 //---------------------------------------------------------
 // 後始末する

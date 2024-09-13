@@ -37,7 +37,6 @@ public:
 	void Initialize(Player* pPlayer, Enemies* pEnemies);
 	void Update(float elapsedTime);
 	void Render();
-	void InitializeFMOD();
 	void CreateBullet(const DirectX::SimpleMath::Vector3& position, DirectX::SimpleMath::Vector3& direction);
 	// Getter
 public:
