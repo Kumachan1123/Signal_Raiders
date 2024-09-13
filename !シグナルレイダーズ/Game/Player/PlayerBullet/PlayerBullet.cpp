@@ -73,6 +73,8 @@ void PlayerBullet::Initialize(CommonResources* resources)
 							   // エミッションカラーを設定する
 							   basicEffect->SetEmissiveColor(DirectX::XMVECTOR{ 0.3, 0.3, 0.3, 1 });
 						   });
+
+
 	m_direction = Vector3::Zero;
 	m_velocity = Vector3::Zero;
 	m_position = Vector3::Zero;
@@ -96,6 +98,13 @@ void PlayerBullet::Update(DirectX::SimpleMath::Vector3& Direction, float elapsed
 	m_position += m_velocity;
 	// バウンディングスフィアの位置更新
 	m_boundingSphere.Center = m_position;
+	// 現在の弾の位置を軌跡リストに追加
+	m_trailPositions.push_back(m_position);
+
+	// 軌跡が最大の長さを超えたら、古い位置を削除
+	if (m_trailPositions.size() > MAX_TRAIL_LENGTH) {
+		m_trailPositions.pop_back();
+	}
 	// 時間計測
 	m_time += elapsedTime;
 
@@ -133,6 +142,15 @@ void PlayerBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 	m_basicEffect->SetView(view);
 	m_basicEffect->SetProjection(proj);
 	m_basicEffect->Apply(context);
+	// 軌跡描画
+	m_primitiveBatch->Begin();
+	for (size_t i = 1; i < m_trailPositions.size(); ++i) {
+		// 前の位置と現在の位置をラインで繋ぐ
+		DirectX::DX11::VertexPositionColor start(m_trailPositions[i - 1], DirectX::Colors::Lime);
+		DirectX::DX11::VertexPositionColor end(m_trailPositions[i], DirectX::Colors::Lime);
+		m_primitiveBatch->DrawLine(start, end);
+	}
+	m_primitiveBatch->End();
 	// 境界球の変換を同じワールドマトリックスに基づいて行う
 	BoundingSphere transformedBoundingSphere = m_boundingSphere;
 	m_boundingSphere.Transform(transformedBoundingSphere, boundingbulletWorld);

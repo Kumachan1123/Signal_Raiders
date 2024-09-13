@@ -21,6 +21,9 @@ public:
 	// ジオメトリックプリミティブ弾
 	std::unique_ptr<DirectX::Model> m_model;
 private:
+	// 軌跡用の履歴を保存する配列
+	std::vector<DirectX::SimpleMath::Vector3> m_trailPositions;
+	const size_t MAX_TRAIL_LENGTH = 50;  // 軌跡の長さ
 	// 共通リソース
 	CommonResources* m_commonResources;
 	// ワールド行列
@@ -37,6 +40,8 @@ private:
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+	// テクスチャ
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_trailTexture;
 
 	//関数
 public:
