@@ -70,16 +70,6 @@ private:
 	int m_counter;		// フェードカウンタ
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
-	// 敵生成フラグ
-	bool m_isEnemyBorn = false;
-	// 敵生成済み
-	bool m_isBorned = false;
-	// 敵の数
-	int m_enemyIndex = 0;
-	// 敵の生成間隔
-	float m_enemyBornInterval = 0.0f;
-	// 敵の生成タイミングを管理
-	float m_enemyBornTimer = 0.0f;
 	// 弾生成フラグ
 	bool m_isBullet = false;
 	// 弾生成済み
@@ -87,16 +77,10 @@ private:
 	// プレイヤーと敵の当たり判定
 	bool m_isHitPlayerToEnemy = false;
 	// モデル
-	std::unique_ptr<DirectX::Model> m_model;
+//	std::unique_ptr<DirectX::Model> m_model;
 	// 回転角(度)
 	float m_angle;
-	// 生成開始時間
-	float m_startTime;
-	// wi-fi
-	//std::unique_ptr<Wifi> m_wifi;
-	// 境界球
-	DirectX::BoundingSphere m_inPlayerArea;
-	DirectX::BoundingSphere m_playerSphere;
+
 
 	//デバッグ用
 	// ベーシックエフェクト
@@ -120,8 +104,4 @@ private:
 	// FMODのシステムの初期化と音声データのロード
 	void InitializeFMOD();
 
-public:
-
-	DirectX::BoundingSphere GetPlayerSphere() { return m_playerSphere; }
-	DirectX::BoundingSphere GetInPlayerArea() { return m_inPlayerArea; }
 };

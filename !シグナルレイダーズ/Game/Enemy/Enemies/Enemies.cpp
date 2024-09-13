@@ -61,8 +61,10 @@ void Enemies::Initialize(Player* pPlayer)
 //---------------------------------------------------------
 void Enemies::Update(float elapsedTime)
 {
-	m_startTime += elapsedTime;
+	m_startTime += elapsedTime;// ゲーム開始時間を更新
 	m_pWifi->Update(elapsedTime);// Wi-Fiの更新
+	// エフェクトの更新
+	for (auto& effect : GetEffect()) effect->Update(elapsedTime);
 	// 敵生成・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
 	// 敵生成タイマーを更新
 	m_enemyBornTimer += elapsedTime;
@@ -159,12 +161,21 @@ void Enemies::Update(float elapsedTime)
 //---------------------------------------------------------
 void Enemies::Render()
 {
+	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	Matrix view = m_pPlayer->GetCamera()->GetViewMatrix();
 	Matrix projection = m_pPlayer->GetCamera()->GetProjectionMatrix();
-	if (m_enemy.size() > 0)
-	{
-		for (const auto& enemy : m_enemy)enemy->Render(view, projection);
-	}
+	if (m_enemy.size() > 0)for (const auto& enemy : m_enemy)enemy->Render(view, projection);
+	// エフェクトを描画する
+	GetEffect().erase
+	(std::remove_if(GetEffect().begin(), GetEffect().end(), [&](const std::unique_ptr<Effect>& effect)//	再生終了したパーティクルを削除する
+					{
+						if (!effect->IsPlaying()) return true;// 再生終了したパーティクルは削除する
+						effect->Render(context, view, projection);// パーティクルを描画する
+						return false;//	再生中のパーティクルは削除しない
+					}),
+	 GetEffect().end()//	削除対象のパーティクルを削除する
+	);
+
 }
 
 void Enemies::InitializeFMOD()

@@ -27,18 +27,12 @@ PlayScene::PlayScene()
 	m_commonResources{},
 	m_projection{},
 	m_isChangeScene{ false },
-	m_model{},
 	m_angle{ 0.0f },
-	//m_wifi{ nullptr },
 	m_stage1{ nullptr },
 	m_effect{},
 	m_isFade{ false },
 	m_volume{ 1.0f },
 	m_counter{ 0 },
-	m_enemyBornTimer{ 0.0f },
-	m_enemyBornInterval{ 0.5f },
-	m_enemyIndex{ 0 },
-	m_startTime{ 0.0f },
 	m_fade{},
 	m_fadeState{ },
 	m_fadeTexNum{ 2 },
@@ -58,7 +52,6 @@ void PlayScene::Initialize(CommonResources* resources)
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto DR = m_commonResources->GetDeviceResources();
-
 	// プレイヤーを初期化する
 	m_pPlayer = std::make_unique<Player>(resources);
 	m_pPlayer->Initialize();
@@ -109,7 +102,7 @@ void PlayScene::Update(float elapsedTime)
 	m_pPlayer->Update(kb, elapsedTime);
 #ifdef _DEBUG// デバッグ
 	// 右クリックで敵を一掃
-	if (mtracker->GetLastState().rightButton)for (auto& enemy : m_enemy)enemy->SetEnemyHP(0);
+	if (mtracker->GetLastState().rightButton)for (auto& enemy : m_pEnemies->GetEnemy())enemy->SetEnemyHP(0);
 	// スペースキーでプレイヤーのHPを0にする
 	if (kb->pressed.Space)m_pPlayer->SetPlayerHP(0.0f);
 #endif
@@ -126,18 +119,11 @@ void PlayScene::Update(float elapsedTime)
 		m_isBullet = true;
 	}
 	if (!mtracker->GetLastState().leftButton)m_isBullet = false;
-
-
 	m_audioManager->Update();// オーディオマネージャーの更新
-
 	m_pEnemies->Update(elapsedTime);// 敵の更新
 	UpdateBullets(elapsedTime);// 弾の更新
-	//UpdateEnemies(elapsedTime);// 敵の更新
-
-	// パーティクルの更新
-	for (auto& particle : m_effect) particle->Update(elapsedTime);
 	// プレイヤーのHPが0以下、または敵がいないなら
-	if (m_pPlayer->GetPlayerHP() <= 0.0f || (m_enemy.size() <= 0 && m_isBorned))
+	if (m_pPlayer->GetPlayerHP() <= 0.0f || (m_pEnemies->GetEnemy().size() <= 0 && m_pEnemies->GetisBorned()))
 	{
 		m_fade->SetTextureNum((int)(Fade::TextureNum::BLACK));
 		m_fade->SetState(Fade::FadeState::FadeOut);
@@ -146,8 +132,6 @@ void PlayScene::Update(float elapsedTime)
 	m_fade->Update(elapsedTime);
 	// フェードアウトが終了したら
 	if (m_fade->GetState() == Fade::FadeState::FadeOutEnd)m_isChangeScene = true;
-	// 敵を生成するまでの待機時間５秒カウントする
-	m_startTime += elapsedTime;
 }
 
 //---------------------------------------------------------
@@ -155,7 +139,7 @@ void PlayScene::Update(float elapsedTime)
 //---------------------------------------------------------
 void PlayScene::Render()
 {
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
+	//auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 
 	// カメラからビュー行列と射影行列を取得する
 	Matrix view = m_pPlayer->GetCamera()->GetViewMatrix();
@@ -169,24 +153,12 @@ void PlayScene::Render()
 	for (const auto& bullet : m_playerBullets)bullet->Render(view, projection);
 	// 敵を描画する
 	m_pEnemies->Render();
-	//if (m_enemy.size() > 0) for (const auto& enemy : m_enemy)enemy->Render(view, projection);
-
-	// エフェクトを描画する
-	m_effect.erase
-	(std::remove_if(m_effect.begin(), m_effect.end(), [&](const std::unique_ptr<Effect>& particle)//	再生終了したパーティクルを削除する
-					{
-						if (!particle->IsPlaying()) return true;// 再生終了したパーティクルは削除する
-						particle->Render(context, view, projection);// パーティクルを描画する
-						return false;//	再生中のパーティクルは削除しない
-					}),
-	 m_effect.end()//	削除対象のパーティクルを削除する
-	);
+#ifdef _DEBUG// プレイヤーのHPを表示する
 	// デバッグ情報を「DebugString」で表示する
 	auto debugString = m_commonResources->GetDebugString();
-#ifdef _DEBUG
 	debugString->AddString("HP:%f", m_pPlayer->GetPlayerHP());
 #endif
-	//m_wifi->Render(debugString);
+	// プレイヤーを描画する
 	m_pPlayer->Render();
 	// フェードの描画
 	m_fade->Render();
@@ -198,8 +170,6 @@ void PlayScene::Finalize()
 {
 	m_playerBullets.clear();
 	m_enemy.clear();
-
-	m_model.reset();
 	m_skybox.reset();
 	m_audioManager->Shutdown();
 }
@@ -215,10 +185,8 @@ IScene::SceneID PlayScene::GetNextSceneID() const
 		m_audioManager->StopSound("SE");// SEを停止する
 		m_audioManager->StopSound("EnemyDead");// 敵死亡SEを停止する
 		// プレイヤーのHPが0以下なら
-		if (m_pPlayer->GetPlayerHP() <= 0.0f)
-		{
-			return IScene::SceneID::GAMEOVER;// ゲームオーバーシーンへ
-		}
+		if (m_pPlayer->GetPlayerHP() <= 0.0f)return IScene::SceneID::GAMEOVER;// ゲームオーバーシーンへ
+		// 敵がいないなら
 		else return IScene::SceneID::CLEAR;// クリアシーンへ
 	}
 	// シーン変更がない場合
@@ -258,19 +226,13 @@ void PlayScene::UpdateBullets(float elapsedTime)
 }
 void PlayScene::InitializeFMOD()
 {
-
 	// FMODシステムの初期化
 	m_audioManager->Initialize();
-
-	// 音声データのロード
 	// ここで必要な音声データをAudioManagerにロードさせる
-	// 例：audioManager->LoadSound("Resources/Sounds/音声.mp3", "チャンネル名");
 	m_audioManager->LoadSound("Resources/Sounds/playerBullet.mp3", "SE");
 	m_audioManager->LoadSound("Resources/Sounds/playbgm.mp3", "BGM");
 	m_audioManager->LoadSound("Resources/Sounds/Explosion.mp3", "EnemyDead");
 	m_audioManager->LoadSound("Resources/Sounds/damage.mp3", "Damage");
 	m_audioManager->LoadSound("Resources/Sounds/hit.mp3", "Hit");
 	m_audioManager->LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet");
-
-
 }

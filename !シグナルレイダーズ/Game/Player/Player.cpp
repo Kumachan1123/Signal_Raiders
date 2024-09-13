@@ -12,6 +12,9 @@ Player::Player(CommonResources* commonResources)
 	m_playerSphere{},
 	m_pCamera{}
 {
+	// ‹«ŠE‹…
+	m_inPlayerArea.Radius = 20.0f;
+	m_playerSphere.Radius = 2.0f;
 }
 
 Player::~Player()
@@ -33,9 +36,6 @@ void Player::Initialize()
 	m_pPlayerController = std::make_unique<PlayerController>();
 	m_pPlayerController->Initialize(m_commonResources);
 	m_pPlayerController->SetPlayetPosition(m_pCamera->GetEyePosition());
-	// ‹«ŠE‹…
-	m_inPlayerArea.Radius = 20.0f;
-	m_playerSphere.Radius = 2.0f;
 }
 
 void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>& kb, float elapsedTime)

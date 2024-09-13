@@ -44,8 +44,8 @@ public:
 	float GetPlayerHP() { return m_playerHP; }	// プレイヤーのHP
 	FPS_Camera* GetCamera() { return m_pCamera.get(); }// カメラ
 	PlayerController* GetPlayerController() { return m_pPlayerController.get(); }// プレイヤーコントローラー
-	DirectX::BoundingSphere GetPlayerSphere() { return m_playerSphere; }// プレイヤーの境界球
-	DirectX::BoundingSphere GetInPlayerArea() { return m_inPlayerArea; }// プレイヤーと敵との一定範囲内での境界球
+	DirectX::BoundingSphere GetPlayerSphere() const { return m_playerSphere; }// プレイヤーの境界球
+	DirectX::BoundingSphere GetInPlayerArea() const { return m_inPlayerArea; }// プレイヤーと敵との一定範囲内での境界球
 	// Setter
 public:
 	void SetPlayerHP(float playerHP) { m_playerHP = playerHP; }	// プレイヤーのHP

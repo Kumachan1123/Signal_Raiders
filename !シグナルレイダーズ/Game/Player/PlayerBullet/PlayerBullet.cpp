@@ -42,16 +42,11 @@ void PlayerBullet::Initialize(CommonResources* resources)
 	m_commonResources = resources;
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-
 	// プリミティブバッチを作成する
 	m_primitiveBatch = std::make_unique<DirectX::DX11::PrimitiveBatch<DirectX::DX11::VertexPositionColor>>(context);
-	/*
-		デバッグドローの表示用オブジェクトを生成する
-	*/
 	// ベーシックエフェクトを作成する
 	m_basicEffect = std::make_unique<BasicEffect>(device);
 	m_basicEffect->SetVertexColorEnabled(true);
-
 	// 入力レイアウトを作成する
 	DX::ThrowIfFailed(
 		CreateInputLayoutFromEffect<VertexPositionColor>(
@@ -91,7 +86,6 @@ void PlayerBullet::Update(DirectX::SimpleMath::Vector3& Direction, float elapsed
 	UNREFERENCED_PARAMETER(Direction);
 	m_angle += 6.0f;
 	if (m_angle > 360)m_angle = 0;
-
 	// カメラが向いている方向に速度を与える
 	m_velocity += m_direction;
 	// 移動量を正規化する
@@ -100,10 +94,8 @@ void PlayerBullet::Update(DirectX::SimpleMath::Vector3& Direction, float elapsed
 	m_velocity *= 0.75f;
 	// 実際に移動する
 	m_position += m_velocity;
-
 	// バウンディングスフィアの位置更新
 	m_boundingSphere.Center = m_position;
-
 	// 時間計測
 	m_time += elapsedTime;
 
@@ -123,31 +115,26 @@ void PlayerBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 	using namespace DirectX::SimpleMath;
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
-
 	// 弾のサイズを設定
 	Matrix bulletWorld = Matrix::CreateScale(SIZE);
 	Matrix boundingbulletWorld = Matrix::CreateScale(Vector3::One);
 	bulletWorld *= Matrix::CreateRotationX(DirectX::XMConvertToRadians(m_angle));
-
-	// 弾の自転
 	// 弾の座標を設定
 	bulletWorld *= Matrix::CreateTranslation(m_position);
 	boundingbulletWorld *= Matrix::CreateTranslation(m_position);
 	// 弾描画
 	m_model->Draw(context, *states, bulletWorld, view, proj);
-
 	// 各パラメータを設定する
 	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
 	context->OMSetDepthStencilState(states->DepthRead(), 0);
 	context->RSSetState(states->CullNone());
 	context->IASetInputLayout(m_inputLayout.Get());
-	//** デバッグドローでは、ワールド変換いらない
+	//　デバッグドローでは、ワールド変換いらない
 	m_basicEffect->SetView(view);
 	m_basicEffect->SetProjection(proj);
 	m_basicEffect->Apply(context);
 	// 境界球の変換を同じワールドマトリックスに基づいて行う
 	BoundingSphere transformedBoundingSphere = m_boundingSphere;
-
 	m_boundingSphere.Transform(transformedBoundingSphere, boundingbulletWorld);
 #ifdef _DEBUG
 	// 描画する
