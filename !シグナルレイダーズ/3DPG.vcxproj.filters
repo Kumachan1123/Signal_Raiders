@@ -180,9 +180,6 @@
     <ClInclude Include="Game\Player\PlayerController\PlayerController.h">
       <Filter>Game\Player\PlayerController</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Player\PlayerBullet\PlayerBullet.h">
-      <Filter>Game\Player\PlayerBullet</Filter>
-    </ClInclude>
     <ClInclude Include="IBullet.h">
       <Filter>Game\Interface</Filter>
     </ClInclude>
@@ -269,6 +266,7 @@
     <ClInclude Include="Game\Scene\PressKey\PressKey.h" />
     <ClInclude Include="Game\Enemy\Enemies\Enemies.h" />
     <ClInclude Include="Game\Player\Player.h" />
+    <ClInclude Include="Game\Player\PlayerBullet\PlayerBullet.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -312,9 +310,6 @@
     </ClCompile>
     <ClCompile Include="Game\Player\PlayerController\PlayerController.cpp">
       <Filter>Game\Player\PlayerController</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Player\PlayerBullet\PlayerBullet.cpp">
-      <Filter>Game\Player\PlayerBullet</Filter>
     </ClCompile>
     <ClCompile Include="Game\Wifi\CheckVersion\CheckVersion.cpp">
       <Filter>Game\Wi-Fi\CheckVersion</Filter>
@@ -386,6 +381,7 @@
     <ClCompile Include="Game\Scene\PressKey\PressKey.cpp" />
     <ClCompile Include="Game\Enemy\Enemies\Enemies.cpp" />
     <ClCompile Include="Game\Player\Player.cpp" />
+    <ClCompile Include="Game\Player\PlayerBullet\PlayerBullet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

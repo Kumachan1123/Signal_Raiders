@@ -98,7 +98,7 @@ public:
 	void Render() override;
 	void Finalize() override;
 	void UpdateBullets(float elapsedTime);
-	void UpdateEnemies(float elapsedTime);
+
 	SceneID GetNextSceneID() const;
 private:
 	// FMODのシステムの初期化と音声データのロード
