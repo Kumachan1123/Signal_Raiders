@@ -6,7 +6,6 @@
 #include "Game/Scene/PlayScene.h"
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
-#include "Game/FPS_Camera/FPS_Camera.h"
 #include "Libraries/MyLib/DebugString.h"
 #include "Libraries/MyLib/GridFloor.h"
 #include "Libraries/MyLib/InputManager.h"
@@ -30,8 +29,7 @@ PlayScene::PlayScene()
 	m_isChangeScene{ false },
 	m_model{},
 	m_angle{ 0.0f },
-	m_camera{},
-	m_wifi{ nullptr },
+	//m_wifi{ nullptr },
 	m_stage1{ nullptr },
 	m_effect{},
 	m_isFade{ false },
@@ -60,31 +58,21 @@ void PlayScene::Initialize(CommonResources* resources)
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto DR = m_commonResources->GetDeviceResources();
-	// Wi-Fiを初期化する
-	m_wifi = std::make_unique<Wifi>();
-	m_wifi->Initialize();
+
+	// プレイヤーを初期化する
+	m_pPlayer = std::make_unique<Player>(resources);
+	m_pPlayer->Initialize();
+	// 敵全体を初期化する
+	m_pEnemies = std::make_unique<Enemies>(resources);
+	m_pEnemies->Initialize(m_pPlayer.get());
 	// 地面（ステージ１生成）
 	m_stage1 = std::make_unique<Stage1>();
 	m_stage1->Initialize(resources);
-	// FPSカメラを作成する
-	m_camera = std::make_unique<FPS_Camera>();
-	// コントローラー生成
-	m_playerController = std::make_unique<PlayerController>();
-	m_playerController->Initialize(resources);
-	m_playerController->SetPlayetPosition(m_camera->GetEyePosition());
 	// スカイボックス生成
 	m_skybox = std::make_unique<SkyBox>();
 	m_skybox->Initialize(resources);
 	// プリミティブバッチを作成する
 	m_primitiveBatch = std::make_unique<DX11::PrimitiveBatch<DX11::VertexPositionColor>>(context);
-	m_inPlayerArea.Radius = 20.0f;
-	m_playerSphere.Radius = 2.0f;
-	// HPゲージ作成
-	m_pPlayerHP = std::make_unique<PlayerHP>();
-	m_pPlayerHP->Initialize(DR, 1280, 720);
-	// 照準作成
-	m_pPlayerPointer = std::make_unique<PlayerPointer>();
-	m_pPlayerPointer->Initialize(DR, 1280, 720);
 	// フェードの初期化
 	m_fade = std::make_unique<Fade>(m_commonResources);
 	m_fade->Create(DR);
@@ -117,19 +105,13 @@ void PlayScene::Update(float elapsedTime)
 	// 二重再生しない
 	m_audioManager->PlaySound("BGM", 0.3);
 	// カメラが向いている方向を取得する
-	DirectX::SimpleMath::Vector3 cameraDirection = m_camera->GetDirection();
-	m_playerController->Update(kb, cameraDirection, elapsedTime);
-	// FPSカメラ位置を更新する
-	m_camera->Update(m_playerController->GetPlayerPosition(), m_playerController->GetYawX());
-	m_camera->SetTargetPositionY(m_playerController->GetPitch());
-	m_pPlayerHP->Update(m_playerHP);
-	m_pPlayerPointer->Update();
-#ifdef _DEBUG
-	// デバッグ用
-   // 右クリックで敵を一掃
+	DirectX::SimpleMath::Vector3 cameraDirection = m_pPlayer->GetCamera()->GetDirection();
+	m_pPlayer->Update(kb, elapsedTime);
+#ifdef _DEBUG// デバッグ
+	// 右クリックで敵を一掃
 	if (mtracker->GetLastState().rightButton)for (auto& enemy : m_enemy)enemy->SetEnemyHP(0);
 	// スペースキーでプレイヤーのHPを0にする
-	if (kb->pressed.Space)m_playerHP = 0.0f;
+	if (kb->pressed.Space)m_pPlayer->SetPlayerHP(0.0f);
 #endif
 	// 左クリックで弾発射
 	if (mtracker->GetLastState().leftButton && !m_isBullet)
@@ -139,21 +121,23 @@ void PlayScene::Update(float elapsedTime)
 		// 弾を生成する
 		auto bullet = std::make_unique<PlayerBullet>();
 		bullet->Initialize(m_commonResources);
-		bullet->MakeBall(m_playerController->GetPlayerPosition(), cameraDirection);
+		bullet->MakeBall(m_pPlayer->GetPlayerController()->GetPlayerPosition(), cameraDirection);
 		m_playerBullets.push_back(std::move(bullet));
 		m_isBullet = true;
 	}
 	if (!mtracker->GetLastState().leftButton)m_isBullet = false;
+
+
 	m_audioManager->Update();// オーディオマネージャーの更新
-	m_wifi->Update(elapsedTime);// Wi-Fiの更新
+
+	m_pEnemies->Update(elapsedTime);// 敵の更新
 	UpdateBullets(elapsedTime);// 弾の更新
-	UpdateEnemies(elapsedTime);// 敵の更新
-	m_inPlayerArea.Center = m_playerController->GetPlayerPosition();// プレイヤーの位置を取得
-	m_playerSphere.Center = m_inPlayerArea.Center;// プレイヤーの位置を取得
+	//UpdateEnemies(elapsedTime);// 敵の更新
+
 	// パーティクルの更新
 	for (auto& particle : m_effect) particle->Update(elapsedTime);
 	// プレイヤーのHPが0以下、または敵がいないなら
-	if (m_playerHP <= 0.0f || (m_enemy.size() <= 0 && m_isBorned))
+	if (m_pPlayer->GetPlayerHP() <= 0.0f || (m_enemy.size() <= 0 && m_isBorned))
 	{
 		m_fade->SetTextureNum((int)(Fade::TextureNum::BLACK));
 		m_fade->SetState(Fade::FadeState::FadeOut);
@@ -172,36 +156,21 @@ void PlayScene::Update(float elapsedTime)
 void PlayScene::Render()
 {
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-	auto states = m_commonResources->GetCommonStates();
+
 	// カメラからビュー行列と射影行列を取得する
-	Matrix view = m_camera->GetViewMatrix();
-	Matrix projection = m_camera->GetProjectionMatrix();
-	Matrix skyWorld = Matrix::Identity;
-	skyWorld *= Matrix::CreateScale(10);
+	Matrix view = m_pPlayer->GetCamera()->GetViewMatrix();
+	Matrix projection = m_pPlayer->GetCamera()->GetProjectionMatrix();
+	Matrix skyWorld = Matrix::Identity * Matrix::CreateScale(10);
 	// 天球描画
-	m_skybox->Render(view, projection, skyWorld, m_playerController->GetPlayerPosition());
+	m_skybox->Render(view, projection, skyWorld, m_pPlayer->GetPlayerController()->GetPlayerPosition());
 	// 地面描画
 	m_stage1->Render(view, projection);
-#ifdef _DEBUG
-	// 各パラメータを設定する
-	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
-	context->OMSetDepthStencilState(states->DepthRead(), 0);
-	context->RSSetState(states->CullNone());
-	context->IASetInputLayout(m_inputLayout.Get());
-	m_basicEffect->SetView(view);
-	m_basicEffect->SetProjection(projection);
-	m_basicEffect->Apply(context);
-	m_primitiveBatch->Begin();
-	DX::Draw(m_primitiveBatch.get(), m_playerSphere, DirectX::Colors::PeachPuff);
-	m_primitiveBatch->End();
-#endif
 	// 弾を描画する
 	for (const auto& bullet : m_playerBullets)bullet->Render(view, projection);
 	// 敵を描画する
-	if (m_enemy.size() > 0)
-	{
-		for (const auto& enemy : m_enemy)enemy->Render(view, projection);
-	}
+	m_pEnemies->Render();
+	//if (m_enemy.size() > 0) for (const auto& enemy : m_enemy)enemy->Render(view, projection);
+
 	// エフェクトを描画する
 	m_effect.erase
 	(std::remove_if(m_effect.begin(), m_effect.end(), [&](const std::unique_ptr<Effect>& particle)//	再生終了したパーティクルを削除する
@@ -214,9 +183,11 @@ void PlayScene::Render()
 	);
 	// デバッグ情報を「DebugString」で表示する
 	auto debugString = m_commonResources->GetDebugString();
-	m_wifi->Render(debugString);
-	m_pPlayerHP->Render();
-	m_pPlayerPointer->Render();
+#ifdef _DEBUG
+	debugString->AddString("HP:%f", m_pPlayer->GetPlayerHP());
+#endif
+	//m_wifi->Render(debugString);
+	m_pPlayer->Render();
 	// フェードの描画
 	m_fade->Render();
 }
@@ -227,10 +198,8 @@ void PlayScene::Finalize()
 {
 	m_playerBullets.clear();
 	m_enemy.clear();
-	m_wifi.reset();
+
 	m_model.reset();
-	m_camera.reset();
-	m_playerController.reset();
 	m_skybox.reset();
 	m_audioManager->Shutdown();
 }
@@ -246,7 +215,10 @@ IScene::SceneID PlayScene::GetNextSceneID() const
 		m_audioManager->StopSound("SE");// SEを停止する
 		m_audioManager->StopSound("EnemyDead");// 敵死亡SEを停止する
 		// プレイヤーのHPが0以下なら
-		if (m_playerHP <= 0.0f)return IScene::SceneID::GAMEOVER;// ゲームオーバーシーンへ
+		if (m_pPlayer->GetPlayerHP() <= 0.0f)
+		{
+			return IScene::SceneID::GAMEOVER;// ゲームオーバーシーンへ
+		}
 		else return IScene::SceneID::CLEAR;// クリアシーンへ
 	}
 	// シーン変更がない場合
@@ -255,11 +227,8 @@ IScene::SceneID PlayScene::GetNextSceneID() const
 
 void PlayScene::UpdateBullets(float elapsedTime)
 {
-#ifdef _DEBUG
-	auto debugString = m_commonResources->GetDebugString();
-	debugString->AddString("HP:%f", m_playerHP);
-#endif
-	DirectX::SimpleMath::Vector3 dir = m_camera->GetDirection();
+
+	DirectX::SimpleMath::Vector3 dir = m_pPlayer->GetCamera()->GetDirection();
 	for (auto it = m_playerBullets.begin(); it != m_playerBullets.end(); )
 	{
 		(*it)->Update(dir, elapsedTime);
@@ -267,12 +236,11 @@ void PlayScene::UpdateBullets(float elapsedTime)
 		else
 		{
 			bool isHit = false;
-			for (auto& enemy : m_enemy)
+			for (auto& enemy : m_pEnemies->GetEnemy())
 			{
 				if ((*it)->GetBoundingSphere().Intersects(enemy->GetBoundingSphere()))
 				{
 					isHit = true;
-					m_count++;//debug
 					enemy->SetEnemyHP(enemy->GetHP() - (*it)->Damage());
 					m_effect.push_back(std::make_unique<Effect>(m_commonResources,
 																Effect::ParticleType::ENEMY_HIT,
@@ -288,100 +256,6 @@ void PlayScene::UpdateBullets(float elapsedTime)
 		}
 	}
 }
-void PlayScene::UpdateEnemies(float elapsedTime)
-{
-
-	// 敵生成・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
-	// 敵生成タイマーを更新
-	m_enemyBornTimer += elapsedTime;
-	if (m_startTime >= 5.0f)m_isEnemyBorn = true;//生成可能にする
-	// 生成可能なら
-	if (m_isEnemyBorn && !m_isBorned && m_enemyIndex < m_wifi->GetWifiLevels().size())//m_wifi->GetWifiLevels().size()
-	{
-		if (m_enemyBornTimer >= m_enemyBornInterval)// 一定時間経過したら
-		{
-			// 敵を生成する
-			auto enemy = std::make_unique<Enemy>();
-			enemy->Initialize(m_commonResources, m_wifi->GetWifiLevels()[m_enemyIndex]);
-			m_enemy.push_back(std::move(enemy));
-			// タイマーをリセットし、次のWi-Fiレベルのインデックスに進む
-			m_enemyBornTimer = 0.0f;
-			m_enemyIndex++;
-		}
-	}
-	// 生成完了したら生成不可能にする
-	if (m_enemyIndex >= m_wifi->GetWifiLevels().size())
-	{
-		m_enemyBornTimer = 0.0f;
-		m_isEnemyBorn = false;
-		m_isBorned = true;
-	}
-	// 敵同士の当たり判定・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
-	// 敵同士が重ならないようにする
-	for (size_t i = 0; i < m_enemy.size(); ++i)
-	{
-		for (size_t j = i + 1; j < m_enemy.size(); ++j)
-		{
-			bool hit = m_enemy[i]->GetBoundingSphere().Intersects(m_enemy[j]->GetBoundingSphere());
-			m_enemy[i]->SetHitToOtherEnemy(hit);
-			m_enemy[j]->SetHitToOtherEnemy(hit);
-			if (hit)m_enemy[i]->CheckHitOtherEnemy(m_enemy[i]->GetBoundingSphere(), m_enemy[j]->GetBoundingSphere());
-		}
-	}
-
-	// 敵とプレイヤーの一定範囲との当たり判定・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
-	for (auto& enemy : m_enemy)
-	{
-		m_isHitPlayerToEnemy = false;
-		// 敵を更新
-		enemy->Update(elapsedTime, m_playerController->GetPlayerPosition());
-		// 敵の弾がプレイヤーに当たったら
-		bool hit = enemy->GetBulletHitToPlayer();
-		if (hit)
-		{
-			enemy->SetPlayerHP(m_playerHP);
-			enemy->SetBulletHitToPlayer(false);
-			m_audioManager->PlaySound("Damage", 0.5);// ダメージSEを再生
-		}
-		// 敵がプレイヤーに当たったら
-		if (enemy->GetBoundingSphere().Intersects(m_inPlayerArea))
-		{
-			m_isHitPlayerToEnemy = true;
-			// 押し返し用にプレイヤーの一定範囲境界球をローカル変数にコピー
-			BoundingSphere playerSphere = m_inPlayerArea;
-			// 境界球の範囲を調整
-			playerSphere.Radius /= 3.0f;
-			// プレイヤーの境界球と敵の境界球が重なっていたら
-			if (enemy->GetBoundingSphere().Intersects(playerSphere)) enemy->CheckHitOtherEnemy(enemy->GetBoundingSphere(), playerSphere);
-		}
-		// プレイヤーと敵の当たり判定を設定
-		enemy->SetHitToPlayer(m_isHitPlayerToEnemy);
-		enemy->SetPlayerBoundingSphere(m_playerSphere);
-	}
-	// 敵の削除・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
-	// 削除対象を保持するベクター
-	std::vector<std::unique_ptr<Enemy>> enemiesToRemove;
-	// 削除対象を収集する
-	for (auto it = m_enemy.begin(); it != m_enemy.end(); )
-	{
-		// 敵が死んでいたら
-		if ((*it)->GetEnemyIsDead())
-		{
-			// 敵の座標を渡して爆破エフェクトを再生
-			m_effect.push_back(std::make_unique<Effect>(m_commonResources,
-														Effect::ParticleType::ENEMY_DEAD,
-														(*it)->GetPosition(),
-														(*it)->GetMatrix()));
-			m_audioManager->PlaySound("EnemyDead", 2);// 敵のSEを再生
-			enemiesToRemove.push_back(std::move(*it));// 削除対象に追加
-			it = m_enemy.erase(it);  // 削除してイテレータを更新
-		}
-		else it++;  // 次の要素へ
-	}
-}
-//---------------------------------------------------------
-// FMODのシステムの初期化と音声データのロード
-//---------------------------------------------------------
 void PlayScene::InitializeFMOD()
 {
 
@@ -394,8 +268,8 @@ void PlayScene::InitializeFMOD()
 	m_audioManager->LoadSound("Resources/Sounds/playerBullet.mp3", "SE");
 	m_audioManager->LoadSound("Resources/Sounds/playbgm.mp3", "BGM");
 	m_audioManager->LoadSound("Resources/Sounds/Explosion.mp3", "EnemyDead");
-	m_audioManager->LoadSound("Resources/Sounds/hit.mp3", "Hit");
 	m_audioManager->LoadSound("Resources/Sounds/damage.mp3", "Damage");
+	m_audioManager->LoadSound("Resources/Sounds/hit.mp3", "Hit");
 	m_audioManager->LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet");
 
 

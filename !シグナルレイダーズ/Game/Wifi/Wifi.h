@@ -90,6 +90,8 @@ public:
 	void Update(float elapsedTime);
 	// •`‰æˆ—
 	void Render(mylib::DebugString* debugString);
+	// ƒNƒŠƒA
+	void Clear();
 public:
 	// æ“¾‚µ‚½Wi-Fi‚ğó‚¯æ‚é
 	std::vector<int> GetWifiLevels()const { return m_wifilevels; }

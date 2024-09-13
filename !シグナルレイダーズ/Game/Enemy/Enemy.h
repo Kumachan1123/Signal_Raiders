@@ -91,6 +91,7 @@ public:
 	bool GetHitToOtherEnemy() const { return m_isHitToOtherEnemy; }
 	bool GetBulletHitToPlayer() const { return m_isBullethit; }
 	bool GetHitToPlayerBullet()const { return m_isHitToPlayerBullet; }
+	float GetToPlayerDamage() const { return PLAYER_DAMAGE; }
 	// setter
 	void SetBoundingSphereCenter(DirectX::SimpleMath::Vector3& cen) { m_enemyBoundingSphere.Center = cen; }
 	void SetPosition(DirectX::SimpleMath::Vector3& pos) { m_position = pos; }
@@ -98,8 +99,8 @@ public:
 	void SetHitToPlayer(bool isHitToPlayer) { m_isHit = isHitToPlayer; }
 	void SetHitToOtherEnemy(bool isHitToOtherEnemy) { m_isHitToOtherEnemy = isHitToOtherEnemy; }
 	void SetBulletBoundingSphere(DirectX::BoundingSphere& bs) { m_enemyBulletBS = bs; }
-	void SetPlayerBoundingSphere(DirectX::BoundingSphere& playerBS) { m_playerBS = playerBS; }
-	void SetPlayerHP(float& HP) const { HP -= PLAYER_DAMAGE; }
+	void SetPlayerBoundingSphere(DirectX::BoundingSphere playerBS) { m_playerBS = playerBS; }
+	void SetPlayerHP(float& HP) { HP -= PLAYER_DAMAGE; }
 	void SetBulletHitToPlayer(bool hit) { m_isBullethit = hit; }
 	void SetHitToPlayerBullet(bool hit) { m_isHitToPlayerBullet = hit; }
 public:

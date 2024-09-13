@@ -123,3 +123,14 @@ void Wifi::Render(mylib::DebugString* debugString)
 	m_preWifilevels.clear();
 }
 
+void Wifi::Clear()
+{
+	if (dwResult != ERROR_SUCCESS)
+	{
+		return;
+	}
+	// メモリの解放とハンドルのクローズ
+	m_memory->FreeMemoryAndCloseHandle(pInterfaceList, hClient, m_networkInfos, displayedSSIDs);
+	m_preWifilevels.clear();
+}
+

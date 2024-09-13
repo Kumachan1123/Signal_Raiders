@@ -5,6 +5,7 @@
 #pragma once
 #include "IScene.h"
 #include "Game/SkyBox/SkyBox.h"
+#include "Game/Player/Player.h"
 #include "Game/Player/PlayerController/PlayerController.h"
 #include "Game/Player/PlayerBullet/PlayerBullet.h"
 #include "Game/Enemy/Enemy.h"
@@ -28,10 +29,9 @@ class CommonResources;
 namespace mylib
 {
 	class InputManager;
-	class DebugCamera;
 }
 
-class FPS_Camera;
+
 class Fade;
 class PlayScene final :
 	public IScene
@@ -40,30 +40,21 @@ class PlayScene final :
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
-	// FPSカメラ
-	std::unique_ptr<FPS_Camera> m_camera;
-	// マウス
-	std::unique_ptr<DirectX::Mouse> m_mouse;
-	// プレイヤーコントローラー
-	std::unique_ptr<PlayerController>m_playerController;
+	// プレイヤー
+	std::unique_ptr<Player> m_pPlayer;
 	// プレイヤーの弾
 	std::vector<std::unique_ptr<PlayerBullet>> m_playerBullets;
-	// プレイヤーのHP
-	float m_playerHP = 100.0f;
-	std::unique_ptr <PlayerHP> m_pPlayerHP;
-	// 照準
-	std::unique_ptr<PlayerPointer> m_pPlayerPointer;
 	// スカイボックス用のメンバ変数
 	std::unique_ptr<SkyBox> m_skybox;
 	// 敵全体
-	std::unique_ptr<Enemies> m_enemies;
+	std::unique_ptr<Enemies> m_pEnemies;
 	// 敵
 	std::vector<std::unique_ptr<Enemy>> m_enemy;
 	// 地面（ステージ１
 	std::unique_ptr<Stage1> m_stage1;
 	// 射影行列
 	DirectX::SimpleMath::Matrix m_projection;
-	// Particle
+	// エフェクト
 	std::vector<std::unique_ptr<Effect>> m_effect;
 	// フェード
 	std::unique_ptr<Fade> m_fade;
@@ -101,8 +92,8 @@ private:
 	float m_angle;
 	// 生成開始時間
 	float m_startTime;
-	// wi-fi関連の変数
-	std::unique_ptr<Wifi> m_wifi;
+	// wi-fi
+	//std::unique_ptr<Wifi> m_wifi;
 	// 境界球
 	DirectX::BoundingSphere m_inPlayerArea;
 	DirectX::BoundingSphere m_playerSphere;
@@ -113,7 +104,7 @@ private:
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
-	int m_count = 0;
+
 public:
 	PlayScene();
 	~PlayScene() override;
@@ -130,8 +121,7 @@ private:
 	void InitializeFMOD();
 
 public:
-	float GetPlayerHP() { return m_playerHP; }
-	void SetPlayerHP(float hp) { m_playerHP = hp; }
+
 	DirectX::BoundingSphere GetPlayerSphere() { return m_playerSphere; }
 	DirectX::BoundingSphere GetInPlayerArea() { return m_inPlayerArea; }
 };
