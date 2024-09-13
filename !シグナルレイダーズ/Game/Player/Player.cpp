@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "Player.h"
-
+#include "Game/CommonResources.h"
+#include "DeviceResources.h"
+#include <Mouse.h>
+#include "Libraries/MyLib/InputManager.h"
 Player::Player(CommonResources* commonResources)
 	:
 	m_commonResources{ commonResources },
@@ -10,7 +13,9 @@ Player::Player(CommonResources* commonResources)
 	m_pPlayerController{},
 	m_inPlayerArea{},
 	m_playerSphere{},
-	m_pCamera{}
+	m_pCamera{},
+	m_pPlayerBullets{},
+	m_pEnemies{ nullptr }
 {
 	// 境界球
 	m_inPlayerArea.Radius = 20.0f;
@@ -21,9 +26,11 @@ Player::~Player()
 {
 }
 
-void Player::Initialize()
+void Player::Initialize(Enemies* pEnemies)
 {
 	auto DR = m_commonResources->GetDeviceResources();
+	// 敵
+	m_pEnemies = pEnemies;
 	// FPSカメラを作成する
 	m_pCamera = std::make_unique<FPS_Camera>();
 	// HPゲージ作成
@@ -36,28 +43,53 @@ void Player::Initialize()
 	m_pPlayerController = std::make_unique<PlayerController>();
 	m_pPlayerController->Initialize(m_commonResources);
 	m_pPlayerController->SetPlayetPosition(m_pCamera->GetEyePosition());
+	// 弾
+	m_pPlayerBullets = std::make_unique<PlayerBullets>(m_commonResources);
+	m_pPlayerBullets->Initialize(this, m_pEnemies);
 }
 
 void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>& kb, float elapsedTime)
 {
+
+	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
 	// カメラが向いている方向を取得する
 	DirectX::SimpleMath::Vector3 cameraDirection = m_pCamera->GetDirection();
+#ifdef _DEBUG// デバッグ
+	// 右クリックで敵を一掃
+	if (mtracker->GetLastState().rightButton)for (auto& enemy : m_pEnemies->GetEnemy())enemy->SetEnemyHP(0);
+	// スペースキーでプレイヤーのHPを0にする
+	if (kb->pressed.Space)SetPlayerHP(0.0f);
+#endif
+	// 左クリックで弾発射
+	if (mtracker->GetLastState().leftButton && m_pPlayerBullets->GetIsBullet() == false)
+	{
+
+		// 弾を生成する
+		m_pPlayerBullets->CreateBullet(GetPlayerController()->GetPlayerPosition(), cameraDirection);
+
+	}
+	if (!mtracker->GetLastState().leftButton)m_pPlayerBullets->SetIsBullet(false);
+
 	// プレイヤーコントローラー更新
 	m_pPlayerController->Update(kb, cameraDirection, elapsedTime);
 	// カメラ更新
 	m_pCamera->Update(m_pPlayerController->GetPlayerPosition(), m_pPlayerController->GetYawX());
 	m_pCamera->SetTargetPositionY(m_pPlayerController->GetPitch());
+	// 弾更新
+	m_pPlayerBullets->Update(elapsedTime);
 	// HP更新
 	m_pPlayerHP->Update(m_playerHP);
 	// 照準更新
 	m_pPlayerPointer->Update();
 	m_inPlayerArea.Center = GetPlayerController()->GetPlayerPosition();// プレイヤーの位置を取得
 	m_playerSphere.Center = m_inPlayerArea.Center;// プレイヤーの位置を取得
+
 }
 
 void Player::Render()
 {
 	m_pPlayerHP->Render();// HP描画
 	m_pPlayerPointer->Render();// 照準描画
+	m_pPlayerBullets->Render();// 弾描画
 
 }

@@ -1,6 +1,6 @@
 /*
 	@file	PlayerBullet.cpp
-	@brief	プレイヤーコントローラークラス
+	@brief	プレイヤーの弾クラス
 	作成者：くまち
 */
 #include "pch.h"

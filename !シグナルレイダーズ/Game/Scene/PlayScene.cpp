@@ -54,9 +54,10 @@ void PlayScene::Initialize(CommonResources* resources)
 	auto DR = m_commonResources->GetDeviceResources();
 	// プレイヤーを初期化する
 	m_pPlayer = std::make_unique<Player>(resources);
-	m_pPlayer->Initialize();
+
 	// 敵全体を初期化する
 	m_pEnemies = std::make_unique<Enemies>(resources);
+	m_pPlayer->Initialize(m_pEnemies.get());
 	m_pEnemies->Initialize(m_pPlayer.get());
 	// 地面（ステージ１生成）
 	m_stage1 = std::make_unique<Stage1>();
@@ -94,34 +95,16 @@ void PlayScene::Update(float elapsedTime)
 {
 	// キーボードステートトラッカーを取得する
 	const auto& kb = m_commonResources->GetInputManager()->GetKeyboardTracker();
-	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
+
 	// 二重再生しない
 	m_audioManager->PlaySound("BGM", 0.3);
 	// カメラが向いている方向を取得する
 	DirectX::SimpleMath::Vector3 cameraDirection = m_pPlayer->GetCamera()->GetDirection();
 	m_pPlayer->Update(kb, elapsedTime);
-#ifdef _DEBUG// デバッグ
-	// 右クリックで敵を一掃
-	if (mtracker->GetLastState().rightButton)for (auto& enemy : m_pEnemies->GetEnemy())enemy->SetEnemyHP(0);
-	// スペースキーでプレイヤーのHPを0にする
-	if (kb->pressed.Space)m_pPlayer->SetPlayerHP(0.0f);
-#endif
-	// 左クリックで弾発射
-	if (mtracker->GetLastState().leftButton && !m_isBullet)
-	{
-		// SEの再生
-		m_audioManager->PlaySound("SE", .5);
-		// 弾を生成する
-		auto bullet = std::make_unique<PlayerBullet>();
-		bullet->Initialize(m_commonResources);
-		bullet->MakeBall(m_pPlayer->GetPlayerController()->GetPlayerPosition(), cameraDirection);
-		m_playerBullets.push_back(std::move(bullet));
-		m_isBullet = true;
-	}
-	if (!mtracker->GetLastState().leftButton)m_isBullet = false;
+
 	m_audioManager->Update();// オーディオマネージャーの更新
 	m_pEnemies->Update(elapsedTime);// 敵の更新
-	UpdateBullets(elapsedTime);// 弾の更新
+
 	// プレイヤーのHPが0以下、または敵がいないなら
 	if (m_pPlayer->GetPlayerHP() <= 0.0f || (m_pEnemies->GetEnemy().size() <= 0 && m_pEnemies->GetisBorned()))
 	{
@@ -150,7 +133,7 @@ void PlayScene::Render()
 	// 地面描画
 	m_stage1->Render(view, projection);
 	// 弾を描画する
-	for (const auto& bullet : m_playerBullets)bullet->Render(view, projection);
+	for (const auto& bullet : m_playerBullet)bullet->Render(view, projection);
 	// 敵を描画する
 	m_pEnemies->Render();
 #ifdef _DEBUG// プレイヤーのHPを表示する
@@ -168,7 +151,7 @@ void PlayScene::Render()
 //---------------------------------------------------------
 void PlayScene::Finalize()
 {
-	m_playerBullets.clear();
+	m_playerBullet.clear();
 	m_enemy.clear();
 	m_skybox.reset();
 	m_audioManager->Shutdown();
@@ -182,8 +165,6 @@ IScene::SceneID PlayScene::GetNextSceneID() const
 	if (m_isChangeScene)
 	{
 		m_audioManager->StopSound("BGM");// BGMを停止する
-		m_audioManager->StopSound("SE");// SEを停止する
-		m_audioManager->StopSound("EnemyDead");// 敵死亡SEを停止する
 		// プレイヤーのHPが0以下なら
 		if (m_pPlayer->GetPlayerHP() <= 0.0f)return IScene::SceneID::GAMEOVER;// ゲームオーバーシーンへ
 		// 敵がいないなら
@@ -193,46 +174,10 @@ IScene::SceneID PlayScene::GetNextSceneID() const
 	return IScene::SceneID::NONE;// 何もしない
 }
 
-void PlayScene::UpdateBullets(float elapsedTime)
-{
-
-	DirectX::SimpleMath::Vector3 dir = m_pPlayer->GetCamera()->GetDirection();
-	for (auto it = m_playerBullets.begin(); it != m_playerBullets.end(); )
-	{
-		(*it)->Update(dir, elapsedTime);
-		if ((*it)->IsExpired())it = m_playerBullets.erase(it);
-		else
-		{
-			bool isHit = false;
-			for (auto& enemy : m_pEnemies->GetEnemy())
-			{
-				if ((*it)->GetBoundingSphere().Intersects(enemy->GetBoundingSphere()))
-				{
-					isHit = true;
-					enemy->SetEnemyHP(enemy->GetHP() - (*it)->Damage());
-					m_effect.push_back(std::make_unique<Effect>(m_commonResources,
-																Effect::ParticleType::ENEMY_HIT,
-																enemy->GetPosition(),
-																enemy->GetMatrix()));
-					enemy->SetHitToPlayerBullet(true);
-					m_audioManager->PlaySound("Hit", 0.3);// ヒットSEを再生
-					break;
-				}
-			}
-			if (isHit) it = m_playerBullets.erase(it);
-			else it++;
-		}
-	}
-}
 void PlayScene::InitializeFMOD()
 {
 	// FMODシステムの初期化
 	m_audioManager->Initialize();
 	// ここで必要な音声データをAudioManagerにロードさせる
-	m_audioManager->LoadSound("Resources/Sounds/playerBullet.mp3", "SE");
 	m_audioManager->LoadSound("Resources/Sounds/playbgm.mp3", "BGM");
-	m_audioManager->LoadSound("Resources/Sounds/Explosion.mp3", "EnemyDead");
-	m_audioManager->LoadSound("Resources/Sounds/damage.mp3", "Damage");
-	m_audioManager->LoadSound("Resources/Sounds/hit.mp3", "Hit");
-	m_audioManager->LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet");
 }

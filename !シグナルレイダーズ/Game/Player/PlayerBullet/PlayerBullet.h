@@ -1,6 +1,6 @@
 /*
 	@file	PlayerBullet.h
-	@brief	プレイヤーコントローラークラス
+	@brief	プレイヤーの弾クラス
 	作成者：くまち
 */
 #pragma once

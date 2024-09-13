@@ -45,7 +45,6 @@ Enemies::Enemies(CommonResources* commonResources)
 //---------------------------------------------------------
 Enemies::~Enemies()
 {
-	// do nothing.
 }
 
 //---------------------------------------------------------

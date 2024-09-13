@@ -210,7 +210,7 @@ void PlayerUI::Render()
 	context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
 
 	//	深度バッファに書き込み参照する
-	context->OMSetDepthStencilState(m_states->DepthDefault(), 0);
+	context->OMSetDepthStencilState(m_states->DepthNone(), 0);
 
 	//	カリングは左周り
 	context->RSSetState(m_states->CullNone());

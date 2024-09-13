@@ -43,7 +43,7 @@ private:
 	// プレイヤー
 	std::unique_ptr<Player> m_pPlayer;
 	// プレイヤーの弾
-	std::vector<std::unique_ptr<PlayerBullet>> m_playerBullets;
+	std::vector<std::unique_ptr<PlayerBullet>> m_playerBullet;
 	// スカイボックス用のメンバ変数
 	std::unique_ptr<SkyBox> m_skybox;
 	// 敵全体

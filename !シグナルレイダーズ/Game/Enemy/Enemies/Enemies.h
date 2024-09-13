@@ -61,6 +61,6 @@ public:
 	std::vector<std::unique_ptr<Enemy>>& GetEnemy() { return m_enemy; }
 	std::unique_ptr<Wifi>& GetWifi() { return m_pWifi; }
 	std::vector<std::unique_ptr<Effect>>& GetEffect() { return m_effect; }
-	bool GetisBorned() { return m_isBorned; }
+	bool GetisBorned() const { return m_isBorned; }
 	// Setter
 };
