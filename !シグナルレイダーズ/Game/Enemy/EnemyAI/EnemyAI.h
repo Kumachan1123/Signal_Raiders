@@ -41,6 +41,7 @@ private:
 	const float RANDOM_MIN = 0.5f;
 	float  m_time = 0.0f;  // 時間の初期化
 	float m_attackCooldown;  // 攻撃のクールダウンタイム
+	bool m_isHitPlayerBullet = false;
 public:
 	//	getter
 
@@ -60,6 +61,7 @@ public:
 	void SetVelocity(DirectX::SimpleMath::Vector3& vel) { m_velocity = vel; }
 	void KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bool& isHitToPlayerBullet, const DirectX::SimpleMath::Vector3& playerPos);
 	void SetState(IState::EnemyState state) { m_enemyState = state; }
+	void SetHitPlayerBullet(bool hit) { m_isHitPlayerBullet = hit; }
 public:
 	EnemyAI();
 	~EnemyAI();

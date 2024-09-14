@@ -169,7 +169,7 @@ void Effect::Render(ID3D11DeviceContext1* context, SimpleMath::Matrix view, Simp
 
 	// 深度ステンシル状態を設定（深度バッファを有効にする）
 
-	context->OMSetDepthStencilState(m_States->DepthNone(), 0);
+	context->OMSetDepthStencilState(m_States->DepthDefault(), 0);
 	context->OMSetBlendState(m_States->NonPremultiplied(), nullptr, 0xFFFFFFFF);
 
 	// カリングは左周り（反時計回り）

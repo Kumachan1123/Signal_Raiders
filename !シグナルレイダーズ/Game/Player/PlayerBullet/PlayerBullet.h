@@ -17,7 +17,7 @@ public:
 	DirectX::SimpleMath::Vector3 m_velocity;		// 弾の速さ
 	DirectX::SimpleMath::Vector3 m_direction;		// 弾が飛ぶ方向
 	float m_time;									// 生存時間
-	const float BULLET_LIFETIME = .5;				// 寿命
+	const float BULLET_LIFETIME = 1;				// 寿命
 	const int DAMAGE = 10;						// 敵に与えるダメージ
 	// ジオメトリックプリミティブ弾
 	std::unique_ptr<DirectX::Model> m_model;

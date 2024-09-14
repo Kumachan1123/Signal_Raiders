@@ -243,6 +243,7 @@ void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 		}
 	}
 	UpdateBullets(elapsedTime);
+
 	m_enemyBoundingSphere.Center = m_position;
 	m_enemyBoundingSphere.Center.y -= 2.0f;
 	m_HPBar->Update(elapsedTime, m_currentHP);
@@ -340,18 +341,9 @@ void Enemy::InitializeDepthStencilState(ID3D11Device* device)
 	// 影（ステンシル値が１のとき描画する）
 	//desc.DepthEnable = TRUE;									// 深度テストを行う
 	desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;			// 深度バッファは更新しない
-	//desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;				// テストの条件：深度値以下なら→手前なら
-
-	//desc.StencilEnable = TRUE;									// ステンシルテストを行う
-	//desc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;		// 0xff
-	//desc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;	// 0xff
 
 	// 表面
-	//desc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;		// 参照値とステンシル値が同値なら：１なら
 	desc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_INCR_SAT;	// OK　ステンシル値をインクリメントする
-	//desc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;		// NG　何もしない
-	//desc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;	// NG　何もしない
-
 	// 裏面も同じ設定
 	desc.BackFace = desc.FrontFace;
 

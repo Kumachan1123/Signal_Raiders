@@ -43,6 +43,7 @@ void EnemyAI::Initialize()
 void EnemyAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool& isHitToPlayer, bool& isHitToPlayerBullet)
 {
 	using namespace DirectX::SimpleMath;
+	if (isHitToPlayerBullet)m_isHitPlayerBullet = true;
 	// sin”g‚ğ—p‚¢‚½•‚—V“®ì‚ÌÀ‘•
 	m_time += elapsedTime;
 	// sin”g‚ğ—p‚¢‚½•‚—V“®ì‚ÌÀ‘•
@@ -52,7 +53,7 @@ void EnemyAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Direc
 	pos.y = m_initialPosition.y + amplitude * std::sin(frequency * m_time);
 	pos.y += m_velocity.y * elapsedTime;
 	// “G‚ªƒvƒŒƒCƒ„[‚Ìˆê’è”ÍˆÍ“à‚É“ü‚Á‚½‚ç
-	if (isHitToPlayer)
+	if (isHitToPlayer || m_isHitPlayerBullet)
 	{
 		ChangeState(m_enemyAttack.get());//UŒ‚‘Ô¨‚É‚·‚é
 		m_enemyState = IState::EnemyState::ATTACK;// œpœj‘Ô¨

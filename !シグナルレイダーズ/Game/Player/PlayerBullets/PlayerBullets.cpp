@@ -36,11 +36,11 @@ void PlayerBullets::Update(float elapsedTime)
 	DirectX::SimpleMath::Vector3 playerUp = m_pPlayer->GetCamera()->GetUpVector();
 	for (auto it = m_playerBullet.begin(); it != m_playerBullet.end(); )
 	{
-		(*it)->SetCameraEye(playerPos);
-		(*it)->SetCameraTarget(playerTarget);
-		(*it)->SetCameraUp(playerUp);
-		(*it)->Update(dir, elapsedTime);
-		if ((*it)->IsExpired())it = m_playerBullet.erase(it);
+		(*it)->SetCameraEye(playerPos);// カメラの位置を設定
+		(*it)->SetCameraTarget(playerTarget);// カメラの注視点を設定
+		(*it)->SetCameraUp(playerUp);	// カメラの上方向を設定
+		(*it)->Update(dir, elapsedTime);// 弾を更新
+		if ((*it)->IsExpired())it = m_playerBullet.erase(it);// 弾が寿命を迎えたら削除
 		else
 		{
 			bool isHit = false;

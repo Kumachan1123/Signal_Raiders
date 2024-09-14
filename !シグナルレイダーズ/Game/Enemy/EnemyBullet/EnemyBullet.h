@@ -60,7 +60,7 @@ public:
 	// ’e‚ª¶¬‚³‚ê‚Ä‚©‚ç‚ÌŒo‰ßŽžŠÔ‚ªŽõ–½‚ð’´‚¦‚½‚©‚Ç‚¤‚©‚ð”»’è‚·‚é
 	bool IsExpired() const
 	{
-		const float BULLET_LIFETIME = 1.0f;				// Žõ–½
+		const float BULLET_LIFETIME = 10.0f;				// Žõ–½
 
 		return GetTime() >= BULLET_LIFETIME;
 	}
