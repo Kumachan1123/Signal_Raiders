@@ -55,6 +55,10 @@ void PlayerBullet::Initialize(CommonResources* resources)
 			m_inputLayout.ReleaseAndGetAddressOf()
 		)
 	);
+	// 弾の軌道ポインター
+	m_bulletTrail = std::make_unique<BulletTrail>();
+	m_bulletTrail->Initialize(m_commonResources);
+
 	// モデルを読み込む準備
 	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);
 	fx->SetDirectory(L"Resources/Models");
@@ -98,13 +102,12 @@ void PlayerBullet::Update(DirectX::SimpleMath::Vector3& Direction, float elapsed
 	m_position += m_velocity;
 	// バウンディングスフィアの位置更新
 	m_boundingSphere.Center = m_position;
-	// 現在の弾の位置を軌跡リストに追加
-	m_trailPositions.push_back(m_position);
 
-	// 軌跡が最大の長さを超えたら、古い位置を削除
-	if (m_trailPositions.size() > MAX_TRAIL_LENGTH) {
-		m_trailPositions.pop_back();
-	}
+	// 現在の弾の位置を軌跡リストに追加
+	m_bulletTrail->SetBulletPosition(m_position);
+	// 軌跡の更新
+
+	m_bulletTrail->Update(elapsedTime);
 	// 時間計測
 	m_time += elapsedTime;
 
@@ -133,6 +136,9 @@ void PlayerBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 	boundingbulletWorld *= Matrix::CreateTranslation(m_position);
 	// 弾描画
 	m_model->Draw(context, *states, bulletWorld, view, proj);
+	// 軌跡描画
+	m_bulletTrail->CreateBillboard(m_cameraTarget, m_cameraEye, m_cameraUp);
+	m_bulletTrail->Render(view, proj);
 	// 各パラメータを設定する
 	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
 	context->OMSetDepthStencilState(states->DepthRead(), 0);
@@ -142,15 +148,7 @@ void PlayerBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 	m_basicEffect->SetView(view);
 	m_basicEffect->SetProjection(proj);
 	m_basicEffect->Apply(context);
-	// 軌跡描画
-	m_primitiveBatch->Begin();
-	for (size_t i = 1; i < m_trailPositions.size(); ++i) {
-		// 前の位置と現在の位置をラインで繋ぐ
-		DirectX::DX11::VertexPositionColor start(m_trailPositions[i - 1], DirectX::Colors::Lime);
-		DirectX::DX11::VertexPositionColor end(m_trailPositions[i], DirectX::Colors::Lime);
-		m_primitiveBatch->DrawLine(start, end);
-	}
-	m_primitiveBatch->End();
+
 	// 境界球の変換を同じワールドマトリックスに基づいて行う
 	BoundingSphere transformedBoundingSphere = m_boundingSphere;
 	m_boundingSphere.Transform(transformedBoundingSphere, boundingbulletWorld);

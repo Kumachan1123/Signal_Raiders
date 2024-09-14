@@ -7,6 +7,7 @@
 //前方宣言
 class CommonResources;
 #include "Game/CommonResources.h"
+#include "Game/BulletTrail/BulletTrail.h"
 class PlayerBullet
 {
 	//変数
@@ -33,6 +34,8 @@ private:
 
 	// 弾の自転
 	float m_angle;
+	// 弾の軌跡ポインター
+	std::unique_ptr<BulletTrail> m_bulletTrail;
 
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
 	// 	//デバッグ用
@@ -42,7 +45,10 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 	// テクスチャ
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_trailTexture;
-
+	// カメラ
+	DirectX::SimpleMath::Vector3 m_cameraEye;
+	DirectX::SimpleMath::Vector3 m_cameraTarget;
+	DirectX::SimpleMath::Vector3 m_cameraUp;
 	//関数
 public:
 	PlayerBullet();
@@ -60,6 +66,9 @@ public:
 	float GetTime()const { return m_time; }
 	//Setter
 	void SetBulletPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }
+	void SetCameraEye(DirectX::SimpleMath::Vector3 eye) { m_bulletTrail->SetCameraPosition(eye); m_cameraEye = eye; }
+	void SetCameraTarget(DirectX::SimpleMath::Vector3 target) { m_bulletTrail->SetCameraTarget(target); m_cameraTarget = target; }
+	void SetCameraUp(DirectX::SimpleMath::Vector3 up) { m_bulletTrail->SetCameraUp(up); m_cameraUp = up; }
 	// 弾が生成されてからの経過時間が寿命を超えたかどうかを判定する
 	bool IsExpired() const { return m_time >= BULLET_LIFETIME; }
 	// 敵にダメージを与える

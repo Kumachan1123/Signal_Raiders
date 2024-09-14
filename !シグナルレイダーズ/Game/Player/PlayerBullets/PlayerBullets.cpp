@@ -31,8 +31,14 @@ void PlayerBullets::Update(float elapsedTime)
 {
 	// プレイヤーの弾を更新する
 	DirectX::SimpleMath::Vector3 dir = m_pPlayer->GetCamera()->GetDirection();
+	DirectX::SimpleMath::Vector3 playerPos = m_pPlayer->GetCamera()->GetEyePosition();
+	DirectX::SimpleMath::Vector3 playerTarget = m_pPlayer->GetCamera()->GetTargetPosition();
+	DirectX::SimpleMath::Vector3 playerUp = m_pPlayer->GetCamera()->GetUpVector();
 	for (auto it = m_playerBullet.begin(); it != m_playerBullet.end(); )
 	{
+		(*it)->SetCameraEye(playerPos);
+		(*it)->SetCameraTarget(playerTarget);
+		(*it)->SetCameraUp(playerUp);
 		(*it)->Update(dir, elapsedTime);
 		if ((*it)->IsExpired())it = m_playerBullet.erase(it);
 		else
