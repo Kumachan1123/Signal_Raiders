@@ -104,6 +104,58 @@ void BulletTrail::CreateShader()
 	device->CreateBuffer(&desc, nullptr, &m_CBuffer);
 }
 
+void BulletTrail::Trail()
+{
+	// タイマーが一定時間（0.05秒）を超えたら新しいパーティクルを生成
+	if (m_timer >= 0.00025f)
+	{
+		// 乱数の設定
+		std::random_device seed;
+		std::default_random_engine engine(seed());
+
+		// ランダムな角度（0 から 2π まで）
+		std::uniform_real_distribution<> angleDist(0, XM_2PI);
+
+		// ランダムな速度の範囲を設定
+		std::uniform_real_distribution<> speedDist(0.5f, 2.0f);
+
+		// ランダムな角度
+		float randAngleXY = static_cast<float>(angleDist(engine));
+		float randAngleXZ = static_cast<float>(angleDist(engine));
+
+		// ランダムな速度
+		float speed = static_cast<float>(speedDist(engine));
+
+		// ランダムな方向の速度ベクトル
+		SimpleMath::Vector3 randomVelocity = speed * SimpleMath::Vector3(
+			cosf(randAngleXY) * sinf(randAngleXZ),
+			cosf(randAngleXZ),
+			sinf(randAngleXY) * sinf(randAngleXZ)
+		);
+
+		// パーティクルの生成
+		ParticleUtility pU(
+			1.0f,  // 生存時間(s)
+			m_bulletPos, // 初期位置 (基準座標)
+			randomVelocity, // 初期速度（ランダムな方向）
+			SimpleMath::Vector3::One, // 加速度
+			SimpleMath::Vector3::Zero, // 回転速度
+			SimpleMath::Vector3(0, 0, 0), // 初期回転
+			SimpleMath::Vector3(1, 1, 0), // 初期スケール
+			SimpleMath::Vector3(0, 0, 0), // 最終スケール（小さくなる）
+			SimpleMath::Vector4(1, 1, 0, .25), // 初期カラー（白）
+			SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 0.0f), // 最終カラー（白→透明）
+			ParticleUtility::Type::SPARK // パーティクルのタイプ
+		);
+
+		// 生成したパーティクルをリストに追加
+		m_particleUtility.push_back(pU);
+
+		// タイマーをリセット
+		m_timer = 0.0f;
+	}
+}
+
 
 // 画像の読み込み
 void BulletTrail::LoadTexture(const wchar_t* path)
@@ -196,10 +248,10 @@ void BulletTrail::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
 
 	//	深度バッファに書き込み参照する
-	context->OMSetDepthStencilState(m_states->DepthDefault(), 0);
+	context->OMSetDepthStencilState(m_states->DepthNone(), 0);
 
 	//	カリングはなし
-	context->RSSetState(m_states->CullNone());
+	context->RSSetState(m_states->CullCounterClockwise());
 
 	//	シェーダをセットする
 	context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
@@ -253,54 +305,3 @@ void BulletTrail::CreateBillboard(DirectX::SimpleMath::Vector3 target, DirectX::
 	m_billboard = rot * m_billboard;
 }
 
-void BulletTrail::Trail()
-{
-	// タイマーが一定時間（0.05秒）を超えたら新しいパーティクルを生成
-	if (m_timer >= 0.00025f)
-	{
-		// 乱数の設定
-		std::random_device seed;
-		std::default_random_engine engine(seed());
-
-		// ランダムな角度（0 から 2π まで）
-		std::uniform_real_distribution<> angleDist(0, XM_2PI);
-
-		// ランダムな速度の範囲を設定
-		std::uniform_real_distribution<> speedDist(0.5f, 2.0f);
-
-		// ランダムな角度
-		float randAngleXY = static_cast<float>(angleDist(engine));
-		float randAngleXZ = static_cast<float>(angleDist(engine));
-
-		// ランダムな速度
-		float speed = static_cast<float>(speedDist(engine));
-
-		// ランダムな方向の速度ベクトル
-		SimpleMath::Vector3 randomVelocity = speed * SimpleMath::Vector3(
-			cosf(randAngleXY) * sinf(randAngleXZ),
-			cosf(randAngleXZ),
-			sinf(randAngleXY) * sinf(randAngleXZ)
-		);
-
-		// パーティクルの生成
-		ParticleUtility pU(
-			1.0f,  // 生存時間(s)
-			m_bulletPos, // 初期位置 (基準座標)
-			randomVelocity, // 初期速度（ランダムな方向）
-			SimpleMath::Vector3::One, // 加速度
-			SimpleMath::Vector3::Zero, // 回転速度
-			SimpleMath::Vector3(0, 0, 0), // 初期回転
-			SimpleMath::Vector3(1, 1, 0), // 初期スケール
-			SimpleMath::Vector3(0, 0, 0), // 最終スケール（小さくなる）
-			SimpleMath::Vector4(0, 0, .1, 1), // 初期カラー（白）
-			SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 0.0f), // 最終カラー（白→透明）
-			ParticleUtility::Type::SPARK // パーティクルのタイプ
-		);
-
-		// 生成したパーティクルをリストに追加
-		m_particleUtility.push_back(pU);
-
-		// タイマーをリセット
-		m_timer = 0.0f;
-	}
-}
