@@ -14,7 +14,7 @@ class CommonResources;
 class EnemyBullet
 {	//•Ï”
 public:
-	const float SIZE = 0.1f;
+	const float SIZE = 0.15f;
 	DirectX::SimpleMath::Vector3 m_position;		// ’e‚ÌÀ•W
 	DirectX::SimpleMath::Vector3 m_velocity;		// ’e‚Ì‘¬‚³
 	DirectX::SimpleMath::Vector3 m_direction;		// ’e‚ª”ò‚Ô•ûŒü

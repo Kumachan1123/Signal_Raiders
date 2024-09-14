@@ -59,16 +59,16 @@ void EnemyBullet::Initialize(CommonResources* resources)
 						   {
 							   // ベイシックエフェクトを取得する
 							   auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);
-							   // ディフューズカラーを設定する
-							   basicEffect->SetDiffuseColor(DirectX::Colors::Violet);
-							   basicEffect->SetFogStart(0.5);
+							   basicEffect->SetAlpha(.5f);// アルファ値を設定する
+							   basicEffect->SetDiffuseColor(DirectX::Colors::Purple);// ディフューズカラーを設定する
+							   basicEffect->SetAmbientLightColor(DirectX::Colors::Purple);// アンビエントライトカラーを設定する
 
 						   });
 	m_direction = Vector3::Zero;
 	m_velocity = Vector3{ 0.0f,0.0f,0.0f };
 	m_position = Vector3::Zero;
 	m_boundingSphere.Center = m_position;
-	m_boundingSphere.Radius = .25;
+	m_boundingSphere.Radius = .3;
 }
 // 弾の初期位置を設定
 void EnemyBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir, DirectX::SimpleMath::Vector3& target)
@@ -93,7 +93,7 @@ void EnemyBullet::Update(DirectX::SimpleMath::Vector3& pos, float elapsedTime)
 		toPlayer.Normalize();
 	}
 	// 弾の速度を遅くする
-	float bulletSpeed = .25f; // 適当な速度を設定する（任意の値、調整可能）
+	float bulletSpeed = .5f; // 適当な速度を設定する（任意の値、調整可能）
 	m_velocity = toPlayer * bulletSpeed;
 	// プレイヤーの方向に向かって弾を飛ばす
 	//m_velocity = toPlayer;
