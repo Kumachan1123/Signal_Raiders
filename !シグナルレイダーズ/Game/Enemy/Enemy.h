@@ -13,6 +13,7 @@ class EnemyAI;
 class EnemyHPBar;
 class EnemyBullet;
 class EnemyModel;
+class EnemyBullets;
 class Enemy
 {
 private:
@@ -30,6 +31,7 @@ private:
 	std::unique_ptr<EnemyModel>		m_enemyModel;
 	std::unique_ptr<EnemyAI>		m_enemyAI;
 	std::unique_ptr<EnemyHPBar>		m_HPBar;
+	std::unique_ptr<EnemyBullets>	m_enemyBullets;
 	std::vector<std::unique_ptr<EnemyBullet>> m_bullets; // 弾のリスト
 
 	// 影の深度ステンシルステート
@@ -89,7 +91,7 @@ public:
 	bool GetEnemyIsDead() const { return m_isDead; }
 	bool GetHitToPlayer()const { return m_isHit; }
 	bool GetHitToOtherEnemy() const { return m_isHitToOtherEnemy; }
-	bool GetBulletHitToPlayer() const { return m_isBullethit; }
+	bool GetBulletHitToPlayer() const { return m_isBullethit; }// 敵の弾がプレイヤーに当たったか
 	bool GetHitToPlayerBullet()const { return m_isHitToPlayerBullet; }
 	float GetToPlayerDamage() const { return PLAYER_DAMAGE; }
 	// setter
@@ -101,7 +103,7 @@ public:
 	void SetBulletBoundingSphere(DirectX::BoundingSphere& bs) { m_enemyBulletBS = bs; }
 	void SetPlayerBoundingSphere(DirectX::BoundingSphere playerBS) { m_playerBS = playerBS; }
 	void SetPlayerHP(float& HP) { HP -= PLAYER_DAMAGE; }
-	void SetBulletHitToPlayer(bool hit) { m_isBullethit = hit; }
+	void SetBulletHitToPlayer(bool hit) { m_isBullethit = hit; }// 敵の弾がプレイヤーに当たったか
 	void SetHitToPlayerBullet(bool hit) { m_isHitToPlayerBullet = hit; }
 public:
 	// 初期ステータスを設定

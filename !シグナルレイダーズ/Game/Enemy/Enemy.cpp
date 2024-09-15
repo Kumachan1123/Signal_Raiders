@@ -10,6 +10,7 @@
 #include "Game/Enemy/EnemyAI/EnemyAI.h"
 #include "Game/Enemy/EnemyHPBar/EnemyHPBar.h"
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
+#include "Game/Enemy/EnemyBullets/EnemyBullets.h"
 #include "Game/Enemy/EnemyModel/EnemyModel.h"
 #include "DeviceResources.h"
 #include "Libraries/MyLib/DebugString.h"
@@ -125,6 +126,10 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 	// AI生成
 	m_enemyAI = std::make_unique<EnemyAI>();
 	m_enemyAI->Initialize();
+	// 弾全体生成
+	m_enemyBullets = std::make_unique<EnemyBullets>(this);
+	m_enemyBullets->Initialize(resources);
+	// 乱数生成
 	std::random_device rd;  // シード生成器
 	std::mt19937 gen(rd()); // メルセンヌ・ツイスタの乱数生成器
 	std::uniform_real_distribution<float> dist(-25.0f, 25.0f); // 一様分布
@@ -199,7 +204,9 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	m_basicEffect->SetProjection(proj);
 	m_basicEffect->Apply(context);
 
-	for (const auto& bullet : m_bullets)bullet->Render(view, proj);
+	// 敵の弾描画
+	m_enemyBullets->Render(view, proj);
+	//for (const auto& bullet : m_bullets)bullet->Render(view, proj);
 #ifdef _DEBUG
 	m_primitiveBatch->Begin();
 	if (!m_isHit)
@@ -230,20 +237,17 @@ void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 
 		if (m_attackCooldown <= 0.1f)
 		{
-			// 弾を発射
-			auto bullet = std::make_unique<EnemyBullet>();
-			bullet->Initialize(m_commonResources);
-			m_audioManager->PlaySound("EnemyBullet", 0.25);
-			m_rotation = m_enemyAI->GetRotation();
+			m_audioManager->PlaySound("EnemyBullet", 0.25);// サウンド再生
+			m_rotation = m_enemyAI->GetRotation();// 敵の向きを取得
 			// クォータニオンから方向ベクトルを計算
 			DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_rotation);
-			bullet->MakeBall(GetPosition(), direction, playerPos);
-			m_bullets.push_back(std::move(bullet));
+			// 弾を発射
+			m_enemyBullets->CreateBullet(GetPosition(), direction, playerPos);
+			// クールダウンタイムをリセット
 			m_enemyAI->GetEnemyAttack()->SetCoolTime(3.0f);
 		}
 	}
-	UpdateBullets(elapsedTime);
-
+	m_enemyBullets->Update(elapsedTime, GetPosition());// 敵の弾の更新
 	m_enemyBoundingSphere.Center = m_position;
 	m_enemyBoundingSphere.Center.y -= 2.0f;
 	m_HPBar->Update(elapsedTime, m_currentHP);
@@ -276,32 +280,6 @@ void Enemy::CheckHitOtherEnemy(DirectX::BoundingSphere& A, DirectX::BoundingSphe
 
 
 
-void Enemy::UpdateBullets(float elapsedTime)
-{
-	std::vector<std::unique_ptr<EnemyBullet>> newBullets;
-
-	// 弾の更新と有効な弾を新しいリストに移動する
-	for (auto& bullet : m_bullets)
-	{
-		bullet->Update(m_position, elapsedTime); // 弾の更新
-
-		// 寿命を迎えていない弾だけを新しいリストに追加する
-		if (!bullet->IsExpired() && !m_isBullethit)
-		{
-			SetBulletBoundingSphere(bullet->GetBoundingSphere());
-			m_isBullethit = GetBulletBoundingSphere().Intersects(GetPlayerBoundingSphere());
-			if (m_isBullethit)
-			{
-				SetBulletHitToPlayer(m_isBullethit);
-				continue;
-			}
-			newBullets.push_back(std::move(bullet));
-		}
-	}
-
-	// m_bullets を新しいリストで置き換える
-	m_bullets = std::move(newBullets);
-}
 
 //---------------------------------------------------------
 // 深度ステンシルステートを初期化する

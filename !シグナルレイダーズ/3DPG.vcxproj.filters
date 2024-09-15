@@ -270,6 +270,7 @@
     <ClInclude Include="Game\Player\PlayerBullets\PlayerBullets.h" />
     <ClInclude Include="Game\BulletTrail\BulletTrail.h" />
     <ClInclude Include="Game\ParticleUtility\ParticleUtility.h" />
+    <ClInclude Include="Game\Enemy\EnemyBullets\EnemyBullets.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -388,6 +389,7 @@
     <ClCompile Include="Game\Player\PlayerBullets\PlayerBullets.cpp" />
     <ClCompile Include="Game\BulletTrail\BulletTrail.cpp" />
     <ClCompile Include="Game\ParticleUtility\ParticleUtility.cpp" />
+    <ClCompile Include="Game\Enemy\EnemyBullets\EnemyBullets.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
