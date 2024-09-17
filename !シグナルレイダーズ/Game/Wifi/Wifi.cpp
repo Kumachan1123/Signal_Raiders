@@ -107,21 +107,6 @@ void Wifi::Update(float elapsedTime)
 	}
 
 }
-// 描画処理
-void Wifi::Render(mylib::DebugString* debugString)
-{
-#ifdef _DEBUG
-	debugString->AddString("Size:%i", m_preWifilevels.size());
-
-#endif
-	if (dwResult != ERROR_SUCCESS)
-	{
-		return;
-	}
-	// メモリの解放とハンドルのクローズ
-	m_memory->FreeMemoryAndCloseHandle(pInterfaceList, hClient, m_networkInfos, displayedSSIDs);
-	m_preWifilevels.clear();
-}
 
 void Wifi::Clear()
 {

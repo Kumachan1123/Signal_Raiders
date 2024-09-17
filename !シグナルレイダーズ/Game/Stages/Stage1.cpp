@@ -59,7 +59,6 @@ void Stage1::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matri
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 
 	//	プリミティブバッチの作成 

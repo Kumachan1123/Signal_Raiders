@@ -28,7 +28,7 @@ float4 main(PS_INPUT input) : SV_TARGET
    
       // フェードテクスチャの明度を取得
     float fadeValue = fadeTex.Sample(samLinear, input.Tex).r;
-    float4 mainValue;
+    float4 mainValue = float4(1, 1, 1, 1); // 仮の値
     // テクスチャ番号に応じて取得するテクスチャが変わる
     switch (num)
     {

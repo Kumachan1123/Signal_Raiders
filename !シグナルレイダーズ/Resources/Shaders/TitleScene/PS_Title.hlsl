@@ -24,7 +24,7 @@ struct PS_INPUT
 float4 main(PS_INPUT input) : SV_TARGET
 {
     // 時間に基づいて青系のグラデーションエフェクトを生成
-    float gradient = exp(-abs(sin(time * 1.0 + input.Tex.xy * 5.0)));
+    float gradient = exp(-abs(sin(time * 1.0 + input.Tex.y * 5.0)));
     
     // テクスチャをサンプリング
     float4 output = tex.Sample(samLinear, input.Tex);

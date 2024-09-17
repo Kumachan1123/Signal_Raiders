@@ -22,6 +22,9 @@ Output::Output()
 	: m_networkInfos{}
 	, m_count{}
 	, m_data{}
+	, m_datas{}
+	, m_cipherSecurityLevel{}
+	, m_authSecurityLevel{}
 
 {
 }
@@ -36,22 +39,10 @@ void Output::DisplayInformation(std::vector<NetworkInfo>& networkInfos,
 								SecurityLevel& cipherSecurityLevel,
 								SecurityLevel& authSecurityLevel)
 {
+	UNREFERENCED_PARAMETER(authSecurityLevel);
+	UNREFERENCED_PARAMETER(cipherSecurityLevel);
 	SetInformation(networkInfos);
 	SetCount(count);
-	//for (const auto& networkInfo : m_networkInfos)
-	//{
-	//	SetValue();
-	//	DrawFormatString(10, 20 * (m_count), Colors::LIME, "SSID:%s", networkInfo.ssid.c_str());
-	//	DrawFormatString(300, 20 * (m_count), Colors::LIME, "Signal Quality:%i", networkInfo.signalQuality);
-	//	// 暗号アルゴリズムのセキュリティレベルを表示
-	//	cipherSecurityLevel = EvaluateSecurityLevel(networkInfo.defaultCipherAlgorithm);
-	//	DrawFormatString(600, 20 * (m_count), Colors::LIME, "暗号:%s", ConvertSecurityLevelToJapanese(cipherSecurityLevel).c_str());
-	//	// 認証アルゴリズムのセキュリティレベルを表示
-	//	authSecurityLevel = EvaluateAuthAlgorithmSecurity(networkInfo.defaultAuthAlgorithm);
-	//	DrawFormatString(800, 20 * (m_count), Colors::LIME, "認証:%s", ConvertAuthSecurityLevelToJapanese(authSecurityLevel).c_str());
-	//	m_count++;
-	//}
-
 	//数値だけ出す
 	for (const auto& networkInfo : m_networkInfos)
 	{
@@ -61,18 +52,12 @@ void Output::DisplayInformation(std::vector<NetworkInfo>& networkInfos,
 		Datas datas{};
 		datas.WVlevel = WaveLevel;
 		datas.ASlevel = ASLevel;
- 		datas.CIlevel = CILevel;
+		datas.CIlevel = CILevel;
 		m_datas.push_back(datas);
-		
-		
+
+
 	}
-	for (const auto& datas : m_datas)
-	{
-		/*DrawFormatString(300, 20 * (m_count), Colors::LIME, "Signal Quality:%i", datas.WVlevel);
-		DrawFormatString(600, 20 * (m_count), Colors::LIME, "暗号:%i", datas.ASlevel);
-		DrawFormatString(800, 20 * (m_count), Colors::LIME, "認証:%i", datas.CIlevel);
-		m_count++;*/
-	}
+
 	m_datas.clear();
 }
 
@@ -105,7 +90,7 @@ SecurityLevel Output::EvaluateSecurityLevel(DWORD cipherAlgorithm)
 	}
 
 
-	
+
 }
 std::string Output::ConvertSecurityLevelToJapanese(DWORD cipherAlgorithm)
 {

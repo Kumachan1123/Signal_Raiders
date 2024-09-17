@@ -88,8 +88,6 @@ public:
 	void Initialize();
 	// 更新処理
 	void Update(float elapsedTime);
-	// 描画処理
-	void Render(mylib::DebugString* debugString);
 	// クリア
 	void Clear();
 public:

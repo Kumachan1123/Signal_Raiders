@@ -297,7 +297,7 @@ void BulletTrail::Trail()
 				SimpleMath::Vector3(0, 0, 10), // 初期回転
 				SimpleMath::Vector3(1, 1, 0), // 初期スケール
 				SimpleMath::Vector3(0, 0, 0), // 最終スケール（小さくなる）
-				SimpleMath::Vector4(0, 1, 0.2, .35), // 初期カラー（白）
+				SimpleMath::Vector4(0, 0.2, 1, .5), // 初期カラー（白）
 				SimpleMath::Vector4(0.5, 1, 1, 0), // 最終カラー（白→透明）
 				m_type // パーティクルのタイプ
 

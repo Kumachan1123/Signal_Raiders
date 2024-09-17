@@ -68,15 +68,15 @@ void PlayerBullet::Initialize(CommonResources* resources)
 						   {
 							   // ベイシックエフェクトを取得する
 							   auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);
-							   basicEffect->SetAlpha(.50f);
+
 							   // ディフューズカラーを設定する
-							   basicEffect->SetDiffuseColor(DirectX::Colors::Lime);
+							   basicEffect->SetDiffuseColor(DirectX::Colors::Cyan);
 							   // スペキュラカラーを設定する
-							   basicEffect->SetSpecularColor(DirectX::Colors::White);
+							   basicEffect->SetSpecularColor(DirectX::Colors::Cyan);
 							   // スペキュラパワーを設定する
 							   basicEffect->SetSpecularPower(50.0f);
 							   // エミッションカラーを設定する
-							   basicEffect->SetEmissiveColor(DirectX::XMVECTOR{ 0.3, 0.3, 0.3, 1 });
+							   basicEffect->SetEmissiveColor(DirectX::Colors::Cyan);
 						   });
 
 
@@ -133,11 +133,12 @@ void PlayerBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 	// 弾の座標を設定
 	bulletWorld *= Matrix::CreateTranslation(m_position);
 	boundingbulletWorld *= Matrix::CreateTranslation(m_position);
-	// 弾描画
-	m_model->Draw(context, *states, bulletWorld, view, proj);
+
 	// 軌跡描画
 	m_bulletTrail->CreateBillboard(m_cameraTarget, m_cameraEye, m_cameraUp);
 	m_bulletTrail->Render(view, proj);
+	// 弾描画
+	m_model->Draw(context, *states, bulletWorld, view, proj);
 	// 各パラメータを設定する
 	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
 	context->OMSetDepthStencilState(states->DepthRead(), 0);

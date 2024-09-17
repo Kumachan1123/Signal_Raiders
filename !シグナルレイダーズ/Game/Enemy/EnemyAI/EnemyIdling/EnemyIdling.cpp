@@ -39,6 +39,8 @@ void EnemyIdling::Initialize()
 
 void EnemyIdling::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool isHitToPlayer)
 {
+	UNREFERENCED_PARAMETER(isHitToPlayer);
+	UNREFERENCED_PARAMETER(playerPos);
 	using namespace DirectX::SimpleMath;
 	// sin”g‚ğg‚Á‚½‰ñ“]‚ÌXV
 	float rotationAmplitude = 1.0f;  // ‰ñ“]U•

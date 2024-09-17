@@ -11,6 +11,8 @@
 #include "Libraries/MyLib/MemoryLeakDetector.h"
 #include <cassert>
 #include <random>
+#include <type_traits> // std::enable_if, std::is_integral
+
 class EnemyAttack;
 class EnemyIdling;
 // コンストラクタ
@@ -80,26 +82,26 @@ void EnemyAI::ChangeState(IState* newState)
 		m_currentState->Initialize();
 	}
 }
-// テンプレート化されたランダムな倍率を生成する関数
-template <typename T>
-T EnemyAI::GenerateRandomMultiplier(T min, T max)
+// 整数型用のランダムな倍率を生成する関数
+int EnemyAI::GenerateRandomMultiplier(int min, int max)
 {
-	static std::random_device rd;
-	static std::mt19937 gen(rd());
-	if constexpr (std::is_integral<T>::value)
-	{
-		std::uniform_int_distribution<T> dis(min, max);
-		return dis(gen);
-	}
-	else
-	{
-		std::uniform_real_distribution<T> dis(min, max);
-		return dis(gen);
-	}
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> dis(min, max);
+	return dis(gen);
+}
+
+// 浮動小数点型用のランダムな倍率を生成する関数
+float EnemyAI::GenerateRandomMultiplier(float min, float max)
+{
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<float> dis(min, max);
+	return dis(gen);
 }
 
 // 明示的なインスタンス化
-template float EnemyAI::GenerateRandomMultiplier(float min, float max);
+//template float EnemyAI::GenerateRandomMultiplier(float min, float max);
 
 void EnemyAI::KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bool& isHitToPlayerBullet, const DirectX::SimpleMath::Vector3& playerPos)
 {

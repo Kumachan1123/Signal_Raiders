@@ -73,7 +73,13 @@ public:
 				bool& isHitToPlayerBullet);
 	void ChangeState(IState* newState);
 	// 攻撃ロジックを実装
-	template <typename T>
-	T GenerateRandomMultiplier(T min, T max);
+
+	// 整数型用のランダムな倍率を生成する関数
+	int GenerateRandomMultiplier(int min, int max);
+
+
+	// 浮動小数点型用のランダムな倍率を生成する関数
+	float GenerateRandomMultiplier(float min, float max);
+
 };
 #endif //ENEMY_AI_DEFINED

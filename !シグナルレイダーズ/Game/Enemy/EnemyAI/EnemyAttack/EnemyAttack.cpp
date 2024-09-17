@@ -84,10 +84,6 @@ void EnemyAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, D
 	// プレイヤーの方向に移動
 	pos += toPlayerVector * m_velocity.Length() * elapsedTime * 2;
 
-	// 敵がプレイヤーの方向を向いているかをチェック
-	const float directionThreshold = -0.93f; // 内積が1に近いかどうかの閾値
-
-
 	// 攻撃のクールダウンタイムを管理
 	m_attackCooldown -= elapsedTime;
 	if (m_attackCooldown <= 2.0f)

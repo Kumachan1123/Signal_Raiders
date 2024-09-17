@@ -35,21 +35,19 @@ SkyBox::~SkyBox()
 //---------------------------------------------------------
 void SkyBox::Initialize(CommonResources* resources)
 {
-    using namespace DirectX;
-    using namespace DirectX::SimpleMath;
-    assert(resources);
-    m_commonResources = resources;
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
+	assert(resources);
+	m_commonResources = resources;
 
-    auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
-    auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-    auto states = m_commonResources->GetCommonStates();
+	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 
-    // モデルを読み込む準備
-    std::unique_ptr<EffectFactory> fx = std::make_unique<EffectFactory>(device);
-    fx->SetDirectory(L"Resources/Models/sky");
+	// モデルを読み込む準備
+	std::unique_ptr<EffectFactory> fx = std::make_unique<EffectFactory>(device);
+	fx->SetDirectory(L"Resources/Models/sky");
 
-    // モデルを読み込む
-    m_model = Model::CreateFromCMO(device, L"Resources/Models/sky/sky.cmo", *fx);
+	// モデルを読み込む
+	m_model = Model::CreateFromCMO(device, L"Resources/Models/sky/sky.cmo", *fx);
 
 }
 //---------------------------------------------------------
@@ -58,11 +56,11 @@ void SkyBox::Initialize(CommonResources* resources)
 void SkyBox::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj,
 					DirectX::SimpleMath::Matrix world, DirectX::SimpleMath::Vector3 pos)
 {
-    using namespace DirectX;
-    using namespace DirectX::SimpleMath;
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
 
-    auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-    auto states = m_commonResources->GetCommonStates();
+	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
+	auto states = m_commonResources->GetCommonStates();
 	world *= Matrix::CreateTranslation(pos);
 	// モデルのエフェクト情報を更新する
 	m_model->UpdateEffects([](DirectX::IEffect* effect)
