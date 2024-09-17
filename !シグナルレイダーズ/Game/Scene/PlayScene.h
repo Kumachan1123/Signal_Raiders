@@ -16,7 +16,7 @@
 #include "Game/Wifi/UpdateInfo/UpdateInfo.h"
 #include "Game/Wifi/Wifi.h"
 #include "Mouse.h"
-#include "Game/Stages/Stage1.h"
+#include "Game/Stages/Stage.h"
 #include "Game/Player/PlayerUI/PlayerHP/PlayerHP.h"
 #include "Game/Player/PlayerUI/PlayerPointer/PlayerPointer.h"
 #include "Game/Effect/Effect.h"
@@ -50,11 +50,11 @@ private:
 	// 敵
 	std::vector<std::unique_ptr<Enemy>> m_enemy;
 	// 地面（ステージ１
-	std::unique_ptr<Stage1> m_stage1;
+	std::unique_ptr<Stage> m_pStage;
 	// 射影行列
 	DirectX::SimpleMath::Matrix m_projection;
 	// エフェクト
-	std::vector<std::unique_ptr<Effect>> m_effect;
+	std::vector<std::unique_ptr<Effect>> m_pEffect;
 	// フェード
 	std::unique_ptr<Fade> m_fade;
 	// フェードの状態

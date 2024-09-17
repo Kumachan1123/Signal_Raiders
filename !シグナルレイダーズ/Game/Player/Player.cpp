@@ -50,7 +50,7 @@ void Player::Initialize(Enemies* pEnemies)
 
 void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>& kb, float elapsedTime)
 {
-
+	// マウスのトラッカーを取得する
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
 	// カメラが向いている方向を取得する
 	DirectX::SimpleMath::Vector3 cameraDirection = m_pCamera->GetDirection();
@@ -67,12 +67,10 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 		m_pPlayerBullets->CreateBullet(GetPlayerController()->GetPlayerPosition(), cameraDirection);
 	}
 	if (!mtracker->GetLastState().leftButton)m_pPlayerBullets->SetIsBullet(false);
-
 	// プレイヤーコントローラー更新
 	m_pPlayerController->Update(kb, cameraDirection, elapsedTime);
 	// カメラ更新
 	m_pCamera->Update(m_pPlayerController->GetPlayerPosition(), m_pPlayerController->GetYawX());
-
 	// プレイヤーがダメージを受けた時、カメラをsin波を使って上下に揺らす
 	if (m_isDamage)
 	{
@@ -80,19 +78,14 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 		// カメラを上下に揺らす
 		m_pCamera->SetTargetPositionY(m_pPlayerController->GetPitch() + sin(m_damageTime * 100.0f) * 0.1f);
 		m_damageTime += elapsedTime;
-		if (m_damageTime >= 0.5f)
+		if (m_damageTime >= 0.25f)
 		{
 			m_isDamage = false;
 			m_pCamera->SetTargetPositionY(m_pPlayerController->GetPitch());
 			m_damageTime = 0.0f;
 		}
-
-
 	}
-	else
-	{
-		m_pCamera->SetTargetPositionY(m_pPlayerController->GetPitch());
-	}
+	else m_pCamera->SetTargetPositionY(m_pPlayerController->GetPitch());// カメラの注視点を設定
 	// 弾更新
 	m_pPlayerBullets->Update(elapsedTime);
 	// HP更新
@@ -101,7 +94,6 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 	m_pPlayerPointer->Update();
 	m_inPlayerArea.Center = GetPlayerController()->GetPlayerPosition();// プレイヤーの位置を取得
 	m_playerSphere.Center = m_inPlayerArea.Center;// プレイヤーの位置を取得
-
 }
 
 void Player::Render()
@@ -109,5 +101,4 @@ void Player::Render()
 	m_pPlayerHP->Render();// HP描画
 	m_pPlayerPointer->Render();// 照準描画
 	m_pPlayerBullets->Render();// 弾描画
-
 }

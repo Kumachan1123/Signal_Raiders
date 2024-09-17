@@ -1,9 +1,9 @@
 #include "pch.h"
 
-#include "Game//Stages/Stage1.h"
+#include "Game//Stages/Stage.h"
 
 
-Stage1::Stage1()
+Stage::Stage()
 	: m_commonResources(nullptr)
 	, m_BatchEffect(nullptr)
 	, m_Batch(nullptr)
@@ -12,17 +12,15 @@ Stage1::Stage1()
 	, m_Texture(nullptr)
 	, m_depthStencilState_Floor(nullptr)
 {
-
 }
-Stage1::~Stage1() {}
+Stage::~Stage() {}
 
-void Stage1::Initialize(CommonResources* resources)
+void Stage::Initialize(CommonResources* resources)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	m_commonResources = resources;
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
-	//auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	//	エフェクトの作成 
 	m_BatchEffect = std::make_unique<AlphaTestEffect>(device);
 	m_BatchEffect->SetAlphaFunction(D3D11_COMPARISON_EQUAL);
@@ -50,12 +48,12 @@ void Stage1::Initialize(CommonResources* resources)
 	// 深度ステンシルバッファを初期化する
 	this->InitializeDepthStencilState(device);
 }
-void Stage1::Update(float elapsedTime)
+void Stage::Update(float elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
 
 }
-void Stage1::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void Stage::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
@@ -103,7 +101,7 @@ void Stage1::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matri
 //---------------------------------------------------------
 // 深度ステンシルステートを初期化する
 //---------------------------------------------------------
-void Stage1::InitializeDepthStencilState(ID3D11Device* device)
+void Stage::InitializeDepthStencilState(ID3D11Device* device)
 {
 	assert(device);
 

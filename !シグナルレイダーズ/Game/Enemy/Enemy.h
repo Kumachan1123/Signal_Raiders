@@ -28,41 +28,29 @@ private:
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
-	// モデル
-	std::unique_ptr<DirectX::Model> m_model;
-	std::unique_ptr<EnemyModel>		m_enemyModel;
-	std::unique_ptr<EnemyAI>		m_enemyAI;
-	std::unique_ptr<EnemyHPBar>		m_HPBar;
-	std::unique_ptr<EnemyBullets>	m_enemyBullets;
+	std::unique_ptr<DirectX::Model> m_model;// 影用のモデル
+	std::unique_ptr<EnemyModel>		m_enemyModel;// 敵のモデル
+	std::unique_ptr<EnemyAI>		m_enemyAI;// 敵のAI
+	std::unique_ptr<EnemyHPBar>		m_HPBar;// 敵のHPバー
+	std::unique_ptr<EnemyBullets>	m_enemyBullets;// 敵の弾
 	std::vector<std::unique_ptr<EnemyBullet>> m_bullets; // 弾のリスト
 	// プレイヤーのポインター
 	Player* m_pPlayer;
 	// 影の深度ステンシルステート
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilState_Shadow;
-
 	// モデルの影
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState>m_depthStencilState;
-	// 輪郭（仮）
-	Microsoft::WRL::ComPtr<ID3D11BlendState> m_blendState;	// ブレンドステート
-	// 追加：アウトライン用のシェーダー
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_outlinePS;
 	// 敵の情報
 	DirectX::SimpleMath::Vector3 m_position;		// 座標
 	DirectX::SimpleMath::Vector3 m_velocity;		// 速度
 	DirectX::SimpleMath::Vector3 m_rotate;		// 回転
-	DirectX::SimpleMath::Vector3 m_accele;		// 加速度
-	DirectX::SimpleMath::Vector3 m_nowScale;		// 現在スケール
-	DirectX::SimpleMath::Vector3 m_startScale;		// 初期スケール
-	DirectX::SimpleMath::Vector3 m_endScale;		// 最終スケール
-	DirectX::SimpleMath::Quaternion m_rotation; // クォータニオン (追加)
 	// 砲塔境界球
-	DirectX::BoundingSphere m_enemyBoundingSphere;	//敵の境界球
-	DirectX::BoundingSphere m_enemyBoundingSphereToPlayer;// 敵とPlayerとの一定範囲との当たり判定に使う
-	DirectX::BoundingSphere m_enemyWBoundingSphere;
-	DirectX::BoundingSphere m_enemyBulletBS;
-	DirectX::BoundingSphere m_playerBS;
-	DirectX::SimpleMath::Matrix m_matrix;				// マトリクス
+	DirectX::BoundingSphere m_enemyBS;	//敵の境界球
+	DirectX::BoundingSphere m_enemyBSToPlayerArea;// 敵とPlayerとの一定範囲の当たり判定に使う
+	DirectX::BoundingSphere m_enemyBulletBS;// 敵の弾の境界球
+	DirectX::BoundingSphere m_playerBS;// プレイヤーの境界球
+	DirectX::SimpleMath::Matrix m_matrix;// マトリクス
 
 	int m_currentHP;//敵の体力
 	bool m_isDead = false;//敵のHPが0になったらTrue
@@ -70,26 +58,20 @@ private:
 	bool m_isHitToOtherEnemy = false;// その他の敵との判定
 	bool m_isHitToPlayerBullet = false;// 敵がプレイヤーの弾に当たったか
 	bool m_isBullethit = false;// 敵の弾がプレイヤーに当たったか
-	float m_attackCooldown;  // 攻撃のクールダウンタイム
-
-	// Player
+	float m_attackCooldown;  // 攻撃のクールダウンタイ
+	// プレイヤーに与えるダメージ
 	const float PLAYER_DAMAGE = 1.0f;
-
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
 public:
 	//	getter
-	DirectX::BoundingSphere& GetBoundingSphere() { return m_enemyBoundingSphere; }
+	DirectX::BoundingSphere& GetBoundingSphere() { return m_enemyBS; }
 	DirectX::BoundingSphere& GetBulletBoundingSphere() { return m_enemyBulletBS; }
 	DirectX::BoundingSphere& GetPlayerBoundingSphere() { return m_playerBS; }
 	DirectX::SimpleMath::Matrix GetMatrix() const { return m_matrix; }
 	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
 	DirectX::SimpleMath::Vector3 GetVelocity() const { return m_velocity; }
-	DirectX::SimpleMath::Vector3 GetAccele() const { return m_accele; }
-	DirectX::SimpleMath::Vector3 GetNowScale() const { return m_nowScale; }
 	DirectX::SimpleMath::Vector3 GetRotate() const { return m_rotate; }
-	DirectX::SimpleMath::Vector3 GetStartScale() const { return m_startScale; }
-	DirectX::SimpleMath::Vector3 GetEndScale() const { return m_endScale; }
 	Player* GetPlayer()const { return m_pPlayer; }
 	int GetHP() const { return m_currentHP; }
 	bool GetEnemyIsDead() const { return m_isDead; }
@@ -99,7 +81,6 @@ public:
 	bool GetHitToPlayerBullet()const { return m_isHitToPlayerBullet; }
 	float GetToPlayerDamage() const { return PLAYER_DAMAGE; }
 	// setter
-	void SetBoundingSphereCenter(DirectX::SimpleMath::Vector3& cen) { m_enemyBoundingSphere.Center = cen; }
 	void SetPosition(DirectX::SimpleMath::Vector3& pos) { m_position = pos; }
 	void SetEnemyHP(int hp) { m_currentHP = hp; }
 	void SetHitToPlayer(bool isHitToPlayer) { m_isHit = isHitToPlayer; }
@@ -116,12 +97,7 @@ public:
 	void Initialize(CommonResources* resources, int hp);
 	void Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos);
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+	void CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::BoundingSphere& B);
 
-	void CheckHitOtherEnemy(DirectX::BoundingSphere& A, DirectX::BoundingSphere& B);
-
-
-private:
-	// 深度ステンシルステートを初期化する
-	void InitializeDepthStencilState(ID3D11Device* device);
 
 };

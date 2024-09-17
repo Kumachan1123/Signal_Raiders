@@ -28,8 +28,8 @@ PlayScene::PlayScene()
 	m_projection{},
 	m_isChangeScene{ false },
 	m_angle{ 0.0f },
-	m_stage1{ nullptr },
-	m_effect{},
+	m_pStage{ nullptr },
+	m_pEffect{},
 	m_isFade{ false },
 	m_volume{ 1.0f },
 	m_counter{ 0 },
@@ -60,8 +60,8 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pPlayer->Initialize(m_pEnemies.get());
 	m_pEnemies->Initialize(m_pPlayer.get());
 	// 地面（ステージ１生成）
-	m_stage1 = std::make_unique<Stage1>();
-	m_stage1->Initialize(resources);
+	m_pStage = std::make_unique<Stage>();
+	m_pStage->Initialize(resources);
 	// スカイボックス生成
 	m_skybox = std::make_unique<SkyBox>();
 	m_skybox->Initialize(resources);
@@ -129,7 +129,7 @@ void PlayScene::Render()
 	// 天球描画
 	m_skybox->Render(view, projection, skyWorld, m_pPlayer->GetPlayerController()->GetPlayerPosition());
 	// 地面描画
-	m_stage1->Render(view, projection);
+	m_pStage->Render(view, projection);
 	// 敵を描画する
 	m_pEnemies->Render();
 	// プレイヤーを描画する

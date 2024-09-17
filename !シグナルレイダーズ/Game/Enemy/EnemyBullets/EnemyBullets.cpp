@@ -63,7 +63,6 @@ void EnemyBullets::Update(float elapsedTime, DirectX::SimpleMath::Vector3 enemyP
 
 // •`‰æ
 void EnemyBullets::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
-
 {
 	for (const auto& bullet : m_bullets)bullet->Render(view, proj);
 }

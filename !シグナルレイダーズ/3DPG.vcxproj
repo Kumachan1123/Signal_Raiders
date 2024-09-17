@@ -225,7 +225,7 @@
     <ClInclude Include="Game\Scene\TitleScene\TitleScene.h" />
     <ClInclude Include="Game\Screen.h" />
     <ClInclude Include="Game\SkyBox\SkyBox.h" />
-    <ClInclude Include="Game\Stages\Stage1.h" />
+    <ClInclude Include="Game\Stages\Stage.h" />
     <ClInclude Include="Game\Stages\VertexTypesEx.h" />
     <ClInclude Include="Game\Template\Template.h" />
     <ClInclude Include="Game\Wifi\CheckVersion\CheckVersion.h" />
@@ -286,7 +286,7 @@
     <ClCompile Include="Game\Scene\TitleLogo\TitleLogo.cpp" />
     <ClCompile Include="Game\Scene\TitleScene\TitleScene.cpp" />
     <ClCompile Include="Game\SkyBox\SkyBox.cpp" />
-    <ClCompile Include="Game\Stages\Stage1.cpp" />
+    <ClCompile Include="Game\Stages\Stage.cpp" />
     <ClCompile Include="Game\Stages\VertexTypesEx.cpp" />
     <ClCompile Include="Game\Wifi\CheckVersion\CheckVersion.cpp" />
     <ClCompile Include="Game\Wifi\GetListOfInterfaces\GetListOfInterfaces.cpp" />

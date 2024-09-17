@@ -24,10 +24,10 @@
 
 // コンストラクタ
 Enemy::Enemy(Player* pPlayer)
-	: m_enemyBoundingSphere()
+	: m_enemyBS()
 	, m_commonResources{}
 	, m_currentHP{}
-	, m_attackCooldown{}
+	, m_attackCooldown{ 3.0f }
 	, m_enemyModel{}
 	, m_enemyAI{}
 	, m_HPBar{}
@@ -35,18 +35,10 @@ Enemy::Enemy(Player* pPlayer)
 	, m_depthStencilState_Shadow{}
 	, m_pixelShader{}
 	, m_depthStencilState{}
-	, m_blendState{}
-	, m_outlinePS{}
 	, m_position{}
 	, m_velocity{}
 	, m_rotate{}
-	, m_accele{}
-	, m_nowScale{}
-	, m_startScale{}
-	, m_endScale{}
-	, m_rotation{}
-	, m_enemyBoundingSphereToPlayer{}
-	, m_enemyWBoundingSphere{}
+	, m_enemyBSToPlayerArea{}
 	, m_enemyBulletBS{}
 	, m_playerBS{}
 	, m_matrix{}
@@ -67,13 +59,12 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
+	// 共通リソースを設定
 	m_commonResources = resources;
+	// デバイスとコンテキストを取得
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-	m_attackCooldown = 3.0f;
-	/*
-	デバッグドローの表示用オブジェクトを生成する
-	*/
+
 	// ベーシックエフェクトを作成する
 	m_basicEffect = std::make_unique<BasicEffect>(device);
 	m_basicEffect->SetVertexColorEnabled(true);
@@ -86,40 +77,16 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 			m_inputLayout.ReleaseAndGetAddressOf()
 		)
 	);
-
 	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/PS_EnemyShadow.cso");
 	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pixelShader.ReleaseAndGetAddressOf()));
-
-
 	// モデルを読み込む準備
 	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);
 	fx->SetDirectory(L"Resources/Models/Enemy");
-	// モデルを読み込む
+	// 影用のモデルを読み込む
 	m_model = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy.cmo", *fx);
-
 	m_enemyModel = std::make_unique<EnemyModel>();
 	m_enemyModel->Initialize(m_commonResources);
-	// 加算合成
-	CD3D11_DEFAULT defaultSettings{};
-	CD3D11_BLEND_DESC blendDesc(defaultSettings);
-	blendDesc.RenderTarget[0].BlendEnable = TRUE;
-	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_COLOR;
-	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_DEST_COLOR;
-	// ブレンドステートを作成する
-	DX::ThrowIfFailed(device->CreateBlendState(&blendDesc, m_blendState.ReleaseAndGetAddressOf()));
-	// 深度ステンシルバッファを初期化する
-	this->InitializeDepthStencilState(device);
-
-	// アウトラインシェーダーを作成する
-	std::vector<uint8_t> psBlob = DX::ReadData(L"Resources/Shaders/PS_Outline.cso"); // 事前にコンパイルされたシェーダーバイナリ
-	DX::ThrowIfFailed(
-		device->CreatePixelShader(
-			psBlob.data(),
-			psBlob.size(),
-			nullptr,
-			m_outlinePS.ReleaseAndGetAddressOf()
-		)
-	);
+	// 敵の体力を設定
 	m_currentHP = hp;
 	// HPBar生成
 	m_HPBar = std::make_unique<EnemyHPBar>();
@@ -140,13 +107,11 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 	m_position.z = dist(gen);
 	// プリミティブバッチを作成する
 	m_primitiveBatch = std::make_unique<DirectX::DX11::PrimitiveBatch<DirectX::DX11::VertexPositionColor>>(context);
-
+	// 敵の座標を設定
 	m_enemyAI->SetPosition(m_position);
-
 	// 境界球の初期化
-	m_enemyBoundingSphere.Center = m_position;
-	m_enemyBoundingSphere.Radius = 1.5f;
-
+	m_enemyBS.Center = m_position;
+	m_enemyBS.Radius = 1.5f;
 	// オーディオマネージャー
 	m_audioManager->LoadSound("Resources/Sound/EnemyBullet.mp3", "EnemyBullet");
 
@@ -162,31 +127,20 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	Matrix world = Matrix::CreateFromQuaternion(m_enemyAI->GetRotation())
 		* Matrix::CreateTranslation(m_position)
 		* Matrix::CreateTranslation(Vector3{ 0,-2,0 });
-
 	// 敵のサイズを設定
 	Matrix enemyWorld = Matrix::CreateScale(m_enemyAI->GetScale());
 	// 敵の座標を設定
 	enemyWorld *= world;
-
-
-
 	// HPBar描画
 	m_HPBar->Render(view, proj, m_position, m_rotate);
-
 	// 敵描画	
 	m_enemyModel->Render(context, states, enemyWorld, view, proj);
-
-
-
-
 	// ライトの方向
 	Vector3 lightDir = Vector3::UnitY;
 	lightDir.Normalize();
 	// 影行列の元を作る
-	// Plane(法線、距離)：TKの性質上、法線の向きが逆なので、それを考慮する
 	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, -0.01f));
 	Matrix mat = enemyWorld * shadowMatrix;
-
 	// 影描画
 	m_model->Draw(context, *states, mat * Matrix::Identity, view, proj, true, [&]()
 				  {
@@ -205,21 +159,19 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	m_basicEffect->SetView(view);
 	m_basicEffect->SetProjection(proj);
 	m_basicEffect->Apply(context);
-
 	// 敵の弾描画
 	m_enemyBullets->Render(view, proj);
-	//for (const auto& bullet : m_bullets)bullet->Render(view, proj);
 #ifdef _DEBUG
 	m_primitiveBatch->Begin();
 	if (!m_isHit)
 	{
-		if (!m_isHitToOtherEnemy)DX::Draw(m_primitiveBatch.get(), m_enemyBoundingSphere, Colors::Black);
-		else					DX::Draw(m_primitiveBatch.get(), m_enemyBoundingSphere, Colors::White);
+		if (!m_isHitToOtherEnemy)DX::Draw(m_primitiveBatch.get(), m_enemyBS, Colors::Black);
+		else					DX::Draw(m_primitiveBatch.get(), m_enemyBS, Colors::White);
 	}
 	else
 	{
-		if (!m_isHitToOtherEnemy)DX::Draw(m_primitiveBatch.get(), m_enemyBoundingSphere, Colors::Blue);
-		else					 DX::Draw(m_primitiveBatch.get(), m_enemyBoundingSphere, Colors::Tomato);
+		if (!m_isHitToOtherEnemy)DX::Draw(m_primitiveBatch.get(), m_enemyBS, Colors::Blue);
+		else					 DX::Draw(m_primitiveBatch.get(), m_enemyBS, Colors::Tomato);
 
 	}
 	m_primitiveBatch->End();
@@ -236,13 +188,11 @@ void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 	{
 		m_attackCooldown = m_enemyAI->GetEnemyAttack()->GetCoolTime();
 		// 攻撃のクールダウンタイムを管理
-
 		if (m_attackCooldown <= 0.1f)
 		{
 			m_audioManager->PlaySound("EnemyBullet", 0.25);// サウンド再生
-			m_rotation = m_enemyAI->GetRotation();// 敵の向きを取得
 			// クォータニオンから方向ベクトルを計算
-			DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_rotation);
+			DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_enemyAI->GetRotation());
 			// 弾を発射
 			m_enemyBullets->CreateBullet(GetPosition(), direction, playerPos);
 			// クールダウンタイムをリセット
@@ -250,14 +200,14 @@ void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 		}
 	}
 	m_enemyBullets->Update(elapsedTime, GetPosition());// 敵の弾の更新
-	m_enemyBoundingSphere.Center = m_position;
-	m_enemyBoundingSphere.Center.y -= 2.0f;
+	m_enemyBS.Center = m_position;
+	m_enemyBS.Center.y -= 2.0f;
 	m_HPBar->Update(elapsedTime, m_currentHP);
 	m_isDead = m_HPBar->GetIsDead();
 }
 
-// 敵同士が衝突したら押し戻す
-void Enemy::CheckHitOtherEnemy(DirectX::BoundingSphere& A, DirectX::BoundingSphere& B)
+// オブジェクト同士が衝突したら押し戻す
+void Enemy::CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::BoundingSphere& B)
 {
 	using namespace DirectX::SimpleMath;
 	// 押し戻す処理
@@ -277,56 +227,8 @@ void Enemy::CheckHitOtherEnemy(DirectX::BoundingSphere& A, DirectX::BoundingSphe
 	m_position += pushBackVec;
 	A.Center = m_position;
 	A.Center.y -= 2.0f;
-
 }
 
 
 
 
-//---------------------------------------------------------
-// 深度ステンシルステートを初期化する
-//---------------------------------------------------------
-void Enemy::InitializeDepthStencilState(ID3D11Device* device)
-{
-	assert(device);
-
-	// 深度ステンシルバッファを設定する
-	D3D11_DEPTH_STENCIL_DESC desc{};
-
-	/*
-		床の設定
-	*/
-	// 床（描画時０を１にする）
-	desc.DepthEnable = TRUE;									// 深度テストを行う
-	desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;			// 深度バッファを更新する
-	desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;				// テストの条件：深度値以下なら→手前なら
-
-	desc.StencilEnable = TRUE;									// ステンシルテストを行う
-	desc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;		// 0xff
-	desc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;	// 0xff
-
-	// 表面
-	desc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;		// 参照値がステンシル値と同じなら：ゼロなら
-	desc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_INCR_SAT;	// OK　ステンシル値をインクリメントする
-	desc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;		// NG　何もしない
-	desc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;	// NG　何もしない
-
-	// 裏面も同じ設定
-	desc.BackFace = desc.FrontFace;
-
-
-	/*
-		影の設定
-	*/
-	// 影（ステンシル値が１のとき描画する）
-	//desc.DepthEnable = TRUE;									// 深度テストを行う
-	desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;			// 深度バッファは更新しない
-
-	// 表面
-	desc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_INCR_SAT;	// OK　ステンシル値をインクリメントする
-	// 裏面も同じ設定
-	desc.BackFace = desc.FrontFace;
-
-	// 深度ステンシルステートを作成する
-	device->CreateDepthStencilState(&desc, m_depthStencilState_Shadow.ReleaseAndGetAddressOf());
-}

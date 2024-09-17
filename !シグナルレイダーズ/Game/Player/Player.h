@@ -50,7 +50,6 @@ public:
 	void Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>& kb, float elapsedTime);
 	// •`‰æ
 	void Render();
-
 	// Getter
 public:
 	float GetPlayerHP() const { return m_playerHP; }	// ƒvƒŒƒCƒ„[‚ÌHP

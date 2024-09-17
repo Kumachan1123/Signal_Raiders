@@ -12,7 +12,7 @@
 #include <Effects.h>
 #include <Libraries/Microsoft/DebugDraw.h>
 
-class Stage1
+class Stage
 {
 private:
 	// 共通リソース
@@ -27,8 +27,6 @@ private:
 	// ノーマルマップハンドル
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_NormalMap;
 
-	//std::unique_ptr<DirectX::NormalMapEffect> m_BatchEffect;
-
 	//	共通ステートオブジェクトへのポインタ
 	std::unique_ptr<DirectX::CommonStates> m_States;
 
@@ -37,14 +35,13 @@ private:
 
 	//	プリミティブバッチ 
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_Batch;
+
 	// 床の深度ステンシルステート
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilState_Floor;
-
-
 public:
 	// 初期ステータスを設定
-	Stage1();
-	~Stage1();
+	Stage();
+	~Stage();
 	void Initialize(CommonResources* resources);
 	void Update(float elapsedTime);
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);

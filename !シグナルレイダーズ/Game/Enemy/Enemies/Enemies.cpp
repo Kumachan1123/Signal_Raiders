@@ -96,10 +96,10 @@ void Enemies::Update(float elapsedTime)
 	{
 		for (size_t j = i + 1; j < m_enemy.size(); ++j)
 		{
-			bool hit = m_enemy[i]->GetBoundingSphere().Intersects(m_enemy[j]->GetBoundingSphere());
-			m_enemy[i]->SetHitToOtherEnemy(hit);
-			m_enemy[j]->SetHitToOtherEnemy(hit);
-			if (hit)m_enemy[i]->CheckHitOtherEnemy(m_enemy[i]->GetBoundingSphere(), m_enemy[j]->GetBoundingSphere());
+			bool hit = m_enemy[i]->GetBoundingSphere().Intersects(m_enemy[j]->GetBoundingSphere());// “G“¯Žm‚ªd‚È‚Á‚Ä‚¢‚½‚ç
+			m_enemy[i]->SetHitToOtherEnemy(hit);// “–‚½‚è”»’è‚ðÝ’è
+			m_enemy[j]->SetHitToOtherEnemy(hit);// “–‚½‚è”»’è‚ðÝ’è
+			if (hit)m_enemy[i]->CheckHitOtherObject(m_enemy[i]->GetBoundingSphere(), m_enemy[j]->GetBoundingSphere());// “G“¯Žm‚ªd‚È‚Á‚Ä‚¢‚½‚ç‰Ÿ‚µ•Ô‚·
 		}
 	}
 
@@ -127,7 +127,7 @@ void Enemies::Update(float elapsedTime)
 			// ‹«ŠE‹…‚Ì”ÍˆÍ‚ð’²®
 			playerSphere.Radius /= 3.0f;
 			// ƒvƒŒƒCƒ„[‚Ì‹«ŠE‹…‚Æ“G‚Ì‹«ŠE‹…‚ªd‚È‚Á‚Ä‚¢‚½‚ç
-			if (enemy->GetBoundingSphere().Intersects(playerSphere)) enemy->CheckHitOtherEnemy(enemy->GetBoundingSphere(), playerSphere);
+			if (enemy->GetBoundingSphere().Intersects(playerSphere)) enemy->CheckHitOtherObject(enemy->GetBoundingSphere(), playerSphere);// “G‚ð‰Ÿ‚µ•Ô‚·
 		}
 		// ƒvƒŒƒCƒ„[‚Æ“G‚Ì“–‚½‚è”»’è‚ðÝ’è
 		enemy->SetHitToPlayer(m_isHitPlayerToEnemy);

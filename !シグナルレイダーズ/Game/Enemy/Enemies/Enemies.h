@@ -14,13 +14,12 @@ class Enemy;
 class Player;
 class Effect;
 class Wifi;
-
 class Enemies
 {
 private:
 	// コモンリソース
 	CommonResources* m_commonResources;
-
+	// 敵
 	std::vector<std::unique_ptr<Enemy>> m_enemy;
 	// 敵生成フラグ
 	bool m_isEnemyBorn = false;
@@ -44,7 +43,6 @@ private:
 	std::vector<std::unique_ptr<Effect>> m_effect;
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
-
 public:
 	Enemies(CommonResources* commonResources);
 	~Enemies();
@@ -56,11 +54,9 @@ public:
 	void Render();
 	// 効果音の初期化
 	void InitializeFMOD();
-	// Getter
-public:
-	std::vector<std::unique_ptr<Enemy>>& GetEnemy() { return m_enemy; }
-	std::unique_ptr<Wifi>& GetWifi() { return m_pWifi; }
-	std::vector<std::unique_ptr<Effect>>& GetEffect() { return m_effect; }
-	bool GetisBorned() const { return m_isBorned; }
-	// Setter
+public:// Getter
+	std::vector<std::unique_ptr<Enemy>>& GetEnemy() { return m_enemy; }// 敵
+	std::unique_ptr<Wifi>& GetWifi() { return m_pWifi; }// Wi-Fi
+	std::vector<std::unique_ptr<Effect>>& GetEffect() { return m_effect; }// エフェクト
+	bool GetisBorned() const { return m_isBorned; }// 敵生成済み
 };
