@@ -16,8 +16,7 @@
 #include <WICTextureLoader.h>
 #include <CommonStates.h>
 #include <vector>
-#ifndef PLAYER_UI_DEFINED
-#define PLAYER_UI_DEFINED
+
 
 class PlayerUI
 {
@@ -29,6 +28,7 @@ public:
 		DirectX::SimpleMath::Vector3	nul;
 		float							renderRatio;
 	};
+	ConstBuffer m_constBuffer{};
 
 private:
 	DX::DeviceResources* m_pDR;
@@ -82,19 +82,19 @@ public:
 
 	void SetWindowSize(const int& width, const int& height);
 
-	void SetScale(DirectX::SimpleMath::Vector2 scale);
-	DirectX::SimpleMath::Vector2 GetScale() { return m_scale; }
-	DirectX::SimpleMath::Vector2 GetBaseScale() { return m_baseScale; }
-	void SetPosition(DirectX::SimpleMath::Vector2 position);
-	DirectX::SimpleMath::Vector2 GetPosition() { return m_position; }
-	void SetAnchor(kumachi::ANCHOR anchor);
-	kumachi::ANCHOR GetAnchor() { return m_anchor; }
+	void SetScale(DirectX::SimpleMath::Vector2 scale) { m_scale = scale; };
+	DirectX::SimpleMath::Vector2 GetScale() const { return m_scale; }
+	DirectX::SimpleMath::Vector2 GetBaseScale() const { return m_baseScale; }
+	void SetPosition(DirectX::SimpleMath::Vector2 position) { m_position = position; };
+	DirectX::SimpleMath::Vector2 GetPosition() const { return m_position; }
+	void SetAnchor(kumachi::ANCHOR anchor) { m_anchor = anchor; };
+	kumachi::ANCHOR GetAnchor() const { return m_anchor; }
 
-	void SetRenderRatio(float ratio);
-	float GetRenderRatio() { return m_renderRatio; }
+	void SetRenderRatio(float ratio) { m_renderRatio = ratio; };
+	float GetRenderRatio() const { return m_renderRatio; }
 
-	void SetRenderRatioOffset(float offset);
-	float GetRenderRatioOffset() { return m_renderRatioOffset; }
+	void SetRenderRatioOffset(float offset) { m_renderRatioOffset = offset; };
+	float GetRenderRatioOffset() const { return m_renderRatioOffset; }
 
 private:
 
@@ -102,4 +102,3 @@ private:
 };
 
 
-#endif //PLAYER_UI_DEFINED

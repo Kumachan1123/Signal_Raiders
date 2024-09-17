@@ -81,27 +81,27 @@ public:
 	bool Update(float elapsedTime);
 
 	//	getter
-	const DirectX::SimpleMath::Vector3 GetPosition() { return m_position; }
+	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
 
-	const DirectX::SimpleMath::Vector3 GetVelocity() { return m_velocity; }
+	DirectX::SimpleMath::Vector3 GetVelocity() const { return m_velocity; }
 
-	const DirectX::SimpleMath::Vector3 GetAccele() { return m_accele; }
+	DirectX::SimpleMath::Vector3 GetAccele() const { return m_accele; }
 
-	const DirectX::SimpleMath::Vector3 GetNowScale() { return m_nowScale; }
-	const DirectX::SimpleMath::Vector3 GetStartScale() { return m_startScale; }
-	const DirectX::SimpleMath::Vector3 GetEndScale() { return m_endScale; }
+	DirectX::SimpleMath::Vector3 GetNowScale() const { return m_nowScale; }
+	DirectX::SimpleMath::Vector3 GetStartScale() const { return m_startScale; }
+	DirectX::SimpleMath::Vector3 GetEndScale() const { return m_endScale; }
 
-	const float GetLife() { return m_life; }
-	const float GetStartLife() { return m_startLife; }
-	const DirectX::SimpleMath::Color GetNowColor() { return m_nowColor; }
-	const DirectX::SimpleMath::Color GetStartColor() { return m_startColor; }
-	const DirectX::SimpleMath::Color GetEndColor() { return m_endColor; }
+	float GetLife() const { return m_life; }
+	float GetStartLife() const { return m_startLife; }
+	DirectX::SimpleMath::Color GetNowColor() const { return m_nowColor; }
+	DirectX::SimpleMath::Color GetStartColor() const { return m_startColor; }
+	DirectX::SimpleMath::Color GetEndColor() const { return m_endColor; }
 
 private:
 	// É^ÉCÉvÇ≤Ç∆ÇÃèàóù
 	void Spiral(float elapsedTime);//	óÜê˘
 	void Onibi(float elapsedTime);//	ãSâŒ
 	void Kamehameha(float elapsedTime);//	Ç©ÇﬂÇÕÇﬂîg
-	void EnemyTrail(float elapsedTime);//	âŒâ‘
-	void PlayerTrail(float elapsedTime);//	ãOê’
+	void Trail(float elapsedTime);//	âŒâ‘
+
 };

@@ -54,16 +54,14 @@ void EnemyAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Direc
 	// “G‚ğ‚Ó‚í‚Ó‚í•‚—V‚³‚¹‚é
 	pos.y = m_initialPosition.y + amplitude * std::sin(frequency * m_time);
 	pos.y += m_velocity.y * elapsedTime;
-	// “G‚ªƒvƒŒƒCƒ„[‚Ìˆê’è”ÍˆÍ“à‚É“ü‚Á‚½‚ç
-	if (isHitToPlayer || m_isHitPlayerBullet)
+	// “G‚ªƒvƒŒƒCƒ„[‚Ìˆê’è”ÍˆÍ“à‚É“ü‚èA‚©‚ÂƒvƒŒƒCƒ„[‚Ì’e‚É“–‚½‚Á‚Ä‚¢‚È‚¢ê‡
+	if ((isHitToPlayer || m_isHitPlayerBullet) && isHitToPlayerBullet == false)
 	{
 		ChangeState(m_enemyAttack.get());//UŒ‚‘Ô¨‚É‚·‚é
 		m_enemyState = IState::EnemyState::ATTACK;// œpœj‘Ô¨
-
 	}
 	else
 	{
-
 		ChangeState(m_enemyIdling.get());//œpœj‘Ô¨‚É‚·‚é
 		m_enemyState = IState::EnemyState::IDLING;// œpœj‘Ô¨
 	}

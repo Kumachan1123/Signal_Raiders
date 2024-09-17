@@ -29,7 +29,7 @@ private:
 	unsigned int m_menuIndex;
 	DX::DeviceResources* m_pDR;
 
-
+	std::unique_ptr<PlayerUI> m_heart;
 	std::unique_ptr<PlayerUI> m_gauge;
 	std::unique_ptr<PlayerUI> m_frame;
 	std::unique_ptr<PlayerUI> m_base;

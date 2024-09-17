@@ -95,26 +95,7 @@ void PlayerUI::Create(DX::DeviceResources* pDR
 
 }
 
-void PlayerUI::SetScale(DirectX::SimpleMath::Vector2 scale)
-{
-	m_scale = scale;
-}
-void PlayerUI::SetPosition(DirectX::SimpleMath::Vector2 position)
-{
-	m_position = position;
-}
-void PlayerUI::SetAnchor(kumachi::ANCHOR anchor)
-{
-	m_anchor = anchor;
-}
-void PlayerUI::SetRenderRatio(float ratio)
-{
-	m_renderRatio = ratio;
-}
-void PlayerUI::SetRenderRatioOffset(float offset)
-{
-	m_renderRatioOffset = offset;
-}
+
 /// <summary>
 /// Shader作成部分だけ分離した関数
 /// </summary>
@@ -164,8 +145,6 @@ void PlayerUI::CreateShader()
 }
 
 
-
-
 /// <summary>
 /// 描画関数
 /// </summary>
@@ -173,24 +152,18 @@ void PlayerUI::Render()
 {
 	auto context = m_pDR->GetD3DDeviceContext();
 	//	頂点情報
-	//	Position.xy	:拡縮用スケール
-	//	Position.z	:アンカータイプ(0～8)の整数で指定
-	//	Color.xy　	:アンカー座標(ピクセル指定:1280 ×720)
-	//	Color.zw	:画像サイズ
-	//	Tex.xy		:x = ゲージ画像の描画範囲(0～1), y = 0
 	VertexPositionColorTexture vertex[1] = {
 		VertexPositionColorTexture(
-			 SimpleMath::Vector3(m_scale.x, m_scale.y, static_cast<float>(m_anchor))
-			,SimpleMath::Vector4(m_position.x, m_position.y, static_cast<float>(m_textureWidth), static_cast<float>(m_textureHeight))
-			,SimpleMath::Vector2(m_renderRatio - m_renderRatioOffset,0))
+			 SimpleMath::Vector3(m_scale.x, m_scale.y, static_cast<float>(m_anchor))//	Position.xy	:拡縮用スケール	Position.z	:アンカータイプ(0～8)の整数で指定
+			,SimpleMath::Vector4(m_position.x, m_position.y, static_cast<float>(m_textureWidth), static_cast<float>(m_textureHeight))	//	Color.xy　	:アンカー座標(ピクセル指定:1280 ×720) Color.zw	:画像サイズ
+			,SimpleMath::Vector2(m_renderRatio - m_renderRatioOffset,0))//	Tex.xy		:x = ゲージ画像の描画範囲(0～1), y = 0
 	};
 
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	ConstBuffer cbuff;
-	cbuff.windowSize = SimpleMath::Vector4(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 1, 1);
-	cbuff.renderRatio = m_renderRatio - m_renderRatioOffset;
+	m_constBuffer.windowSize = SimpleMath::Vector4(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 1, 1);
+	m_constBuffer.renderRatio = m_renderRatio - m_renderRatioOffset;
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(m_CBuffer.Get(), 0, NULL, &cbuff, 0, 0);
+	context->UpdateSubresource(m_CBuffer.Get(), 0, NULL, &m_constBuffer, 0, 0);
 
 	//	シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };

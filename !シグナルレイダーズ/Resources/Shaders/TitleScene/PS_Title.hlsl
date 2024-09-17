@@ -31,9 +31,9 @@ float4 main(PS_INPUT input) : SV_TARGET
     
     // グラデーションエフェクトを加える
     // エフェクトの色は青系
-    output.rgba += gradient * float4(0.25, 0.5, 1.0, 0.0);
+    output.rgba += gradient * float4(0.0, 0.5, 1.0, 0.0);
     
     // 結果を返す
-    return output * color;
+    return output;
 }
 

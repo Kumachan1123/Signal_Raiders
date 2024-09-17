@@ -27,6 +27,8 @@ PlayerHP::PlayerHP()
 	, m_baseTexturePath(nullptr)
 	, m_gauge(nullptr)
 	, m_frame(nullptr)
+	, m_base(nullptr)
+	, m_heart(nullptr)
 {
 }
 
@@ -40,10 +42,10 @@ void PlayerHP::Initialize(DX::DeviceResources* pDR, int width, int height)
 	m_windowWidth = width;
 	m_windowHeight = height;
 
-	m_baseTexturePath = L"Resources/Textures/Hearts.png";
+	m_baseTexturePath = L"Resources/Textures/HPBar.png";
 
-	Add(L"Resources/Textures/HeartsFrame.png"
-		, SimpleMath::Vector2(242, 27)
+	Add(L"Resources/Textures/HPBarFrame.png"
+		, SimpleMath::Vector2(328, 40)
 		, SimpleMath::Vector2(.50f, .50f)
 		, kumachi::ANCHOR::MIDDLE_CENTER);
 }
@@ -65,13 +67,14 @@ void PlayerHP::Render()
 	m_base->Render();
 	m_gauge->Render();
 	m_frame->Render();
+	m_heart->Render();
 }
 
 void PlayerHP::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, kumachi::ANCHOR anchor)
 {
 	m_base = std::make_unique<PlayerUI>();
 	m_base->Create(m_pDR
-				   , L"Resources/Textures/HeartsBase.png"
+				   , L"Resources/Textures/HPBarBase.png"
 				   , position
 				   , scale
 				   , anchor);
@@ -95,7 +98,13 @@ void PlayerHP::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, D
 					, anchor);
 	m_frame->SetWindowSize(m_windowWidth, m_windowHeight);
 
-
+	m_heart = std::make_unique<PlayerUI>();
+	m_heart->Create(m_pDR
+					, L"Resources/Textures/HP.png"
+					, SimpleMath::Vector2(0, -5)
+					, SimpleMath::Vector2(.50f, .50f)
+					, kumachi::ANCHOR::TOP_LEFT);
+	m_heart->SetWindowSize(m_windowWidth, m_windowHeight);
 }
 
 

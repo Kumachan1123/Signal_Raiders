@@ -66,10 +66,8 @@ bool ParticleUtility::Update(float elapsedTime)
 			Kamehameha(elapsedTime);
 			break;
 		case ParticleUtility::Type::ENEMYTRAIL:
-			EnemyTrail(elapsedTime);
-			break;
 		case ParticleUtility::Type::PLAYERTRAIL:
-			PlayerTrail(elapsedTime);
+			Trail(elapsedTime);
 			break;
 		default:
 			break;
@@ -192,8 +190,8 @@ void ParticleUtility::Kamehameha(float elapsedTime)
 	m_life -= elapsedTime;
 }
 
-// タイプ::敵の弾の処理
-void ParticleUtility::EnemyTrail(float elapsedTime)
+// タイプ::弾の軌跡の処理
+void ParticleUtility::Trail(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
 
@@ -211,21 +209,3 @@ void ParticleUtility::EnemyTrail(float elapsedTime)
 	m_life -= elapsedTime;
 }
 
-// タイプ::軌跡の処理
-void ParticleUtility::PlayerTrail(float elapsedTime)
-{
-	using namespace DirectX::SimpleMath;
-
-	// スケールと色の変化
-	m_nowScale = SimpleMath::Vector3::Lerp(m_startScale, m_endScale, 1.0f - m_life / m_startLife);
-	m_nowColor = SimpleMath::Color::Lerp(m_startColor, m_endColor, 1.0f - m_life / m_startLife);
-
-	// 加速度の適用
-	m_velocity += m_accele * elapsedTime;
-
-	// 座標更新
-	m_position += m_velocity * elapsedTime;
-
-	// ライフの減少
-	m_life -= elapsedTime;
-}
