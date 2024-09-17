@@ -74,15 +74,10 @@ bool ParticleUtility::Update(float elapsedTime)
 		default:
 			break;
 	}
-
-
-
-
 	if (m_life < 0.0f)
 	{
 		return false;
 	}
-
 	return true;
 }
 
@@ -197,9 +192,11 @@ void ParticleUtility::Kamehameha(float elapsedTime)
 	m_life -= elapsedTime;
 }
 
-// タイプ::火花の処理
+// タイプ::敵の弾の処理
 void ParticleUtility::EnemyTrail(float elapsedTime)
 {
+	using namespace DirectX::SimpleMath;
+
 	// スケールと色の変化
 	m_nowScale = SimpleMath::Vector3::Lerp(m_startScale, m_endScale, 1.0f - m_life / m_startLife);
 	m_nowColor = SimpleMath::Color::Lerp(m_startColor, m_endColor, 1.0f - m_life / m_startLife);
@@ -212,41 +209,13 @@ void ParticleUtility::EnemyTrail(float elapsedTime)
 
 	// ライフの減少
 	m_life -= elapsedTime;
-	std::random_device seed;
-	std::default_random_engine engine(seed());
-
-	// スパークの動きにランダムなはじけ飛ぶ動きを追加
-	if (m_life < m_startLife * 0.75f) // ライフが 3/4 未満になったら
-	{
-
-		std::uniform_real_distribution<> dist(-5.0f, 5.0f); // より広い範囲のランダムな値を生成
-		// 速度に強いランダムな変化を加える
-		m_velocity.x += static_cast<float>(dist(engine)) * elapsedTime;
-		m_velocity.y += static_cast<float>(dist(engine)) * elapsedTime;
-		m_velocity.z += static_cast<float>(dist(engine)) * elapsedTime;
-
-		// ライフの減少と共に速度が劇的に増加する
-		m_velocity *= 1.f; // 速度を1.5倍にする
-	}
-
-	// ライフが残り少ないときにさらに強いはじけを追加
-	if (m_life < m_startLife * 0.25f) // ライフが 1/4 未満になったら
-	{
-		std::uniform_real_distribution<> dist(-10.0f, 10.0f); // さらに強いランダムな力
-
-		// 速度にさらに強いランダムな変化を加える
-		m_velocity.x += static_cast<float>(dist(engine)) * elapsedTime;
-		m_velocity.y += static_cast<float>(dist(engine)) * elapsedTime;
-		m_velocity.z += static_cast<float>(dist(engine)) * elapsedTime;
-
-		// 速度を一気に加速させる
-		m_velocity *= 2.0f; // 速度を2倍にする
-	}
 }
 
 // タイプ::軌跡の処理
 void ParticleUtility::PlayerTrail(float elapsedTime)
 {
+	using namespace DirectX::SimpleMath;
+
 	// スケールと色の変化
 	m_nowScale = SimpleMath::Vector3::Lerp(m_startScale, m_endScale, 1.0f - m_life / m_startLife);
 	m_nowColor = SimpleMath::Color::Lerp(m_startColor, m_endColor, 1.0f - m_life / m_startLife);

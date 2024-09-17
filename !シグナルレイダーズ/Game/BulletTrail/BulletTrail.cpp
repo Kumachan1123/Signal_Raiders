@@ -150,7 +150,7 @@ void BulletTrail::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 			//	内積がマイナスの場合はカメラの後ろなので表示する必要なし
 			continue;
 		}
-		VertexPositionColorTexture vPCT;
+		VertexPositionColorTexture vPCT{};
 		//	表示するパーティクルの中心座標のみを入れる。
 		//	→つまり、C++で用意しているデータだけではテクスチャを表示できない。
 		//	　→ジオメトリシェーダを使う事前提のデータ、ということ
@@ -198,7 +198,7 @@ void BulletTrail::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
 
 	//	深度バッファに書き込み参照する
-	context->OMSetDepthStencilState(m_states->DepthNone(), 0);
+	context->OMSetDepthStencilState(m_states->DepthRead(), 0);
 
 	//	カリングはなし
 	context->RSSetState(m_states->CullCounterClockwise());
@@ -285,7 +285,7 @@ void BulletTrail::Trail()
 
 
 
-		if (m_type == ParticleUtility::Type::PLAYERTRAIL)
+		if (m_type == ParticleUtility::Type::PLAYERTRAIL)// プレイヤーの弾の軌跡
 		{
 			// パーティクルの生成
 			ParticleUtility pU(
@@ -298,7 +298,7 @@ void BulletTrail::Trail()
 				SimpleMath::Vector3(1, 1, 0), // 初期スケール
 				SimpleMath::Vector3(0, 0, 0), // 最終スケール（小さくなる）
 				SimpleMath::Vector4(0, 0.2, 1, .5), // 初期カラー（白）
-				SimpleMath::Vector4(0.5, 1, 1, 0), // 最終カラー（白→透明）
+				SimpleMath::Vector4(0, 1, 1, 0.5), // 最終カラー（白→透明）
 				m_type // パーティクルのタイプ
 
 			);
@@ -306,7 +306,7 @@ void BulletTrail::Trail()
 			m_particleUtility.push_back(pU);
 		}
 
-		if (m_type == ParticleUtility::Type::ENEMYTRAIL)
+		if (m_type == ParticleUtility::Type::ENEMYTRAIL)// 敵の弾の軌跡
 		{
 			// パーティクルの生成
 			ParticleUtility pU(
@@ -319,7 +319,7 @@ void BulletTrail::Trail()
 				SimpleMath::Vector3(1, 1, 0), // 初期スケール
 				SimpleMath::Vector3(0, 0, 0), // 最終スケール（小さくなる）
 				SimpleMath::Vector4(1, 0, 1, 1), // 初期カラー（白）
-				SimpleMath::Vector4(1, 1, 1, 0), // 最終カラー（白→透明）
+				SimpleMath::Vector4(0, 1, 1, 0.25), // 最終カラー（白→透明）
 				m_type // パーティクルのタイプ
 
 			);

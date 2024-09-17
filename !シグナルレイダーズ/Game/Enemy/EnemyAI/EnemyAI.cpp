@@ -100,9 +100,7 @@ float EnemyAI::GenerateRandomMultiplier(float min, float max)
 	return dis(gen);
 }
 
-// 明示的なインスタンス化
-//template float EnemyAI::GenerateRandomMultiplier(float min, float max);
-
+// ノックバック処理
 void EnemyAI::KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bool& isHitToPlayerBullet, const DirectX::SimpleMath::Vector3& playerPos)
 {
 	using namespace DirectX::SimpleMath;

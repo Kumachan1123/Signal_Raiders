@@ -62,6 +62,7 @@ void EnemyBullet::Initialize(CommonResources* resources)
 							   basicEffect->SetAlpha(.5f);// アルファ値を設定する
 							   basicEffect->SetDiffuseColor(DirectX::Colors::Purple);// ディフューズカラーを設定する
 							   basicEffect->SetAmbientLightColor(DirectX::Colors::Purple);// アンビエントライトカラーを設定する
+							   basicEffect->SetEmissiveColor(DirectX::Colors::Purple);// エミッシブカラーを設定する
 
 						   });
 	// 弾の軌道生成
@@ -96,11 +97,11 @@ void EnemyBullet::Update(DirectX::SimpleMath::Vector3& pos, float elapsedTime)
 		toPlayer.Normalize();
 	}
 	// 弾の速度を遅くする
-	float bulletSpeed = .5f; // 適当な速度を設定する（任意の値、調整可能）
+	float bulletSpeed = .05f; // 適当な速度を設定する（任意の値、調整可能）
 	m_velocity = toPlayer * bulletSpeed;
 	// プレイヤーの方向に向かって弾を飛ばす
 	m_position += m_velocity;
-	m_position.y += 0.01f;// プレイヤーの高さに補正
+	//m_position.y += 0.05f;// プレイヤーの高さに補正
 	m_boundingSphere.Center = m_position;//境界球に座標を渡す
 	// 現在の弾の位置を軌跡リストに追加
 	m_bulletTrail->SetBulletPosition(m_position);

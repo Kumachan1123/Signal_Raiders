@@ -119,7 +119,7 @@ public:
 
 	void CheckHitOtherEnemy(DirectX::BoundingSphere& A, DirectX::BoundingSphere& B);
 
-	void UpdateBullets(float elapsedTime);
+
 private:
 	// 深度ステンシルステートを初期化する
 	void InitializeDepthStencilState(ID3D11Device* device);

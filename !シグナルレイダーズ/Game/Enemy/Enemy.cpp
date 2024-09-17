@@ -134,7 +134,7 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 	// 乱数生成
 	std::random_device rd;  // シード生成器
 	std::mt19937 gen(rd()); // メルセンヌ・ツイスタの乱数生成器
-	std::uniform_real_distribution<float> dist(-25.0f, 25.0f); // 一様分布
+	std::uniform_real_distribution<float> dist(-50.0f, 50.0f); // 一様分布
 	m_position.x = dist(gen);
 	m_position.y = 6.0f;
 	m_position.z = dist(gen);

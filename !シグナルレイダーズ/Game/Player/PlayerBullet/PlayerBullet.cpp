@@ -70,11 +70,11 @@ void PlayerBullet::Initialize(CommonResources* resources)
 							   auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);
 
 							   // ディフューズカラーを設定する
-							   basicEffect->SetDiffuseColor(DirectX::Colors::Cyan);
+							   basicEffect->SetDiffuseColor(DirectX::Colors::SkyBlue);
 							   // スペキュラカラーを設定する
-							   basicEffect->SetSpecularColor(DirectX::Colors::Cyan);
-							   // スペキュラパワーを設定する
-							   basicEffect->SetSpecularPower(50.0f);
+							   //basicEffect->SetSpecularColor(DirectX::Colors::SkyBlue);
+							   //// スペキュラパワーを設定する
+							   //basicEffect->SetSpecularPower(10.0f);
 							   // エミッションカラーを設定する
 							   basicEffect->SetEmissiveColor(DirectX::Colors::Cyan);
 						   });
