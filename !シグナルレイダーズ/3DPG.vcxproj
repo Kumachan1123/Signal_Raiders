@@ -240,7 +240,6 @@
     <ClInclude Include="Game\Wifi\StartScan\StartScan.h" />
     <ClInclude Include="Game\Wifi\UpdateInfo\UpdateInfo.h" />
     <ClInclude Include="Game\Wifi\Wifi.h" />
-    <ClInclude Include="IBullet.h" />
     <ClInclude Include="Libraries\Microsoft\DebugDraw.h" />
     <ClInclude Include="Libraries\Microsoft\ReadData.h" />
     <ClInclude Include="Libraries\MyLib\DebugCamera.h" />

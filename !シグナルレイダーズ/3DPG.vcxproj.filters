@@ -180,9 +180,6 @@
     <ClInclude Include="Game\Player\PlayerController\PlayerController.h">
       <Filter>Game\Player\PlayerController</Filter>
     </ClInclude>
-    <ClInclude Include="IBullet.h">
-      <Filter>Game\Interface</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Wifi\CheckVersion\CheckVersion.h">
       <Filter>Game\Wi-Fi\CheckVersion</Filter>
     </ClInclude>

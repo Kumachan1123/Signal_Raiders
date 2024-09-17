@@ -10,7 +10,6 @@
 #include "Game/Player/PlayerBullet/PlayerBullet.h"
 #include "Game/Enemy/Enemy.h"
 #include "Game/Enemy/Enemies/Enemies.h"
-#include "Game/Interface/IBullet.h"
 #include "Game/Wifi/ReleaseMemory/ReleaseMemory.h"
 #include "Game/Wifi/Output/Output.h"
 #include "Game/Wifi/Interface/IWifiParts.h"
@@ -76,8 +75,6 @@ private:
 	bool m_isBulletBorned = false;
 	// プレイヤーと敵の当たり判定
 	bool m_isHitPlayerToEnemy = false;
-	// モデル
-//	std::unique_ptr<DirectX::Model> m_model;
 	// 回転角(度)
 	float m_angle;
 

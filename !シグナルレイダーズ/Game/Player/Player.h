@@ -36,6 +36,10 @@ private:
 	// 境界球
 	DirectX::BoundingSphere m_inPlayerArea;// プレイヤーと敵との一定範囲内での境界球
 	DirectX::BoundingSphere m_playerSphere;// プレイヤーの境界球
+	// プレイヤーがダメージを食らった時
+	bool m_isDamage = false;
+	// プレイヤーがダメージを食らった時の時間
+	float m_damageTime = 0.0f;
 public:
 	Player(CommonResources* commonResources);
 	~Player();
@@ -49,7 +53,7 @@ public:
 
 	// Getter
 public:
-	float GetPlayerHP() { return m_playerHP; }	// プレイヤーのHP
+	float GetPlayerHP() const { return m_playerHP; }	// プレイヤーのHP
 	FPS_Camera* GetCamera() { return m_pCamera.get(); }// カメラ
 	PlayerController* GetPlayerController() { return m_pPlayerController.get(); }// プレイヤーコントローラー
 	DirectX::BoundingSphere GetPlayerSphere() const { return m_playerSphere; }// プレイヤーの境界球
@@ -57,4 +61,5 @@ public:
 	// Setter
 public:
 	void SetPlayerHP(float playerHP) { m_playerHP = playerHP; }	// プレイヤーのHP
+	void SetisPlayerDamage(bool isDamage) { m_isDamage = isDamage; }// プレイヤーがダメージを受けたか
 };

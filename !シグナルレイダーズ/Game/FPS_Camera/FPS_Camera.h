@@ -63,6 +63,7 @@ public:
 
 	// setter
 	void SetTargetPositionY(float target) { m_target.y += target; }
+	void SetEyePositionY(float eye) { m_eye.y += eye; }
 
 	DirectX::SimpleMath::Vector3 GetDirection() const;
 private:

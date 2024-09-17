@@ -63,10 +63,8 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 	// 左クリックで弾発射
 	if (mtracker->GetLastState().leftButton && m_pPlayerBullets->GetIsBullet() == false)
 	{
-
 		// 弾を生成する
 		m_pPlayerBullets->CreateBullet(GetPlayerController()->GetPlayerPosition(), cameraDirection);
-
 	}
 	if (!mtracker->GetLastState().leftButton)m_pPlayerBullets->SetIsBullet(false);
 
@@ -74,7 +72,27 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 	m_pPlayerController->Update(kb, cameraDirection, elapsedTime);
 	// カメラ更新
 	m_pCamera->Update(m_pPlayerController->GetPlayerPosition(), m_pPlayerController->GetYawX());
-	m_pCamera->SetTargetPositionY(m_pPlayerController->GetPitch());
+
+	// プレイヤーがダメージを受けた時、カメラをsin波を使って上下に揺らす
+	if (m_isDamage)
+	{
+		// ダメージを受けた時の処理
+		// カメラを上下に揺らす
+		m_pCamera->SetTargetPositionY(m_pPlayerController->GetPitch() + sin(m_damageTime * 100.0f) * 0.1f);
+		m_damageTime += elapsedTime;
+		if (m_damageTime >= 0.5f)
+		{
+			m_isDamage = false;
+			m_pCamera->SetTargetPositionY(m_pPlayerController->GetPitch());
+			m_damageTime = 0.0f;
+		}
+
+
+	}
+	else
+	{
+		m_pCamera->SetTargetPositionY(m_pPlayerController->GetPitch());
+	}
 	// 弾更新
 	m_pPlayerBullets->Update(elapsedTime);
 	// HP更新
