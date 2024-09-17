@@ -22,6 +22,7 @@ EnemyAttack::EnemyAttack(EnemyAI* enemy)
 	: m_enemy(enemy)
 	, m_attackCooldown{ 3.0f }
 	, m_rotationSpeed{}
+	, m_commonResources{}
 {
 }
 // デストラクタ

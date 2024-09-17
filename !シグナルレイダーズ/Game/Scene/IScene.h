@@ -15,6 +15,7 @@ public:
 	{
 		NONE,
 		TITLE,
+		SETTING,
 		PLAY,
 		CLEAR,
 		GAMEOVER

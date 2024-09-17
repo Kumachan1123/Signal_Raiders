@@ -99,6 +99,9 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 		case IScene::SceneID::TITLE:
 			m_currentScene = std::make_unique<TitleScene>();
 			break;
+		case IScene::SceneID::SETTING:
+			//m_currentScene = std::make_unique<SettingScene>();
+			break;
 		case IScene::SceneID::PLAY:
 			m_currentScene = std::make_unique<PlayScene>();
 			break;

@@ -16,6 +16,7 @@
 #include "Game/FPS_Camera/FPS_Camera.h"
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
+void EndGame()noexcept;
 
 //---------------------------------------------------------
 // コンストラクタ
@@ -29,10 +30,10 @@ TitleScene::TitleScene()
 	m_counter{ 0 },
 	m_camera{},
 	m_pDR{},
-	m_fade{},
+	m_pFade{},
 	m_fadeState{ },
 	m_fadeTexNum{ 0 },
-	m_backGround{ nullptr },
+	m_pBackGround{ nullptr },
 	m_audioManager{ AudioManager::GetInstance() }
 {}
 
@@ -55,21 +56,24 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_commonResources = resources;
 	auto DR = m_commonResources->GetDeviceResources();
 	// フェードの初期化
-	m_fade = std::make_unique<Fade>(m_commonResources);
-	m_fade->Create(DR);
-	m_fade->SetState(Fade::FadeState::FadeIn);
-	m_fade->SetTextureNum((int)(Fade::TextureNum::BLACK));
+	m_pFade = std::make_unique<Fade>(m_commonResources);
+	m_pFade->Create(DR);
+	m_pFade->SetState(Fade::FadeState::FadeIn);
+	m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));
 	// 背景の初期化
-	m_backGround = std::make_unique<BackGround>(m_commonResources);
-	m_backGround->Create(DR);
+	m_pBackGround = std::make_unique<BackGround>(m_commonResources);
+	m_pBackGround->Create(DR);
 	// FPSカメラを作成する
 	m_camera = std::make_unique<FPS_Camera>();
 	// 指示画像を作成
-	m_pressKey = std::make_unique<PressKey>(m_commonResources);
-	m_pressKey->Initialize();
+	m_pPressKey = std::make_unique<PressKey>(m_commonResources);
+	m_pPressKey->Initialize();
 	// タイトルロゴを作成
-	m_titleLogo = std::make_unique<TitleLogo>(m_commonResources);
-	m_titleLogo->Create(DR);
+	m_pTitleLogo = std::make_unique<TitleLogo>(m_commonResources);
+	m_pTitleLogo->Create(DR);
+	// メニューを作成
+	m_pMenu = std::make_unique<Menu>();
+	m_pMenu->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
 	// 音声を初期化する
 	InitializeFMOD();
 
@@ -80,29 +84,41 @@ void TitleScene::Initialize(CommonResources* resources)
 //---------------------------------------------------------
 void TitleScene::Update(float elapsedTime)
 {
+	// メニューの更新
+	m_pMenu->Update(elapsedTime);
 	// オーディオマネージャーの更新処理
 	m_audioManager->Update();
 	// キーボードステートトラッカーを取得する
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
-	// スペースキーが押されたら
-	if (m_fade->GetState() == Fade::FadeState::FadeInEnd && kbTracker->pressed.Space)
+	// メニューでの選択処理が行われたら
+	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd && kbTracker->pressed.Space)
 	{
 		m_audioManager->PlaySound("SE", .3);// SEの再生
-		m_fade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
-		m_fade->SetTextureNum((int)(Fade::TextureNum::READY));// フェードのテクスチャを変更
+		if (m_pMenu->GetSceneNum() == Menu::SceneID::PLAY)
+		{
+			m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
+			m_pFade->SetTextureNum((int)(Fade::TextureNum::READY));// フェードのテクスチャを変更
+		}
+		else if (m_pMenu->GetSceneNum() == Menu::SceneID::END)
+		{
+			m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
+			m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
+		}
+
 	}
 	// フェードアウトが終了したら
-	if (m_fade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;
+	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;
 	// BGMの再生
 	m_audioManager->PlaySound("BGM", 0.3);
 	// 指示画像の更新
-	m_pressKey->Update(elapsedTime);
+	m_pPressKey->Update(elapsedTime);
 	// 背景の更新
-	m_backGround->Update(elapsedTime);
+	m_pBackGround->Update(elapsedTime);
 	// フェードの更新
-	m_fade->Update(elapsedTime);
+	m_pFade->Update(elapsedTime);
 	// タイトルロゴの更新
-	m_titleLogo->Update(elapsedTime);
+	m_pTitleLogo->Update(elapsedTime);
+
 }
 //---------------------------------------------------------
 // 描画する
@@ -110,13 +126,17 @@ void TitleScene::Update(float elapsedTime)
 void TitleScene::Render()
 {
 	// 背景の描画
-	m_backGround->Render();
+	m_pBackGround->Render();
 	// タイトルロゴの描画
-	m_titleLogo->Render();
+	m_pTitleLogo->Render();
 	// スペースキー押してってやつ描画(画面遷移中は描画しない)
-	if (m_fade->GetState() == Fade::FadeState::FadeInEnd)m_pressKey->Render();
+	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
+	{
+		m_pMenu->Render();
+		//m_pPressKey->Render();
+	}
 	// フェードの描画
-	m_fade->Render();
+	m_pFade->Render();
 }
 
 //---------------------------------------------------------
@@ -138,7 +158,21 @@ IScene::SceneID TitleScene::GetNextSceneID() const
 	{
 		m_audioManager->StopSound("BGM");// BGMの停止
 		m_audioManager->StopSound("SE");// SEの停止
-		return IScene::SceneID::PLAY;
+		switch (m_pMenu->GetSceneNum())
+		{
+			case Menu::SceneID::PLAY:
+				return IScene::SceneID::PLAY;
+				break;
+			case Menu::SceneID::SETTING:
+				//return IScene::SceneID::SETTING;
+				break;
+			case Menu::SceneID::END:
+				// ゲーム終了
+				EndGame();
+				break;
+			default:
+				break;
+		}
 	}
 	// シーン変更がない場合
 	return IScene::SceneID::NONE;
@@ -156,4 +190,8 @@ void TitleScene::InitializeFMOD()
 	m_audioManager->LoadSound("Resources/Sounds/title.mp3", "BGM");
 }
 
+void EndGame() noexcept
+{
+	PostQuitMessage(0);
+}
 

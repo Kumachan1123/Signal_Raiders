@@ -252,7 +252,6 @@
     <ClInclude Include="Game\Player\PlayerUI\PlayerPointer\PlayerPointer.h" />
     <ClInclude Include="Game\Scene\ClearScene.h" />
     <ClInclude Include="Game\Enemy\EnemyModel\EnemyModel.h" />
-    <ClInclude Include="Game\Stages\Stage1.h" />
     <ClInclude Include="Game\Stages\VertexTypesEx.h" />
     <ClInclude Include="Game\Effect\Effect.h" />
     <ClInclude Include="Game\Scene\GameOverScene.h" />
@@ -268,6 +267,9 @@
     <ClInclude Include="Game\BulletTrail\BulletTrail.h" />
     <ClInclude Include="Game\ParticleUtility\ParticleUtility.h" />
     <ClInclude Include="Game\Enemy\EnemyBullets\EnemyBullets.h" />
+    <ClInclude Include="Game\Stages\Stage.h" />
+    <ClInclude Include="Game\Scene\TitleScene\Menu\Menu.h" />
+    <ClInclude Include="Game\Scene\TitleScene\TitleUI\TitleUI.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -371,7 +373,6 @@
     <ClCompile Include="Game\Player\PlayerUI\PlayerPointer\PlayerPointer.cpp" />
     <ClCompile Include="Game\Scene\ClearScene.cpp" />
     <ClCompile Include="Game\Enemy\EnemyModel\EnemyModel.cpp" />
-    <ClCompile Include="Game\Stages\Stage1.cpp" />
     <ClCompile Include="Game\Stages\VertexTypesEx.cpp" />
     <ClCompile Include="Game\Effect\Effect.cpp" />
     <ClCompile Include="Game\Scene\GameOverScene.cpp" />
@@ -387,6 +388,9 @@
     <ClCompile Include="Game\BulletTrail\BulletTrail.cpp" />
     <ClCompile Include="Game\ParticleUtility\ParticleUtility.cpp" />
     <ClCompile Include="Game\Enemy\EnemyBullets\EnemyBullets.cpp" />
+    <ClCompile Include="Game\Stages\Stage.cpp" />
+    <ClCompile Include="Game\Scene\TitleScene\Menu\Menu.cpp" />
+    <ClCompile Include="Game\Scene\TitleScene\TitleUI\TitleUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -407,6 +411,7 @@
     <None Include="Resources\Shaders\PlayerHP\GS_PlayerHP.cso" />
     <None Include="Resources\Shaders\PlayerHP\PS_PlayerHP.cso" />
     <None Include="Resources\Shaders\PlayerHP\VS_PlayerHP.cso" />
+    <None Include="Resources\Shaders\TitleScene\Menu\Menu.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\PS_EnemyShadow.hlsl">
@@ -422,5 +427,8 @@
     <FxCompile Include="Resources\Shaders\Fade\PS_Fade.hlsl" />
     <FxCompile Include="Resources\Shaders\TitleScene\PS_TitleBack.hlsl" />
     <FxCompile Include="Resources\Shaders\TitleScene\VS_TitleBack.hlsl" />
+    <FxCompile Include="Resources\Shaders\TitleScene\Menu\GS_Menu.hlsl" />
+    <FxCompile Include="Resources\Shaders\TitleScene\Menu\PS_Menu.hlsl" />
+    <FxCompile Include="Resources\Shaders\TitleScene\Menu\VS_Menu.hlsl" />
   </ItemGroup>
 </Project>

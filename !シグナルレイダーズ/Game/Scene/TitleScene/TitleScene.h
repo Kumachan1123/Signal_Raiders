@@ -10,6 +10,7 @@
 #include "Game/Scene/TitleLogo/TitleLogo.h"
 #include "Game/KumachiLib/AudioManager.h"
 #include "Game/Scene/PressKey/PressKey.h"
+#include "Game/Scene/TitleScene/Menu/Menu.h"
 // 前方宣言
 class CommonResources;
 class Fade;
@@ -26,15 +27,17 @@ private:
 	//	変数
 	DX::DeviceResources* m_pDR;
 	// フェード
-	std::unique_ptr<Fade> m_fade;
+	std::unique_ptr<Fade> m_pFade;
 	// フェードの状態
 	Fade::FadeState m_fadeState;
 	// 背景
-	std::unique_ptr<BackGround> m_backGround;
+	std::unique_ptr<BackGround> m_pBackGround;
 	// タイトルロゴ
-	std::unique_ptr<TitleLogo> m_titleLogo;
+	std::unique_ptr<TitleLogo> m_pTitleLogo;
 	// 指示
-	std::unique_ptr<PressKey> m_pressKey;
+	std::unique_ptr<PressKey> m_pPressKey;
+	// メニュー
+	std::unique_ptr<Menu> m_pMenu;
 	// フェード画像番号
 	int m_fadeTexNum;
 
@@ -64,7 +67,9 @@ public:
 
 	SceneID GetNextSceneID() const;
 	void InitializeFMOD();
+
 private:
+
 
 
 	void DrawSpace();// スペースキー押してってやつ描画
