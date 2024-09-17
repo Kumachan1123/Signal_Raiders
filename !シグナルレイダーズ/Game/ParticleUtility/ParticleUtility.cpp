@@ -65,11 +65,11 @@ bool ParticleUtility::Update(float elapsedTime)
 		case ParticleUtility::Type::KAMEHAMEHA:
 			Kamehameha(elapsedTime);
 			break;
-		case ParticleUtility::Type::SPARK:
-			Spark(elapsedTime);
+		case ParticleUtility::Type::ENEMYTRAIL:
+			EnemyTrail(elapsedTime);
 			break;
-		case ParticleUtility::Type::TRAIL:
-			Trail(elapsedTime);
+		case ParticleUtility::Type::PLAYERTRAIL:
+			PlayerTrail(elapsedTime);
 			break;
 		default:
 			break;
@@ -198,7 +198,7 @@ void ParticleUtility::Kamehameha(float elapsedTime)
 }
 
 // タイプ::火花の処理
-void ParticleUtility::Spark(float elapsedTime)
+void ParticleUtility::EnemyTrail(float elapsedTime)
 {
 	// スケールと色の変化
 	m_nowScale = SimpleMath::Vector3::Lerp(m_startScale, m_endScale, 1.0f - m_life / m_startLife);
@@ -214,12 +214,12 @@ void ParticleUtility::Spark(float elapsedTime)
 	m_life -= elapsedTime;
 	std::random_device seed;
 	std::default_random_engine engine(seed());
-	std::uniform_real_distribution<> dist(-5.0f, 5.0f); // より広い範囲のランダムな値を生成
+
 	// スパークの動きにランダムなはじけ飛ぶ動きを追加
 	if (m_life < m_startLife * 0.75f) // ライフが 3/4 未満になったら
 	{
 
-
+		std::uniform_real_distribution<> dist(-5.0f, 5.0f); // より広い範囲のランダムな値を生成
 		// 速度に強いランダムな変化を加える
 		m_velocity.x += static_cast<float>(dist(engine)) * elapsedTime;
 		m_velocity.y += static_cast<float>(dist(engine)) * elapsedTime;
@@ -245,7 +245,7 @@ void ParticleUtility::Spark(float elapsedTime)
 }
 
 // タイプ::軌跡の処理
-void ParticleUtility::Trail(float elapsedTime)
+void ParticleUtility::PlayerTrail(float elapsedTime)
 {
 	// スケールと色の変化
 	m_nowScale = SimpleMath::Vector3::Lerp(m_startScale, m_endScale, 1.0f - m_life / m_startLife);

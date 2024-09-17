@@ -27,7 +27,7 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> BulletTrail::INPUT_LAYOUT =
 	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,	0, sizeof(SimpleMath::Vector3) + sizeof(SimpleMath::Vector4), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
 
-BulletTrail::BulletTrail()
+BulletTrail::BulletTrail(ParticleUtility::Type type)
 	:m_commonResources{}
 	, m_timer(0.0f)
 	, m_pDR{}
@@ -43,6 +43,7 @@ BulletTrail::BulletTrail()
 	, m_view{}
 	, m_proj{}
 	, m_billboard{}
+	, m_type{ type }
 {
 }
 
@@ -282,23 +283,49 @@ void BulletTrail::Trail()
 			sinf(randAngleXY) * sinf(randAngleXZ)
 		);
 
-		// パーティクルの生成
-		ParticleUtility pU(
-			1.0f,  // 生存時間(s)
-			m_bulletPos, // 初期位置 (基準座標)
-			randomVelocity, // 初期速度（ランダムな方向）
-			SimpleMath::Vector3::One, // 加速度
-			SimpleMath::Vector3::One, // 回転速度
-			SimpleMath::Vector3(0, 0, 10), // 初期回転
-			SimpleMath::Vector3(1, 1, 0), // 初期スケール
-			SimpleMath::Vector3(0, 0, 0), // 最終スケール（小さくなる）
-			SimpleMath::Vector4(0, 1, 0.2, .35), // 初期カラー（白）
-			SimpleMath::Vector4(0.5, 1, 1, 0), // 最終カラー（白→透明）
-			ParticleUtility::Type::SPARK // パーティクルのタイプ
-		);
 
-		// 生成したパーティクルをリストに追加
-		m_particleUtility.push_back(pU);
+
+		if (m_type == ParticleUtility::Type::PLAYERTRAIL)
+		{
+			// パーティクルの生成
+			ParticleUtility pU(
+				1.0f,  // 生存時間(s)
+				m_bulletPos, // 初期位置 (基準座標)
+				randomVelocity, // 初期速度（ランダムな方向）
+				SimpleMath::Vector3::One, // 加速度
+				SimpleMath::Vector3::One, // 回転速度
+				SimpleMath::Vector3(0, 0, 10), // 初期回転
+				SimpleMath::Vector3(1, 1, 0), // 初期スケール
+				SimpleMath::Vector3(0, 0, 0), // 最終スケール（小さくなる）
+				SimpleMath::Vector4(0, 1, 0.2, .35), // 初期カラー（白）
+				SimpleMath::Vector4(0.5, 1, 1, 0), // 最終カラー（白→透明）
+				m_type // パーティクルのタイプ
+
+			);
+			// 生成したパーティクルをリストに追加
+			m_particleUtility.push_back(pU);
+		}
+
+		if (m_type == ParticleUtility::Type::ENEMYTRAIL)
+		{
+			// パーティクルの生成
+			ParticleUtility pU(
+				1.0f,  // 生存時間(s)
+				m_bulletPos, // 初期位置 (基準座標)
+				randomVelocity, // 初期速度（ランダムな方向）
+				SimpleMath::Vector3::One, // 加速度
+				SimpleMath::Vector3::One, // 回転速度
+				SimpleMath::Vector3(0, 0, 10), // 初期回転
+				SimpleMath::Vector3(1, 1, 0), // 初期スケール
+				SimpleMath::Vector3(0, 0, 0), // 最終スケール（小さくなる）
+				SimpleMath::Vector4(1, 0, 1, 1), // 初期カラー（白）
+				SimpleMath::Vector4(1, 1, 1, 0), // 最終カラー（白→透明）
+				m_type // パーティクルのタイプ
+
+			);
+			// 生成したパーティクルをリストに追加
+			m_particleUtility.push_back(pU);
+		}
 
 		// タイマーをリセット
 		m_timer = 0.0f;

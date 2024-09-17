@@ -64,9 +64,11 @@ public:
 
 	std::vector<DirectX::VertexPositionColorTexture> m_vertices;
 	std::list<ParticleUtility> m_particleUtility;
+	// パーティクルタイプ
+	ParticleUtility::Type m_type;
 	//	関数
 public:
-	BulletTrail();
+	BulletTrail(ParticleUtility::Type type);
 	~BulletTrail();
 	void Initialize(CommonResources* resources);
 	void LoadTexture(const wchar_t* path);

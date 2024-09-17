@@ -8,6 +8,7 @@
 class CommonResources;
 #include "Game/CommonResources.h"
 #include "Game/BulletTrail/BulletTrail.h"
+#include "Game/ParticleUtility/ParticleUtility.h"
 class PlayerBullet
 {
 	//ïœêî

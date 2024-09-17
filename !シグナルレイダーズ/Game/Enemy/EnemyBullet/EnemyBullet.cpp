@@ -64,6 +64,9 @@ void EnemyBullet::Initialize(CommonResources* resources)
 							   basicEffect->SetAmbientLightColor(DirectX::Colors::Purple);// アンビエントライトカラーを設定する
 
 						   });
+	// 弾の軌道生成
+	m_bulletTrail = std::make_unique<BulletTrail>(ParticleUtility::Type::ENEMYTRAIL);
+	m_bulletTrail->Initialize(resources);
 	m_direction = Vector3::Zero;
 	m_velocity = Vector3{ 0.0f,0.0f,0.0f };
 	m_position = Vector3::Zero;
@@ -87,7 +90,7 @@ void EnemyBullet::Update(DirectX::SimpleMath::Vector3& pos, float elapsedTime)
 	if (m_angle > 360)m_angle = 0;
 	// プレイヤーの方向ベクトルを計算
 	DirectX::SimpleMath::Vector3 toPlayer = m_target - pos;
-
+	// ベクトルを正規化
 	if (toPlayer.LengthSquared() > 0)
 	{
 		toPlayer.Normalize();
@@ -96,11 +99,14 @@ void EnemyBullet::Update(DirectX::SimpleMath::Vector3& pos, float elapsedTime)
 	float bulletSpeed = .5f; // 適当な速度を設定する（任意の値、調整可能）
 	m_velocity = toPlayer * bulletSpeed;
 	// プレイヤーの方向に向かって弾を飛ばす
-	//m_velocity = toPlayer;
 	m_position += m_velocity;
-	m_position.y += 0.01f;
-	m_boundingSphere.Center = m_position;
-	m_time += elapsedTime;
+	m_position.y += 0.01f;// プレイヤーの高さに補正
+	m_boundingSphere.Center = m_position;//境界球に座標を渡す
+	// 現在の弾の位置を軌跡リストに追加
+	m_bulletTrail->SetBulletPosition(m_position);
+	// 軌跡の更新
+	m_bulletTrail->Update(elapsedTime);
+	m_time += elapsedTime;// 経過時間
 
 }
 void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
@@ -116,9 +122,12 @@ void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	// 弾の座標を設定
 	bulletWorld *= Matrix::CreateTranslation(m_position);
 	boundingbulletWorld *= Matrix::CreateTranslation(m_position);
+
+	// 軌跡描画
+	m_bulletTrail->CreateBillboard(m_cameraTarget, m_cameraEye, m_cameraUp);
+	m_bulletTrail->Render(view, proj);
 	// 弾描画
 	m_model->Draw(context, *states, bulletWorld, view, proj);
-
 	// 各パラメータを設定する
 	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
 	context->OMSetDepthStencilState(states->DepthRead(), 0);

@@ -75,7 +75,7 @@ void Enemies::Update(float elapsedTime)
 		if (m_enemyBornTimer >= m_enemyBornInterval)// 一定時間経過したら
 		{
 			// 敵を生成する
-			auto enemy = std::make_unique<Enemy>();
+			auto enemy = std::make_unique<Enemy>(m_pPlayer);
 			enemy->Initialize(m_commonResources, m_pWifi->GetWifiLevels()[m_enemyIndex]);
 			m_enemy.push_back(std::move(enemy));
 			// タイマーをリセットし、次のWi-Fiレベルのインデックスに進む

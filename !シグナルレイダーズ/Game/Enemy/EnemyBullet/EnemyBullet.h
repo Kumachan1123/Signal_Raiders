@@ -8,6 +8,7 @@
 #ifndef ENEMY_BULLET_DEFINED
 #define ENEMY_BULLET_DEFINED
 #include "Game/CommonResources.h"
+#include "Game/BulletTrail/BulletTrail.h"
 
 class CommonResources;
 
@@ -30,13 +31,16 @@ private:
 	// 「弾」境界ボックス
 	DirectX::BoundingSphere m_boundingSphere;
 	DirectX::SimpleMath::Vector3 m_target;
-
+	// カメラ
+	DirectX::SimpleMath::Vector3 m_cameraEye;
+	DirectX::SimpleMath::Vector3 m_cameraTarget;
+	DirectX::SimpleMath::Vector3 m_cameraUp;
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
 	// 弾の自転
 	float m_angle;
 
-	// 「弾」境界ボックス
-	//DirectX::BoundingSphere m_boundingSphere;
+	// 弾の軌道
+	std::unique_ptr<BulletTrail> m_bulletTrail;
 	// 	//デバッグ用
 	// ベーシックエフェクト
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
@@ -57,6 +61,10 @@ public:
 	float GetTime()const { return m_time; }
 	//Setter
 	void SetBulletPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }
+	void SetCameraEye(DirectX::SimpleMath::Vector3 eye) { m_bulletTrail->SetCameraPosition(eye); m_cameraEye = eye; }
+	void SetCameraTarget(DirectX::SimpleMath::Vector3 target) { m_bulletTrail->SetCameraTarget(target); m_cameraTarget = target; }
+	void SetCameraUp(DirectX::SimpleMath::Vector3 up) { m_bulletTrail->SetCameraUp(up); m_cameraUp = up; }
+
 	// 弾が生成されてからの経過時間が寿命を超えたかどうかを判定する
 	bool IsExpired() const
 	{

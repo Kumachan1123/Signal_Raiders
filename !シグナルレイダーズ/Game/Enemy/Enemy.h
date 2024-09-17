@@ -9,11 +9,13 @@
 //前方宣言
 class CommonResources;
 class PlayScene;
+class Player;
 class EnemyAI;
 class EnemyHPBar;
 class EnemyBullet;
 class EnemyModel;
 class EnemyBullets;
+class Enemies;
 class Enemy
 {
 private:
@@ -33,7 +35,8 @@ private:
 	std::unique_ptr<EnemyHPBar>		m_HPBar;
 	std::unique_ptr<EnemyBullets>	m_enemyBullets;
 	std::vector<std::unique_ptr<EnemyBullet>> m_bullets; // 弾のリスト
-
+	// プレイヤーのポインター
+	Player* m_pPlayer;
 	// 影の深度ステンシルステート
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilState_Shadow;
 
@@ -87,6 +90,7 @@ public:
 	DirectX::SimpleMath::Vector3 GetRotate() const { return m_rotate; }
 	DirectX::SimpleMath::Vector3 GetStartScale() const { return m_startScale; }
 	DirectX::SimpleMath::Vector3 GetEndScale() const { return m_endScale; }
+	Player* GetPlayer()const { return m_pPlayer; }
 	int GetHP() const { return m_currentHP; }
 	bool GetEnemyIsDead() const { return m_isDead; }
 	bool GetHitToPlayer()const { return m_isHit; }
@@ -107,7 +111,7 @@ public:
 	void SetHitToPlayerBullet(bool hit) { m_isHitToPlayerBullet = hit; }
 public:
 	// 初期ステータスを設定
-	Enemy();
+	Enemy(Player* pPlayer);
 	~Enemy();
 	void Initialize(CommonResources* resources, int hp);
 	void Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos);

@@ -24,8 +24,8 @@ public:
 		SPIRAL = 0,//	—†ù
 		KAMEHAMEHA,//	‚©‚ß‚Í‚ß”g
 		ONIBI,//	‹S‰Î
-		SPARK,//	‰Î‰Ô
-		TRAIL//	‹OÕ
+		ENEMYTRAIL,//	‰Î‰Ô
+		PLAYERTRAIL//	‹OÕ
 	};
 	//	•Ï”
 
@@ -102,6 +102,6 @@ private:
 	void Spiral(float elapsedTime);//	—†ù
 	void Onibi(float elapsedTime);//	‹S‰Î
 	void Kamehameha(float elapsedTime);//	‚©‚ß‚Í‚ß”g
-	void Spark(float elapsedTime);//	‰Î‰Ô
-	void Trail(float elapsedTime);//	‹OÕ
+	void EnemyTrail(float elapsedTime);//	‰Î‰Ô
+	void PlayerTrail(float elapsedTime);//	‹OÕ
 };

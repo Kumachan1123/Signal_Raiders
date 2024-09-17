@@ -56,7 +56,7 @@ void PlayerBullet::Initialize(CommonResources* resources)
 		)
 	);
 	// 弾の軌道ポインター
-	m_bulletTrail = std::make_unique<BulletTrail>();
+	m_bulletTrail = std::make_unique<BulletTrail>(ParticleUtility::Type::PLAYERTRAIL);
 	m_bulletTrail->Initialize(m_commonResources);
 
 	// モデルを読み込む準備
@@ -68,6 +68,7 @@ void PlayerBullet::Initialize(CommonResources* resources)
 						   {
 							   // ベイシックエフェクトを取得する
 							   auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);
+							   basicEffect->SetAlpha(.50f);
 							   // ディフューズカラーを設定する
 							   basicEffect->SetDiffuseColor(DirectX::Colors::Lime);
 							   // スペキュラカラーを設定する
@@ -102,11 +103,9 @@ void PlayerBullet::Update(DirectX::SimpleMath::Vector3& Direction, float elapsed
 	m_position += m_velocity;
 	// バウンディングスフィアの位置更新
 	m_boundingSphere.Center = m_position;
-
 	// 現在の弾の位置を軌跡リストに追加
 	m_bulletTrail->SetBulletPosition(m_position);
 	// 軌跡の更新
-
 	m_bulletTrail->Update(elapsedTime);
 	// 時間計測
 	m_time += elapsedTime;

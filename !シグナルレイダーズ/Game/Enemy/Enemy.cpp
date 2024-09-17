@@ -12,6 +12,7 @@
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 #include "Game/Enemy/EnemyBullets/EnemyBullets.h"
 #include "Game/Enemy/EnemyModel/EnemyModel.h"
+#include "Game/Enemy/Enemies/Enemies.h"
 #include "DeviceResources.h"
 #include "Libraries/MyLib/DebugString.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
@@ -22,7 +23,7 @@
 #include <Libraries/Microsoft/DebugDraw.h>
 
 // コンストラクタ
-Enemy::Enemy()
+Enemy::Enemy(Player* pPlayer)
 	: m_enemyBoundingSphere()
 	, m_commonResources{}
 	, m_currentHP{}
@@ -55,6 +56,7 @@ Enemy::Enemy()
 	, m_isHitToPlayerBullet{}
 	, m_isBullethit{}
 	, m_audioManager{ AudioManager::GetInstance() }
+	, m_pPlayer{ pPlayer }
 {}
 // デストラクタ
 Enemy::~Enemy() {}
