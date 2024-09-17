@@ -53,6 +53,8 @@ void EnemyBullets::Update(float elapsedTime, DirectX::SimpleMath::Vector3 enemyP
 				m_pEnemy->GetPlayer()->SetisPlayerDamage(true);// プレイヤーにダメージを与える
 				continue;
 			}
+			// 弾のY座標が-1以下になったら弾を消す
+			if (bullet->GetBulletPosition().y < 0.0f)continue;
 			newBullets.push_back(std::move(bullet));
 		}
 	}
