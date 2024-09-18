@@ -1,9 +1,9 @@
 /*
-	@file	TitleUI.cpp
-	@brief	タイトルUIクラス
+	@file	SettingUI.cpp
+	@brief	セッティングUIクラス
 */
 #include "pch.h"
-#include "TitleUI.h"
+#include "SettingUI.h"
 #include "Game/KumachiLib/BinaryFile.h"
 #include "DeviceResources.h"
 #include <SimpleMath.h>
@@ -14,13 +14,13 @@
 #include <CommonStates.h>
 #include <vector>
 using namespace DirectX;
-const std::vector<D3D11_INPUT_ELEMENT_DESC> TitleUI::INPUT_LAYOUT =
+const std::vector<D3D11_INPUT_ELEMENT_DESC> SettingUI::INPUT_LAYOUT =
 {
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "COLOR",	0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, sizeof(SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(SimpleMath::Vector3) + sizeof(SimpleMath::Vector4), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
-TitleUI::TitleUI()
+SettingUI::SettingUI()
 	: m_pDR{ nullptr }
 	, m_time{ 0 }
 	, m_windowWidth{ 0 }
@@ -34,11 +34,11 @@ TitleUI::TitleUI()
 {
 }
 
-TitleUI::~TitleUI()
+SettingUI::~SettingUI()
 {
 }
 
-void TitleUI::LoadTexture(const wchar_t* path)
+void SettingUI::LoadTexture(const wchar_t* path)
 {
 	//	指定された画像を読み込む
 	HRESULT result = DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, m_pTextureResource.ReleaseAndGetAddressOf(), m_pTexture.ReleaseAndGetAddressOf());
@@ -55,10 +55,10 @@ void TitleUI::LoadTexture(const wchar_t* path)
 	UNREFERENCED_PARAMETER(result);
 }
 
-void TitleUI::Create(DX::DeviceResources* pDR, const wchar_t* path
-					 , DirectX::SimpleMath::Vector2 position
-					 , DirectX::SimpleMath::Vector2 scale
-					 , kumachi::ANCHOR anchor)
+void SettingUI::Create(DX::DeviceResources* pDR, const wchar_t* path
+					   , DirectX::SimpleMath::Vector2 position
+					   , DirectX::SimpleMath::Vector2 scale
+					   , kumachi::ANCHOR anchor)
 {
 	m_pDR = pDR;// デバイスリソース
 	m_position = position;// 位置
@@ -77,10 +77,10 @@ void TitleUI::Create(DX::DeviceResources* pDR, const wchar_t* path
 
 }
 
-void TitleUI::CreateShader()
+void SettingUI::CreateShader()
 {
 	auto device = m_pDR->GetD3DDevice();// デバイス
-	// コンパイルされたシェーダーを読み込む
+	// コンパイルされたシェーダーを読み込む(タイトルシーンのUIの使いまわし）
 	kumachi::BinaryFile VS = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/TitleScene/Menu/VS_Menu.cso");
 	kumachi::BinaryFile GS = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/TitleScene/Menu/GS_Menu.cso");
 	kumachi::BinaryFile PS = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/TitleScene/Menu/PS_Menu.cso");
@@ -118,13 +118,13 @@ void TitleUI::CreateShader()
 	device->CreateBuffer(&bd, nullptr, &m_pCBuffer);
 }
 
-void TitleUI::Update(float elapsedTime)
+void SettingUI::Update(float elapsedTime)
 {
 	m_time += elapsedTime;
 
 }
 
-void TitleUI::Render()
+void SettingUI::Render()
 {
 	auto context = m_pDR->GetD3DDeviceContext();// コンテキスト
 	VertexPositionColorTexture vertex[1] = {
@@ -172,7 +172,7 @@ void TitleUI::Render()
 	context->PSSetShader(nullptr, nullptr, 0);
 }
 
-void TitleUI::SetWindowSize(const int& width, const int& height)
+void SettingUI::SetWindowSize(const int& width, const int& height)
 {
 	m_windowWidth = width;
 	m_windowHeight = height;

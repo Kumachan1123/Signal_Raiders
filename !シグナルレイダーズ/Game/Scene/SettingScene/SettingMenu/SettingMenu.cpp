@@ -1,9 +1,9 @@
 /*
-	@file	Menu.cpp
-	@brief	メニュークラス
+	@file	SettingMenu.cpp
+	@brief	セッティングメニュークラス
 */
 #include "pch.h"
-#include "Menu.h"
+#include "SettingMenu.h"
 #include "Game/Screen.h"
 #include "Game/Scene/TitleScene/TitleUI/TitleUI.h"
 #include "Game/KumachiLib/BinaryFile.h"
@@ -20,7 +20,7 @@
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
-Menu::Menu()
+SettingMenu::SettingMenu()
 	: m_menuIndex{ 0 }
 	, m_pDR{ nullptr }
 	, m_commonResources{ nullptr }
@@ -31,41 +31,52 @@ Menu::Menu()
 	, m_windowWidth{ 0 }
 	, m_windowHeight{ 0 }
 	, m_tracker{}
-	, m_num{ SceneID::PLAY }
+	, m_num{ StateID::BGM }
 {
 }
 
 
-Menu::~Menu()
+SettingMenu::~SettingMenu()
 {
 }
 
-void Menu::Initialize(CommonResources* resources, int width, int height)
+void SettingMenu::Initialize(CommonResources* resources, int width, int height)
 {
 	m_commonResources = resources;
 	m_pDR = m_commonResources->GetDeviceResources();
 	m_windowWidth = width;
 	m_windowHeight = height;
 	m_pSelectTexturePath = L"Resources/Textures/select.png";
-	//  「プレイ」を読み込む
-	Add(L"Resources/Textures/play.png"
-		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y + 280)
+
+	//  「BGM」を読み込む
+	Add(L"Resources/Textures/BGM.png"
+		, SimpleMath::Vector2(Screen::LEFT + 350, Screen::CENTER_Y - 300)
 		, SimpleMath::Vector2(.5, .5)
 		, kumachi::ANCHOR::MIDDLE_CENTER);
-	//  「せってい」を読み込む
-	Add(L"Resources/Textures/setting.png"
-		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y + 350)
+	//  「SE」を読み込む
+	Add(L"Resources/Textures/SE.png"
+		, SimpleMath::Vector2(Screen::LEFT + 350, Screen::CENTER_Y - 150)
+		, SimpleMath::Vector2(.5, .5)
+		, kumachi::ANCHOR::MIDDLE_CENTER);
+	//  「マウスかんど」を読み込む
+	Add(L"Resources/Textures/Mouse.png"
+		, SimpleMath::Vector2(Screen::LEFT + 350, Screen::CENTER_Y)
+		, SimpleMath::Vector2(.5, .5)
+		, kumachi::ANCHOR::MIDDLE_CENTER);
+	//  「へんこう」を読み込む
+	Add(L"Resources/Textures/Apply.png"
+		, SimpleMath::Vector2(Screen::LEFT + 350, Screen::CENTER_Y + 150)
 		, SimpleMath::Vector2(.5, .5)
 		, kumachi::ANCHOR::MIDDLE_CENTER);
 	//  「おわる」を読み込む
 	Add(L"Resources/Textures/end.png"
-		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y + 420)
+		, SimpleMath::Vector2(Screen::LEFT + 350, Screen::CENTER_Y + 300)
 		, SimpleMath::Vector2(.5, .5)
 		, kumachi::ANCHOR::MIDDLE_CENTER);
 
 }
 
-void Menu::Update(float elapsedTime)
+void SettingMenu::Update(float elapsedTime)
 {
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
 	m_time += elapsedTime;
@@ -86,7 +97,7 @@ void Menu::Update(float elapsedTime)
 	}
 	if (kbTracker->pressed.Space)
 	{
-		m_num = static_cast<SceneID>(m_menuIndex);
+		m_num = static_cast<StateID>(m_menuIndex);
 	}
 	//  メニューアイテムの選択先を更新
 	for (int i = 0; i < m_pUI.size(); i++)
@@ -109,7 +120,7 @@ void Menu::Update(float elapsedTime)
 	m_pSelect[m_menuIndex]->SetScale(Vector2::One);
 }
 
-void Menu::Render()
+void SettingMenu::Render()
 {
 	for (unsigned int i = 0; i < m_pUI.size(); i++)
 	{
@@ -120,10 +131,10 @@ void Menu::Render()
 	}
 }
 
-void Menu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, kumachi::ANCHOR anchor)
+void SettingMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, kumachi::ANCHOR anchor)
 {
 	//  メニューとしてアイテムを追加する
-	std::unique_ptr<TitleUI> userInterface = std::make_unique<TitleUI>();
+	std::unique_ptr<SettingUI> userInterface = std::make_unique<SettingUI>();
 	//  指定された画像を表示するためのアイテムを作成する
 	userInterface->Create(m_pDR
 						  , path
@@ -136,7 +147,7 @@ void Menu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, Direc
 	m_pUI.push_back(std::move(userInterface));
 
 	//  背景用のウィンドウ画像も追加する
-	std::unique_ptr<TitleUI> base = std::make_unique<TitleUI>();
+	std::unique_ptr<SettingUI> base = std::make_unique<SettingUI>();
 	base->Create(m_pDR
 				 , m_pSelectTexturePath
 				 , position

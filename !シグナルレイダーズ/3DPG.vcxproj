@@ -221,6 +221,10 @@
     <ClInclude Include="Game\Scene\PressKey\PressKey.h" />
     <ClInclude Include="Game\Scene\SceneManager.h" />
     <ClInclude Include="Game\Scene\BackGround\BackGround.h" />
+    <ClInclude Include="Game\Scene\SettingScene\SettingBar\SettingBar.h" />
+    <ClInclude Include="Game\Scene\SettingScene\SettingMenu\SettingMenu.h" />
+    <ClInclude Include="Game\Scene\SettingScene\SettingScene.h" />
+    <ClInclude Include="Game\Scene\SettingScene\SettingUI\SettingUI.h" />
     <ClInclude Include="Game\Scene\TitleLogo\TitleLogo.h" />
     <ClInclude Include="Game\Scene\TitleScene\Menu\Menu.h" />
     <ClInclude Include="Game\Scene\TitleScene\TitleScene.h" />
@@ -285,6 +289,10 @@
     <ClCompile Include="Game\Scene\PressKey\PressKey.cpp" />
     <ClCompile Include="Game\Scene\SceneManager.cpp" />
     <ClCompile Include="Game\Scene\BackGround\BackGround.cpp" />
+    <ClCompile Include="Game\Scene\SettingScene\SettingBar\SettingBar.cpp" />
+    <ClCompile Include="Game\Scene\SettingScene\SettingMenu\SettingMenu.cpp" />
+    <ClCompile Include="Game\Scene\SettingScene\SettingScene.cpp" />
+    <ClCompile Include="Game\Scene\SettingScene\SettingUI\SettingUI.cpp" />
     <ClCompile Include="Game\Scene\TitleLogo\TitleLogo.cpp" />
     <ClCompile Include="Game\Scene\TitleScene\Menu\Menu.cpp" />
     <ClCompile Include="Game\Scene\TitleScene\TitleScene.cpp" />

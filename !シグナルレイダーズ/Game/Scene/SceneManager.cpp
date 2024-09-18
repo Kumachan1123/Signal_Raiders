@@ -5,6 +5,7 @@
 #include "pch.h"
 #include "SceneManager.h"
 #include "Game/Scene/TitleScene/TitleScene.h"
+#include "Game/Scene/SettingScene/SettingScene.h"
 #include "PlayScene.h"
 #include "ClearScene.h"
 #include "GameOverScene.h"
@@ -100,7 +101,7 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 			m_currentScene = std::make_unique<TitleScene>();
 			break;
 		case IScene::SceneID::SETTING:
-			//m_currentScene = std::make_unique<SettingScene>();
+			m_currentScene = std::make_unique<SettingScene>();
 			break;
 		case IScene::SceneID::PLAY:
 			m_currentScene = std::make_unique<PlayScene>();

@@ -270,6 +270,10 @@
     <ClInclude Include="Game\Stages\Stage.h" />
     <ClInclude Include="Game\Scene\TitleScene\Menu\Menu.h" />
     <ClInclude Include="Game\Scene\TitleScene\TitleUI\TitleUI.h" />
+    <ClInclude Include="Game\Scene\SettingScene\SettingScene.h" />
+    <ClInclude Include="Game\Scene\SettingScene\SettingUI\SettingUI.h" />
+    <ClInclude Include="Game\Scene\SettingScene\SettingMenu\SettingMenu.h" />
+    <ClInclude Include="Game\Scene\SettingScene\SettingBar\SettingBar.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -391,6 +395,10 @@
     <ClCompile Include="Game\Stages\Stage.cpp" />
     <ClCompile Include="Game\Scene\TitleScene\Menu\Menu.cpp" />
     <ClCompile Include="Game\Scene\TitleScene\TitleUI\TitleUI.cpp" />
+    <ClCompile Include="Game\Scene\SettingScene\SettingScene.cpp" />
+    <ClCompile Include="Game\Scene\SettingScene\SettingUI\SettingUI.cpp" />
+    <ClCompile Include="Game\Scene\SettingScene\SettingMenu\SettingMenu.cpp" />
+    <ClCompile Include="Game\Scene\SettingScene\SettingBar\SettingBar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

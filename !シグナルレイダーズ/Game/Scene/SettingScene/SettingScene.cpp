@@ -1,9 +1,9 @@
-ï»¿/*
-	@file	TitleScene.cpp
-	@brief	ã‚¿ã‚¤ãƒˆãƒ«ã‚·ãƒ¼ãƒ³ã‚¯ãƒ©ã‚¹
+/*
+	@file	SettingScene.cpp
+	@brief	ƒƒjƒ…[ƒNƒ‰ƒX
 */
 #include "pch.h"
-#include "TitleScene.h"
+#include "SettingScene.h"
 #include "Game/Fade/Fade.h"
 #include "Game/Screen.h"
 #include "Game/CommonResources.h"
@@ -16,12 +16,12 @@
 #include "Game/FPS_Camera/FPS_Camera.h"
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
-void EndGame()noexcept;
+
 
 //---------------------------------------------------------
-// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 //---------------------------------------------------------
-TitleScene::TitleScene()
+SettingScene::SettingScene()
 	:
 	m_commonResources{},
 	m_isChangeScene{ false },
@@ -39,159 +39,140 @@ TitleScene::TitleScene()
 
 
 //---------------------------------------------------------
-// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+// ƒfƒXƒgƒ‰ƒNƒ^
 //---------------------------------------------------------
-TitleScene::~TitleScene()
+SettingScene::~SettingScene()
 {
 	// do nothing.
 	Finalize();
 }
 
 //---------------------------------------------------------
-// åˆæœŸåŒ–ã™ã‚‹
+// ‰Šú‰»‚·‚é
 //---------------------------------------------------------
-void TitleScene::Initialize(CommonResources* resources)
+void SettingScene::Initialize(CommonResources* resources)
 {
 	assert(resources);
 	m_commonResources = resources;
 	auto DR = m_commonResources->GetDeviceResources();
-	// ãƒ•ã‚§ãƒ¼ãƒ‰ã®åˆæœŸåŒ–
+	// ƒtƒF[ƒh‚Ì‰Šú‰»
 	m_pFade = std::make_unique<Fade>(m_commonResources);
 	m_pFade->Create(DR);
 	m_pFade->SetState(Fade::FadeState::FadeIn);
 	m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));
-	// èƒŒæ™¯ã®åˆæœŸåŒ–
+	// ”wŒi‚Ì‰Šú‰»
 	m_pBackGround = std::make_unique<BackGround>(m_commonResources);
 	m_pBackGround->Create(DR);
-	// FPSã‚«ãƒ¡ãƒ©ã‚’ä½œæˆã™ã‚‹
+	// FPSƒJƒƒ‰‚ğì¬‚·‚é
 	m_camera = std::make_unique<FPS_Camera>();
-	// æŒ‡ç¤ºç”»åƒã‚’ä½œæˆ
+	// w¦‰æ‘œ‚ğì¬
 	m_pPressKey = std::make_unique<PressKey>(m_commonResources);
 	m_pPressKey->Initialize();
-	// ã‚¿ã‚¤ãƒˆãƒ«ãƒ­ã‚´ã‚’ä½œæˆ
-	m_pTitleLogo = std::make_unique<TitleLogo>(m_commonResources);
-	m_pTitleLogo->Create(DR);
-	// ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’ä½œæˆ
-	m_pMenu = std::make_unique<Menu>();
-	m_pMenu->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
-	// éŸ³å£°ã‚’åˆæœŸåŒ–ã™ã‚‹
+	// ƒZƒbƒeƒBƒ“ƒOƒƒjƒ…[‚ğì¬
+	m_pSettingMenu = std::make_unique<SettingMenu>();
+	m_pSettingMenu->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
+	// İ’èƒo[‚ğì¬
+	m_pSettingBar = std::make_unique<SettingBar>(m_pSettingMenu.get());
+	m_pSettingBar->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
+	// ‰¹º‚ğ‰Šú‰»‚·‚é
 	InitializeFMOD();
 
 }
 
 //---------------------------------------------------------
-// æ›´æ–°ã™ã‚‹
+// XV‚·‚é
 //---------------------------------------------------------
-void TitleScene::Update(float elapsedTime)
+void SettingScene::Update(float elapsedTime)
 {
-	// ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®æ›´æ–°
-	m_pMenu->Update(elapsedTime);
-	// ã‚ªãƒ¼ãƒ‡ã‚£ã‚ªãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã®æ›´æ–°å‡¦ç†
+	// ƒZƒbƒeƒBƒ“ƒOƒƒjƒ…[‚ÌXVˆ—
+	m_pSettingMenu->Update(elapsedTime);
+	// ¡‘I‚Î‚ê‚Ä‚¢‚éƒƒjƒ…[‚ÌID‚ğBar‚É“n‚·
+	m_pSettingBar->SetStateIDNum(static_cast<SettingMenu::StateID>(m_pSettingMenu->GetMenuIndex()));
+	// ƒZƒbƒeƒBƒ“ƒOƒo[‚ÌXVˆ—
+	m_pSettingBar->Update(elapsedTime);
+	// ƒI[ƒfƒBƒIƒ}ƒl[ƒWƒƒ[‚ÌXVˆ—
 	m_audioManager->Update();
-	// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã‚¹ãƒ†ãƒ¼ãƒˆãƒˆãƒ©ãƒƒã‚«ãƒ¼ã‚’å–å¾—ã™ã‚‹
+	// ƒL[ƒ{[ƒhƒXƒe[ƒgƒgƒ‰ƒbƒJ[‚ğæ“¾‚·‚é
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
-	// ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã§ã®é¸æŠå‡¦ç†ãŒè¡Œã‚ã‚ŒãŸã‚‰
+	// ƒƒjƒ…[‚Å‚Ì‘I‘ğˆ—‚ªs‚í‚ê‚½‚ç
 	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd && kbTracker->pressed.Space)
 	{
-		m_audioManager->PlaySound("SE", .3);// SEã®å†ç”Ÿ
-		if (m_pMenu->GetSceneNum() == Menu::SceneID::PLAY)
+		m_audioManager->PlaySound("SE", .3);// SE‚ÌÄ¶
+		if (m_pSettingMenu->GetStateIDNum() == SettingMenu::StateID::END ||
+			m_pSettingMenu->GetStateIDNum() == SettingMenu::StateID::APPLY)
 		{
-			m_pFade->SetState(Fade::FadeState::FadeOut);// ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆã«ç§»è¡Œ
-			m_pFade->SetTextureNum((int)(Fade::TextureNum::READY));// ãƒ•ã‚§ãƒ¼ãƒ‰ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’å¤‰æ›´
-		}
-		else
-		{
-			m_pFade->SetState(Fade::FadeState::FadeOut);// ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆã«ç§»è¡Œ
-			m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// ãƒ•ã‚§ãƒ¼ãƒ‰ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’å¤‰æ›´
+			m_pFade->SetState(Fade::FadeState::FadeOut);// ƒtƒF[ƒhƒAƒEƒg‚ÉˆÚs
+			m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// ƒtƒF[ƒh‚ÌƒeƒNƒXƒ`ƒƒ‚ğ•ÏX
 		}
 
+
 	}
-	// ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆãŒçµ‚äº†ã—ãŸã‚‰
+	// ƒtƒF[ƒhƒAƒEƒg‚ªI—¹‚µ‚½‚ç
 	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;
-	// BGMã®å†ç”Ÿ
+	// BGM‚ÌÄ¶
 	m_audioManager->PlaySound("BGM", 0.3);
-	// æŒ‡ç¤ºç”»åƒã®æ›´æ–°
+	// w¦‰æ‘œ‚ÌXV
 	m_pPressKey->Update(elapsedTime);
-	// èƒŒæ™¯ã®æ›´æ–°
+	// ”wŒi‚ÌXV
 	m_pBackGround->Update(elapsedTime);
-	// ãƒ•ã‚§ãƒ¼ãƒ‰ã®æ›´æ–°
+	// ƒtƒF[ƒh‚ÌXV
 	m_pFade->Update(elapsedTime);
-	// ã‚¿ã‚¤ãƒˆãƒ«ãƒ­ã‚´ã®æ›´æ–°
-	m_pTitleLogo->Update(elapsedTime);
+	// w¦‰æ‘œ‚ÌXV
+	m_pPressKey->Update(elapsedTime);
 
 }
 //---------------------------------------------------------
-// æç”»ã™ã‚‹
+// •`‰æ‚·‚é
 //---------------------------------------------------------
-void TitleScene::Render()
+void SettingScene::Render()
 {
-	// èƒŒæ™¯ã®æç”»
+	// ”wŒi‚Ì•`‰æ
 	m_pBackGround->Render();
-	// ã‚¿ã‚¤ãƒˆãƒ«ãƒ­ã‚´ã®æç”»
-	m_pTitleLogo->Render();
-	// ã‚¹ãƒšãƒ¼ã‚¹ã‚­ãƒ¼æŠ¼ã—ã¦ã£ã¦ã‚„ã¤æç”»(ç”»é¢é·ç§»ä¸­ã¯æç”»ã—ãªã„)
+
+	// ƒXƒy[ƒXƒL[‰Ÿ‚µ‚Ä‚Á‚Ä‚â‚Â•`‰æ(‰æ–Ê‘JˆÚ’†‚Í•`‰æ‚µ‚È‚¢)
 	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
 	{
-		m_pMenu->Render();
+		m_pSettingMenu->Render();
+		m_pSettingBar->Render();
 		//m_pPressKey->Render();
 	}
-	// ãƒ•ã‚§ãƒ¼ãƒ‰ã®æç”»
+	// ƒtƒF[ƒh‚Ì•`‰æ
 	m_pFade->Render();
 }
 
 //---------------------------------------------------------
-// å¾Œå§‹æœ«ã™ã‚‹
+// Œãn––‚·‚é
 //---------------------------------------------------------
-void TitleScene::Finalize()
+void SettingScene::Finalize()
 {
-	// ã‚ªãƒ¼ãƒ‡ã‚£ã‚ªãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã®çµ‚äº†å‡¦ç†
+	// ƒI[ƒfƒBƒIƒ}ƒl[ƒWƒƒ[‚ÌI—¹ˆ—
 	m_audioManager->Shutdown();
 }
 
 //---------------------------------------------------------
-// æ¬¡ã®ã‚·ãƒ¼ãƒ³IDã‚’å–å¾—ã™ã‚‹
+// Ÿ‚ÌƒV[ƒ“ID‚ğæ“¾‚·‚é
 //---------------------------------------------------------
-IScene::SceneID TitleScene::GetNextSceneID() const
+IScene::SceneID SettingScene::GetNextSceneID() const
 {
-	// ã‚·ãƒ¼ãƒ³å¤‰æ›´ãŒã‚ã‚‹å ´åˆ
+	// ƒV[ƒ“•ÏX‚ª‚ ‚éê‡
 	if (m_isChangeScene)
 	{
-		m_audioManager->StopSound("BGM");// BGMã®åœæ­¢
-		m_audioManager->StopSound("SE");// SEã®åœæ­¢
-		switch (m_pMenu->GetSceneNum())
-		{
-			case Menu::SceneID::PLAY:
-				return IScene::SceneID::PLAY;
-				break;
-			case Menu::SceneID::SETTING:
-				return IScene::SceneID::SETTING;
-				break;
-			case Menu::SceneID::END:
-				// ã‚²ãƒ¼ãƒ çµ‚äº†
-				EndGame();
-				break;
-			default:
-				break;
-		}
+		m_audioManager->StopSound("BGM");// BGM‚Ì’â~
+		m_audioManager->StopSound("SE");// SE‚Ì’â~
+		return IScene::SceneID::TITLE;
 	}
-	// ã‚·ãƒ¼ãƒ³å¤‰æ›´ãŒãªã„å ´åˆ
+	// ƒV[ƒ“•ÏX‚ª‚È‚¢ê‡
 	return IScene::SceneID::NONE;
 }
 
 //---------------------------------------------------------
-// FMODã®ã‚·ã‚¹ãƒ†ãƒ ã®åˆæœŸåŒ–ã¨éŸ³å£°ãƒ‡ãƒ¼ã‚¿ã®ãƒ­ãƒ¼ãƒ‰
+// FMOD‚ÌƒVƒXƒeƒ€‚Ì‰Šú‰»‚Æ‰¹ºƒf[ƒ^‚Ìƒ[ƒh
 //---------------------------------------------------------
-void TitleScene::InitializeFMOD()
+void SettingScene::InitializeFMOD()
 {
-	// FMODã‚·ã‚¹ãƒ†ãƒ ã®åˆæœŸåŒ–
+	// FMODƒVƒXƒeƒ€‚Ì‰Šú‰»
 	m_audioManager->Initialize();
-	// éŸ³å£°ãƒ‡ãƒ¼ã‚¿ã®ãƒ­ãƒ¼ãƒ‰
+	// ‰¹ºƒf[ƒ^‚Ìƒ[ƒh
 	m_audioManager->LoadSound("Resources/Sounds/select.mp3", "SE");
 	m_audioManager->LoadSound("Resources/Sounds/title.mp3", "BGM");
 }
-
-void EndGame() noexcept
-{
-	PostQuitMessage(0);
-}
-
