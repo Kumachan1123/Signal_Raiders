@@ -49,7 +49,7 @@ void Menu::Initialize(CommonResources* resources, int width, int height)
 	m_pSelectTexturePath = L"Resources/Textures/select.png";
 	//  「プレイ」を読み込む
 	Add(L"Resources/Textures/play.png"
-		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y + 280)
+		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y + 250)
 		, SimpleMath::Vector2(.5, .5)
 		, kumachi::ANCHOR::MIDDLE_CENTER);
 	//  「せってい」を読み込む
@@ -59,7 +59,7 @@ void Menu::Initialize(CommonResources* resources, int width, int height)
 		, kumachi::ANCHOR::MIDDLE_CENTER);
 	//  「おわる」を読み込む
 	Add(L"Resources/Textures/end.png"
-		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y + 420)
+		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y + 450)
 		, SimpleMath::Vector2(.5, .5)
 		, kumachi::ANCHOR::MIDDLE_CENTER);
 
