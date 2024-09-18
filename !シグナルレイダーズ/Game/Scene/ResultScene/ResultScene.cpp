@@ -197,7 +197,7 @@ IScene::SceneID ResultScene::GetNextSceneID() const
 				return IScene::SceneID::PLAY;
 				break;
 			case ResultMenu::SceneID::END:
-				return IScene::SceneID::SETTING;
+				return IScene::SceneID::TITLE;
 				break;
 			default:
 				break;
