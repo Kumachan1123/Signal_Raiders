@@ -5,6 +5,7 @@
 #pragma once
 #include "IScene.h"
 
+
 // ‘O•ûéŒ¾
 class CommonResources;
 
@@ -23,7 +24,6 @@ public:
 	void Update(float elapsedTime);
 	void Render();
 	void Finalize();
-
 
 private:
 	void ChangeScene(IScene::SceneID sceneID);

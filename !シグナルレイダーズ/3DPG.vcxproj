@@ -222,6 +222,7 @@
     <ClInclude Include="Game\Scene\SceneManager.h" />
     <ClInclude Include="Game\Scene\BackGround\BackGround.h" />
     <ClInclude Include="Game\Scene\SettingScene\SettingBar\SettingBar.h" />
+    <ClInclude Include="Game\Scene\SettingScene\SettingData\SettingData.h" />
     <ClInclude Include="Game\Scene\SettingScene\SettingMenu\SettingMenu.h" />
     <ClInclude Include="Game\Scene\SettingScene\SettingScene.h" />
     <ClInclude Include="Game\Scene\SettingScene\SettingUI\SettingUI.h" />
@@ -290,6 +291,7 @@
     <ClCompile Include="Game\Scene\SceneManager.cpp" />
     <ClCompile Include="Game\Scene\BackGround\BackGround.cpp" />
     <ClCompile Include="Game\Scene\SettingScene\SettingBar\SettingBar.cpp" />
+    <ClCompile Include="Game\Scene\SettingScene\SettingData\SettingData.cpp" />
     <ClCompile Include="Game\Scene\SettingScene\SettingMenu\SettingMenu.cpp" />
     <ClCompile Include="Game\Scene\SettingScene\SettingScene.cpp" />
     <ClCompile Include="Game\Scene\SettingScene\SettingUI\SettingUI.cpp" />

@@ -21,14 +21,17 @@ using namespace DirectX::SimpleMath;
 //-------------------------------------------------------------------
 // コンストラクタ
 //-------------------------------------------------------------------
-PlayerController::PlayerController()
-	: m_position{}
+PlayerController::PlayerController(Player* pPlayer)
+	: m_pPlayer{ pPlayer }
+	, m_position{}
 	, m_velocity{}
 	, m_yawX{}
 	, m_beforeYawX{}
 	, m_pitchY{}
 	, m_dash{}
 	, m_commonResources{}
+	, m_hWnd{ nullptr }
+	, m_sensitive{ pPlayer->GetMouseSensitive() }
 {
 	// スクリーンの解像度を取得
 	RECT desktopRect;
@@ -88,7 +91,7 @@ void PlayerController::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardS
 	float deltaY = static_cast<float>(mouseY - m_lastMouseY);
 
 	// マウス感度の適用
-	const float mouseSensitivity = 0.04f;
+	const float mouseSensitivity = 0.01f * m_sensitive;
 	float x = deltaX * mouseSensitivity * 10.0f * elapsedTime;
 	float y = deltaY * mouseSensitivity * 100.0f * elapsedTime;
 

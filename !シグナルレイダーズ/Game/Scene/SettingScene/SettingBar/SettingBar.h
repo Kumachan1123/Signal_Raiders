@@ -14,6 +14,7 @@
 #include <CommonStates.h>
 #include <vector>
 #include "Keyboard.h"
+#include "Game/Scene/SettingScene/SettingData/SettingData.h"
 
 class CommonResources;
 class SettingBar
@@ -31,7 +32,10 @@ private:
 	const wchar_t* m_pSettingBarPointerTexturePath;// 設定バーの玉テクスチャパス
 	int m_windowWidth, m_windowHeight;// ウィンドウの幅と高さ
 	DirectX::Keyboard::KeyboardStateTracker m_tracker;// トラッカー
+	std::unique_ptr<SettingData> m_pSettingData;// 設定データ
+
 	SettingMenu::StateID m_num;// 状態ID
+	unsigned int m_setting[3] = { 0, 0, 0 };// 設定
 	float m_time = 0;// 時間
 	//	関数
 public:
@@ -45,4 +49,5 @@ public:
 			 , DirectX::SimpleMath::Vector2 scale
 			 , kumachi::ANCHOR anchor);
 	void SetStateIDNum(SettingMenu::StateID num) { m_num = num; }
+	int GetSetting(int index) const { return m_setting[index]; }
 };

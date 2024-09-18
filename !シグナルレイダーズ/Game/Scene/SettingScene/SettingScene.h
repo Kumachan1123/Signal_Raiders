@@ -11,6 +11,7 @@
 #include "Game/Scene/PressKey/PressKey.h"
 #include "Game/Scene/SettingScene/SettingMenu/SettingMenu.h"
 #include "Game/Scene/SettingScene/SettingBar/SettingBar.h"
+#include "Game/Scene/SettingScene/SettingData/SettingData.h"
 // 前方宣言
 class CommonResources;
 class Fade;
@@ -38,9 +39,14 @@ private:
 	std::unique_ptr<SettingMenu> m_pSettingMenu;
 	// 設定バー
 	std::unique_ptr<SettingBar> m_pSettingBar;
+	// 設定データ
+	std::unique_ptr<SettingData> m_pSettingData;
 	// フェード画像番号
 	int m_fadeTexNum;
-
+	// 音量の基準
+	const float VOLUME = 0.5f;
+	float m_BGMvolume;	// ボリューム
+	float m_SEvolume;	// ボリューム
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
 
@@ -51,8 +57,6 @@ private:
 	std::unique_ptr<FPS_Camera> m_camera;
 	// フェードで使用する変数
 	bool m_isFade;		// フェードフラグ
-	float m_volume;		// ボリューム
-	int m_counter;		// フェードカウンタ
 
 
 public:
@@ -68,8 +72,10 @@ public:
 	SceneID GetNextSceneID() const;
 	void InitializeFMOD();
 
+
+
 private:
 
-
+	void SetVolume();
 
 };

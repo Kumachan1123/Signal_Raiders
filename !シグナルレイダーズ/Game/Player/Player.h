@@ -40,6 +40,10 @@ private:
 	bool m_isDamage = false;
 	// プレイヤーがダメージを食らった時の時間
 	float m_damageTime = 0.0f;
+	// SEの音量
+	float m_SEVolume = 0.0f;
+	// マウス感度
+	float m_mouseSensitive;
 public:
 	Player(CommonResources* commonResources);
 	~Player();
@@ -57,8 +61,12 @@ public:
 	PlayerController* GetPlayerController() { return m_pPlayerController.get(); }// プレイヤーコントローラー
 	DirectX::BoundingSphere GetPlayerSphere() const { return m_playerSphere; }// プレイヤーの境界球
 	DirectX::BoundingSphere GetInPlayerArea() const { return m_inPlayerArea; }// プレイヤーと敵との一定範囲内での境界球
+	float GetVolume() const { return m_SEVolume; }// 音量取得
+	float GetMouseSensitive() const { return m_mouseSensitive; }// マウス感度
 	// Setter
 public:
 	void SetPlayerHP(float playerHP) { m_playerHP = playerHP; }	// プレイヤーのHP
 	void SetisPlayerDamage(bool isDamage) { m_isDamage = isDamage; }// プレイヤーがダメージを受けたか
+	void SetVolume(float volume) { m_SEVolume = volume; }// 音量取得
+	void SetMouseSensitive(float sensitive) { m_mouseSensitive = sensitive; }// マウス感度
 };

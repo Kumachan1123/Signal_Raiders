@@ -43,6 +43,8 @@ private:
 	std::vector<std::unique_ptr<Effect>> m_effect;
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
+	// SEの音量
+	float m_SEVolume = 0.0f;
 public:
 	Enemies(CommonResources* commonResources);
 	~Enemies();
@@ -54,9 +56,13 @@ public:
 	void Render();
 	// 効果音の初期化
 	void InitializeFMOD();
-public:// Getter
+
+public:
+	// Getter
 	std::vector<std::unique_ptr<Enemy>>& GetEnemy() { return m_enemy; }// 敵
 	std::unique_ptr<Wifi>& GetWifi() { return m_pWifi; }// Wi-Fi
 	std::vector<std::unique_ptr<Effect>>& GetEffect() { return m_effect; }// エフェクト
 	bool GetisBorned() const { return m_isBorned; }// 敵生成済み
+	// Setter
+	void SetVolume(float volume) { m_SEVolume = volume; }// 音量取得
 };

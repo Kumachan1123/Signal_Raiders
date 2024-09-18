@@ -17,6 +17,8 @@
 #include <Effects.h>
 #include <memory>
 #include <Libraries/Microsoft/DebugDraw.h>
+
+
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 //---------------------------------------------------------
@@ -36,7 +38,11 @@ PlayScene::PlayScene()
 	m_fade{},
 	m_fadeState{ },
 	m_fadeTexNum{ 2 },
-	m_audioManager{ AudioManager::GetInstance() }
+	m_audioManager{ AudioManager::GetInstance() },
+	m_BGMvolume{ VOLUME },
+	m_SEvolume{ VOLUME },
+	m_mouseSensitivity{ }
+
 {}
 //---------------------------------------------------------
 // デストラクタ
@@ -52,13 +58,22 @@ void PlayScene::Initialize(CommonResources* resources)
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto DR = m_commonResources->GetDeviceResources();
+	// 設定データを取得する
+	m_pSettingData = std::make_unique<SettingData>();
+	m_pSettingData->Load();
+	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume()) / 2;// BGMの音量を設定する(若干音量を補正)
+	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume());// SEの音量を設定する
+	m_mouseSensitivity = static_cast<float>(m_pSettingData->GetMouseSensitivity());// マウス感度を設定する
 	// プレイヤーを初期化する
 	m_pPlayer = std::make_unique<Player>(resources);
-
 	// 敵全体を初期化する
 	m_pEnemies = std::make_unique<Enemies>(resources);
+
+	m_pPlayer->SetVolume(m_SEvolume);// プレイヤーが出す効果音の音量を設定する
+	m_pPlayer->SetMouseSensitive(m_mouseSensitivity);// マウス感度を設定する
 	m_pPlayer->Initialize(m_pEnemies.get());
 	m_pEnemies->Initialize(m_pPlayer.get());
+	m_pEnemies->SetVolume(m_SEvolume);// 敵が出す効果音の音量を設定する
 	// 地面（ステージ１生成）
 	m_pStage = std::make_unique<Stage>();
 	m_pStage->Initialize(resources);
@@ -97,7 +112,7 @@ void PlayScene::Update(float elapsedTime)
 	const auto& kb = m_commonResources->GetInputManager()->GetKeyboardTracker();
 
 	// 二重再生しない
-	m_audioManager->PlaySound("BGM", 0.3);
+	m_audioManager->PlaySound("BGM", m_BGMvolume);
 	// カメラが向いている方向を取得する
 	DirectX::SimpleMath::Vector3 cameraDirection = m_pPlayer->GetCamera()->GetDirection();
 	m_pPlayer->Update(kb, elapsedTime);

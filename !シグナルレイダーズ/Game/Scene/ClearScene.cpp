@@ -28,6 +28,8 @@ ClearScene::ClearScene()
 	m_clearTexCenter{},
 	m_isChangeScene{},
 	m_isFade{},
+	m_BGMvolume{ VOLUME },
+	m_SEvolume{ VOLUME },
 	m_volume{},
 	m_counter{},
 	m_time{},
@@ -76,7 +78,11 @@ void ClearScene::Initialize(CommonResources* resources)
 	// 背景の初期化
 	m_backGround = std::make_unique<BackGround>(m_commonResources);
 	m_backGround->Create(DR);
-
+	// 設定ファイルの読み込み
+	m_pSettingData = std::make_unique<SettingData>();
+	m_pSettingData->Load();
+	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume());
+	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume());
 	// 画像をロードする
 	DX::ThrowIfFailed(
 		CreateWICTextureFromFile(
@@ -162,7 +168,7 @@ void ClearScene::Update(float elapsedTime)
 	if (m_fade->GetState() == Fade::FadeState::FadeInEnd && kbTracker->pressed.Space)
 	{
 		// SEの再生
-		m_audioManager->PlaySound("SE", .3);
+		m_audioManager->PlaySound("SE", m_SEvolume);
 		// フェードアウトに移行
 		m_fade->SetState(Fade::FadeState::FadeOut);
 		m_fade->SetTextureNum((int)(Fade::TextureNum::BLACK));
@@ -173,7 +179,7 @@ void ClearScene::Update(float elapsedTime)
 		m_isChangeScene = true;
 	}
 	// BGMの再生
-	m_audioManager->PlaySound("BGM", 0.3);
+	m_audioManager->PlaySound("BGM", m_BGMvolume);
 
 	// フェードに関する準備
 	m_time += elapsedTime; // 時間をカウント

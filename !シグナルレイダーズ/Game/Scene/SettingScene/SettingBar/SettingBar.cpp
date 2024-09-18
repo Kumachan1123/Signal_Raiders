@@ -29,6 +29,7 @@ SettingBar::SettingBar(SettingMenu* pSettingMenu)
 	, m_windowHeight{ 0 }
 	, m_tracker{}
 	, m_num{ SettingMenu::StateID::BGM }
+	, m_setting{ 4,4,4 }
 {
 }
 
@@ -44,6 +45,8 @@ void SettingBar::Initialize(CommonResources* resources, int width, int height)
 	m_windowHeight = height;
 	m_pSettingBarTexturePath = L"Resources/Textures/SettingBar.png";
 	m_pSettingBarPointerTexturePath = L"Resources/Textures/SettingBarPointer.png";
+	m_pSettingData = std::make_unique<SettingData>();
+
 	//  「BGM」の場所に配置
 	Add(m_pSettingBarTexturePath
 		, SimpleMath::Vector2(Screen::CENTER_X + 250, Screen::CENTER_Y - 300)
@@ -60,33 +63,84 @@ void SettingBar::Initialize(CommonResources* resources, int width, int height)
 		, SimpleMath::Vector2(1, 1)
 		, kumachi::ANCHOR::MIDDLE_CENTER);
 
+	// Jsonファイルから設定を読み込む
+	m_pSettingData->Load();
+	m_setting[0] = m_pSettingData->GetBGMVolume();
+	m_setting[1] = m_pSettingData->GetSEVolume();
+	m_setting[2] = m_pSettingData->GetMouseSensitivity();
+
+	//  設定バーの玉を読み込んだ設定に合わせて移動
+	for (unsigned int i = 0; i < m_pBarPointer.size(); i++)
+	{
+		m_pBarPointer[i]->SetPosition(Vector2(static_cast<float>(Screen::CENTER_X + m_setting[i] * 60 - 60), m_pBarPointer[i]->GetPosition().y));
+	}
 }
 
 void SettingBar::Update(float elapsedTime)
 {
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
 	m_time += elapsedTime;
-	if (m_num < 3)//  セッティングシーンで「へんこう」と「おわり」以外が選ばれている場合
+	if (0 <= m_num && m_num <= 2)//  セッティングシーンで「へんこう」と「おわり」以外が選ばれている場合
 	{
 		//  キーボードの入力を取得
 		if (kbTracker->pressed.A)
 		{
 			// ポインターの座標を左に移動
 			// 左に移動できるのは中心にいるときから５回まで
-			if (m_pBarPointer[m_num]->GetPosition().x > Screen::CENTER_X + 250 - 300)
+			// m_numが2のときはマウス感度の設定なので、左に移動できるのは中心にいるときから３回まで
+			if (m_num == 2)
+			{
+				if (m_pBarPointer[m_num]->GetPosition().x > Screen::CENTER_X + 250 - 240)
+				{
+					m_pBarPointer[m_num]->SetPosition(Vector2(m_pBarPointer[m_num]->GetPosition().x - 120, m_pBarPointer[m_num]->GetPosition().y));
+					m_setting[m_num] -= 1;
+				}
+			}
+			else
+			{
+				if (m_pBarPointer[m_num]->GetPosition().x > Screen::CENTER_X + 250 - 300)
+				{
+					m_pBarPointer[m_num]->SetPosition(Vector2(m_pBarPointer[m_num]->GetPosition().x - 60, m_pBarPointer[m_num]->GetPosition().y));
+					m_setting[m_num] -= 1;
+				}
+			}
+			/*if (m_pBarPointer[m_num]->GetPosition().x > Screen::CENTER_X + 250 - 300)
 			{
 				m_pBarPointer[m_num]->SetPosition(Vector2(m_pBarPointer[m_num]->GetPosition().x - 60, m_pBarPointer[m_num]->GetPosition().y));
-			}
+				m_setting[m_num] -= 1;
+			}*/
 		}
 		if (kbTracker->pressed.D)
 		{
 			// ポインターの座標を右に移動
 			// 右に移動できるのは中心にいるときから５回まで
-			if (m_pBarPointer[m_num]->GetPosition().x < Screen::CENTER_X + 250 + 300)
+			if (m_num == 2)
+			{
+				if (m_pBarPointer[m_num]->GetPosition().x < Screen::CENTER_X + 250 + 300)
+				{
+					m_pBarPointer[m_num]->SetPosition(Vector2(m_pBarPointer[m_num]->GetPosition().x + 120, m_pBarPointer[m_num]->GetPosition().y));
+					m_setting[m_num] += 1;
+				}
+			}
+			else
+			{
+				if (m_pBarPointer[m_num]->GetPosition().x < Screen::CENTER_X + 250 + 300)
+				{
+					m_pBarPointer[m_num]->SetPosition(Vector2(m_pBarPointer[m_num]->GetPosition().x + 60, m_pBarPointer[m_num]->GetPosition().y));
+					m_setting[m_num] += 1;
+				}
+			}
+			/*if (m_pBarPointer[m_num]->GetPosition().x < Screen::CENTER_X + 250 + 300)
 			{
 				m_pBarPointer[m_num]->SetPosition(Vector2(m_pBarPointer[m_num]->GetPosition().x + 60, m_pBarPointer[m_num]->GetPosition().y));
-			}
+				m_setting[m_num] += 1;
+			}*/
 		}
+	}
+	else if (m_num == 3)
+	{
+		//  「へんこう」が選ばれている場合,設定を保存する
+		if (kbTracker->pressed.Space)m_pSettingData->Save(m_setting[0], m_setting[1], m_setting[2]);
 	}
 
 }
@@ -96,8 +150,6 @@ void SettingBar::Render()
 
 	for (unsigned int i = 0; i < m_pBarPointer.size(); i++)
 	{
-		//  アイテム用ウィンドウ背景を表示
-		//if (i == m_menuIndex) m_pSelect[i]->Render();
 		//  実際に表示したいアイテム画像を表示
 		m_pBar[i]->Render();
 		//  設定バーの玉を表示

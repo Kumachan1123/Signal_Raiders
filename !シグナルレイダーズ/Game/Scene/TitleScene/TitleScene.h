@@ -11,6 +11,9 @@
 #include "Game/KumachiLib/AudioManager.h"
 #include "Game/Scene/PressKey/PressKey.h"
 #include "Game/Scene/TitleScene/Menu/Menu.h"
+#include "Game/Scene/SettingScene/SettingMenu/SettingMenu.h"
+#include "Game/Scene/SettingScene/SettingBar/SettingBar.h"
+#include "Game/Scene/SettingScene/SettingData/SettingData.h"
 // 前方宣言
 class CommonResources;
 class Fade;
@@ -38,6 +41,8 @@ private:
 	std::unique_ptr<PressKey> m_pPressKey;
 	// メニュー
 	std::unique_ptr<Menu> m_pMenu;
+	// 設定データ
+	std::unique_ptr<SettingData> m_pSettingData;
 	// フェード画像番号
 	int m_fadeTexNum;
 
@@ -51,7 +56,10 @@ private:
 	std::unique_ptr<FPS_Camera> m_camera;
 	// フェードで使用する変数
 	bool m_isFade;		// フェードフラグ
-	float m_volume;		// ボリューム
+	// 音量の基準
+	const float VOLUME = 0.5f;
+	float m_BGMvolume;	// ボリューム
+	float m_SEvolume;	// ボリューム
 	int m_counter;		// フェードカウンタ
 
 
@@ -64,6 +72,7 @@ public:
 	void Update(float elapsedTime)override;
 	void Render() override;
 	void Finalize() override;
+
 
 	SceneID GetNextSceneID() const;
 	void InitializeFMOD();

@@ -113,7 +113,7 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 	m_enemyBS.Center = m_position;
 	m_enemyBS.Radius = 1.5f;
 	// オーディオマネージャー
-	m_audioManager->LoadSound("Resources/Sound/EnemyBullet.mp3", "EnemyBullet");
+	m_audioManager->LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet");
 
 }
 // 描画
@@ -190,7 +190,7 @@ void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 		// 攻撃のクールダウンタイムを管理
 		if (m_attackCooldown <= 0.1f)
 		{
-			m_audioManager->PlaySound("EnemyBullet", 0.25);// サウンド再生
+			m_audioManager->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
 			// クォータニオンから方向ベクトルを計算
 			DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_enemyAI->GetRotation());
 			// 弾を発射

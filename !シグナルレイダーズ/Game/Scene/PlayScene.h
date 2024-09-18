@@ -4,6 +4,7 @@
 */
 #pragma once
 #include "IScene.h"
+#include "Game/Scene/SettingScene/SettingData/SettingData.h"
 #include "Game/SkyBox/SkyBox.h"
 #include "Game/Player/Player.h"
 #include "Game/Player/PlayerController/PlayerController.h"
@@ -22,9 +23,9 @@
 #include "Game/Effect/Effect.h"
 #include "Game/Fade/Fade.h"
 #include "Game/KumachiLib/AudioManager.h"
+
 // 前方宣言
 class CommonResources;
-
 namespace mylib
 {
 	class InputManager;
@@ -57,6 +58,8 @@ private:
 	std::vector<std::unique_ptr<Effect>> m_pEffect;
 	// フェード
 	std::unique_ptr<Fade> m_fade;
+	// 設定データ
+	std::unique_ptr<SettingData> m_pSettingData;
 	// フェードの状態
 	Fade::FadeState m_fadeState;
 	// フェード画像番号
@@ -77,8 +80,11 @@ private:
 	bool m_isHitPlayerToEnemy = false;
 	// 回転角(度)
 	float m_angle;
-
-
+	// 音量の基準
+	const float VOLUME = 1.0f;
+	float m_BGMvolume;	// ボリューム
+	float m_SEvolume;	// ボリューム
+	float m_mouseSensitivity;
 	//デバッグ用
 	// ベーシックエフェクト
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;

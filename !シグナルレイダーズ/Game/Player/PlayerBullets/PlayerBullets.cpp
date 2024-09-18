@@ -20,6 +20,7 @@ void PlayerBullets::Initialize(Player* pPlayer, Enemies* pEnemies)
 {
 	m_pPlayer = pPlayer;// プレイヤーのポインターを取得
 	m_pEnemies = pEnemies;// 敵全体のポインターを取得
+
 	// オーディオマネージャーを初期化する
 	m_audioManager->Initialize();
 	// 効果音の初期化
@@ -55,7 +56,7 @@ void PlayerBullets::Update(float elapsedTime)
 																			   enemy->GetPosition(),
 																			   enemy->GetMatrix()));
 					enemy->SetHitToPlayerBullet(true);
-					m_audioManager->PlaySound("Hit", 0.3);// ヒットSEを再生
+					m_audioManager->PlaySound("Hit", m_pPlayer->GetVolume());// ヒットSEを再生
 					break;
 				}
 			}
@@ -76,7 +77,7 @@ void PlayerBullets::Render()
 
 void PlayerBullets::CreateBullet(const DirectX::SimpleMath::Vector3& position, DirectX::SimpleMath::Vector3& direction)
 {	// SEの再生
-	m_audioManager->PlaySound("Shoot", .5);
+	m_audioManager->PlaySound("Shoot", m_pPlayer->GetVolume());
 	auto bullet = std::make_unique<PlayerBullet>();
 	bullet->Initialize(m_commonResources);
 	bullet->MakeBall(position, direction);

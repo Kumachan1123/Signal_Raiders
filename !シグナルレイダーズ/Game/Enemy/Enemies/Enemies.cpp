@@ -116,7 +116,7 @@ void Enemies::Update(float elapsedTime)
 			float playerHP = m_pPlayer->GetPlayerHP() - enemy->GetToPlayerDamage();//新しいHPを計算
 			m_pPlayer->SetPlayerHP(playerHP);// プレイヤーのHPを設定
 			enemy->SetBulletHitToPlayer(false);// フラグをリセット
-			m_audioManager->PlaySound("Damage", 0.5);// ダメージSEを再生
+			m_audioManager->PlaySound("Damage", m_pPlayer->GetVolume());// ダメージSEを再生
 		}
 		// 敵がプレイヤーに当たったら
 		if (enemy->GetBoundingSphere().Intersects(m_pPlayer->GetInPlayerArea()))
@@ -147,7 +147,7 @@ void Enemies::Update(float elapsedTime)
 														Effect::ParticleType::ENEMY_DEAD,
 														(*it)->GetPosition(),
 														(*it)->GetMatrix()));
-			m_audioManager->PlaySound("EnemyDead", 2);// 敵のSEを再生
+			m_audioManager->PlaySound("EnemyDead", m_pPlayer->GetVolume() * 10);// 敵のSEを再生(こいつだけ音量10倍)
 			enemiesToRemove.push_back(std::move(*it));// 削除対象に追加
 			it = m_enemy.erase(it);  // 削除してイテレータを更新
 		}

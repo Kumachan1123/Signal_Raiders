@@ -33,5 +33,6 @@ public:
 
 	virtual void Finalize() = 0;
 
+
 	virtual SceneID GetNextSceneID() const = 0;
 };

@@ -4,22 +4,25 @@
 	作成者：くまち
 */
 #pragma once
+#include "Game/Player/Player.h"
 //前方宣言
 class CommonResources;
 class Mouse;
-
+class Player;
 class PlayerController
 {
 	//変数
 public:
 	DirectX::SimpleMath::Vector3 m_position;		// 一人称視点
 	DirectX::SimpleMath::Vector3 m_velocity;		// 移動ベクトル
-	float m_yawX, m_pitchY;
-
+	float m_yawX, m_pitchY;						// カメラ回転
+	float m_sensitive;							// マウス感度
 	float m_lastMouseX;
 	float m_lastMouseY;
 	HWND m_hWnd;
 	POINT m_point;
+	// プレイヤー
+	Player* m_pPlayer;
 	// カメラ左右回転
 	float yawX = 0.0f;
 	float m_beforeYawX;
@@ -32,7 +35,7 @@ private:
 	// 共通リソース
 	CommonResources* m_commonResources; float DmouseX = 0;
 public:
-	PlayerController();
+	PlayerController(Player* pPlayer);
 	~PlayerController();
 	void Initialize(CommonResources* resources);
 	void MoveStop();
@@ -45,6 +48,7 @@ public:
 	float GetPlayerPositionY()const { return m_position.y; }
 	//Setter
 	void SetPlayetPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }
+	void SetMouseSensitive(float sensitive) { m_sensitive = sensitive; }
 };
 
 template <typename T>

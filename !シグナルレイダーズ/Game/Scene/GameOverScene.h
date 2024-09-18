@@ -5,6 +5,7 @@
 #pragma once
 #include "IScene.h"
 #include "Game/Fade/Fade.h"
+#include "Game/Scene/SettingScene/SettingData/SettingData.h"
 #include "Game/Scene/BackGround/BackGround.h"
 #include "Game/KumachiLib/AudioManager.h"
 // 前方宣言
@@ -38,7 +39,8 @@ private:
 	// テクスチャの半分の大きさ
 	DirectX::SimpleMath::Vector2 m_gameoverTexCenter;
 	DirectX::SimpleMath::Vector2 m_pressKeyTexCenter;
-
+	// 設定データ
+	std::unique_ptr<SettingData> m_pSettingData;
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
 
@@ -53,6 +55,10 @@ private:
 	bool m_isFade;		// フェードフラグ
 	float m_volume;		// ボリューム
 	int m_counter;		// フェードカウンタ
+	// 音量の基準
+	const float VOLUME = 0.5f;
+	float m_BGMvolume;	// ボリューム
+	float m_SEvolume;	// ボリューム
 	float m_time = 0.0f;// 拡縮に使う時間
 	float m_size = 0.0f;// 画像サイズ
 	float m_pressKeySize = 0.0f;

@@ -87,7 +87,7 @@ public:
 	void SetHitToOtherEnemy(bool isHitToOtherEnemy) { m_isHitToOtherEnemy = isHitToOtherEnemy; }
 	void SetBulletBoundingSphere(DirectX::BoundingSphere& bs) { m_enemyBulletBS = bs; }
 	void SetPlayerBoundingSphere(DirectX::BoundingSphere playerBS) { m_playerBS = playerBS; }
-	void SetPlayerHP(float& HP) { HP -= PLAYER_DAMAGE; }
+	void SetPlayerHP(float& HP) const { HP -= PLAYER_DAMAGE; }
 	void SetBulletHitToPlayer(bool hit) { m_isBullethit = hit; }// ìGÇÃíeÇ™ÉvÉåÉCÉÑÅ[Ç…ìñÇΩÇ¡ÇΩÇ©
 	void SetHitToPlayerBullet(bool hit) { m_isHitToPlayerBullet = hit; }
 public:

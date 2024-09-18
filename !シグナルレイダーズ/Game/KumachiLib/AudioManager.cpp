@@ -46,8 +46,10 @@ void AudioManager::PlaySound(const std::string& soundKey, float volume)
 		FMOD::Sound* sound = soundIt->second;
 
 		// BGMの場合、既に再生中のチャンネルが存在する場合は再生しない
+		// ただし、音量だけは変更する
 		if (soundKey == "BGM")
 		{
+
 			auto channelIt = m_channels.find("BGM");
 			if (channelIt != m_channels.end())
 			{
@@ -56,6 +58,7 @@ void AudioManager::PlaySound(const std::string& soundKey, float volume)
 				existingChannel->isPlaying(&isPlaying);
 				if (isPlaying)
 				{
+					existingChannel->setVolume(volume);
 					return; // 既に再生中のため、何もしない
 				}
 			}
@@ -104,6 +107,7 @@ void AudioManager::Shutdown()
 	}
 }
 
+// 音声ファイルを読み込む
 bool AudioManager::LoadSound(const std::string& filePath, const std::string& key) {
 	if (m_sounds.find(key) != m_sounds.end()) {
 		// 既にロード済み
@@ -120,6 +124,7 @@ bool AudioManager::LoadSound(const std::string& filePath, const std::string& key
 	return true;
 }
 
+// 音声ファイルを取得する
 FMOD::Sound* AudioManager::GetSound(const std::string& key) {
 	auto it = m_sounds.find(key);
 	return (it != m_sounds.end()) ? it->second : nullptr;

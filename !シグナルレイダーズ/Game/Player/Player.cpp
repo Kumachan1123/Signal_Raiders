@@ -40,7 +40,7 @@ void Player::Initialize(Enemies* pEnemies)
 	m_pPlayerPointer = std::make_unique<PlayerPointer>();
 	m_pPlayerPointer->Initialize(DR, 1280, 720);
 	// コントローラー生成
-	m_pPlayerController = std::make_unique<PlayerController>();
+	m_pPlayerController = std::make_unique<PlayerController>(this);
 	m_pPlayerController->Initialize(m_commonResources);
 	m_pPlayerController->SetPlayetPosition(m_pCamera->GetEyePosition());
 	// 弾

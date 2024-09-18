@@ -45,6 +45,7 @@ private:
 
 	DirectX::Keyboard::KeyboardStateTracker m_tracker;// トラッカー
 
+
 	StateID m_num;// 状態ID
 	float m_time = 0;// 時間
 	//	関数
