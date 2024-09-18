@@ -1,13 +1,15 @@
 /*
-	@file	GameOverScene.h
-	@brief	ゲームオーバークラス
+	@file	ResultScene.h
+	@brief	リザルトシーンクラス
 */
 #pragma once
-#include "IScene.h"
+#include "Game/Scene/IScene.h"
 #include "Game/Fade/Fade.h"
 #include "Game/Scene/SettingScene/SettingData/SettingData.h"
 #include "Game/Scene/BackGround/BackGround.h"
+#include "Game/Scene/ResultScene/ResultMenu/ResultMenu.h"
 #include "Game/KumachiLib/AudioManager.h"
+#include "Game/Scene/ResultScene/Result/Result.h"
 // 前方宣言
 class CommonResources;
 class Fade;
@@ -19,31 +21,23 @@ namespace mylib
 }
 
 
-class GameOverScene final :
+class ResultScene final :
 	public IScene
 {
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
 
-	// スプライトバッチ
-	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
-
-	// スプライトフォント
-	std::unique_ptr<DirectX::SpriteFont> m_spriteFont;
-
-	// タイトル画像
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_gameoverTexture;
-	// 指示
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pressKeyTexture;
-	// テクスチャの半分の大きさ
-	DirectX::SimpleMath::Vector2 m_gameoverTexCenter;
-	DirectX::SimpleMath::Vector2 m_pressKeyTexCenter;
 	// 設定データ
 	std::unique_ptr<SettingData> m_pSettingData;
+	// リザルトメニュー
+	std::unique_ptr<ResultMenu> m_pResultMenu;
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
-
+	// 結果クラス
+	std::unique_ptr<Result> m_pResult;
+	// 結果クラスに渡すテクスチャパス
+	const wchar_t* m_pTexturePath;
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
 
@@ -63,12 +57,14 @@ private:
 	float m_size = 0.0f;// 画像サイズ
 	float m_pressKeySize = 0.0f;
 	// 画面遷移フェード
-	std::unique_ptr<Fade> m_fade;
+	std::unique_ptr<Fade> m_pFade;
 	// 背景
-	std::unique_ptr<BackGround> m_backGround;
+	std::unique_ptr<BackGround> m_pBackGround;
+	// 現在のシーンID
+	IScene::SceneID m_nowSceneID;
 public:
-	GameOverScene();
-	~GameOverScene() override;
+	ResultScene(IScene::SceneID sceneID);
+	~ResultScene() override;
 
 	void Initialize(CommonResources* resources) override;
 	void Update(float elapsedTime)override;

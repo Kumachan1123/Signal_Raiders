@@ -1,9 +1,9 @@
 /*
-	@file	TitleLogo.cpp
-	@brief	タイトルロゴクラス
+	@file	Result.cpp
+	@brief	結果クラス
 */
 #include "pch.h"
-#include "TitleLogo.h"
+#include "Result.h"
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
@@ -12,12 +12,12 @@
 #include "Game/KumachiLib//BinaryFile.h"
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
-const std::vector<D3D11_INPUT_ELEMENT_DESC>  TitleLogo::INPUT_LAYOUT =
+const std::vector<D3D11_INPUT_ELEMENT_DESC>  Result::INPUT_LAYOUT =
 {
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
-TitleLogo::TitleLogo(CommonResources* resources)
+Result::Result(CommonResources* resources)
 	:
 	m_commonResources{ resources },
 	m_vertexShader{},
@@ -27,42 +27,82 @@ TitleLogo::TitleLogo(CommonResources* resources)
 	m_CBuffer{},
 	m_batch{},
 	m_states{},
-	m_titleTexture{},
+	m_texture{},
 	m_time{},
 	m_world{},
 	m_view{},
 	m_proj{},
+	m_vertex{},
 	m_ConstBuffer{}
 {}
 
-TitleLogo::~TitleLogo()
+Result::~Result()
 {}
 
-void TitleLogo::LoadTexture(const wchar_t* path)
+void Result::LoadTexture(const wchar_t* path)
 {
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;
 	DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, nullptr, texture.ReleaseAndGetAddressOf());
-	m_titleTexture.push_back(texture);
+	m_texture.push_back(texture);
 }
 
-void TitleLogo::Create(DX::DeviceResources* pDR)
+void Result::Create(DX::DeviceResources* pDR, const wchar_t* path)
 {
 	m_pDR = pDR;
+
 	ID3D11Device1* device = pDR->GetD3DDevice();
 	// シェーダーの作成
 	CreateShader();
-	// 画像の読み込み（2枚ともデフォルトは読み込み失敗でnullptr)
-	LoadTexture(L"Resources/Textures/Title.png");
+	// 画像の読み込み
+	LoadTexture(path);
+	// ゲームオーバー画像
+	if (wcscmp(path, L"Resources/Textures/GameOver.png") == 0)
+	{
+		//	頂点情報(板ポリゴンの４頂点の座標情報）
+		VertexPositionTexture vertex[4] =
+		{
+			//	頂点情報													UV情報
+			VertexPositionTexture(SimpleMath::Vector3(-0.85f,  0.4f, 0.0f), SimpleMath::Vector2(0.0f, 0.0f)),
+			VertexPositionTexture(SimpleMath::Vector3(0.85f,  0.4f, 0.0f), SimpleMath::Vector2(1.0f, 0.0f)),
+			VertexPositionTexture(SimpleMath::Vector3(0.85f, -0.4f, 0.0f), SimpleMath::Vector2(1.0f, 1.0f)),
+			VertexPositionTexture(SimpleMath::Vector3(-0.85f, -0.4f, 0.0f), SimpleMath::Vector2(0.0f, 1.0f)),
+		};
+		for (int i = 0; i < 4; i++)
+		{
+			m_vertex[i] = vertex[i];
+		}
+	}
+	else // クリア画像
+	{
+		//	頂点情報(板ポリゴンの４頂点の座標情報）
+		VertexPositionTexture vertex[4] =
+		{
+			//	頂点情報													UV情報
+			VertexPositionTexture(SimpleMath::Vector3(-0.8f,  0.5f, 0.0f), SimpleMath::Vector2(0.0f, 0.0f)),
+			VertexPositionTexture(SimpleMath::Vector3(0.8f,  0.5f, 0.0f), SimpleMath::Vector2(1.0f, 0.0f)),
+			VertexPositionTexture(SimpleMath::Vector3(0.8f, -0.5f, 0.0f), SimpleMath::Vector2(1.0f, 1.0f)),
+			VertexPositionTexture(SimpleMath::Vector3(-0.8f, -0.5f, 0.0f), SimpleMath::Vector2(0.0f, 1.0f)),
+		};
+		for (int i = 0; i < 4; i++)
+		{
+			m_vertex[i] = vertex[i];
+		}
+	}
+	// 頂点の座標を調整
+	for (int i = 0; i < 4; i++)
+	{
+		m_vertex[i].position.y += 0.25f;
+	}
 	// プリミティブバッチの作成
 	m_batch = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(pDR->GetD3DDeviceContext());
 	// コモンステートの作成
 	m_states = std::make_unique<CommonStates>(device);
 }
 
-void TitleLogo::CreateShader()
+void Result::CreateShader()
 {
 	ID3D11Device1* device = m_pDR->GetD3DDevice();
-	//	コンパイルされたシェーダファイルを読み込み
+	//	コンパイルされたシェーダファイルを読み込み（タイトル画像のシェーダーを使いまわす）
 	kumachi::BinaryFile VSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/TitleScene/VS_Title.cso");
 	kumachi::BinaryFile PSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/TitleScene/PS_Title.cso");
 	//	インプットレイアウトの作成
@@ -89,36 +129,29 @@ void TitleLogo::CreateShader()
 	device->CreateBuffer(&bd, nullptr, &m_CBuffer);
 }
 
-void TitleLogo::Update(float elapsedTime)
+void Result::Update(float elapsedTime)
 {
 	m_time += elapsedTime; // 時間をカウント
 }
 
-void TitleLogo::Render()
+void Result::Render()
 {
 	//	板ポリ描画処理
 	ID3D11DeviceContext1* context = m_pDR->GetD3DDeviceContext();
-	//	頂点情報(板ポリゴンの４頂点の座標情報）
-	VertexPositionTexture vertex[4] =
-	{
-		//	頂点情報													UV情報
-		VertexPositionTexture(SimpleMath::Vector3(-0.85f,  0.75f, 0.0f), SimpleMath::Vector2(0.0f, 0.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(0.85f,  0.75f, 0.0f), SimpleMath::Vector2(1.0f, 0.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(0.85f, -0.75f, 0.0f), SimpleMath::Vector2(1.0f, 1.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(-0.85f, -0.75f, 0.0f), SimpleMath::Vector2(0.0f, 1.0f)),
-	};
-	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	//	ビュー設定
 	m_ConstBuffer.matView = m_view.Transpose();
 	//	プロジェクション設定
 	m_ConstBuffer.matProj = m_proj.Transpose();
 	//	ワールド設定
 	m_ConstBuffer.matWorld = m_world.Transpose();
+	// 色設定
 	m_ConstBuffer.Colors = SimpleMath::Vector4(1, 1, 1, 10);
 	// 時間設定
 	m_ConstBuffer.time = m_time;
 	//	パディング
 	m_ConstBuffer.padding = SimpleMath::Vector3(0, 0, 0);
+
+
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(m_CBuffer.Get(), 0, NULL, &m_ConstBuffer, 0, 0);
 	//	シェーダーにバッファを渡す
@@ -141,16 +174,16 @@ void TitleLogo::Render()
 	context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
 	context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
 	//	Create関数で読み込んだ画像をピクセルシェーダに登録する。
-	for (int i = 0; i < m_titleTexture.size(); i++)
+	for (int i = 0; i < m_texture.size(); i++)
 	{
 		//	for文で一気に設定する
-		context->PSSetShaderResources(i, 1, m_titleTexture[i].GetAddressOf());
+		context->PSSetShaderResources(i, 1, m_texture[i].GetAddressOf());
 	}
 	//	インプットレイアウトの登録
 	context->IASetInputLayout(m_inputLayout.Get());
 	//	板ポリゴンを描画
 	m_batch->Begin();
-	m_batch->DrawQuad(vertex[0], vertex[1], vertex[2], vertex[3]);
+	m_batch->DrawQuad(m_vertex[0], m_vertex[1], m_vertex[2], m_vertex[3]);
 	m_batch->End();
 	//	シェーダの登録を解除しておく
 	context->VSSetShader(nullptr, nullptr, 0);

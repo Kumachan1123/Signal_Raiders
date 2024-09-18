@@ -57,10 +57,11 @@ private:
 	std::unique_ptr<FPS_Camera> m_camera;
 	// フェードで使用する変数
 	bool m_isFade;		// フェードフラグ
-
+	// 現在のシーンID
+	IScene::SceneID m_nowSceneID;
 
 public:
-	SettingScene();
+	SettingScene(IScene::SceneID sceneID);
 	~SettingScene() override;
 
 

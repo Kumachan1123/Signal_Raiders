@@ -1,49 +1,46 @@
 ﻿/*
-	@file	TitleScene.cpp
-	@brief	タイトルシーンクラス
+	@file	ResultScene.cpp
+	@brief　リザルトシーンクラス
 */
 #include "pch.h"
-#include "TitleScene.h"
-#include "Game/Fade/Fade.h"
+#include "ResultScene.h"
 #include "Game/Screen.h"
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
 #include "Libraries/MyLib/InputManager.h"
 #include <cassert>
-#include "Game/KumachiLib//BinaryFile.h"
 #include <Libraries/Microsoft/DebugDraw.h>
-#include "Game/FPS_Camera/FPS_Camera.h"
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
-void EndGame()noexcept;
 
 //---------------------------------------------------------
 // コンストラクタ
 //---------------------------------------------------------
-TitleScene::TitleScene(IScene::SceneID sceneID)
+ResultScene::ResultScene(IScene::SceneID sceneID)
 	:
 	m_commonResources{},
-	m_isChangeScene{ false },
-	m_isFade{ false },
+	m_isChangeScene{},
+	m_isFade{},
+	m_volume{},
 	m_BGMvolume{ VOLUME },
 	m_SEvolume{ VOLUME },
-	m_counter{ 0 },
-	m_camera{},
-	m_pDR{},
+	m_counter{},
+	m_time{ },
+	m_size{},
+	m_pressKeySize{},
 	m_pFade{},
-	m_fadeState{ },
-	m_fadeTexNum{ 0 },
 	m_pBackGround{ nullptr },
 	m_audioManager{ AudioManager::GetInstance() },
+	m_pTexturePath{},
 	m_nowSceneID{ sceneID }
-{}
-
+{
+}
 
 //---------------------------------------------------------
 // デストラクタ
 //---------------------------------------------------------
-TitleScene::~TitleScene()
+ResultScene::~ResultScene()
 {
 	// do nothing.
 	Finalize();
@@ -52,135 +49,155 @@ TitleScene::~TitleScene()
 //---------------------------------------------------------
 // 初期化する
 //---------------------------------------------------------
-void TitleScene::Initialize(CommonResources* resources)
+void ResultScene::Initialize(CommonResources* resources)
 {
 	assert(resources);
 	m_commonResources = resources;
+
 	auto DR = m_commonResources->GetDeviceResources();
+	//auto device = DR->GetD3DDevice();
+	//auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	// フェードの初期化
 	m_pFade = std::make_unique<Fade>(m_commonResources);
 	m_pFade->Create(DR);
 	m_pFade->SetState(Fade::FadeState::FadeIn);
 	m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));
-	// 背景の初期化
+	// 背景を作成する
 	m_pBackGround = std::make_unique<BackGround>(m_commonResources);
 	m_pBackGround->Create(DR);
-	// FPSカメラを作成する
-	m_camera = std::make_unique<FPS_Camera>();
-	// 指示画像を作成
-	m_pPressKey = std::make_unique<PressKey>(m_commonResources);
-	m_pPressKey->Initialize();
-	// タイトルロゴを作成
-	m_pTitleLogo = std::make_unique<TitleLogo>(m_commonResources);
-	m_pTitleLogo->Create(DR);
-	// メニューを作成
-	m_pMenu = std::make_unique<Menu>();
-	m_pMenu->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
+	// リザルトメニューを作成する
+	m_pResultMenu = std::make_unique<ResultMenu>();
+	m_pResultMenu->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
 	// 設定ファイルの読み込み
 	m_pSettingData = std::make_unique<SettingData>();
 	m_pSettingData->Load();
 	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume());
 	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume());
-	// 音声を初期化する
+	// 今のシーンIDによってテクスチャを変更
+	switch (m_nowSceneID)
+	{
+		case IScene::SceneID::GAMEOVER:
+			m_pTexturePath = L"Resources/Textures/GameOver.png";
+			break;
+		case IScene::SceneID::CLEAR:
+			m_pTexturePath = L"Resources/Textures/Clear.png";
+			break;
+	}
+	// 結果クラス作成
+	m_pResult = std::make_unique<Result>(m_commonResources);
+	m_pResult->Create(DR, m_pTexturePath);
+	// シーン変更フラグを初期化する
+	m_isChangeScene = false;
+
+	// Sound用のオブジェクトを初期化する
 	InitializeFMOD();
 
+	// フェードに関する準備
+	m_isFade = false;
+	m_volume = 1.0f;
+	m_counter = 0;
 }
 
 //---------------------------------------------------------
 // 更新する
 //---------------------------------------------------------
-void TitleScene::Update(float elapsedTime)
+void ResultScene::Update(float elapsedTime)
 {
-	// メニューの更新
-	m_pMenu->Update(elapsedTime);
-	// オーディオマネージャーの更新処理
+	// リザルトメニューの更新
+	m_pResultMenu->Update(elapsedTime);
+	// オーディオマネージャーの更新
 	m_audioManager->Update();
 	// キーボードステートトラッカーを取得する
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
-	// メニューでの選択処理が行われたら
-	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
+
+	// スペースキーが押されたら
+	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd && kbTracker->pressed.Space)
 	{
-		if (kbTracker->pressed.Space)
+		// SEの再生
+		m_audioManager->PlaySound("SE", m_SEvolume);
+		if (m_pResultMenu->GetSceneNum() == ResultMenu::SceneID::REPLAY)
 		{
-			m_audioManager->PlaySound("SE", m_SEvolume);// SEの再生
-			if (m_pMenu->GetSceneNum() == Menu::SceneID::PLAY)
-			{
-				m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
-				m_pFade->SetTextureNum((int)(Fade::TextureNum::READY));// フェードのテクスチャを変更
-			}
-			else
-			{
-				m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
-				m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
-			}
+			m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
+			m_pFade->SetTextureNum((int)(Fade::TextureNum::READY));// フェードのテクスチャを変更
 		}
-		// WかSのいずれかが押されたら
+		else
+		{
+			m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
+			m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
+		}		// WかSのいずれかが押されたら
 		if (kbTracker->pressed.W || kbTracker->pressed.S)
 			m_audioManager->PlaySound("Select", m_SEvolume);// SEの再生
-	}
 
+	}
 	// フェードアウトが終了したら
-	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;
+	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)
+	{
+		m_isChangeScene = true;
+	}
 	// BGMの再生
 	m_audioManager->PlaySound("BGM", m_BGMvolume);
-	// 指示画像の更新
-	m_pPressKey->Update(elapsedTime);
+	// フェードに関する準備
+	m_time += elapsedTime; // 時間をカウント
+	m_size = (sin(m_time) + 1.0f) * 0.3f + 0.75f; // sin波で0.5〜1.5の間を変動させる
+	m_pressKeySize = (cos(m_time) + 1.0f) * 0.3f + 0.75f; // sin波で0.5〜1.5の間を変動させる
 	// 背景の更新
 	m_pBackGround->Update(elapsedTime);
+
 	// フェードの更新
 	m_pFade->Update(elapsedTime);
-	// タイトルロゴの更新
-	m_pTitleLogo->Update(elapsedTime);
 
+	// 結果の更新
+	m_pResult->Update(elapsedTime);
 }
+
 //---------------------------------------------------------
 // 描画する
 //---------------------------------------------------------
-void TitleScene::Render()
+void ResultScene::Render()
 {
 	// 背景の描画
 	m_pBackGround->Render();
-	// タイトルロゴの描画
-	m_pTitleLogo->Render();
-	// スペースキー押してってやつ描画(画面遷移中は描画しない)
+
+	// メニューと結果を描画
 	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
 	{
-		m_pMenu->Render();
+		m_pResult->Render();
+		m_pResultMenu->Render();
 	}
+
 	// フェードの描画
 	m_pFade->Render();
+
 }
 
 //---------------------------------------------------------
 // 後始末する
 //---------------------------------------------------------
-void TitleScene::Finalize()
+void ResultScene::Finalize()
 {
-	// オーディオマネージャーの終了処理
+	// オーディオマネージャーのシャットダウン
 	m_audioManager->Shutdown();
 }
 
 //---------------------------------------------------------
 // 次のシーンIDを取得する
 //---------------------------------------------------------
-IScene::SceneID TitleScene::GetNextSceneID() const
+IScene::SceneID ResultScene::GetNextSceneID() const
 {
+
 	// シーン変更がある場合
 	if (m_isChangeScene)
 	{
-		m_audioManager->StopSound("BGM");// BGMの停止
-		m_audioManager->StopSound("SE");// SEの停止
-		switch (m_pMenu->GetSceneNum())
+		// BGMとSEの停止
+		m_audioManager->StopSound("BGM");
+		m_audioManager->StopSound("SE");
+		switch (m_pResultMenu->GetSceneNum())
 		{
-			case Menu::SceneID::PLAY:
+			case ResultMenu::SceneID::REPLAY:
 				return IScene::SceneID::PLAY;
 				break;
-			case Menu::SceneID::SETTING:
+			case ResultMenu::SceneID::END:
 				return IScene::SceneID::SETTING;
-				break;
-			case Menu::SceneID::END:
-				// ゲーム終了
-				EndGame();
 				break;
 			default:
 				break;
@@ -193,18 +210,14 @@ IScene::SceneID TitleScene::GetNextSceneID() const
 //---------------------------------------------------------
 // FMODのシステムの初期化と音声データのロード
 //---------------------------------------------------------
-void TitleScene::InitializeFMOD()
+void ResultScene::InitializeFMOD()
 {
 	// FMODシステムの初期化
 	m_audioManager->Initialize();
 	// 音声データのロード
+	// ここで必要な音声データをAudioManagerにロードさせる
 	m_audioManager->LoadSound("Resources/Sounds/select.mp3", "SE");
-	m_audioManager->LoadSound("Resources/Sounds/title.mp3", "BGM");
+	m_audioManager->LoadSound("Resources/Sounds/result.mp3", "BGM");
 	m_audioManager->LoadSound("Resources/Sounds/click.mp3", "Select");
-}
-
-void EndGame() noexcept
-{
-	PostQuitMessage(0);
 }
 

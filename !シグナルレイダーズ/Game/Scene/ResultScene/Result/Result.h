@@ -1,13 +1,13 @@
 /*
-	@file	TitleLogo.h
-	@brief	タイトルロゴクラス
+	@file	Result.h
+	@brief	結果クラス
 */
 #pragma once
 #include <DeviceResources.h>
 // 前方宣言
 class CommonResources;
 
-class TitleLogo final
+class Result final
 {
 public:
 	//	データ受け渡し用コンスタントバッファ(送信側)
@@ -36,28 +36,32 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
 	// データ受け渡し用コンスタントバッファ
 	ConstBuffer m_ConstBuffer;
-	//	プリミティブバッチ
+	// プリミティブバッチ
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_batch;
-	//	コモンステート
+	// コモンステート
 	std::unique_ptr<DirectX::CommonStates> m_states;
 	// タイトル画像
-	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_titleTexture;
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_texture;
+	// テクスチャパス
+	wchar_t* m_texturePath;
 	// 時間
 	float m_time;
 	// 空の行列
 	DirectX::SimpleMath::Matrix m_world;
 	DirectX::SimpleMath::Matrix m_view;
 	DirectX::SimpleMath::Matrix m_proj;
+	// 頂点情報
+	DirectX::VertexPositionTexture m_vertex[4];
 public:
 	//	関数
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 public:
-	TitleLogo(CommonResources* resources);
-	~TitleLogo();
+	Result(CommonResources* resources);
+	~Result();
 	void LoadTexture(const wchar_t* path);
 
 	//	初期化
-	void Create(DX::DeviceResources* pDR);
+	void Create(DX::DeviceResources* pDR, const wchar_t* path);
 
 	//	更新
 	void Update(float elapsedTime);

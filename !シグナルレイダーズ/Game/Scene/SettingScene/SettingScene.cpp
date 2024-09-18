@@ -21,7 +21,7 @@ using namespace DirectX::SimpleMath;
 //---------------------------------------------------------
 // コンストラクタ
 //---------------------------------------------------------
-SettingScene::SettingScene()
+SettingScene::SettingScene(IScene::SceneID sceneID)
 	:
 	m_commonResources{},
 	m_isChangeScene{ false },
@@ -34,7 +34,8 @@ SettingScene::SettingScene()
 	m_fadeState{ },
 	m_fadeTexNum{ 0 },
 	m_pBackGround{ nullptr },
-	m_audioManager{ AudioManager::GetInstance() }
+	m_audioManager{ AudioManager::GetInstance() },
+	m_nowSceneID{ sceneID }
 {}
 
 

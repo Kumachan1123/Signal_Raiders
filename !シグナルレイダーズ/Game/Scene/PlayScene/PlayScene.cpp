@@ -3,7 +3,7 @@
 	@brief	プレイシーンクラス
 */
 #include "pch.h"
-#include "Game/Scene/PlayScene.h"
+#include "Game/Scene/PlayScene/PlayScene.h"
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
 #include "Libraries/MyLib/DebugString.h"
@@ -24,7 +24,7 @@ using namespace DirectX::SimpleMath;
 //---------------------------------------------------------
 // コンストラクタ
 //---------------------------------------------------------
-PlayScene::PlayScene()
+PlayScene::PlayScene(IScene::SceneID sceneID)
 	:
 	m_commonResources{},
 	m_projection{},
@@ -41,8 +41,8 @@ PlayScene::PlayScene()
 	m_audioManager{ AudioManager::GetInstance() },
 	m_BGMvolume{ VOLUME },
 	m_SEvolume{ VOLUME },
-	m_mouseSensitivity{ }
-
+	m_mouseSensitivity{ },
+	m_nowSceneID{ sceneID }
 {}
 //---------------------------------------------------------
 // デストラクタ

@@ -3,7 +3,7 @@
 	@brief	プレイシーンクラス
 */
 #pragma once
-#include "IScene.h"
+#include "Game/Scene/IScene.h"
 #include "Game/Scene/SettingScene/SettingData/SettingData.h"
 #include "Game/SkyBox/SkyBox.h"
 #include "Game/Player/Player.h"
@@ -91,16 +91,15 @@ private:
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
-
+	IScene::SceneID m_nowSceneID;
 public:
-	PlayScene();
+	PlayScene(IScene::SceneID sceneID);
 	~PlayScene() override;
 
 	void Initialize(CommonResources* resources) override;
 	void Update(float elapsedTime)override;
 	void Render() override;
 	void Finalize() override;
-	void UpdateBullets(float elapsedTime);
 
 	SceneID GetNextSceneID() const;
 private:

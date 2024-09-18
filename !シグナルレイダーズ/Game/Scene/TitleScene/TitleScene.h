@@ -61,10 +61,11 @@ private:
 	float m_BGMvolume;	// ボリューム
 	float m_SEvolume;	// ボリューム
 	int m_counter;		// フェードカウンタ
-
+	// 現在のシーンID
+	IScene::SceneID m_nowSceneID;
 
 public:
-	TitleScene();
+	TitleScene(IScene::SceneID sceneID);
 	~TitleScene() override;
 
 

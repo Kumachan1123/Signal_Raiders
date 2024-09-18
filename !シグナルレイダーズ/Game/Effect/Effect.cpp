@@ -142,7 +142,7 @@ void Effect::Render(ID3D11DeviceContext1* context, SimpleMath::Matrix view, Simp
 	// プリミティブバッチ作成
 	m_Batch = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(context);
 
-	VertexPositionTexture billboardVertex[4];
+	VertexPositionTexture billboardVertex[4]{};
 	for (int i = 0; i < 4; i++)
 	{
 		billboardVertex[i] = m_vertices[i];

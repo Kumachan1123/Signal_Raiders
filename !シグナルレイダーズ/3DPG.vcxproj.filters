@@ -165,7 +165,7 @@
     <ClInclude Include="Game\Scene\TitleScene\TitleScene.h">
       <Filter>Game\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Scene\PlayScene.h">
+    <ClInclude Include="Game\Scene\PlayScene\PlayScene.h">
       <Filter>Game\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Game\Scene\SceneManager.h">
@@ -250,11 +250,10 @@
     <ClInclude Include="Game\KumachiLib\Anchor.h" />
     <ClInclude Include="Game\Player\PlayerUI\PlayerHP\PlayerHP.h" />
     <ClInclude Include="Game\Player\PlayerUI\PlayerPointer\PlayerPointer.h" />
-    <ClInclude Include="Game\Scene\ClearScene.h" />
     <ClInclude Include="Game\Enemy\EnemyModel\EnemyModel.h" />
     <ClInclude Include="Game\Stages\VertexTypesEx.h" />
     <ClInclude Include="Game\Effect\Effect.h" />
-    <ClInclude Include="Game\Scene\GameOverScene.h" />
+    <ClInclude Include="Game\Scene\ResultScene\ResultScene.h" />
     <ClInclude Include="Game\Fade\Fade.h" />
     <ClInclude Include="Game\Scene\BackGround\BackGround.h" />
     <ClInclude Include="Game\KumachiLib\AudioManager.h" />
@@ -274,6 +273,10 @@
     <ClInclude Include="Game\Scene\SettingScene\SettingUI\SettingUI.h" />
     <ClInclude Include="Game\Scene\SettingScene\SettingMenu\SettingMenu.h" />
     <ClInclude Include="Game\Scene\SettingScene\SettingBar\SettingBar.h" />
+    <ClInclude Include="Game\Scene\SettingScene\SettingData\SettingData.h" />
+    <ClInclude Include="Game\Scene\ResultScene\ResultMenu\ResultMenu.h" />
+    <ClInclude Include="Game\Scene\ResultScene\ResultUI\ResultUI.h" />
+    <ClInclude Include="Game\Scene\ResultScene\Result\Result.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -303,7 +306,7 @@
     <ClCompile Include="Game\Scene\TitleScene\TitleScene.cpp">
       <Filter>Game\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Scene\PlayScene.cpp">
+    <ClCompile Include="Game\Scene\PlayScene\PlayScene.cpp">
       <Filter>Game\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Game\Scene\SceneManager.cpp">
@@ -375,11 +378,10 @@
     <ClCompile Include="Game\Player\PlayerUI\PlayerUI.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\PlayerHP\PlayerHP.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\PlayerPointer\PlayerPointer.cpp" />
-    <ClCompile Include="Game\Scene\ClearScene.cpp" />
     <ClCompile Include="Game\Enemy\EnemyModel\EnemyModel.cpp" />
     <ClCompile Include="Game\Stages\VertexTypesEx.cpp" />
     <ClCompile Include="Game\Effect\Effect.cpp" />
-    <ClCompile Include="Game\Scene\GameOverScene.cpp" />
+    <ClCompile Include="Game\Scene\ResultScene\ResultScene.cpp" />
     <ClCompile Include="Game\Fade\Fade.cpp" />
     <ClCompile Include="Game\Scene\BackGround\BackGround.cpp" />
     <ClCompile Include="Game\KumachiLib\AudioManager.cpp" />
@@ -399,6 +401,10 @@
     <ClCompile Include="Game\Scene\SettingScene\SettingUI\SettingUI.cpp" />
     <ClCompile Include="Game\Scene\SettingScene\SettingMenu\SettingMenu.cpp" />
     <ClCompile Include="Game\Scene\SettingScene\SettingBar\SettingBar.cpp" />
+    <ClCompile Include="Game\Scene\SettingScene\SettingData\SettingData.cpp" />
+    <ClCompile Include="Game\Scene\ResultScene\ResultMenu\ResultMenu.cpp" />
+    <ClCompile Include="Game\Scene\ResultScene\ResultUI\ResultUI.cpp" />
+    <ClCompile Include="Game\Scene\ResultScene\Result\Result.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
