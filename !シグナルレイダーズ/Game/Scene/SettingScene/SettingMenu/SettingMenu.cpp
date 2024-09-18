@@ -50,27 +50,27 @@ void SettingMenu::Initialize(CommonResources* resources, int width, int height)
 
 	//  「BGM」を読み込む
 	Add(L"Resources/Textures/BGM.png"
-		, SimpleMath::Vector2(Screen::LEFT + 350, Screen::CENTER_Y - 300)
+		, SimpleMath::Vector2(Screen::LEFT + 400, Screen::CENTER_Y - 300)
 		, SimpleMath::Vector2(.5, .5)
 		, kumachi::ANCHOR::MIDDLE_CENTER);
 	//  「SE」を読み込む
 	Add(L"Resources/Textures/SE.png"
-		, SimpleMath::Vector2(Screen::LEFT + 350, Screen::CENTER_Y - 150)
+		, SimpleMath::Vector2(Screen::LEFT + 400, Screen::CENTER_Y - 150)
 		, SimpleMath::Vector2(.5, .5)
 		, kumachi::ANCHOR::MIDDLE_CENTER);
 	//  「マウスかんど」を読み込む
 	Add(L"Resources/Textures/Mouse.png"
-		, SimpleMath::Vector2(Screen::LEFT + 350, Screen::CENTER_Y)
+		, SimpleMath::Vector2(Screen::LEFT + 400, Screen::CENTER_Y)
 		, SimpleMath::Vector2(.5, .5)
 		, kumachi::ANCHOR::MIDDLE_CENTER);
 	//  「へんこう」を読み込む
 	Add(L"Resources/Textures/Apply.png"
-		, SimpleMath::Vector2(Screen::LEFT + 350, Screen::CENTER_Y + 150)
+		, SimpleMath::Vector2(Screen::LEFT + 400, Screen::CENTER_Y + 150)
 		, SimpleMath::Vector2(.5, .5)
 		, kumachi::ANCHOR::MIDDLE_CENTER);
 	//  「おわる」を読み込む
 	Add(L"Resources/Textures/end.png"
-		, SimpleMath::Vector2(Screen::LEFT + 350, Screen::CENTER_Y + 300)
+		, SimpleMath::Vector2(Screen::LEFT + 400, Screen::CENTER_Y + 300)
 		, SimpleMath::Vector2(.5, .5)
 		, kumachi::ANCHOR::MIDDLE_CENTER);
 

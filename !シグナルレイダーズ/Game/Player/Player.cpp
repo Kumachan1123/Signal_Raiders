@@ -15,7 +15,10 @@ Player::Player(CommonResources* commonResources)
 	m_playerSphere{},
 	m_pCamera{},
 	m_pPlayerBullets{},
-	m_pEnemies{ nullptr }
+	m_pEnemies{ nullptr },
+	m_mouseSensitive{ 0.1f },
+	m_isDamage{ false },
+	m_damageTime{ 0.0f }
 {
 	// ‹«ŠE‹…
 	m_inPlayerArea.Radius = 20.0f;
