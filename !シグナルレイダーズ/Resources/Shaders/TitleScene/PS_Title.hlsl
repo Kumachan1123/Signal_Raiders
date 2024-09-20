@@ -28,11 +28,12 @@ float4 main(PS_INPUT input) : SV_TARGET
     
     // テクスチャをサンプリング
     float4 output = tex.Sample(samLinear, input.Tex);
-    
+    // C++側で設定した色情報のalpha値を0にする
+   
     // グラデーションエフェクトを加える
-    // エフェクトの色は青系
-    output.rgba += gradient * float4(0.75, 0.75, 0.75, 0.0);
-    
+    // エフェクトの色は画像の色に加算
+    output.rgba += gradient * color;
+   
     // 結果を返す
     return output;
 }

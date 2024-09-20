@@ -58,6 +58,8 @@ void Result::Create(DX::DeviceResources* pDR, const wchar_t* path)
 	// ゲームオーバー画像
 	if (wcscmp(path, L"Resources/Textures/GameOver.png") == 0)
 	{
+		// グラデーションエフェクトの色設定
+		m_ConstBuffer.Colors = SimpleMath::Vector4(0.15f, 0, 0.5f, 0);
 		//	頂点情報(板ポリゴンの４頂点の座標情報）
 		VertexPositionTexture vertex[4] =
 		{
@@ -74,6 +76,8 @@ void Result::Create(DX::DeviceResources* pDR, const wchar_t* path)
 	}
 	else // クリア画像
 	{
+		// グラデーションエフェクトの色設定
+		m_ConstBuffer.Colors = SimpleMath::Vector4(0.5f, 0.5f, 0, 0);
 		//	頂点情報(板ポリゴンの４頂点の座標情報）
 		VertexPositionTexture vertex[4] =
 		{
@@ -144,8 +148,7 @@ void Result::Render()
 	m_ConstBuffer.matProj = m_proj.Transpose();
 	//	ワールド設定
 	m_ConstBuffer.matWorld = m_world.Transpose();
-	// 色設定
-	m_ConstBuffer.Colors = SimpleMath::Vector4(1, 1, 1, 10);
+	// グラデーションエフェクトの色設定はCreate関数で設定済み
 	// 時間設定
 	m_ConstBuffer.time = m_time;
 	//	パディング

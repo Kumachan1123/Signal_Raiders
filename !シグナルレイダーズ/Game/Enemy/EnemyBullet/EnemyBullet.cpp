@@ -97,11 +97,10 @@ void EnemyBullet::Update(DirectX::SimpleMath::Vector3& pos, float elapsedTime)
 		toPlayer.Normalize();
 	}
 	// 弾の速度を遅くする
-	float bulletSpeed = .1f; // 適当な速度を設定する（任意の値、調整可能）
+	float bulletSpeed = .2f; // 適当な速度を設定する（任意の値、調整可能）
 	m_velocity = toPlayer * bulletSpeed;
 	// プレイヤーの方向に向かって弾を飛ばす
 	m_position += m_velocity;
-	//m_position.y += 0.05f;// プレイヤーの高さに補正
 	m_boundingSphere.Center = m_position;//境界球に座標を渡す
 	// 現在の弾の位置を軌跡リストに追加
 	m_bulletTrail->SetBulletPosition(m_position);

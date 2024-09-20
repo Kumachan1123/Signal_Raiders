@@ -114,7 +114,8 @@ void TitleLogo::Render()
 	m_ConstBuffer.matProj = m_proj.Transpose();
 	//	ワールド設定
 	m_ConstBuffer.matWorld = m_world.Transpose();
-	m_ConstBuffer.Colors = SimpleMath::Vector4(1, 1, 1, 10);
+	// グラデーションエフェクトの色設定 
+	m_ConstBuffer.Colors = SimpleMath::Vector4(0.25f, 0.75f, 0.75f, 0);
 	// 時間設定
 	m_ConstBuffer.time = m_time;
 	//	パディング

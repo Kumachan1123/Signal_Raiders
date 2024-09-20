@@ -54,8 +54,8 @@ void EnemyAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Direc
 	// 敵をふわふわ浮遊させる
 	pos.y = m_initialPosition.y + amplitude * std::sin(frequency * m_time);
 	pos.y += m_velocity.y * elapsedTime;
-	// 敵がプレイヤーの一定範囲内に入り、かつプレイヤーの弾に当たっていない場合
-	if ((isHitToPlayer || m_isHitPlayerBullet) && isHitToPlayerBullet == false)
+	// 敵がプレイヤーの一定範囲内に入っている場合
+	if ((isHitToPlayer || m_isHitPlayerBullet))
 	{
 		ChangeState(m_enemyAttack.get());//攻撃態勢にする
 		m_enemyState = IState::EnemyState::ATTACK;// 徘徊態勢
@@ -129,7 +129,8 @@ void EnemyAI::KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bo
 	// 減衰した速度を使って位置を更新
 	Vector3 velocity = m_initialVelocity * decayFactor;
 	pos += velocity * elapsedTime;
-	m_enemyState = IState::EnemyState::DAMAGE;// ダメージ態勢
+	if (m_enemyState != IState::EnemyState::ANGRY)// 怒り態勢でない場合
+		m_enemyState = IState::EnemyState::DAMAGE;// ダメージ態勢にする
 	// ノックバックが終了したかどうかチェック
 	if (t >= 1.0f)
 	{

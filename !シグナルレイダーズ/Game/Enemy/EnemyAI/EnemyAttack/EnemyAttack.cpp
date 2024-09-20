@@ -40,37 +40,30 @@ void EnemyAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, D
 {
 	UNREFERENCED_PARAMETER(isHitToPlayer);
 	using namespace DirectX::SimpleMath;
-	m_rotationSpeed -= (elapsedTime / 10);
-	if (m_rotationSpeed <= 0.24f)
+	m_rotationSpeed -= (elapsedTime / 10);// 回転速度を減少
+	if (m_rotationSpeed <= 0.24f)// 回転速度が0.24以下になったら
 	{
-		m_rotationSpeed = 0.24f;
+		m_rotationSpeed = 0.24f;// 回転速度を0.24に設定
 	}
 	// プレイヤーへのベクトルを計算
 	Vector3 toPlayerVector = playerPos - pos;
-	if (toPlayerVector.LengthSquared() > 0.0f)
+	if (toPlayerVector.LengthSquared() > 0.0f)// プレイヤーへのベクトルが0より大きい場合
 	{
-		toPlayerVector.Normalize();
+		toPlayerVector.Normalize();// プレイヤーへのベクトルを正規化
 	}
-
 	// 現在の前方ベクトルを取得
 	Vector3 forward = Vector3::Transform(Vector3::Forward, m_rotation);
-	if (forward.LengthSquared() > 0.0f)
+	if (forward.LengthSquared() > 0.0f)// 現在の前方ベクトルが0より大きい場合
 	{
-		forward.Normalize();
+		forward.Normalize();// 現在の前方ベクトルを正規化
 	}
-
 	// 内積を使って角度を計算
 	float dot = toPlayerVector.Dot(forward);
 	dot = clamp(dot, -1.0f, 1.0f); // acosの引数が範囲外になるのを防ぐため
 	float angle = std::acos(dot);
-
 	// 外積を使って回転方向を決定
 	Vector3 cross = toPlayerVector.Cross(forward);
-	if (cross.y < 0)
-	{
-		angle = -angle;
-	}
-
+	if (cross.y < 0)angle = -angle;// プレイヤーの方向に向くための回転を計算
 	// プレイヤーの方向に向くための回転を計算
 	Quaternion toPlayerRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, angle);
 
@@ -83,19 +76,16 @@ void EnemyAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, D
 	}
 
 	// プレイヤーの方向に移動
-	pos += toPlayerVector * m_velocity.Length() * elapsedTime * 2;
+	pos += toPlayerVector * (m_velocity.Length() * 5.0f) * elapsedTime;
 
 	// 攻撃のクールダウンタイムを管理
 	m_attackCooldown -= elapsedTime;
 	if (m_attackCooldown <= 2.0f)
 	{
 		m_enemy->SetState(IState::EnemyState::ANGRY);
-		if (m_attackCooldown <= 0.0f)
-		{
-			// 弾を発射
-			m_attackCooldown = 3.0f; // 次の攻撃までのクールダウンタイムを3秒に設定
+		// 次の攻撃までのクールダウンタイムを3秒に設定
+		if (m_attackCooldown <= 0.0f)m_attackCooldown = 3.0f;// 弾を発射
 
-		}
 	}
 
 	m_enemy->SetRotation(m_rotation);
