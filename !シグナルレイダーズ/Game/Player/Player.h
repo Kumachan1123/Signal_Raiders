@@ -21,6 +21,9 @@ private:
 	CommonResources* m_commonResources;
 	// 敵
 	Enemies* m_pEnemies;
+	// プレイヤーの位置
+	DirectX::SimpleMath::Vector3 m_playerPos;
+
 	// カメラ
 	std::unique_ptr<FPS_Camera> m_pCamera;
 	// プレイヤーのHP
@@ -58,6 +61,7 @@ public:
 public:
 	float GetPlayerHP() const { return m_playerHP; }	// プレイヤーのHP
 	FPS_Camera* GetCamera() { return m_pCamera.get(); }// カメラ
+	DirectX::SimpleMath::Vector3 GetPlayerPos() const { return m_playerPos; }// プレイヤーの位置
 	PlayerController* GetPlayerController() { return m_pPlayerController.get(); }// プレイヤーコントローラー
 	DirectX::BoundingSphere GetPlayerSphere() const { return m_playerSphere; }// プレイヤーの境界球
 	DirectX::BoundingSphere GetInPlayerArea() const { return m_inPlayerArea; }// プレイヤーと敵との一定範囲内での境界球

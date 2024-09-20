@@ -24,7 +24,7 @@
 #include "Game/Effect/Effect.h"
 #include "Game/Fade/Fade.h"
 #include "Game/KumachiLib/AudioManager.h"
-
+#include "Game/Radar/Radar.h"
 // 前方宣言
 class CommonResources;
 namespace mylib
@@ -51,6 +51,8 @@ private:
 	std::unique_ptr<Enemies> m_pEnemies;
 	// 敵
 	std::vector<std::unique_ptr<Enemy>> m_enemy;
+	// レーダー
+	std::unique_ptr<Radar> m_pRadar;
 	// 地面（ステージ)
 	std::unique_ptr<Stage> m_pStage;
 	// 壁

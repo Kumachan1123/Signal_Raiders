@@ -93,7 +93,9 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_fade->Create(DR);
 	m_fade->SetState(Fade::FadeState::FadeIn);
 	m_fade->SetTextureNum((int)(Fade::TextureNum::GO));
-
+	// レーダーを初期化する
+	m_pRadar = std::make_unique<Radar>(resources);
+	m_pRadar->Initialize(m_pPlayer.get(), m_pEnemies.get());
 	// ベーシックエフェクトを作成する
 	m_basicEffect = std::make_unique<BasicEffect>(device);
 	m_basicEffect->SetVertexColorEnabled(true);
@@ -133,6 +135,8 @@ void PlayScene::Update(float elapsedTime)
 		m_fade->SetTextureNum((int)(Fade::TextureNum::BLACK));
 		m_fade->SetState(Fade::FadeState::FadeOut);
 	}
+	// レーダーを更新する
+	m_pRadar->Update();
 	// 画面遷移フェード処理
 	m_fade->Update(elapsedTime);
 	// フェードアウトが終了したら
@@ -160,7 +164,8 @@ void PlayScene::Render()
 	m_pPlayer->Render();
 	// フェードの描画
 	m_fade->Render();
-
+	// レーダーを描画する
+	m_pRadar->Render();
 
 #ifdef _DEBUG// プレイヤーのHPを表示する
 	// デバッグ情報を「DebugString」で表示する

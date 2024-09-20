@@ -72,6 +72,8 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 	if (!mtracker->GetLastState().leftButton)m_pPlayerBullets->SetIsBullet(false);
 	// プレイヤーコントローラー更新
 	m_pPlayerController->Update(kb, cameraDirection, elapsedTime);
+	// プレイヤーの位置を取得
+	m_playerPos = m_pPlayerController->GetPlayerPosition();
 	// カメラ更新
 	m_pCamera->Update(m_pPlayerController->GetPlayerPosition(), m_pPlayerController->GetYawX());
 	// プレイヤーがダメージを受けた時、カメラをsin波を使って上下に揺らす
