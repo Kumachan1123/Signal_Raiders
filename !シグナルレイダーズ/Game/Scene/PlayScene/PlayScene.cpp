@@ -58,6 +58,9 @@ void PlayScene::Initialize(CommonResources* resources)
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto DR = m_commonResources->GetDeviceResources();
+
+
+
 	// 設定データを取得する
 	m_pSettingData = std::make_unique<SettingData>();
 	m_pSettingData->Load();
@@ -90,6 +93,7 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_fade->Create(DR);
 	m_fade->SetState(Fade::FadeState::FadeIn);
 	m_fade->SetTextureNum((int)(Fade::TextureNum::GO));
+
 	// ベーシックエフェクトを作成する
 	m_basicEffect = std::make_unique<BasicEffect>(device);
 	m_basicEffect->SetVertexColorEnabled(true);
@@ -156,6 +160,8 @@ void PlayScene::Render()
 	m_pPlayer->Render();
 	// フェードの描画
 	m_fade->Render();
+
+
 #ifdef _DEBUG// プレイヤーのHPを表示する
 	// デバッグ情報を「DebugString」で表示する
 	auto debugString = m_commonResources->GetDebugString();
@@ -197,3 +203,5 @@ void PlayScene::InitializeFMOD()
 	// ここで必要な音声データをAudioManagerにロードさせる
 	m_audioManager->LoadSound("Resources/Sounds/playbgm.mp3", "BGM");
 }
+
+

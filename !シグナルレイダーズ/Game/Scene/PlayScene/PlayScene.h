@@ -57,8 +57,12 @@ private:
 	std::unique_ptr<Wall> m_pWall;
 	// 射影行列
 	DirectX::SimpleMath::Matrix m_projection;
+	// ビュー行列
+	DirectX::SimpleMath::Matrix m_view;
 	// エフェクト
 	std::vector<std::unique_ptr<Effect>> m_pEffect;
+
+
 	// フェード
 	std::unique_ptr<Fade> m_fade;
 	// 設定データ
@@ -95,6 +99,10 @@ private:
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 	IScene::SceneID m_nowSceneID;
+
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>m_depthStencilView;
+	Microsoft::WRL::ComPtr<ID3D11BlendState> m_blendState;
+
 public:
 	PlayScene(IScene::SceneID sceneID);
 	~PlayScene() override;
