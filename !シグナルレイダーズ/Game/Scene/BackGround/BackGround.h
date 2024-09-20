@@ -28,15 +28,15 @@ public:
 		DirectX::SimpleMath::Matrix matView;    // ビュー行列
 		DirectX::SimpleMath::Matrix matProj;    // プロジェクション行列
 		DirectX::SimpleMath::Vector4 colors;    // カラー
-		float time;                             // 時間
+		float time = 0.0f;                             // 時間
 		DirectX::SimpleMath::Vector3 padding;// パディング
-	}m_cbuff;
+	}m_constBuffer;
 
 private:
 	//	変数
 	DX::DeviceResources* m_pDR;
 
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_cBuffer;
 
 	DX::StepTimer                           m_timer;
 	//	入力レイアウト
@@ -55,6 +55,7 @@ private:
 	//	ピクセルシェーダ
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 
+	//	ワールドビュープロジェクション行列
 	DirectX::SimpleMath::Matrix m_world;
 	DirectX::SimpleMath::Matrix m_view;
 	DirectX::SimpleMath::Matrix m_proj;

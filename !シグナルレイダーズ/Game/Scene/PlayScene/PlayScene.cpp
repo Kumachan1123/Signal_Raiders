@@ -74,9 +74,12 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pPlayer->Initialize(m_pEnemies.get());
 	m_pEnemies->Initialize(m_pPlayer.get());
 	m_pEnemies->SetVolume(m_SEvolume);// 敵が出す効果音の音量を設定する
-	// 地面（ステージ１生成）
+	// 地面（ステージ生成）
 	m_pStage = std::make_unique<Stage>();
 	m_pStage->Initialize(resources);
+	// 壁
+	m_pWall = std::make_unique<Wall>(resources);
+	m_pWall->Create(DR);
 	// スカイボックス生成
 	m_skybox = std::make_unique<SkyBox>();
 	m_skybox->Initialize(resources);
@@ -116,7 +119,8 @@ void PlayScene::Update(float elapsedTime)
 	// カメラが向いている方向を取得する
 	DirectX::SimpleMath::Vector3 cameraDirection = m_pPlayer->GetCamera()->GetDirection();
 	m_pPlayer->Update(kb, elapsedTime);
-
+	m_pStage->Update(elapsedTime);
+	m_pWall->Update(elapsedTime);
 	m_audioManager->Update();// オーディオマネージャーの更新
 	m_pEnemies->Update(elapsedTime);// 敵の更新
 
@@ -145,6 +149,8 @@ void PlayScene::Render()
 	m_skybox->Render(view, projection, skyWorld, m_pPlayer->GetPlayerController()->GetPlayerPosition());
 	// 地面描画
 	m_pStage->Render(view, projection);
+	// 壁描画
+	m_pWall->Render(view, projection);
 	// 敵を描画する
 	m_pEnemies->Render();
 	// プレイヤーを描画する

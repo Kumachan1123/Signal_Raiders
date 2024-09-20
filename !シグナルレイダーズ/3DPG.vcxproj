@@ -234,8 +234,8 @@
     <ClInclude Include="Game\Scene\TitleScene\TitleUI\TitleUI.h" />
     <ClInclude Include="Game\Screen.h" />
     <ClInclude Include="Game\SkyBox\SkyBox.h" />
-    <ClInclude Include="Game\Stages\Stage.h" />
-    <ClInclude Include="Game\Stages\VertexTypesEx.h" />
+    <ClInclude Include="Game\Stage\Stage.h" />
+    <ClInclude Include="Game\Stage\Wall\Wall.h" />
     <ClInclude Include="Game\Template\Template.h" />
     <ClInclude Include="Game\Wifi\CheckVersion\CheckVersion.h" />
     <ClInclude Include="Game\Wifi\GetListOfInterfaces\GetListOfInterfaces.h" />
@@ -304,8 +304,8 @@
     <ClCompile Include="Game\Scene\TitleScene\TitleScene.cpp" />
     <ClCompile Include="Game\Scene\TitleScene\TitleUI\TitleUI.cpp" />
     <ClCompile Include="Game\SkyBox\SkyBox.cpp" />
-    <ClCompile Include="Game\Stages\Stage.cpp" />
-    <ClCompile Include="Game\Stages\VertexTypesEx.cpp" />
+    <ClCompile Include="Game\Stage\Stage.cpp" />
+    <ClCompile Include="Game\Stage\Wall\Wall.cpp" />
     <ClCompile Include="Game\Wifi\CheckVersion\CheckVersion.cpp" />
     <ClCompile Include="Game\Wifi\GetListOfInterfaces\GetListOfInterfaces.cpp" />
     <ClCompile Include="Game\Wifi\GetScanResults\GetScanResults.cpp" />

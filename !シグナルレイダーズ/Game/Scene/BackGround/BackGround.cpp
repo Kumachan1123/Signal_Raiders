@@ -36,7 +36,7 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC>  BackGround::INPUT_LAYOUT =
 BackGround::BackGround(CommonResources* resources)
 	:m_pDR(nullptr)
 	, m_time(0.0f)
-	, m_cbuff()
+	, m_constBuffer()
 {
 	m_commonResources = resources;
 }
@@ -121,7 +121,7 @@ void  BackGround::CreateShader()
 	bd.ByteWidth = sizeof(ConstBuffer);
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bd.CPUAccessFlags = 0;
-	device->CreateBuffer(&bd, nullptr, &m_CBuffer);
+	device->CreateBuffer(&bd, nullptr, &m_cBuffer);
 }
 
 //更新
@@ -150,15 +150,15 @@ void  BackGround::Render()
 		VertexPositionTexture(SimpleMath::Vector3(-1.0, -1.0f, 0.0f), SimpleMath::Vector2(0.0f, 1.0f)),
 	};
 	// シェーダーに渡す追加のバッファを作成する(ConstBuffer)
-	m_cbuff.matView = m_view.Transpose();
-	m_cbuff.matProj = m_proj.Transpose();
-	m_cbuff.matWorld = m_world.Transpose();
-	m_cbuff.colors = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	m_cbuff.time = m_time;
+	m_constBuffer.matView = m_view.Transpose();
+	m_constBuffer.matProj = m_proj.Transpose();
+	m_constBuffer.matWorld = m_world.Transpose();
+	m_constBuffer.colors = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_constBuffer.time = m_time;
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(m_CBuffer.Get(), 0, NULL, &m_cbuff, 0, 0);
+	context->UpdateSubresource(m_cBuffer.Get(), 0, NULL, &m_constBuffer, 0, 0);
 	//	シェーダーにバッファを渡す
-	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };
+	ID3D11Buffer* cb[1] = { m_cBuffer.Get() };
 	//	頂点シェーダもピクセルシェーダも、同じ値を渡す
 	context->VSSetConstantBuffers(0, 1, cb);
 	context->PSSetConstantBuffers(0, 1, cb);

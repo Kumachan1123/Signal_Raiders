@@ -11,34 +11,37 @@
 #include <SimpleMath.h>
 #include <Effects.h>
 #include <Libraries/Microsoft/DebugDraw.h>
-
 class Stage
 {
+
+
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
 	// モデル
-	std::unique_ptr<DirectX::Model> m_stage;
+	std::unique_ptr<DirectX::Model> m_pStageModel;
 	//	入力レイアウト 
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_InputLayout;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	//	テクスチャハンドル 
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_Texture;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pTexture;
 
-	// ノーマルマップハンドル
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_NormalMap;
-
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_cBuffer;
 	//	共通ステートオブジェクトへのポインタ
-	std::unique_ptr<DirectX::CommonStates> m_States;
+	std::unique_ptr<DirectX::CommonStates> m_pStates;
 
 	//	エフェクト 
-	std::unique_ptr<DirectX::AlphaTestEffect> m_BatchEffect;
+	std::unique_ptr<DirectX::AlphaTestEffect> m_pBatchEffect;
 
 	//	プリミティブバッチ 
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_Batch;
+	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_pPrimitiveBatch;
 
 	// 床の深度ステンシルステート
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilState_Floor;
+
+
+
 public:
+
 	// 初期ステータスを設定
 	Stage();
 	~Stage();

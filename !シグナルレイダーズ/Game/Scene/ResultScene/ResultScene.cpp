@@ -55,8 +55,6 @@ void ResultScene::Initialize(CommonResources* resources)
 	m_commonResources = resources;
 
 	auto DR = m_commonResources->GetDeviceResources();
-	//auto device = DR->GetD3DDevice();
-	//auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	// フェードの初期化
 	m_pFade = std::make_unique<Fade>(m_commonResources);
 	m_pFade->Create(DR);

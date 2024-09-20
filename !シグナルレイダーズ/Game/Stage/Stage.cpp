@@ -1,15 +1,16 @@
 #include "pch.h"
 
-#include "Game//Stages/Stage.h"
+#include "Game/Stage/Stage.h"
+
 
 
 Stage::Stage()
 	: m_commonResources(nullptr)
-	, m_BatchEffect(nullptr)
-	, m_Batch(nullptr)
-	, m_InputLayout(nullptr)
-	, m_States(nullptr)
-	, m_Texture(nullptr)
+	, m_pBatchEffect(nullptr)
+	, m_pPrimitiveBatch(nullptr)
+	, m_pInputLayout(nullptr)
+	, m_pStates(nullptr)
+	, m_pTexture(nullptr)
 	, m_depthStencilState_Floor(nullptr)
 {
 }
@@ -21,37 +22,37 @@ void Stage::Initialize(CommonResources* resources)
 	using namespace DirectX::SimpleMath;
 	m_commonResources = resources;
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
-	//	エフェクトの作成 
-	m_BatchEffect = std::make_unique<AlphaTestEffect>(device);
-	m_BatchEffect->SetAlphaFunction(D3D11_COMPARISON_EQUAL);
-	m_BatchEffect->SetReferenceAlpha(255);
-	//	入力レイアウト生成 
+	// エフェクトの作成 
+	m_pBatchEffect = std::make_unique<AlphaTestEffect>(device);
+	m_pBatchEffect->SetAlphaFunction(D3D11_COMPARISON_EQUAL);
+	m_pBatchEffect->SetReferenceAlpha(255);
+	// 入力レイアウト生成 
 	void const* shaderByteCode;
 	size_t byteCodeLength;
-	m_BatchEffect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
+	m_pBatchEffect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
 	device->CreateInputLayout(
 		VertexPositionTexture::InputElements,
 		VertexPositionTexture::InputElementCount,
-		shaderByteCode, byteCodeLength, m_InputLayout.GetAddressOf()
+		shaderByteCode, byteCodeLength, m_pInputLayout.GetAddressOf()
 	);
+	// 共通ステートの作成
+	m_pStates = std::make_unique<CommonStates>(device);
 
-	//	共通ステートの作成
-	m_States = std::make_unique<CommonStates>(device);
-
-	//	テクスチャのロード 
+	// 床テクスチャのロード 
 	CreateWICTextureFromFile(
 		device,
 		L"Resources/Textures/tile.png",
 		nullptr,
-		m_Texture.GetAddressOf()
+		m_pTexture.GetAddressOf()
 	);
+
+
 	// 深度ステンシルバッファを初期化する
 	this->InitializeDepthStencilState(device);
+
 }
 void Stage::Update(float elapsedTime)
 {
-	UNREFERENCED_PARAMETER(elapsedTime);
-
 }
 void Stage::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
@@ -60,10 +61,10 @@ void Stage::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 
 	//	プリミティブバッチの作成 
-	m_Batch =
+	m_pPrimitiveBatch =
 		std::make_unique<PrimitiveBatch<VertexPositionTexture>>(context);
 
-	//	頂点情報（板ポリゴンの頂点） 
+	//	頂点情報（床の頂点） 
 	VertexPositionTexture vertex[4] =
 	{//												座標					UV座標（ふつうは0～1の間で指定。超えた場合は繰り返す
 		VertexPositionTexture(SimpleMath::Vector3(100.0f, 0.00f, 100.0f),	SimpleMath::Vector2(.0f, 0.0f)),
@@ -72,31 +73,32 @@ void Stage::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 		VertexPositionTexture(SimpleMath::Vector3(100.0f,0.f, -100.0f),	SimpleMath::Vector2(0.0f, 50.0f)),
 	};
 
-
 	//	深度バッファに書き込み参照する 
 	context->OMSetDepthStencilState(m_depthStencilState_Floor.Get(), 0);
 	//	テクスチャサンプラーの設定（クランプテクスチャアドレッシングモード） 
-	ID3D11SamplerState* samplers[1] = { m_States->PointWrap() };
+	ID3D11SamplerState* samplers[1] = { m_pStates->PointWrap() };
 	context->PSSetSamplers(0, 1, samplers);
 
 	//	カリングは左周り（反時計回り） 
-	context->RSSetState(m_States->CullCounterClockwise());
+	context->RSSetState(m_pStates->CullNone());
 
 	//	不透明のみ描画する設定 
-	m_BatchEffect->SetAlphaFunction(D3D11_COMPARISON_NOT_EQUAL);
-	m_BatchEffect->SetReferenceAlpha(0);
-	m_BatchEffect->SetWorld(SimpleMath::Matrix::Identity);
-	m_BatchEffect->SetView(view);
-	m_BatchEffect->SetProjection(proj);
-	m_BatchEffect->SetTexture(m_Texture.Get());
+	m_pBatchEffect->SetAlphaFunction(D3D11_COMPARISON_NOT_EQUAL);
+	m_pBatchEffect->SetReferenceAlpha(0);
+	m_pBatchEffect->SetWorld(SimpleMath::Matrix::Identity);
+	m_pBatchEffect->SetView(view);
+	m_pBatchEffect->SetProjection(proj);
+	m_pBatchEffect->SetTexture(m_pTexture.Get());
+	m_pBatchEffect->Apply(context);
+	context->IASetInputLayout(m_pInputLayout.Get());
 
-	m_BatchEffect->Apply(context);
-	context->IASetInputLayout(m_InputLayout.Get());
 
 	//	半透明部分を描画 
-	m_Batch->Begin();
-	m_Batch->DrawQuad(vertex[0], vertex[1], vertex[2], vertex[3]);
-	m_Batch->End();
+	m_pPrimitiveBatch->Begin();
+	m_pPrimitiveBatch->DrawQuad(vertex[0], vertex[1], vertex[2], vertex[3]);
+	m_pPrimitiveBatch->End();
+
+
 }
 //---------------------------------------------------------
 // 深度ステンシルステートを初期化する
