@@ -79,7 +79,7 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 	{
 		// ダメージを受けた時の処理
 		// カメラを上下に揺らす
-		m_pCamera->SetTargetPositionY(m_pPlayerController->GetPitch() + sin(m_damageTime * 100.0f) * 0.1f);
+		m_pCamera->SetTargetPositionY(m_pPlayerController->GetPitch() + sin(m_damageTime * 70.0f) * 0.15f);
 		m_damageTime += elapsedTime;
 		if (m_damageTime >= 0.25f)
 		{

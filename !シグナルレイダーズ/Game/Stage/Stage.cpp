@@ -51,9 +51,7 @@ void Stage::Initialize(CommonResources* resources)
 	this->InitializeDepthStencilState(device);
 
 }
-void Stage::Update(float elapsedTime)
-{
-}
+
 void Stage::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
 	using namespace DirectX;

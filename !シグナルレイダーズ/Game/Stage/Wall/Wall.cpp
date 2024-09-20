@@ -126,7 +126,7 @@ void Wall::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	m_constBuffer.matView = view.Transpose();
 	m_constBuffer.matProj = proj.Transpose();
 	m_constBuffer.matWorld = m_world.Transpose();
-	m_constBuffer.colors = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_constBuffer.colors = DirectX::SimpleMath::Vector4(0, 1.0f, 1.0f, 0.0f);
 	m_constBuffer.time = m_time;
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(m_cBuffer.Get(), 0, NULL, &m_constBuffer, 0, 0);

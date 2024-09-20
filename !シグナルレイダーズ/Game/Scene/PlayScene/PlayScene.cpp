@@ -119,7 +119,6 @@ void PlayScene::Update(float elapsedTime)
 	// カメラが向いている方向を取得する
 	DirectX::SimpleMath::Vector3 cameraDirection = m_pPlayer->GetCamera()->GetDirection();
 	m_pPlayer->Update(kb, elapsedTime);
-	m_pStage->Update(elapsedTime);
 	m_pWall->Update(elapsedTime);
 	m_audioManager->Update();// オーディオマネージャーの更新
 	m_pEnemies->Update(elapsedTime);// 敵の更新

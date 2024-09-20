@@ -46,7 +46,6 @@ public:
 	Stage();
 	~Stage();
 	void Initialize(CommonResources* resources);
-	void Update(float elapsedTime);
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 private:
 	// 深度ステンシルステートを初期化する
