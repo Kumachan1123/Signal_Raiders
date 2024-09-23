@@ -16,10 +16,9 @@ Radar::Radar(CommonResources* commonResources)
 	: m_commonResources{ commonResources },
 	m_pPlayer{ nullptr },
 	m_pEnemies{ nullptr },
-	/*m_radarPos{ 0.735f, 0.54f },
-	m_radarSize{ 0.03f, 0.06f },*/
-	m_radarPos{ 0.74f, -0.55f },
-	m_radarSize{ 0.02f, -0.04f }
+	m_radarPos{ 0.745f, -0.55f },
+	m_playerSize{ 0.018f, -0.032f },
+	m_enemySize{ 0.009f, -0.016f }
 
 {
 }
@@ -89,71 +88,98 @@ void Radar::Update()
 void Radar::Render()
 {
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-
+	auto states = m_commonResources->GetCommonStates();
 	// バッチの開始
 	m_primitiveBatch->Begin();
 	m_basicEffect->Apply(context);
+	context->OMSetBlendState(states->AlphaBlend(), nullptr, 0xFFFFFFFF);
+	context->OMSetDepthStencilState(states->DepthDefault(), 0);
+	context->RSSetState(states->CullNone());
+
 	context->IASetInputLayout(m_inputLayout.Get());
 
 	// レーダーの背景を描画
 	m_primitiveBatch->DrawQuad(
-		VertexPositionColor(Vector3(0.5f, -.16f, 0.0f), Vector4(0.3, 0.3, 0.3, 0.6)),
-		VertexPositionColor(Vector3(1.0f, -.16f, 0.0f), Vector4(0.3, 0.3, 0.3, 0.6)),
-		VertexPositionColor(Vector3(1.0f, -1.0f, 0.0f), Vector4(0.3, 0.3, 0.3, 0.6)),
-		VertexPositionColor(Vector3(0.5f, -1.0f, 0.0f), Vector4(0.3, 0.3, 0.3, 0.6))
+		VertexPositionColor(Vector3(0.5f, -.16f, 0.0f), Vector4(0.0, 0.0, 0.0, 0.6)),
+		VertexPositionColor(Vector3(1.0f, -.16f, 0.0f), Vector4(0.0, 0.0, 0.0, 0.6)),
+		VertexPositionColor(Vector3(1.0f, -1.0f, 0.0f), Vector4(0.0, 0.0, 0.0, 0.6)),
+		VertexPositionColor(Vector3(0.5f, -1.0f, 0.0f), Vector4(0.0, 0.0, 0.0, 0.6))
 	);
 	// バッチの終了
 	m_primitiveBatch->End();
 
 	// バッチの開始
 	m_primitiveBatch->Begin();
+
+
 	// プレイヤー位置をレーダー中心に描画
 	// レーダーの背景を描画した時の値から中心を計算し、プレイヤーの位置を描画
 	m_basicEffect->Apply(context);
+	context->OMSetBlendState(states->AlphaBlend(), nullptr, 0xFFFFFFFF);
+	context->OMSetDepthStencilState(states->DepthDefault(), 0);
+	context->RSSetState(states->CullNone());
 	context->IASetInputLayout(m_inputLayout.Get());
 
 	m_primitiveBatch->DrawQuad(
-		VertexPositionColor(Vector3(m_radarPos.x, m_radarPos.y, 0.0f), Colors::LimeGreen),
-		VertexPositionColor(Vector3(m_radarPos.x + m_radarSize.x, m_radarPos.y, 0.0f), Colors::LimeGreen),
-		VertexPositionColor(Vector3(m_radarPos.x + m_radarSize.x, m_radarPos.y + m_radarSize.y, 0.0f), Colors::LimeGreen),
-		VertexPositionColor(Vector3(m_radarPos.x, m_radarPos.y + m_radarSize.y, 0.0f), Colors::LimeGreen)
+		VertexPositionColor(Vector3(m_radarPos.x, m_radarPos.y, 0.0f), Colors::Lime),
+		VertexPositionColor(Vector3(m_radarPos.x + m_playerSize.x, m_radarPos.y, 0.0f), Colors::Lime),
+		VertexPositionColor(Vector3(m_radarPos.x + m_playerSize.x, m_radarPos.y + m_playerSize.y, 0.0f), Colors::Lime),
+		VertexPositionColor(Vector3(m_radarPos.x, m_radarPos.y + m_playerSize.y, 0.0f), Colors::Lime)
 	);
 	// バッチの終了
 	m_primitiveBatch->End();
 
 
 
-	m_basicEffect->Apply(context);
-	context->IASetInputLayout(m_inputLayout.Get());
 
-	// 敵の位置を描画
-// 敵の位置を描画
+	// 敵の位置を描画	 
 	for (const auto& enemyPos : m_enemyPos)
 	{
-		Vector3 relativePos = enemyPos - m_playerPos;
+		Vector3 relativePos = enemyPos - m_playerPos;// プレイヤーから敵への相対位置を計算
 
-		// レーダー範囲内の敵のみ描画
-		if (relativePos.Length() <= m_range)
+
+		// カメラの向きを取得
+		Vector3 cameraDirection = m_pPlayer->GetPlayerDir(); // カメラの向き（前方ベクトル）
+
+		// カメラの向きに基づいて回転行列を作成
+		float playerRotation = atan2(cameraDirection.x, cameraDirection.z); // カメラの前方ベクトルから回転角を計算
+		Matrix rotationMatrix = Matrix::CreateRotationZ(XMConvertToRadians(180));// 回転を調整
+		rotationMatrix *= Matrix::CreateRotationY(playerRotation); // Y軸回転
+
+		// 敵の位置をプレイヤーの位置を軸にして回転
+		Vector3 rotatedPos = Vector3::Transform(relativePos, rotationMatrix);
+		// レーダーの中心からの相対位置を計算
+		Vector2 radarPos = Vector2(
+			rotatedPos.x / m_range * (1.0f - 0.5f), // ミニマップの横幅
+			rotatedPos.z / m_range * (1.0f - 0.16f) // ミニマップの高さ
+		);
+		radarPos += m_radarPos;
+
+		// ミニマップの範囲内にいるかを確認
+		if (radarPos.x > 0.5f + m_enemySize.x && radarPos.x < 1.0f + m_enemySize.x &&
+			radarPos.y > -1.0f + m_enemySize.y && radarPos.y < -0.16f + m_enemySize.y)
 		{
-			// レーダーの中心からの相対位置を計算
-			Vector2 radarPos = Vector2(
-				relativePos.x / m_range * (1.0f - 0.5f), // ミニマップの横幅
-				relativePos.z / m_range * (1.0f - 0.16f) // ミニマップの高さ
-			);
-
+			m_basicEffect->Apply(context);
+			context->OMSetBlendState(states->AlphaBlend(), nullptr, 0xFFFFFFFF);
+			context->OMSetDepthStencilState(states->DepthDefault(), 0);
+			context->RSSetState(states->CullNone());
+			context->IASetInputLayout(m_inputLayout.Get());
 			// バッチの開始
 			m_primitiveBatch->Begin();
 			// 敵の位置を描画
 			m_primitiveBatch->DrawQuad(
-				VertexPositionColor(Vector3(m_radarPos.x + radarPos.x, m_radarPos.y + radarPos.y, 0.0f), Colors::Red),
-				VertexPositionColor(Vector3(m_radarPos.x + radarPos.x + 0.01f, m_radarPos.y + radarPos.y, 0.0f), Colors::Red),
-				VertexPositionColor(Vector3(m_radarPos.x + radarPos.x + 0.01f, m_radarPos.y + radarPos.y + 0.02f, 0.0f), Colors::Red),
-				VertexPositionColor(Vector3(m_radarPos.x + radarPos.x, m_radarPos.y + radarPos.y + 0.02f, 0.0f), Colors::Red)
+				VertexPositionColor(Vector3(radarPos.x, radarPos.y, 0.0f), Colors::Red),
+				VertexPositionColor(Vector3(radarPos.x + 0.01f, radarPos.y, 0.0f), Colors::Red),
+				VertexPositionColor(Vector3(radarPos.x + 0.01f, radarPos.y + 0.02f, 0.0f), Colors::Red),
+				VertexPositionColor(Vector3(radarPos.x, radarPos.y + 0.02f, 0.0f), Colors::Red)
 			);
 			// バッチの終了
 			m_primitiveBatch->End();
 		}
+
+
 	}
+
 
 
 }

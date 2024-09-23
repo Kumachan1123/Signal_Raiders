@@ -26,13 +26,13 @@ PlayerController::PlayerController(Player* pPlayer)
 	, m_position{}
 	, m_velocity{}
 	, m_yawX{}
-	, m_beforeYawX{}
 	, m_pitchY{}
 	, m_dash{}
 	, m_commonResources{}
 	, m_hWnd{ nullptr }
 	, m_sensitive{ pPlayer->GetMouseSensitive() + 1.0f }// マウス感度:Player->GetMouseSensitive()のままだと
 	// 最小値が0.0fになるので + 1.0fする
+	, m_rotate{}
 {
 	// スクリーンの解像度を取得
 	RECT desktopRect;
@@ -65,8 +65,7 @@ void PlayerController::MoveStop()
 	m_velocity.y -= 0.75;
 	m_yawX = 0.0f;
 	m_pitchY = 0.0f;
-	yawX = 0.0f;
-	yawY = 0.0f;
+
 	m_dash = 0.1f;
 }
 
@@ -154,6 +153,9 @@ void PlayerController::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardS
 
 	// 実際に移動する
 	m_position += m_velocity;
+
+	// 横回転を保存
+	m_rotate = x;
 
 	// 地面の高さに制限
 	if (m_position.y <= 2.0f) m_position.y = 2.0f;

@@ -162,10 +162,11 @@ void PlayScene::Render()
 	m_pEnemies->Render();
 	// プレイヤーを描画する
 	m_pPlayer->Render();
-	// フェードの描画
-	m_fade->Render();
+
 	// レーダーを描画する
 	m_pRadar->Render();
+	// フェードの描画
+	m_fade->Render();
 
 #ifdef _DEBUG// プレイヤーのHPを表示する
 	// デバッグ情報を「DebugString」で表示する

@@ -38,7 +38,9 @@ class Radar
 
 	// プリミティブバッチ
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
-	float m_range = 400.0f;// レーダーの範囲
+	float m_range = 300.0f;// レーダーの範囲
+	// プレイヤーとの距離
+	float m_distance = 125.0f;
 	// プレイヤーの位置
 	DirectX::SimpleMath::Vector3 m_playerPos;
 	// 敵の位置
@@ -46,9 +48,11 @@ class Radar
 	// 敵の状態
 	std::vector<bool> m_enemyState;
 
-	// レーダー表示位置とサイズ
+	// レーダー表示位置とプレイヤーのサイズ
 	DirectX::SimpleMath::Vector2 m_radarPos;
-	DirectX::SimpleMath::Vector2 m_radarSize;
+	DirectX::SimpleMath::Vector2 m_playerSize;
+	// 敵のサイズ
+	DirectX::SimpleMath::Vector2 m_enemySize;
 public:
 	// コンストラクタ
 	Radar(CommonResources* commonResources);

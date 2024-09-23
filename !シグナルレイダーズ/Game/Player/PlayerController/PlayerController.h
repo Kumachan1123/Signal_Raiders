@@ -16,6 +16,7 @@ public:
 	DirectX::SimpleMath::Vector3 m_position;		// 一人称視点
 	DirectX::SimpleMath::Vector3 m_velocity;		// 移動ベクトル
 	float m_yawX, m_pitchY;						// カメラ回転
+	float m_rotate;								// プレイヤー回転(ミニマップに渡す用)
 	float m_sensitive;							// マウス感度
 	float m_lastMouseX;
 	float m_lastMouseY;
@@ -23,11 +24,7 @@ public:
 	POINT m_point;
 	// プレイヤー
 	Player* m_pPlayer;
-	// カメラ左右回転
-	float yawX = 0.0f;
-	float m_beforeYawX;
-	// カメラ上下回転
-	float yawY = 0.0f;
+
 	// ダッシュ
 	float m_dash;
 	//関数
@@ -45,7 +42,7 @@ public:
 	float GetYawX()const { return m_yawX; }
 	float GetPitch()const { return m_pitchY; }
 	DirectX::SimpleMath::Vector3 GetPlayerPosition()const { return m_position; }
-	float GetPlayerPositionY()const { return m_position.y; }
+	float GetRotate()const { return m_rotate; }
 	//Setter
 	void SetPlayetPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }
 	void SetMouseSensitive(float sensitive) { m_sensitive = sensitive; }

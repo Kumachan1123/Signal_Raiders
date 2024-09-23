@@ -18,7 +18,8 @@ Player::Player(CommonResources* commonResources)
 	m_pEnemies{ nullptr },
 	m_mouseSensitive{ 0.1f },
 	m_isDamage{ false },
-	m_damageTime{ 0.0f }
+	m_damageTime{ 0.0f },
+	m_playerDir{}
 {
 	// 境界球
 	m_inPlayerArea.Radius = 20.0f;
@@ -74,8 +75,11 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 	m_pPlayerController->Update(kb, cameraDirection, elapsedTime);
 	// プレイヤーの位置を取得
 	m_playerPos = m_pPlayerController->GetPlayerPosition();
+
 	// カメラ更新
 	m_pCamera->Update(m_pPlayerController->GetPlayerPosition(), m_pPlayerController->GetYawX());
+	// プレイヤーの回転を取得
+	m_playerDir = cameraDirection;
 	// プレイヤーがダメージを受けた時、カメラをsin波を使って上下に揺らす
 	if (m_isDamage)
 	{
