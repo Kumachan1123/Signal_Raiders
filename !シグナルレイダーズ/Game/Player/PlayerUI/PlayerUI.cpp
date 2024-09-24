@@ -172,7 +172,7 @@ void PlayerUI::Render()
 	context->PSSetConstantBuffers(0, 1, cb);
 
 	//	‰æ‘œ—pƒTƒ“ƒvƒ‰[‚Ì“o˜^
-	ID3D11SamplerState* sampler[1] = { m_states->LinearWrap() };
+	ID3D11SamplerState* sampler[1] = { m_states->AnisotropicWrap() };
 	context->PSSetSamplers(0, 1, sampler);
 
 

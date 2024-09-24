@@ -136,7 +136,7 @@ void PlayScene::Update(float elapsedTime)
 		m_fade->SetState(Fade::FadeState::FadeOut);
 	}
 	// レーダーを更新する
-	m_pRadar->Update();
+	m_pRadar->Update(elapsedTime);
 	// 画面遷移フェード処理
 	m_fade->Update(elapsedTime);
 	// フェードアウトが終了したら

@@ -32,13 +32,13 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_InputLayout;
 
 	//	共通ステートオブジェクトへのポインタ
-	std::unique_ptr<DirectX::CommonStates> m_States;
+	std::unique_ptr<DirectX::CommonStates> m_states;
 
 	//	テクスチャハンドル 
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_Texture;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
 
 	//	エフェクト 
-	std::unique_ptr<DirectX::AlphaTestEffect> m_BatchEffect;
+	std::unique_ptr<DirectX::AlphaTestEffect> m_batchEffect;
 
 	//	プリミティブバッチ 
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_Batch;
@@ -82,7 +82,7 @@ public:
 
 
 public:
-	bool IsPlaying() { return m_isPlaying; };
-	DirectX::SimpleMath::Vector3 GetPosition() { return m_position; };
+	bool IsPlaying() const { return m_isPlaying; };
+	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; };
 
 };

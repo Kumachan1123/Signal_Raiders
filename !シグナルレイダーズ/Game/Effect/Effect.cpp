@@ -71,14 +71,14 @@ Effect::Effect(CommonResources* resources, ParticleType type, DirectX::SimpleMat
 
 
 	// エフェクトの作成 
-	m_BatchEffect = std::make_unique<AlphaTestEffect>(device);
-	m_BatchEffect->SetAlphaFunction(D3D11_COMPARISON_GREATER);
-	m_BatchEffect->SetReferenceAlpha(1); // 0ではなく1に設定して完全な黒を除外する
+	m_batchEffect = std::make_unique<AlphaTestEffect>(device);
+	m_batchEffect->SetAlphaFunction(D3D11_COMPARISON_GREATER);
+	m_batchEffect->SetReferenceAlpha(1); // 0ではなく1に設定して完全な黒を除外する
 
 	// 入力レイアウト生成
 	void const* shaderByteCode;
 	size_t byteCodeLength;
-	m_BatchEffect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
+	m_batchEffect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
 	device->CreateInputLayout(
 		VertexPositionTexture::InputElements,
 		VertexPositionTexture::InputElementCount,
@@ -86,14 +86,14 @@ Effect::Effect(CommonResources* resources, ParticleType type, DirectX::SimpleMat
 	);
 
 	// 共通ステート生成
-	m_States = std::make_unique<CommonStates>(device);
+	m_states = std::make_unique<CommonStates>(device);
 
 	// テクスチャロード
 	CreateWICTextureFromFile(
 		device,
 		texturePath,
 		nullptr,
-		m_Texture.GetAddressOf()
+		m_texture.GetAddressOf()
 	);
 
 	// アニメーション再生中
@@ -169,26 +169,26 @@ void Effect::Render(ID3D11DeviceContext1* context, SimpleMath::Matrix view, Simp
 
 	// 深度ステンシル状態を設定（深度バッファを有効にする）
 
-	context->OMSetDepthStencilState(m_States->DepthDefault(), 0);
-	context->OMSetBlendState(m_States->NonPremultiplied(), nullptr, 0xFFFFFFFF);
+	context->OMSetDepthStencilState(m_states->DepthDefault(), 0);
+	context->OMSetBlendState(m_states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
 
 	// カリングは左周り（反時計回り）
-	context->RSSetState(m_States->CullCounterClockwise());
+	context->RSSetState(m_states->CullCounterClockwise());
 
 	// テクスチャサンプラーの設定（クランプテクスチャアドレッシングモード）
-	ID3D11SamplerState* samplers[1] = { m_States->AnisotropicWrap() };
+	ID3D11SamplerState* samplers[1] = { m_states->AnisotropicWrap() };
 	context->PSSetSamplers(0, 1, samplers);
 
 	//	不透明のみ描画する設定 
-	m_BatchEffect->SetAlphaFunction(D3D11_COMPARISON_GREATER);
-	m_BatchEffect->SetReferenceAlpha(0);
+	m_batchEffect->SetAlphaFunction(D3D11_COMPARISON_GREATER);
+	m_batchEffect->SetReferenceAlpha(0);
 
 
-	m_BatchEffect->SetWorld(worldBillboard);
-	m_BatchEffect->SetView(view);
-	m_BatchEffect->SetProjection(proj);
-	m_BatchEffect->SetTexture(m_Texture.Get());
-	m_BatchEffect->Apply(context);
+	m_batchEffect->SetWorld(worldBillboard);
+	m_batchEffect->SetView(view);
+	m_batchEffect->SetProjection(proj);
+	m_batchEffect->SetTexture(m_texture.Get());
+	m_batchEffect->Apply(context);
 	context->IASetInputLayout(m_InputLayout.Get());
 
 	//	半透明部分を描画 

@@ -39,10 +39,11 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_cBuffer;
 
 	DX::StepTimer                           m_timer;
-	//	入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 	// 共通リソース
 	CommonResources* m_commonResources;
+	//	入力レイアウト
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+
 	//	プリミティブバッチ
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_batch;
 	//	コモンステート

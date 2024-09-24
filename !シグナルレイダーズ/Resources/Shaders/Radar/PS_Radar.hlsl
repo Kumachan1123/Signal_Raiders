@@ -11,7 +11,6 @@ cbuffer ConstBuffer : register(b0)
 
 // C++側から設定されるデータ②
 Texture2D tex : register(t0); // テクスチャ1
-Texture2D tex2 : register(t1); // テクスチャ2
 SamplerState samLinear : register(s0); // サンプラーステート
 
 // このシェーダが引数として受け取るデータ
@@ -23,18 +22,22 @@ struct PS_INPUT
 
 float4 main(PS_INPUT input) : SV_TARGET
 {
-    // 時間に基づいて青系のグラデーションエフェクトを生成
-    float gradient = exp(-abs(sin(time * 1.0 + input.Tex.y * 5.0)));
+   
     
+   
+     // ピクセルの中心からの距離を計算（半径1の円形における距離）
+    float distanceFromCenter = length(input.Tex - float2(0.5, 0.5));
+
+    // グラデーションエフェクトの強度を距離に基づいて調整する
+    float gradient = exp(-abs(sin(time * 1.0 + distanceFromCenter * -2.0)));
+
     // テクスチャをサンプリング
     float4 output = tex.Sample(samLinear, input.Tex);
-    // C++側で設定した色情報のalpha値を0にする
-   
+   // output.a = 0;
+    
     // グラデーションエフェクトを加える
     // エフェクトの色は画像の色に加算
-    output.rgba += gradient * color;
-   
-   
+    output.rgb += gradient * color.rgb;
 
     // 結果を返す
     return output;

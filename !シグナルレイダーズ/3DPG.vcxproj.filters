@@ -446,5 +446,7 @@
     <FxCompile Include="Resources\Shaders\TitleScene\Menu\GS_Menu.hlsl" />
     <FxCompile Include="Resources\Shaders\TitleScene\Menu\PS_Menu.hlsl" />
     <FxCompile Include="Resources\Shaders\TitleScene\Menu\VS_Menu.hlsl" />
+    <FxCompile Include="Resources\Shaders\Radar\VS_Radar.hlsl" />
+    <FxCompile Include="Resources\Shaders\Radar\PS_Radar.hlsl" />
   </ItemGroup>
 </Project>

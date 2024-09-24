@@ -13,7 +13,7 @@
 #include <Model.h>
 #include <Effects.h>
 #include <Libraries/Microsoft/DebugDraw.h>
-
+#include "Game/KumachiLib/BinaryFile.h"
 #include <memory>
 #include "Game/Player/Player.h"
 #include "Game/Enemy/Enemies/Enemies.h"
@@ -26,6 +26,24 @@ class Enemy;
 class EnemyAI;
 class Radar
 {
+public:
+	// データ受け渡し用コンスタントバッファ(送信側)
+	struct ConstBuffer
+	{
+		DirectX::SimpleMath::Matrix matWorld;   // ワールド行列
+		DirectX::SimpleMath::Matrix matView;    // ビュー行列
+		DirectX::SimpleMath::Matrix matProj;    // プロジェクション行列
+		DirectX::SimpleMath::Vector4 colors;    // カラー
+		float time = 0.0f;                             // 時間
+		DirectX::SimpleMath::Vector3 padding;// パディング
+	}m_constBuffer;
+private:
+	enum class RadarState
+	{
+		Background,
+		Player,
+		Enemy,
+	};
 	// 変数
 	CommonResources* m_commonResources;
 	Player* m_pPlayer;
@@ -35,9 +53,14 @@ class Radar
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_cBuffer;
 
+
+	//	コモンステート
+	std::unique_ptr<DirectX::CommonStates> m_states;
 	// プリミティブバッチ
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
+	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_primitiveBatchTexture;
+	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatchColor;
 	float m_range = 300.0f;// レーダーの範囲
 	// プレイヤーとの距離
 	float m_distance = 125.0f;
@@ -53,7 +76,19 @@ class Radar
 	DirectX::SimpleMath::Vector2 m_playerSize;
 	// 敵のサイズ
 	DirectX::SimpleMath::Vector2 m_enemySize;
+	// 時間
+	float m_time;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_backTexture;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_playerTexture;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_enemyTexture;
+
+	//	頂点シェーダ
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
+	//	ピクセルシェーダ
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 public:
+	//	関数
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 	// コンストラクタ
 	Radar(CommonResources* commonResources);
 	// デストラクタ
@@ -61,10 +96,17 @@ public:
 	// 初期化
 	void Initialize(Player* pPlayer, Enemies* pEnemies);
 	// 更新
-	void Update();
+	void Update(float elapsedTime);
 	// 描画
 	void Render();
 
+	// テクスチャの読み込み
+	void LoadTexture(const wchar_t* path, RadarState type);
 
+	void DrawBackground();// 背景を描画する
+	void DrawPlayer();// プレイヤーを描画する
+	void DrawEnemy();// 敵を描画する
+
+	void CreateBuffer(ID3D11DeviceContext1* context);// バッファを作成する
 
 };
