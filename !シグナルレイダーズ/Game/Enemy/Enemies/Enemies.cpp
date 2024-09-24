@@ -68,9 +68,11 @@ void Enemies::Update(float elapsedTime)
 	// 敵生成・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
 	// 敵生成タイマーを更新
 	m_enemyBornTimer += elapsedTime;
+	// 敵の生成数
+	int enemyNum = static_cast<int>(m_pWifi->GetWifiLevels().size());// static_cast<int>(m_pWifi->GetWifiLevels().size()
 	if (m_startTime >= 5.0f)m_isEnemyBorn = true;//生成可能にする
 	// 生成可能なら
-	if (m_isEnemyBorn && !m_isBorned && m_enemyIndex < 5)// m_pWifi->GetWifiLevels().size()
+	if (m_isEnemyBorn && !m_isBorned && m_enemyIndex < enemyNum)
 	{
 		if (m_enemyBornTimer >= m_enemyBornInterval)// 一定時間経過したら
 		{
@@ -84,7 +86,7 @@ void Enemies::Update(float elapsedTime)
 		}
 	}
 	// 生成完了したら生成不可能にする
-	if (m_enemyIndex >= m_pWifi->GetWifiLevels().size())
+	if (m_enemyIndex >= enemyNum)
 	{
 		m_enemyBornTimer = 0.0f;
 		m_isEnemyBorn = false;

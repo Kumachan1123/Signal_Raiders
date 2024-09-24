@@ -38,6 +38,11 @@ private:
 	int m_frameCols = 10; // 画像の列数
 	// 数字テクスチャ
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
+	// 「残り：」テクスチャ
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_remaining;
+	// 「/」テクスチャ
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_slash;
+
 	//	入力レイアウト 
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 
@@ -46,14 +51,22 @@ private:
 	//	エフェクト 
 	std::unique_ptr<DirectX::AlphaTestEffect> m_batchEffect;
 	// 頂点情報
-	DirectX::DX11::VertexPositionTexture m_vertices[4];
+	// 総数の10の位
+	DirectX::DX11::VertexPositionTexture m_verticesEnemyIndex10[4];
+	// 総数の1の位
+	DirectX::DX11::VertexPositionTexture m_verticesEnemyIndex1[4];
+	// 現在の敵の数の10の位
+	DirectX::DX11::VertexPositionTexture m_verticesNowEnemy10[4];
+	// 現在の敵の数の1の位
+	DirectX::DX11::VertexPositionTexture m_verticesNowEnemy1[4];
+	// 「のこり：」
+	DirectX::DX11::VertexPositionTexture m_verticesRemaining[4];
+	// 「/」
+	DirectX::DX11::VertexPositionTexture m_verticesSlash[4];
+
 	// プリミティブバッチ
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_primitiveBatch;
-	// 板ポリゴンの頂点座標
-	float m_vertexMinX;
-	float m_vertexMaxX;
-	float m_vertexMinY;
-	float m_vertexMaxY;
+
 public:
 	// コンストラクタ
 	EnemyCounter();
@@ -69,5 +82,17 @@ public:
 	// 現在の敵の数を設定する
 	void SetNowEnemy(int nowEnemy) { m_nowEnemy = nowEnemy; }
 private:
-	void LoadTexture(const wchar_t* path);
+	void LoadTexture(const wchar_t* path, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& tex);
+	// 総数の10の位を描画
+	void DrawEnemyIndex10();
+	// 総数の1の位を描画
+	void DrawEnemyIndex1();
+	// 現在の敵の数の10の位を描画
+	void DrawNowEnemy10();
+	// 現在の敵の数の1の位を描画
+	void DrawNowEnemy1();
+	// 「のこり：」を描画
+	void DrawRemaining();
+	// 「/」を描画
+	void DrawSlash();
 };
