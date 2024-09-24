@@ -11,6 +11,7 @@
 #include "Game/Player/PlayerBullet/PlayerBullet.h"
 #include "Game/Enemy/Enemy.h"
 #include "Game/Enemy/Enemies/Enemies.h"
+#include "Game/Enemy/EnemyCounter/EnemyCounter.h"
 #include "Game/Wifi/ReleaseMemory/ReleaseMemory.h"
 #include "Game/Wifi/Output/Output.h"
 #include "Game/Wifi/Interface/IWifiParts.h"
@@ -63,7 +64,8 @@ private:
 	DirectX::SimpleMath::Matrix m_view;
 	// エフェクト
 	std::vector<std::unique_ptr<Effect>> m_pEffect;
-
+	// 敵カウンター
+	std::unique_ptr<EnemyCounter> m_pEnemyCounter;
 
 	// フェード
 	std::unique_ptr<Fade> m_fade;
@@ -75,20 +77,9 @@ private:
 	int m_fadeTexNum;
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
-	// フェードで使用する変数
-	bool m_isFade;		// フェードフラグ
-	float m_volume;		// ボリューム
-	int m_counter;		// フェードカウンタ
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
-	// 弾生成フラグ
-	bool m_isBullet = false;
-	// 弾生成済み
-	bool m_isBulletBorned = false;
-	// プレイヤーと敵の当たり判定
-	bool m_isHitPlayerToEnemy = false;
-	// 回転角(度)
-	float m_angle;
+
 	// 音量の基準
 	const float VOLUME = 1.0f;
 	float m_BGMvolume;	// ボリューム

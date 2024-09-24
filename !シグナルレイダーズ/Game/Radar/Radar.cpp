@@ -68,7 +68,7 @@ void Radar::Initialize(Player* pPlayer, Enemies* pEnemies)
 	m_pPlayer = pPlayer;
 	m_pEnemies = pEnemies;
 	// プリミティブバッチの作成
-	m_primitiveBatchTexture = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(context);
+	m_primitiveBatch = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(context);
 
 	// 共通ステート生成
 	m_states = std::make_unique<CommonStates>(device);
@@ -140,6 +140,7 @@ void Radar::Render()
 	//	画像用サンプラーの登録
 	ID3D11SamplerState* sampler[1] = { m_states->LinearWrap() };
 	context->PSSetSamplers(0, 1, sampler);
+
 	// 半透明描画指定
 	ID3D11BlendState* blendstate = m_states->NonPremultiplied();
 	//	透明判定処理
@@ -183,11 +184,11 @@ void Radar::DrawBackground()
 	// インプットレイアウトの登録
 	context->IASetInputLayout(m_inputLayout.Get());
 	// ポリゴンを描画
-	m_primitiveBatchTexture->Begin();
+	m_primitiveBatch->Begin();
 
-	m_primitiveBatchTexture->DrawQuad(vertex[0], vertex[1], vertex[2], vertex[3]);
+	m_primitiveBatch->DrawQuad(vertex[0], vertex[1], vertex[2], vertex[3]);
 
-	m_primitiveBatchTexture->End();
+	m_primitiveBatch->End();
 	//	シェーダの登録を解除しておく
 	context->VSSetShader(nullptr, nullptr, 0);
 	context->PSSetShader(nullptr, nullptr, 0);
@@ -220,9 +221,9 @@ void Radar::DrawPlayer()
 	context->IASetInputLayout(m_inputLayout.Get());
 	// バッチの開始
 	// 板ポリゴンを描画
-	m_primitiveBatchTexture->Begin();
-	m_primitiveBatchTexture->DrawQuad(playerVertex[0], playerVertex[1], playerVertex[2], playerVertex[3]);
-	m_primitiveBatchTexture->End();
+	m_primitiveBatch->Begin();
+	m_primitiveBatch->DrawQuad(playerVertex[0], playerVertex[1], playerVertex[2], playerVertex[3]);
+	m_primitiveBatch->End();
 	//	シェーダの登録を解除しておく
 	context->VSSetShader(nullptr, nullptr, 0);
 	context->PSSetShader(nullptr, nullptr, 0);
@@ -271,22 +272,23 @@ void Radar::DrawEnemy()
 			// インプットレイアウトの登録
 			context->IASetInputLayout(m_inputLayout.Get());
 			// バッチの開始
-			m_primitiveBatchTexture->Begin();
+			m_primitiveBatch->Begin();
 			// 敵の位置を描画
-			m_primitiveBatchTexture->DrawQuad(
+			m_primitiveBatch->DrawQuad(
 				VertexPositionTexture(Vector3(radarPos.x, radarPos.y, 0.0f), SimpleMath::Vector2(0.0f, 0.0f)),
 				VertexPositionTexture(Vector3(radarPos.x + 0.01f, radarPos.y, 0.0f), SimpleMath::Vector2(1.0f, 0.0f)),
 				VertexPositionTexture(Vector3(radarPos.x + 0.01f, radarPos.y + 0.02f, 0.0f), SimpleMath::Vector2(1.0f, 1.0f)),
 				VertexPositionTexture(Vector3(radarPos.x, radarPos.y + 0.02f, 0.0f), SimpleMath::Vector2(0.0f, 1.0f))
 			);
 			// バッチの終了
-			m_primitiveBatchTexture->End();
+			m_primitiveBatch->End();
 		}
 	}
 	//	シェーダの登録を解除しておく
 	context->VSSetShader(nullptr, nullptr, 0);
 	context->PSSetShader(nullptr, nullptr, 0);
 }
+
 
 //---------------------------------------------------------
 // バッファを作成

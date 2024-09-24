@@ -278,6 +278,7 @@
     <ClInclude Include="Game\Scene\ResultScene\Result\Result.h" />
     <ClInclude Include="Game\Stage\Wall\Wall.h" />
     <ClInclude Include="Game\Radar\Radar.h" />
+    <ClInclude Include="Game\Enemy\EnemyCounter\EnemyCounter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -407,6 +408,7 @@
     <ClCompile Include="Game\Scene\ResultScene\Result\Result.cpp" />
     <ClCompile Include="Game\Stage\Wall\Wall.cpp" />
     <ClCompile Include="Game\Radar\Radar.cpp" />
+    <ClCompile Include="Game\Enemy\EnemyCounter\EnemyCounter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

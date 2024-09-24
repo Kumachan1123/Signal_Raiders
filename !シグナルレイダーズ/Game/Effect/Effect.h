@@ -33,12 +33,12 @@ private:
 
 	//	共通ステートオブジェクトへのポインタ
 	std::unique_ptr<DirectX::CommonStates> m_states;
-
+	//	エフェクト 
+	std::unique_ptr<DirectX::AlphaTestEffect> m_batchEffect;
 	//	テクスチャハンドル 
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
 
-	//	エフェクト 
-	std::unique_ptr<DirectX::AlphaTestEffect> m_batchEffect;
+
 
 	//	プリミティブバッチ 
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_Batch;

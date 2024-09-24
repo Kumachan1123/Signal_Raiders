@@ -59,8 +59,7 @@ private:
 	//	コモンステート
 	std::unique_ptr<DirectX::CommonStates> m_states;
 	// プリミティブバッチ
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_primitiveBatchTexture;
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatchColor;
+	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_primitiveBatch;
 	float m_range = 300.0f;// レーダーの範囲
 	// プレイヤーとの距離
 	float m_distance = 125.0f;

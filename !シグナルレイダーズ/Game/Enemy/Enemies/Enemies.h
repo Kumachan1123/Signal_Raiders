@@ -60,6 +60,8 @@ public:
 public:
 	// Getter
 	std::vector<std::unique_ptr<Enemy>>& GetEnemy() { return m_enemy; }// “G
+	int GetEnemyIndex() const { return m_enemyIndex; }// ¶¬‚³‚ê‚½“G‚ÌÅ‘å”
+	int GetEnemySize() const { return static_cast<int>(m_enemy.size()); }// ¡Aê‚É‚¢‚é“G‚Ì”
 	std::unique_ptr<Wifi>& GetWifi() { return m_pWifi; }// Wi-Fi
 	std::vector<std::unique_ptr<Effect>>& GetEffect() { return m_effect; }// ƒGƒtƒFƒNƒg
 	bool GetisBorned() const { return m_isBorned; }// “G¶¬Ï‚İ

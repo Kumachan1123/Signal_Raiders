@@ -70,7 +70,7 @@ void Enemies::Update(float elapsedTime)
 	m_enemyBornTimer += elapsedTime;
 	if (m_startTime >= 5.0f)m_isEnemyBorn = true;//¶¬‰Â”\‚É‚·‚é
 	// ¶¬‰Â”\‚È‚ç
-	if (m_isEnemyBorn && !m_isBorned && m_enemyIndex < m_pWifi->GetWifiLevels().size())// m_pWifi->GetWifiLevels().size()
+	if (m_isEnemyBorn && !m_isBorned && m_enemyIndex < 5)// m_pWifi->GetWifiLevels().size()
 	{
 		if (m_enemyBornTimer >= m_enemyBornInterval)// ˆê’èŠÔŒo‰ß‚µ‚½‚ç
 		{

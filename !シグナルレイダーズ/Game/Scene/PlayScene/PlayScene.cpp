@@ -29,12 +29,8 @@ PlayScene::PlayScene(IScene::SceneID sceneID)
 	m_commonResources{},
 	m_projection{},
 	m_isChangeScene{ false },
-	m_angle{ 0.0f },
 	m_pStage{ nullptr },
 	m_pEffect{},
-	m_isFade{ false },
-	m_volume{ 1.0f },
-	m_counter{ 0 },
 	m_fade{},
 	m_fadeState{ },
 	m_fadeTexNum{ 2 },
@@ -43,6 +39,7 @@ PlayScene::PlayScene(IScene::SceneID sceneID)
 	m_SEvolume{ VOLUME },
 	m_mouseSensitivity{ },
 	m_nowSceneID{ sceneID }
+
 {}
 //---------------------------------------------------------
 // デストラクタ
@@ -86,6 +83,9 @@ void PlayScene::Initialize(CommonResources* resources)
 	// スカイボックス生成
 	m_skybox = std::make_unique<SkyBox>();
 	m_skybox->Initialize(resources);
+	// 敵カウンター
+	m_pEnemyCounter = std::make_unique<EnemyCounter>();
+	m_pEnemyCounter->Initialize(resources);
 	// プリミティブバッチを作成する
 	m_primitiveBatch = std::make_unique<DX11::PrimitiveBatch<DX11::VertexPositionColor>>(context);
 	// フェードの初期化
@@ -128,7 +128,9 @@ void PlayScene::Update(float elapsedTime)
 	m_pWall->Update(elapsedTime);
 	m_audioManager->Update();// オーディオマネージャーの更新
 	m_pEnemies->Update(elapsedTime);// 敵の更新
-
+	m_pEnemyCounter->SetEnemyIndex(m_pEnemies->GetEnemyIndex());// 敵の総数を取得
+	m_pEnemyCounter->SetNowEnemy(m_pEnemies->GetEnemySize());// 現在の敵の数を取得
+	m_pEnemyCounter->Update(elapsedTime);// 敵カウンターの更新
 	// プレイヤーのHPが0以下、または敵がいないなら
 	if (m_pPlayer->GetPlayerHP() <= 0.0f || (m_pEnemies->GetEnemy().size() <= 0 && m_pEnemies->GetisBorned()))
 	{
@@ -162,7 +164,8 @@ void PlayScene::Render()
 	m_pEnemies->Render();
 	// プレイヤーを描画する
 	m_pPlayer->Render();
-
+	// 敵カウンターを描画する
+	m_pEnemyCounter->Render();
 	// レーダーを描画する
 	m_pRadar->Render();
 	// フェードの描画
