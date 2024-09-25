@@ -52,8 +52,6 @@ void PlayScene::Initialize(CommonResources* resources)
 {
 	assert(resources);
 	m_commonResources = resources;
-	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto DR = m_commonResources->GetDeviceResources();
 
 
@@ -86,8 +84,6 @@ void PlayScene::Initialize(CommonResources* resources)
 	// 敵カウンター
 	m_pEnemyCounter = std::make_unique<EnemyCounter>();
 	m_pEnemyCounter->Initialize(resources);
-	// プリミティブバッチを作成する
-	m_primitiveBatch = std::make_unique<DX11::PrimitiveBatch<DX11::VertexPositionColor>>(context);
 	// フェードの初期化
 	m_fade = std::make_unique<Fade>(m_commonResources);
 	m_fade->Create(DR);
@@ -96,18 +92,7 @@ void PlayScene::Initialize(CommonResources* resources)
 	// レーダーを初期化する
 	m_pRadar = std::make_unique<Radar>(resources);
 	m_pRadar->Initialize(m_pPlayer.get(), m_pEnemies.get());
-	// ベーシックエフェクトを作成する
-	m_basicEffect = std::make_unique<BasicEffect>(device);
-	m_basicEffect->SetVertexColorEnabled(true);
-	// 入力レイアウトを作成する
-	DX::ThrowIfFailed(
-		CreateInputLayoutFromEffect<VertexPositionColor>
-		(
-			device,
-			m_basicEffect.get(),
-			m_inputLayout.ReleaseAndGetAddressOf()
-		)
-	);
+
 	// Sound用のオブジェクトを初期化する
 	InitializeFMOD();
 }
@@ -172,11 +157,7 @@ void PlayScene::Render()
 	// フェードの描画
 	m_fade->Render();
 
-#ifdef _DEBUG// プレイヤーのHPを表示する
-	// デバッグ情報を「DebugString」で表示する
-	auto debugString = m_commonResources->GetDebugString();
-	debugString->AddString("HP:%f", m_pPlayer->GetPlayerHP());
-#endif
+
 }
 //---------------------------------------------------------
 // 後始末する

@@ -29,6 +29,6 @@ namespace kumachi
 
 		//	アクセサ
 		char* GetData() { return m_data.get(); }
-		unsigned int GetSize() { return m_size; }
+		unsigned int GetSize() const { return m_size; }
 	};
 }

@@ -140,13 +140,13 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	lightDir.Normalize();
 	// ‰es—ñ‚ÌŒ³‚ðì‚é
 	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, -0.01f));
-	Matrix mat = enemyWorld * shadowMatrix;
+	enemyWorld *= shadowMatrix;
 	// ‰e•`‰æ
-	m_model->Draw(context, *states, mat * Matrix::Identity, view, proj, true, [&]()
+	m_model->Draw(context, *states, enemyWorld * Matrix::Identity, view, proj, true, [&]()
 				  {
-					  context->OMSetBlendState(states->Opaque(), nullptr, 0xffffffff);
-					  context->OMSetDepthStencilState(m_depthStencilState_Shadow.Get(), 1);
-					  context->RSSetState(states->CullNone());
+					  context->OMSetBlendState(states->AlphaBlend(), nullptr, 0xffffffff);
+					  context->OMSetDepthStencilState(m_depthStencilState_Shadow.Get(), 0);
+					  context->RSSetState(states->CullClockwise());
 					  context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
 				  });
 	// •`‰æ‚·‚é

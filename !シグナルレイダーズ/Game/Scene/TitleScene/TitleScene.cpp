@@ -67,9 +67,6 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_pBackGround->Create(DR);
 	// FPSカメラを作成する
 	m_camera = std::make_unique<FPS_Camera>();
-	// 指示画像を作成
-	m_pPressKey = std::make_unique<PressKey>(m_commonResources);
-	m_pPressKey->Initialize();
 	// タイトルロゴを作成
 	m_pTitleLogo = std::make_unique<TitleLogo>(m_commonResources);
 	m_pTitleLogo->Create(DR);
@@ -123,8 +120,6 @@ void TitleScene::Update(float elapsedTime)
 	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;
 	// BGMの再生
 	m_audioManager->PlaySound("BGM", m_BGMvolume);
-	// 指示画像の更新
-	m_pPressKey->Update(elapsedTime);
 	// 背景の更新
 	m_pBackGround->Update(elapsedTime);
 	// フェードの更新

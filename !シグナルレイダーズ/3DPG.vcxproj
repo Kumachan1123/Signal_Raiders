@@ -220,7 +220,6 @@
     <ClInclude Include="Game\Scene\ResultScene\ResultScene.h" />
     <ClInclude Include="Game\Scene\IScene.h" />
     <ClInclude Include="Game\Scene\PlayScene\PlayScene.h" />
-    <ClInclude Include="Game\Scene\PressKey\PressKey.h" />
     <ClInclude Include="Game\Scene\ResultScene\ResultMenu\ResultMenu.h" />
     <ClInclude Include="Game\Scene\ResultScene\ResultUI\ResultUI.h" />
     <ClInclude Include="Game\Scene\ResultScene\Result\Result.h" />
@@ -294,7 +293,6 @@
     <ClCompile Include="Game\Radar\Radar.cpp" />
     <ClCompile Include="Game\Scene\ResultScene\ResultScene.cpp" />
     <ClCompile Include="Game\Scene\PlayScene\PlayScene.cpp" />
-    <ClCompile Include="Game\Scene\PressKey\PressKey.cpp" />
     <ClCompile Include="Game\Scene\ResultScene\ResultMenu\ResultMenu.cpp" />
     <ClCompile Include="Game\Scene\ResultScene\ResultUI\ResultUI.cpp" />
     <ClCompile Include="Game\Scene\ResultScene\Result\Result.cpp" />

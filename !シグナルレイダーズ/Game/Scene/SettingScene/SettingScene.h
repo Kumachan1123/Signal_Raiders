@@ -8,7 +8,6 @@
 #include "Game/Fade/Fade.h"
 #include "Game/Scene/BackGround/BackGround.h"
 #include "Game/KumachiLib/AudioManager.h"
-#include "Game/Scene/PressKey/PressKey.h"
 #include "Game/Scene/SettingScene/SettingMenu/SettingMenu.h"
 #include "Game/Scene/SettingScene/SettingBar/SettingBar.h"
 #include "Game/Scene/SettingScene/SettingData/SettingData.h"
@@ -33,8 +32,6 @@ private:
 	Fade::FadeState m_fadeState;
 	// 背景
 	std::unique_ptr<BackGround> m_pBackGround;
-	// 指示
-	std::unique_ptr<PressKey> m_pPressKey;
 	// メニュー
 	std::unique_ptr<SettingMenu> m_pSettingMenu;
 	// 設定バー

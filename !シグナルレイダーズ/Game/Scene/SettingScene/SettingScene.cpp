@@ -35,7 +35,11 @@ SettingScene::SettingScene(IScene::SceneID sceneID)
 	m_fadeTexNum{ 0 },
 	m_pBackGround{ nullptr },
 	m_audioManager{ AudioManager::GetInstance() },
-	m_nowSceneID{ sceneID }
+	m_nowSceneID{ sceneID },
+	m_pSettingMenu{},
+	m_pSettingBar{},
+	m_pSettingData{}
+
 {}
 
 
@@ -66,9 +70,6 @@ void SettingScene::Initialize(CommonResources* resources)
 	m_pBackGround->Create(DR);
 	// FPSカメラを作成する
 	m_camera = std::make_unique<FPS_Camera>();
-	// 指示画像を作成
-	m_pPressKey = std::make_unique<PressKey>(m_commonResources);
-	m_pPressKey->Initialize();
 	// セッティングメニューを作成
 	m_pSettingMenu = std::make_unique<SettingMenu>();
 	m_pSettingMenu->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
@@ -125,14 +126,12 @@ void SettingScene::Update(float elapsedTime)
 	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;
 	// BGMの再生
 	m_audioManager->PlaySound("BGM", m_BGMvolume);
-	// 指示画像の更新
-	m_pPressKey->Update(elapsedTime);
+
 	// 背景の更新
 	m_pBackGround->Update(elapsedTime);
 	// フェードの更新
 	m_pFade->Update(elapsedTime);
-	// 指示画像の更新
-	m_pPressKey->Update(elapsedTime);
+
 
 }
 //---------------------------------------------------------
@@ -148,7 +147,6 @@ void SettingScene::Render()
 	{
 		m_pSettingMenu->Render();
 		m_pSettingBar->Render();
-		//m_pPressKey->Render();
 	}
 	// フェードの描画
 	m_pFade->Render();

@@ -9,7 +9,6 @@
 #include "Game/Scene/BackGround/BackGround.h"
 #include "Game/Scene/TitleLogo/TitleLogo.h"
 #include "Game/KumachiLib/AudioManager.h"
-#include "Game/Scene/PressKey/PressKey.h"
 #include "Game/Scene/TitleScene/Menu/Menu.h"
 #include "Game/Scene/SettingScene/SettingMenu/SettingMenu.h"
 #include "Game/Scene/SettingScene/SettingBar/SettingBar.h"
@@ -37,8 +36,7 @@ private:
 	std::unique_ptr<BackGround> m_pBackGround;
 	// タイトルロゴ
 	std::unique_ptr<TitleLogo> m_pTitleLogo;
-	// 指示
-	std::unique_ptr<PressKey> m_pPressKey;
+
 	// メニュー
 	std::unique_ptr<Menu> m_pMenu;
 	// 設定データ
