@@ -50,6 +50,9 @@ void Player::Initialize(Enemies* pEnemies)
 	// 弾
 	m_pPlayerBullets = std::make_unique<PlayerBullets>(m_commonResources);
 	m_pPlayerBullets->Initialize(this, m_pEnemies);
+	// 危険状態
+	m_pCrisis = std::make_unique<Crisis>(m_commonResources);
+	m_pCrisis->Create(DR);
 }
 
 void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>& kb, float elapsedTime)
@@ -99,6 +102,8 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 	m_pPlayerBullets->Update(elapsedTime);
 	// HP更新
 	m_pPlayerHP->Update(m_playerHP);
+	// 体力が10以下になったら危機状態更新
+	if (m_playerHP <= 10.0f)m_pCrisis->Update(elapsedTime);
 	// 照準更新
 	m_pPlayerPointer->Update();
 	m_inPlayerArea.Center = GetPlayerController()->GetPlayerPosition();// プレイヤーの位置を取得
@@ -107,6 +112,7 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 
 void Player::Render()
 {
+	if (m_playerHP <= 10.0f)m_pCrisis->Render();// 危機状態描画
 	m_pPlayerHP->Render();// HP描画
 	m_pPlayerPointer->Render();// 照準描画
 	m_pPlayerBullets->Render();// 弾描画

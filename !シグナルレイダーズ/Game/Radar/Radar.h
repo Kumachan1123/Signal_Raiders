@@ -100,7 +100,7 @@ public:
 	void Render();
 
 	// テクスチャの読み込み
-	void LoadTexture(const wchar_t* path, RadarState type);
+	void LoadTexture(const wchar_t* path, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& tex);
 
 	void DrawBackground();// 背景を描画する
 	void DrawPlayer();// プレイヤーを描画する

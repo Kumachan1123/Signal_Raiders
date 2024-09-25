@@ -211,6 +211,7 @@
     <ClInclude Include="Game\Player\PlayerBullet\PlayerBullet.h" />
     <ClInclude Include="Game\Player\PlayerController\PlayerController.h" />
     <ClInclude Include="Game\KumachiLib\Anchor.h" />
+    <ClInclude Include="Game\Player\PlayerUI\Crisis\Crisis.h" />
     <ClInclude Include="Game\Player\PlayerUI\PlayerHP\PlayerHP.h" />
     <ClInclude Include="Game\Player\PlayerUI\PlayerPointer\PlayerPointer.h" />
     <ClInclude Include="Game\Player\PlayerUI\PlayerUI.h" />
@@ -286,6 +287,7 @@
     <ClCompile Include="Game\Player\PlayerBullets\PlayerBullets.cpp" />
     <ClCompile Include="Game\Player\PlayerBullet\PlayerBullet.cpp" />
     <ClCompile Include="Game\Player\PlayerController\PlayerController.cpp" />
+    <ClCompile Include="Game\Player\PlayerUI\Crisis\Crisis.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\PlayerHP\PlayerHP.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\PlayerPointer\PlayerPointer.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\PlayerUI.cpp" />

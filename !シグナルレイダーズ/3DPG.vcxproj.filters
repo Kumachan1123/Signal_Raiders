@@ -279,6 +279,7 @@
     <ClInclude Include="Game\Stage\Wall\Wall.h" />
     <ClInclude Include="Game\Radar\Radar.h" />
     <ClInclude Include="Game\Enemy\EnemyCounter\EnemyCounter.h" />
+    <ClInclude Include="Game\Player\PlayerUI\Crisis\Crisis.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -409,6 +410,7 @@
     <ClCompile Include="Game\Stage\Wall\Wall.cpp" />
     <ClCompile Include="Game\Radar\Radar.cpp" />
     <ClCompile Include="Game\Enemy\EnemyCounter\EnemyCounter.cpp" />
+    <ClCompile Include="Game\Player\PlayerUI\Crisis\Crisis.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

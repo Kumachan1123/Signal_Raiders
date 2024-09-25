@@ -5,6 +5,7 @@
 #include "Game/Player/PlayerBullets/PlayerBullets.h"
 #include "Game/Player/PlayerUI/PlayerHP/PlayerHP.h"
 #include "Game/Player/PlayerUI/PlayerPointer/PlayerPointer.h"
+#include "Game/Player/PlayerUI/Crisis/Crisis.h"
 #include "Game/Enemy/Enemies/Enemies.h"
 #include "Game/FPS_Camera/FPS_Camera.h"
 // 前方宣言
@@ -12,6 +13,9 @@ class CommonResources;
 class PlayerController;
 class PlayerUI;
 class PlayerBullets;
+class PlayerPointer;
+class PlayerHP;
+class Crisis;
 class FPS_Camera;
 class Enemies;
 class Player
@@ -28,7 +32,7 @@ private:
 	// カメラ
 	std::unique_ptr<FPS_Camera> m_pCamera;
 	// プレイヤーのHP
-	float m_playerHP = 100.0f;
+	float m_playerHP;
 	// プレイヤーのHPのUI
 	std::unique_ptr <PlayerHP> m_pPlayerHP;
 	// プレイヤーの弾
@@ -37,6 +41,8 @@ private:
 	std::unique_ptr<PlayerPointer> m_pPlayerPointer;
 	// プレイヤーコントローラー
 	std::unique_ptr<PlayerController> m_pPlayerController;
+	// 危機状態
+	std::unique_ptr<Crisis> m_pCrisis;
 	// 境界球
 	DirectX::BoundingSphere m_inPlayerArea;// プレイヤーと敵との一定範囲内での境界球
 	DirectX::BoundingSphere m_playerSphere;// プレイヤーの境界球

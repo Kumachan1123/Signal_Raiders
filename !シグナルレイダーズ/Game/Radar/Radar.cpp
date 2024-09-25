@@ -36,28 +36,14 @@ Radar::Radar(CommonResources* commonResources)
 Radar::~Radar()
 {
 }
-void Radar::LoadTexture(const wchar_t* path, RadarState type)
+void Radar::LoadTexture(const wchar_t* path, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& tex)
 {
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;
 	DirectX::CreateWICTextureFromFile(device, path, nullptr, texture.ReleaseAndGetAddressOf());
-	// 指定したタイプによってテクスチャを設定
-	switch (type)
-	{
-		case Radar::RadarState::Background:
-			m_backTexture = texture;
-			break;
-		case Radar::RadarState::Player:
-			m_playerTexture = texture;
-			break;
-		case Radar::RadarState::Enemy:
-			m_enemyTexture = texture;
-			break;
-		default:
-			break;
-	}
-
+	tex = texture;
 }
+
 //---------------------------------------------------------
 // 初期化
 //---------------------------------------------------------
@@ -74,9 +60,9 @@ void Radar::Initialize(Player* pPlayer, Enemies* pEnemies)
 	m_states = std::make_unique<CommonStates>(device);
 
 	// 画像の読み込み 
-	LoadTexture(L"Resources/Textures/RadarBack.png", RadarState::Background);
-	LoadTexture(L"Resources/Textures/PlayerPin.png", RadarState::Player);
-	LoadTexture(L"Resources/Textures/EnemyPin.png", RadarState::Enemy);
+	LoadTexture(L"Resources/Textures/RadarBack.png", m_backTexture);
+	LoadTexture(L"Resources/Textures/PlayerPin.png", m_playerTexture);
+	LoadTexture(L"Resources/Textures/EnemyPin.png", m_enemyTexture);
 	//	コンパイルされたシェーダファイルを読み込み
 	kumachi::BinaryFile VSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/Radar/VS_Radar.cso");
 	kumachi::BinaryFile PSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/Radar/PS_Radar.cso");
@@ -156,6 +142,7 @@ void Radar::Render()
 
 
 }
+
 
 //---------------------------------------------------------
 // 背景描画
