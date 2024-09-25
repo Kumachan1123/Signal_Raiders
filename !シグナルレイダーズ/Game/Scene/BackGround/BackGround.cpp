@@ -91,8 +91,8 @@ void  BackGround::CreateShader()
 	ID3D11Device1* device = m_pDR->GetD3DDevice();
 
 	//	コンパイルされたシェーダファイルを読み込み
-	kumachi::BinaryFile VSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/TitleScene/VS_TitleBack.cso");
-	kumachi::BinaryFile PSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/TitleScene/PS_TitleBack.cso");
+	kumachi::BinaryFile VSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/CRT/VS_CRT.cso");
+	kumachi::BinaryFile PSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/CRT/PS_CRT.cso");
 
 	//	インプットレイアウトの作成
 	device->CreateInputLayout(&INPUT_LAYOUT[0],
