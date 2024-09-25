@@ -347,8 +347,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Resources\Shaders\CRT\PS_CRT.cso" />
-    <None Include="Resources\Shaders\CRT\VS_CRT.cso" />
     <None Include="Resources\Shaders\PlayerHP\GS_PlayerHP.cso" />
     <None Include="Resources\Shaders\PlayerHP\PlayerHP.hlsli" />
     <None Include="Resources\Shaders\PlayerHP\PS_PlayerHP.cso" />

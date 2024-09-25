@@ -39,6 +39,9 @@ Crisis::Crisis(CommonResources* resources)
 	, m_constBuffer()
 {
 	m_commonResources = resources;
+	// 色の初期化
+	m_constBuffer.colors = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 0.0f);
+
 }
 
 /// <summary>
@@ -130,12 +133,20 @@ void  Crisis::Update(float elapsedTime)
 	//	時間更新（m_timeを0.1ずつ増やし、１を超えたら０からやり直し）
 	m_time += elapsedTime;
 	// 色の更新
-	// alpha値を0.7fから0.9fまでを往復する
-	m_constBuffer.colors.w = 0.8f + 0.1f * sin(m_time * .50f);
+	// alpha値が0.7f未満だったらまず0.9fまで少しずつ上げる
+	if (m_constBuffer.colors.w < 0.7f)
+	{
+		m_constBuffer.colors.w += 0.15f * elapsedTime;
+	}
+	else
+	{
+		// alpha値を0.7fから0.9fまでを往復する
+		m_constBuffer.colors.w = 0.8f + 0.1f * sin(m_time);
+	}
 
 
-	//	色の更新
-	m_constBuffer.colors = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, m_constBuffer.colors.w);
+
+	m_constBuffer.colors = DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, m_constBuffer.colors.w);
 
 }
 
