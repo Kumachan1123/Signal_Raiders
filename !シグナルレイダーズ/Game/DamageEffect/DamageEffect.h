@@ -1,13 +1,11 @@
 //--------------------------------------------------------------------------------------
-// File: Crisis.h
+// File: DamageEffect.h
 //
-// 危険状態クラス
+// 攻撃を受けた時の演出クラス
 //
 //-------------------------------------------------------------------------------------
 
 #pragma once
-
-
 #include "Game/CommonResources.h"
 #include <DeviceResources.h>
 #include <SimpleMath.h>
@@ -17,8 +15,10 @@
 #include <WICTextureLoader.h>
 #include <CommonStates.h>
 #include <vector>
+#include "Game/Player/Player.h"
+class Player;
 class CommonResources;
-class Crisis
+class DamageEffect
 {
 public:
 	// データ受け渡し用コンスタントバッファ(送信側)
@@ -29,9 +29,9 @@ public:
 		DirectX::SimpleMath::Matrix matProj;    // プロジェクション行列
 		DirectX::SimpleMath::Vector4 colors;    // カラー
 		float time = 0.0f;                             // 時間
-		DirectX::SimpleMath::Vector3 padding;// パディング
+		DirectX::SimpleMath::Vector2 uv;// uv座標
+		float padding = 0.0f;// パディング
 	}m_constBuffer;
-
 private:
 	//	変数
 	DX::DeviceResources* m_pDR;
@@ -39,6 +39,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_cBuffer;
 	// 共通リソース
 	CommonResources* m_commonResources;
+	// プレイヤーのポインター
+	Player* m_pPlayer;
 	//	入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 
@@ -61,17 +63,30 @@ private:
 
 	// 時間
 	float m_time;
+	// 攻撃してきた敵のいる向き
+	DirectX::SimpleMath::Vector3 m_enemyDirection;
+	// プレイヤーの向き
+	DirectX::SimpleMath::Vector3 m_playerDirection;
+
+	// 固定値
+	// 板ポリゴンのXサイズ
+	const float SIZE_X = 0.0625;
+	// 板ポリゴンのYサイズ
+	const float SIZE_Y = 0.11;
+	// 拡大率
+	const float SCALE = 5.0f;
 public:
 	//	関数
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 
-	Crisis(CommonResources* resources);
-	~Crisis();
+	DamageEffect(CommonResources* resources);
+	~DamageEffect();
 
 	void LoadTexture(const wchar_t* path);
 
 	void Create(DX::DeviceResources* pDR);
 
+	void Initialize(Player* pPlayer);
 	void Update(float elapsedTime);
 
 	void Render();

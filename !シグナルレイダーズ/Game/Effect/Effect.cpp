@@ -1,6 +1,6 @@
 /*
-	@file	Particle.cpp
-	@brief	パーティクルクラス
+	@file	Effect.cpp
+	@brief	エフェクトクラス
 	作成者：くまち
 */
 #include "pch.h"

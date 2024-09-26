@@ -257,7 +257,6 @@
     <ClInclude Include="Game\Scene\BackGround\BackGround.h" />
     <ClInclude Include="Game\KumachiLib\AudioManager.h" />
     <ClInclude Include="Game\Scene\TitleLogo\TitleLogo.h" />
-    <ClInclude Include="Game\Scene\PressKey\PressKey.h" />
     <ClInclude Include="Game\Enemy\Enemies\Enemies.h" />
     <ClInclude Include="Game\Player\Player.h" />
     <ClInclude Include="Game\Player\PlayerBullet\PlayerBullet.h" />
@@ -280,6 +279,7 @@
     <ClInclude Include="Game\Radar\Radar.h" />
     <ClInclude Include="Game\Enemy\EnemyCounter\EnemyCounter.h" />
     <ClInclude Include="Game\Player\PlayerUI\Crisis\Crisis.h" />
+    <ClInclude Include="Game\DamageEffect\DamageEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -388,7 +388,6 @@
     <ClCompile Include="Game\Scene\BackGround\BackGround.cpp" />
     <ClCompile Include="Game\KumachiLib\AudioManager.cpp" />
     <ClCompile Include="Game\Scene\TitleLogo\TitleLogo.cpp" />
-    <ClCompile Include="Game\Scene\PressKey\PressKey.cpp" />
     <ClCompile Include="Game\Enemy\Enemies\Enemies.cpp" />
     <ClCompile Include="Game\Player\Player.cpp" />
     <ClCompile Include="Game\Player\PlayerBullet\PlayerBullet.cpp" />
@@ -411,6 +410,7 @@
     <ClCompile Include="Game\Radar\Radar.cpp" />
     <ClCompile Include="Game\Enemy\EnemyCounter\EnemyCounter.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\Crisis\Crisis.cpp" />
+    <ClCompile Include="Game\DamageEffect\DamageEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -445,12 +445,14 @@
     <FxCompile Include="Resources\Shaders\TitleScene\VS_Title.hlsl" />
     <FxCompile Include="Resources\Shaders\Fade\VS_Fade.hlsl" />
     <FxCompile Include="Resources\Shaders\Fade\PS_Fade.hlsl" />
-    <FxCompile Include="Resources\Shaders\TitleScene\PS_TitleBack.hlsl" />
-    <FxCompile Include="Resources\Shaders\TitleScene\VS_TitleBack.hlsl" />
     <FxCompile Include="Resources\Shaders\TitleScene\Menu\GS_Menu.hlsl" />
     <FxCompile Include="Resources\Shaders\TitleScene\Menu\PS_Menu.hlsl" />
     <FxCompile Include="Resources\Shaders\TitleScene\Menu\VS_Menu.hlsl" />
     <FxCompile Include="Resources\Shaders\Radar\VS_Radar.hlsl" />
     <FxCompile Include="Resources\Shaders\Radar\PS_Radar.hlsl" />
+    <FxCompile Include="Resources\Shaders\CRT\PS_CRT.hlsl" />
+    <FxCompile Include="Resources\Shaders\CRT\VS_CRT.hlsl" />
+    <FxCompile Include="Resources\Shaders\DamageEffect\PS_Damage.hlsl" />
+    <FxCompile Include="Resources\Shaders\DamageEffect\VS_Damage.hlsl" />
   </ItemGroup>
 </Project>

@@ -81,6 +81,10 @@ void PlayScene::Initialize(CommonResources* resources)
 	// スカイボックス生成
 	m_skybox = std::make_unique<SkyBox>();
 	m_skybox->Initialize(resources);
+	// ダメージエフェクト生成
+	m_pDamageEffect = std::make_unique<DamageEffect>(resources);
+	m_pDamageEffect->Initialize(m_pPlayer.get());
+	m_pDamageEffect->Create(DR);
 	// 敵カウンター
 	m_pEnemyCounter = std::make_unique<EnemyCounter>();
 	m_pEnemyCounter->Initialize(resources);
@@ -125,6 +129,8 @@ void PlayScene::Update(float elapsedTime)
 	}
 	// レーダーを更新する
 	m_pRadar->Update(elapsedTime);
+	// ダメージエフェクトを更新する
+	if (m_pPlayer->GetisPlayerDamage())m_pDamageEffect->Update(elapsedTime);
 	// 画面遷移フェード処理
 	m_fade->Update(elapsedTime);
 	// フェードアウトが終了したら
@@ -154,6 +160,8 @@ void PlayScene::Render()
 	m_pEnemyCounter->Render();
 	// レーダーを描画する
 	m_pRadar->Render();
+	// ダメージエフェクトを描画する
+	if (m_pPlayer->GetisPlayerDamage())m_pDamageEffect->Render();
 	// フェードの描画
 	m_fade->Render();
 

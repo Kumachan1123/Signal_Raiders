@@ -50,6 +50,7 @@ void EnemyBullets::Update(float elapsedTime, DirectX::SimpleMath::Vector3 enemyP
 			if (m_pEnemy->GetBulletHitToPlayer())
 			{
 				m_pEnemy->SetBulletHitToPlayer(m_pEnemy->GetBulletHitToPlayer());// プレイヤーに当たったフラグを設定
+				m_pEnemy->GetPlayer()->SetEnemyBulletDirection(bullet->GetBulletDirection());// プレイヤーにダメージを与える敵の向きを設定
 				m_pEnemy->GetPlayer()->SetisPlayerDamage(true);// プレイヤーにダメージを与える
 				continue;
 			}

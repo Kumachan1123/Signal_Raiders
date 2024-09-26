@@ -26,6 +26,7 @@
 #include "Game/Fade/Fade.h"
 #include "Game/KumachiLib/AudioManager.h"
 #include "Game/Radar/Radar.h"
+#include "Game/DamageEffect/DamageEffect.h"
 // 前方宣言
 class CommonResources;
 namespace mylib
@@ -64,6 +65,8 @@ private:
 	DirectX::SimpleMath::Matrix m_view;
 	// エフェクト
 	std::vector<std::unique_ptr<Effect>> m_pEffect;
+	// ダメージエフェクト
+	std::unique_ptr<DamageEffect> m_pDamageEffect;
 	// 敵カウンター
 	std::unique_ptr<EnemyCounter> m_pEnemyCounter;
 

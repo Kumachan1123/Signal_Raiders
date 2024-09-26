@@ -56,6 +56,7 @@ public:
 	void MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir, DirectX::SimpleMath::Vector3& target);
 	//Getter
 	DirectX::SimpleMath::Vector3 GetBulletPosition()const { return m_position; }
+	DirectX::SimpleMath::Vector3 GetBulletDirection()const { return m_direction; }
 	DirectX::BoundingSphere& GetBoundingSphere() { return m_boundingSphere; }
 	float GetPlayerPositionY()const { return m_position.y; }
 	float GetTime()const { return m_time; }

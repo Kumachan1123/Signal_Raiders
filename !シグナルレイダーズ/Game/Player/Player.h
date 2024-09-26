@@ -46,6 +46,8 @@ private:
 	// 境界球
 	DirectX::BoundingSphere m_inPlayerArea;// プレイヤーと敵との一定範囲内での境界球
 	DirectX::BoundingSphere m_playerSphere;// プレイヤーの境界球
+	// 攻撃してきた敵の向き
+	DirectX::SimpleMath::Vector3 m_enemyDir;
 	// プレイヤーがダメージを食らった時
 	bool m_isDamage = false;
 	// プレイヤーがダメージを食らった時の時間
@@ -75,10 +77,13 @@ public:
 	DirectX::BoundingSphere GetInPlayerArea() const { return m_inPlayerArea; }// プレイヤーと敵との一定範囲内での境界球
 	float GetVolume() const { return m_SEVolume; }// 音量取得
 	float GetMouseSensitive() const { return m_mouseSensitive; }// マウス感度
+	DirectX::SimpleMath::Vector3 GetEnemyDir() const { return m_enemyDir; }// 攻撃してきた敵の向き
+	bool GetisPlayerDamage() const { return m_isDamage; }	// プレイヤーがダメージを受けたか
 	// Setter
 public:
 	void SetPlayerHP(float playerHP) { m_playerHP = playerHP; }	// プレイヤーのHP
 	void SetisPlayerDamage(bool isDamage) { m_isDamage = isDamage; }// プレイヤーがダメージを受けたか
 	void SetVolume(float volume) { m_SEVolume = volume; }// 音量取得
 	void SetMouseSensitive(float sensitive) { m_mouseSensitive = sensitive; }// マウス感度
+	void SetEnemyBulletDirection(DirectX::SimpleMath::Vector3 enemyDir) { m_enemyDir = enemyDir; }// 攻撃してきた敵の向き
 };
