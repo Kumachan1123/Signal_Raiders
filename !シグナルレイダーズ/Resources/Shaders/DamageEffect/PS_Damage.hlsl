@@ -7,7 +7,7 @@ cbuffer ConstBuffer : register(b0)
     float4 color; // 色
     float time; // 時間
     float2 uv; // uv座標
-    float padding; // パディング
+    float alpha; // アルファ
 };
 
 
@@ -47,8 +47,8 @@ float4 main(PS_INPUT input) : SV_TARGET
     float3 rgb = lerp(float3(1.0, 0.5, 0.0), float3(3.0, 0.0, 0.0), corona);
 
     // アルファ値を光の弧に基づいて調整する
-    float alpha = (1.0 - corona);
+    float a = (color.a - corona);
 
     // 色を返す（中心に近づくほど白くなるように赤色と白色を適用）
-    return float4(rgb, alpha);
+    return float4(rgb, a);
 }

@@ -86,6 +86,17 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 	// プレイヤーがダメージを受けた時、カメラをsin波を使って上下に揺らす
 	if (m_isDamage)
 	{
+		// 攻撃を食らったらダメージエフェクトを生成
+		if (m_isPlayEffect)
+		{
+			// ダメージエフェクト生成
+			auto damageEffect = std::make_unique<DamageEffect>(m_commonResources);
+			damageEffect->Initialize(this);
+			damageEffect->Create(m_commonResources->GetDeviceResources());
+			damageEffect->SetEnemyDirection(GetEnemyDir());// ダメージを受けた敵の向きを設定
+			m_pDamageEffect.push_back(std::move(damageEffect));
+			m_isPlayEffect = false;// ダメージエフェクトを生成したらfalse
+		}
 		// ダメージを受けた時の処理
 		// カメラを上下に揺らす
 		m_pCamera->SetTargetPositionY(m_pPlayerController->GetPitch() + sin(m_damageTime * 70.0f) * 0.15f);
@@ -106,6 +117,20 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 	if (m_playerHP <= 10.0f)m_pCrisis->Update(elapsedTime);
 	// 照準更新
 	m_pPlayerPointer->Update();
+	// ダメージエフェクトを更新する
+	std::vector<std::unique_ptr<DamageEffect>> newDE;
+	for (auto& damageEffect : m_pDamageEffect)
+	{
+		// 更新する
+		damageEffect->Update(elapsedTime);
+		// 再生が終わったダメージエフェクトだったら次のエフェクトへ
+		if (damageEffect->Destroy())continue;
+		// 再生が終了していないエフェクトは新しいリストに移動
+		newDE.push_back(std::move(damageEffect));
+	}
+	// ダメージエフェクトを新しいリストに置き換える
+	m_pDamageEffect = std::move(newDE);
+	// プレイヤーの境界球を更新
 	m_inPlayerArea.Center = GetPlayerController()->GetPlayerPosition();// プレイヤーの位置を取得
 	m_playerSphere.Center = m_inPlayerArea.Center;// プレイヤーの位置を取得
 }
@@ -116,4 +141,9 @@ void Player::Render()
 	m_pPlayerHP->Render();// HP描画
 	m_pPlayerPointer->Render();// 照準描画
 	m_pPlayerBullets->Render();// 弾描画
+	// ダメージエフェクトを更新する
+	for (auto& damageEffect : m_pDamageEffect)
+	{
+		damageEffect->Render();
+	}
 }

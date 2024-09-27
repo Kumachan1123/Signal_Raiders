@@ -6,6 +6,7 @@
 #include "Game/Player/PlayerUI/PlayerHP/PlayerHP.h"
 #include "Game/Player/PlayerUI/PlayerPointer/PlayerPointer.h"
 #include "Game/Player/PlayerUI/Crisis/Crisis.h"
+#include "Game/DamageEffect/DamageEffect.h"
 #include "Game/Enemy/Enemies/Enemies.h"
 #include "Game/FPS_Camera/FPS_Camera.h"
 // 前方宣言
@@ -16,6 +17,7 @@ class PlayerBullets;
 class PlayerPointer;
 class PlayerHP;
 class Crisis;
+class DamageEffect;
 class FPS_Camera;
 class Enemies;
 class Player
@@ -39,6 +41,8 @@ private:
 	std::unique_ptr<PlayerBullets> m_pPlayerBullets;
 	// 照準
 	std::unique_ptr<PlayerPointer> m_pPlayerPointer;
+	// ダメージエフェクト
+	std::vector<std::unique_ptr<DamageEffect>> m_pDamageEffect;
 	// プレイヤーコントローラー
 	std::unique_ptr<PlayerController> m_pPlayerController;
 	// 危機状態
@@ -50,6 +54,7 @@ private:
 	DirectX::SimpleMath::Vector3 m_enemyDir;
 	// プレイヤーがダメージを食らった時
 	bool m_isDamage = false;
+	bool m_isPlayEffect = false;// エフェクト再生フラグ
 	// プレイヤーがダメージを食らった時の時間
 	float m_damageTime = 0.0f;
 	// SEの音量
@@ -79,6 +84,7 @@ public:
 	float GetMouseSensitive() const { return m_mouseSensitive; }// マウス感度
 	DirectX::SimpleMath::Vector3 GetEnemyDir() const { return m_enemyDir; }// 攻撃してきた敵の向き
 	bool GetisPlayerDamage() const { return m_isDamage; }	// プレイヤーがダメージを受けたか
+	bool GetisPlayEffect() const { return m_isPlayEffect; }// エフェクト再生フラグ
 	// Setter
 public:
 	void SetPlayerHP(float playerHP) { m_playerHP = playerHP; }	// プレイヤーのHP
@@ -86,4 +92,5 @@ public:
 	void SetVolume(float volume) { m_SEVolume = volume; }// 音量取得
 	void SetMouseSensitive(float sensitive) { m_mouseSensitive = sensitive; }// マウス感度
 	void SetEnemyBulletDirection(DirectX::SimpleMath::Vector3 enemyDir) { m_enemyDir = enemyDir; }// 攻撃してきた敵の向き
+	void SetisPlayEffect(bool isPlayEffect) { m_isPlayEffect = isPlayEffect; }// エフェクト再生フラグ
 };

@@ -165,7 +165,6 @@ void PlayerController::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardS
 	if (m_position.x >= 98.5f) m_position.x = 98.5f;
 	if (m_position.z <= -98.5f) m_position.z = -98.5f;
 	if (m_position.z >= 98.5f) m_position.z = 98.5f;
-
 	// マウス位置を中央に戻す
 	SetCursorPos(m_point.x, m_point.y);
 }

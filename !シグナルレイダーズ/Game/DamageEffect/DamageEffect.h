@@ -30,7 +30,7 @@ public:
 		DirectX::SimpleMath::Vector4 colors;    // カラー
 		float time = 0.0f;                             // 時間
 		DirectX::SimpleMath::Vector2 uv;// uv座標
-		float padding = 0.0f;// パディング
+		float alpha = 0.0f;// アルファ値
 	}m_constBuffer;
 private:
 	//	変数
@@ -82,6 +82,7 @@ private:
 	const float UV_H = 0.9f;// 下
 	const float UV_C = 0.5f;// 中央
 
+
 public:
 	//	関数
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
@@ -97,6 +98,22 @@ public:
 	void Update(float elapsedTime);
 
 	void Render();
+
+	// getter
+	DirectX::SimpleMath::Vector3 GetEnemyDirection()const { return m_enemyDirection; }
+	bool Destroy()const
+	{
+		if (m_time >= 2.0f)
+		{
+
+			return true;
+
+		}
+
+		return false;
+	}
+	// setter
+	void SetEnemyDirection(DirectX::SimpleMath::Vector3 direction) { m_enemyDirection = direction; }
 private:
 
 	void CreateShader();

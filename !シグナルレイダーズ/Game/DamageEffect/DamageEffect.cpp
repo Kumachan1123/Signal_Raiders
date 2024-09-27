@@ -139,10 +139,21 @@ void  DamageEffect::CreateShader()
 //更新
 void  DamageEffect::Update(float elapsedTime)
 {
+
+	if (m_time >= 2.0f)
+	{
+		m_time = 0.0f;
+		m_constBuffer.colors.w = 0.0f;
+		m_pPlayer->SetisPlayEffect(false);
+		return;
+	}
 	// 時間更新
 	m_time += elapsedTime;
+	m_constBuffer.time = m_time;
+	// アルファ値(sin関数を使って二秒以内に0から1を往復する)
+	m_constBuffer.colors.w = 0.5f + 0.5f * sin(m_time * 2.0f);
 	// 攻撃してきた敵のいる向き
-	m_enemyDirection = m_pPlayer->GetEnemyDir();
+	//m_enemyDirection = m_pPlayer->GetEnemyDir();
 	// プレイヤーの向き
 	m_playerDirection = m_pPlayer->GetPlayerDir();
 	// プレイヤーの向きと敵の向きの差から0から360の間の角度を求める
@@ -154,23 +165,25 @@ void  DamageEffect::Update(float elapsedTime)
 	{
 		angle += 360;
 	}
-	// プレイヤーの向きによってUV座標を変える(0=左,前、1=右,後)
-	// 角度が22.5から67.5の間だったら
-	if (angle >= 22.5 && angle <= 67.5)			m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_W, UV_H);// 右後
-	// 角度が67.5から112.5の間だったら
-	else if (angle > 67.5 && angle <= 112.5)	m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_W, UV_C);// 右
-	// 角度が112.5から157.5の間だったら
-	else if (angle > 112.5 && angle <= 157.5)	m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_W, UV_Y);// 右前
-	// 角度が157.5から202.5の間だったら
-	else if (angle > 157.5 && angle <= 202.5)	m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_C, UV_Y);// 前
-	// 角度が202.5から247.5の間だったら
-	else if (angle > 202.5 && angle <= 247.5)	m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_X, UV_Y);// 左前
-	// 角度が247.5から292.5の間だったら
-	else if (angle > 247.5 && angle <= 292.5)	m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_X, UV_C);// 左
-	// 角度が292.5から337.5の間だったら
-	else if (angle > 292.5 && angle <= 337.5)	m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_X, UV_H);// 左後
-	// 角度が337.5から22.5の間だったら
-	else										m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_C, UV_H);// 後
+	// プレイヤーの向きによってUV座標を変える（16方向）
+	if (angle >= 11.25 && angle < 33.75)           m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_W, UV_H); // 右後1
+	else if (angle >= 33.75 && angle < 56.25)      m_constBuffer.uv = DirectX::SimpleMath::Vector2((UV_W + UV_C) / 2, UV_H); // 右後2
+	else if (angle >= 56.25 && angle < 78.75)      m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_W, (UV_H + UV_C) / 2); // 右後3
+	else if (angle >= 78.75 && angle < 101.25)     m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_W, UV_C); // 右
+	else if (angle >= 101.25 && angle < 123.75)    m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_W, (UV_Y + UV_C) / 2); // 右前1
+	else if (angle >= 123.75 && angle < 146.25)    m_constBuffer.uv = DirectX::SimpleMath::Vector2((UV_W + UV_C) / 2, UV_Y); // 右前2
+	else if (angle >= 146.25 && angle < 168.75)    m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_W, UV_Y); // 右前3
+	else if (angle >= 168.75 && angle < 191.25)    m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_C, UV_Y); // 前
+	else if (angle >= 191.25 && angle < 213.75)    m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_X, UV_Y); // 左前3
+	else if (angle >= 213.75 && angle < 236.25)    m_constBuffer.uv = DirectX::SimpleMath::Vector2((UV_X + UV_C) / 2, UV_Y); // 左前2
+	else if (angle >= 236.25 && angle < 258.75)    m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_X, (UV_Y + UV_C) / 2); // 左前1
+	else if (angle >= 258.75 && angle < 281.25)    m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_X, UV_C); // 左
+	else if (angle >= 281.25 && angle < 303.75)    m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_X, (UV_H + UV_C) / 2); // 左後1
+	else if (angle >= 303.75 && angle < 326.25)    m_constBuffer.uv = DirectX::SimpleMath::Vector2((UV_X + UV_C) / 2, UV_H); // 左後2
+	else if (angle >= 326.25 && angle < 348.75)    m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_X, UV_H); // 左後3
+	else                                            m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_C, UV_H); // 後
+
+
 
 }
 
@@ -196,7 +209,7 @@ void  DamageEffect::Render()
 	m_constBuffer.matView = m_view.Transpose();
 	m_constBuffer.matProj = m_proj.Transpose();
 	m_constBuffer.matWorld = m_world.Transpose();
-	m_constBuffer.time = m_time;
+
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(m_cBuffer.Get(), 0, NULL, &m_constBuffer, 0, 0);
 	//	シェーダーにバッファを渡す
@@ -222,13 +235,6 @@ void  DamageEffect::Render()
 	//	シェーダをセットする
 	context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
 	context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
-
-	//	Create関数で読み込んだ画像をピクセルシェーダに登録する。
-	//for (int i = 0; i < m_texture.size(); i++)
-	//{
-	//	//	for文で一気に設定する
-	//	context->PSSetShaderResources(i, 1, m_texture[i].GetAddressOf());
-	//}
 
 	//	インプットレイアウトの登録
 	context->IASetInputLayout(m_inputLayout.Get());
