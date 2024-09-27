@@ -156,21 +156,21 @@ void  DamageEffect::Update(float elapsedTime)
 	}
 	// プレイヤーの向きによってUV座標を変える(0=左,前、1=右,後)
 	// 角度が22.5から67.5の間だったら
-	if (angle >= 22.5 && angle <= 67.5)			m_constBuffer.uv = DirectX::SimpleMath::Vector2(1.0f, 1.0f);// 右後
+	if (angle >= 22.5 && angle <= 67.5)			m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_W, UV_H);// 右後
 	// 角度が67.5から112.5の間だったら
-	else if (angle > 67.5 && angle <= 112.5)	m_constBuffer.uv = DirectX::SimpleMath::Vector2(1.0f, 0.5f);// 右
+	else if (angle > 67.5 && angle <= 112.5)	m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_W, UV_C);// 右
 	// 角度が112.5から157.5の間だったら
-	else if (angle > 112.5 && angle <= 157.5)	m_constBuffer.uv = DirectX::SimpleMath::Vector2(1.0f, 0.0f);// 右前
+	else if (angle > 112.5 && angle <= 157.5)	m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_W, UV_Y);// 右前
 	// 角度が157.5から202.5の間だったら
-	else if (angle > 157.5 && angle <= 202.5)	m_constBuffer.uv = DirectX::SimpleMath::Vector2(0.5f, 0.0f);// 前
+	else if (angle > 157.5 && angle <= 202.5)	m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_C, UV_Y);// 前
 	// 角度が202.5から247.5の間だったら
-	else if (angle > 202.5 && angle <= 247.5)	m_constBuffer.uv = DirectX::SimpleMath::Vector2(0.0f, 0.0f);// 左前
+	else if (angle > 202.5 && angle <= 247.5)	m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_X, UV_Y);// 左前
 	// 角度が247.5から292.5の間だったら
-	else if (angle > 247.5 && angle <= 292.5)	m_constBuffer.uv = DirectX::SimpleMath::Vector2(0.0f, 0.5f);// 左
+	else if (angle > 247.5 && angle <= 292.5)	m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_X, UV_C);// 左
 	// 角度が292.5から337.5の間だったら
-	else if (angle > 292.5 && angle <= 337.5)	m_constBuffer.uv = DirectX::SimpleMath::Vector2(0.0f, 1.0f);// 左後
+	else if (angle > 292.5 && angle <= 337.5)	m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_X, UV_H);// 左後
 	// 角度が337.5から22.5の間だったら
-	else										m_constBuffer.uv = DirectX::SimpleMath::Vector2(0.5f, 1.0f);// 後
+	else										m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_C, UV_H);// 後
 
 }
 

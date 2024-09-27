@@ -75,6 +75,13 @@ private:
 	const float SIZE_Y = 0.11;
 	// Šg‘å—¦
 	const float SCALE = 5.0f;
+	// UVÀ•W
+	const float UV_X = 0.1f;// ¶
+	const float UV_Y = 0.1f;// ã
+	const float UV_W = 0.9f;// ‰E
+	const float UV_H = 0.9f;// ‰º
+	const float UV_C = 0.5f;// ’†‰›
+
 public:
 	//	ŠÖ”
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
