@@ -50,7 +50,7 @@ void PlayerBullets::Update(float elapsedTime)
 				if ((*it)->GetBoundingSphere().Intersects(enemy->GetBoundingSphere()))
 				{
 					isHit = true;
-					enemy->SetEnemyHP(enemy->GetHP() - (*it)->Damage());
+					enemy->SetHP(enemy->GetHP() - (*it)->Damage());
 					m_pEnemies->GetEffect().push_back(std::make_unique<Effect>(m_commonResources,
 																			   Effect::ParticleType::ENEMY_HIT,
 																			   enemy->GetPosition(),

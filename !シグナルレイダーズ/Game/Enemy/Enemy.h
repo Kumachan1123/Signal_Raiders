@@ -5,7 +5,7 @@
 */
 #pragma once
 #include "Game/KumachiLib/AudioManager.h"
-
+#include "Game/Interface/IEnemy.h"
 //前方宣言
 class CommonResources;
 class PlayScene;
@@ -16,35 +16,26 @@ class EnemyBullet;
 class EnemyModel;
 class EnemyBullets;
 class Enemies;
-class Enemy
+class Enemy : public IEnemy
 {
 private:
-	// 共通リソース
-	CommonResources* m_commonResources;
 	// プリミティブバッチ
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
-	// 	//デバッグ用
-	// ベーシックエフェクト
+	// デバッグ用
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
-	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
-	std::unique_ptr<DirectX::Model> m_model;// 影用のモデル
-	std::unique_ptr<EnemyModel>		m_enemyModel;// 敵のモデル
-	std::unique_ptr<EnemyAI>		m_enemyAI;// 敵のAI
-	std::unique_ptr<EnemyHPBar>		m_HPBar;// 敵のHPバー
-	std::unique_ptr<EnemyBullets>	m_enemyBullets;// 敵の弾
-	std::vector<std::unique_ptr<EnemyBullet>> m_bullets; // 弾のリスト
-	// プレイヤーのポインター
-	Player* m_pPlayer;
-	// 影の深度ステンシルステート
+
+	std::unique_ptr<DirectX::Model> m_model;          // 影用のモデル
+	std::unique_ptr<EnemyModel> m_enemyModel;         // 敵のモデル
+	std::unique_ptr<EnemyAI> m_enemyAI;               // 敵のAI
+	std::unique_ptr<EnemyHPBar> m_HPBar;              // 敵のHPバー
+	std::unique_ptr<EnemyBullets> m_enemyBullets;     // 敵の弾
+
+	// 影関連
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilState_Shadow;
-	// モデルの影
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilState>m_depthStencilState;
-	// 敵の情報
-	DirectX::SimpleMath::Vector3 m_position;		// 座標
-	DirectX::SimpleMath::Vector3 m_velocity;		// 速度
-	DirectX::SimpleMath::Vector3 m_rotate;		// 回転
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilState;
+
 	// 砲塔境界球
 	DirectX::BoundingSphere m_enemyBS;	//敵の境界球
 	DirectX::BoundingSphere m_enemyBSToPlayerArea;// 敵とPlayerとの一定範囲の当たり判定に使う
@@ -64,40 +55,14 @@ private:
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
 public:
-	//	getter
-	DirectX::BoundingSphere& GetBoundingSphere() { return m_enemyBS; }
-	DirectX::BoundingSphere& GetBulletBoundingSphere() { return m_enemyBulletBS; }
-	DirectX::BoundingSphere& GetPlayerBoundingSphere() { return m_playerBS; }
-	DirectX::SimpleMath::Matrix GetMatrix() const { return m_matrix; }
-	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
-	DirectX::SimpleMath::Vector3 GetVelocity() const { return m_velocity; }
-	DirectX::SimpleMath::Vector3 GetRotate() const { return m_rotate; }
-	Player* GetPlayer()const { return m_pPlayer; }
-	int GetHP() const { return m_currentHP; }
-	bool GetEnemyIsDead() const { return m_isDead; }
-	bool GetHitToPlayer()const { return m_isHit; }
-	bool GetHitToOtherEnemy() const { return m_isHitToOtherEnemy; }
-	bool GetBulletHitToPlayer() const { return m_isBullethit; }// 敵の弾がプレイヤーに当たったか
-	bool GetHitToPlayerBullet()const { return m_isHitToPlayerBullet; }
-	float GetToPlayerDamage() const { return PLAYER_DAMAGE; }
-	// setter
-	void SetPosition(DirectX::SimpleMath::Vector3& pos) { m_position = pos; }
-	void SetEnemyHP(int hp) { m_currentHP = hp; }
-	void SetHitToPlayer(bool isHitToPlayer) { m_isHit = isHitToPlayer; }
-	void SetHitToOtherEnemy(bool isHitToOtherEnemy) { m_isHitToOtherEnemy = isHitToOtherEnemy; }
-	void SetBulletBoundingSphere(DirectX::BoundingSphere& bs) { m_enemyBulletBS = bs; }
-	void SetPlayerBoundingSphere(DirectX::BoundingSphere playerBS) { m_playerBS = playerBS; }
-	void SetPlayerHP(float& HP) const { HP -= PLAYER_DAMAGE; }
-	void SetBulletHitToPlayer(bool hit) { m_isBullethit = hit; }// 敵の弾がプレイヤーに当たったか
-	void SetHitToPlayerBullet(bool hit) { m_isHitToPlayerBullet = hit; }
-public:
-	// 初期ステータスを設定
+	// コンストラクタ
 	Enemy(Player* pPlayer);
 	~Enemy();
-	void Initialize(CommonResources* resources, int hp);
-	void Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos);
-	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
-	void CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::BoundingSphere& B);
 
+	// インターフェースの実装
+	void Initialize(CommonResources* resources, int hp) override;
+	void Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos) override;
+	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;
+	void CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::BoundingSphere& B) override;
 
 };

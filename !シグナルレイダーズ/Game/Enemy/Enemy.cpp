@@ -24,31 +24,10 @@
 
 // コンストラクタ
 Enemy::Enemy(Player* pPlayer)
-	: m_enemyBS()
-	, m_commonResources{}
-	, m_currentHP{}
-	, m_attackCooldown{ 3.0f }
-	, m_enemyModel{}
+	: IEnemy(pPlayer)  // BaseEnemyのコンストラクタを呼び出す
 	, m_enemyAI{}
-	, m_HPBar{}
-	, m_bullets{}
-	, m_depthStencilState_Shadow{}
-	, m_pixelShader{}
-	, m_depthStencilState{}
-	, m_position{}
-	, m_velocity{}
-	, m_rotate{}
-	, m_enemyBSToPlayerArea{}
-	, m_enemyBulletBS{}
-	, m_playerBS{}
-	, m_matrix{}
-	, m_isDead{}
-	, m_isHit{}
-	, m_isHitToOtherEnemy{}
-	, m_isHitToPlayerBullet{}
-	, m_isBullethit{}
-	, m_audioManager{ AudioManager::GetInstance() }
-	, m_pPlayer{ pPlayer }
+	, m_enemyBullets{}
+
 {}
 // デストラクタ
 Enemy::~Enemy() {}
@@ -59,62 +38,30 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	// 共通リソースを設定
-	m_commonResources = resources;
-	// デバイスとコンテキストを取得
-	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
+	IEnemy::Initialize(resources, hp);  // BaseEnemyの初期化処理
 
-	// ベーシックエフェクトを作成する
-	m_basicEffect = std::make_unique<BasicEffect>(device);
-	m_basicEffect->SetVertexColorEnabled(true);
-
-	// 入力レイアウトを作成する
-	DX::ThrowIfFailed(
-		CreateInputLayoutFromEffect<VertexPositionColor>(
-			device,
-			m_basicEffect.get(),
-			m_inputLayout.ReleaseAndGetAddressOf()
-		)
-	);
-	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/PS_EnemyShadow.cso");
-	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pixelShader.ReleaseAndGetAddressOf()));
-	// モデルを読み込む準備
-	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);
-	fx->SetDirectory(L"Resources/Models/Enemy");
-	// 影用のモデルを読み込む
-	m_model = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy.cmo", *fx);
-	m_enemyModel = std::make_unique<EnemyModel>();
-	m_enemyModel->Initialize(m_commonResources);
-	// 敵の体力を設定
-	m_currentHP = hp;
-	// HPBar生成
-	m_HPBar = std::make_unique<EnemyHPBar>();
-	m_HPBar->SetEnemyHP(m_currentHP);
-	m_HPBar->Initialize(resources);
 	// AI生成
 	m_enemyAI = std::make_unique<EnemyAI>();
 	m_enemyAI->Initialize();
+
 	// 弾全体生成
 	m_enemyBullets = std::make_unique<EnemyBullets>(this);
 	m_enemyBullets->Initialize(resources);
-	// 乱数生成
-	std::random_device rd;  // シード生成器
-	std::mt19937 gen(rd()); // メルセンヌ・ツイスタの乱数生成器
-	std::uniform_real_distribution<float> dist(-50.0f, 50.0f); // 一様分布
+
+	// 乱数生成（位置の初期化）
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<float> dist(-50.0f, 50.0f);
 	m_position.x = dist(gen);
 	m_position.y = 6.0f;
 	m_position.z = dist(gen);
-	// プリミティブバッチを作成する
-	m_primitiveBatch = std::make_unique<DirectX::DX11::PrimitiveBatch<DirectX::DX11::VertexPositionColor>>(context);
-	// 敵の座標を設定
+
+	// AIに座標を設定
 	m_enemyAI->SetPosition(m_position);
+
 	// 境界球の初期化
 	m_enemyBS.Center = m_position;
 	m_enemyBS.Radius = 1.5f;
-	// オーディオマネージャー
-	m_audioManager->LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet");
-
 }
 // 描画
 void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
@@ -181,27 +128,33 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 // 更新
 void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 {
-	m_enemyModel->Update(elapsedTime, m_enemyAI->GetState());// モデルのアニメーション更新
-	m_enemyAI->Update(elapsedTime, m_position, playerPos, m_isHit, m_isHitToPlayerBullet);// AIの更新
-	m_audioManager->Update();// オーディオマネージャーの更新
-	if (m_enemyAI->GetNowState() == m_enemyAI->GetEnemyAttack())// 攻撃態勢なら
+	// BaseEnemyの更新処理を呼び出し
+	IEnemy::Update(elapsedTime, playerPos);
+
+	// AIの更新
+	m_enemyAI->Update(elapsedTime, m_position, playerPos, m_isHit, m_isHitToPlayerBullet);
+
+	// 攻撃処理
+	if (m_enemyAI->GetNowState() == m_enemyAI->GetEnemyAttack())
 	{
 		m_attackCooldown = m_enemyAI->GetEnemyAttack()->GetCoolTime();
-		// 攻撃のクールダウンタイムを管理
 		if (m_attackCooldown <= 0.1f)
 		{
-			m_audioManager->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
-			// クォータニオンから方向ベクトルを計算
+			m_audioManager->PlaySound("EnemyBullet", m_pPlayer->GetVolume());
 			DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_enemyAI->GetRotation());
-			// 弾を発射
 			m_enemyBullets->CreateBullet(GetPosition(), direction, playerPos);
-			// クールダウンタイムをリセット
 			m_enemyAI->GetEnemyAttack()->SetCoolTime(3.0f);
 		}
 	}
-	m_enemyBullets->Update(elapsedTime, GetPosition());// 敵の弾の更新
+
+	// 弾の更新
+	m_enemyBullets->Update(elapsedTime, GetPosition());
+
+	// 境界球の位置を更新
 	m_enemyBS.Center = m_position;
 	m_enemyBS.Center.y -= 2.0f;
+
+	// HPバーの更新
 	m_HPBar->Update(elapsedTime, m_currentHP);
 	m_isDead = m_HPBar->GetIsDead();
 }

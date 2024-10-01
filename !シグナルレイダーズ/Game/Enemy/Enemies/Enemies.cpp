@@ -14,6 +14,7 @@
 #include <Model.h>
 #include <Effects.h>
 #include <memory>
+#include <Game/Enemy/Enemy.h>
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -112,7 +113,7 @@ void Enemies::Update(float elapsedTime)
 		// 敵を更新
 		enemy->Update(elapsedTime, m_pPlayer->GetPlayerController()->GetPlayerPosition());
 		// 敵の弾がプレイヤーに当たったら
-		bool hit = enemy->GetBulletHitToPlayer();
+		bool hit = enemy->IsBulletHitToPlayer();
 		if (hit)
 		{
 			float playerHP = m_pPlayer->GetPlayerHP() - enemy->GetToPlayerDamage();//新しいHPを計算
@@ -137,12 +138,12 @@ void Enemies::Update(float elapsedTime)
 	}
 	// 敵の削除・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
 	// 削除対象を保持するベクター
-	std::vector<std::unique_ptr<Enemy>> enemiesToRemove;
+	std::vector<std::unique_ptr<IEnemy>> enemiesToRemove;
 	// 削除対象を収集する
 	for (auto it = m_enemy.begin(); it != m_enemy.end(); )
 	{
 		// 敵が死んでいたら
-		if ((*it)->GetEnemyIsDead())
+		if ((*it)->IsDead())
 		{
 			// 敵の座標を渡して爆破エフェクトを再生
 			m_effect.push_back(std::make_unique<Effect>(m_commonResources,
