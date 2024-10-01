@@ -63,7 +63,7 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 	DirectX::SimpleMath::Vector3 cameraDirection = m_pCamera->GetDirection();
 #ifdef _DEBUG// デバッグ
 	// 右クリックで敵を一掃
-	if (mtracker->GetLastState().rightButton)for (auto& enemy : m_pEnemies->GetEnemy())enemy->SetHP(0);
+	if (mtracker->GetLastState().rightButton)for (auto& enemy : m_pEnemies->GetEnemy())enemy->SetEnemyHP(0);
 	// スペースキーでプレイヤーのHPを0にする
 	if (kb->pressed.Space)SetPlayerHP(0.0f);
 #endif
@@ -114,7 +114,7 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 	// HP更新
 	m_pPlayerHP->Update(m_playerHP);
 	// 体力が10以下になったら危機状態更新
-	if (m_playerHP <= 20.0f)m_pCrisis->Update(elapsedTime);
+	if (m_playerHP <= 10.0f)m_pCrisis->Update(elapsedTime);
 	// 照準更新
 	m_pPlayerPointer->Update();
 	// ダメージエフェクトを更新する

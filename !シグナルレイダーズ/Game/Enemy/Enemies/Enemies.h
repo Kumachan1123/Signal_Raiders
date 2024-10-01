@@ -4,13 +4,13 @@
 	作成者：くまち
 */
 #pragma once
-#include "Game/Interface/IEnemy.h"
+#include "Game/Enemy/Enemy.h"
 #include "Game/Effect/Effect.h"
 #include "Game/Player/Player.h"
 #include "Game/Wifi/Wifi.h"
 // 前方宣言
 class CommonResources;
-class IEnemy;
+class Enemy;
 class Player;
 class Effect;
 class Wifi;
@@ -20,7 +20,7 @@ private:
 	// コモンリソース
 	CommonResources* m_commonResources;
 	// 敵
-	std::vector<std::unique_ptr<IEnemy>> m_enemy;
+	std::vector<std::unique_ptr<Enemy>> m_enemy;
 	// 敵生成フラグ
 	bool m_isEnemyBorn = false;
 	// 敵生成済み
@@ -37,7 +37,7 @@ private:
 	float m_startTime = 0.0f;
 	// wi-fi
 	std::unique_ptr<Wifi> m_pWifi;
-	// プレイヤー
+	// プレイヤーコントローラー
 	Player* m_pPlayer;
 	// エフェクト
 	std::vector<std::unique_ptr<Effect>> m_effect;
@@ -59,7 +59,7 @@ public:
 
 public:
 	// Getter
-	std::vector<std::unique_ptr<IEnemy>>& GetEnemy() { return m_enemy; } // 敵	
+	std::vector<std::unique_ptr<Enemy>>& GetEnemy() { return m_enemy; }// 敵
 	int GetEnemyIndex() const { return m_enemyIndex; }// 生成された敵の最大数
 	int GetEnemySize() const { return static_cast<int>(m_enemy.size()); }// 今、場にいる敵の数
 	std::unique_ptr<Wifi>& GetWifi() { return m_pWifi; }// Wi-Fi

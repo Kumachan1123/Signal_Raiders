@@ -8,7 +8,7 @@ using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 // コンストラクタ
-EnemyBullets::EnemyBullets(IEnemy* m_pEnemy)
+EnemyBullets::EnemyBullets(Enemy* m_pEnemy)
 	:m_commonResources{}
 	, m_pEnemy{ m_pEnemy }
 {
@@ -43,13 +43,13 @@ void EnemyBullets::Update(float elapsedTime, DirectX::SimpleMath::Vector3 enemyP
 		bullet->Update(enemyPos, elapsedTime); // 弾の更新
 
 		// 寿命を迎えていない弾だけを新しいリストに追加する
-		if (!bullet->IsExpired() && !m_pEnemy->IsBulletHitToPlayer())
+		if (!bullet->IsExpired() && !m_pEnemy->GetBulletHitToPlayer())
 		{
 			m_pEnemy->SetBulletBoundingSphere(bullet->GetBoundingSphere());
 			m_pEnemy->SetBulletHitToPlayer(m_pEnemy->GetBulletBoundingSphere().Intersects(m_pEnemy->GetPlayerBoundingSphere()));
-			if (m_pEnemy->IsBulletHitToPlayer())
+			if (m_pEnemy->GetBulletHitToPlayer())
 			{
-				m_pEnemy->SetBulletHitToPlayer(m_pEnemy->IsBulletHitToPlayer());// プレイヤーに当たったフラグを設定
+				m_pEnemy->SetBulletHitToPlayer(m_pEnemy->GetBulletHitToPlayer());// プレイヤーに当たったフラグを設定
 				m_pEnemy->GetPlayer()->SetEnemyBulletDirection(bullet->GetBulletDirection());// プレイヤーにダメージを与える敵の向きを設定
 				m_pEnemy->GetPlayer()->SetisPlayEffect(true);// エフェクト再生フラグを設定
 				m_pEnemy->GetPlayer()->SetisPlayerDamage(true);// プレイヤーにダメージを与える

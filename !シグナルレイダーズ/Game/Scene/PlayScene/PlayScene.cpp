@@ -114,13 +114,9 @@ void PlayScene::Update(float elapsedTime)
 	m_pWall->Update(elapsedTime);
 	m_audioManager->Update();// オーディオマネージャーの更新
 	m_pEnemies->Update(elapsedTime);// 敵の更新
-	if (m_pEnemies->GetEnemySize() > 0)// 敵がいるなら
-	{
-		m_pEnemyCounter->SetEnemyIndex(m_pEnemies->GetEnemyIndex());// 敵の総数を取得
-		m_pEnemyCounter->SetNowEnemy(m_pEnemies->GetEnemySize());// 現在の敵の数を取得
-		m_pEnemyCounter->Update(elapsedTime);// 敵カウンターの更新
-	}
-
+	m_pEnemyCounter->SetEnemyIndex(m_pEnemies->GetEnemyIndex());// 敵の総数を取得
+	m_pEnemyCounter->SetNowEnemy(m_pEnemies->GetEnemySize());// 現在の敵の数を取得
+	m_pEnemyCounter->Update(elapsedTime);// 敵カウンターの更新
 	// プレイヤーのHPが0以下、または敵がいないなら
 	if (m_pPlayer->GetPlayerHP() <= 0.0f ||
 		(m_pEnemies->GetEnemySize() <= 0 && m_pEnemies->GetisBorned()))
@@ -156,8 +152,8 @@ void PlayScene::Render()
 	m_pEnemies->Render();
 	// プレイヤーを描画する
 	m_pPlayer->Render();
-	if (m_pEnemies->GetEnemySize() > 0)// 敵がいるなら敵カウンターを描画する
-		m_pEnemyCounter->Render();
+	// 敵カウンターを描画する
+	m_pEnemyCounter->Render();
 	// レーダーを描画する
 	m_pRadar->Render();
 

@@ -191,12 +191,10 @@
     <ClInclude Include="Game\BulletTrail\BulletTrail.h" />
     <ClInclude Include="Game\CommonResources.h" />
     <ClInclude Include="Game\DamageEffect\DamageEffect.h" />
-    <ClInclude Include="Game\Enemy\Boss\Boss.h" />
     <ClInclude Include="Game\Enemy\Enemies\Enemies.h" />
     <ClInclude Include="Game\Enemy\EnemyBullets\EnemyBullets.h" />
     <ClInclude Include="Game\Enemy\EnemyCounter\EnemyCounter.h" />
     <ClInclude Include="Game\Fade\Fade.h" />
-    <ClInclude Include="Game\Interface\IEnemy.h" />
     <ClInclude Include="Game\KumachiLib\AudioManager.h" />
     <ClInclude Include="Game\Effect\Effect.h" />
     <ClInclude Include="Game\Enemy\Enemy.h" />
@@ -270,7 +268,6 @@
     <ClCompile Include="Game\BulletTrail\BulletTrail.cpp" />
     <ClCompile Include="Game\CommonResources.cpp" />
     <ClCompile Include="Game\DamageEffect\DamageEffect.cpp" />
-    <ClCompile Include="Game\Enemy\Boss\Boss.cpp" />
     <ClCompile Include="Game\Enemy\Enemies\Enemies.cpp" />
     <ClCompile Include="Game\Enemy\EnemyBullets\EnemyBullets.cpp" />
     <ClCompile Include="Game\Enemy\EnemyCounter\EnemyCounter.cpp" />

@@ -280,8 +280,6 @@
     <ClInclude Include="Game\Enemy\EnemyCounter\EnemyCounter.h" />
     <ClInclude Include="Game\Player\PlayerUI\Crisis\Crisis.h" />
     <ClInclude Include="Game\DamageEffect\DamageEffect.h" />
-    <ClInclude Include="Game\Enemy\Boss\Boss.h" />
-    <ClInclude Include="Game\Interface\IEnemy.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -413,7 +411,6 @@
     <ClCompile Include="Game\Enemy\EnemyCounter\EnemyCounter.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\Crisis\Crisis.cpp" />
     <ClCompile Include="Game\DamageEffect\DamageEffect.cpp" />
-    <ClCompile Include="Game\Enemy\Boss\Boss.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
