@@ -137,7 +137,7 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 
 void Player::Render()
 {
-	if (m_playerHP <= 10.0f)m_pCrisis->Render();// Šë‹@ó‘Ô•`‰æ
+	if (m_playerHP <= 10.0f)m_pCrisis->Render();// HP‚ª10ˆÈ‰º‚ÅŠë‹@ó‘Ô•`‰æ
 	m_pPlayerHP->Render();// HP•`‰æ
 	m_pPlayerPointer->Render();// Æ€•`‰æ
 	m_pPlayerBullets->Render();// ’e•`‰æ

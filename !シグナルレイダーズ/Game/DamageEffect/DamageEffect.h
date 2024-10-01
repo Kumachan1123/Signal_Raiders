@@ -74,7 +74,7 @@ private:
 	// 板ポリゴンのYサイズ
 	const float SIZE_Y = 0.11;
 	// 拡大率
-	const float SCALE = 5.0f;
+	const float SCALE = 10.0f;
 	// UV座標
 	const float UV_X = 0.1f;// 左
 	const float UV_Y = 0.1f;// 上
