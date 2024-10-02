@@ -6,6 +6,7 @@
 #include "Game/Scene/IScene.h"
 #include <DeviceResources.h>
 #include "Game/Fade/Fade.h"
+#include "Libraries/MyLib/DebugString.h"
 #include "Game/Scene/BackGround/BackGround.h"
 #include "Game/Scene/TitleLogo/TitleLogo.h"
 #include "Game/KumachiLib/AudioManager.h"
@@ -75,11 +76,4 @@ public:
 
 	SceneID GetNextSceneID() const;
 	void InitializeFMOD();
-
-private:
-
-
-
-	void DrawSpace();// スペースキー押してってやつ描画
-
 };

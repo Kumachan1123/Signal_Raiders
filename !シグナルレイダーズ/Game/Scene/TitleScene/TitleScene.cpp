@@ -13,6 +13,7 @@
 #include <cassert>
 #include "Game/KumachiLib//BinaryFile.h"
 #include <Libraries/Microsoft/DebugDraw.h>
+#include "Libraries/MyLib/DebugString.h"
 #include "Game/FPS_Camera/FPS_Camera.h"
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -120,7 +121,6 @@ void TitleScene::Update(float elapsedTime)
 	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;
 	// BGMの再生
 	m_audioManager->PlaySound("BGM", m_BGMvolume);
-	// 背景の更新
 	m_pBackGround->Update(elapsedTime);
 	// フェードの更新
 	m_pFade->Update(elapsedTime);
