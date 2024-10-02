@@ -4,13 +4,16 @@
 	作成者：くまち
 */
 #pragma once
+#include "Game/Interface/IEnemy.h"
 #include "Game/Enemy/Enemy.h"
+#include "Game/Enemy/Boss/Boss.h"
 #include "Game/Effect/Effect.h"
 #include "Game/Player/Player.h"
 #include "Game/Wifi/Wifi.h"
 // 前方宣言
 class CommonResources;
-class Enemy;
+class IEnemy;
+class Boss;
 class Player;
 class Effect;
 class Wifi;
@@ -20,7 +23,9 @@ private:
 	// コモンリソース
 	CommonResources* m_commonResources;
 	// 敵
-	std::vector<std::unique_ptr<Enemy>> m_enemy;
+	std::vector<std::unique_ptr<IEnemy>> m_enemies;
+	// ボス
+	std::unique_ptr<Boss> m_boss;
 	// 敵生成フラグ
 	bool m_isEnemyBorn = false;
 	// 敵生成済み
@@ -35,6 +40,12 @@ private:
 	float m_enemyBornTimer = 0.0f;
 	// 敵の生成開始時間
 	float m_startTime = 0.0f;
+	// ボス生成フラグ
+	bool m_isBossBorn = false;
+	// ボス生成済み
+	bool m_isBossBorned = false;
+	// ボス生存フラグ
+	bool m_isBossAlive = true;
 	// wi-fi
 	std::unique_ptr<Wifi> m_pWifi;
 	// プレイヤーコントローラー
@@ -59,12 +70,13 @@ public:
 
 public:
 	// Getter
-	std::vector<std::unique_ptr<Enemy>>& GetEnemy() { return m_enemy; }// 敵
+	std::vector<std::unique_ptr<IEnemy>>& GetEnemies() { return m_enemies; }  // 敵リスト
 	int GetEnemyIndex() const { return m_enemyIndex; }// 生成された敵の最大数
-	int GetEnemySize() const { return static_cast<int>(m_enemy.size()); }// 今、場にいる敵の数
+	int GetEnemySize() const { return static_cast<int>(m_enemies.size()); }
 	std::unique_ptr<Wifi>& GetWifi() { return m_pWifi; }// Wi-Fi
 	std::vector<std::unique_ptr<Effect>>& GetEffect() { return m_effect; }// エフェクト
 	bool GetisBorned() const { return m_isBorned; }// 敵生成済み
+	bool GetIsBossAlive() const { return m_isBossAlive; }// ボス生存フラグ
 	// Setter
 	void SetVolume(float volume) { m_SEVolume = volume; }// 音量取得
 };

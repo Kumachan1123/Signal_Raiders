@@ -25,8 +25,8 @@ private:
 	float  m_time = 0.0f;  // éûä‘ÇÃèâä˙âª
 public:
 	//	getter
-	DirectX::SimpleMath::Vector3 GetPosition() { return m_position; }
-	DirectX::SimpleMath::Quaternion GetRotation() { return m_rotation; }
+	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
+	DirectX::SimpleMath::Quaternion GetRotation() const { return m_rotation; }
 	//  setter
 	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }
 	void SetRotation(DirectX::SimpleMath::Quaternion rot) { m_rotation = rot; }

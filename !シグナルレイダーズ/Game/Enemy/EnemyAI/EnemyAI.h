@@ -20,10 +20,10 @@ class EnemyAI
 {
 private:
 	//•½í
-	std::unique_ptr<EnemyAttack> m_enemyAttack;
+
 	std::unique_ptr<EnemyIdling> m_enemyIdling;
 	//UŒ‚
-
+	std::unique_ptr<EnemyAttack> m_enemyAttack;
 	// Œ»İ‚Ìó‘Ô
 	IState* m_currentState;
 	IState::EnemyState m_enemyState;

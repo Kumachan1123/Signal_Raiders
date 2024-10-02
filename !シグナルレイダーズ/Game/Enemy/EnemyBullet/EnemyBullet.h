@@ -73,8 +73,7 @@ public:
 
 		return GetTime() >= BULLET_LIFETIME;
 	}
-	// “G‚Éƒ_ƒ[ƒW‚ğ—^‚¦‚é
-	int Damage()const { return DAMAGE; }
+
 };
 #endif //ENEMY_BULLET_DEFINED
 

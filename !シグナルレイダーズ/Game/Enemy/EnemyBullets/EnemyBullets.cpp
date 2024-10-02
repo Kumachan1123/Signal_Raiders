@@ -13,9 +13,9 @@ using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 // コンストラクタ
-EnemyBullets::EnemyBullets(Enemy* m_pEnemy)
+EnemyBullets::EnemyBullets(IEnemy* pEnemy)
 	:m_commonResources{}
-	, m_pEnemy{ m_pEnemy }
+	, m_pEnemy{ pEnemy }
 {
 }
 
@@ -35,9 +35,9 @@ void EnemyBullets::Update(float elapsedTime, DirectX::SimpleMath::Vector3 enemyP
 {
 	std::vector<std::unique_ptr<EnemyBullet>> newBullets;
 	Vector3 position = m_pEnemy->GetPosition();
-	Vector3 playerPos = m_pEnemy->GetPlayer()->GetCamera()->GetEyePosition();
-	Vector3 playerTarget = m_pEnemy->GetPlayer()->GetCamera()->GetTargetPosition();
-	Vector3 playerUp = m_pEnemy->GetPlayer()->GetCamera()->GetUpVector();
+	Vector3 playerPos = m_pEnemy->GetCamera()->GetEyePosition();
+	Vector3 playerTarget = m_pEnemy->GetCamera()->GetTargetPosition();
+	Vector3 playerUp = m_pEnemy->GetCamera()->GetUpVector();
 
 	// 弾の更新と有効な弾を新しいリストに移動する
 	for (auto& bullet : m_bullets)

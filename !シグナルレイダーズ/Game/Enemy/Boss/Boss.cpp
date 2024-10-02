@@ -1,11 +1,11 @@
 /*
-	@file	Enemy.cpp
-	@brief	敵クラス
+	@file	Boss.cpp
+	@brief	ボスクラス
 	作成者：くまち
 */
 #include "pch.h"
 #include <SimpleMath.h>
-#include "Game/Enemy/Enemy.h"
+#include "Game/Enemy/Boss/Boss.h"
 #include "Game/CommonResources.h"
 #include "Game/Enemy/EnemyAI/EnemyAI.h"
 #include "Game/Enemy/EnemyHPBar/EnemyHPBar.h"
@@ -23,18 +23,18 @@
 #include <Libraries/Microsoft/DebugDraw.h>
 
 // コンストラクタ
-Enemy::Enemy(Player* pPlayer)
+Boss::Boss(Player* pPlayer)
 	: IEnemy(pPlayer)
 	, m_pPlayer{ pPlayer }
 	, m_pCamera{ pPlayer->GetCamera() }
-	, m_enemyBS{}
+	, m_enemyBS()
 	, m_commonResources{}
 	, m_currentHP{}
 	, m_attackCooldown{ 3.0f }
 	, m_enemyModel{}
 	, m_enemyAI{}
 	, m_HPBar{}
-	, m_bullets{}
+	//	, m_bullets{}
 	, m_depthStencilState_Shadow{}
 	, m_pixelShader{}
 	, m_depthStencilState{}
@@ -52,14 +52,13 @@ Enemy::Enemy(Player* pPlayer)
 	, m_isBullethit{}
 	, m_audioManager{ AudioManager::GetInstance() }
 
-
 {}
 // デストラクタ
-Enemy::~Enemy() {}
+Boss::~Boss() {}
 //---------------------------------------------------------
 // 初期化する
 //---------------------------------------------------------
-void Enemy::Initialize(CommonResources* resources, int hp)
+void Boss::Initialize(CommonResources* resources, int hp)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
@@ -99,7 +98,7 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 	// AI生成
 	m_enemyAI = std::make_unique<EnemyAI>();
 	m_enemyAI->Initialize();
-	// 弾全体生成
+	//// 弾全体生成
 	m_enemyBullets = std::make_unique<EnemyBullets>(this);
 	m_enemyBullets->Initialize(resources);
 	// 乱数生成
@@ -107,7 +106,7 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 	std::mt19937 gen(rd()); // メルセンヌ・ツイスタの乱数生成器
 	std::uniform_real_distribution<float> dist(-50.0f, 50.0f); // 一様分布
 	m_position.x = dist(gen);
-	m_position.y = 6.0f;
+	m_position.y = 10.0f;
 	m_position.z = dist(gen);
 	// プリミティブバッチを作成する
 	m_primitiveBatch = std::make_unique<DirectX::DX11::PrimitiveBatch<DirectX::DX11::VertexPositionColor>>(context);
@@ -115,13 +114,13 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 	m_enemyAI->SetPosition(m_position);
 	// 境界球の初期化
 	m_enemyBS.Center = m_position;
-	m_enemyBS.Radius = 1.5f;
+	m_enemyBS.Radius = 2.0f;
 	// オーディオマネージャー
 	m_audioManager->LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet");
 
 }
 // 描画
-void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
@@ -132,7 +131,7 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 		* Matrix::CreateTranslation(m_position)
 		* Matrix::CreateTranslation(Vector3{ 0,-2,0 });
 	// 敵のサイズを設定
-	Matrix enemyWorld = Matrix::CreateScale(m_enemyAI->GetScale());
+	Matrix enemyWorld = Matrix::CreateScale(m_enemyAI->GetScale() * 2);
 	// 敵の座標を設定
 	enemyWorld *= world;
 	// HPBar描画
@@ -163,7 +162,7 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	m_basicEffect->SetView(view);
 	m_basicEffect->SetProjection(proj);
 	m_basicEffect->Apply(context);
-	// 敵の弾描画
+	//// 敵の弾描画
 	m_enemyBullets->Render(view, proj);
 #ifdef _DEBUG
 	m_primitiveBatch->Begin();
@@ -183,7 +182,7 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 
 }
 // 更新
-void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
+void Boss::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 {
 	m_enemyModel->Update(elapsedTime, m_enemyAI->GetState());// モデルのアニメーション更新
 	m_enemyAI->Update(elapsedTime, m_position, playerPos, m_isHit, m_isHitToPlayerBullet);// AIの更新
@@ -197,7 +196,7 @@ void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 			m_audioManager->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
 			// クォータニオンから方向ベクトルを計算
 			DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_enemyAI->GetRotation());
-			// 弾を発射
+			//// 弾を発射
 			m_enemyBullets->CreateBullet(GetPosition(), direction, playerPos);
 			// クールダウンタイムをリセット
 			m_enemyAI->GetEnemyAttack()->SetCoolTime(3.0f);
@@ -211,7 +210,7 @@ void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 }
 
 // オブジェクト同士が衝突したら押し戻す
-void Enemy::CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::BoundingSphere& B)
+void Boss::CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::BoundingSphere& B)
 {
 	using namespace DirectX::SimpleMath;
 	// 押し戻す処理

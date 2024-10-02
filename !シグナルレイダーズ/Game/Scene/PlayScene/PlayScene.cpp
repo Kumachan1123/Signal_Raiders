@@ -119,7 +119,7 @@ void PlayScene::Update(float elapsedTime)
 	m_pEnemyCounter->Update(elapsedTime);// 敵カウンターの更新
 	// プレイヤーのHPが0以下、または敵がいないなら
 	if (m_pPlayer->GetPlayerHP() <= 0.0f ||
-		(m_pEnemies->GetEnemySize() <= 0 && m_pEnemies->GetisBorned()))
+		(m_pEnemies->GetEnemySize() <= 0 && m_pEnemies->GetisBorned() && m_pEnemies->GetIsBossAlive() == false))
 	{
 		m_fade->SetTextureNum((int)(Fade::TextureNum::BLACK));
 		m_fade->SetState(Fade::FadeState::FadeOut);

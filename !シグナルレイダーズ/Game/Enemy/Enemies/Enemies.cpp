@@ -24,7 +24,8 @@ using namespace DirectX::SimpleMath;
 Enemies::Enemies(CommonResources* commonResources)
 	:
 	m_commonResources{ commonResources },
-	m_enemy{},
+	m_enemies{},
+	m_boss{},
 	m_isEnemyBorn{ false },
 	m_isBorned{ false },
 	m_enemyIndex{ 0 },
@@ -69,7 +70,8 @@ void Enemies::Update(float elapsedTime)
 	// 敵生成タイマーを更新
 	m_enemyBornTimer += elapsedTime;
 	// 敵の生成数
-	int enemyNum = static_cast<int>(m_pWifi->GetWifiLevels().size());// static_cast<int>(m_pWifi->GetWifiLevels().size()
+	//int enemyNum = static_cast<int>(m_pWifi->GetWifiLevels().size());// static_cast<int>(m_pWifi->GetWifiLevels().size()
+	int enemyNum = 2;
 	if (m_startTime >= 5.0f)m_isEnemyBorn = true;//生成可能にする
 	// 生成可能なら
 	if (m_isEnemyBorn && !m_isBorned && m_enemyIndex < enemyNum)
@@ -79,7 +81,7 @@ void Enemies::Update(float elapsedTime)
 			// 敵を生成する
 			auto enemy = std::make_unique<Enemy>(m_pPlayer);
 			enemy->Initialize(m_commonResources, m_pWifi->GetWifiLevels()[m_enemyIndex]);
-			m_enemy.push_back(std::move(enemy));
+			m_enemies.push_back(std::move(enemy));
 			// タイマーをリセットし、次のWi-Fiレベルのインデックスに進む
 			m_enemyBornTimer = 0.0f;
 			m_enemyIndex++;
@@ -89,24 +91,35 @@ void Enemies::Update(float elapsedTime)
 	if (m_enemyIndex >= enemyNum)
 	{
 		m_enemyBornTimer = 0.0f;
-		m_isEnemyBorn = false;
-		m_isBorned = true;
+		m_isEnemyBorn = false;// ザコ敵生成不可能にする
+		m_isBorned = true;// ザコ敵生成完了
 	}
+	// ザコ敵が全滅したらボスを生成
+	if (m_enemies.size() == 0 && m_isBorned && !m_isBossBorned)
+	{
+		m_isBossBorned = true;// ボス生成可能にする
+		m_enemies.clear();// ザコ敵を削除
+		m_boss = std::make_unique<Boss>(m_pPlayer);
+		m_boss->Initialize(m_commonResources, 500);
+		m_enemies.push_back(std::move(m_boss));// ボスを生成
+
+	}
+
 	// 敵同士の当たり判定・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
 	// 敵同士が重ならないようにする
-	for (size_t i = 0; i < m_enemy.size(); ++i)
+	for (size_t i = 0; i < m_enemies.size(); ++i)
 	{
-		for (size_t j = i + 1; j < m_enemy.size(); ++j)
+		for (size_t j = i + 1; j < m_enemies.size(); ++j)
 		{
-			bool hit = m_enemy[i]->GetBoundingSphere().Intersects(m_enemy[j]->GetBoundingSphere());// 敵同士が重なっていたら
-			m_enemy[i]->SetHitToOtherEnemy(hit);// 当たり判定を設定
-			m_enemy[j]->SetHitToOtherEnemy(hit);// 当たり判定を設定
-			if (hit)m_enemy[i]->CheckHitOtherObject(m_enemy[i]->GetBoundingSphere(), m_enemy[j]->GetBoundingSphere());// 敵同士が重なっていたら押し返す
+			bool hit = m_enemies[i]->GetBoundingSphere().Intersects(m_enemies[j]->GetBoundingSphere());// 敵同士が重なっていたら
+			m_enemies[i]->SetHitToOtherEnemy(hit);// 当たり判定を設定
+			m_enemies[j]->SetHitToOtherEnemy(hit);// 当たり判定を設定
+			if (hit)m_enemies[i]->CheckHitOtherObject(m_enemies[i]->GetBoundingSphere(), m_enemies[j]->GetBoundingSphere());// 敵同士が重なっていたら押し返す
 		}
 	}
 
 	// 敵とプレイヤーの一定範囲との当たり判定・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
-	for (auto& enemy : m_enemy)
+	for (auto& enemy : m_enemies)
 	{
 		m_isHitPlayerToEnemy = false;// フラグを初期化
 		// 敵を更新
@@ -135,12 +148,13 @@ void Enemies::Update(float elapsedTime)
 		enemy->SetHitToPlayer(m_isHitPlayerToEnemy);
 		enemy->SetPlayerBoundingSphere(m_pPlayer->GetPlayerSphere());
 	}
-	// 敵の削除・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+	// ザコ敵の削除・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
 	// 削除対象を保持するベクター
-	std::vector<std::unique_ptr<Enemy>> enemiesToRemove;
-	// 削除対象を収集する
-	for (auto it = m_enemy.begin(); it != m_enemy.end(); )
+	std::vector<std::unique_ptr<IEnemy>> enemiesToRemove;
+	// ザコ削除対象を収集する
+	for (auto it = m_enemies.begin(); it != m_enemies.end(); )
 	{
+
 		// 敵が死んでいたら
 		if ((*it)->GetEnemyIsDead())
 		{
@@ -150,12 +164,21 @@ void Enemies::Update(float elapsedTime)
 														(*it)->GetPosition(),
 														(*it)->GetMatrix()));
 			m_audioManager->PlaySound("EnemyDead", m_pPlayer->GetVolume() * 10);// 敵のSEを再生(こいつだけ音量10倍)
+			// もしも倒されたのがボスだったら
+			if (auto boss = dynamic_cast<Boss*>(it->get()))
+			{
+				// 生存フラグをfalseにする
+				m_isBossAlive = false;
+			}
 			enemiesToRemove.push_back(std::move(*it));// 削除対象に追加
-			it = m_enemy.erase(it);  // 削除してイテレータを更新
+
+			it = m_enemies.erase(it);  // 削除してイテレータを更新
 		}
+
 		else it++;  // 次の要素へ
 	}
 	m_pWifi->Clear();// Wi-Fiのクリア
+
 }
 
 //---------------------------------------------------------
@@ -166,7 +189,7 @@ void Enemies::Render()
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	Matrix view = m_pPlayer->GetCamera()->GetViewMatrix();
 	Matrix projection = m_pPlayer->GetCamera()->GetProjectionMatrix();
-	if (m_enemy.size() > 0)for (const auto& enemy : m_enemy)enemy->Render(view, projection);
+	if (m_enemies.size() > 0)for (const auto& enemy : m_enemies)enemy->Render(view, projection);
 	// エフェクトを描画する
 	GetEffect().erase
 	(std::remove_if(GetEffect().begin(), GetEffect().end(), [&](const std::unique_ptr<Effect>& effect)//	再生終了したパーティクルを削除する

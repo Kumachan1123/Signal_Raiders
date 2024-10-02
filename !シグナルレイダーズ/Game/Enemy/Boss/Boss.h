@@ -1,6 +1,6 @@
 /*
-	@file	Enemy.h
-	@brief	敵クラス
+	@file	Boss.h
+	@brief	ボスクラス
 	作成者：くまち
 */
 #pragma once
@@ -10,14 +10,14 @@
 class CommonResources;
 class PlayScene;
 class Player;
+class FPS_Camera;
 class EnemyAI;
 class EnemyHPBar;
 class EnemyBullet;
 class EnemyModel;
 class EnemyBullets;
 class Enemies;
-class FPS_Camera;
-class Enemy : public IEnemy
+class Boss : public IEnemy
 {
 private:
 	// 共通リソース
@@ -62,13 +62,13 @@ private:
 	bool m_isBullethit = false;// 敵の弾がプレイヤーに当たったか
 	float m_attackCooldown;  // 攻撃のクールダウンタイ
 	// プレイヤーに与えるダメージ
-	const float PLAYER_DAMAGE = 1.0f;
+	const float PLAYER_DAMAGE = 5.0f;
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
 public:
 	//	getter
 	DirectX::BoundingSphere& GetBoundingSphere() override { return m_enemyBS; }
-	DirectX::BoundingSphere& GetBulletBoundingSphere() override { return m_enemyBulletBS; }
+	DirectX::BoundingSphere& GetBulletBoundingSphere()override { return m_enemyBulletBS; }
 	DirectX::BoundingSphere& GetPlayerBoundingSphere() override { return m_playerBS; }
 	DirectX::SimpleMath::Matrix GetMatrix() const override { return m_matrix; }
 	DirectX::SimpleMath::Vector3 GetPosition() const override { return m_position; }
@@ -84,23 +84,23 @@ public:
 	bool GetHitToPlayerBullet()const override { return m_isHitToPlayerBullet; }
 	float GetToPlayerDamage() const override { return PLAYER_DAMAGE; }
 	// setter
-	void SetPosition(DirectX::SimpleMath::Vector3& pos)override { m_position = pos; }
-	void SetEnemyHP(int hp)override { m_currentHP = hp; }
+	void SetPosition(DirectX::SimpleMath::Vector3& pos) override { m_position = pos; }
+	void SetEnemyHP(int hp) override { m_currentHP = hp; }
 	void SetHitToPlayer(bool isHitToPlayer)override { m_isHit = isHitToPlayer; }
 	void SetHitToOtherEnemy(bool isHitToOtherEnemy) override { m_isHitToOtherEnemy = isHitToOtherEnemy; }
-	void SetBulletBoundingSphere(DirectX::BoundingSphere& bs)override { m_enemyBulletBS = bs; }
-	void SetPlayerBoundingSphere(DirectX::BoundingSphere playerBS)override { m_playerBS = playerBS; }
+	void SetBulletBoundingSphere(DirectX::BoundingSphere& bs) override { m_enemyBulletBS = bs; }
+	void SetPlayerBoundingSphere(DirectX::BoundingSphere playerBS) override { m_playerBS = playerBS; }
 	void SetPlayerHP(float& HP) const override { HP -= PLAYER_DAMAGE; }
-	void SetBulletHitToPlayer(bool hit)override { m_isBullethit = hit; }// 敵の弾がプレイヤーに当たったか
-	void SetHitToPlayerBullet(bool hit) override { m_isHitToPlayerBullet = hit; }
+	void SetBulletHitToPlayer(bool hit) override { m_isBullethit = hit; }// 敵の弾がプレイヤーに当たったか
+	void SetHitToPlayerBullet(bool hit)override { m_isHitToPlayerBullet = hit; }
 public:
 	// 初期ステータスを設定
-	Enemy(Player* pPlayer);
-	~Enemy();
+	Boss(Player* pPlayer);
+	~Boss();
 	void Initialize(CommonResources* resources, int hp) override;
-	void Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos) override;
-	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;
-	void CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::BoundingSphere& B) override;
+	void Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)override;
+	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;
+	void CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::BoundingSphere& B)override;
 
 
 };

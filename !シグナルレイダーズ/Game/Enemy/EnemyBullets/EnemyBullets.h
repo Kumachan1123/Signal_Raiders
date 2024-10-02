@@ -5,6 +5,7 @@
 */
 #pragma once
 #include "Game/Enemy/Enemy.h"
+#include "Game/Interface/IEnemy.h"
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 #include "Game/BulletTrail/BulletTrail.h"
 #include "Game/CommonResources.h"
@@ -15,7 +16,7 @@ class EnemyBullet;
 class BulletTrail;
 class Player;
 class Enemy;
-
+class IEnemy;
 class EnemyBullets
 {
 public:
@@ -23,13 +24,13 @@ public:
 	CommonResources* m_commonResources;// 共通リソース
 	DirectX::BoundingSphere m_enemyBulletBS;
 	DirectX::BoundingSphere m_playerBS;
-	Enemy* m_pEnemy;// 敵のポインター
+	IEnemy* m_pEnemy;// 敵のポインター
 	bool m_isBullethit = false;// 敵の弾がプレイヤーに当たったか
 	std::vector<std::unique_ptr<EnemyBullet>> m_bullets; // 弾のリスト
 	std::vector<std::unique_ptr<BulletTrail>> m_bulletTrails; // 弾の軌跡リスト
 	DirectX::SimpleMath::Vector3 m_position;		// 敵の座標
 	// 関数
-	EnemyBullets(Enemy* m_pEnemy);
+	EnemyBullets(IEnemy* pEnemy);
 	~EnemyBullets();
 	void Initialize(CommonResources* resources);
 	void Update(float elapsedTime, DirectX::SimpleMath::Vector3 enemyPos);

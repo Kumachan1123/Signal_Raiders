@@ -102,7 +102,7 @@ void Radar::Update(float elapsedTime)
 	// “G‚ÌˆÊ’u‚ðƒNƒŠƒA
 	m_enemyPos.clear();
 	// “G‚ÌˆÊ’u‚ðŽæ“¾
-	for (auto& enemy : m_pEnemies->GetEnemy())
+	for (auto& enemy : m_pEnemies->GetEnemies())
 	{
 		Vector3 enemyPos = enemy->GetPosition();
 		float distance = Vector3::Distance(m_playerPos, enemyPos);

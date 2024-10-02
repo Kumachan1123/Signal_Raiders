@@ -52,7 +52,7 @@ void PlayerBullets::Update(float elapsedTime)
 		else
 		{
 			bool isHit = false;
-			for (auto& enemy : m_pEnemies->GetEnemy())
+			for (auto& enemy : m_pEnemies->GetEnemies())
 			{
 				if ((*it)->GetBoundingSphere().Intersects(enemy->GetBoundingSphere()))
 				{

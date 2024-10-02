@@ -63,7 +63,7 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 	DirectX::SimpleMath::Vector3 cameraDirection = m_pCamera->GetDirection();
 #ifdef _DEBUG// デバッグ
 	// 右クリックで敵を一掃
-	if (mtracker->GetLastState().rightButton)for (auto& enemy : m_pEnemies->GetEnemy())enemy->SetEnemyHP(0);
+	if (mtracker->GetLastState().rightButton)for (auto& enemy : m_pEnemies->GetEnemies())enemy->SetEnemyHP(0);
 	// スペースキーでプレイヤーのHPを0にする
 	if (kb->pressed.Space)SetPlayerHP(0.0f);
 #endif
@@ -87,7 +87,7 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 	if (m_isDamage)
 	{
 		// 攻撃を食らったらダメージエフェクトを生成
-		if (m_isPlayEffect)
+		if (m_isPlayEffect == true)
 		{
 			// ダメージエフェクト生成
 			auto damageEffect = std::make_unique<DamageEffect>(m_commonResources);
