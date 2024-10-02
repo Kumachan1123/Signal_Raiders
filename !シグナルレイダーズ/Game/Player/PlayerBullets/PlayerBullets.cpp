@@ -12,9 +12,11 @@ PlayerBullets::PlayerBullets(CommonResources* commonResources)
 
 PlayerBullets::~PlayerBullets()
 {
-	// do nothing.
-
+	// ƒvƒŒƒCƒ„[‚Ì’e‚ğíœ
+	for (auto& bullet : m_playerBullet)bullet.reset();
+	m_playerBullet.clear();
 }
+
 
 void PlayerBullets::Initialize(Player* pPlayer, Enemies* pEnemies)
 {
