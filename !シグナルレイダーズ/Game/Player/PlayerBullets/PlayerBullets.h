@@ -1,3 +1,8 @@
+/*
+	@file	PlayerBullets.h
+	@brief	プレイヤーの弾全体を管理するクラス
+	作成者：くまち
+*/
 #pragma once
 #include "Game/Player/Player.h"
 #include "Game/Player/PlayerBullet/PlayerBullet.h"
@@ -45,4 +50,4 @@ public:
 public:
 	void SetIsBullet(bool isBullet) { m_isBullet = isBullet; }
 	void SetIsBulletBorned(bool isBulletBorned) { m_isBulletBorned = isBulletBorned; }
-}; // class PlayerBullets;
+};
