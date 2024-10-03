@@ -23,7 +23,7 @@ private:
 	CommonResources* m_commonResources;
 
 	DirectX::SimpleMath::Vector3 m_position;// エフェクトを再生する座標
-	float m_scale;
+	float m_scale;// エフェクトのスケール
 
 
 	// ワールド行列
@@ -74,7 +74,11 @@ public:
 	static const DirectX::VertexPositionTexture Vertices[4];
 public:
 
-	Effect(CommonResources* resources, ParticleType type, DirectX::SimpleMath::Vector3 PlayPos, DirectX::SimpleMath::Matrix world);// デバイスと再生位置を受け取る
+	Effect(CommonResources* resources,
+		   ParticleType type,
+		   DirectX::SimpleMath::Vector3 playPos,
+		   float scale,
+		   DirectX::SimpleMath::Matrix world);// 再生位置を受け取る
 	~Effect();
 	void Update(float elapsedTime);
 	void Render(ID3D11DeviceContext1* context, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);

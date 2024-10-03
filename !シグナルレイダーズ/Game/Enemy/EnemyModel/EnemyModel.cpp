@@ -1,6 +1,6 @@
 /*
-	@file	Enemy.cpp
-	@brief	敵クラス
+	@file	EnemyModel.cpp
+	@brief	敵モデルクラス
 	作成者：くまち
 */
 #include "pch.h"

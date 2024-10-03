@@ -14,7 +14,7 @@ class FPS_Camera;
 class EnemyAI;
 class EnemyHPBar;
 class EnemyBullet;
-class EnemyModel;
+class BossModel;
 class EnemyBullets;
 class Enemies;
 class Boss : public IEnemy
@@ -30,7 +30,7 @@ private:
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 	std::unique_ptr<DirectX::Model> m_model;// 影用のモデル
-	std::unique_ptr<EnemyModel>		m_enemyModel;// 敵のモデル
+	std::unique_ptr<BossModel>		m_bossModel;// 敵のモデル
 	std::unique_ptr<EnemyAI>		m_enemyAI;// 敵のAI
 	std::unique_ptr<EnemyHPBar>		m_HPBar;// 敵のHPバー
 	std::unique_ptr<EnemyBullets>	m_enemyBullets;// 敵の弾

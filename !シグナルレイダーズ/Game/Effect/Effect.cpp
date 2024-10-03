@@ -13,10 +13,10 @@
 using namespace DirectX;
 
 
-Effect::Effect(CommonResources* resources, ParticleType type, DirectX::SimpleMath::Vector3 PlayPos, DirectX::SimpleMath::Matrix world)
-	: m_position{ PlayPos }
+Effect::Effect(CommonResources* resources, ParticleType type, DirectX::SimpleMath::Vector3 playPos, float scale, DirectX::SimpleMath::Matrix world)
+	: m_position{ playPos }
 	, m_type{ type }
-	, m_scale{ 3.0f }
+	, m_scale{ scale }
 	, m_commonResources{ resources }
 	, m_world{ world }
 	, m_isPlaying{ true }

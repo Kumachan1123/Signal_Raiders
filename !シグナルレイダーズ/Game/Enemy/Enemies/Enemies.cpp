@@ -70,8 +70,8 @@ void Enemies::Update(float elapsedTime)
 	// 敵生成タイマーを更新
 	m_enemyBornTimer += elapsedTime;
 	// 敵の生成数
-	//int enemyNum = static_cast<int>(m_pWifi->GetWifiLevels().size());// static_cast<int>(m_pWifi->GetWifiLevels().size()
-	int enemyNum = 2;
+	int enemyNum = static_cast<int>(m_pWifi->GetWifiLevels().size());// static_cast<int>(m_pWifi->GetWifiLevels().size()
+	//int enemyNum = 2;
 	if (m_startTime >= 5.0f)m_isEnemyBorn = true;//生成可能にする
 	// 生成可能なら
 	if (m_isEnemyBorn && !m_isBorned && m_enemyIndex < enemyNum)
@@ -157,19 +157,29 @@ void Enemies::Update(float elapsedTime)
 
 		// 敵が死んでいたら
 		if ((*it)->GetEnemyIsDead())
-		{
-			// 敵の座標を渡して爆破エフェクトを再生
-			m_effect.push_back(std::make_unique<Effect>(m_commonResources,
-														Effect::ParticleType::ENEMY_DEAD,
-														(*it)->GetPosition(),
-														(*it)->GetMatrix()));
-			m_audioManager->PlaySound("EnemyDead", m_pPlayer->GetVolume() * 10);// 敵のSEを再生(こいつだけ音量10倍)
-			// もしも倒されたのがボスだったら
+		{	// もしも倒されたのがボスだったら
 			if (auto boss = dynamic_cast<Boss*>(it->get()))
 			{
-				// 生存フラグをfalseにする
-				m_isBossAlive = false;
+				// 敵の座標を渡して爆破エフェクトを再生
+				m_effect.push_back(std::make_unique<Effect>(m_commonResources,
+															Effect::ParticleType::ENEMY_DEAD,
+															(*it)->GetPosition(),
+															10.0f,
+															(*it)->GetMatrix()));
+				m_isBossAlive = false;// 生存フラグをfalseにする
 			}
+			else// ザコ敵だったら
+			{
+				// 敵の座標を渡して爆破エフェクトを再生
+				m_effect.push_back(std::make_unique<Effect>(m_commonResources,
+															Effect::ParticleType::ENEMY_DEAD,
+															(*it)->GetPosition(),
+															3.0f,
+															(*it)->GetMatrix()));
+			}
+
+			m_audioManager->PlaySound("EnemyDead", m_pPlayer->GetVolume() * 10);// 敵のSEを再生(こいつだけ音量10倍)
+
 			enemiesToRemove.push_back(std::move(*it));// 削除対象に追加
 
 			it = m_enemies.erase(it);  // 削除してイテレータを更新

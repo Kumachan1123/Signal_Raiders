@@ -61,6 +61,7 @@ void PlayerBullets::Update(float elapsedTime)
 					m_pEnemies->GetEffect().push_back(std::make_unique<Effect>(m_commonResources,
 																			   Effect::ParticleType::ENEMY_HIT,
 																			   enemy->GetPosition(),
+																			   3.0f,
 																			   enemy->GetMatrix()));
 					enemy->SetHitToPlayerBullet(true);
 					m_audioManager->PlaySound("Hit", m_pPlayer->GetVolume());// ƒqƒbƒgSE‚ğÄ¶

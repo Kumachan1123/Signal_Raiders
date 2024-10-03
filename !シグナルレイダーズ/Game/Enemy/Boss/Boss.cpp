@@ -11,7 +11,7 @@
 #include "Game/Enemy/EnemyHPBar/EnemyHPBar.h"
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 #include "Game/Enemy/EnemyBullets/EnemyBullets.h"
-#include "Game/Enemy/EnemyModel/EnemyModel.h"
+#include "Game/Enemy/BossModel/BossModel.h"
 #include "Game/Enemy/Enemies/Enemies.h"
 #include "DeviceResources.h"
 #include "Libraries/MyLib/DebugString.h"
@@ -31,7 +31,7 @@ Boss::Boss(Player* pPlayer)
 	, m_commonResources{}
 	, m_currentHP{}
 	, m_attackCooldown{ 3.0f }
-	, m_enemyModel{}
+	, m_bossModel{}
 	, m_enemyAI{}
 	, m_HPBar{}
 	//	, m_bullets{}
@@ -84,11 +84,11 @@ void Boss::Initialize(CommonResources* resources, int hp)
 	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pixelShader.ReleaseAndGetAddressOf()));
 	// モデルを読み込む準備
 	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);
-	fx->SetDirectory(L"Resources/Models/Enemy");
+	fx->SetDirectory(L"Resources/Models/Boss");
 	// 影用のモデルを読み込む
-	m_model = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy.cmo", *fx);
-	m_enemyModel = std::make_unique<EnemyModel>();
-	m_enemyModel->Initialize(m_commonResources);
+	m_model = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss.cmo", *fx);
+	m_bossModel = std::make_unique<BossModel>();
+	m_bossModel->Initialize(m_commonResources);
 	// 敵の体力を設定
 	m_currentHP = hp;
 	// HPBar生成
@@ -137,7 +137,7 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	// HPBar描画
 	m_HPBar->Render(view, proj, m_position, m_rotate);
 	// 敵描画	
-	m_enemyModel->Render(context, states, enemyWorld, view, proj);
+	m_bossModel->Render(context, states, enemyWorld, view, proj);
 	// ライトの方向
 	Vector3 lightDir = Vector3::UnitY;
 	lightDir.Normalize();
@@ -184,7 +184,7 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 // 更新
 void Boss::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 {
-	m_enemyModel->Update(elapsedTime, m_enemyAI->GetState());// モデルのアニメーション更新
+	m_bossModel->Update(elapsedTime, m_enemyAI->GetState());// モデルのアニメーション更新
 	m_enemyAI->Update(elapsedTime, m_position, playerPos, m_isHit, m_isHitToPlayerBullet);// AIの更新
 	m_audioManager->Update();// オーディオマネージャーの更新
 	if (m_enemyAI->GetNowState() == m_enemyAI->GetEnemyAttack())// 攻撃態勢なら
