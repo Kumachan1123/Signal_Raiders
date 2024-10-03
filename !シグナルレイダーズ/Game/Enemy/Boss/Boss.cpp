@@ -113,8 +113,8 @@ void Boss::Initialize(CommonResources* resources, int hp)
 	// 敵の座標を設定
 	m_enemyAI->SetPosition(m_position);
 	// 境界球の初期化
-	m_enemyBS.Center = Vector3(m_position.x, m_position.y + 4, m_position.z);
-	m_enemyBS.Radius = 2.5f;
+	m_enemyBS.Center = m_position;
+	m_enemyBS.Radius = 2.0f;
 	// オーディオマネージャー
 	m_audioManager->LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet");
 
