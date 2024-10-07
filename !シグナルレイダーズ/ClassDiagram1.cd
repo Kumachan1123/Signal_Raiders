@@ -35,13 +35,6 @@
       <FileName>Libraries\MyLib\InputManager.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="mylib::DebugCamera" Collapsed="true">
-    <Position X="15.5" Y="1.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Libraries\MyLib\DebugCamera.h</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="mylib::GridFloor" Collapsed="true">
     <Position X="15.5" Y="3.5" Width="1.5" />
     <TypeIdentifier>
@@ -524,6 +517,13 @@
     <TypeIdentifier>
       <HashCode>AAAAIEAgAAAIAgAAAAAAEAACAAAAAiAGIIAAAAAAARA=</HashCode>
       <FileName>Libraries\FMOD\inc\fmod.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mylib::DebugCamera" Collapsed="true">
+    <Position X="15.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQCAIQAAAEQAQAAQAAIAAACQCBAYQAAAAAwQBAAAAA=</HashCode>
+      <FileName>Libraries\MyLib\DebugCamera.h</FileName>
     </TypeIdentifier>
   </Class>
   <Struct Name="NetworkInfo" Collapsed="true">

@@ -66,6 +66,7 @@ void EnemyAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Direc
 		m_enemyState = IState::EnemyState::IDLING;// œpœj‘Ô¨
 	}
 	m_currentState->Update(elapsedTime, pos, playerPos, isHitToPlayer);
+	// ƒvƒŒƒCƒ„[‚Ì’e‚É“–‚½‚Á‚½ê‡
 	if (isHitToPlayerBullet)
 		KnockBack(elapsedTime, pos, isHitToPlayerBullet, playerPos);
 
