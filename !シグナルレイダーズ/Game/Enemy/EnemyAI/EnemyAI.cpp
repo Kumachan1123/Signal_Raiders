@@ -69,6 +69,7 @@ void EnemyAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Direc
 	if (isHitToPlayerBullet)
 		KnockBack(elapsedTime, pos, isHitToPlayerBullet, playerPos);
 
+
 	m_position = pos;
 }
 // ステート変更
