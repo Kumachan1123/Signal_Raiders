@@ -31,7 +31,7 @@ float4 main(PS_INPUT input) : SV_TARGET
 {
     // テクスチャをサンプリング
     float4 output = tex.Sample(samLinear, input.Tex);
-
+   
     // 縦線の強度を計算
     float lineIntensity = sin(input.Tex.y * 200.0 + time * 10.0) * 0.05;
 
