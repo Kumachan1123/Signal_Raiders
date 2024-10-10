@@ -191,7 +191,10 @@
     <ClInclude Include="Game\BulletTrail\BulletTrail.h" />
     <ClInclude Include="Game\CommonResources.h" />
     <ClInclude Include="Game\DamageEffect\DamageEffect.h" />
-    <ClInclude Include="Game\Enemy\BossModel\BossModel.h" />
+    <ClInclude Include="Game\Enemy\Boss\BossAI\BossAI.h" />
+    <ClInclude Include="Game\Enemy\Boss\BossAI\BossAttack\BossAttack.h" />
+    <ClInclude Include="Game\Enemy\Boss\BossAI\BossIdling\BossIdling.h" />
+    <ClInclude Include="Game\Enemy\Boss\BossModel\BossModel.h" />
     <ClInclude Include="Game\Enemy\Boss\Boss.h" />
     <ClInclude Include="Game\Enemy\Enemies\Enemies.h" />
     <ClInclude Include="Game\Enemy\EnemyBullets\EnemyBullets.h" />
@@ -271,7 +274,10 @@
     <ClCompile Include="Game\BulletTrail\BulletTrail.cpp" />
     <ClCompile Include="Game\CommonResources.cpp" />
     <ClCompile Include="Game\DamageEffect\DamageEffect.cpp" />
-    <ClCompile Include="Game\Enemy\BossModel\BossModel.cpp" />
+    <ClCompile Include="Game\Enemy\Boss\BossAI\BossAI.cpp" />
+    <ClCompile Include="Game\Enemy\Boss\BossAI\BossAttack\BossAttack.cpp" />
+    <ClCompile Include="Game\Enemy\Boss\BossAI\BossIdling\BossIdling.cpp" />
+    <ClCompile Include="Game\Enemy\Boss\BossModel\BossModel.cpp" />
     <ClCompile Include="Game\Enemy\Boss\Boss.cpp" />
     <ClCompile Include="Game\Enemy\Enemies\Enemies.cpp" />
     <ClCompile Include="Game\Enemy\EnemyBullets\EnemyBullets.cpp" />

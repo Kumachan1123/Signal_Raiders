@@ -282,7 +282,10 @@
     <ClInclude Include="Game\DamageEffect\DamageEffect.h" />
     <ClInclude Include="Game\Enemy\Boss\Boss.h" />
     <ClInclude Include="Game\Interface\IEnemy.h" />
-    <ClInclude Include="Game\Enemy\BossModel\BossModel.h" />
+    <ClInclude Include="Game\Enemy\Boss\BossModel\BossModel.h" />
+    <ClInclude Include="Game\Enemy\Boss\BossAI\BossAI.h" />
+    <ClInclude Include="Game\Enemy\Boss\BossAI\BossAttack\BossAttack.h" />
+    <ClInclude Include="Game\Enemy\Boss\BossAI\BossIdling\BossIdling.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -415,7 +418,10 @@
     <ClCompile Include="Game\Player\PlayerUI\Crisis\Crisis.cpp" />
     <ClCompile Include="Game\DamageEffect\DamageEffect.cpp" />
     <ClCompile Include="Game\Enemy\Boss\Boss.cpp" />
-    <ClCompile Include="Game\Enemy\BossModel\BossModel.cpp" />
+    <ClCompile Include="Game\Enemy\Boss\BossModel\BossModel.cpp" />
+    <ClCompile Include="Game\Enemy\Boss\BossAI\BossAttack\BossAttack.cpp" />
+    <ClCompile Include="Game\Enemy\Boss\BossAI\BossIdling\BossIdling.cpp" />
+    <ClCompile Include="Game\Enemy\Boss\BossAI\BossAI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

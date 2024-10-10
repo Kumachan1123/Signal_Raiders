@@ -7,11 +7,11 @@
 #include <SimpleMath.h>
 #include "Game/Enemy/Boss/Boss.h"
 #include "Game/CommonResources.h"
-#include "Game/Enemy/EnemyAI/EnemyAI.h"
+#include "Game/Enemy/Boss/BossAI/BossAI.h"
 #include "Game/Enemy/EnemyHPBar/EnemyHPBar.h"
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 #include "Game/Enemy/EnemyBullets/EnemyBullets.h"
-#include "Game/Enemy/BossModel/BossModel.h"
+
 #include "Game/Enemy/Enemies/Enemies.h"
 #include "DeviceResources.h"
 #include "Libraries/MyLib/DebugString.h"
@@ -32,7 +32,7 @@ Boss::Boss(Player* pPlayer)
 	, m_currentHP{}
 	, m_attackCooldown{ 3.0f }
 	, m_bossModel{}
-	, m_enemyAI{}
+	, m_pBossAI{}
 	, m_HPBar{}
 	//	, m_bullets{}
 	, m_depthStencilState_Shadow{}
@@ -87,8 +87,8 @@ void Boss::Initialize(CommonResources* resources, int hp)
 	fx->SetDirectory(L"Resources/Models/Boss");
 	// 影用のモデルを読み込む
 	m_model = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss.cmo", *fx);
-	m_bossModel = std::make_unique<BossModel>();
-	m_bossModel->Initialize(m_commonResources);
+	/*m_bossModel = std::make_unique<BossModel>();
+	m_bossModel->Initialize(m_commonResources);*/
 	// 敵の体力を設定
 	m_currentHP = hp;
 	// HPBar生成
@@ -96,8 +96,8 @@ void Boss::Initialize(CommonResources* resources, int hp)
 	m_HPBar->SetEnemyHP(m_currentHP);
 	m_HPBar->Initialize(resources);
 	// AI生成
-	m_enemyAI = std::make_unique<EnemyAI>();
-	m_enemyAI->Initialize();
+	m_pBossAI = std::make_unique<BossAI>();
+	m_pBossAI->Initialize();
 	//// 弾全体生成
 	m_enemyBullets = std::make_unique<EnemyBullets>(this);
 	m_enemyBullets->Initialize(resources);
@@ -111,7 +111,7 @@ void Boss::Initialize(CommonResources* resources, int hp)
 	// プリミティブバッチを作成する
 	m_primitiveBatch = std::make_unique<DirectX::DX11::PrimitiveBatch<DirectX::DX11::VertexPositionColor>>(context);
 	// 敵の座標を設定
-	m_enemyAI->SetPosition(m_position);
+	m_pBossAI->SetPosition(m_position);
 	// 境界球の初期化
 	m_enemyBS.Center = m_position;
 	m_enemyBS.Radius = 2.0f;
@@ -127,17 +127,17 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
 	// 基準となる座標やら回転やら
-	Matrix world = Matrix::CreateFromQuaternion(m_enemyAI->GetRotation())
+	Matrix world = Matrix::CreateFromQuaternion(m_pBossAI->GetRotation())
 		* Matrix::CreateTranslation(m_position)
 		* Matrix::CreateTranslation(Vector3{ 0,-2,0 });
 	// 敵のサイズを設定
-	Matrix enemyWorld = Matrix::CreateScale(m_enemyAI->GetScale() * 2);
+	Matrix enemyWorld = Matrix::CreateScale(m_pBossAI->GetScale() * 2);
 	// 敵の座標を設定
 	enemyWorld *= world;
 	// HPBar描画
 	m_HPBar->Render(view, proj, m_position, m_rotate);
 	// 敵描画	
-	m_bossModel->Render(context, states, enemyWorld, view, proj);
+	//m_bossModel->Render(context, states, enemyWorld, view, proj);
 	// ライトの方向
 	Vector3 lightDir = Vector3::UnitY;
 	lightDir.Normalize();
@@ -184,22 +184,22 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 // 更新
 void Boss::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 {
-	m_bossModel->Update(elapsedTime, m_enemyAI->GetState());// モデルのアニメーション更新
-	m_enemyAI->Update(elapsedTime, m_position, playerPos, m_isHit, m_isHitToPlayerBullet);// AIの更新
+	//m_bossModel->Update(elapsedTime, m_pBossAI->GetState());// モデルのアニメーション更新
+	m_pBossAI->Update(elapsedTime, m_position, playerPos, m_isHit, m_isHitToPlayerBullet);// AIの更新
 	m_audioManager->Update();// オーディオマネージャーの更新
-	if (m_enemyAI->GetNowState() == m_enemyAI->GetEnemyAttack())// 攻撃態勢なら
+	if (m_pBossAI->GetNowState() == m_pBossAI->GetEnemyAttack())// 攻撃態勢なら
 	{
-		m_attackCooldown = m_enemyAI->GetEnemyAttack()->GetCoolTime();
+		m_attackCooldown = m_pBossAI->GetEnemyAttack()->GetCoolTime();
 		// 攻撃のクールダウンタイムを管理
 		if (m_attackCooldown <= 0.1f)
 		{
 			m_audioManager->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
 			// クォータニオンから方向ベクトルを計算
-			DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_enemyAI->GetRotation());
+			DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_pBossAI->GetRotation());
 			//// 弾を発射
 			m_enemyBullets->CreateBullet(GetPosition(), direction, playerPos);
 			// クールダウンタイムをリセット
-			m_enemyAI->GetEnemyAttack()->SetCoolTime(3.0f);
+			m_pBossAI->GetEnemyAttack()->SetCoolTime(3.0f);
 		}
 	}
 	m_enemyBullets->Update(elapsedTime, GetPosition());// 敵の弾の更新

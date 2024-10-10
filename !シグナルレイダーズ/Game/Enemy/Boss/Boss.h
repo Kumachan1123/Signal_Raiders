@@ -11,7 +11,7 @@ class CommonResources;
 class PlayScene;
 class Player;
 class FPS_Camera;
-class EnemyAI;
+class BossAI;
 class EnemyHPBar;
 class EnemyBullet;
 class BossModel;
@@ -31,7 +31,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 	std::unique_ptr<DirectX::Model> m_model;// ‰e—p‚Ìƒ‚ƒfƒ‹
 	std::unique_ptr<BossModel>		m_bossModel;// “G‚Ìƒ‚ƒfƒ‹
-	std::unique_ptr<EnemyAI>		m_enemyAI;// “G‚ÌAI
+	std::unique_ptr<BossAI>		m_pBossAI;// “G‚ÌAI
 	std::unique_ptr<EnemyHPBar>		m_HPBar;// “G‚ÌHPƒo[
 	std::unique_ptr<EnemyBullets>	m_enemyBullets;// “G‚Ì’e
 	std::vector<std::unique_ptr<EnemyBullet>> m_bullets; // ’e‚ÌƒŠƒXƒg
