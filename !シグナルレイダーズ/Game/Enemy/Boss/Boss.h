@@ -12,9 +12,9 @@ class PlayScene;
 class Player;
 class FPS_Camera;
 class BossAI;
+class BossModel;
 class EnemyHPBar;
 class EnemyBullet;
-class BossModel;
 class EnemyBullets;
 class Enemies;
 class Boss : public IEnemy
@@ -30,10 +30,10 @@ private:
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 	std::unique_ptr<DirectX::Model> m_model;// 影用のモデル
-	std::unique_ptr<BossModel>		m_bossModel;// 敵のモデル
-	std::unique_ptr<BossAI>		m_pBossAI;// 敵のAI
-	std::unique_ptr<EnemyHPBar>		m_HPBar;// 敵のHPバー
-	std::unique_ptr<EnemyBullets>	m_enemyBullets;// 敵の弾
+	std::unique_ptr<BossAI>		m_pBossAI;// AI
+	std::unique_ptr<BossModel>		m_bossModel;//モデル
+	std::unique_ptr<EnemyHPBar>		m_HPBar;// HPバー
+	std::unique_ptr<EnemyBullets>	m_enemyBullets;// 弾
 	std::vector<std::unique_ptr<EnemyBullet>> m_bullets; // 弾のリスト
 	// プレイヤーのポインター
 	Player* m_pPlayer;

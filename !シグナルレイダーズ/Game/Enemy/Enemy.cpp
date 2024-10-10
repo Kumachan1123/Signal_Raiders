@@ -148,7 +148,7 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	// ‰e•`‰æ
 	m_model->Draw(context, *states, enemyWorld * Matrix::Identity, view, proj, true, [&]()
 				  {
-					  context->OMSetBlendState(states->AlphaBlend(), nullptr, 0xffffffff);
+					  context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xffffffff);
 					  context->OMSetDepthStencilState(m_depthStencilState_Shadow.Get(), 0);
 					  context->RSSetState(states->CullClockwise());
 					  context->PSSetShader(m_pixelShader.Get(), nullptr, 0);

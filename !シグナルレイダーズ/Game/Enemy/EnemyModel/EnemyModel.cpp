@@ -14,7 +14,7 @@
 EnemyModel::EnemyModel()
 	:
 	m_commonResources{},
-	m_headModel{},
+	m_bodyModel{},
 	m_antennaModel{},
 	m_attackFaceModel{},
 	m_handModel{},
@@ -35,7 +35,7 @@ void EnemyModel::Initialize(CommonResources* resources)
 	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);
 	fx->SetDirectory(L"Resources/Models/Enemy");
 	// モデルを読み込む（ 頭、アンテナ、手、表情差分）
-	m_headModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_Head.cmo", *fx);
+	m_bodyModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_Head.cmo", *fx);
 	m_antennaModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_Antenna.cmo", *fx);
 	m_attackFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_Face.cmo", *fx);
 	m_handModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_Hand.cmo", *fx);
@@ -58,7 +58,7 @@ void EnemyModel::Render(ID3D11DeviceContext1* context,
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	m_headModel->Draw(context, *states, world, view, proj);// 頭
+	m_bodyModel->Draw(context, *states, world, view, proj);// 頭
 	m_antennaModel->Draw(context, *states, world, view, proj);// アンテナ
 	// 手
 	m_handModel->Draw(context, *states, world, view, proj);

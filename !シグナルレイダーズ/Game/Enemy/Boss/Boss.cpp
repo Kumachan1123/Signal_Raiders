@@ -11,7 +11,7 @@
 #include "Game/Enemy/EnemyHPBar/EnemyHPBar.h"
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 #include "Game/Enemy/EnemyBullets/EnemyBullets.h"
-
+#include "Game/Enemy/Boss/BossModel/BossModel.h"
 #include "Game/Enemy/Enemies/Enemies.h"
 #include "DeviceResources.h"
 #include "Libraries/MyLib/DebugString.h"
@@ -87,8 +87,8 @@ void Boss::Initialize(CommonResources* resources, int hp)
 	fx->SetDirectory(L"Resources/Models/Boss");
 	// 影用のモデルを読み込む
 	m_model = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss.cmo", *fx);
-	/*m_bossModel = std::make_unique<BossModel>();
-	m_bossModel->Initialize(m_commonResources);*/
+	m_bossModel = std::make_unique<BossModel>();
+	m_bossModel->Initialize(m_commonResources);
 	// 敵の体力を設定
 	m_currentHP = hp;
 	// HPBar生成
@@ -114,7 +114,7 @@ void Boss::Initialize(CommonResources* resources, int hp)
 	m_pBossAI->SetPosition(m_position);
 	// 境界球の初期化
 	m_enemyBS.Center = m_position;
-	m_enemyBS.Radius = 2.0f;
+	m_enemyBS.Radius = 2.5f;
 	// オーディオマネージャー
 	m_audioManager->LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet");
 
@@ -137,7 +137,7 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	// HPBar描画
 	m_HPBar->Render(view, proj, m_position, m_rotate);
 	// 敵描画	
-	//m_bossModel->Render(context, states, enemyWorld, view, proj);
+	m_bossModel->Render(context, states, enemyWorld, view, proj);
 	// ライトの方向
 	Vector3 lightDir = Vector3::UnitY;
 	lightDir.Normalize();
@@ -184,7 +184,7 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 // 更新
 void Boss::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 {
-	//m_bossModel->Update(elapsedTime, m_pBossAI->GetState());// モデルのアニメーション更新
+	m_bossModel->Update(elapsedTime, m_pBossAI->GetState());// モデルのアニメーション更新
 	m_pBossAI->Update(elapsedTime, m_position, playerPos, m_isHit, m_isHitToPlayerBullet);// AIの更新
 	m_audioManager->Update();// オーディオマネージャーの更新
 	if (m_pBossAI->GetNowState() == m_pBossAI->GetEnemyAttack())// 攻撃態勢なら
@@ -204,7 +204,7 @@ void Boss::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 	}
 	m_enemyBullets->Update(elapsedTime, GetPosition());// 敵の弾の更新
 	m_enemyBS.Center = m_position;
-	m_enemyBS.Center.y -= 2.0f;
+	m_enemyBS.Center.y -= 1.0f;
 	m_HPBar->Update(elapsedTime, m_currentHP);
 	m_isDead = m_HPBar->GetIsDead();
 }
@@ -229,7 +229,7 @@ void Boss::CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::BoundingSphe
 	// ⑥を使用して、Ａの座標とＡのコライダー座標を更新する（実際に押し戻す）
 	m_position += pushBackVec;
 	A.Center = m_position;
-	A.Center.y -= 2.0f;
+	A.Center.y -= 1.0f;
 }
 
 
