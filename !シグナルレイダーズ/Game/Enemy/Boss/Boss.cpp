@@ -196,10 +196,25 @@ void Boss::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 			m_audioManager->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
 			// クォータニオンから方向ベクトルを計算
 			DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_pBossAI->GetRotation());
-			//// 弾を発射
+
+			// 弾を発射
+			// 中央の弾を発射
 			m_enemyBullets->CreateBullet(GetPosition(), direction, playerPos);
+
+			// 角度をずらして左右の弾を発射
+			constexpr float angleOffset = DirectX::XMConvertToRadians(15.0f); // 15度の角度オフセット
+
+			// 左方向
+			DirectX::SimpleMath::Quaternion leftRotation = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::Up, angleOffset);
+			DirectX::SimpleMath::Vector3 leftDirection = DirectX::SimpleMath::Vector3::Transform(direction, leftRotation);
+			m_enemyBullets->CreateBullet(GetPosition(), leftDirection, playerPos);
+
+			// 右方向
+			DirectX::SimpleMath::Quaternion rightRotation = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::Up, -angleOffset);
+			DirectX::SimpleMath::Vector3 rightDirection = DirectX::SimpleMath::Vector3::Transform(direction, rightRotation);
+			m_enemyBullets->CreateBullet(GetPosition(), rightDirection, playerPos);
 			// クールダウンタイムをリセット
-			m_pBossAI->GetEnemyAttack()->SetCoolTime(3.0f);
+			m_pBossAI->GetEnemyAttack()->SetCoolTime(1.0f);
 		}
 	}
 	m_enemyBullets->Update(elapsedTime, GetPosition());// 敵の弾の更新
@@ -229,7 +244,6 @@ void Boss::CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::BoundingSphe
 	// ⑥を使用して、Ａの座標とＡのコライダー座標を更新する（実際に押し戻す）
 	m_position += pushBackVec;
 	A.Center = m_position;
-	A.Center.y -= 1.0f;
 }
 
 

@@ -31,7 +31,7 @@ void BossModel::Initialize(CommonResources* resources)
 	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);
 	fx->SetDirectory(L"Resources/Models/Boss");
 	// モデルを読み込む（ 胴体、表情差分）
-	m_bodyModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss_Body.cmo", *fx);
+	m_bodyModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss.cmo", *fx);
 	m_idlingFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss_Face_Idling.cmo", *fx);
 	m_attackFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss_Face_Attack.cmo", *fx);
 
