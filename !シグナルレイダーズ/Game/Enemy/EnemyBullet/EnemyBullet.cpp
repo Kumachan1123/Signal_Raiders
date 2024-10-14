@@ -131,10 +131,7 @@ void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	m_bulletTrail->CreateBillboard(m_cameraTarget, m_cameraEye, m_cameraUp);
 	m_bulletTrail->Render(view, proj);
 	// ’e•`‰æ
-	m_model->Draw(context, *states, bulletWorld, view, proj, false, [&]()
-				  {
-					  context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
-				  });
+	m_model->Draw(context, *states, bulletWorld, view, proj);
 	// Šeƒpƒ‰ƒ[ƒ^‚ðÝ’è‚·‚é
 	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
 	context->OMSetDepthStencilState(states->DepthRead(), 0);
