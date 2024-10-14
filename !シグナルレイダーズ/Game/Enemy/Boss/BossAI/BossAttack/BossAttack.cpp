@@ -22,7 +22,7 @@ using namespace DirectX::SimpleMath;
 BossAttack::BossAttack(BossAI* pBoss)
 	: m_pBoss(pBoss)
 	, m_attackCooldown{ 1.0f }
-	, m_rotationSpeed{ .5f }
+	, m_rotationSpeed{ 2.0f }
 	, m_commonResources{}
 {
 }
@@ -33,9 +33,10 @@ BossAttack::~BossAttack() {}
 // 初期化する
 void BossAttack::Initialize()
 {
-	m_rotation = m_pBoss->GetRotation();
-	m_velocity = m_pBoss->GetVelocity();
-	m_scale = m_pBoss->GetScale();
+	m_rotation = m_pBoss->GetRotation();// 回転
+	m_velocity = m_pBoss->GetVelocity();// 速度
+	m_scale = m_pBoss->GetScale();// スケール
+	m_rotationSpeed = 2.0f; // 回転速度
 }
 
 void BossAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool isHitToPlayer)
@@ -62,7 +63,7 @@ void BossAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Di
 	float angle = std::acos(dot);
 
 	// プレイヤーの方向に向くための回転を計算
-	if (dot > 0.99f)  // ほぼ向いたら回転処理をスキップする（内積が1に近いとき）
+	if (dot > 0.9f)  // ほぼ向いたら回転処理をスキップする（内積が1に近いとき）
 	{
 		// すでにプレイヤーの方向を向いているので回転を止める
 	}
@@ -94,4 +95,6 @@ void BossAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Di
 
 	m_pBoss->SetRotation(m_rotation);
 	m_pBoss->SetVelocity(m_velocity);
+	m_rotationSpeed -= .05f;
+	if (m_rotationSpeed < 0.1f) m_rotationSpeed = 0.1f;
 }

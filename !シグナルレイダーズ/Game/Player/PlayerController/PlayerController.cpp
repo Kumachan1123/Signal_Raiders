@@ -141,7 +141,7 @@ void PlayerController::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardS
 	// ƒ_ƒbƒVƒ…
 	if (kb->lastState.LeftShift)
 	{
-		m_dash = 0.3f;
+		m_dash = 0.2f;
 	}
 
 

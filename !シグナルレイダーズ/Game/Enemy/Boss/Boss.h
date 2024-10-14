@@ -36,6 +36,9 @@ private:
 	std::unique_ptr<EnemyBullets>	m_enemyBullets;// 弾
 	std::vector<std::unique_ptr<EnemyBullet>> m_bullets; // 弾のリスト
 	const float BULLET_SIZE = 0.25f; // 弾の大きさ
+
+
+
 	// プレイヤーのポインター
 	Player* m_pPlayer;
 	FPS_Camera* m_pCamera;
@@ -54,7 +57,13 @@ private:
 	DirectX::BoundingSphere m_enemyBulletBS;// 敵の弾の境界球
 	DirectX::BoundingSphere m_playerBS;// プレイヤーの境界球
 	DirectX::SimpleMath::Matrix m_matrix;// マトリクス
-
+	// 弾の発射位置
+	// 中央
+	DirectX::SimpleMath::Vector3 m_bulletPosCenter;
+	// 左
+	DirectX::SimpleMath::Vector3 m_bulletPosLeft;
+	// 右
+	DirectX::SimpleMath::Vector3 m_bulletPosRight;
 	int m_currentHP;//敵の体力
 	bool m_isDead = false;//敵のHPが0になったらTrue
 	bool m_isHit = false;// プレイヤーとの判定

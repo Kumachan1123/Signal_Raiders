@@ -27,7 +27,7 @@ public:
 
 	// ダッシュ
 	float m_dash;
-	//関数
+
 private:
 	// 共通リソース
 	CommonResources* m_commonResources; float DmouseX = 0;

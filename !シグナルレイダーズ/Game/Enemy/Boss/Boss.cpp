@@ -112,6 +112,8 @@ void Boss::Initialize(CommonResources* resources, int hp)
 	m_primitiveBatch = std::make_unique<DirectX::DX11::PrimitiveBatch<DirectX::DX11::VertexPositionColor>>(context);
 	// 敵の座標を設定
 	m_pBossAI->SetPosition(m_position);
+
+
 	// 境界球の初期化
 	m_enemyBS.Center = m_position;
 	m_enemyBS.Radius = 2.5f;
@@ -177,6 +179,13 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 		else					 DX::Draw(m_primitiveBatch.get(), m_enemyBS, Colors::Tomato);
 
 	}
+	// 弾の発射位置を描画
+	BoundingSphere right{ m_bulletPosRight, 1.0f };
+	DX::Draw(m_primitiveBatch.get(), right, Colors::Magenta);
+	BoundingSphere left{ m_bulletPosLeft, 1.0f };
+	DX::Draw(m_primitiveBatch.get(), left, Colors::Magenta);
+	BoundingSphere center{ m_bulletPosCenter, 1.0f };
+	DX::Draw(m_primitiveBatch.get(), center, Colors::Magenta);
 	m_primitiveBatch->End();
 #endif
 
@@ -184,6 +193,8 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 // 更新
 void Boss::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 {
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
 	m_bossModel->Update(elapsedTime, m_pBossAI->GetState());// モデルのアニメーション更新
 	m_pBossAI->Update(elapsedTime, m_position, playerPos, m_isHit, m_isHitToPlayerBullet);// AIの更新
 	m_audioManager->Update();// オーディオマネージャーの更新
@@ -195,24 +206,24 @@ void Boss::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 		{
 			m_audioManager->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
 			// クォータニオンから方向ベクトルを計算
-			DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_pBossAI->GetRotation());
+			Vector3 direction = Vector3::Transform(Vector3::Backward, m_pBossAI->GetRotation());
 
 			// 弾を発射
 			// 中央の弾を発射
-			m_enemyBullets->CreateBullet(GetPosition(), direction, playerPos, BULLET_SIZE);
+			m_enemyBullets->CreateBullet(m_bulletPosCenter, direction, playerPos, BULLET_SIZE);
 
 			// 角度をずらして左右の弾を発射
-			constexpr float angleOffset = DirectX::XMConvertToRadians(15.0f); // 15度の角度オフセット
+			constexpr float angleOffset = XMConvertToRadians(15.0f); // 15度の角度オフセット
 
 			// 左方向
-			DirectX::SimpleMath::Quaternion leftRotation = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::Up, angleOffset);
-			DirectX::SimpleMath::Vector3 leftDirection = DirectX::SimpleMath::Vector3::Transform(direction, leftRotation);
-			m_enemyBullets->CreateBullet(GetPosition(), leftDirection, playerPos, BULLET_SIZE);
+			Quaternion leftRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, angleOffset);
+			Vector3 leftDirection = Vector3::Transform(direction, leftRotation);
+			m_enemyBullets->CreateBullet(m_bulletPosLeft, direction, playerPos, BULLET_SIZE);
 
 			// 右方向
-			DirectX::SimpleMath::Quaternion rightRotation = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::Up, -angleOffset);
-			DirectX::SimpleMath::Vector3 rightDirection = DirectX::SimpleMath::Vector3::Transform(direction, rightRotation);
-			m_enemyBullets->CreateBullet(GetPosition(), rightDirection, playerPos, BULLET_SIZE);
+			Quaternion rightRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, -angleOffset);
+			Vector3 rightDirection = Vector3::Transform(direction, rightRotation);
+			m_enemyBullets->CreateBullet(m_bulletPosRight, direction, playerPos, BULLET_SIZE);
 			// クールダウンタイムをリセット
 			m_pBossAI->GetEnemyAttack()->SetCoolTime(1.0f);
 		}
@@ -220,6 +231,24 @@ void Boss::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 	m_enemyBullets->Update(elapsedTime, GetPosition());// 敵の弾の更新
 	m_enemyBS.Center = m_position;
 	m_enemyBS.Center.y -= 1.0f;
+
+	// 弾の発射位置を設定
+
+	// 中央
+	Matrix transform = Matrix::CreateFromQuaternion(m_pBossAI->GetRotation())
+		* Matrix::CreateTranslation(m_position);
+	// 中央の座標に回転を適用
+	m_bulletPosCenter = Vector3::Transform(Vector3(0, 2.5f, 3), transform);
+
+
+	// 左の座標に回転を適用
+	m_bulletPosLeft = Vector3::Transform(Vector3(-2.5f, 0, 3), transform);
+
+
+	// 右の座標に回転を適用
+	m_bulletPosRight = Vector3::Transform(Vector3(2.5f, 0, 3), transform);
+
+	// HPBar更新
 	m_HPBar->Update(elapsedTime, m_currentHP);
 	m_isDead = m_HPBar->GetIsDead();
 }
