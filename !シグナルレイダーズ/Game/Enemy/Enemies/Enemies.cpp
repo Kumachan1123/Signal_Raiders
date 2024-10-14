@@ -14,6 +14,7 @@
 #include <Model.h>
 #include <Effects.h>
 #include <memory>
+#include "Game/Template/Template.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -142,7 +143,8 @@ void Enemies::Update(float elapsedTime)
 			// ‹«ŠE‹…‚Ì”ÍˆÍ‚ð’²®
 			playerSphere.Radius /= 3.0f;
 			// ƒvƒŒƒCƒ„[‚Ì‹«ŠE‹…‚Æ“G‚Ì‹«ŠE‹…‚ªd‚È‚Á‚Ä‚¢‚½‚ç
-			if (enemy->GetBoundingSphere().Intersects(playerSphere)) enemy->CheckHitOtherObject(enemy->GetBoundingSphere(), playerSphere);// “G‚ð‰Ÿ‚µ•Ô‚·
+			if (enemy->GetBoundingSphere().Intersects(playerSphere))
+				enemy->CheckHitOtherObject(enemy->GetBoundingSphere(), playerSphere);// “G‚ð‰Ÿ‚µ•Ô‚·
 		}
 		// ƒvƒŒƒCƒ„[‚Æ“G‚Ì“–‚½‚è”»’è‚ðÝ’è
 		enemy->SetHitToPlayer(m_isHitPlayerToEnemy);

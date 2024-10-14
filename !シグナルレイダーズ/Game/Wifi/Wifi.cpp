@@ -70,6 +70,7 @@ void Wifi::Update(float elapsedTime)
 	m_output->SetInformation(m_networkInfos);
 	// 時間を計測
 	m_time += elapsedTime;
+	// Wi-Fiを取得できない状態の時
 	if (dwResult != ERROR_SUCCESS)
 	{
 		if (m_preWifilevels.size() < 30)
@@ -89,8 +90,26 @@ void Wifi::Update(float elapsedTime)
 
 		m_wifilevels = m_preWifilevels;
 	}
-	else
+	else// Wi-Fiを取得できる状態の時
 	{
+		// 取得した数が0の時
+		if (m_networkInfos.size() == 0)
+		{
+			if (m_preWifilevels.size() < 30)
+			{
+				for (int index = 0; index < 30; index++)
+				{
+					// 五秒経ったら更新終了
+					if (m_time >= 5.0f)
+					{
+						break;
+					}
+					m_preWifilevels.push_back(100);
+				}
+			}
+			m_wifilevels = m_preWifilevels;
+		}
+		// 取得した数が1以上の時
 		//数値だけ出す
 		for (const auto& networkInfo : m_networkInfos)
 		{

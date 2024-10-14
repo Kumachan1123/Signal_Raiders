@@ -7,7 +7,8 @@ T Lerp(const T& start, const T& end, float t)
 }
 
 template <typename T>
-T clamp(T value, T min, T max) 
+T clamp(T value, T min, T max)
 {
 	return (value < min) ? min : (value > max) ? max : value;
 }
+
