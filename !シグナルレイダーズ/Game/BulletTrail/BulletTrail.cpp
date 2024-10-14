@@ -228,12 +228,7 @@ void BulletTrail::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	context->PSSetShader(nullptr, nullptr, 0);
 }
 
-/// <summary>
-/// ビルボード作成関数
-/// </summary>
-/// <param name="target">カメラターゲット（注視点）</param>
-/// <param name="eye">カメラアイ（カメラ座標）</param>
-/// <param name="up">上向きベクトル（基本はYのみ１のベクトル）</param>
+// ビルボードの作成
 void BulletTrail::CreateBillboard(DirectX::SimpleMath::Vector3 target, DirectX::SimpleMath::Vector3 eye, DirectX::SimpleMath::Vector3 up)
 {
 	m_billboard =
@@ -247,6 +242,8 @@ void BulletTrail::CreateBillboard(DirectX::SimpleMath::Vector3 target, DirectX::
 	m_cameraTarget = target;
 	m_billboard = rot * m_billboard;
 }
+
+// パーティクルの生成
 void BulletTrail::Trail()
 {
 	// タイマーが一定時間（0.05秒）を超えたら新しいパーティクルを生成
@@ -289,7 +286,7 @@ void BulletTrail::Trail()
 				SimpleMath::Vector3::One, // 回転速度
 				SimpleMath::Vector3(0, 0, 10), // 初期回転
 				SimpleMath::Vector3(m_size, m_size, 0), // 初期スケール
-				SimpleMath::Vector3(0, 0, 0), // 最終スケール（小さくなる）
+				SimpleMath::Vector3(m_size / 10, m_size / 10, 0), // 最終スケール（小さくなる）
 				SimpleMath::Vector4(0, 0.2, 1, .5), // 初期カラー（白）
 				SimpleMath::Vector4(0, 1, 1, 0.5), // 最終カラー（白→透明）
 				m_type // パーティクルのタイプ

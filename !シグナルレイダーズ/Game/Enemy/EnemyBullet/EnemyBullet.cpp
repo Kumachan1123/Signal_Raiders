@@ -61,9 +61,9 @@ void EnemyBullet::Initialize(CommonResources* resources)
 							   // ベイシックエフェクトを取得する
 							   auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);
 							   basicEffect->SetAlpha(.5f);// アルファ値を設定する
-							   basicEffect->SetDiffuseColor(DirectX::Colors::Purple);// ディフューズカラーを設定する
-							   basicEffect->SetAmbientLightColor(DirectX::Colors::Purple);// アンビエントライトカラーを設定する
-							   basicEffect->SetEmissiveColor(DirectX::Colors::Purple);// エミッシブカラーを設定する
+							   basicEffect->SetDiffuseColor(DirectX::Colors::Pink);// ディフューズカラーを設定する
+							   basicEffect->SetAmbientLightColor(DirectX::Colors::Pink);// アンビエントライトカラーを設定する
+							   basicEffect->SetEmissiveColor(DirectX::Colors::Magenta);// エミッシブカラーを設定する
 
 						   });
 	// 弾の軌道生成
@@ -131,7 +131,10 @@ void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	m_bulletTrail->CreateBillboard(m_cameraTarget, m_cameraEye, m_cameraUp);
 	m_bulletTrail->Render(view, proj);
 	// 弾描画
-	m_model->Draw(context, *states, bulletWorld, view, proj);
+	m_model->Draw(context, *states, bulletWorld, view, proj, false, [&]()
+				  {
+					  context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
+				  });
 	// 各パラメータを設定する
 	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
 	context->OMSetDepthStencilState(states->DepthRead(), 0);
