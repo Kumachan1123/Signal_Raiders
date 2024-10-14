@@ -15,9 +15,10 @@ class CommonResources;
 class EnemyBullet
 {	//•Ï”
 public:
-	const float SIZE = 0.15f;
+	//const float SIZE = 0.15f;
 	DirectX::SimpleMath::Vector3 m_position;		// ’e‚ÌÀ•W
 	DirectX::SimpleMath::Vector3 m_velocity;		// ’e‚Ì‘¬‚³
+	float m_size;			// ’e‚Ì‘å‚«‚³
 	DirectX::SimpleMath::Vector3 m_direction;		// ’e‚ª”ò‚Ô•ûŒü
 	float m_time;									// ¶‘¶ŠÔ
 	const int DAMAGE = 10;						// “G‚É—^‚¦‚éƒ_ƒ[ƒW
@@ -48,7 +49,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 
 public:
-	EnemyBullet();
+	EnemyBullet(float size);
 	~EnemyBullet();
 	void Initialize(CommonResources* resources);
 	void Update(DirectX::SimpleMath::Vector3& pos, float elapsedTime);

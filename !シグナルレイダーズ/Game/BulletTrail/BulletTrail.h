@@ -66,9 +66,11 @@ public:
 	std::list<ParticleUtility> m_particleUtility;
 	// パーティクルタイプ
 	ParticleUtility::Type m_type;
+	// パーティクルのサイズ
+	float m_size;
 	//	関数
 public:
-	BulletTrail(ParticleUtility::Type type);
+	BulletTrail(ParticleUtility::Type type, float size);
 	~BulletTrail();
 	void Initialize(CommonResources* resources);
 	void LoadTexture(const wchar_t* path);

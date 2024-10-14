@@ -77,11 +77,11 @@ void EnemyBullets::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 }
 
 // íeÇÃê∂ê¨
-void EnemyBullets::CreateBullet(Vector3 enemyPos, Vector3 dir, Vector3 playerPos)
+void EnemyBullets::CreateBullet(Vector3 enemyPos, Vector3 dir, Vector3 playerPos, float size)
 {
 	m_position = enemyPos;
 	// íeÇî≠éÀ
-	auto bullet = std::make_unique<EnemyBullet>();
+	auto bullet = std::make_unique<EnemyBullet>(size);
 	bullet->Initialize(m_commonResources);
 	bullet->MakeBall(m_position, dir, playerPos);
 	m_bullets.push_back(std::move(bullet));

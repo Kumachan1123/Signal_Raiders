@@ -11,12 +11,13 @@
 //-------------------------------------------------------------------
 // コンストラクタ
 //-------------------------------------------------------------------
-EnemyBullet::EnemyBullet()
+EnemyBullet::EnemyBullet(float size)
 	:m_position{}
 	, m_velocity{}
 	, m_commonResources{}
 	, m_time(0.0f)
 	, m_angle{ 0.0f }
+	, m_size{ size }
 {
 }
 //-------------------------------------------------------------------
@@ -66,13 +67,14 @@ void EnemyBullet::Initialize(CommonResources* resources)
 
 						   });
 	// 弾の軌道生成
-	m_bulletTrail = std::make_unique<BulletTrail>(ParticleUtility::Type::ENEMYTRAIL);
+	m_bulletTrail = std::make_unique<BulletTrail>(ParticleUtility::Type::ENEMYTRAIL, m_size);
 	m_bulletTrail->Initialize(resources);
 	m_direction = Vector3::Zero;
 	m_velocity = Vector3{ 0.0f,0.0f,0.0f };
 	m_position = Vector3::Zero;
+
 	m_boundingSphere.Center = m_position;
-	m_boundingSphere.Radius = .3;
+	m_boundingSphere.Radius = m_size * 2;
 }
 // 弾の初期位置を設定
 void EnemyBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir, DirectX::SimpleMath::Vector3& target)
@@ -117,7 +119,7 @@ void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
 	// 弾のサイズを設定
-	Matrix bulletWorld = Matrix::CreateScale(SIZE);
+	Matrix bulletWorld = Matrix::CreateScale(m_size);
 	Matrix boundingbulletWorld = Matrix::CreateScale(Vector3::One);
 	// 弾の自転
 	bulletWorld *= Matrix::CreateRotationX(DirectX::XMConvertToRadians(m_angle));

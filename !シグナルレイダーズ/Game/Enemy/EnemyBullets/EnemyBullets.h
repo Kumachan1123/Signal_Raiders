@@ -35,7 +35,7 @@ public:
 	void Initialize(CommonResources* resources);
 	void Update(float elapsedTime, DirectX::SimpleMath::Vector3 enemyPos);
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
-	void CreateBullet(DirectX::SimpleMath::Vector3 enemyPos, DirectX::SimpleMath::Vector3 dir, DirectX::SimpleMath::Vector3 playerPos);
+	void CreateBullet(DirectX::SimpleMath::Vector3 enemyPos, DirectX::SimpleMath::Vector3 dir, DirectX::SimpleMath::Vector3 playerPos, float size);
 	// Getter
 	DirectX::BoundingSphere& GetBulletBoundingSphere() { return m_enemyBulletBS; }
 	DirectX::BoundingSphere& GetPlayerBoundingSphere() { return m_playerBS; }

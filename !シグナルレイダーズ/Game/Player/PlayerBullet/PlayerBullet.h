@@ -13,7 +13,8 @@ class PlayerBullet
 {
 	//•Ï”
 public:
-	const float SIZE = 0.1f;
+	const float SIZE = 0.1f;// ’e‚Ì‘å‚«‚³
+
 	DirectX::SimpleMath::Vector3 m_position;		// ’e‚ÌÀ•W
 	DirectX::SimpleMath::Vector3 m_velocity;		// ’e‚Ì‘¬‚³
 	DirectX::SimpleMath::Vector3 m_direction;		// ’e‚ª”ò‚Ô•ûŒü

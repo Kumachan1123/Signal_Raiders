@@ -35,6 +35,7 @@ private:
 	std::unique_ptr<EnemyHPBar>		m_HPBar;// HPバー
 	std::unique_ptr<EnemyBullets>	m_enemyBullets;// 弾
 	std::vector<std::unique_ptr<EnemyBullet>> m_bullets; // 弾のリスト
+	const float BULLET_SIZE = 0.25f; // 弾の大きさ
 	// プレイヤーのポインター
 	Player* m_pPlayer;
 	FPS_Camera* m_pCamera;

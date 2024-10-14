@@ -56,7 +56,7 @@ void PlayerBullet::Initialize(CommonResources* resources)
 		)
 	);
 	// 弾の軌道ポインター
-	m_bulletTrail = std::make_unique<BulletTrail>(ParticleUtility::Type::PLAYERTRAIL);
+	m_bulletTrail = std::make_unique<BulletTrail>(ParticleUtility::Type::PLAYERTRAIL, SIZE);
 	m_bulletTrail->Initialize(m_commonResources);
 
 	// モデルを読み込む準備
@@ -71,10 +71,7 @@ void PlayerBullet::Initialize(CommonResources* resources)
 
 							   // ディフューズカラーを設定する
 							   basicEffect->SetDiffuseColor(DirectX::Colors::SkyBlue);
-							   // スペキュラカラーを設定する
-							   //basicEffect->SetSpecularColor(DirectX::Colors::SkyBlue);
-							   //// スペキュラパワーを設定する
-							   //basicEffect->SetSpecularPower(10.0f);
+
 							   // エミッションカラーを設定する
 							   basicEffect->SetEmissiveColor(DirectX::Colors::Cyan);
 						   });

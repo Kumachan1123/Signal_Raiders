@@ -66,10 +66,10 @@ void BossAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Direct
 	m_currentState->Update(elapsedTime, pos, playerPos, isHitToPlayer);
 	// プレイヤーの弾に当たった場合
 	if (isHitToPlayerBullet)
-		KnockBack(elapsedTime, pos, isHitToPlayerBullet, playerPos);
+		//KnockBack(elapsedTime, pos, isHitToPlayerBullet, playerPos);
 
 
-	m_position = pos;
+		m_position = pos;
 }
 // ステート変更
 void BossAI::ChangeState(IState* newState)

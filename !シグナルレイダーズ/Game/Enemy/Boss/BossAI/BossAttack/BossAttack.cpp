@@ -22,7 +22,7 @@ using namespace DirectX::SimpleMath;
 BossAttack::BossAttack(BossAI* pBoss)
 	: m_pBoss(pBoss)
 	, m_attackCooldown{ 1.0f }
-	, m_rotationSpeed{ .1f }
+	, m_rotationSpeed{ .5f }
 	, m_commonResources{}
 {
 }

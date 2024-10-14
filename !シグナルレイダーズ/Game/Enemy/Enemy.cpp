@@ -198,7 +198,7 @@ void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 			// クォータニオンから方向ベクトルを計算
 			DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_enemyAI->GetRotation());
 			// 弾を発射
-			m_enemyBullets->CreateBullet(GetPosition(), direction, playerPos);
+			m_enemyBullets->CreateBullet(GetPosition(), direction, playerPos, 0.15f);
 			// クールダウンタイムをリセット
 			m_enemyAI->GetEnemyAttack()->SetCoolTime(3.0f);
 		}

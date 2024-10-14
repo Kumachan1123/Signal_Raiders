@@ -27,7 +27,7 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> BulletTrail::INPUT_LAYOUT =
 	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,	0, sizeof(SimpleMath::Vector3) + sizeof(SimpleMath::Vector4), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
 
-BulletTrail::BulletTrail(ParticleUtility::Type type)
+BulletTrail::BulletTrail(ParticleUtility::Type type, float size)
 	:m_commonResources{}
 	, m_timer(0.0f)
 	, m_pDR{}
@@ -44,6 +44,7 @@ BulletTrail::BulletTrail(ParticleUtility::Type type)
 	, m_proj{}
 	, m_billboard{}
 	, m_type{ type }
+	, m_size{ size * 10 }
 {
 }
 
@@ -160,7 +161,6 @@ void BulletTrail::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 
 
 		//	現在のテクスチャのスケールを「XMFLOAT2」のXに入れる。
-		//	Yは使っていないし、そもそものTextureのUV座標とは違う使い方になっていることに注意
 		vPCT.textureCoordinate = XMFLOAT2(li.GetNowScale().x, 0.0f);
 
 		m_vertices.push_back(vPCT);
@@ -219,14 +219,7 @@ void BulletTrail::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 
 	//	指定した座標を中心に、シェーダ側で板ポリゴンを生成・描画させる
 	m_batch->Begin();
-
-	//	ここまでの処理の関係上、以下は使えない
-	//m_batch->DrawQuad(vertex[0], vertex[1], vertex[2], vertex[3]);
-
-	//	ジオメトリシェーダでPointを受け取ることになっているため、
-	//	ここではD3D11_PRIMITIVE_TOPOLOGY_POINTLISTを使う
 	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &m_vertices[0], m_vertices.size());
-
 	m_batch->End();
 
 	//	シェーダの登録を解除しておく
@@ -295,7 +288,7 @@ void BulletTrail::Trail()
 				SimpleMath::Vector3::One, // 加速度
 				SimpleMath::Vector3::One, // 回転速度
 				SimpleMath::Vector3(0, 0, 10), // 初期回転
-				SimpleMath::Vector3(1, 1, 0), // 初期スケール
+				SimpleMath::Vector3(m_size, m_size, 0), // 初期スケール
 				SimpleMath::Vector3(0, 0, 0), // 最終スケール（小さくなる）
 				SimpleMath::Vector4(0, 0.2, 1, .5), // 初期カラー（白）
 				SimpleMath::Vector4(0, 1, 1, 0.5), // 最終カラー（白→透明）
