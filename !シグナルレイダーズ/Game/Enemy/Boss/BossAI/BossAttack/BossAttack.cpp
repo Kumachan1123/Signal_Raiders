@@ -61,8 +61,7 @@ void BossAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Di
 	dot = clamp(dot, -1.0f, 1.0f);
 	float angle = std::acos(dot);
 
-	// 振動を防ぐための閾値（この閾値をもう少し緩めにして震えを抑える）
-	const float angleThreshold = 0.2f; // 大きめの閾値に変更
+	// プレイヤーの方向に向くための回転を計算
 	if (dot > 0.99f)  // ほぼ向いたら回転処理をスキップする（内積が1に近いとき）
 	{
 		// すでにプレイヤーの方向を向いているので回転を止める
