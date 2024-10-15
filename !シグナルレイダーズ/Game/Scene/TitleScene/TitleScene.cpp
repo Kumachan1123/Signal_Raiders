@@ -14,6 +14,7 @@
 #include "Game/KumachiLib//BinaryFile.h"
 #include <Libraries/Microsoft/DebugDraw.h>
 #include "Libraries/MyLib/DebugString.h"
+#include <Mouse.h>
 #include "Game/FPS_Camera/FPS_Camera.h"
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -95,10 +96,13 @@ void TitleScene::Update(float elapsedTime)
 	m_audioManager->Update();
 	// キーボードステートトラッカーを取得する
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
+	// マウスのトラッカーを取得する
+	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
+
 	// メニューでの選択処理が行われたら
 	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
 	{
-		if (kbTracker->pressed.Space)
+		if (kbTracker->pressed.Space || mtracker->GetLastState().leftButton)
 		{
 			m_audioManager->PlaySound("SE", m_SEvolume);// SEの再生
 			if (m_pMenu->GetSceneNum() == Menu::SceneID::PLAY)

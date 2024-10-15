@@ -15,6 +15,7 @@
 #include <WICTextureLoader.h>
 #include <CommonStates.h>
 #include <vector>
+#include <Mouse.h>
 #include "Libraries/MyLib/InputManager.h"
 
 using namespace DirectX;
@@ -64,6 +65,9 @@ void ResultMenu::Initialize(CommonResources* resources, int width, int height)
 void ResultMenu::Update(float elapsedTime)
 {
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
+	// マウスのトラッカーを取得する
+	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
+
 	m_time += elapsedTime;
 	//  キーボードの入力を取得
 	if (kbTracker->pressed.S)
@@ -80,7 +84,7 @@ void ResultMenu::Update(float elapsedTime)
 		//  メニューアイテム数の最大値を超えないように制御
 		m_menuIndex %= m_pUI.size();
 	}
-	if (kbTracker->pressed.Space)
+	if (kbTracker->pressed.Space || mtracker->GetLastState().leftButton)
 	{
 		m_num = static_cast<SceneID>(m_menuIndex);
 	}

@@ -10,6 +10,7 @@
 #include "Libraries/MyLib/MemoryLeakDetector.h"
 #include "Libraries/MyLib/InputManager.h"
 #include <cassert>
+#include <Mouse.h>
 #include <Libraries/Microsoft/DebugDraw.h>
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -107,9 +108,11 @@ void ResultScene::Update(float elapsedTime)
 	m_audioManager->Update();
 	// キーボードステートトラッカーを取得する
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
+	// マウスのトラッカーを取得する
+	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
 
 	// スペースキーが押されたら
-	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd && kbTracker->pressed.Space)
+	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd && kbTracker->pressed.Space || mtracker->GetLastState().leftButton)
 	{
 		// SEの再生
 		m_audioManager->PlaySound("SE", m_SEvolume);

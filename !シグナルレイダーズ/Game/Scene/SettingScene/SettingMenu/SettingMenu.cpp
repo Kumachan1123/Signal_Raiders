@@ -16,7 +16,7 @@
 #include <CommonStates.h>
 #include <vector>
 #include "Libraries/MyLib/InputManager.h"
-
+#include <Mouse.h>
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
@@ -78,7 +78,10 @@ void SettingMenu::Initialize(CommonResources* resources, int width, int height)
 
 void SettingMenu::Update(float elapsedTime)
 {
+	//  キーボードの入力を取得
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
+	// マウスのトラッカーを取得する
+	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
 	m_time += elapsedTime;
 	//  キーボードの入力を取得
 	if (kbTracker->pressed.S)
@@ -95,7 +98,7 @@ void SettingMenu::Update(float elapsedTime)
 		//  メニューアイテム数の最大値を超えないように制御
 		m_menuIndex %= m_pUI.size();
 	}
-	if (kbTracker->pressed.Space)
+	if (kbTracker->pressed.Space || mtracker->GetLastState().leftButton)
 	{
 		m_num = static_cast<StateID>(m_menuIndex);
 	}
