@@ -79,10 +79,14 @@ void SettingBar::Initialize(CommonResources* resources, int width, int height)
 
 void SettingBar::Update(float elapsedTime)
 {
+	//  キーボードの入力を取得
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
+
 	m_time += elapsedTime;
 	if (0 <= m_num && m_num <= 2)//  セッティングシーンで「へんこう」と「おわり」以外が選ばれている場合
 	{
+
+
 		//  キーボードの入力を取得
 		if (kbTracker->pressed.A)
 		{
@@ -92,7 +96,9 @@ void SettingBar::Update(float elapsedTime)
 			{
 				m_pBarPointer[m_num]->SetPosition(Vector2(m_pBarPointer[m_num]->GetPosition().x - 60, m_pBarPointer[m_num]->GetPosition().y));
 				m_setting[m_num] -= 1;
+
 			}
+
 		}
 		if (kbTracker->pressed.D)
 		{
@@ -102,8 +108,12 @@ void SettingBar::Update(float elapsedTime)
 			{
 				m_pBarPointer[m_num]->SetPosition(Vector2(m_pBarPointer[m_num]->GetPosition().x + 60, m_pBarPointer[m_num]->GetPosition().y));
 				m_setting[m_num] += 1;
+
+
 			}
+
 		}
+
 	}
 	else if (m_num == 3)
 	{
