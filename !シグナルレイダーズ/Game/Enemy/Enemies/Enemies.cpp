@@ -101,7 +101,7 @@ void Enemies::Update(float elapsedTime)
 		m_isBossBorned = true;// ボス生成可能にする
 		m_enemies.clear();// ザコ敵を削除
 		m_boss = std::make_unique<Boss>(m_pPlayer);
-		m_boss->Initialize(m_commonResources, 500);
+		m_boss->Initialize(m_commonResources, 1000);
 		m_enemies.push_back(std::move(m_boss));// ボスを生成
 
 	}
