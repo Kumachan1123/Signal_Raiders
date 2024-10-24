@@ -31,7 +31,7 @@ Menu::Menu()
 	, m_windowWidth{ 0 }
 	, m_windowHeight{ 0 }
 	, m_tracker{}
-	, m_num{ SceneID::PLAY }
+	, m_num{ SceneID::STAGESELECT }
 {
 }
 
@@ -128,10 +128,10 @@ void Menu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, Direc
 	std::unique_ptr<TitleUI> userInterface = std::make_unique<TitleUI>();
 	//  指定された画像を表示するためのアイテムを作成する
 	userInterface->Create(m_pDR
-						  , path
-						  , position
-						  , scale
-						  , anchor);
+		, path
+		, position
+		, scale
+		, anchor);
 	userInterface->SetWindowSize(m_windowWidth, m_windowHeight);
 
 	//  アイテムを新しく追加
@@ -140,10 +140,10 @@ void Menu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, Direc
 	//  背景用のウィンドウ画像も追加する
 	std::unique_ptr<TitleUI> base = std::make_unique<TitleUI>();
 	base->Create(m_pDR
-				 , m_pSelectTexturePath
-				 , position
-				 , scale
-				 , anchor);
+		, m_pSelectTexturePath
+		, position
+		, scale
+		, anchor);
 	base->SetWindowSize(m_windowWidth, m_windowHeight);
 
 	//  背景用のアイテムも新しく追加する

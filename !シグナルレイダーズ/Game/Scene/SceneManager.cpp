@@ -8,6 +8,7 @@
 #include "Game/Scene/SettingScene/SettingScene.h"
 #include "Game/Scene/PlayScene/PlayScene.h"
 #include "Game/Scene/ResultScene/ResultScene.h"
+#include "Game/Scene/StageSelectScene/StageSelectScene.h"
 #include "Game/Screen.h"
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
@@ -96,22 +97,25 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 
 	switch (sceneID)
 	{
-		case IScene::SceneID::TITLE:
-			m_currentScene = std::make_unique<TitleScene>(sceneID);
-			break;
-		case IScene::SceneID::SETTING:
-			m_currentScene = std::make_unique<SettingScene>(sceneID);
-			break;
-		case IScene::SceneID::PLAY:
-			m_currentScene = std::make_unique<PlayScene>(sceneID);
-			break;
-		case IScene::SceneID::CLEAR:
-		case IScene::SceneID::GAMEOVER:
-			m_currentScene = std::make_unique<ResultScene>(sceneID);
-			break;
-		default:
-			assert(!"SceneManager::CreateScene::シーン名が存在しません！");
-			// no break
+	case IScene::SceneID::TITLE:
+		m_currentScene = std::make_unique<TitleScene>(sceneID);
+		break;
+	case IScene::SceneID::SETTING:
+		m_currentScene = std::make_unique<SettingScene>(sceneID);
+		break;
+	case IScene::SceneID::STAGESELECT:
+		m_currentScene = std::make_unique<StageSelectScene>(sceneID);
+		break;
+	case IScene::SceneID::PLAY:
+		m_currentScene = std::make_unique<PlayScene>(sceneID);
+		break;
+	case IScene::SceneID::CLEAR:
+	case IScene::SceneID::GAMEOVER:
+		m_currentScene = std::make_unique<ResultScene>(sceneID);
+		break;
+	default:
+		assert(!"SceneManager::CreateScene::シーン名が存在しません！");
+		// no break
 	}
 
 	assert(m_currentScene && "SceneManager::CreateScene::次のシーンが生成されませんでした！");

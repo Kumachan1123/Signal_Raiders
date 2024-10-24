@@ -79,7 +79,7 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pWall = std::make_unique<Wall>(resources);
 	m_pWall->Create(DR);
 	// スカイボックス生成
-	m_skybox = std::make_unique<SkyBox>();
+	m_skybox = std::make_unique<Sky>(2);
 	m_skybox->Initialize(resources);
 
 	// 敵カウンター

@@ -73,6 +73,4 @@ public:
 
 	SceneID GetNextSceneID() const;
 	void InitializeFMOD();
-private:
-	void DrawSpace();// スペースキー押してってやつ描画
 };

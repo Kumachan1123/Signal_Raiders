@@ -5,7 +5,7 @@
 #pragma once
 #include "Game/Scene/IScene.h"
 #include "Game/Scene/SettingScene/SettingData/SettingData.h"
-#include "Game/SkyBox/SkyBox.h"
+#include "Game/Sky/Sky.h"
 #include "Game/Player/Player.h"
 #include "Game/Player/PlayerController/PlayerController.h"
 #include "Game/Player/PlayerBullet/PlayerBullet.h"
@@ -48,7 +48,7 @@ private:
 	// プレイヤーの弾
 	std::vector<std::unique_ptr<PlayerBullet>> m_playerBullet;
 	// スカイボックス用のメンバ変数
-	std::unique_ptr<SkyBox> m_skybox;
+	std::unique_ptr<Sky> m_skybox;
 	// 敵全体
 	std::unique_ptr<Enemies> m_pEnemies;
 	// 敵

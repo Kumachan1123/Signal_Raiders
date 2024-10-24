@@ -20,7 +20,12 @@ struct PS_INPUT
     float4 pos : SV_POSITION; // 位置
     float2 Tex : TEXCOORD; // UV座標
 };
-
+// HSVからRGBに変換する関数
+float3 HSVtoRGB(float3 hsv)
+{
+    float3 rgb = clamp(abs(fmod(hsv.x * 6.0 + float3(0.0, 4.0, 2.0), 6.0) - 3.0) - 1.0, 0.0, 1.0);
+    return hsv.z * lerp(float3(1.0, 1.0, 1.0), rgb, hsv.y);
+}
 float4 main(PS_INPUT input) : SV_TARGET
 {
     // 時間に基づいて青系のグラデーションエフェクトを生成
@@ -28,14 +33,17 @@ float4 main(PS_INPUT input) : SV_TARGET
     
     // テクスチャをサンプリング
     float4 output = tex.Sample(samLinear, input.Tex);
-    // C++側で設定した色情報のalpha値を0にする
-   
-    // グラデーションエフェクトを加える
-    // エフェクトの色は画像の色に加算
-    output.rgba += gradient * color;
-   
-   
-
+    
+    // colorの全成分が0かどうかを判定
+    float isColorZero = step(0.001, dot(color.rgb, color.rgb)); // colorが(0,0,0)なら0、そうでなければ1
+    
+    // HSV値を時間とテクスチャ座標に基づいて生成
+    float3 hsv = float3(fmod(time * 0.5 + input.Tex.y, 1.0), 1.0, 1.0); // Hueの変化で虹色を生成
+    float3 rgb = HSVtoRGB(hsv); // RGBに変換
+    
+    // 発光色を混ぜる
+    output.rgb += gradient * lerp(rgb, color.rgb, isColorZero); // colorが0なら虹色、そうでなければ指定の色を使う
+    
     // 結果を返す
     return output;
 }

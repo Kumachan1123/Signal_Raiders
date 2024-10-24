@@ -75,12 +75,12 @@ void ResultScene::Initialize(CommonResources* resources)
 	// 今のシーンIDによってテクスチャを変更
 	switch (m_nowSceneID)
 	{
-		case IScene::SceneID::GAMEOVER:
-			m_pTexturePath = L"Resources/Textures/GameOver.png";
-			break;
-		case IScene::SceneID::CLEAR:
-			m_pTexturePath = L"Resources/Textures/Clear.png";
-			break;
+	case IScene::SceneID::GAMEOVER:
+		m_pTexturePath = L"Resources/Textures/GameOver.png";
+		break;
+	case IScene::SceneID::CLEAR:
+		m_pTexturePath = L"Resources/Textures/Clear.png";
+		break;
 	}
 	// 結果クラス作成
 	m_pResult = std::make_unique<Result>(m_commonResources);
@@ -194,14 +194,14 @@ IScene::SceneID ResultScene::GetNextSceneID() const
 		m_audioManager->StopSound("SE");
 		switch (m_pResultMenu->GetSceneNum())
 		{
-			case ResultMenu::SceneID::REPLAY:
-				return IScene::SceneID::PLAY;
-				break;
-			case ResultMenu::SceneID::END:
-				return IScene::SceneID::TITLE;
-				break;
-			default:
-				break;
+		case ResultMenu::SceneID::REPLAY:
+			return IScene::SceneID::PLAY;
+			break;
+		case ResultMenu::SceneID::END:
+			return IScene::SceneID::TITLE;
+			break;
+		default:
+			break;
 		}
 	}
 	// シーン変更がない場合

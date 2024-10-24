@@ -22,7 +22,7 @@ class Menu
 public:
 	enum SceneID
 	{
-		PLAY = 0,
+		STAGESELECT = 0,
 		SETTING,
 		END
 	};
@@ -43,7 +43,7 @@ private:
 
 	DirectX::Keyboard::KeyboardStateTracker m_tracker;
 
-	SceneID m_num = SceneID::PLAY;
+	SceneID m_num;// ÉVÅ[Éìî‘çÜ
 	float m_time = 0;
 	//	ä÷êî
 public:
@@ -55,9 +55,9 @@ public:
 	void Render();
 
 	void Add(const wchar_t* path
-			 , DirectX::SimpleMath::Vector2 position
-			 , DirectX::SimpleMath::Vector2 scale
-			 , kumachi::ANCHOR anchor);
+		, DirectX::SimpleMath::Vector2 position
+		, DirectX::SimpleMath::Vector2 scale
+		, kumachi::ANCHOR anchor);
 
 public:
 	SceneID GetSceneNum() const { return m_num; }

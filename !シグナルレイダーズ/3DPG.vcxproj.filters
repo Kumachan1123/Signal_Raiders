@@ -174,7 +174,7 @@
     <ClInclude Include="Game\FPS_Camera\FPS_Camera.h">
       <Filter>Game\FPS_Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Game\SkyBox\SkyBox.h">
+    <ClInclude Include="Game\Sky\Sky.h">
       <Filter>Game\SkyBox</Filter>
     </ClInclude>
     <ClInclude Include="Game\Player\PlayerController\PlayerController.h">
@@ -286,6 +286,10 @@
     <ClInclude Include="Game\Enemy\Boss\BossAI\BossAttack\BossAttack.h" />
     <ClInclude Include="Game\Enemy\Boss\BossAI\BossIdling\BossIdling.h" />
     <ClInclude Include="Game\Enemy\Boss\BossModel\BossModel.h" />
+    <ClInclude Include="Game\Scene\StageSelectScene\Menu\StageSelectMenu.h" />
+    <ClInclude Include="Game\Scene\StageSelectScene\Stage\StageSelect.h" />
+    <ClInclude Include="Game\Scene\StageSelectScene\StageSelectUI\StageSelectUI.h" />
+    <ClInclude Include="Game\Scene\StageSelectScene\StageSelectScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -324,7 +328,7 @@
     <ClCompile Include="Game\FPS_Camera\FPS_Camera.cpp">
       <Filter>Game\FPS_Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Game\SkyBox\SkyBox.cpp">
+    <ClCompile Include="Game\Sky\Sky.cpp">
       <Filter>Game\SkyBox</Filter>
     </ClCompile>
     <ClCompile Include="Game\Player\PlayerController\PlayerController.cpp">
@@ -422,6 +426,10 @@
     <ClCompile Include="Game\Enemy\Boss\BossAI\BossIdling\BossIdling.cpp" />
     <ClCompile Include="Game\Enemy\Boss\BossAI\BossAI.cpp" />
     <ClCompile Include="Game\Enemy\Boss\BossModel\BossModel.cpp" />
+    <ClCompile Include="Game\Scene\StageSelectScene\Menu\StageSelectMenu.cpp" />
+    <ClCompile Include="Game\Scene\StageSelectScene\Stage\StageSelect.cpp" />
+    <ClCompile Include="Game\Scene\StageSelectScene\StageSelectUI\StageSelectUI.cpp" />
+    <ClCompile Include="Game\Scene\StageSelectScene\StageSelectScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

@@ -22,7 +22,7 @@ using namespace DirectX::SimpleMath;
 BossAttack::BossAttack(BossAI* pBoss)
 	: m_pBoss(pBoss)
 	, m_attackCooldown{ 1.0f }
-	, m_rotationSpeed{ 2.0f }
+	, m_rotationSpeed{ }
 	, m_commonResources{}
 {
 }
@@ -36,7 +36,7 @@ void BossAttack::Initialize()
 	m_rotation = m_pBoss->GetRotation();// ‰ñ“]
 	m_velocity = m_pBoss->GetVelocity();// ‘¬“x
 	m_scale = m_pBoss->GetScale();// ƒXƒP[ƒ‹
-	m_rotationSpeed = 2.0f; // ‰ñ“]‘¬“x
+	m_rotationSpeed = 3.0f; // ‰ñ“]‘¬“x
 }
 
 void BossAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool isHitToPlayer)
@@ -95,6 +95,6 @@ void BossAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Di
 
 	m_pBoss->SetRotation(m_rotation);
 	m_pBoss->SetVelocity(m_velocity);
-	m_rotationSpeed -= .05f;
+	m_rotationSpeed -= .01f;
 	if (m_rotationSpeed < 0.1f) m_rotationSpeed = 0.1f;
 }

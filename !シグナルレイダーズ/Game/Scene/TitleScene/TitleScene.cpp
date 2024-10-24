@@ -105,16 +105,8 @@ void TitleScene::Update(float elapsedTime)
 		if (kbTracker->pressed.Space || mtracker->GetLastState().leftButton)
 		{
 			m_audioManager->PlaySound("SE", m_SEvolume);// SEの再生
-			if (m_pMenu->GetSceneNum() == Menu::SceneID::PLAY)
-			{
-				m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
-				m_pFade->SetTextureNum((int)(Fade::TextureNum::READY));// フェードのテクスチャを変更
-			}
-			else
-			{
-				m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
-				m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
-			}
+			m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
+			m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
 		}
 		// WかSのいずれかが押されたら
 		if (kbTracker->pressed.W || kbTracker->pressed.S)
@@ -171,18 +163,18 @@ IScene::SceneID TitleScene::GetNextSceneID() const
 		m_audioManager->StopSound("SE");// SEの停止
 		switch (m_pMenu->GetSceneNum())
 		{
-			case Menu::SceneID::PLAY:
-				return IScene::SceneID::PLAY;
-				break;
-			case Menu::SceneID::SETTING:
-				return IScene::SceneID::SETTING;
-				break;
-			case Menu::SceneID::END:
-				// ゲーム終了
-				EndGame();
-				break;
-			default:
-				break;
+		case Menu::SceneID::STAGESELECT:
+			return IScene::SceneID::STAGESELECT;
+			break;
+		case Menu::SceneID::SETTING:
+			return IScene::SceneID::SETTING;
+			break;
+		case Menu::SceneID::END:
+			// ゲーム終了
+			EndGame();
+			break;
+		default:
+			break;
 		}
 	}
 	// シーン変更がない場合
