@@ -40,7 +40,8 @@ private:
 	const wchar_t* m_pTexturePath;
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
-
+	// ステージ番号
+	int m_stageNumber;
 	// 空の行列
 	DirectX::SimpleMath::Matrix m_world;
 	DirectX::SimpleMath::Matrix m_view;
@@ -70,7 +71,9 @@ public:
 	void Update(float elapsedTime)override;
 	void Render() override;
 	void Finalize() override;
-
+	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; }
 	SceneID GetNextSceneID() const;
 	void InitializeFMOD();
+	int GetStageNumber() const { return m_stageNumber; }
+
 };

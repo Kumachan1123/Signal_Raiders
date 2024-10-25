@@ -77,12 +77,18 @@ void EnemyBullets::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 }
 
 // ’e‚Ì¶¬
-void EnemyBullets::CreateBullet(Vector3 enemyPos, Vector3 dir, Vector3 playerPos, float size)
+void EnemyBullets::CreateBullet(Vector3 enemyPos, Vector3 dir, Vector3 playerPos, float size, EnemyBullet::BulletType type)
 {
 	m_position = enemyPos;
-	// ’e‚ğ”­Ë
+	// ’e‚ğ”­Ë‚·‚é
 	auto bullet = std::make_unique<EnemyBullet>(size);
-	bullet->Initialize(m_commonResources);
+	bullet->Initialize(m_commonResources, type);
 	bullet->MakeBall(m_position, dir, playerPos);
 	m_bullets.push_back(std::move(bullet));
+}
+
+// —†ù’e‚Ì‰ñ“]•ûŒü‚ğİ’è
+void EnemyBullets::SetRotateDirection(int direction)
+{
+	for (auto& bullet : m_bullets)bullet->SetRotateDirection(direction);
 }

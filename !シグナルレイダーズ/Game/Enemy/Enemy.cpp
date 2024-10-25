@@ -147,12 +147,12 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	enemyWorld *= shadowMatrix;
 	// 影描画
 	m_model->Draw(context, *states, enemyWorld * Matrix::Identity, view, proj, true, [&]()
-				  {
-					  context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xffffffff);
-					  context->OMSetDepthStencilState(m_depthStencilState_Shadow.Get(), 0);
-					  context->RSSetState(states->CullClockwise());
-					  context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
-				  });
+		{
+			context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xffffffff);
+			context->OMSetDepthStencilState(m_depthStencilState_Shadow.Get(), 0);
+			context->RSSetState(states->CullClockwise());
+			context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
+		});
 	// 描画する
 	// 各パラメータを設定する
 	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
@@ -198,7 +198,7 @@ void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 			// クォータニオンから方向ベクトルを計算
 			DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_enemyAI->GetRotation());
 			// 弾を発射
-			m_enemyBullets->CreateBullet(GetPosition(), direction, playerPos, 0.15f);
+			m_enemyBullets->CreateBullet(GetPosition(), direction, playerPos, 0.15f, EnemyBullet::BulletType::STRAIGHT);
 			// クールダウンタイムをリセット
 			m_enemyAI->GetEnemyAttack()->SetCoolTime(3.0f);
 		}

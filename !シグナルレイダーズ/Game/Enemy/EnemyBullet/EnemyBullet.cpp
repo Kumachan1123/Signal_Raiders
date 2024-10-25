@@ -18,6 +18,10 @@ EnemyBullet::EnemyBullet(float size)
 	, m_time(0.0f)
 	, m_angle{ 0.0f }
 	, m_size{ size }
+	, m_spiralAngle{ 0.0f }
+	, m_bulletSpeed{ 0.5f }
+	, m_rotateDirection{ 1 }
+	, m_bulletType{ BulletType::STRAIGHT }
 {
 }
 //-------------------------------------------------------------------
@@ -26,14 +30,14 @@ EnemyBullet::EnemyBullet(float size)
 EnemyBullet::~EnemyBullet()
 {
 }
-void EnemyBullet::Initialize(CommonResources* resources)
+void EnemyBullet::Initialize(CommonResources* resources, BulletType type)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	m_commonResources = resources;
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-
+	m_bulletType = type;
 	// プリミティブバッチを作成する
 	m_primitiveBatch = std::make_unique<DirectX::DX11::PrimitiveBatch<DirectX::DX11::VertexPositionColor>>(context);
 	/*
@@ -57,15 +61,15 @@ void EnemyBullet::Initialize(CommonResources* resources)
 	// モデルを読み込む
 	m_model = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Bullet.cmo", *fx);
 	m_model->UpdateEffects([&](DirectX::IEffect* effect)
-						   {
-							   // ベイシックエフェクトを取得する
-							   auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);
-							   basicEffect->SetAlpha(.5f);// アルファ値を設定する
-							   basicEffect->SetDiffuseColor(DirectX::Colors::Pink);// ディフューズカラーを設定する
-							   basicEffect->SetAmbientLightColor(DirectX::Colors::Pink);// アンビエントライトカラーを設定する
-							   basicEffect->SetEmissiveColor(DirectX::Colors::Magenta);// エミッシブカラーを設定する
+		{
+			// ベイシックエフェクトを取得する
+			auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);
+			basicEffect->SetAlpha(.5f);// アルファ値を設定する
+			basicEffect->SetDiffuseColor(DirectX::Colors::Pink);// ディフューズカラーを設定する
+			basicEffect->SetAmbientLightColor(DirectX::Colors::Pink);// アンビエントライトカラーを設定する
+			basicEffect->SetEmissiveColor(DirectX::Colors::Magenta);// エミッシブカラーを設定する
 
-						   });
+		});
 	// 弾の軌道生成
 	m_bulletTrail = std::make_unique<BulletTrail>(ParticleUtility::Type::ENEMYTRAIL, m_size);
 	m_bulletTrail->Initialize(resources);
@@ -84,35 +88,28 @@ void EnemyBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::Sim
 	m_position.y -= 2.5f;
 	m_direction = dir;
 	m_target = target;
+	m_bulletSpeed = 0.5f;
 }
 
 // 更新
 void EnemyBullet::Update(DirectX::SimpleMath::Vector3& pos, float elapsedTime)
 {
+	// 角度を増加させる
 	m_angle += 6.0f;
-	if (m_angle > 360)m_angle = 0;
-	// プレイヤーの方向ベクトルを計算
-	DirectX::SimpleMath::Vector3 toPlayer = m_target - pos;
-	// ベクトルを正規化
-	if (toPlayer.LengthSquared() > 0)
-	{
-		toPlayer.Normalize();
-	}
-	// 弾の方向をプレイヤーの方向に向ける
-	m_direction = toPlayer;
-	// 弾の速度を遅くする
-	float bulletSpeed = .1f; // 適当な速度を設定する（任意の値、調整可能）
-	m_velocity = m_direction * bulletSpeed;
-	// プレイヤーの方向に向かって弾を飛ばす
-	m_position += m_velocity;
-	m_boundingSphere.Center = m_position;//境界球に座標を渡す
+	if (m_angle > 360) m_angle = 0;
+
+	if (m_bulletType == BulletType::SPIRAL) SpiralBullet();
+	else StraightBullet(pos);
+
 	// 現在の弾の位置を軌跡リストに追加
 	m_bulletTrail->SetBulletPosition(m_position);
+
 	// 軌跡の更新
 	m_bulletTrail->Update(elapsedTime);
-	m_time += elapsedTime;// 経過時間
+	m_time += elapsedTime; // 経過時間を更新
 
 }
+
 void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
 	using namespace DirectX::SimpleMath;
@@ -150,4 +147,63 @@ void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	DX::Draw(m_primitiveBatch.get(), m_boundingSphere, DirectX::Colors::Red);
 	m_primitiveBatch->End();
 #endif
+}
+
+// 直線弾
+void EnemyBullet::StraightBullet(DirectX::SimpleMath::Vector3& pos)
+{	// プレイヤーの方向ベクトルを計算
+	DirectX::SimpleMath::Vector3 toPlayer = m_target - pos;
+	// ベクトルを正規化
+	if (toPlayer.LengthSquared() > 0)
+	{
+		toPlayer.Normalize();
+	}
+	// 弾の方向をプレイヤーの方向に向ける
+	m_direction = toPlayer;
+	// 弾の速度を遅くする
+	float bulletSpeed = .1f; // 適当な速度を設定する（任意の値、調整可能）
+	m_velocity = m_direction * bulletSpeed;
+	// プレイヤーの方向に向かって弾を飛ばす
+	m_position += m_velocity;
+	m_boundingSphere.Center = m_position;//境界球に座標を渡す
+}
+
+
+// 螺旋弾
+void EnemyBullet::SpiralBullet()
+{
+	// プレイヤー方向ベクトルを計算
+	DirectX::SimpleMath::Vector3 toPlayer = m_target - m_position;
+
+	// プレイヤーとの距離を取得してスパイラルの半径に使う
+	float distanceToPlayer = toPlayer.Length();
+	if (distanceToPlayer > 0)
+	{
+		toPlayer.Normalize();
+	}
+
+	// プレイヤー中心に円を描くようにオフセット計算
+	float spiralRadius = 1.0f; // プレイヤー中心からのスパイラルの半径
+	float spiralSpeed = 4.0f;  // スパイラルの回転速度
+
+	// 時間によってプレイヤー周りを回転する位置を設定
+	DirectX::SimpleMath::Vector3 spiralOffset = {
+		spiralRadius * cosf(spiralSpeed * m_time) * distanceToPlayer * 0.1f,
+		0.0f,
+		spiralRadius * sinf(spiralSpeed * m_time) * distanceToPlayer * 0.1f * m_rotateDirection
+	};
+
+	// プレイヤーに向かう方向とスパイラル効果をミックス
+	m_direction = toPlayer + spiralOffset;
+	m_direction.Normalize();
+
+	// 弾の速度を設定
+
+	m_velocity = m_direction * m_bulletSpeed;
+
+	// プレイヤーに向かいつつスパイラルを描いて移動
+	m_position += m_velocity;
+	m_boundingSphere.Center = m_position;
+	// 弾の速度を少し遅くする
+	m_bulletSpeed -= 0.001f;
 }

@@ -15,7 +15,12 @@ class CommonResources;
 class EnemyBullet
 {	//•Ï”
 public:
-	//const float SIZE = 0.15f;
+	enum class BulletType
+	{
+		STRAIGHT,//’¼ü
+		SPIRAL,//—†ù
+	};
+	BulletType m_bulletType;
 	DirectX::SimpleMath::Vector3 m_position;		// ’e‚ÌÀ•W
 	DirectX::SimpleMath::Vector3 m_velocity;		// ’e‚Ì‘¬‚³
 	float m_size;			// ’e‚Ì‘å‚«‚³
@@ -39,7 +44,11 @@ private:
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
 	// ’e‚Ì©“]
 	float m_angle;
-
+	float m_spiralAngle;
+	// ‰ñ“]•ûŒüi—†ù’e—p:+‚È‚ç‰E‰ñ‚èA-‚È‚ç¶‰ñ‚èj
+	int m_rotateDirection;
+	// ’e‚Ì‘¬“x
+	float m_bulletSpeed;
 	// ’e‚Ì‹O“¹
 	std::unique_ptr<BulletTrail> m_bulletTrail;
 	// 	//ƒfƒoƒbƒO—p
@@ -51,7 +60,7 @@ private:
 public:
 	EnemyBullet(float size);
 	~EnemyBullet();
-	void Initialize(CommonResources* resources);
+	void Initialize(CommonResources* resources, BulletType type);
 	void Update(DirectX::SimpleMath::Vector3& pos, float elapsedTime);
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 	void MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir, DirectX::SimpleMath::Vector3& target);
@@ -74,6 +83,11 @@ public:
 
 		return GetTime() >= BULLET_LIFETIME;
 	}
+	// —†ù’e‚Ì‰ñ“]•ûŒü‚ğŒˆ‚ß‚é
+	void SetRotateDirection(int direction) { m_rotateDirection = direction; }
+private:
+	void SpiralBullet();//—†ù’e
+	void StraightBullet(DirectX::SimpleMath::Vector3& pos);//’¼ü’e
 
 };
 #endif //ENEMY_BULLET_DEFINED

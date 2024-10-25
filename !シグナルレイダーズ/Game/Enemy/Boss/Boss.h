@@ -64,6 +64,11 @@ private:
 	DirectX::SimpleMath::Vector3 m_bulletPosLeft;
 	// 右
 	DirectX::SimpleMath::Vector3 m_bulletPosRight;
+	// 発射位置を回転させるためのクォータニオン
+	DirectX::SimpleMath::Quaternion m_bulletQuaternion;
+	// 時間
+	float m_time;
+	// 敵のステータス
 	int m_currentHP;//敵の体力
 	bool m_isDead = false;//敵のHPが0になったらTrue
 	bool m_isHit = false;// プレイヤーとの判定
@@ -107,10 +112,11 @@ public:
 	// 初期ステータスを設定
 	Boss(Player* pPlayer);
 	~Boss();
-	void Initialize(CommonResources* resources, int hp) override;
-	void Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)override;
-	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;
-	void CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::BoundingSphere& B)override;
-
+	void Initialize(CommonResources* resources, int hp) override;// 初期化
+	void Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)override;// 更新
+	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;// 描画
+	void CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::BoundingSphere& B)override;// 衝突判定
+	void ShootBullet();// 弾発射
+	void BulletPotsitioning(float elapsedTime);// 弾の位置設定
 
 };

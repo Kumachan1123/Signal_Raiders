@@ -34,7 +34,8 @@ ResultScene::ResultScene(IScene::SceneID sceneID)
 	m_pBackGround{ nullptr },
 	m_audioManager{ AudioManager::GetInstance() },
 	m_pTexturePath{},
-	m_nowSceneID{ sceneID }
+	m_nowSceneID{ sceneID },
+	m_stageNumber{ 0 }
 {
 }
 
@@ -125,6 +126,7 @@ void ResultScene::Update(float elapsedTime)
 		{
 			m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
 			m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
+			m_stageNumber = 5;// タイトルに戻る
 		}		// WかSのいずれかが押されたら
 		if (kbTracker->pressed.W || kbTracker->pressed.S)
 			m_audioManager->PlaySound("Select", m_SEvolume);// SEの再生
@@ -198,7 +200,9 @@ IScene::SceneID ResultScene::GetNextSceneID() const
 			return IScene::SceneID::PLAY;
 			break;
 		case ResultMenu::SceneID::END:
-			return IScene::SceneID::TITLE;
+
+			return IScene::SceneID::STAGESELECT;
+
 			break;
 		default:
 			break;

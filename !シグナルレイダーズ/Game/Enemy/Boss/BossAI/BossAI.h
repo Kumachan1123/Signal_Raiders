@@ -19,11 +19,9 @@ class BossIdling;
 class BossAI
 {
 private:
-	//•½í
 
-	std::unique_ptr<BossIdling> m_enemyIdling;
 	//UŒ‚
-	std::unique_ptr<BossAttack> m_enemyAttack;
+	std::unique_ptr<BossAttack> m_pBossAttack;
 	// Œ»İ‚Ìó‘Ô
 	IState* m_currentState;
 	IState::EnemyState m_enemyState;
@@ -50,8 +48,8 @@ public:
 	DirectX::SimpleMath::Quaternion GetRotation() const { return m_rotation; }
 	DirectX::SimpleMath::Vector3 GetVelocity() const { return m_velocity; }
 	DirectX::SimpleMath::Vector3 GetScale() const { return m_scale; }
-	BossAttack* GetEnemyAttack()const { return m_enemyAttack.get(); }
-	BossIdling* GetEnemyIdling()const { return m_enemyIdling.get(); }
+	BossAttack* GetBossAttack()const { return m_pBossAttack.get(); }
+
 	IState* GetNowState()const { return m_currentState; }
 	IState::EnemyState GetState()const { return m_enemyState; }
 	//  setter
@@ -67,10 +65,10 @@ public:
 	~BossAI();
 	void Initialize();
 	void Update(float elapsedTime,
-				DirectX::SimpleMath::Vector3& pos,
-				DirectX::SimpleMath::Vector3& playerPos,
-				bool& isHitToPlayer,
-				bool& isHitToPlayerBullet);
+		DirectX::SimpleMath::Vector3& pos,
+		DirectX::SimpleMath::Vector3& playerPos,
+		bool& isHitToPlayer,
+		bool& isHitToPlayerBullet);
 	void ChangeState(IState* newState);
 	// UŒ‚ƒƒWƒbƒN‚ğÀ‘•
 

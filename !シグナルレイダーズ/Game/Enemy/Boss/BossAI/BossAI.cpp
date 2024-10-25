@@ -15,10 +15,10 @@
 
 // コンストラクタ
 BossAI::BossAI()
-	: m_currentState(nullptr), m_rotationSpeed(0.5f), m_attackCooldown(0.0f), m_enemyAttack(nullptr), m_enemyIdling(nullptr), m_enemyState(IState::EnemyState::IDLING)
+	: m_currentState(nullptr), m_rotationSpeed(0.5f), m_attackCooldown(0.0f), m_pBossAttack(nullptr), m_enemyState(IState::EnemyState::IDLING)
 {
-	m_enemyAttack = std::make_unique<BossAttack>(this);
-	m_enemyIdling = std::make_unique<BossIdling>(this);
+	m_pBossAttack = std::make_unique<BossAttack>(this);
+
 }
 // デストラクタ
 BossAI::~BossAI() {}
@@ -35,9 +35,9 @@ void BossAI::Initialize()
 	m_scale = Vector3::One; // スケール初期化
 	m_time = 0.0f;  // 時間の初期化
 	m_position = m_initialPosition;
-	m_currentState = m_enemyIdling.get();
+	m_currentState = m_pBossAttack.get();
 	m_currentState->Initialize();
-	m_enemyState = IState::EnemyState::IDLING;// 待機態勢
+	m_enemyState = IState::EnemyState::ATTACK;// 待機態勢
 }
 // 更新
 void BossAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool& isHitToPlayer, bool& isHitToPlayerBullet)
@@ -52,17 +52,7 @@ void BossAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Direct
 	// 敵をふわふわ浮遊させる
 	pos.y = m_initialPosition.y + amplitude * std::sin(frequency * m_time);
 	pos.y += m_velocity.y * elapsedTime;
-	// 敵がプレイヤーの一定範囲内に入っている場合
-	if ((isHitToPlayer || m_isHitPlayerBullet))
-	{
-		ChangeState(m_enemyAttack.get());//攻撃態勢にする
-		m_enemyState = IState::EnemyState::ATTACK;// 徘徊態勢
-	}
-	else
-	{
-		ChangeState(m_enemyIdling.get());//徘徊態勢にする
-		m_enemyState = IState::EnemyState::IDLING;// 徘徊態勢
-	}
+
 	m_currentState->Update(elapsedTime, pos, playerPos, isHitToPlayer);
 	// プレイヤーの弾に当たった場合
 	if (isHitToPlayerBullet)
