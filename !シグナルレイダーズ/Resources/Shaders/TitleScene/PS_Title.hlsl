@@ -28,7 +28,7 @@ float3 HSVtoRGB(float3 hsv)
 }
 float4 main(PS_INPUT input) : SV_TARGET
 {
-    // 時間に基づいて青系のグラデーションエフェクトを生成
+    // 時間に基づいてグラデーションエフェクトを生成
     float gradient = exp(-abs(sin(time * 1.0 + input.Tex.y * 5.0)));
     
     // テクスチャをサンプリング
