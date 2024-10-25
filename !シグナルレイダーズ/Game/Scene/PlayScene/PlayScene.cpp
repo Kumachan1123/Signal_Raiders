@@ -38,9 +38,12 @@ PlayScene::PlayScene(IScene::SceneID sceneID)
 	m_BGMvolume{ VOLUME },
 	m_SEvolume{ VOLUME },
 	m_mouseSensitivity{ },
-	m_nowSceneID{ sceneID }
+	m_nowSceneID{ sceneID },
+	m_stageNumber{ 0 }
 
-{}
+{
+
+}
 //---------------------------------------------------------
 // デストラクタ
 //---------------------------------------------------------
@@ -79,7 +82,7 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pWall = std::make_unique<Wall>(resources);
 	m_pWall->Create(DR);
 	// スカイボックス生成
-	m_skybox = std::make_unique<Sky>(2);
+	m_skybox = std::make_unique<Sky>(m_stageNumber);
 	m_skybox->Initialize(resources);
 
 	// 敵カウンター
@@ -96,6 +99,7 @@ void PlayScene::Initialize(CommonResources* resources)
 
 	// Sound用のオブジェクトを初期化する
 	InitializeFMOD();
+
 }
 
 //---------------------------------------------------------
@@ -103,6 +107,7 @@ void PlayScene::Initialize(CommonResources* resources)
 //---------------------------------------------------------
 void PlayScene::Update(float elapsedTime)
 {
+	ShowCursor(FALSE);//カーソルを見えないようにする
 	// キーボードステートトラッカーを取得する
 	const auto& kb = m_commonResources->GetInputManager()->GetKeyboardTracker();
 

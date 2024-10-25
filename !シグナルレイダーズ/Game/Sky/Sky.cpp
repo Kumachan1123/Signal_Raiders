@@ -53,23 +53,23 @@ void Sky::Initialize(CommonResources* resources)
 	switch (m_stageID)
 	{
 
-	case 1:
+	case 0:
 		//テクスチャパスを設定する
 		wcscpy_s(m_texturePath, L"Resources/models/sky/sky.cmo");
 		break;
-	case 2:
+	case 1:
 		//テクスチャパスを設定する
 		wcscpy_s(m_texturePath, L"Resources/models/sky/CloudySky.cmo");
 		break;
-	case 3:
+	case 2:
 		//テクスチャパスを設定する
 		wcscpy_s(m_texturePath, L"Resources/models/sky/EveningSky.cmo");
 		break;
-	case 4:
+	case 3:
 		//テクスチャパスを設定する
 		wcscpy_s(m_texturePath, L"Resources/models/sky/NightSky.cmo");
 		break;
-	case 5:
+	case 4:
 		//テクスチャパスを設定する
 		wcscpy_s(m_texturePath, L"Resources/models/sky/MidNightSky.cmo");
 		break;

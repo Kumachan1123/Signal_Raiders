@@ -81,7 +81,8 @@ private:
 	AudioManager* m_audioManager;
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
-
+	// ステージ番号
+	int m_stageNumber;
 	// 音量の基準
 	const float VOLUME = 1.0f;
 	float m_BGMvolume;	// ボリューム
@@ -106,7 +107,7 @@ public:
 	void Update(float elapsedTime)override;
 	void Render() override;
 	void Finalize() override;
-
+	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; }
 	SceneID GetNextSceneID() const;
 private:
 	// FMODのシステムの初期化と音声データのロード

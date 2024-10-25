@@ -32,7 +32,7 @@ StageSelectMenu::StageSelectMenu()
 	, m_windowWidth{ 0 }
 	, m_windowHeight{ 0 }
 	, m_tracker{}
-	, m_num{ SceneID::REPLAY }
+	, m_num{ SceneID::PLAY }
 {
 }
 
@@ -47,17 +47,38 @@ void StageSelectMenu::Initialize(CommonResources* resources, int width, int heig
 	m_pDR = m_commonResources->GetDeviceResources();
 	m_windowWidth = width;
 	m_windowHeight = height;
-	m_pSelectTexturePath = L"Resources/Textures/ResultSelect.png";
-	//  「もういっかいやる」を読み込む
-	Add(L"Resources/Textures/RePlay.png"
-		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y + 250)
-		, SimpleMath::Vector2(.5, .5)
+	m_pSelectTexturePath = L"Resources/Textures/StageSelect.png";
+	//  「ステージ1の写真」を読み込む
+	Add(L"Resources/Textures/stage1.png"
+		, SimpleMath::Vector2(Screen::CENTER_X - 550, Screen::CENTER_Y)
+		, SimpleMath::Vector2(.75, .75)
 		, kumachi::ANCHOR::MIDDLE_CENTER);
-	// 　「おわる」を読み込む
+	//  「ステージ2の写真」を読み込む
+	Add(L"Resources/Textures/stage2.png"
+		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y)
+		, SimpleMath::Vector2(.75, .75)
+		, kumachi::ANCHOR::MIDDLE_CENTER);
+	//  「ステージ3の写真」を読み込む
+	Add(L"Resources/Textures/stage3.png"
+		, SimpleMath::Vector2(Screen::CENTER_X + 550, Screen::CENTER_Y)
+		, SimpleMath::Vector2(.75, .75)
+		, kumachi::ANCHOR::MIDDLE_CENTER);
+	//  「ステージ4の写真」を読み込む
+	Add(L"Resources/Textures/stage4.png"
+		, SimpleMath::Vector2(Screen::CENTER_X - 550, Screen::CENTER_Y + 300)
+		, SimpleMath::Vector2(.75, .75)
+		, kumachi::ANCHOR::MIDDLE_CENTER);
+	//  「ステージ5の写真」を読み込む
+	Add(L"Resources/Textures/stage5.png"
+		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y + 300)
+		, SimpleMath::Vector2(.75, .75)
+		, kumachi::ANCHOR::MIDDLE_CENTER);
+	//  「タイトルに戻る」を読み込む
 	Add(L"Resources/Textures/ToTitle.png"
-		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y + 400)
-		, SimpleMath::Vector2(.5, .5)
+		, SimpleMath::Vector2(Screen::CENTER_X + 550, Screen::CENTER_Y + 300)
+		, SimpleMath::Vector2(.6, .6)
 		, kumachi::ANCHOR::MIDDLE_CENTER);
+
 
 
 }
@@ -70,14 +91,14 @@ void StageSelectMenu::Update(float elapsedTime)
 
 	m_time += elapsedTime;
 	//  キーボードの入力を取得
-	if (kbTracker->pressed.S)
+	if (kbTracker->pressed.D)
 	{
 		//  →キーを押したら、選択先を1つ進める
 		m_menuIndex += 1;
 		//  メニューアイテム数の最大値を超えないように制御
 		m_menuIndex %= m_pUI.size();
 	}
-	if (kbTracker->pressed.W)
+	if (kbTracker->pressed.A)
 	{
 		//  ←キーを押したら、選択先を1つ戻す
 		m_menuIndex += static_cast<unsigned int>(m_pUI.size()) - 1;
@@ -101,12 +122,14 @@ void StageSelectMenu::Update(float elapsedTime)
 	Vector2 select = m_pUI[m_menuIndex]->GetSelectScale();
 	//  選択状態とするための変化用サイズを算出する
 	SimpleMath::Vector2 selectScale = SimpleMath::Vector2::Lerp(m_pUI[m_menuIndex]->GetSelectScale(), SimpleMath::Vector2::One, 1);
-	//  選択状態は初期状態＋50％の大きさとする
+	//  選択状態は初期状態より大きくする
 	select = SimpleMath::Vector2((sin(m_time) * 0.1f) + 1.0f);
 	//  算出後のサイズを現在のサイズとして設定する
 	m_pUI[m_menuIndex]->SetScale(select);
+	//  メニューIDが5の時は、拡大率を少し抑える
+	if (m_menuIndex == 5) m_pUI[m_menuIndex]->SetScale(select * 0.75);
 	//  背景用のウィンドウ画像にも同じ割合の値を設定する
-	m_pSelect[m_menuIndex]->SetScale(Vector2::One);
+	m_pSelect[m_menuIndex]->SetScale(select);
 }
 
 void StageSelectMenu::Render()

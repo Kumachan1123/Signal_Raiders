@@ -22,7 +22,7 @@ public:
 	{
 		DirectX::SimpleMath::Vector4 windowSize;
 		float time;
-		DirectX::SimpleMath::Vector3 padding;
+		DirectX::SimpleMath::Vector3 color;
 	};
 	ConstBuffer m_constBuffer{};
 public:

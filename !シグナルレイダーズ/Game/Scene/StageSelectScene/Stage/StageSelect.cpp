@@ -61,10 +61,11 @@ void StageSelect::Create(DX::DeviceResources* pDR)
 	VertexPositionTexture vertex[4] =
 	{
 		//	頂点情報													UV情報
-		VertexPositionTexture(SimpleMath::Vector3(-0.85f,  0.3f, 0.0f), SimpleMath::Vector2(0.0f, 0.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(0.85f,  0.3f, 0.0f), SimpleMath::Vector2(1.0f, 0.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(0.85f, -0.3f, 0.0f), SimpleMath::Vector2(1.0f, 1.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(-0.85f, -0.3f, 0.0f), SimpleMath::Vector2(0.0f, 1.0f)),
+		VertexPositionTexture(SimpleMath::Vector3(0.85f, -0.6f, 0.0f), SimpleMath::Vector2(1.0f, 1.0f)),
+		VertexPositionTexture(SimpleMath::Vector3(-0.85f, -0.6f, 0.0f), SimpleMath::Vector2(0.0f, 1.0f)),
+		VertexPositionTexture(SimpleMath::Vector3(-0.85f,  0.f, 0.0f), SimpleMath::Vector2(0.0f, 0.0f)),
+		VertexPositionTexture(SimpleMath::Vector3(0.85f,  0.f, 0.0f), SimpleMath::Vector2(1.0f, 0.0f)),
+
 	};
 	for (int i = 0; i < 4; i++)
 	{
@@ -73,7 +74,7 @@ void StageSelect::Create(DX::DeviceResources* pDR)
 	// 頂点の座標を調整
 	for (int i = 0; i < 4; i++)
 	{
-		m_vertex[i].position.y += 0.75f;
+		m_vertex[i].position.y += 1.0f;
 	}
 	// プリミティブバッチの作成
 	m_batch = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(pDR->GetD3DDeviceContext());

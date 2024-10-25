@@ -73,4 +73,5 @@ public:
 
 	SceneID GetNextSceneID() const;
 	void InitializeFMOD();
+	int GetStageNumber() const { return m_pStageSelectMenu->GetMenuIndex(); }
 };

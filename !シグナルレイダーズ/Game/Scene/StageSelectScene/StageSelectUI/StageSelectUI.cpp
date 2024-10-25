@@ -126,15 +126,20 @@ void StageSelectUI::Update(float elapsedTime)
 
 void StageSelectUI::Render()
 {
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
+
+	//	板ポリ描画処理
 	auto context = m_pDR->GetD3DDeviceContext();// コンテキスト
 	VertexPositionColorTexture vertex[1] = {
-		VertexPositionColorTexture(SimpleMath::Vector3(m_scale.x, m_scale.y, static_cast<float>(m_anchor))
-		, SimpleMath::Vector4(m_position.x, m_position.y, static_cast<float>(m_textureWidth), static_cast<float>(m_textureHeight))
-		, SimpleMath::Vector2(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight)))
+		VertexPositionColorTexture(Vector3(m_scale.x, m_scale.y, static_cast<float>(m_anchor))
+		, Vector4(m_position.x, m_position.y, static_cast<float>(m_textureWidth), static_cast<float>(m_textureHeight))
+		, Vector2(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight)))
 	};
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	m_constBuffer.windowSize = SimpleMath::Vector4(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 1, 1);
+	m_constBuffer.windowSize = Vector4(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 1, 1);
 	m_constBuffer.time = m_time;
+	m_constBuffer.color = Vector3(.75, .75, .75);
 
 	// 受け渡し用バッファの内容更新
 	context->UpdateSubresource(m_pCBuffer.Get(), 0, NULL, &m_constBuffer, 0, 0);

@@ -142,8 +142,6 @@ void Player::Render()
 	m_pPlayerPointer->Render();// 照準描画
 	m_pPlayerBullets->Render();// 弾描画
 	// ダメージエフェクトを更新する
-	for (auto& damageEffect : m_pDamageEffect)
-	{
-		damageEffect->Render();
-	}
+	for (auto& damageEffect : m_pDamageEffect)damageEffect->Render();
+
 }

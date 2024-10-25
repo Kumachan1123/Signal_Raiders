@@ -22,13 +22,15 @@ class StageSelectMenu
 public:
 	enum SceneID
 	{
-		REPLAY = 0,
+		PLAY = 0,
 		END
 	};
 	//	ïœêî
+public:
+	unsigned int m_menuIndex;
 private:
 
-	unsigned int m_menuIndex;
+
 	DX::DeviceResources* m_pDR;
 	CommonResources* m_commonResources;
 	std::vector<std::unique_ptr<StageSelectUI>> m_pUI;
@@ -42,7 +44,7 @@ private:
 
 	DirectX::Keyboard::KeyboardStateTracker m_tracker;
 
-	SceneID m_num = SceneID::REPLAY;
+	SceneID m_num = SceneID::PLAY;
 	float m_time = 0;
 	//	ä÷êî
 public:
@@ -61,4 +63,6 @@ public:
 public:
 	SceneID GetSceneNum() const { return m_num; }
 	void SetSceneNum(SceneID num) { m_num = num; }
+	int GetMenuIndex() const { return m_menuIndex; }
+	void SetMenuIndex(int index) { m_menuIndex = index; }
 };

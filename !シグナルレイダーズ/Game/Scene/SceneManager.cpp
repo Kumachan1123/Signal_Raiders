@@ -23,7 +23,9 @@
 SceneManager::SceneManager()
 	:
 	m_currentScene{},
-	m_commonResources{}
+	m_commonResources{},
+	m_stageNumber{ 0 },
+	m_nowSceneID{ IScene::SceneID::NONE }
 {
 }
 
@@ -108,6 +110,7 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 		break;
 	case IScene::SceneID::PLAY:
 		m_currentScene = std::make_unique<PlayScene>(sceneID);
+
 		break;
 	case IScene::SceneID::CLEAR:
 	case IScene::SceneID::GAMEOVER:
@@ -119,7 +122,14 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 	}
 
 	assert(m_currentScene && "SceneManager::CreateScene::次のシーンが生成されませんでした！");
+	if (GetSceneID() == IScene::SceneID::STAGESELECT && m_stageNumber < 5)
+	{
+		auto playScene = dynamic_cast<PlayScene*>(m_currentScene.get());
+		assert(playScene);
+		playScene->SetStageNumber(m_stageNumber);
+	}
 	m_currentScene->Initialize(m_commonResources);
+	SetSceneID(sceneID);
 }
 
 //---------------------------------------------------------
@@ -129,6 +139,17 @@ void SceneManager::DeleteScene()
 {
 	if (m_currentScene)
 	{
+		//現在のシーンが「セレクトシーン」の場合、ステージ番号を取得する
+		if (GetSceneID() == IScene::SceneID::STAGESELECT)
+		{
+			//ステージ番号を取得する
+			auto stageSelectScene = dynamic_cast<StageSelectScene*>(m_currentScene.get());
+			assert(stageSelectScene);
+			//ステージ番号を取得する
+			m_stageNumber = stageSelectScene->GetStageNumber();
+
+		}
 		m_currentScene.reset();
+		ShowCursor(TRUE);//カーソルを見えるようにする
 	}
 }

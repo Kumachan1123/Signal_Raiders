@@ -87,7 +87,7 @@ void Game::Initialize(HWND window, int width, int height)
 	m_sceneManager->Initialize(m_commonResources.get());
 
 	// ★追記ココまで↑↑↑★
-	ShowCursor(FALSE);//カーソルを見えないようにする
+	ShowCursor(TRUE);//カーソルを見えないようにする
 }
 
 #pragma region Frame Update
@@ -95,9 +95,9 @@ void Game::Initialize(HWND window, int width, int height)
 void Game::Tick()
 {
 	m_timer.Tick([&]()
-				 {
-					 Update(m_timer);
-				 });
+		{
+			Update(m_timer);
+		});
 
 	Render();
 }
@@ -154,7 +154,7 @@ void Game::Render()
 	UNREFERENCED_PARAMETER(context);
 
 	// デバッグ文字列を作成する：FPS
-	m_debugString->AddString("fps : %d", m_timer.GetFramesPerSecond());
+	//m_debugString->AddString("fps : %d", m_timer.GetFramesPerSecond());
 
 	// シーンマネージャを描画する
 	m_sceneManager->Render();

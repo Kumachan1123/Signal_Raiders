@@ -107,7 +107,7 @@ void StageSelectScene::Update(float elapsedTime)
 	{
 		// SEの再生
 		m_audioManager->PlaySound("SE", m_SEvolume);
-		if (m_pStageSelectMenu->GetSceneNum() == StageSelectMenu::SceneID::REPLAY)
+		if (m_pStageSelectMenu->GetMenuIndex() < 5)
 		{
 			m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
 			m_pFade->SetTextureNum((int)(Fade::TextureNum::READY));// フェードのテクスチャを変更
@@ -131,7 +131,6 @@ void StageSelectScene::Update(float elapsedTime)
 	// フェードに関する準備
 	m_time += elapsedTime; // 時間をカウント
 	m_size = (sin(m_time) + 1.0f) * 0.3f + 0.75f; // sin波で0.5〜1.5の間を変動させる
-	m_pressKeySize = (cos(m_time) + 1.0f) * 0.3f + 0.75f; // sin波で0.5〜1.5の間を変動させる
 	// 背景の更新
 	m_pBackGround->Update(elapsedTime);
 
@@ -183,17 +182,15 @@ IScene::SceneID StageSelectScene::GetNextSceneID() const
 		// BGMとSEの停止
 		m_audioManager->StopSound("BGM");
 		m_audioManager->StopSound("SE");
-		switch (m_pStageSelectMenu->GetSceneNum())
+		if (m_pStageSelectMenu->GetMenuIndex() < 5)
 		{
-		case StageSelectMenu::SceneID::REPLAY:
 			return IScene::SceneID::PLAY;
-			break;
-		case StageSelectMenu::SceneID::END:
-			return IScene::SceneID::TITLE;
-			break;
-		default:
-			break;
 		}
+		else
+		{
+			return IScene::SceneID::TITLE;
+		}
+
 	}
 	// シーン変更がない場合
 	return IScene::SceneID::NONE;
