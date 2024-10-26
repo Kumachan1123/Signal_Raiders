@@ -139,7 +139,7 @@ void StageSelectUI::Render()
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	m_constBuffer.windowSize = Vector4(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 1, 1);
 	m_constBuffer.time = m_time;
-	m_constBuffer.color = Vector3(.75, .75, .75);
+	m_constBuffer.color = Vector3(.25, .25, .25);
 
 	// 受け渡し用バッファの内容更新
 	context->UpdateSubresource(m_pCBuffer.Get(), 0, NULL, &m_constBuffer, 0, 0);

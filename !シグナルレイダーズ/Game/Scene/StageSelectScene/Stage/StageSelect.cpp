@@ -56,7 +56,7 @@ void StageSelect::Create(DX::DeviceResources* pDR)
 	// 画像の読み込み
 	LoadTexture(L"Resources/Textures/StageSelectTex.png");
 	// グラデーションエフェクトの色設定
-	m_ConstBuffer.Colors = SimpleMath::Vector4(.5, .5, .5, 0);
+	m_ConstBuffer.color = SimpleMath::Vector4(.25, .25, .25, 0);
 	//	頂点情報(板ポリゴンの４頂点の座標情報）
 	VertexPositionTexture vertex[4] =
 	{

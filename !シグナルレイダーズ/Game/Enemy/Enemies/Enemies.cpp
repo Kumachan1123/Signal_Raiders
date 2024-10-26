@@ -35,6 +35,7 @@ Enemies::Enemies(CommonResources* commonResources)
 	m_enemyBornInterval{ 0.5f },
 	m_enemyBornTimer{ 0.0f },
 	m_bossHP{ 100 },
+	m_bossBulletType{ Boss::BossBulletType::NORMAL },
 	m_startTime{ 0.0f },
 	m_pWifi{ nullptr },
 	m_pPlayer{ nullptr },
@@ -108,9 +109,10 @@ void Enemies::Update(float elapsedTime)
 	{
 		m_isBossBorned = true;// ボス生成可能にする
 		m_enemies.clear();// ザコ敵を削除
-		m_boss = std::make_unique<Boss>(m_pPlayer);
-		m_boss->Initialize(m_commonResources, m_bossHP);
-		m_enemies.push_back(std::move(m_boss));// ボスを生成
+		m_boss = std::make_unique<Boss>(m_pPlayer);// ボスを生成
+		m_boss->Initialize(m_commonResources, m_bossHP);// ボスを初期化
+		m_boss->SetBulletType(m_bossBulletType);// ボスの弾の種類を設定
+		m_enemies.push_back(std::move(m_boss));// ボスを敵リストに追加
 
 	}
 
@@ -132,7 +134,7 @@ void Enemies::Update(float elapsedTime)
 	{
 		m_isHitPlayerToEnemy = false;// フラグを初期化
 		// 敵を更新
-		enemy->Update(elapsedTime, m_pPlayer->GetPlayerController()->GetPlayerPosition());
+		enemy->Update(elapsedTime, m_pPlayer->GetCamera()->GetEyePosition());
 		// 敵の弾がプレイヤーに当たったら
 		bool hit = enemy->GetBulletHitToPlayer();
 		if (hit)
@@ -241,22 +243,27 @@ void Enemies::SetEnemyMax()
 	case 0:
 		m_enemyMax = 5;// 敵の生成上限を設定
 		m_bossHP = 100;// ボスの体力を設定
+		m_bossBulletType = Boss::BossBulletType::NORMAL;// ボスの弾を一発に設定
 		break;
 	case 1:
 		m_enemyMax = 10;// 敵の生成上限を設定
 		m_bossHP = 200;// ボスの体力を設定
+		m_bossBulletType = Boss::BossBulletType::NORMAL;// ボスの弾を一発に設定
 		break;
 	case 2:
 		m_enemyMax = 20;// 敵の生成上限を設定
 		m_bossHP = 300;// ボスの体力を設定
+		m_bossBulletType = Boss::BossBulletType::TWIN;// ボスの弾を二発に設定
 		break;
 	case 3:
 		m_enemyMax = 30;// 敵の生成上限を設定
 		m_bossHP = 500;// ボスの体力を設定
+		m_bossBulletType = Boss::BossBulletType::THREE;// ボスの弾を三発に設定
 		break;
 	case 4:
 		m_enemyMax = 40;// 敵の生成上限を設定
 		m_bossHP = 1000;// ボスの体力を設定
+		m_bossBulletType = Boss::BossBulletType::SPIRAL;// ボスの弾を螺旋に設定
 		break;
 	}
 }

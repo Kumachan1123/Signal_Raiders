@@ -16,7 +16,7 @@ public:
 		DirectX::SimpleMath::Matrix		matWorld;//	ワールド行列
 		DirectX::SimpleMath::Matrix		matView;	//	ビュー行列
 		DirectX::SimpleMath::Matrix		matProj;	//	プロジェクション行列
-		DirectX::SimpleMath::Vector4	Colors;
+		DirectX::SimpleMath::Vector4	color;
 		float time = 0.0f;
 		DirectX::SimpleMath::Vector3 padding;
 	};

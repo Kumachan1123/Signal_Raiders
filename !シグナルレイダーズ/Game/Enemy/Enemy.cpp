@@ -135,8 +135,10 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	Matrix enemyWorld = Matrix::CreateScale(m_enemyAI->GetScale());
 	// “G‚ÌÀ•W‚ğİ’è
 	enemyWorld *= world;
+	// HPBar‚ÌÀ•W‚ğİ’è
+	Vector3 hpBarPos = Vector3(m_position.x, m_position.y - 3.0f, m_position.z);
 	// HPBar•`‰æ
-	m_HPBar->Render(view, proj, m_position, m_rotate);
+	m_HPBar->Render(view, proj, hpBarPos, m_rotate);
 	// “G•`‰æ	
 	m_enemyModel->Render(context, states, enemyWorld, view, proj);
 	// ƒ‰ƒCƒg‚Ì•ûŒü

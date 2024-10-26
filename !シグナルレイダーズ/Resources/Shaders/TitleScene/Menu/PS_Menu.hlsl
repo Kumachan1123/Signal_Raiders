@@ -18,7 +18,7 @@ float4 main(PS_INPUT input) : SV_TARGET
     float4 output = tex.Sample(samLinear, input.Tex);
     
     // colorの全成分が0かどうかを判定
-    float isColorZero = step(0.001, dot(color.rgb, color.rgb)); // colorが(0,0,0)なら0、そうでなければ1
+    float isColorZero = step(0.0001, dot(color.rgb, color.rgb)); // colorが(0,0,0)なら0、そうでなければ1
     
     // HSV値を時間とテクスチャ座標に基づいて生成
     float3 hsv = float3(fmod(time * 0.5 + input.Tex.y, 1.0), 1.0, 1.0); // Hueの変化で虹色を生成

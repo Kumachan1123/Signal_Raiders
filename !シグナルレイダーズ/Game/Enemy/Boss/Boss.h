@@ -6,6 +6,7 @@
 #pragma once
 #include "Game/KumachiLib/AudioManager.h"
 #include "Game/Interface/IEnemy.h"
+#include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 //前方宣言
 class CommonResources;
 class PlayScene;
@@ -19,6 +20,14 @@ class EnemyBullets;
 class Enemies;
 class Boss : public IEnemy
 {
+public:
+	enum class BossBulletType
+	{
+		NORMAL = 0,	// 一発
+		TWIN,		// 二発
+		THREE,		// 三発
+		SPIRAL,		// 三発螺旋
+	};
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
@@ -66,6 +75,11 @@ private:
 	DirectX::SimpleMath::Vector3 m_bulletPosRight;
 	// 発射位置を回転させるためのクォータニオン
 	DirectX::SimpleMath::Quaternion m_bulletQuaternion;
+	// 弾のタイプ
+	BossBulletType m_bossBulletType;// Enemiesクラスで設定する
+	EnemyBullet::BulletType m_bulletType;// EnemyBulletクラスに送る
+	// 弾の飛ぶ方向
+	DirectX::SimpleMath::Vector3 m_bulletDirection;
 	// 時間
 	float m_time;
 	// 敵のステータス
@@ -116,7 +130,14 @@ public:
 	void Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)override;// 更新
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;// 描画
 	void CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::BoundingSphere& B)override;// 衝突判定
-	void ShootBullet();// 弾発射
-	void BulletPotsitioning(float elapsedTime);// 弾の位置設定
 
+	void SetBulletType(BossBulletType bossBulletType) { m_bossBulletType = bossBulletType; };// 弾のタイプ設定
+	BossBulletType GetBulletType() const { return m_bossBulletType; };// 弾のタイプ取得
+private:
+	void ShootBullet();// 弾発射
+	void BulletPotsitioning();// 弾の位置設定
+	void CreateBullet();// 弾を生成
+	void CreateCenterBullet(EnemyBullet::BulletType type);// 中央の弾を生成
+	void CreateLeftBullet(float angleOffset, EnemyBullet::BulletType type);// 左の弾を生成
+	void CreateRightBullet(float angleOffset, EnemyBullet::BulletType type);// 右の弾を生成
 };

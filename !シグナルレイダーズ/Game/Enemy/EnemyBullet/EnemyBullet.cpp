@@ -37,7 +37,7 @@ void EnemyBullet::Initialize(CommonResources* resources, BulletType type)
 	m_commonResources = resources;
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-	m_bulletType = type;
+	m_bulletType = type;// 弾の種類を設定する
 	// プリミティブバッチを作成する
 	m_primitiveBatch = std::make_unique<DirectX::DX11::PrimitiveBatch<DirectX::DX11::VertexPositionColor>>(context);
 	/*
@@ -161,7 +161,7 @@ void EnemyBullet::StraightBullet(DirectX::SimpleMath::Vector3& pos)
 	// 弾の方向をプレイヤーの方向に向ける
 	m_direction = toPlayer;
 	// 弾の速度を遅くする
-	float bulletSpeed = .1f; // 適当な速度を設定する（任意の値、調整可能）
+	float bulletSpeed = .2f; // 適当な速度を設定する（任意の値、調整可能）
 	m_velocity = m_direction * bulletSpeed;
 	// プレイヤーの方向に向かって弾を飛ばす
 	m_position += m_velocity;

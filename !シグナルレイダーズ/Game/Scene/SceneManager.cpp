@@ -114,6 +114,7 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 		break;
 	case IScene::SceneID::CLEAR:
 	case IScene::SceneID::GAMEOVER:
+
 		m_currentScene = std::make_unique<ResultScene>(sceneID);
 		break;
 	default:
@@ -136,6 +137,7 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 		auto resultScene = dynamic_cast<ResultScene*>(m_currentScene.get());
 		assert(resultScene);
 		resultScene->SetStageNumber(m_stageNumber);
+
 	}
 	m_currentScene->Initialize(m_commonResources);
 	SetSceneID(sceneID);
@@ -168,6 +170,6 @@ void SceneManager::DeleteScene()
 			m_stageNumber = resultScene->GetStageNumber();
 		}
 		m_currentScene.reset();
-		ShowCursor(TRUE);//カーソルを見えるようにする
+		//ShowCursor(TRUE);//カーソルを見えるようにする
 	}
 }

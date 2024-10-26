@@ -19,6 +19,8 @@ class Effect;
 class Wifi;
 class Enemies
 {
+public:
+
 private:
 	// コモンリソース
 	CommonResources* m_commonResources;
@@ -62,7 +64,7 @@ private:
 	AudioManager* m_audioManager;
 	// SEの音量
 	float m_SEVolume = 0.0f;
-
+	Boss::BossBulletType m_bossBulletType;
 public:
 	Enemies(CommonResources* commonResources);
 	~Enemies();

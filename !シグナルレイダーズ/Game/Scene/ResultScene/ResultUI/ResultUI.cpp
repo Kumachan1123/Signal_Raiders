@@ -56,9 +56,9 @@ void ResultUI::LoadTexture(const wchar_t* path)
 }
 
 void ResultUI::Create(DX::DeviceResources* pDR, const wchar_t* path
-					  , DirectX::SimpleMath::Vector2 position
-					  , DirectX::SimpleMath::Vector2 scale
-					  , kumachi::ANCHOR anchor)
+	, DirectX::SimpleMath::Vector2 position
+	, DirectX::SimpleMath::Vector2 scale
+	, kumachi::ANCHOR anchor)
 {
 	m_pDR = pDR;// デバイスリソース
 	m_position = position;// 位置
@@ -86,9 +86,9 @@ void ResultUI::CreateShader()
 	kumachi::BinaryFile PS = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/TitleScene/Menu/PS_Menu.cso");
 	// インプットレイアウト作成
 	device->CreateInputLayout(&INPUT_LAYOUT[0],
-							  static_cast<UINT>(INPUT_LAYOUT.size()),
-							  VS.GetData(), VS.GetSize(),
-							  m_pInputLayout.GetAddressOf());
+		static_cast<UINT>(INPUT_LAYOUT.size()),
+		VS.GetData(), VS.GetSize(),
+		m_pInputLayout.GetAddressOf());
 	//	頂点シェーダ作成
 	if (FAILED(device->CreateVertexShader(VS.GetData(), VS.GetSize(), NULL, m_pVertexShader.ReleaseAndGetAddressOf())))
 	{//	エラー
@@ -135,7 +135,7 @@ void ResultUI::Render()
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	m_constBuffer.windowSize = SimpleMath::Vector4(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 1, 1);
 	m_constBuffer.time = m_time;
-
+	m_constBuffer.color = SimpleMath::Vector3(0.2, 0.2, 0.2);
 	// 受け渡し用バッファの内容更新
 	context->UpdateSubresource(m_pCBuffer.Get(), 0, NULL, &m_constBuffer, 0, 0);
 	// シェーダーにバッファを渡す

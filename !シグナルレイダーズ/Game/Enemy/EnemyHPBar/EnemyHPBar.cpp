@@ -21,7 +21,7 @@
 #include "Game/Template/Template.h"
 // コンストラクタ
 EnemyHPBar::EnemyHPBar()
-	: m_commonResources{}, m_maxHP(100), m_currentHP(100), m_displayedHP(100), m_lerpSpeed(5.0f), m_isDead(false)
+	: m_commonResources{}, m_maxHP(100), m_currentHP(100), m_displayedHP(100), m_lerpSpeed(5.0f), m_scale(1.5f), m_isDead(false)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
@@ -93,7 +93,7 @@ void EnemyHPBar::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::M
 	// ビルボードをアフィン変換
 	Matrix worldBillboard{};
 	worldBillboard = billboardMatrix;
-	worldBillboard *= Matrix::CreateTranslation(Vector3(0.0f, -2.0f, 0.0f));
+	worldBillboard *= Matrix::CreateScale(m_scale);
 	worldBillboard *= Matrix::CreateRotationY(XMConvertToRadians(-rot.y * 2.0f));	// ③
 	worldBillboard *= Matrix::CreateTranslation(pos);
 	worldBillboard *= Matrix::CreateRotationY(XMConvertToRadians(rot.y * 2.0f));	// ③
