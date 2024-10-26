@@ -65,16 +65,6 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume()) / 2;// BGMの音量を設定する(若干音量を補正)
 	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume());// SEの音量を設定する
 	m_mouseSensitivity = static_cast<float>(m_pSettingData->GetMouseSensitivity());// マウス感度を設定する
-	// プレイヤーを初期化する
-	m_pPlayer = std::make_unique<Player>(resources);
-	// 敵全体を初期化する
-	m_pEnemies = std::make_unique<Enemies>(resources);
-
-	m_pPlayer->SetVolume(m_SEvolume);// プレイヤーが出す効果音の音量を設定する
-	m_pPlayer->SetMouseSensitive(m_mouseSensitivity);// マウス感度を設定する
-	m_pPlayer->Initialize(m_pEnemies.get());
-	m_pEnemies->Initialize(m_pPlayer.get());
-	m_pEnemies->SetVolume(m_SEvolume);// 敵が出す効果音の音量を設定する
 	// 地面（ステージ生成）
 	m_pStage = std::make_unique<Stage>();
 	m_pStage->Initialize(resources);
@@ -84,6 +74,16 @@ void PlayScene::Initialize(CommonResources* resources)
 	// スカイボックス生成
 	m_skybox = std::make_unique<Sky>(m_stageNumber);
 	m_skybox->Initialize(resources);
+	// プレイヤーを初期化する
+	m_pPlayer = std::make_unique<Player>(resources);
+	// 敵全体を初期化する
+	m_pEnemies = std::make_unique<Enemies>(resources);
+	m_pEnemies->SetStageNumber(m_stageNumber);// ステージ番号を設定する
+	m_pPlayer->SetVolume(m_SEvolume);// プレイヤーが出す効果音の音量を設定する
+	m_pPlayer->SetMouseSensitive(m_mouseSensitivity);// マウス感度を設定する
+	m_pPlayer->Initialize(m_pEnemies.get());
+	m_pEnemies->Initialize(m_pPlayer.get());
+	m_pEnemies->SetVolume(m_SEvolume);// 敵が出す効果音の音量を設定する
 
 	// 敵カウンター
 	m_pEnemyCounter = std::make_unique<EnemyCounter>();

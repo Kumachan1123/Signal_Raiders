@@ -26,6 +26,8 @@ private:
 	std::vector<std::unique_ptr<IEnemy>> m_enemies;
 	// ボス
 	std::unique_ptr<Boss> m_boss;
+	// ステージ番号（0から4をプレイシーンから参照）
+	int m_stageNumber = 0;
 	// 敵生成フラグ
 	bool m_isEnemyBorn = false;
 	// 敵生成済み
@@ -34,6 +36,8 @@ private:
 	bool m_isHitPlayerToEnemy = false;
 	// 敵の数
 	int m_enemyIndex = 0;
+	// 敵の生成上限
+	int m_enemyMax = 0;
 	// 敵の生成間隔
 	float m_enemyBornInterval = 0.0f;
 	// 敵の生成タイミングを管理
@@ -46,6 +50,8 @@ private:
 	bool m_isBossBorned = false;
 	// ボス生存フラグ
 	bool m_isBossAlive = true;
+	// ボスの体力
+	int m_bossHP;
 	// wi-fi
 	std::unique_ptr<Wifi> m_pWifi;
 	// プレイヤーコントローラー
@@ -56,6 +62,7 @@ private:
 	AudioManager* m_audioManager;
 	// SEの音量
 	float m_SEVolume = 0.0f;
+
 public:
 	Enemies(CommonResources* commonResources);
 	~Enemies();
@@ -79,4 +86,8 @@ public:
 	bool GetIsBossAlive() const { return m_isBossAlive; }// ボス生存フラグ
 	// Setter
 	void SetVolume(float volume) { m_SEVolume = volume; }// 音量取得
+	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; }// ステージ番号
+private:
+	// 敵の生成上限設定
+	void SetEnemyMax();
 };

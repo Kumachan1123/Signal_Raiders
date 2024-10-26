@@ -30,8 +30,11 @@ Enemies::Enemies(CommonResources* commonResources)
 	m_isEnemyBorn{ false },
 	m_isBorned{ false },
 	m_enemyIndex{ 0 },
+	m_stageNumber{ 0 },
+	m_enemyMax{ 0 },
 	m_enemyBornInterval{ 0.5f },
 	m_enemyBornTimer{ 0.0f },
+	m_bossHP{ 100 },
 	m_startTime{ 0.0f },
 	m_pWifi{ nullptr },
 	m_pPlayer{ nullptr },
@@ -56,6 +59,8 @@ void Enemies::Initialize(Player* pPlayer)
 {
 	m_pPlayer = pPlayer;
 	InitializeFMOD();
+	// 敵の生成上限設定
+	SetEnemyMax();
 }
 
 //---------------------------------------------------------
@@ -72,6 +77,9 @@ void Enemies::Update(float elapsedTime)
 	m_enemyBornTimer += elapsedTime;
 	// 敵の生成数
 	int enemyNum = static_cast<int>(m_pWifi->GetWifiLevels().size());// static_cast<int>(m_pWifi->GetWifiLevels().size()
+	// 敵の生成数を上限以下に収める
+	if (enemyNum > m_enemyMax)enemyNum = m_enemyMax;
+
 	//int enemyNum = 2;
 	if (m_startTime >= 5.0f)m_isEnemyBorn = true;//生成可能にする
 	// 生成可能なら
@@ -101,7 +109,7 @@ void Enemies::Update(float elapsedTime)
 		m_isBossBorned = true;// ボス生成可能にする
 		m_enemies.clear();// ザコ敵を削除
 		m_boss = std::make_unique<Boss>(m_pPlayer);
-		m_boss->Initialize(m_commonResources, 1000);
+		m_boss->Initialize(m_commonResources, m_bossHP);
 		m_enemies.push_back(std::move(m_boss));// ボスを生成
 
 	}
@@ -164,20 +172,20 @@ void Enemies::Update(float elapsedTime)
 			{
 				// 敵の座標を渡して爆破エフェクトを再生
 				m_effect.push_back(std::make_unique<Effect>(m_commonResources,
-															Effect::ParticleType::ENEMY_DEAD,
-															(*it)->GetPosition(),
-															10.0f,
-															(*it)->GetMatrix()));
+					Effect::ParticleType::ENEMY_DEAD,
+					(*it)->GetPosition(),
+					10.0f,
+					(*it)->GetMatrix()));
 				m_isBossAlive = false;// 生存フラグをfalseにする
 			}
 			else// ザコ敵だったら
 			{
 				// 敵の座標を渡して爆破エフェクトを再生
 				m_effect.push_back(std::make_unique<Effect>(m_commonResources,
-															Effect::ParticleType::ENEMY_DEAD,
-															(*it)->GetPosition(),
-															3.0f,
-															(*it)->GetMatrix()));
+					Effect::ParticleType::ENEMY_DEAD,
+					(*it)->GetPosition(),
+					3.0f,
+					(*it)->GetMatrix()));
 			}
 
 			m_audioManager->PlaySound("EnemyDead", m_pPlayer->GetVolume() * 10);// 敵のSEを再生(こいつだけ音量10倍)
@@ -205,12 +213,12 @@ void Enemies::Render()
 	// エフェクトを描画する
 	GetEffect().erase
 	(std::remove_if(GetEffect().begin(), GetEffect().end(), [&](const std::unique_ptr<Effect>& effect)//	再生終了したパーティクルを削除する
-					{
-						if (!effect->IsPlaying()) return true;// 再生終了したパーティクルは削除する
-						effect->Render(context, view, projection);// パーティクルを描画する
-						return false;//	再生中のパーティクルは削除しない
-					}),
-	 GetEffect().end()//	削除対象のパーティクルを削除する
+		{
+			if (!effect->IsPlaying()) return true;// 再生終了したパーティクルは削除する
+			effect->Render(context, view, projection);// パーティクルを描画する
+			return false;//	再生中のパーティクルは削除しない
+		}),
+		GetEffect().end()//	削除対象のパーティクルを削除する
 	);
 
 }
@@ -222,4 +230,33 @@ void Enemies::InitializeFMOD()
 	m_audioManager->Initialize();
 	m_audioManager->LoadSound("Resources/Sounds/Explosion.mp3", "EnemyDead");
 	m_audioManager->LoadSound("Resources/Sounds/damage.mp3", "Damage");
+}
+
+// 敵の生成上限設定
+void Enemies::SetEnemyMax()
+{
+	// ステージ番号によって敵の生成上限を設定
+	switch (m_stageNumber)
+	{
+	case 0:
+		m_enemyMax = 5;// 敵の生成上限を設定
+		m_bossHP = 100;// ボスの体力を設定
+		break;
+	case 1:
+		m_enemyMax = 10;// 敵の生成上限を設定
+		m_bossHP = 200;// ボスの体力を設定
+		break;
+	case 2:
+		m_enemyMax = 20;// 敵の生成上限を設定
+		m_bossHP = 300;// ボスの体力を設定
+		break;
+	case 3:
+		m_enemyMax = 30;// 敵の生成上限を設定
+		m_bossHP = 500;// ボスの体力を設定
+		break;
+	case 4:
+		m_enemyMax = 40;// 敵の生成上限を設定
+		m_bossHP = 1000;// ボスの体力を設定
+		break;
+	}
 }
