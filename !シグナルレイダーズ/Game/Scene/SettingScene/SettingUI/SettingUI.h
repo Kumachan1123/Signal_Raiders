@@ -22,7 +22,7 @@ public:
 	{
 		DirectX::SimpleMath::Vector4 windowSize;
 		float time;
-		DirectX::SimpleMath::Vector3 padding;
+		DirectX::SimpleMath::Vector3 color;
 	};
 	ConstBuffer m_constBuffer{};
 public:
@@ -58,10 +58,10 @@ public:
 	void LoadTexture(const wchar_t* path);
 
 	void Create(DX::DeviceResources* pDR
-				, const wchar_t* path
-				, DirectX::SimpleMath::Vector2 position
-				, DirectX::SimpleMath::Vector2 scale
-				, kumachi::ANCHOR anchor);
+		, const wchar_t* path
+		, DirectX::SimpleMath::Vector2 position
+		, DirectX::SimpleMath::Vector2 scale
+		, kumachi::ANCHOR anchor);
 	void Update(float elapsedTime);
 
 	void Render();
