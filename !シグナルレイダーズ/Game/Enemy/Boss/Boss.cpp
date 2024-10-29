@@ -147,13 +147,13 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	Vector3 lightDir = Vector3::UnitY;
 	lightDir.Normalize();
 	// ‰es—ñ‚ÌŒ³‚ðì‚é
-	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, -0.01f));
+	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, 0.01f));
 	enemyWorld *= shadowMatrix;
 	// ‰e•`‰æ
 	m_model->Draw(context, *states, enemyWorld * Matrix::Identity, view, proj, true, [&]()
 		{
 			context->OMSetBlendState(states->Opaque(), nullptr, 0xffffffff);
-			context->OMSetDepthStencilState(m_depthStencilState_Shadow.Get(), 0);
+			context->OMSetDepthStencilState(states->DepthNone(), 0);
 			context->RSSetState(states->CullClockwise());
 			context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
 		});

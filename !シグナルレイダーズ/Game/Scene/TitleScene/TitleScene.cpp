@@ -78,6 +78,8 @@ void TitleScene::Initialize(CommonResources* resources)
 	// 設定ファイルの読み込み
 	m_pSettingData = std::make_unique<SettingData>();
 	m_pSettingData->Load();
+
+	// 音量の設定
 	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume());
 	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume());
 	// 音声を初期化する

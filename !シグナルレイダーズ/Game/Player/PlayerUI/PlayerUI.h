@@ -2,7 +2,6 @@
 //@file    PlayerUI.h
 //@brief  プレイヤーUIクラス
 //作成者：くまち
-//
 //-------------------------------------------------------------------------------------
 
 
@@ -73,10 +72,10 @@ public:
 	void LoadTexture(const wchar_t* path);
 
 	void Create(DX::DeviceResources* pDR
-				, const wchar_t* path
-				, DirectX::SimpleMath::Vector2 position
-				, DirectX::SimpleMath::Vector2 scale
-				, kumachi::ANCHOR anchor);
+		, const wchar_t* path
+		, DirectX::SimpleMath::Vector2 position
+		, DirectX::SimpleMath::Vector2 scale
+		, kumachi::ANCHOR anchor);
 
 	void Render();
 

@@ -114,7 +114,7 @@ void SettingScene::Update(float elapsedTime)
 	}
 
 	// メニューでの選択処理が行われたら
-	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd && kbTracker->pressed.Space || mtracker->GetLastState().leftButton)
+	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd && (kbTracker->pressed.Space || mtracker->GetLastState().leftButton))
 	{
 		m_audioManager->PlaySound("SE", m_SEvolume);// SEの再生
 		if (m_pSettingMenu->GetStateIDNum() == SettingMenu::StateID::END ||

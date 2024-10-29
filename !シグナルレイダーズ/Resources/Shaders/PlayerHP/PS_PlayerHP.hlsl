@@ -9,12 +9,7 @@ float4 main(PS_INPUT input) : SV_TARGET
 	//	指定された画像の表示
     float4 output = tex.Sample(samLinear, input.tex);
 
-	//	真っ白な板ポリゴン
-    float4 outputw = float4(1, 1, 1, 1);
-
-	//	ゲージの現在値から、メーター用画像が丁度いい位置でαグラデーションとなるには、
-	//	どのような値を「smoothValue」に代入すればいいだろう？
-	//	ヒント：一つの値を代入すればOK。計算式まで書く必要性なし！
+	// 画像の透過度を変更
     float smoothValue = renderRatio;
     output.a *= lerp(1.0f, 0.0f, smoothstep(smoothValue, smoothValue + 0.00000001f, input.tex.x));
     return output;
