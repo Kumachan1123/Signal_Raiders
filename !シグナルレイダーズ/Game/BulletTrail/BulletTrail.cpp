@@ -78,9 +78,9 @@ void BulletTrail::CreateShader()
 
 	// インプットレイアウト作成
 	device->CreateInputLayout(&INPUT_LAYOUT[0],
-							  static_cast<UINT>(INPUT_LAYOUT.size()),
-							  VS.GetData(), VS.GetSize(),
-							  m_inputLayout.GetAddressOf());
+		static_cast<UINT>(INPUT_LAYOUT.size()),
+		VS.GetData(), VS.GetSize(),
+		m_inputLayout.GetAddressOf());
 	// 頂点シェーダー作成
 	if (FAILED(device->CreateVertexShader(VS.GetData(), VS.GetSize(), nullptr, m_vertexShader.GetAddressOf())))
 	{
@@ -152,13 +152,11 @@ void BulletTrail::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 			continue;
 		}
 		VertexPositionColorTexture vPCT{};
-		//	表示するパーティクルの中心座標のみを入れる。
-		//	→つまり、C++で用意しているデータだけではテクスチャを表示できない。
-		//	　→ジオメトリシェーダを使う事前提のデータ、ということ
+
+		//	座標
 		vPCT.position = XMFLOAT3(li.GetPosition());
 		//	テクスチャの色
 		vPCT.color = XMFLOAT4(li.GetNowColor());
-
 
 		//	現在のテクスチャのスケールを「XMFLOAT2」のXに入れる。
 		vPCT.textureCoordinate = XMFLOAT2(li.GetNowScale().x, 0.0f);
@@ -172,14 +170,13 @@ void BulletTrail::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 		return;
 	}
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	ConstBuffer cbuff;
-	cbuff.matView = view.Transpose();
-	cbuff.matProj = proj.Transpose();
-	cbuff.matWorld = m_billboard.Transpose();
-	cbuff.Diffuse = SimpleMath::Vector4(1, 1, 1, 1);
+	m_constantBuffer.matView = view.Transpose();
+	m_constantBuffer.matProj = proj.Transpose();
+	m_constantBuffer.matWorld = m_billboard.Transpose();
+	m_constantBuffer.colors = SimpleMath::Vector4(1, 1, 1, 0);
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(m_CBuffer.Get(), 0, NULL, &cbuff, 0, 0);
+	context->UpdateSubresource(m_CBuffer.Get(), 0, NULL, &m_constantBuffer, 0, 0);
 
 	//	シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };

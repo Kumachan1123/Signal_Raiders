@@ -96,7 +96,6 @@ void PlayScene::Initialize(CommonResources* resources)
 	// レーダーを初期化する
 	m_pRadar = std::make_unique<Radar>(resources);
 	m_pRadar->Initialize(m_pPlayer.get(), m_pEnemies.get());
-
 	// Sound用のオブジェクトを初期化する
 	InitializeFMOD();
 

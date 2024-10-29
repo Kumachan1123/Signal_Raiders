@@ -117,14 +117,15 @@ void ResultScene::Update(float elapsedTime)
 	{
 		// SEの再生
 		m_audioManager->PlaySound("SE", m_SEvolume);
+		m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
 		if (m_pResultMenu->GetSceneNum() == ResultMenu::SceneID::REPLAY)
 		{
-			m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
+
 			m_pFade->SetTextureNum((int)(Fade::TextureNum::READY));// フェードのテクスチャを変更
 		}
 		else
 		{
-			m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
+
 			m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
 			m_stageNumber = 5;// タイトルに戻る
 		}		// WかSのいずれかが押されたら

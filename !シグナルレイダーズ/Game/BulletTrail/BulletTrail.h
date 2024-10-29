@@ -20,8 +20,10 @@ public:
 		DirectX::SimpleMath::Matrix		matWorld;
 		DirectX::SimpleMath::Matrix		matView;
 		DirectX::SimpleMath::Matrix		matProj;
-		DirectX::SimpleMath::Vector4	Diffuse;
+		DirectX::SimpleMath::Vector4	colors;//	色
+
 	};
+
 	//変数
 public:
 
@@ -38,13 +40,15 @@ public:
 
 	//	入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
-
 	//	プリミティブバッチ
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_batch;
 	//	コモンステート
 	std::unique_ptr<DirectX::CommonStates> m_states;
 	//	テクスチャハンドル
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_texture;
+	// コンスタントバッファ
+	ConstBuffer m_constantBuffer;
+
 
 	//	頂点シェーダ
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;

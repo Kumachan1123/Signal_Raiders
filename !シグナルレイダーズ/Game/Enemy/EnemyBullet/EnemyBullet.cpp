@@ -15,7 +15,7 @@ EnemyBullet::EnemyBullet(float size)
 	:m_position{}
 	, m_velocity{}
 	, m_commonResources{}
-	, m_time(0.0f)
+	, m_time{ 0.0f }
 	, m_angle{ 0.0f }
 	, m_size{ size }
 	, m_spiralAngle{ 0.0f }
@@ -73,9 +73,9 @@ void EnemyBullet::Initialize(CommonResources* resources, BulletType type)
 	// 弾の軌道生成
 	m_bulletTrail = std::make_unique<BulletTrail>(ParticleUtility::Type::ENEMYTRAIL, m_size);
 	m_bulletTrail->Initialize(resources);
-	m_direction = Vector3::Zero;
-	m_velocity = Vector3{ 0.0f,0.0f,0.0f };
-	m_position = Vector3::Zero;
+	m_direction = Vector3::Zero;// 方向を初期化
+	m_velocity = Vector3::Zero;// 速度を初期化
+	m_position = Vector3::Zero;// 位置を初期化
 
 	m_boundingSphere.Center = m_position;
 	m_boundingSphere.Radius = m_size * 2;
@@ -184,13 +184,14 @@ void EnemyBullet::SpiralBullet()
 
 	// プレイヤー中心に円を描くようにオフセット計算
 	float spiralRadius = 1.0f; // プレイヤー中心からのスパイラルの半径
-	float spiralSpeed = 4.0f;  // スパイラルの回転速度
+	float spiralSpeed = 5.0f;  // スパイラルの回転速度
 
 	// 時間によってプレイヤー周りを回転する位置を設定
 	DirectX::SimpleMath::Vector3 spiralOffset = {
-		spiralRadius * cosf(spiralSpeed * m_time) * distanceToPlayer * 0.1f,
 		0.0f,
-		spiralRadius * sinf(spiralSpeed * m_time) * distanceToPlayer * 0.1f * m_rotateDirection
+		spiralRadius * cosf(spiralSpeed * m_time * 2.5f) * distanceToPlayer * 0.1f,
+
+		spiralRadius * sinf(spiralSpeed * m_time * 2.5f) * distanceToPlayer * 0.1f * m_rotateDirection
 	};
 
 	// プレイヤーに向かう方向とスパイラル効果をミックス
@@ -198,7 +199,6 @@ void EnemyBullet::SpiralBullet()
 	m_direction.Normalize();
 
 	// 弾の速度を設定
-
 	m_velocity = m_direction * m_bulletSpeed;
 
 	// プレイヤーに向かいつつスパイラルを描いて移動

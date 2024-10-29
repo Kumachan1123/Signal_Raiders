@@ -20,7 +20,7 @@ public:
 		float time = 0.0f;
 		DirectX::SimpleMath::Vector3 padding;
 	};
-	ConstBuffer m_constBuffer;
+
 private:
 	// ã§í ÉäÉ\Å[ÉX
 	CommonResources* m_commonResources;

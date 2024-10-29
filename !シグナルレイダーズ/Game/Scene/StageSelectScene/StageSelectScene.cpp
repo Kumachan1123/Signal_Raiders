@@ -107,14 +107,15 @@ void StageSelectScene::Update(float elapsedTime)
 	{
 		// SEの再生
 		m_audioManager->PlaySound("SE", m_SEvolume);
+		m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
 		if (m_pStageSelectMenu->GetMenuIndex() < 5)
 		{
-			m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
+
 			m_pFade->SetTextureNum((int)(Fade::TextureNum::READY));// フェードのテクスチャを変更
 		}
 		else
 		{
-			m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
+
 			m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
 		}		// WかSのいずれかが押されたら
 		if (kbTracker->pressed.W || kbTracker->pressed.S)
