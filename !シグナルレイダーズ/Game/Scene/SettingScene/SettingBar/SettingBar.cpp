@@ -141,7 +141,7 @@ void SettingBar::Add(const wchar_t* path
 					 , kumachi::ANCHOR anchor)
 {
 	//  メニューとしてアイテムを追加する
-	std::unique_ptr<SettingUI> userInterface = std::make_unique<SettingUI>();
+	std::unique_ptr<UI> userInterface = std::make_unique<UI>();
 	//  指定された画像を表示するためのアイテムを作成する
 	userInterface->Create(m_pDR
 						  , path
@@ -155,7 +155,7 @@ void SettingBar::Add(const wchar_t* path
 
 
 	//  背景用のウィンドウ画像も追加する
-	std::unique_ptr<SettingUI> base = std::make_unique<SettingUI>();
+	std::unique_ptr<UI> base = std::make_unique<UI>();
 	base->Create(m_pDR
 				 , m_pSettingBarPointerTexturePath
 				 , position

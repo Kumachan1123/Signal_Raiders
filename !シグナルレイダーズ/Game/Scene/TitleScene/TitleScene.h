@@ -10,7 +10,7 @@
 #include "Game/Scene/BackGround/BackGround.h"
 #include "Game/Scene/TitleLogo/TitleLogo.h"
 #include "Game/KumachiLib/AudioManager.h"
-#include "Game/Scene/TitleScene/Menu/Menu.h"
+#include "Game/Scene/TitleScene/TitleMenu/TitleMenu.h"
 #include "Game/Scene/SettingScene/SettingMenu/SettingMenu.h"
 #include "Game/Scene/SettingScene/SettingBar/SettingBar.h"
 #include "Game/Scene/SettingScene/SettingData/SettingData.h"
@@ -39,7 +39,7 @@ private:
 	std::unique_ptr<TitleLogo> m_pTitleLogo;
 
 	// メニュー
-	std::unique_ptr<Menu> m_pMenu;
+	std::unique_ptr<TitleMenu> m_pMenu;
 	// 設定データ
 	std::unique_ptr<SettingData> m_pSettingData;
 	// フェード画像番号

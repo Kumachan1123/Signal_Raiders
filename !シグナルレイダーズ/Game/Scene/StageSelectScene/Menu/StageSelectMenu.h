@@ -5,7 +5,7 @@
 #pragma once
 
 #include "StepTimer.h"
-#include "Game/Scene/StageSelectScene/StageSelectUI/StageSelectUI.h"
+#include "Game/UI/UI.h"
 #include <DeviceResources.h>
 #include "Game/CommonResources.h"
 #include <SimpleMath.h>
@@ -33,12 +33,12 @@ private:
 
 	DX::DeviceResources* m_pDR;
 	CommonResources* m_commonResources;
-	std::vector<std::unique_ptr<StageSelectUI>> m_pUI;
-	std::vector<std::unique_ptr<StageSelectUI>> m_pSelect;
+	std::vector<std::unique_ptr<UI>> m_pUI;
+	std::vector<std::unique_ptr<UI>> m_pSelect;
 
 	const wchar_t* m_pSelectTexturePath;
 
-	std::unique_ptr<StageSelectUI> m_pSelectWindow;
+	std::unique_ptr<UI> m_pSelectWindow;
 
 	int m_windowWidth, m_windowHeight;
 

@@ -1,11 +1,11 @@
 /*
-	@file	Menu.cpp
-	@brief	メニュークラス
+	@file	TitleMenu.cpp
+	@brief	タイトルメニュークラス
 */
 #include "pch.h"
-#include "Menu.h"
+#include "TitleMenu.h"
 #include "Game/Screen.h"
-#include "Game/Scene/TitleScene/TitleUI/TitleUI.h"
+#include "Game/UI/UI.h"
 #include "Game/KumachiLib/BinaryFile.h"
 #include "DeviceResources.h"
 #include <SimpleMath.h>
@@ -20,7 +20,7 @@
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
-Menu::Menu()
+TitleMenu::TitleMenu()
 	: m_menuIndex{ 0 }
 	, m_pDR{ nullptr }
 	, m_commonResources{ nullptr }
@@ -36,11 +36,11 @@ Menu::Menu()
 }
 
 
-Menu::~Menu()
+TitleMenu::~TitleMenu()
 {
 }
 
-void Menu::Initialize(CommonResources* resources, int width, int height)
+void TitleMenu::Initialize(CommonResources* resources, int width, int height)
 {
 	m_commonResources = resources;
 	m_pDR = m_commonResources->GetDeviceResources();
@@ -65,7 +65,7 @@ void Menu::Initialize(CommonResources* resources, int width, int height)
 
 }
 
-void Menu::Update(float elapsedTime)
+void TitleMenu::Update(float elapsedTime)
 {
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
 	// マウスのトラッカーを取得する
@@ -111,7 +111,7 @@ void Menu::Update(float elapsedTime)
 	m_pSelect[m_menuIndex]->SetScale(Vector2::One);
 }
 
-void Menu::Render()
+void TitleMenu::Render()
 {
 	for (unsigned int i = 0; i < m_pUI.size(); i++)
 	{
@@ -122,10 +122,10 @@ void Menu::Render()
 	}
 }
 
-void Menu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, kumachi::ANCHOR anchor)
+void TitleMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, kumachi::ANCHOR anchor)
 {
 	//  メニューとしてアイテムを追加する
-	std::unique_ptr<TitleUI> userInterface = std::make_unique<TitleUI>();
+	std::unique_ptr<UI> userInterface = std::make_unique<UI>();
 	//  指定された画像を表示するためのアイテムを作成する
 	userInterface->Create(m_pDR
 		, path
@@ -138,7 +138,7 @@ void Menu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, Direc
 	m_pUI.push_back(std::move(userInterface));
 
 	//  背景用のウィンドウ画像も追加する
-	std::unique_ptr<TitleUI> base = std::make_unique<TitleUI>();
+	std::unique_ptr<UI> base = std::make_unique<UI>();
 	base->Create(m_pDR
 		, m_pSelectTexturePath
 		, position

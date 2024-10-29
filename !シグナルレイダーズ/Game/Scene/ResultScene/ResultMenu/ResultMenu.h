@@ -5,7 +5,7 @@
 #pragma once
 
 #include "StepTimer.h"
-#include "Game/Scene/ResultScene/ResultUI/ResultUI.h"
+#include "Game/UI/UI.h"
 #include <DeviceResources.h>
 #include "Game/CommonResources.h"
 #include <SimpleMath.h>
@@ -31,12 +31,12 @@ private:
 	unsigned int m_menuIndex;
 	DX::DeviceResources* m_pDR;
 	CommonResources* m_commonResources;
-	std::vector<std::unique_ptr<ResultUI>> m_pUI;
-	std::vector<std::unique_ptr<ResultUI>> m_pSelect;
+	std::vector<std::unique_ptr<UI>> m_pUI;
+	std::vector<std::unique_ptr<UI>> m_pSelect;
 
 	const wchar_t* m_pSelectTexturePath;
 
-	std::unique_ptr<ResultUI> m_pSelectWindow;
+	std::unique_ptr<UI> m_pSelectWindow;
 
 	int m_windowWidth, m_windowHeight;
 
@@ -54,9 +54,9 @@ public:
 	void Render();
 
 	void Add(const wchar_t* path
-			 , DirectX::SimpleMath::Vector2 position
-			 , DirectX::SimpleMath::Vector2 scale
-			 , kumachi::ANCHOR anchor);
+		, DirectX::SimpleMath::Vector2 position
+		, DirectX::SimpleMath::Vector2 scale
+		, kumachi::ANCHOR anchor);
 
 public:
 	SceneID GetSceneNum() const { return m_num; }

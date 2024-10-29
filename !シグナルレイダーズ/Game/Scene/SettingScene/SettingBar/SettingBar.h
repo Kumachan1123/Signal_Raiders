@@ -26,8 +26,8 @@ private:
 	SettingMenu* m_pSettingMenu;// セッティングメニュー
 	DX::DeviceResources* m_pDR;// デバイスリソース
 	CommonResources* m_commonResources;// 共通リソース
-	std::vector<std::unique_ptr<SettingUI>> m_pBar;// 設定バー
-	std::vector<std::unique_ptr<SettingUI>> m_pBarPointer;// 設定バーの玉
+	std::vector<std::unique_ptr<UI>> m_pBar;// 設定バー
+	std::vector<std::unique_ptr<UI>> m_pBarPointer;// 設定バーの玉
 	const wchar_t* m_pSettingBarTexturePath;// 設定バーテクスチャパス
 	const wchar_t* m_pSettingBarPointerTexturePath;// 設定バーの玉テクスチャパス
 	int m_windowWidth, m_windowHeight;// ウィンドウの幅と高さ
@@ -45,9 +45,9 @@ public:
 	void Update(float elapsedTime);
 	void Render();
 	void Add(const wchar_t* path
-			 , DirectX::SimpleMath::Vector2 position
-			 , DirectX::SimpleMath::Vector2 scale
-			 , kumachi::ANCHOR anchor);
+		, DirectX::SimpleMath::Vector2 position
+		, DirectX::SimpleMath::Vector2 scale
+		, kumachi::ANCHOR anchor);
 	void SetStateIDNum(SettingMenu::StateID num) { m_num = num; }
 	int GetSetting(int index) const { return m_setting[index]; }
 };

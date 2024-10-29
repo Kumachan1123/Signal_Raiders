@@ -5,7 +5,7 @@
 #include "pch.h"
 #include "ResultMenu.h"
 #include "Game/Screen.h"
-#include "Game/Scene/ResultScene/ResultUI/ResultUI.h"
+#include "Game/UI/UI.h"
 #include "Game/KumachiLib/BinaryFile.h"
 #include "DeviceResources.h"
 #include <SimpleMath.h>
@@ -123,7 +123,7 @@ void ResultMenu::Render()
 void ResultMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, kumachi::ANCHOR anchor)
 {
 	//  メニューとしてアイテムを追加する
-	std::unique_ptr<ResultUI> userInterface = std::make_unique<ResultUI>();
+	std::unique_ptr<UI> userInterface = std::make_unique<UI>();
 	//  指定された画像を表示するためのアイテムを作成する
 	userInterface->Create(m_pDR
 						  , path
@@ -136,7 +136,7 @@ void ResultMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position,
 	m_pUI.push_back(std::move(userInterface));
 
 	//  背景用のウィンドウ画像も追加する
-	std::unique_ptr<ResultUI> base = std::make_unique<ResultUI>();
+	std::unique_ptr<UI> base = std::make_unique<UI>();
 	base->Create(m_pDR
 				 , m_pSelectTexturePath
 				 , position

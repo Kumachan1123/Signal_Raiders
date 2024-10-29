@@ -1,5 +1,5 @@
 /*
-	@file	TitleUI.h
+	@file	SettingUI.h
 	@brief	タイトルUIクラス
 */
 #pragma once
@@ -14,7 +14,7 @@
 #include <CommonStates.h>
 #include <vector>
 
-class TitleUI
+class  UI
 {
 public:
 	// データ受け渡し用コンスタントバッファ
@@ -53,8 +53,8 @@ public:
 public:
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 
-	TitleUI();
-	~TitleUI();
+	UI();
+	~UI();
 	void LoadTexture(const wchar_t* path);
 
 	void Create(DX::DeviceResources* pDR

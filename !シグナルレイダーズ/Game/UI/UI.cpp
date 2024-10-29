@@ -1,9 +1,9 @@
 /*
-	@file	ResultUI.cpp
-	@brief	リザルトUIクラス
+	@file	UI.cpp
+	@brief	UIクラス(タイトル・リザルト・セッティング)
 */
 #include "pch.h"
-#include "ResultUI.h"
+#include "UI.h"
 #include "Game/KumachiLib/BinaryFile.h"
 #include "DeviceResources.h"
 #include <SimpleMath.h>
@@ -14,13 +14,13 @@
 #include <CommonStates.h>
 #include <vector>
 using namespace DirectX;
-const std::vector<D3D11_INPUT_ELEMENT_DESC> ResultUI::INPUT_LAYOUT =
+const std::vector<D3D11_INPUT_ELEMENT_DESC> UI::INPUT_LAYOUT =
 {
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "COLOR",	0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, sizeof(SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(SimpleMath::Vector3) + sizeof(SimpleMath::Vector4), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
-ResultUI::ResultUI()
+UI::UI()
 	: m_pDR{ nullptr }
 	, m_time{ 0 }
 	, m_windowWidth{ 0 }
@@ -34,11 +34,11 @@ ResultUI::ResultUI()
 {
 }
 
-ResultUI::~ResultUI()
+UI::~UI()
 {
 }
 
-void ResultUI::LoadTexture(const wchar_t* path)
+void UI::LoadTexture(const wchar_t* path)
 {
 	//	指定された画像を読み込む
 	HRESULT result = DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, m_pTextureResource.ReleaseAndGetAddressOf(), m_pTexture.ReleaseAndGetAddressOf());
@@ -55,7 +55,7 @@ void ResultUI::LoadTexture(const wchar_t* path)
 	UNREFERENCED_PARAMETER(result);
 }
 
-void ResultUI::Create(DX::DeviceResources* pDR, const wchar_t* path
+void UI::Create(DX::DeviceResources* pDR, const wchar_t* path
 	, DirectX::SimpleMath::Vector2 position
 	, DirectX::SimpleMath::Vector2 scale
 	, kumachi::ANCHOR anchor)
@@ -77,7 +77,7 @@ void ResultUI::Create(DX::DeviceResources* pDR, const wchar_t* path
 
 }
 
-void ResultUI::CreateShader()
+void UI::CreateShader()
 {
 	auto device = m_pDR->GetD3DDevice();// デバイス
 	// コンパイルされたシェーダーを読み込む
@@ -118,14 +118,16 @@ void ResultUI::CreateShader()
 	device->CreateBuffer(&bd, nullptr, &m_pCBuffer);
 }
 
-void ResultUI::Update(float elapsedTime)
+void UI::Update(float elapsedTime)
 {
 	m_time += elapsedTime;
 
 }
 
-void ResultUI::Render()
+void UI::Render()
 {
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
 	auto context = m_pDR->GetD3DDeviceContext();// コンテキスト
 	VertexPositionColorTexture vertex[1] = {
 		VertexPositionColorTexture(SimpleMath::Vector3(m_scale.x, m_scale.y, static_cast<float>(m_anchor))
@@ -135,7 +137,8 @@ void ResultUI::Render()
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	m_constBuffer.windowSize = SimpleMath::Vector4(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 1, 1);
 	m_constBuffer.time = m_time;
-	m_constBuffer.color = SimpleMath::Vector3(0.2, 0.2, 0.2);
+	m_constBuffer.color = Vector3(0.5, 0.5, 0.5);
+
 	// 受け渡し用バッファの内容更新
 	context->UpdateSubresource(m_pCBuffer.Get(), 0, NULL, &m_constBuffer, 0, 0);
 	// シェーダーにバッファを渡す
@@ -172,7 +175,7 @@ void ResultUI::Render()
 	context->PSSetShader(nullptr, nullptr, 0);
 }
 
-void ResultUI::SetWindowSize(const int& width, const int& height)
+void UI::SetWindowSize(const int& width, const int& height)
 {
 	m_windowWidth = width;
 	m_windowHeight = height;

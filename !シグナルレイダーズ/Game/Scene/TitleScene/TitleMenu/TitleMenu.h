@@ -1,11 +1,11 @@
 /*
-	@file	Menu.h
+	@file	TitleMenu.h
 	@brief	メニュークラス
 */
 #pragma once
 
 #include "StepTimer.h"
-#include "Game/Scene/TitleScene/TitleUI/TitleUI.h"
+#include "Game/UI/UI.h"
 #include <DeviceResources.h>
 #include "Game/CommonResources.h"
 #include <SimpleMath.h>
@@ -17,7 +17,7 @@
 #include <vector>
 #include "Keyboard.h"
 class CommonResources;
-class Menu
+class TitleMenu
 {
 public:
 	enum SceneID
@@ -32,12 +32,12 @@ private:
 	unsigned int m_menuIndex;
 	DX::DeviceResources* m_pDR;
 	CommonResources* m_commonResources;
-	std::vector<std::unique_ptr<TitleUI>> m_pUI;
-	std::vector<std::unique_ptr<TitleUI>> m_pSelect;
+	std::vector<std::unique_ptr<UI>> m_pUI;
+	std::vector<std::unique_ptr<UI>> m_pSelect;
 
 	const wchar_t* m_pSelectTexturePath;
 
-	std::unique_ptr<TitleUI> m_pSelectWindow;
+	std::unique_ptr<UI> m_pSelectWindow;
 
 	int m_windowWidth, m_windowHeight;
 
@@ -47,8 +47,8 @@ private:
 	float m_time = 0;
 	//	関数
 public:
-	Menu();
-	~Menu();
+	TitleMenu();
+	~TitleMenu();
 
 	void Initialize(CommonResources* resources, int width, int height);
 	void Update(float elapsedTime);

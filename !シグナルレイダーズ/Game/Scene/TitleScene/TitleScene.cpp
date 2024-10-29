@@ -73,7 +73,7 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_pTitleLogo = std::make_unique<TitleLogo>(m_commonResources);
 	m_pTitleLogo->Create(DR);
 	// メニューを作成
-	m_pMenu = std::make_unique<Menu>();
+	m_pMenu = std::make_unique<TitleMenu>();
 	m_pMenu->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
 	// 設定ファイルの読み込み
 	m_pSettingData = std::make_unique<SettingData>();
@@ -163,13 +163,13 @@ IScene::SceneID TitleScene::GetNextSceneID() const
 		m_audioManager->StopSound("SE");// SEの停止
 		switch (m_pMenu->GetSceneNum())
 		{
-		case Menu::SceneID::STAGESELECT:
+		case TitleMenu::SceneID::STAGESELECT:
 			return IScene::SceneID::STAGESELECT;
 			break;
-		case Menu::SceneID::SETTING:
+		case TitleMenu::SceneID::SETTING:
 			return IScene::SceneID::SETTING;
 			break;
-		case Menu::SceneID::END:
+		case TitleMenu::SceneID::END:
 			// ゲーム終了
 			EndGame();
 			break;
