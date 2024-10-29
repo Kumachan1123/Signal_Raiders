@@ -61,6 +61,8 @@ private:
 	float m_SEVolume = 0.0f;
 	// マウス感度
 	float m_mouseSensitive;
+	// チートコマンド：敵を一掃するフラグ
+	bool m_isKillAll;
 public:
 	Player(CommonResources* commonResources);
 	~Player();
@@ -85,6 +87,7 @@ public:
 	DirectX::SimpleMath::Vector3 GetEnemyDir() const { return m_enemyDir; }// 攻撃してきた敵の向き
 	bool GetisPlayerDamage() const { return m_isDamage; }	// プレイヤーがダメージを受けたか
 	bool GetisPlayEffect() const { return m_isPlayEffect; }// エフェクト再生フラグ
+	bool GetisKillAll() const { return m_isKillAll; }// チートコマンド：敵を一掃するフラグ
 	// Setter
 public:
 	void SetPlayerHP(float playerHP) { m_playerHP = playerHP; }	// プレイヤーのHP

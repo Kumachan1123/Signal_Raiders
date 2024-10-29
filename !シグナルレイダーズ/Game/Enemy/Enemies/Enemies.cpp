@@ -167,8 +167,8 @@ void Enemies::Update(float elapsedTime)
 	for (auto it = m_enemies.begin(); it != m_enemies.end(); )
 	{
 
-		// 敵が死んでいたら
-		if ((*it)->GetEnemyIsDead())
+		// 敵が死んでいたら、または全滅フラグが立っていたら
+		if ((*it)->GetEnemyIsDead() || m_pPlayer->GetisKillAll())
 		{	// もしも倒されたのがボスだったら
 			if (auto boss = dynamic_cast<Boss*>(it->get()))
 			{

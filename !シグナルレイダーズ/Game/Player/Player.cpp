@@ -19,7 +19,8 @@ Player::Player(CommonResources* commonResources)
 	m_mouseSensitive{ 0.1f },
 	m_isDamage{ false },
 	m_damageTime{ 0.0f },
-	m_playerDir{}
+	m_playerDir{},
+	m_isKillAll{ false }
 {
 	// 境界球
 	m_inPlayerArea.Radius = 20.0f;
@@ -57,16 +58,19 @@ void Player::Initialize(Enemies* pEnemies)
 
 void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>& kb, float elapsedTime)
 {
+	m_isKillAll = false;// チートコマンドをリセット
 	// マウスのトラッカーを取得する
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
 	// カメラが向いている方向を取得する
 	DirectX::SimpleMath::Vector3 cameraDirection = m_pCamera->GetDirection();
 #ifdef _DEBUG// デバッグ
+
+#endif
 	// 右クリックで敵を一掃
-	if (mtracker->GetLastState().rightButton)for (auto& enemy : m_pEnemies->GetEnemies())enemy->SetEnemyHP(0);
+	if (mtracker->GetLastState().rightButton) m_isKillAll = true;
+	//for (auto& enemy : m_pEnemies->GetEnemies())enemy->SetEnemyHP(0);
 	// スペースキーでプレイヤーのHPを0にする
 	if (kb->pressed.Space)SetPlayerHP(0.0f);
-#endif
 	// 左クリックで弾発射
 	if (mtracker->GetLastState().leftButton && m_pPlayerBullets->GetIsBullet() == false)
 	{
@@ -133,6 +137,7 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 	// プレイヤーの境界球を更新
 	m_inPlayerArea.Center = GetPlayerController()->GetPlayerPosition();// プレイヤーの位置を取得
 	m_playerSphere.Center = m_inPlayerArea.Center;// プレイヤーの位置を取得
+
 }
 
 void Player::Render()
