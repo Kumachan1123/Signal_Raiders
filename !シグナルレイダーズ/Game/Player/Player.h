@@ -63,6 +63,9 @@ private:
 	float m_mouseSensitive;
 	// チートコマンド：敵を一掃するフラグ
 	bool m_isKillAll;
+	// チートコマンドが有効か
+	bool m_isCheat = false;
+
 public:
 	Player(CommonResources* commonResources);
 	~Player();

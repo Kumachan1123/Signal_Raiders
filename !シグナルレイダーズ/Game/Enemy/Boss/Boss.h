@@ -115,6 +115,7 @@ public:
 	// setter
 	void SetPosition(DirectX::SimpleMath::Vector3& pos) override { m_position = pos; }
 	void SetEnemyHP(int hp) override { m_currentHP = hp; }
+	void SetEnemyIsDead(bool isDead) override { m_isDead = isDead; }
 	void SetHitToPlayer(bool isHitToPlayer)override { m_isHit = isHitToPlayer; }
 	void SetHitToOtherEnemy(bool isHitToOtherEnemy) override { m_isHitToOtherEnemy = isHitToOtherEnemy; }
 	void SetBulletBoundingSphere(DirectX::BoundingSphere& bs) override { m_enemyBulletBS = bs; }

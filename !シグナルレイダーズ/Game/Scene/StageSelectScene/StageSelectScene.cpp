@@ -118,7 +118,7 @@ void StageSelectScene::Update(float elapsedTime)
 
 			m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
 		}		// WかSのいずれかが押されたら
-		if (kbTracker->pressed.W || kbTracker->pressed.S)
+		if (kbTracker->pressed.A || kbTracker->pressed.D)
 			m_audioManager->PlaySound("Select", m_SEvolume);// SEの再生
 
 	}
@@ -207,7 +207,7 @@ void StageSelectScene::InitializeFMOD()
 	// 音声データのロード
 	// ここで必要な音声データをAudioManagerにロードさせる
 	m_audioManager->LoadSound("Resources/Sounds/select.mp3", "SE");
-	m_audioManager->LoadSound("Resources/Sounds/result.mp3", "BGM");
+	m_audioManager->LoadSound("Resources/Sounds/title.mp3", "BGM");
 	m_audioManager->LoadSound("Resources/Sounds/click.mp3", "Select");
 }
 

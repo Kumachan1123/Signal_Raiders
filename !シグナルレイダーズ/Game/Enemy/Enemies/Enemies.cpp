@@ -168,7 +168,7 @@ void Enemies::Update(float elapsedTime)
 	{
 
 		// 敵が死んでいたら、または全滅フラグが立っていたら
-		if ((*it)->GetEnemyIsDead() || m_pPlayer->GetisKillAll())
+		if ((*it)->GetEnemyIsDead())
 		{	// もしも倒されたのがボスだったら
 			if (auto boss = dynamic_cast<Boss*>(it->get()))
 			{
@@ -180,7 +180,7 @@ void Enemies::Update(float elapsedTime)
 					(*it)->GetMatrix()));
 				m_isBossAlive = false;// 生存フラグをfalseにする
 			}
-			else// ザコ敵だったら
+			else // ザコ敵だったら
 			{
 				// 敵の座標を渡して爆破エフェクトを再生
 				m_effect.push_back(std::make_unique<Effect>(m_commonResources,
@@ -188,6 +188,7 @@ void Enemies::Update(float elapsedTime)
 					(*it)->GetPosition(),
 					3.0f,
 					(*it)->GetMatrix()));
+
 			}
 
 			m_audioManager->PlaySound("EnemyDead", m_pPlayer->GetVolume() * 10);// 敵のSEを再生(こいつだけ音量10倍)

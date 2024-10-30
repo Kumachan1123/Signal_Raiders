@@ -43,8 +43,8 @@ public:
 	void CreateBullet(const DirectX::SimpleMath::Vector3& position, DirectX::SimpleMath::Vector3& direction);
 	// Getter
 public:
-	bool GetIsBullet() { return m_isBullet; }
-	bool GetIsBulletBorned() { return m_isBulletBorned; }
+	bool GetIsBullet() const { return m_isBullet; }
+	bool GetIsBulletBorned() const { return m_isBulletBorned; }
 	std::vector<std::unique_ptr<PlayerBullet>>& GetPlayerBullet() { return m_playerBullet; }
 	// Setter
 public:

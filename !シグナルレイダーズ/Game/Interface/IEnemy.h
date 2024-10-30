@@ -31,6 +31,7 @@ public:
 	// setter
 	virtual void SetPosition(DirectX::SimpleMath::Vector3& pos) = 0;
 	virtual void SetEnemyHP(int hp) = 0;
+	virtual void SetEnemyIsDead(bool isDead) = 0;
 	virtual void SetHitToPlayer(bool isHitToPlayer) = 0;
 	virtual void SetHitToOtherEnemy(bool isHitToOtherEnemy) = 0;
 	virtual void SetBulletBoundingSphere(DirectX::BoundingSphere& bs) = 0;

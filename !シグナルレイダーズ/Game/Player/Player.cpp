@@ -20,7 +20,8 @@ Player::Player(CommonResources* commonResources)
 	m_isDamage{ false },
 	m_damageTime{ 0.0f },
 	m_playerDir{},
-	m_isKillAll{ false }
+	m_isKillAll{ false },
+	m_isCheat{ false }
 {
 	// 境界球
 	m_inPlayerArea.Radius = 20.0f;
@@ -54,11 +55,12 @@ void Player::Initialize(Enemies* pEnemies)
 	// 危険状態
 	m_pCrisis = std::make_unique<Crisis>(m_commonResources);
 	m_pCrisis->Create(DR);
+
 }
 
 void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>& kb, float elapsedTime)
 {
-	m_isKillAll = false;// チートコマンドをリセット
+
 	// マウスのトラッカーを取得する
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
 	// カメラが向いている方向を取得する
@@ -67,7 +69,16 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 
 #endif
 	// 右クリックで敵を一掃
-	if (mtracker->GetLastState().rightButton) m_isKillAll = true;
+	if (mtracker->GetLastState().rightButton && m_isCheat == false)
+	{
+		m_isCheat = true;
+		for (auto& enemy : m_pEnemies->GetEnemies())enemy->SetEnemyHP(0);
+	}
+	// 右クリックされてないときはチートコマンドを無効にする
+	if (!mtracker->GetLastState().rightButton)
+	{
+		m_isCheat = false;
+	}
 	//for (auto& enemy : m_pEnemies->GetEnemies())enemy->SetEnemyHP(0);
 	// スペースキーでプレイヤーのHPを0にする
 	if (kb->pressed.Space)SetPlayerHP(0.0f);
