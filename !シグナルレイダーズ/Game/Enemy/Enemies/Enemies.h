@@ -92,4 +92,18 @@ public:
 private:
 	// 敵の生成上限設定
 	void SetEnemyMax();
+
+	// 更新処理を分割するメソッド
+	void UpdateStartTime(float elapsedTime);
+	void UpdateEffects(float elapsedTime);
+	void HandleEnemySpawning(float elapsedTime);
+	void SpawnEnemy();
+	void FinalizeEnemySpawn();
+	void SpawnBoss();
+	void HandleEnemyCollisions();
+	void HandlePlayerCollisions(float elapsedTime);
+	void HandleEnemyBulletCollision(std::unique_ptr<IEnemy>& enemy);
+	void HandleEnemyPlayerCollision(std::unique_ptr<IEnemy>& enemy);
+	void RemoveDeadEnemies();
+	void HandleEnemyDeath(std::unique_ptr<IEnemy>& enemy);
 };
