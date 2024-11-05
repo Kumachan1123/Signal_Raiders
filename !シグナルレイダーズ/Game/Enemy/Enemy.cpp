@@ -206,10 +206,11 @@ void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 		}
 	}
 	m_enemyBullets->Update(elapsedTime, GetPosition());// 敵の弾の更新
+	// 敵の当たり判定の座標を更新
 	m_enemyBS.Center = m_position;
 	m_enemyBS.Center.y -= 2.0f;
-	m_HPBar->Update(elapsedTime, m_currentHP);
-	m_isDead = m_HPBar->GetIsDead();
+	m_HPBar->Update(elapsedTime, m_currentHP);// HPBarの更新
+	m_isDead = m_HPBar->GetIsDead();// 敵のHPが0になったら死亡
 }
 
 // オブジェクト同士が衝突したら押し戻す(境界球同士の場合）
@@ -234,28 +235,6 @@ void Enemy::CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::BoundingSph
 	A.Center = m_position;
 	A.Center.y -= 2.0f;
 }
-// オブジェクト同士が衝突したら押し戻す(オブジェクトと壁の場合）
-void Enemy::CheckHitWall(DirectX::BoundingSphere& O, DirectX::BoundingBox& W)
-{
-	using namespace DirectX::SimpleMath;
-	Vector3 closestPoint;
-	closestPoint.x = std::max(W.Center.x - W.Extents.x, std::min(O.Center.x, W.Center.x + W.Extents.x));
-	closestPoint.y = std::max(W.Center.y - W.Extents.y, std::min(O.Center.y, W.Center.y + W.Extents.y));
-	closestPoint.z = std::max(W.Center.z - W.Extents.z, std::min(O.Center.z, W.Center.z + W.Extents.z));
-	// 球の中心と最近接点のベクトルを計算
-	Vector3 pushDirection = O.Center - closestPoint;
-	float distance = pushDirection.Length();
-	// 衝突が発生している場合に押し戻し処理を行う
-	if (distance < O.Radius)
-	{
-		pushDirection.Normalize();
-		float pushDistance = O.Radius - distance;
-
-		// 押し戻しを適用
-		O.Center = O.Center + (pushDirection * pushDistance);
-	}
-}
-
 
 
 

@@ -102,6 +102,5 @@ public:
 	void Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos) override;
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;
 	void CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::BoundingSphere& B) override;
-	void CheckHitWall(DirectX::BoundingSphere& O, DirectX::BoundingBox& W);
 
 };

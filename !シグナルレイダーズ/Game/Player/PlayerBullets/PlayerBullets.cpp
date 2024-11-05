@@ -51,23 +51,27 @@ void PlayerBullets::Update(float elapsedTime)
 		if ((*it)->IsExpired())it = m_playerBullet.erase(it);// 弾が寿命を迎えたら削除
 		else
 		{
-			bool isHit = false;
+			bool isHit = false;// ヒットフラグを初期化
 			for (auto& enemy : m_pEnemies->GetEnemies())
 			{
+				// 敵とプレイヤーの弾の当たり判定
 				if ((*it)->GetBoundingSphere().Intersects(enemy->GetBoundingSphere()))
 				{
-					isHit = true;
-					enemy->SetEnemyHP(enemy->GetHP() - (*it)->Damage());
+					isHit = true;// ヒットフラグを立てる
+					enemy->SetEnemyHP(enemy->GetHP() - (*it)->Damage());// 敵のHPを減らす
+					// エフェクトを追加
 					m_pEnemies->GetEffect().push_back(std::make_unique<Effect>(m_commonResources,
-																			   Effect::ParticleType::ENEMY_HIT,
-																			   enemy->GetPosition(),
-																			   3.0f,
-																			   enemy->GetMatrix()));
+						Effect::ParticleType::ENEMY_HIT,
+						enemy->GetPosition(),
+						3.0f,
+						enemy->GetMatrix()));
+					// プレイヤーの弾が敵に当たったフラグを立てる
 					enemy->SetHitToPlayerBullet(true);
 					m_audioManager->PlaySound("Hit", m_pPlayer->GetVolume());// ヒットSEを再生
 					break;
 				}
 			}
+			// ヒットしていないなら次の弾へ
 			if (isHit) it = m_playerBullet.erase(it);
 			else it++;
 		}
@@ -77,18 +81,19 @@ void PlayerBullets::Update(float elapsedTime)
 void PlayerBullets::Render()
 {
 	using namespace DirectX::SimpleMath;
-	Matrix view = m_pPlayer->GetCamera()->GetViewMatrix();
-	Matrix proj = m_pPlayer->GetCamera()->GetProjectionMatrix();
-	for (auto& bullet : m_playerBullet)bullet->Render(view, proj);
+	Matrix view = m_pPlayer->GetCamera()->GetViewMatrix();// プレイヤーのカメラからビュー行列を取得
+	Matrix proj = m_pPlayer->GetCamera()->GetProjectionMatrix();// プレイヤーのカメラから射影行列を取得
+	for (auto& bullet : m_playerBullet)bullet->Render(view, proj);// プレイヤーの弾を描画
 }
 
 
 void PlayerBullets::CreateBullet(const DirectX::SimpleMath::Vector3& position, DirectX::SimpleMath::Vector3& direction)
 {	// SEの再生
 	m_audioManager->PlaySound("Shoot", m_pPlayer->GetVolume());
+	// 弾を生成
 	auto bullet = std::make_unique<PlayerBullet>();
-	bullet->Initialize(m_commonResources);
-	bullet->MakeBall(position, direction);
-	GetPlayerBullet().push_back(std::move(bullet));
-	SetIsBullet(true);
+	bullet->Initialize(m_commonResources);// 初期化
+	bullet->MakeBall(position, direction);// 弾を生成
+	GetPlayerBullet().push_back(std::move(bullet));// プレイヤーの弾を追加
+	SetIsBullet(true);// 弾生成フラグを立てる
 }

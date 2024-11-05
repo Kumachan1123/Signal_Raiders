@@ -50,4 +50,6 @@ public:
 public:
 	void SetIsBullet(bool isBullet) { m_isBullet = isBullet; }
 	void SetIsBulletBorned(bool isBulletBorned) { m_isBulletBorned = isBulletBorned; }
+
+
 };
