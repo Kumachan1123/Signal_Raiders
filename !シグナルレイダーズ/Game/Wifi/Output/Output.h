@@ -23,7 +23,7 @@
 class Output
 {
 private:
-	
+
 	// Wi-Fi情報を格納する可変長配列
 	std::vector<NetworkInfo> m_networkInfos;
 	// 表示回数
@@ -43,15 +43,14 @@ public:
 	~Output();
 	// 情報を表示
 	void DisplayInformation(std::vector<NetworkInfo>& networkInfos,
-							int& count,
-							SecurityLevel& cipherSecurityLevel,
-							SecurityLevel& authSecurityLevel  );
+		int& count,
+		SecurityLevel& cipherSecurityLevel,
+		SecurityLevel& authSecurityLevel);
 	// 情報を出力
 	std::vector<NetworkInfo> GetInformation() { return m_networkInfos; };
 	// 情報を入力
 	void SetInformation(std::vector<NetworkInfo>& networkInfos) { m_networkInfos = networkInfos; };
-	// 表示回数を出力
-	int GetCount() { return m_count; };
+
 	// 表示回数を入力
 	void SetCount(int count) { m_count = count; };
 	// 暗号アルゴリズム評価出力
@@ -59,17 +58,13 @@ public:
 	// 暗号アルゴリズム評価入力
 	void SetCipherSecurityLevel(SecurityLevel& cipherSecurityLevel) { m_cipherSecurityLevel = cipherSecurityLevel; };
 	// 認証アルゴリズム評価出力
-	SecurityLevel GetAuthSecurityLevel() {return m_authSecurityLevel;};
+	SecurityLevel GetAuthSecurityLevel() { return m_authSecurityLevel; };
 	// 暗号アルゴリズム評価入力
 	void SetAuthSecurityLevel(SecurityLevel& authSecurityLevel) { m_authSecurityLevel = authSecurityLevel; };
-	// 数値化
-	void SetValue();
 	std::vector<Datas> GetDatas()const { return m_datas; }
 	// Cipher Algorithmを評価してセキュリティレベルを返す関数
 	SecurityLevel EvaluateSecurityLevel(DWORD cipherAlgorithm);
-	// セキュリティレベルを文字列に変換する関数
-	std::string ConvertSecurityLevelToJapanese(SecurityLevel securityLevel);
-	std::string ConvertSecurityLevelToJapanese(DWORD cipherAlgorithm);
+
 	int ConvertSecurityLevelToValue(SecurityLevel securityLevel);
 	// 認証アルゴリズムを評価してセキュリティレベルを返す関数
 	SecurityLevel EvaluateAuthAlgorithmSecurity(DOT11_AUTH_ALGORITHM authAlgorithm);

@@ -10,13 +10,13 @@
 
  // 多重インクルードの防止 =====================================================
 #pragma once
-#include "Game/Wifi/Interface/IWifiParts.h"
-#include "Game/Wifi/UpdateInfo/UpdateInfo.h"
-#include "Libraries/MyLib/DebugString.h"
-#include "Game/Wifi/ReleaseMemory/ReleaseMemory.h"
-#include "Game/Wifi/Output/Output.h"
-#include "Game/Wifi/Wifi.h"
 #include "Game/CommonResources.h"
+#include "Game/Wifi/Interface/IWifiParts.h"
+#include "Game/Wifi/Output/Output.h"
+#include "Game/Wifi/ReleaseMemory/ReleaseMemory.h"
+#include "Game/Wifi/UpdateInfo/UpdateInfo.h"
+#include "Game/Wifi/Wifi.h"
+#include "Libraries/MyLib/DebugString.h"
 
 
 
@@ -34,9 +34,6 @@ namespace mylib
 
 class Wifi
 {
-	// クラス定数の宣言
-public:
-
 
 	// データメンバの宣言
 private:
@@ -69,7 +66,7 @@ private:
 	SecurityLevel cipherSecurityLevel;
 	// 認証アルゴリズムのセキュリティレベルを表示
 	SecurityLevel authSecurityLevel;
-	// メンバ関数の宣言
+
 
 	// 最初の五秒はこの配列にWi-Fiの強さを格納する
 	std::vector<int> m_preWifilevels;

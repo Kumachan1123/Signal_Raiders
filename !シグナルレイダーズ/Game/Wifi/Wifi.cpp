@@ -61,7 +61,7 @@ void Wifi::Initialize()
 // 更新処理
 void Wifi::Update(float elapsedTime)
 {
-	//pInterfaceList = nullptr;
+
 	// 全データを更新
 	m_updateInfo->Set(dwResult, dwMaxClient, dwCurVersion, hClient, pInterfaceList, pNetworkList, m_networkInfos, network, ssid, displayedSSIDs, converter, count);
 	std::sort(m_networkInfos.begin(), m_networkInfos.end(), CompareBySignalQuality());
