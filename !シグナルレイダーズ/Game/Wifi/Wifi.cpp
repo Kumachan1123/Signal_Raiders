@@ -66,7 +66,7 @@ void Wifi::Update(float elapsedTime)
 	m_updateInfo->Set(dwResult, dwMaxClient, dwCurVersion, hClient, pInterfaceList, pNetworkList, m_networkInfos, network, ssid, displayedSSIDs, converter, count);
 	std::sort(m_networkInfos.begin(), m_networkInfos.end(), CompareBySignalQuality());
 	// ソート後の情報を表示
-	m_output->DisplayInformation(m_networkInfos, count, cipherSecurityLevel, authSecurityLevel);
+	m_output->DisplayInformation(m_networkInfos, count);
 	m_output->SetInformation(m_networkInfos);
 	// 時間を計測
 	m_time += elapsedTime;
@@ -83,12 +83,15 @@ void Wifi::Update(float elapsedTime)
 
 					break;
 				}
-				m_preWifilevels.push_back(100);
+				m_preWifilevels.push_back(100);// 電波の強さを100に設定
+				m_preSSIDLengths.push_back(10);// ssidの文字数を10に設定
+				m_preSSIDValues.push_back(1000);// ssidの文字のASCIIコードの合計を1000に設定
 
 			}
 		}
-
 		m_wifilevels = m_preWifilevels;
+		m_ssidLengths = m_preSSIDLengths;
+		m_ssidValues = m_preSSIDValues;
 	}
 	else// Wi-Fiを取得できる状態の時
 	{
@@ -104,10 +107,15 @@ void Wifi::Update(float elapsedTime)
 					{
 						break;
 					}
-					m_preWifilevels.push_back(100);
+					m_preWifilevels.push_back(100);// 電波の強さを100に設定
+					m_preSSIDLengths.push_back(10);// ssidの文字数を10に設定
+					m_preSSIDValues.push_back(1000);// ssidの文字のASCIIコードの合計を1000に設定
+
 				}
 			}
 			m_wifilevels = m_preWifilevels;
+			m_ssidLengths = m_preSSIDLengths;
+			m_ssidValues = m_preSSIDValues;
 		}
 		// 取得した数が1以上の時
 		//数値だけ出す
@@ -121,7 +129,14 @@ void Wifi::Update(float elapsedTime)
 			}
 			//電波の強さを可変長配列に登録
 			m_preWifilevels.push_back(networkInfo.signalQuality);
+			//ssidの文字数を可変長配列に登録
+			m_preSSIDLengths.push_back((int)(networkInfo.ssid.length()));
+			//ssidの文字のASCIIコードの合計を可変長配列に登録
+			m_preSSIDValues.push_back(m_output->ConvertSsidToInt(networkInfo.ssid));
+
 			m_wifilevels = m_preWifilevels;
+			m_ssidLengths = m_preSSIDLengths;
+			m_ssidValues = m_preSSIDValues;
 		}
 	}
 

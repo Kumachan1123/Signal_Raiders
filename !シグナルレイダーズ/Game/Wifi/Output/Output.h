@@ -28,10 +28,7 @@ private:
 	std::vector<NetworkInfo> m_networkInfos;
 	// 表示回数
 	int m_count;
-	// 暗号アルゴリズム評価
-	SecurityLevel m_cipherSecurityLevel;
-	// 認証アルゴリズム評価
-	SecurityLevel m_authSecurityLevel;
+
 	// 数値化したデータを格納する変数
 	Datas m_data;
 	std::vector<Datas> m_datas;
@@ -43,9 +40,7 @@ public:
 	~Output();
 	// 情報を表示
 	void DisplayInformation(std::vector<NetworkInfo>& networkInfos,
-		int& count,
-		SecurityLevel& cipherSecurityLevel,
-		SecurityLevel& authSecurityLevel);
+		int& count);
 	// 情報を出力
 	std::vector<NetworkInfo> GetInformation() { return m_networkInfos; };
 	// 情報を入力
@@ -53,22 +48,11 @@ public:
 
 	// 表示回数を入力
 	void SetCount(int count) { m_count = count; };
-	// 暗号アルゴリズム評価出力
-	SecurityLevel GetCipherSecurityLevel() { return m_cipherSecurityLevel; };
-	// 暗号アルゴリズム評価入力
-	void SetCipherSecurityLevel(SecurityLevel& cipherSecurityLevel) { m_cipherSecurityLevel = cipherSecurityLevel; };
-	// 認証アルゴリズム評価出力
-	SecurityLevel GetAuthSecurityLevel() { return m_authSecurityLevel; };
-	// 暗号アルゴリズム評価入力
-	void SetAuthSecurityLevel(SecurityLevel& authSecurityLevel) { m_authSecurityLevel = authSecurityLevel; };
-	std::vector<Datas> GetDatas()const { return m_datas; }
-	// Cipher Algorithmを評価してセキュリティレベルを返す関数
-	SecurityLevel EvaluateSecurityLevel(DWORD cipherAlgorithm);
 
-	int ConvertSecurityLevelToValue(SecurityLevel securityLevel);
-	// 認証アルゴリズムを評価してセキュリティレベルを返す関数
-	SecurityLevel EvaluateAuthAlgorithmSecurity(DOT11_AUTH_ALGORITHM authAlgorithm);
-	// セキュリティレベルを文字列に変換する関数
-	std::string ConvertAuthSecurityLevelToJapanese(SecurityLevel securityLevel);
-	int ConvertAuthSecurityLevelToValue(SecurityLevel securityLevel);
+	// データを渡す
+	std::vector<Datas> GetDatas()const { return m_datas; }
+
+	// SSIDを無理やり数値に変換する関数（各文字のASCIIコードの合計）
+	int ConvertSsidToInt(const std::string& ssid);
+
 };

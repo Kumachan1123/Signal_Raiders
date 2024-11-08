@@ -69,9 +69,15 @@ private:
 
 
 	// 最初の五秒はこの配列にWi-Fiの強さを格納する
-	std::vector<int> m_preWifilevels;
-	// 五秒後にこの配列にWi-Fiの強さを格納する（一度入れたら情報は更新しない）
-	std::vector<int> m_wifilevels;
+	std::vector<int> m_preWifilevels;// Wi-Fiの強さ
+	std::vector<int> m_preSSIDLengths;// ssidの文字数
+	std::vector<int> m_preSSIDValues;// ssidの文字のASCIIコードの合計
+
+	// 五秒後に以下の配列にWi-Fiの情報を格納する（一度入れたら情報は更新しない）
+	std::vector<int> m_wifilevels;// Wi-Fiの強さ
+	std::vector<int> m_ssidLengths;// ssidの文字の合計値
+	std::vector<int> m_ssidValues;// ssidの文字のASCIIコードの合計
+
 	float m_time;				  // Wi-Fi取得時間（５秒過ぎたら５秒で固定）
 
 public:
