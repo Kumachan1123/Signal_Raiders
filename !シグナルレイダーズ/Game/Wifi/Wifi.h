@@ -44,28 +44,25 @@ private:
 	std::unique_ptr<Output>					 m_output;
 	std::unique_ptr<ReleaseMemory>			 m_memory;
 	// Wi-Fi関連の宣言
-	DWORD  dwMaxClient; // 最大のクライアント数
-	HANDLE hClient;
-	DWORD  dwCurVersion;
-	DWORD  dwResult;
+	DWORD  m_dwMaxClient; // 最大のクライアント数
+	HANDLE m_hClient;
+	DWORD  m_dwCurVersion;
+	DWORD  m_dwResult;
 	// インターフェースのリスト取得
-	PWLAN_INTERFACE_INFO_LIST pInterfaceList;
+	PWLAN_INTERFACE_INFO_LIST m_pInterfaceList;
 	// スキャン結果の取得
-	PWLAN_AVAILABLE_NETWORK_LIST pNetworkList;
+	PWLAN_AVAILABLE_NETWORK_LIST m_pNetworkList;
 	// すでに表示したSSIDを管理するためのset
-	std::set<std::string> displayedSSIDs;
+	std::set<std::string> m_displayedSSIDs;
 	// 表示した回数
-	int count;
+	int m_count;
 	// ネットワーク情報を格納するvector
 	std::vector<NetworkInfo> m_networkInfos;
 	// スキャン結果の処理に使う変数
-	WLAN_AVAILABLE_NETWORK network;
-	std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-	std::string ssid;
-	// 暗号アルゴリズムのセキュリティレベルを表示
-	SecurityLevel cipherSecurityLevel;
-	// 認証アルゴリズムのセキュリティレベルを表示
-	SecurityLevel authSecurityLevel;
+	WLAN_AVAILABLE_NETWORK m_network;
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> m_converter;
+	std::string m_ssid;
+
 
 
 	// 最初の五秒はこの配列にWi-Fiの強さを格納する
@@ -94,8 +91,12 @@ public:
 	// クリア
 	void Clear();
 public:
-	// 取得したWi-Fiを受け取る
-	std::vector<int> GetWifiLevels()const { return m_wifilevels; }
+	// 取得した情報を送る
+	std::vector<int> GetWifiLevels()const { return m_wifilevels; }//電波の強さを渡す
+	std::vector<int> GetSSIDLengths()const { return m_ssidLengths; }//SSIDの文字数を渡す
+	std::vector<int> GetSSIDValues()const { return m_ssidValues; }//SSIDの文字の合計値を渡す
 	// 更新が終わったかどうかを調べるためのゲッター
 	std::vector<int> GetPreWifiLevels()const { return m_preWifilevels; }
+	std::vector<int> GetPreSSIDLengths()const { return m_preSSIDLengths; }
+	std::vector<int> GetPreSSIDValues()const { return m_preSSIDValues; }
 };

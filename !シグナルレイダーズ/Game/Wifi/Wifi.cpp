@@ -25,20 +25,18 @@
  * @param[in] なし
  */
 Wifi::Wifi()
-	: dwCurVersion{}
-	, hClient{}
-	, dwMaxClient{}
-	, dwResult{}
-	, pInterfaceList{}
-	, pNetworkList{}
-	, displayedSSIDs{}
-	, count{}
+	: m_dwCurVersion{}
+	, m_hClient{}
+	, m_dwMaxClient{}
+	, m_dwResult{}
+	, m_pInterfaceList{}
+	, m_pNetworkList{}
+	, m_displayedSSIDs{}
+	, m_count{}
 	, m_networkInfos{}
-	, network{}
-	, ssid{}
-	, cipherSecurityLevel{}
-	, authSecurityLevel{}
-	, converter{}
+	, m_network{}
+	, m_ssid{}
+	, m_converter{}
 	, m_updateInfo{ nullptr }
 	, m_output{ nullptr }
 	, m_memory{ nullptr }
@@ -63,15 +61,15 @@ void Wifi::Update(float elapsedTime)
 {
 
 	// 全データを更新
-	m_updateInfo->Set(dwResult, dwMaxClient, dwCurVersion, hClient, pInterfaceList, pNetworkList, m_networkInfos, network, ssid, displayedSSIDs, converter, count);
+	m_updateInfo->Set(m_dwResult, m_dwMaxClient, m_dwCurVersion, m_hClient, m_pInterfaceList, m_pNetworkList, m_networkInfos, m_network, m_ssid, m_displayedSSIDs, m_converter, m_count);
 	std::sort(m_networkInfos.begin(), m_networkInfos.end(), CompareBySignalQuality());
 	// ソート後の情報を表示
-	m_output->DisplayInformation(m_networkInfos, count);
+	m_output->DisplayInformation(m_networkInfos, m_count);
 	m_output->SetInformation(m_networkInfos);
 	// 時間を計測
 	m_time += elapsedTime;
 	// Wi-Fiを取得できない状態の時
-	if (dwResult != ERROR_SUCCESS)
+	if (m_dwResult != ERROR_SUCCESS)
 	{
 		if (m_preWifilevels.size() < 30)
 		{
@@ -144,12 +142,12 @@ void Wifi::Update(float elapsedTime)
 
 void Wifi::Clear()
 {
-	if (dwResult != ERROR_SUCCESS)
+	if (m_dwResult != ERROR_SUCCESS)
 	{
 		return;
 	}
 	// メモリの解放とハンドルのクローズ
-	m_memory->FreeMemoryAndCloseHandle(pInterfaceList, hClient, m_networkInfos, displayedSSIDs);
+	m_memory->FreeMemoryAndCloseHandle(m_pInterfaceList, m_hClient, m_networkInfos, m_displayedSSIDs);
 	m_preWifilevels.clear();
 }
 
