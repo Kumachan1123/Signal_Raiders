@@ -287,6 +287,8 @@
     <ClInclude Include="Game\Scene\StageSelectScene\Stage\StageSelect.h" />
     <ClInclude Include="Game\Scene\StageSelectScene\StageSelectScene.h" />
     <ClInclude Include="Game\UI\UI.h" />
+    <ClInclude Include="Game\Enemy\AreaAttacker\AreaAttacker.h" />
+    <ClInclude Include="Game\Enemy\AreaAttackerModel\AreaAttackerModel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -424,6 +426,8 @@
     <ClCompile Include="Game\Scene\StageSelectScene\Stage\StageSelect.cpp" />
     <ClCompile Include="Game\Scene\StageSelectScene\StageSelectScene.cpp" />
     <ClCompile Include="Game\UI\UI.cpp" />
+    <ClCompile Include="Game\Enemy\AreaAttacker\AreaAttacker.cpp" />
+    <ClCompile Include="Game\Enemy\AreaAttackerModel\AreaAttackerModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

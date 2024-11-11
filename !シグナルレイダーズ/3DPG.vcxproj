@@ -191,6 +191,8 @@
     <ClInclude Include="Game\BulletTrail\BulletTrail.h" />
     <ClInclude Include="Game\CommonResources.h" />
     <ClInclude Include="Game\DamageEffect\DamageEffect.h" />
+    <ClInclude Include="Game\Enemy\AreaAttackerModel\AreaAttackerModel.h" />
+    <ClInclude Include="Game\Enemy\AreaAttacker\AreaAttacker.h" />
     <ClInclude Include="Game\Enemy\Boss\BossAI\BossAI.h" />
     <ClInclude Include="Game\Enemy\Boss\BossAI\BossAttack\BossAttack.h" />
     <ClInclude Include="Game\Enemy\Boss\BossAI\BossIdling\BossIdling.h" />
@@ -275,6 +277,8 @@
     <ClCompile Include="Game\BulletTrail\BulletTrail.cpp" />
     <ClCompile Include="Game\CommonResources.cpp" />
     <ClCompile Include="Game\DamageEffect\DamageEffect.cpp" />
+    <ClCompile Include="Game\Enemy\AreaAttackerModel\AreaAttackerModel.cpp" />
+    <ClCompile Include="Game\Enemy\AreaAttacker\AreaAttacker.cpp" />
     <ClCompile Include="Game\Enemy\Boss\BossAI\BossAI.cpp" />
     <ClCompile Include="Game\Enemy\Boss\BossAI\BossAttack\BossAttack.cpp" />
     <ClCompile Include="Game\Enemy\Boss\BossAI\BossIdling\BossIdling.cpp" />

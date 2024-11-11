@@ -87,9 +87,9 @@ void Wifi::Update(float elapsedTime)
 
 			}
 		}
-		m_wifilevels = m_preWifilevels;
-		m_ssidLengths = m_preSSIDLengths;
-		m_ssidValues = m_preSSIDValues;
+		m_wifilevels = m_preWifilevels;		// 電波の強さを可変長配列に登録
+		m_ssidLengths = m_preSSIDLengths;	// ssidの文字数を可変長配列に登録
+		m_ssidValues = m_preSSIDValues;		// ssidの文字のASCIIコードの合計を可変長配列に登録
 	}
 	else// Wi-Fiを取得できる状態の時
 	{
@@ -111,9 +111,9 @@ void Wifi::Update(float elapsedTime)
 
 				}
 			}
-			m_wifilevels = m_preWifilevels;
-			m_ssidLengths = m_preSSIDLengths;
-			m_ssidValues = m_preSSIDValues;
+			m_wifilevels = m_preWifilevels;		// 電波の強さを可変長配列に登録
+			m_ssidLengths = m_preSSIDLengths;	// ssidの文字数を可変長配列に登録
+			m_ssidValues = m_preSSIDValues;		// ssidの文字のASCIIコードの合計を可変長配列に登録
 		}
 		// 取得した数が1以上の時
 		//数値だけ出す
@@ -132,9 +132,9 @@ void Wifi::Update(float elapsedTime)
 			//ssidの文字のASCIIコードの合計を可変長配列に登録
 			m_preSSIDValues.push_back(m_output->ConvertSsidToInt(networkInfo.ssid));
 
-			m_wifilevels = m_preWifilevels;
-			m_ssidLengths = m_preSSIDLengths;
-			m_ssidValues = m_preSSIDValues;
+			m_wifilevels = m_preWifilevels;		// 電波の強さを可変長配列に登録
+			m_ssidLengths = m_preSSIDLengths;	// ssidの文字数を可変長配列に登録
+			m_ssidValues = m_preSSIDValues;		// ssidの文字のASCIIコードの合計を可変長配列に登録
 		}
 	}
 

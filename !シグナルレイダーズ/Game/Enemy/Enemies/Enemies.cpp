@@ -183,24 +183,24 @@ void Enemies::HandleEnemySpawning(float elapsedTime)
 	int enemyNum = static_cast<int>(m_pWifi->GetWifiLevels().size());
 	if (enemyNum > m_enemyMax) enemyNum = m_enemyMax;
 
-	if (m_startTime >= 5.0f) m_isEnemyBorn = true;
+	if (m_startTime >= 5.0f) m_isEnemyBorn = true;// ザコ敵生成可能にする
 
-	if (m_isEnemyBorn && !m_isBorned && m_enemyIndex < enemyNum)
+	if (m_isEnemyBorn && !m_isBorned && m_enemyIndex < enemyNum)// ザコ敵生成可能かつザコ敵生成完了していない場合
 	{
-		if (m_enemyBornTimer >= m_enemyBornInterval)
+		if (m_enemyBornTimer >= m_enemyBornInterval)// 敵生成間隔を超えたら
 		{
-			SpawnEnemy();
+			SpawnEnemy();// 敵を生成
 		}
 	}
 
-	if (m_enemyIndex >= enemyNum)
+	if (m_enemyIndex >= enemyNum)// 敵生成上限に達したら
 	{
-		FinalizeEnemySpawn();
+		FinalizeEnemySpawn();// 敵生成完了処理
 	}
 
-	if (m_enemies.empty() && m_isBorned && !m_isBossBorned)
+	if (m_enemies.empty() && m_isBorned && !m_isBossBorned)// 敵がいなくなったらボスを生成
 	{
-		SpawnBoss();
+		SpawnBoss();// ボスを生成
 	}
 }
 
@@ -251,10 +251,10 @@ void Enemies::HandleEnemyCollisions()
 		for (size_t j = i + 1; j < m_enemies.size(); ++j)
 		{
 			bool hit = m_enemies[i]->GetBoundingSphere().Intersects(m_enemies[j]->GetBoundingSphere());
-			m_enemies[i]->SetHitToOtherEnemy(hit);
-			m_enemies[j]->SetHitToOtherEnemy(hit);
+			m_enemies[i]->SetHitToOtherEnemy(hit);// 当たり判定結果を設定
+			m_enemies[j]->SetHitToOtherEnemy(hit);// 当たり判定結果を設定
 
-			if (hit)
+			if (hit)// 当たり判定があったら
 			{
 				m_enemies[i]->CheckHitOtherObject(m_enemies[i]->GetBoundingSphere(), m_enemies[j]->GetBoundingSphere());
 			}
@@ -270,7 +270,8 @@ void Enemies::HandlePlayerCollisions(float elapsedTime)
 	for (auto& enemy : m_enemies)
 	{
 		m_isHitPlayerToEnemy = false; // フラグを初期化
-		enemy->Update(elapsedTime, m_pPlayer->GetCamera()->GetEyePosition());
+
+		enemy->Update(elapsedTime, m_pPlayer->GetCamera()->GetEyePosition());// 敵の更新
 
 		// 敵の弾がプレイヤーに当たったら
 		HandleEnemyBulletCollision(enemy);

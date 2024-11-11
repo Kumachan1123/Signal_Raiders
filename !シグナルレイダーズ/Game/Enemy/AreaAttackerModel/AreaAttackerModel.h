@@ -1,25 +1,23 @@
 /*
-	@file	EnemyModel.h
-	@brief	敵モデルクラス
+	@file	AreaAttackerModel.h
+	@brief	範囲攻撃敵モデルクラス
 	作成者：くまち
 */
 #pragma once
-#ifndef ENEMY_MODEL_DEFINED
-#define ENEMY_MODEL_DEFINED
+#ifndef AREA_ATTACKER_MODEL_DEFINED
+#define AREA_ATTACKER_MODEL_DEFINED
 #include "Game/CommonResources.h"
 #include "Game/Interface/IState.h"
-class Enemy;
+class AreaAttacker;
 class CommonResources;
 class IState;
-class EnemyModel
+class AreaAttackerModel
 {
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
 	// モデル
 	std::unique_ptr<DirectX::Model> m_bodyModel;//胴体
-	std::unique_ptr<DirectX::Model> m_antennaModel;//アンテナ
-	std::unique_ptr<DirectX::Model> m_handModel;//手
 	std::unique_ptr<DirectX::Model> m_attackFaceModel;//攻撃態勢の顔
 	std::unique_ptr<DirectX::Model> m_angryFaceModel;//おこの時の顔
 	std::unique_ptr<DirectX::Model> m_idlingFaceModel;//普段の顔
@@ -28,8 +26,8 @@ private:
 	IState::EnemyState m_nowState;
 public:
 	// 初期ステータスを設定
-	EnemyModel();
-	~EnemyModel();
+	AreaAttackerModel();
+	~AreaAttackerModel();
 	void Initialize(CommonResources* resources);
 	void Update(float elapsedTime, IState::EnemyState State);
 	void Render(ID3D11DeviceContext1* context,
@@ -37,6 +35,5 @@ public:
 		DirectX::SimpleMath::Matrix world,
 		DirectX::SimpleMath::Matrix view,
 		DirectX::SimpleMath::Matrix proj);
-
 };
-#endif //ENEMY_MODEL_DEFINED
+#endif //AREA_ATTACKER_MODEL_DEFINED
