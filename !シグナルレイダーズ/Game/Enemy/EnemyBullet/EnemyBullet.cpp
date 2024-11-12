@@ -100,7 +100,7 @@ void EnemyBullet::Update(DirectX::SimpleMath::Vector3& pos, float elapsedTime)
 
 	if (m_bulletType == BulletType::SPIRAL) SpiralBullet();
 	else if (m_bulletType == BulletType::STRAIGHT) StraightBullet(pos);
-	else if (m_bulletType == BulletType::VERTICAL) VerticalBullet();
+	else if (m_bulletType == BulletType::VERTICAL) VerticalBullet(pos);
 
 	// 現在の弾の位置を軌跡リストに追加
 	m_bulletTrail->SetBulletPosition(m_position);
@@ -170,10 +170,30 @@ void EnemyBullet::StraightBullet(DirectX::SimpleMath::Vector3& pos)
 }
 
 // 垂直弾
-void EnemyBullet::VerticalBullet()
+void EnemyBullet::VerticalBullet(DirectX::SimpleMath::Vector3& pos)
 {
-	// 真下に落とす
-	m_velocity = DirectX::SimpleMath::Vector3(0.0f, -0.1f, 0.0f);
+	using namespace DirectX::SimpleMath;
+	if (m_position.y >= 0.50f)
+	{
+		// 真下に落とす
+		m_velocity = Vector3(0.0f, -0.1f, 0.0f);
+
+	}
+	else
+	{
+		// プレイヤーの方向ベクトルを計算
+		Vector3 toPlayer = m_target - pos;
+		// ベクトルを正規化
+		if (toPlayer.LengthSquared() > 0)
+		{
+			toPlayer.Normalize();
+		}
+		// 弾の方向をプレイヤーの方向に向ける
+		m_direction = Vector3(toPlayer.x, 0, toPlayer.z);
+		// 弾の速度を遅くする
+		float bulletSpeed = 1.f; // 適当な速度を設定する（任意の値、調整可能）
+		m_velocity = m_direction * bulletSpeed;
+	}
 	m_position += m_velocity;
 	m_boundingSphere.Center = m_position;
 }

@@ -31,6 +31,7 @@ public:
 	const int DAMAGE = 10;						// 敵に与えるダメージ
 	// ジオメトリックプリミティブ弾
 	std::unique_ptr<DirectX::Model> m_model;
+	const float BULLET_LIFETIME = 20.0f;				// 寿命
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
@@ -84,7 +85,7 @@ public:
 	// 弾が生成されてからの経過時間が寿命を超えたかどうかを判定する
 	bool IsExpired() const
 	{
-		const float BULLET_LIFETIME = 30.0f;				// 寿命
+
 
 		return GetTime() >= BULLET_LIFETIME;
 	}
@@ -92,7 +93,7 @@ public:
 	void SetRotateDirection(int direction) { m_rotateDirection = direction; }
 private:
 	void SpiralBullet();//螺旋弾
-	void VerticalBullet();//垂直弾
+	void VerticalBullet(DirectX::SimpleMath::Vector3& pos);//垂直弾
 	void StraightBullet(DirectX::SimpleMath::Vector3& pos);//直線弾
 
 };

@@ -141,4 +141,5 @@ private:
 	void CreateCenterBullet(EnemyBullet::BulletType type);// ’†‰›‚Ì’e‚ğ¶¬
 	void CreateLeftBullet(float angleOffset, EnemyBullet::BulletType type);// ¶‚Ì’e‚ğ¶¬
 	void CreateRightBullet(float angleOffset, EnemyBullet::BulletType type);// ‰E‚Ì’e‚ğ¶¬
+	void CreateVerticalBullet();// ‚’¼‚Ì’e‚ğ¶¬
 };

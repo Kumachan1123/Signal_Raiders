@@ -299,6 +299,7 @@ void Boss::CreateBullet()
 		CreateCenterBullet(EnemyBullet::BulletType::SPIRAL);// ’†‰›‚Ì’e‚ð”­ŽË
 		CreateLeftBullet(angleOffset, EnemyBullet::BulletType::SPIRAL);// ¶‚Ì’e‚ð”­ŽË
 		CreateRightBullet(angleOffset, EnemyBullet::BulletType::SPIRAL);// ‰E‚Ì’e‚ð”­ŽË
+		CreateVerticalBullet();// ^‰º‚É—Ž‚¿‚Ä’…’e‚µ‚½‚ç‰Á‘¬‚·‚é’e‚ð”­ŽË
 		break;
 	}
 
@@ -334,4 +335,14 @@ void Boss::CreateRightBullet(float angleOffset, EnemyBullet::BulletType type)
 	Vector3 rightDirection = Vector3::Transform(m_bulletDirection, rightRotation);
 	m_enemyBullets->CreateBullet(m_bulletPosRight, m_bulletDirection, m_pPlayer->GetPlayerPos(),
 		BULLET_SIZE, type);
+}
+
+// ^‰º‚É—Ž‚¿‚é’e‚ð”­ŽË
+void Boss::CreateVerticalBullet()
+{
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
+	// ^‰º‚É—Ž‚¿‚é’e‚ð”­ŽË
+	m_enemyBullets->CreateBullet(m_bulletPosCenter, Vector3(0, 0, 0), m_pPlayer->GetPlayerPos(),
+		BULLET_SIZE, EnemyBullet::BulletType::VERTICAL);
 }
