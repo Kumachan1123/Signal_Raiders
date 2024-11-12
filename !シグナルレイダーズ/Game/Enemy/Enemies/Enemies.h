@@ -96,16 +96,17 @@ private:
 	void SetEnemyMax();
 
 	// 更新処理を分割するメソッド
-	void UpdateStartTime(float elapsedTime);
-	void UpdateEffects(float elapsedTime);
-	void HandleEnemySpawning(float elapsedTime);
-	void SpawnEnemy();
-	void FinalizeEnemySpawn();
-	void SpawnBoss();
-	void HandleEnemyCollisions();
-	void HandlePlayerCollisions(float elapsedTime);
-	void HandleEnemyBulletCollision(std::unique_ptr<IEnemy>& enemy);
-	void HandleEnemyPlayerCollision(std::unique_ptr<IEnemy>& enemy);
-	void RemoveDeadEnemies();
-	void HandleEnemyDeath(std::unique_ptr<IEnemy>& enemy);
+	void UpdateStartTime(float elapsedTime);// 敵生成開始時間
+	void UpdateEffects(float elapsedTime);// エフェクト
+	void HandleEnemySpawning(float elapsedTime);// 敵生成
+	void SpawnEnemy();// 敵生成(通常タイプ)
+	void SpawnAreaAttacker();// 敵生成(範囲攻撃タイプ)
+	void FinalizeEnemySpawn();// 敵生成終了
+	void SpawnBoss();// ボス生成
+	void HandleEnemyCollisions();// 敵の当たり判定
+	void HandlePlayerCollisions(float elapsedTime);// プレイヤーと敵の当たり判定
+	void HandleEnemyBulletCollision(std::unique_ptr<IEnemy>& enemy);// 敵の弾とプレイヤーの当たり判定
+	void HandleEnemyPlayerCollision(std::unique_ptr<IEnemy>& enemy);// 敵とプレイヤーの当たり判定
+	void RemoveDeadEnemies();// 死亡した敵を削除
+	void HandleEnemyDeath(std::unique_ptr<IEnemy>& enemy);// 敵の死亡処理
 };

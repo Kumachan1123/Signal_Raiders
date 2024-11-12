@@ -189,7 +189,8 @@ void Enemies::HandleEnemySpawning(float elapsedTime)
 	{
 		if (m_enemyBornTimer >= m_enemyBornInterval)// “G¶¬ŠÔŠu‚ğ’´‚¦‚½‚ç
 		{
-			SpawnEnemy();// “G‚ğ¶¬
+			if (m_pWifi->GetEnemyTypes()[m_enemyIndex] == 0)SpawnEnemy();// “G‚ğ¶¬
+			else SpawnAreaAttacker();// ”ÍˆÍUŒ‚ƒ^ƒCƒv‚Ì“G‚ğ¶¬
 		}
 	}
 
@@ -205,17 +206,31 @@ void Enemies::HandleEnemySpawning(float elapsedTime)
 }
 
 //---------------------------------------------------------
-// “G‚ğ¶¬‚·‚é
+// “G‚ğ¶¬‚·‚é(’Êíƒ^ƒCƒv)
 //---------------------------------------------------------
 void Enemies::SpawnEnemy()
 {
-	auto enemy = std::make_unique<AreaAttacker>(m_pPlayer);
+	auto enemy = std::make_unique<Enemy>(m_pPlayer);
 	enemy->Initialize(m_commonResources, m_pWifi->GetWifiLevels()[m_enemyIndex]);
 	m_enemies.push_back(std::move(enemy));
 
 	m_enemyBornTimer = 0.0f;
 	m_enemyIndex++;
 }
+
+//---------------------------------------------------------
+// “G‚ğ¶¬‚·‚é(”ÍˆÍUŒ‚ƒ^ƒCƒv)
+//---------------------------------------------------------
+void Enemies::SpawnAreaAttacker()
+{
+	auto areaAttacker = std::make_unique<AreaAttacker>(m_pPlayer);
+	areaAttacker->Initialize(m_commonResources, m_pWifi->GetWifiLevels()[m_enemyIndex]);
+	m_enemies.push_back(std::move(areaAttacker));
+
+	m_enemyBornTimer = 0.0f;
+	m_enemyIndex++;
+}
+
 
 //---------------------------------------------------------
 // “G‚Ì¶¬Š®—¹ˆ—

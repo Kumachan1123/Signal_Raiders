@@ -82,14 +82,12 @@ void Wifi::Update(float elapsedTime)
 					break;
 				}
 				m_preWifilevels.push_back(100);// “d”g‚Ì‹­‚³‚ð100‚ÉÝ’è
-				m_preSSIDLengths.push_back(10);// ssid‚Ì•¶Žš”‚ð10‚ÉÝ’è
-				m_preSSIDValues.push_back(1000);// ssid‚Ì•¶Žš‚ÌASCIIƒR[ƒh‚Ì‡Œv‚ð1000‚ÉÝ’è
 
+				m_preEnemyTypes.push_back(0);// “G‚ÌŽí—Þ‚ð0(’Êí)‚ÉÝ’è
 			}
 		}
 		m_wifilevels = m_preWifilevels;		// “d”g‚Ì‹­‚³‚ð‰Â•Ï’·”z—ñ‚É“o˜^
-		m_ssidLengths = m_preSSIDLengths;	// ssid‚Ì•¶Žš”‚ð‰Â•Ï’·”z—ñ‚É“o˜^
-		m_ssidValues = m_preSSIDValues;		// ssid‚Ì•¶Žš‚ÌASCIIƒR[ƒh‚Ì‡Œv‚ð‰Â•Ï’·”z—ñ‚É“o˜^
+		m_enemyTypes = m_preEnemyTypes;		// “G‚ÌŽí—Þ‚ð‰Â•Ï’·”z—ñ‚É“o˜^
 	}
 	else// Wi-Fi‚ðŽæ“¾‚Å‚«‚éó‘Ô‚ÌŽž
 	{
@@ -106,14 +104,11 @@ void Wifi::Update(float elapsedTime)
 						break;
 					}
 					m_preWifilevels.push_back(100);// “d”g‚Ì‹­‚³‚ð100‚ÉÝ’è
-					m_preSSIDLengths.push_back(10);// ssid‚Ì•¶Žš”‚ð10‚ÉÝ’è
-					m_preSSIDValues.push_back(1000);// ssid‚Ì•¶Žš‚ÌASCIIƒR[ƒh‚Ì‡Œv‚ð1000‚ÉÝ’è
-
+					m_preEnemyTypes.push_back(0);// “G‚ÌŽí—Þ‚ð0(’Êí)‚ÉÝ’è
 				}
 			}
 			m_wifilevels = m_preWifilevels;		// “d”g‚Ì‹­‚³‚ð‰Â•Ï’·”z—ñ‚É“o˜^
-			m_ssidLengths = m_preSSIDLengths;	// ssid‚Ì•¶Žš”‚ð‰Â•Ï’·”z—ñ‚É“o˜^
-			m_ssidValues = m_preSSIDValues;		// ssid‚Ì•¶Žš‚ÌASCIIƒR[ƒh‚Ì‡Œv‚ð‰Â•Ï’·”z—ñ‚É“o˜^
+			m_enemyTypes = m_preEnemyTypes;		// “G‚ÌŽí—Þ‚ð‰Â•Ï’·”z—ñ‚É“o˜^
 		}
 		// Žæ“¾‚µ‚½”‚ª1ˆÈã‚ÌŽž
 		//”’l‚¾‚¯o‚·
@@ -125,16 +120,18 @@ void Wifi::Update(float elapsedTime)
 				m_time = 5.0f;
 				break;
 			}
+			//ssid‚Ì•¶Žš”‚ð‰Â•Ï’·”z—ñ‚É“o˜^
+			int ssidLength = (int)(networkInfo.ssid.length());
+			//ssid‚Ì•¶Žš‚ÌASCIIƒR[ƒh‚Ì‡Œv‚ð‰Â•Ï’·”z—ñ‚É“o˜^
+			int ssidValue = m_output->ConvertSsidToInt(networkInfo.ssid);
+			int enemyType = (ssidValue % ssidLength) % 3;
 			//“d”g‚Ì‹­‚³‚ð‰Â•Ï’·”z—ñ‚É“o˜^
 			m_preWifilevels.push_back(networkInfo.signalQuality);
-			//ssid‚Ì•¶Žš”‚ð‰Â•Ï’·”z—ñ‚É“o˜^
-			m_preSSIDLengths.push_back((int)(networkInfo.ssid.length()));
-			//ssid‚Ì•¶Žš‚ÌASCIIƒR[ƒh‚Ì‡Œv‚ð‰Â•Ï’·”z—ñ‚É“o˜^
-			m_preSSIDValues.push_back(m_output->ConvertSsidToInt(networkInfo.ssid));
 
+			m_preEnemyTypes.push_back(enemyType);// “G‚ÌŽí—Þ‚ðÝ’è	
 			m_wifilevels = m_preWifilevels;		// “d”g‚Ì‹­‚³‚ð‰Â•Ï’·”z—ñ‚É“o˜^
-			m_ssidLengths = m_preSSIDLengths;	// ssid‚Ì•¶Žš”‚ð‰Â•Ï’·”z—ñ‚É“o˜^
-			m_ssidValues = m_preSSIDValues;		// ssid‚Ì•¶Žš‚ÌASCIIƒR[ƒh‚Ì‡Œv‚ð‰Â•Ï’·”z—ñ‚É“o˜^
+			m_enemyTypes = m_preEnemyTypes;		// “G‚ÌŽí—Þ‚ð‰Â•Ï’·”z—ñ‚É“o˜^
+
 		}
 	}
 
@@ -149,5 +146,6 @@ void Wifi::Clear()
 	// ƒƒ‚ƒŠ‚Ì‰ð•ú‚Æƒnƒ“ƒhƒ‹‚ÌƒNƒ[ƒY
 	m_memory->FreeMemoryAndCloseHandle(m_pInterfaceList, m_hClient, m_networkInfos, m_displayedSSIDs);
 	m_preWifilevels.clear();
+	m_preEnemyTypes.clear();
 }
 

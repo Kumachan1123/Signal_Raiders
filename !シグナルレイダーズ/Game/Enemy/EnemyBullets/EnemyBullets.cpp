@@ -61,7 +61,7 @@ void EnemyBullets::Update(float elapsedTime, DirectX::SimpleMath::Vector3 enemyP
 				continue;
 			}
 			// ’e‚ÌYÀ•W‚ª-1ˆÈ‰º‚É‚È‚Á‚½‚ç’e‚ðÁ‚·
-			if (bullet->GetBulletPosition().y < 0.0f)continue;
+			if (bullet->GetBulletPosition().y < 0.0f && bullet->GetBulletType() != EnemyBullet::BulletType::VERTICAL)continue;
 			newBullets.push_back(std::move(bullet));
 		}
 	}

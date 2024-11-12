@@ -67,13 +67,11 @@ private:
 
 	// 最初の五秒はこの配列にWi-Fiの強さを格納する
 	std::vector<int> m_preWifilevels;// Wi-Fiの強さ
-	std::vector<int> m_preSSIDLengths;// ssidの文字数
-	std::vector<int> m_preSSIDValues;// ssidの文字のASCIIコードの合計
+	std::vector<int> m_preEnemyTypes;// 敵の種類(ssidの文字のASCIIコードの合計をssidの文字数で割ったもののあまり)
 
 	// 五秒後に以下の配列にWi-Fiの情報を格納する（一度入れたら情報は更新しない）
 	std::vector<int> m_wifilevels;// Wi-Fiの強さ
-	std::vector<int> m_ssidLengths;// ssidの文字の合計値
-	std::vector<int> m_ssidValues;// ssidの文字のASCIIコードの合計
+	std::vector<int> m_enemyTypes;// 敵の種類(ssidの文字のASCIIコードの合計をssidの文字数で割ったもののあまり)
 
 	float m_time;				  // Wi-Fi取得時間（５秒過ぎたら５秒で固定）
 
@@ -93,10 +91,8 @@ public:
 public:
 	// 取得した情報を送る
 	std::vector<int> GetWifiLevels()const { return m_wifilevels; }//電波の強さを渡す
-	std::vector<int> GetSSIDLengths()const { return m_ssidLengths; }//SSIDの文字数を渡す
-	std::vector<int> GetSSIDValues()const { return m_ssidValues; }//SSIDの文字の合計値を渡す
+	std::vector<int> GetEnemyTypes()const { return m_enemyTypes; }//敵の種類を渡す
 	// 更新が終わったかどうかを調べるためのゲッター
 	std::vector<int> GetPreWifiLevels()const { return m_preWifilevels; }
-	std::vector<int> GetPreSSIDLengths()const { return m_preSSIDLengths; }
-	std::vector<int> GetPreSSIDValues()const { return m_preSSIDValues; }
+	std::vector<int> GetPreEnemyTypes()const { return m_preEnemyTypes; }
 };
