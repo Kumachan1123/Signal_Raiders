@@ -19,6 +19,8 @@ public:
 	{
 		STRAIGHT,//’¼ü
 		SPIRAL,//—†ù
+		VERTICAL// ‚’¼
+
 	};
 	BulletType m_bulletType;
 	DirectX::SimpleMath::Vector3 m_position;		// ’e‚ÌÀ•W
@@ -87,6 +89,7 @@ public:
 	void SetRotateDirection(int direction) { m_rotateDirection = direction; }
 private:
 	void SpiralBullet();//—†ù’e
+	void VerticalBullet();//‚’¼’e
 	void StraightBullet(DirectX::SimpleMath::Vector3& pos);//’¼ü’e
 
 };

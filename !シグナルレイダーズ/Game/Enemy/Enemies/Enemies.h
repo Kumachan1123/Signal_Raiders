@@ -6,6 +6,7 @@
 #pragma once
 #include "Game/Interface/IEnemy.h"
 #include "Game/Enemy/Enemy.h"
+#include "Game/Enemy/AreaAttacker/AreaAttacker.h"
 #include "Game/Enemy/Boss/Boss.h"
 #include "Game/Effect/Effect.h"
 #include "Game/Player/Player.h"

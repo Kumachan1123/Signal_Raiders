@@ -99,7 +99,8 @@ void EnemyBullet::Update(DirectX::SimpleMath::Vector3& pos, float elapsedTime)
 	if (m_angle > 360) m_angle = 0;
 
 	if (m_bulletType == BulletType::SPIRAL) SpiralBullet();
-	else StraightBullet(pos);
+	else if (m_bulletType == BulletType::STRAIGHT) StraightBullet(pos);
+	else if (m_bulletType == BulletType::VERTICAL) VerticalBullet();
 
 	// Œ»İ‚Ì’e‚ÌˆÊ’u‚ğ‹OÕƒŠƒXƒg‚É’Ç‰Á
 	m_bulletTrail->SetBulletPosition(m_position);
@@ -130,7 +131,7 @@ void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	// ’e•`‰æ
 	m_model->Draw(context, *states, bulletWorld, view, proj);
 	// Šeƒpƒ‰ƒ[ƒ^‚ğİ’è‚·‚é
-	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
+	context->OMSetBlendState(states->Additive(), nullptr, 0xFFFFFFFF);
 	context->OMSetDepthStencilState(states->DepthRead(), 0);
 	context->RSSetState(states->CullNone());
 	context->IASetInputLayout(m_inputLayout.Get());
@@ -168,6 +169,14 @@ void EnemyBullet::StraightBullet(DirectX::SimpleMath::Vector3& pos)
 	m_boundingSphere.Center = m_position;//‹«ŠE‹…‚ÉÀ•W‚ğ“n‚·
 }
 
+// ‚’¼’e
+void EnemyBullet::VerticalBullet()
+{
+	// ^‰º‚É—‚Æ‚·
+	m_velocity = DirectX::SimpleMath::Vector3(0.0f, -0.1f, 0.0f);
+	m_position += m_velocity;
+	m_boundingSphere.Center = m_position;
+}
 
 // —†ù’e
 void EnemyBullet::SpiralBullet()

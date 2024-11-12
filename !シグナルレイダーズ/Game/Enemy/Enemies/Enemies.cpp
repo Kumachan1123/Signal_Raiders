@@ -209,7 +209,7 @@ void Enemies::HandleEnemySpawning(float elapsedTime)
 //---------------------------------------------------------
 void Enemies::SpawnEnemy()
 {
-	auto enemy = std::make_unique<Enemy>(m_pPlayer);
+	auto enemy = std::make_unique<AreaAttacker>(m_pPlayer);
 	enemy->Initialize(m_commonResources, m_pWifi->GetWifiLevels()[m_enemyIndex]);
 	m_enemies.push_back(std::move(enemy));
 
