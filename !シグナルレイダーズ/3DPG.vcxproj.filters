@@ -444,34 +444,33 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Resources\Shaders\PlayerHP\PlayerHP.hlsli" />
+    <None Include="HLSL\PlayerHP\PlayerHP.hlsli" />
     <None Include="Resources\Shaders\PlayerHP\GS_PlayerHP.cso" />
     <None Include="Resources\Shaders\PlayerHP\PS_PlayerHP.cso" />
     <None Include="Resources\Shaders\PlayerHP\VS_PlayerHP.cso" />
-    <None Include="Resources\Shaders\TitleScene\Menu\Menu.hlsli" />
+    <None Include="HLSL\Menu\Menu.hlsli" />
     <None Include="ClassDiagram.cd" />
     <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Resources\Shaders\PS_EnemyShadow.hlsl">
+    <FxCompile Include="HLSL\EnemyShadow\PS_EnemyShadow.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\PlayerHP\GS_PlayerHP.hlsl" />
-    <FxCompile Include="Resources\Shaders\PlayerHP\PS_PlayerHP.hlsl" />
-    <FxCompile Include="Resources\Shaders\PlayerHP\VS_PlayerHP.hlsl" />
-    <FxCompile Include="Resources\Shaders\PS_Outline.hlsl" />
-    <FxCompile Include="Resources\Shaders\TitleScene\PS_Title.hlsl" />
-    <FxCompile Include="Resources\Shaders\TitleScene\VS_Title.hlsl" />
-    <FxCompile Include="Resources\Shaders\Fade\VS_Fade.hlsl" />
-    <FxCompile Include="Resources\Shaders\Fade\PS_Fade.hlsl" />
-    <FxCompile Include="Resources\Shaders\TitleScene\Menu\GS_Menu.hlsl" />
-    <FxCompile Include="Resources\Shaders\TitleScene\Menu\PS_Menu.hlsl" />
-    <FxCompile Include="Resources\Shaders\TitleScene\Menu\VS_Menu.hlsl" />
-    <FxCompile Include="Resources\Shaders\Radar\VS_Radar.hlsl" />
-    <FxCompile Include="Resources\Shaders\Radar\PS_Radar.hlsl" />
-    <FxCompile Include="Resources\Shaders\CRT\PS_CRT.hlsl" />
-    <FxCompile Include="Resources\Shaders\CRT\VS_CRT.hlsl" />
-    <FxCompile Include="Resources\Shaders\DamageEffect\PS_Damage.hlsl" />
-    <FxCompile Include="Resources\Shaders\DamageEffect\VS_Damage.hlsl" />
+    <FxCompile Include="HLSL\PlayerHP\GS_PlayerHP.hlsl" />
+    <FxCompile Include="HLSL\PlayerHP\PS_PlayerHP.hlsl" />
+    <FxCompile Include="HLSL\PlayerHP\VS_PlayerHP.hlsl" />
+    <FxCompile Include="HLSL\Title\PS_Title.hlsl" />
+    <FxCompile Include="HLSL\Title\VS_Title.hlsl" />
+    <FxCompile Include="HLSL\Fade\VS_Fade.hlsl" />
+    <FxCompile Include="HLSL\Fade\PS_Fade.hlsl" />
+    <FxCompile Include="HLSL\Menu\GS_Menu.hlsl" />
+    <FxCompile Include="HLSL\Menu\PS_Menu.hlsl" />
+    <FxCompile Include="HLSL\Menu\VS_Menu.hlsl" />
+    <FxCompile Include="HLSL\Radar\VS_Radar.hlsl" />
+    <FxCompile Include="HLSL\Radar\PS_Radar.hlsl" />
+    <FxCompile Include="HLSL\CRT\PS_CRT.hlsl" />
+    <FxCompile Include="HLSL\CRT\VS_CRT.hlsl" />
+    <FxCompile Include="HLSL\Damage\PS_Damage.hlsl" />
+    <FxCompile Include="HLSL\Damage\VS_Damage.hlsl" />
   </ItemGroup>
 </Project>
