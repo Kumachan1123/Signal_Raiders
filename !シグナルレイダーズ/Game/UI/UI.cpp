@@ -81,9 +81,9 @@ void UI::CreateShader()
 {
 	auto device = m_pDR->GetD3DDevice();// デバイス
 	// コンパイルされたシェーダーを読み込む
-	kumachi::BinaryFile VS = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/TitleScene/Menu/VS_Menu.cso");
-	kumachi::BinaryFile GS = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/TitleScene/Menu/GS_Menu.cso");
-	kumachi::BinaryFile PS = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/TitleScene/Menu/PS_Menu.cso");
+	kumachi::BinaryFile VS = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/Menu/VS_Menu.cso");
+	kumachi::BinaryFile GS = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/Menu/GS_Menu.cso");
+	kumachi::BinaryFile PS = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/Menu/PS_Menu.cso");
 	// インプットレイアウト作成
 	device->CreateInputLayout(&INPUT_LAYOUT[0],
 		static_cast<UINT>(INPUT_LAYOUT.size()),
