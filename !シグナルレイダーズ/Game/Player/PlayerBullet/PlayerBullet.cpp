@@ -17,8 +17,9 @@
 // ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 //-------------------------------------------------------------------
 PlayerBullet::PlayerBullet()
-	:m_position{}
-	, m_velocity{}
+	: m_position{ DirectX::SimpleMath::Vector3::Zero }
+	, m_velocity{ DirectX::SimpleMath::Vector3::Zero }
+	, m_direction{ DirectX::SimpleMath::Vector3::Zero }
 	, m_commonResources{}
 	, m_time(0.0f)
 	, m_angle{ 0.0f }
@@ -115,10 +116,9 @@ void PlayerBullet::Update(DirectX::SimpleMath::Vector3& Direction, float elapsed
 void PlayerBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir)
 {
 	using namespace DirectX::SimpleMath;
-	m_position = pos;
-	m_position += Vector3(0.0f, -1.0f, 0.0f);
-	m_direction = dir;
-	m_direction.y += 0.0375f;
+	m_position = pos + Vector3(0.0f, -1.0f, 0.0f);// ‰ŠúˆÊ’u‚ðÝ’è
+	m_direction = dir;// •ûŒü‚ðÝ’è
+	m_direction.y += 0.0375f;// ã•ûŒü‚É•â³
 }
 void PlayerBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
@@ -137,24 +137,22 @@ void PlayerBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 	// ‹OÕ•`‰æ
 	m_bulletTrail->CreateBillboard(m_cameraTarget, m_cameraEye, m_cameraUp);
 	m_bulletTrail->Render(view, proj);
-
-
-	// ’e•`‰æ
-	m_model->Draw(context, *states, bulletWorld, view, proj);
 	// ƒ‰ƒCƒg‚Ì•ûŒü
 	Vector3 lightDir = Vector3::UnitY;
 	lightDir.Normalize();
 	// ‰es—ñ‚ÌŒ³‚ðì‚é
-	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, 0.01f));
-	bulletWorld *= shadowMatrix;
+	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, -0.01f));
+	shadowMatrix = bulletWorld * shadowMatrix;
 	// ‰e•`‰æ
-	m_model->Draw(context, *states, bulletWorld * Matrix::Identity, view, proj, true, [&]()
+	m_model->Draw(context, *states, shadowMatrix * Matrix::Identity, view, proj, true, [&]()
 		{
 			context->OMSetBlendState(states->Opaque(), nullptr, 0xffffffff);
 			context->OMSetDepthStencilState(states->DepthNone(), 0);
 			context->RSSetState(states->CullClockwise());
 			context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
 		});
+	// ’e•`‰æ
+	m_model->Draw(context, *states, bulletWorld, view, proj);
 	// Šeƒpƒ‰ƒ[ƒ^‚ðÝ’è‚·‚é
 	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
 	context->OMSetDepthStencilState(states->DepthRead(), 0);

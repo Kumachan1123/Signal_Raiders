@@ -157,6 +157,10 @@ void AreaAttacker::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 	// “G•`‰æ	
 	m_pAreaAttackerModel->Render(context, states, enemyWorld, view, proj);
 
+
+	// “G‚Ì’e•`‰æ
+	m_enemyBullets->Render(view, proj);
+#ifdef _DEBUG
 	// •`‰æ‚·‚é
 	// Šeƒpƒ‰ƒ[ƒ^‚ðÝ’è‚·‚é
 	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
@@ -167,9 +171,6 @@ void AreaAttacker::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 	m_basicEffect->SetView(view);
 	m_basicEffect->SetProjection(proj);
 	m_basicEffect->Apply(context);
-	// “G‚Ì’e•`‰æ
-	m_enemyBullets->Render(view, proj);
-#ifdef _DEBUG
 	m_primitiveBatch->Begin();
 	if (!m_isHit)
 	{

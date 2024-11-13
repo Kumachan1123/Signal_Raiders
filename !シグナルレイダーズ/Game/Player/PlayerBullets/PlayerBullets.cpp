@@ -47,7 +47,10 @@ void PlayerBullets::Update(float elapsedTime)
 		(*it)->SetCameraTarget(playerTarget);// ƒJƒƒ‰‚Ì’Ž‹“_‚ðÝ’è
 		(*it)->SetCameraUp(playerUp);	// ƒJƒƒ‰‚Ìã•ûŒü‚ðÝ’è
 		(*it)->Update(dir, elapsedTime);// ’e‚ðXV
-		if ((*it)->IsExpired())it = m_playerBullet.erase(it);// ’e‚ªŽõ–½‚ðŒ}‚¦‚½‚çíœ
+		if ((*it)->IsExpired() || (*it)->GetBulletPosition().y <= -0.25f)
+		{
+			it = m_playerBullet.erase(it);// ’e‚ªŽõ–½‚ðŒ}‚¦‚é‚©’n–Ê‚É’…‚¢‚½‚çíœ
+		}
 		else
 		{
 			bool isHit = false;// ƒqƒbƒgƒtƒ‰ƒO‚ð‰Šú‰»

@@ -21,8 +21,8 @@ using namespace DirectX::SimpleMath;
 // コンストラクタ
 BossAttack::BossAttack(BossAI* pBoss)
 	: m_pBoss(pBoss)
-	, m_attackCooldown{ 1.0f }
-	, m_rotationSpeed{ }
+	, m_attackCooldown{ ATTACK_INTERVAL }
+	, m_rotationSpeed{ ROTATION_SPEED }
 	, m_commonResources{}
 {
 }
@@ -36,7 +36,6 @@ void BossAttack::Initialize()
 	m_rotation = m_pBoss->GetRotation();// 回転
 	m_velocity = m_pBoss->GetVelocity();// 速度
 	m_scale = m_pBoss->GetScale();// スケール
-	m_rotationSpeed = 3.0f; // 回転速度
 }
 
 // プレイヤー方向のベクトルを計算する
@@ -92,7 +91,7 @@ void BossAttack::ManageAttackCooldown(float elapsedTime)
 		m_pBoss->SetState(IState::EnemyState::ANGRY);
 		if (m_attackCooldown <= 0.0f)
 		{
-			m_attackCooldown = 1.0f;  // クールダウンリセット
+			m_attackCooldown = ATTACK_INTERVAL;  // クールダウンリセット
 		}
 	}
 }
@@ -115,7 +114,7 @@ void BossAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Di
 	ManageAttackCooldown(elapsedTime);
 
 	// 回転速度を減速し、最小値を確保
-	m_rotationSpeed = std::max(m_rotationSpeed - 0.01f, 0.1f);
+	m_rotationSpeed = std::max(m_rotationSpeed - 0.05f, 0.1f);
 
 	// ボスの状態を更新
 	m_pBoss->SetRotation(m_rotation);

@@ -150,6 +150,8 @@ void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 		});
 	// 弾描画
 	m_model->Draw(context, *states, bulletWorld, view, proj);
+
+#ifdef _DEBUG
 	// 各パラメータを設定する
 	context->OMSetBlendState(states->Additive(), nullptr, 0xFFFFFFFF);
 	context->OMSetDepthStencilState(states->DepthRead(), 0);
@@ -162,10 +164,9 @@ void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	// 境界球の変換を同じワールドマトリックスに基づいて行う
 	DirectX::BoundingSphere transformedBoundingSphere = m_boundingSphere;
 	m_boundingSphere.Transform(transformedBoundingSphere, boundingbulletWorld);
-#ifdef _DEBUG
 	// 描画する
 	m_primitiveBatch->Begin();
-	DX::Draw(m_primitiveBatch.get(), m_boundingSphere, DirectX::Colors::Red);
+	DX::Draw(m_primitiveBatch.get(), m_boundingSphere, DirectX::Colors::Black);
 	m_primitiveBatch->End();
 #endif
 }
