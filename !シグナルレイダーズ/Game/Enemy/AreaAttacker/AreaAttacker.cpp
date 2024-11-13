@@ -210,3 +210,38 @@ void AreaAttacker::CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::Boun
 	A.Center = m_position;
 	A.Center.y -= 2.0f;
 }
+
+
+// オブジェクト同士が衝突したら押し戻す(境界球と境界ボックスの場合）
+void AreaAttacker::CheckHitWall(DirectX::BoundingSphere& A, DirectX::BoundingBox& B)
+{
+	using namespace DirectX::SimpleMath;
+	// 押し戻しベクトルを計算
+	Vector3 pushBackVec = Vector3::Zero;
+	// 球体の中心とボックスのクランプされた位置の差分を求める
+	Vector3 closestPoint; // ボックスの最も近い点
+
+	// 各軸でクランプして、最も近い位置を取得
+	closestPoint.x = std::max(B.Center.x - B.Extents.x, std::min(A.Center.x, B.Center.x + B.Extents.x));
+	closestPoint.y = std::max(B.Center.y - B.Extents.y, std::min(A.Center.y, B.Center.y + B.Extents.y));
+	closestPoint.z = std::max(B.Center.z - B.Extents.z, std::min(A.Center.z, B.Center.z + B.Extents.z));
+
+	// 球体の中心と最も近い点のベクトル差
+	Vector3 diffVector = A.Center - closestPoint;
+
+	// 距離を計算
+	float distance = diffVector.Length();
+
+	// 距離が球体の半径より小さい場合は押し戻し処理
+	if (distance < A.Radius)
+	{
+		// 押し戻し量を計算 (正規化して押し戻しベクトルを作成)
+		float penetrationDistance = A.Radius - distance;
+		diffVector.Normalize();
+		pushBackVec = diffVector * penetrationDistance;
+
+		m_position += pushBackVec;
+		A.Center = m_position;
+		A.Center.y -= 2.0f;
+	}
+}

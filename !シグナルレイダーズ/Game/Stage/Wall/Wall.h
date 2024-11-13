@@ -28,12 +28,15 @@ public:
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
-	//	変数
+	// 変数
 	DX::DeviceResources* m_pDR;
-	//	壁テクスチャ
+	// 壁テクスチャ
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_pWallTexture;
-
-	//	ワールドビュープロジェクション行列
+	// 壁の頂点
+	DirectX::VertexPositionTexture m_wall[4][4];
+	// 壁の当たり判定
+	DirectX::BoundingBox m_wallBox[4];
+	// ワールドビュープロジェクション行列
 	DirectX::SimpleMath::Matrix m_world;
 	DirectX::SimpleMath::Matrix m_view;
 	DirectX::SimpleMath::Matrix m_proj;
@@ -45,14 +48,19 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 	//	プリミティブバッチ 
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_pPrimitiveBatch;
+	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_pPrimitiveBatchColor;
+
 	//	入力レイアウト 
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_cBuffer;
 	//	共通ステートオブジェクトへのポインタ
 	std::unique_ptr<DirectX::CommonStates> m_pStates;
 
-	//	エフェクト 
-	std::unique_ptr<DirectX::AlphaTestEffect> m_pBatchEffect;
+
+	// 	//デバッグ用
+	// ベーシックエフェクト
+	std::unique_ptr<DirectX::BasicEffect> m_pBasicEffect;
+
 
 public:
 	//	関数
@@ -64,9 +72,10 @@ public:
 	void LoadTexture(const wchar_t* path);
 
 	void Create(DX::DeviceResources* pDR);
+	void Initialize();
 	void Update(float elapsedTime);
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
-
+	DirectX::BoundingBox& GetBoundingBox(int index) { return m_wallBox[index]; }
 private:
 
 	void CreateShader();

@@ -125,6 +125,7 @@ public:
 	void Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)override;// 更新
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;// 描画
 	void CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::BoundingSphere& B)override;// 衝突判定
+	void CheckHitWall(DirectX::BoundingSphere& A, DirectX::BoundingBox& B)override;// 壁との衝突判定
 
 	void SetBulletType(BossBulletType bossBulletType) { m_bossBulletType = bossBulletType; };// 弾のタイプ設定
 	BossBulletType GetBulletType() const { return m_bossBulletType; };// 弾のタイプ取得

@@ -83,6 +83,9 @@ void Enemies::Update(float elapsedTime)
 	// 敵とプレイヤーの当たり判定
 	HandlePlayerCollisions(elapsedTime);
 
+	// 敵と壁の当たり判定
+	HandleWallCollision();
+
 	// ザコ敵の削除処理
 	RemoveDeadEnemies();
 
@@ -110,11 +113,9 @@ void Enemies::Render()
 	);
 
 }
-
+// FMODシステムの初期化
 void Enemies::InitializeFMOD()
 {
-
-	// FMODシステムの初期化
 	m_audioManager->Initialize();
 	m_audioManager->LoadSound("Resources/Sounds/Explosion.mp3", "EnemyDead");
 	m_audioManager->LoadSound("Resources/Sounds/damage.mp3", "Damage");
@@ -273,6 +274,18 @@ void Enemies::HandleEnemyCollisions()
 				m_enemies[i]->CheckHitOtherObject(m_enemies[i]->GetBoundingSphere(), m_enemies[j]->GetBoundingSphere());
 			}
 		}
+	}
+}
+//---------------------------------------------------------
+// 敵と壁の当たり判定処理
+//---------------------------------------------------------
+void Enemies::HandleWallCollision()
+{
+	for (auto& enemy : m_enemies)
+	{
+		for (int i = 0; i < 4; i++)
+			enemy->CheckHitWall(enemy->GetBoundingSphere(), m_pWall->GetBoundingBox(i));
+
 	}
 }
 

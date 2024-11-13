@@ -10,6 +10,7 @@
 #include "Game/Effect/Effect.h"
 #include "Game/Player/Player.h"
 #include "Game/Wifi/Wifi.h"
+#include "Game/Stage/Wall/Wall.h"
 // 前方宣言
 class CommonResources;
 class IEnemy;
@@ -17,6 +18,7 @@ class Boss;
 class Player;
 class Effect;
 class Wifi;
+class Wall;
 class Enemies
 {
 public:
@@ -56,8 +58,10 @@ private:
 	int m_bossHP;
 	// wi-fi
 	std::unique_ptr<Wifi> m_pWifi;
-	// プレイヤーコントローラー
+	// プレイヤー(コントローラー)
 	Player* m_pPlayer;
+	// 壁
+	Wall* m_pWall;
 	// エフェクト
 	std::vector<std::unique_ptr<Effect>> m_effect;
 	// オーディオマネージャー
@@ -90,6 +94,7 @@ public:
 	// Setter
 	void SetVolume(float volume) { m_SEVolume = volume; }// 音量取得
 	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; }// ステージ番号
+	void SetWall(Wall* pWall) { m_pWall = pWall; };// 壁
 private:
 	// 敵の生成上限設定
 	void SetEnemyMax();
@@ -106,6 +111,7 @@ private:
 	void HandlePlayerCollisions(float elapsedTime);// プレイヤーと敵の当たり判定
 	void HandleEnemyBulletCollision(std::unique_ptr<IEnemy>& enemy);// 敵の弾とプレイヤーの当たり判定
 	void HandleEnemyPlayerCollision(std::unique_ptr<IEnemy>& enemy);// 敵とプレイヤーの当たり判定
+	void HandleWallCollision();// 壁との当たり判定
 	void RemoveDeadEnemies();// 死亡した敵を削除
 	void HandleEnemyDeath(std::unique_ptr<IEnemy>& enemy);// 敵の死亡処理
 };

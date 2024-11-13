@@ -78,7 +78,7 @@ void EnemyModel::Render(ID3D11DeviceContext1* context,
 		{
 			context->OMSetBlendState(states->Opaque(), nullptr, 0xffffffff);
 			context->OMSetDepthStencilState(states->DepthNone(), 0);
-			context->RSSetState(states->CullClockwise());
+			context->RSSetState(states->CullNone());
 			context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
 		});
 	// •\î·•ª

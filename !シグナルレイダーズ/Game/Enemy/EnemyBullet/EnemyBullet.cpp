@@ -154,7 +154,7 @@ void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 #ifdef _DEBUG
 	// 各パラメータを設定する
 	context->OMSetBlendState(states->Additive(), nullptr, 0xFFFFFFFF);
-	context->OMSetDepthStencilState(states->DepthRead(), 0);
+	context->OMSetDepthStencilState(states->DepthDefault(), 0);
 	context->RSSetState(states->CullNone());
 	context->IASetInputLayout(m_inputLayout.Get());
 	//** デバッグドローでは、ワールド変換いらない

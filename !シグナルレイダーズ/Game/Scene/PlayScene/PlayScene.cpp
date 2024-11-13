@@ -81,10 +81,10 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pEnemies->SetStageNumber(m_stageNumber);// ステージ番号を設定する
 	m_pPlayer->SetVolume(m_SEvolume);// プレイヤーが出す効果音の音量を設定する
 	m_pPlayer->SetMouseSensitive(m_mouseSensitivity);// マウス感度を設定する
-	m_pPlayer->Initialize(m_pEnemies.get());
-	m_pEnemies->Initialize(m_pPlayer.get());
+	m_pPlayer->Initialize(m_pEnemies.get());// プレイヤーを初期化する
+	m_pEnemies->Initialize(m_pPlayer.get());// 敵を初期化する
 	m_pEnemies->SetVolume(m_SEvolume);// 敵が出す効果音の音量を設定する
-
+	m_pEnemies->SetWall(m_pWall.get());// 敵に壁の情報を渡す
 	// 敵カウンター
 	m_pEnemyCounter = std::make_unique<EnemyCounter>();
 	m_pEnemyCounter->Initialize(resources);
@@ -160,7 +160,6 @@ void PlayScene::Render()
 	m_pEnemyCounter->Render();
 	// レーダーを描画する
 	m_pRadar->Render();
-
 	// フェードの描画
 	m_fade->Render();
 

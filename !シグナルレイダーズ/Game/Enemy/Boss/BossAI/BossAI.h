@@ -1,6 +1,6 @@
 /*
-	@file	EnemyAI.h
-	@brief	敵AIクラス
+	@file	BossAI.h
+	@brief	ボスAIクラス
 */
 #pragma once
 #ifndef BOSS_AI_DEFINED
