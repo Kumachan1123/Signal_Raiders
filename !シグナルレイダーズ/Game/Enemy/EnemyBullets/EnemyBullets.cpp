@@ -1,7 +1,6 @@
 /*
 	@file	EnemyBullets.cpp
 	@brief	敵の弾全体を管理するクラス
-	作成者：くまち
 */
 #include "pch.h"
 #include <SimpleMath.h>

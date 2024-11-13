@@ -1,7 +1,6 @@
 /*
 	@file	Enemies.cpp
 	@brief	“G‚½‚¿ƒNƒ‰ƒX
-	ì¬ÒF‚­‚Ü‚¿
 */
 #include "pch.h"
 #include "Enemies.h"

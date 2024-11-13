@@ -1,7 +1,6 @@
 /*
 	@file	PlayerBullet.cpp
 	@brief	プレイヤーの弾クラス
-	作成者：くまち
 */
 #include "pch.h"
 #include <SimpleMath.h>

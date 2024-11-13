@@ -1,7 +1,6 @@
 /*
 	@file	Enemy.cpp
 	@brief	敵クラス
-	作成者：くまち
 */
 #include "pch.h"
 #include <SimpleMath.h>
@@ -106,9 +105,7 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 	std::random_device rd;  // シード生成器
 	std::mt19937 gen(rd()); // メルセンヌ・ツイスタの乱数生成器
 	std::uniform_real_distribution<float> dist(-50.0f, 50.0f); // 一様分布
-	m_position.x = dist(gen);
-	m_position.y = 6.0f;
-	m_position.z = dist(gen);
+	m_position = Vector3{ dist(gen), 0.0f, dist(gen) };// 敵の初期位置を設定
 	// プリミティブバッチを作成する
 	m_primitiveBatch = std::make_unique<DirectX::DX11::PrimitiveBatch<DirectX::DX11::VertexPositionColor>>(context);
 	// 敵の座標を設定

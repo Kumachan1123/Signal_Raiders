@@ -1,7 +1,6 @@
 /*
 	@file	EnemyCounter.cpp
 	@brief	敵カウントクラス
-	作成者：くまち
 */
 #include "pch.h"
 #include "EnemyCounter.h"

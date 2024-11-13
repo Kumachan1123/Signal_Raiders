@@ -1,7 +1,6 @@
 /*
 	@file	EnemyBullet.h
 	@brief	“G‚Ì’eƒNƒ‰ƒX
-	ì¬ÒF‚­‚Ü‚¿
 */
 
 #pragma once

@@ -1,7 +1,6 @@
 /*
 	@file	Boss.h
 	@brief	ボスクラス
-	作成者：くまち
 */
 #pragma once
 #include "Game/KumachiLib/AudioManager.h"

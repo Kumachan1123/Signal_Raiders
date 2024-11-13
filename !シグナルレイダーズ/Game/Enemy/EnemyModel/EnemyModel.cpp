@@ -1,7 +1,6 @@
 /*
 	@file	EnemyModel.cpp
 	@brief	“Gƒ‚ƒfƒ‹ƒNƒ‰ƒX
-	ì¬ŽÒF‚­‚Ü‚¿
 */
 #include "pch.h"
 #include "Game/Enemy/Enemy.h"
@@ -51,10 +50,10 @@ void EnemyModel::Update(float elapsedTime, IState::EnemyState State)
 	m_nowState = State;
 }
 void EnemyModel::Render(ID3D11DeviceContext1* context,
-						DirectX::DX11::CommonStates* states,
-						DirectX::SimpleMath::Matrix world,
-						DirectX::SimpleMath::Matrix view,
-						DirectX::SimpleMath::Matrix proj)
+	DirectX::DX11::CommonStates* states,
+	DirectX::SimpleMath::Matrix world,
+	DirectX::SimpleMath::Matrix view,
+	DirectX::SimpleMath::Matrix proj)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
@@ -65,18 +64,18 @@ void EnemyModel::Render(ID3D11DeviceContext1* context,
 	// •\î·•ª
 	switch (m_nowState)
 	{
-		case IState::EnemyState::IDLING:// ƒAƒCƒhƒŠƒ“ƒO
-			m_idlingFaceModel->Draw(context, *states, world, view, proj);
-			break;
-		case IState::EnemyState::ATTACK:// UŒ‚
-			m_attackFaceModel->Draw(context, *states, world, view, proj);
-			break;
-		case IState::EnemyState::ANGRY:// “{‚è
-			m_angryFaceModel->Draw(context, *states, world, view, proj);
-			break;
-		case IState::EnemyState::DAMAGE:// ”í’e
-			m_damageFaceModel->Draw(context, *states, world, view, proj);
-			break;
+	case IState::EnemyState::IDLING:// ƒAƒCƒhƒŠƒ“ƒO
+		m_idlingFaceModel->Draw(context, *states, world, view, proj);
+		break;
+	case IState::EnemyState::ATTACK:// UŒ‚
+		m_attackFaceModel->Draw(context, *states, world, view, proj);
+		break;
+	case IState::EnemyState::ANGRY:// “{‚è
+		m_angryFaceModel->Draw(context, *states, world, view, proj);
+		break;
+	case IState::EnemyState::DAMAGE:// ”í’e
+		m_damageFaceModel->Draw(context, *states, world, view, proj);
+		break;
 
 	}
 }

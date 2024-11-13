@@ -1,7 +1,6 @@
 /*
 	@file	PlayerController.h
 	@brief	プレイヤーコントローラークラス
-	作成者：くまち
 */
 #pragma once
 #include "Game/Player/Player.h"

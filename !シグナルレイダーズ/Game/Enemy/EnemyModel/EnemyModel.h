@@ -1,7 +1,6 @@
 /*
 	@file	EnemyModel.h
 	@brief	敵モデルクラス
-	作成者：くまち
 */
 #pragma once
 #ifndef ENEMY_MODEL_DEFINED

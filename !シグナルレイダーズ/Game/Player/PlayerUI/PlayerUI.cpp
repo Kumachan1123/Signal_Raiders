@@ -1,8 +1,6 @@
 //--------------------------------------------------------------------------------------
 //@file    PlayerUI.cpp
 //@brief  プレイヤーUIクラス
-//作成者：くまち
-//
 //-------------------------------------------------------------------------------------
 
 #include "pch.h"
@@ -71,10 +69,10 @@ void PlayerUI::LoadTexture(const wchar_t* path)
 /// </summary>
 /// <param name="pDR">ユーザーリソース等から持ってくる</param>
 void PlayerUI::Create(DX::DeviceResources* pDR
-					  , const wchar_t* path
-					  , DirectX::SimpleMath::Vector2 position
-					  , DirectX::SimpleMath::Vector2 scale
-					  , kumachi::ANCHOR anchor)
+	, const wchar_t* path
+	, DirectX::SimpleMath::Vector2 position
+	, DirectX::SimpleMath::Vector2 scale
+	, kumachi::ANCHOR anchor)
 {
 	m_pDR = pDR;
 	auto device = pDR->GetD3DDevice();
@@ -110,9 +108,9 @@ void PlayerUI::CreateShader()
 
 	//	インプットレイアウトの作成
 	device->CreateInputLayout(&INPUT_LAYOUT[0],
-							  static_cast<UINT>(INPUT_LAYOUT.size()),
-							  VSData.GetData(), VSData.GetSize(),
-							  m_inputLayout.GetAddressOf());
+		static_cast<UINT>(INPUT_LAYOUT.size()),
+		VSData.GetData(), VSData.GetSize(),
+		m_inputLayout.GetAddressOf());
 
 	//	頂点シェーダ作成
 	if (FAILED(device->CreateVertexShader(VSData.GetData(), VSData.GetSize(), NULL, m_vertexShader.ReleaseAndGetAddressOf())))

@@ -1,7 +1,6 @@
 /*
 	@file	BossModel.h
 	@brief	敵モデルクラス
-	作成者：くまち
 */
 #pragma once
 #ifndef BOSS_MODEL_DEFINED
@@ -39,10 +38,10 @@ public:
 	void Initialize(CommonResources* resources);
 	void Update(float elapsedTime, IState::EnemyState State);
 	void Render(ID3D11DeviceContext1* context,
-				DirectX::DX11::CommonStates* states,
-				DirectX::SimpleMath::Matrix world,
-				DirectX::SimpleMath::Matrix view,
-				DirectX::SimpleMath::Matrix proj);
+		DirectX::DX11::CommonStates* states,
+		DirectX::SimpleMath::Matrix world,
+		DirectX::SimpleMath::Matrix view,
+		DirectX::SimpleMath::Matrix proj);
 
 };
 #endif //BOSS_MODEL_DEFINED

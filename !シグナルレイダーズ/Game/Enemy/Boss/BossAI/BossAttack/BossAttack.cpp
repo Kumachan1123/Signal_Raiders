@@ -1,7 +1,6 @@
 /*
 	@file	BossAttack.cpp
 	@brief	ボス攻撃クラス
-	作成者：くまち
 */
 #include "pch.h"
 #include <SimpleMath.h>

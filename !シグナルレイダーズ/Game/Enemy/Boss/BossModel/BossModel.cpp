@@ -1,7 +1,6 @@
 /*
 	@file	BossModel.cpp
 	@brief	敵モデルクラス
-	作成者：くまち
 */
 #include "pch.h"
 #include "Game/Enemy/Enemy.h"
@@ -44,10 +43,10 @@ void BossModel::Update(float elapsedTime, IState::EnemyState State)
 	m_nowState = State;
 }
 void BossModel::Render(ID3D11DeviceContext1* context,
-					   DirectX::DX11::CommonStates* states,
-					   DirectX::SimpleMath::Matrix world,
-					   DirectX::SimpleMath::Matrix view,
-					   DirectX::SimpleMath::Matrix proj)
+	DirectX::DX11::CommonStates* states,
+	DirectX::SimpleMath::Matrix world,
+	DirectX::SimpleMath::Matrix view,
+	DirectX::SimpleMath::Matrix proj)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
@@ -56,14 +55,14 @@ void BossModel::Render(ID3D11DeviceContext1* context,
 	// 表情差分
 	switch (m_nowState)
 	{
-		case IState::EnemyState::DAMAGE:// ダメージ
-		case IState::EnemyState::IDLING:// アイドリング
-			m_idlingFaceModel->Draw(context, *states, world, view, proj);
-			break;
-		case IState::EnemyState::ATTACK:// 攻撃
-		case IState::EnemyState::ANGRY:// 怒り
-			m_attackFaceModel->Draw(context, *states, world, view, proj);
-			break;
+	case IState::EnemyState::DAMAGE:// ダメージ
+	case IState::EnemyState::IDLING:// アイドリング
+		m_idlingFaceModel->Draw(context, *states, world, view, proj);
+		break;
+	case IState::EnemyState::ATTACK:// 攻撃
+	case IState::EnemyState::ANGRY:// 怒り
+		m_attackFaceModel->Draw(context, *states, world, view, proj);
+		break;
 
 	}
 }

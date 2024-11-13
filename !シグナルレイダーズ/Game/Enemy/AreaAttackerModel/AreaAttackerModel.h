@@ -1,7 +1,6 @@
 /*
 	@file	AreaAttackerModel.h
 	@brief	範囲攻撃敵モデルクラス
-	作成者：くまち
 */
 #pragma once
 #ifndef AREA_ATTACKER_MODEL_DEFINED

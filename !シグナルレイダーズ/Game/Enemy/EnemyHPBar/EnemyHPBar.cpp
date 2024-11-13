@@ -1,7 +1,6 @@
 /*
 	@file	EnemyHPBar.cpp
 	@brief	“GHPBarƒNƒ‰ƒX
-	ì¬ÒF‚­‚Ü‚¿
 */
 #include "pch.h"
 #include <SimpleMath.h>

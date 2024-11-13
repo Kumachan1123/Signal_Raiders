@@ -1,7 +1,6 @@
 /*
 	@file	EnemyHPBar.h
 	@brief	敵HPBarクラス
-	作成者：くまち
 */
 #pragma once
 //前方宣言

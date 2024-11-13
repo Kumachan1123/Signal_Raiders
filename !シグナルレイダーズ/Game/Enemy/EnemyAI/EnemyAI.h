@@ -1,7 +1,6 @@
 /*
 	@file	EnemyAI.h
 	@brief	敵AIクラス
-	作成者：くまち
 */
 #pragma once
 #ifndef ENEMY_AI_DEFINED
@@ -67,10 +66,10 @@ public:
 	~EnemyAI();
 	void Initialize();
 	void Update(float elapsedTime,
-				DirectX::SimpleMath::Vector3& pos,
-				DirectX::SimpleMath::Vector3& playerPos,
-				bool& isHitToPlayer,
-				bool& isHitToPlayerBullet);
+		DirectX::SimpleMath::Vector3& pos,
+		DirectX::SimpleMath::Vector3& playerPos,
+		bool& isHitToPlayer,
+		bool& isHitToPlayerBullet);
 	void ChangeState(IState* newState);
 	// 攻撃ロジックを実装
 

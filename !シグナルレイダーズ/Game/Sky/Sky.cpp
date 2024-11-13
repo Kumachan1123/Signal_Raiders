@@ -1,7 +1,6 @@
 /*
 	@file	Sky.cpp
 	@brief	スカイクラス
-	作成者：くまち
 */
 #include "pch.h"
 #include "Game/Sky/Sky.h"

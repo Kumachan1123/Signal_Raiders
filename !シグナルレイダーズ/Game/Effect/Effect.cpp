@@ -1,7 +1,6 @@
 /*
 	@file	Effect.cpp
 	@brief	エフェクトクラス
-	作成者：くまち
 */
 #include "pch.h"
 #include <VertexTypes.h> 
@@ -34,36 +33,36 @@ Effect::Effect(CommonResources* resources, ParticleType type, DirectX::SimpleMat
 	const wchar_t* texturePath = L"Resources/Textures/effect.png";// テクスチャパスを仮設定
 	switch (m_type)
 	{
-		case ParticleType::ENEMY_DEAD:// 敵死亡エフェクト
-			texturePath = L"Resources/Textures/effect.png";
-			m_frameRows = 4; // 画像の行数
-			m_frameCols = 5; // 画像の列数
-			m_offSetY = 2.0f;// 高さを変える
-			m_vertexMinX = -2.0f;
-			m_vertexMaxX = 2.0f;
-			m_vertexMinY = -2.0f;
-			m_vertexMaxY = 2.0f;
-			break;
-		case ParticleType::ENEMY_HIT:// 敵ヒットエフェクト
-			texturePath = L"Resources/Textures/hit.png";
-			m_frameRows = 2; // 画像の行数
-			m_frameCols = 4; // 画像の列数
-			m_offSetY = 2.0f;// 高さを変える
-			m_vertexMinX = -1.0f;
-			m_vertexMaxX = 1.0f;
-			m_vertexMinY = -1.0f;
-			m_vertexMaxY = 1.0f;
-			break;
-		case ParticleType::ENEMY_SPAWN:// 敵スポーンエフェクト
-			texturePath = L"Resources/Textures/Born.png";
-			m_frameRows = 4; // 画像の行数
-			m_frameCols = 4; // 画像の列数
-			m_offSetY = 2.0f;// 高さを変える
-			m_vertexMinX = -1.0f;
-			m_vertexMaxX = 1.0f;
-			m_vertexMinY = -1.0f;
-			m_vertexMaxY = 1.0f;
-			break;
+	case ParticleType::ENEMY_DEAD:// 敵死亡エフェクト
+		texturePath = L"Resources/Textures/effect.png";
+		m_frameRows = 4; // 画像の行数
+		m_frameCols = 5; // 画像の列数
+		m_offSetY = 2.0f;// 高さを変える
+		m_vertexMinX = -2.0f;
+		m_vertexMaxX = 2.0f;
+		m_vertexMinY = -2.0f;
+		m_vertexMaxY = 2.0f;
+		break;
+	case ParticleType::ENEMY_HIT:// 敵ヒットエフェクト
+		texturePath = L"Resources/Textures/hit.png";
+		m_frameRows = 2; // 画像の行数
+		m_frameCols = 4; // 画像の列数
+		m_offSetY = 2.0f;// 高さを変える
+		m_vertexMinX = -1.0f;
+		m_vertexMaxX = 1.0f;
+		m_vertexMinY = -1.0f;
+		m_vertexMaxY = 1.0f;
+		break;
+	case ParticleType::ENEMY_SPAWN:// 敵スポーンエフェクト
+		texturePath = L"Resources/Textures/Born.png";
+		m_frameRows = 4; // 画像の行数
+		m_frameCols = 4; // 画像の列数
+		m_offSetY = 2.0f;// 高さを変える
+		m_vertexMinX = -1.0f;
+		m_vertexMaxX = 1.0f;
+		m_vertexMinY = -1.0f;
+		m_vertexMaxY = 1.0f;
+		break;
 
 	}
 

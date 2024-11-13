@@ -1,7 +1,6 @@
 /*
 	@file	BossAttack.h
 	@brief	ボス攻撃クラス
-	作成者：くまち
 */
 
 #pragma once

@@ -1,7 +1,6 @@
 /*
 	@file	PlayerBullets.h
 	@brief	プレイヤーの弾全体を管理するクラス
-	作成者：くまち
 */
 #pragma once
 #include "Game/Player/Player.h"

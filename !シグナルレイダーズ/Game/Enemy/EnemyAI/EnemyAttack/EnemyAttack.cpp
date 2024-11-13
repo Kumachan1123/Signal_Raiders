@@ -1,7 +1,6 @@
 /*
 	@file	EnemyAttack.cpp
 	@brief	“GUŒ‚ƒNƒ‰ƒX
-	ì¬ÒF‚­‚Ü‚¿
 */
 #include "pch.h"
 #include <SimpleMath.h>

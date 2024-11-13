@@ -1,7 +1,6 @@
 /*
 	@file	PlayerBullet.h
 	@brief	プレイヤーの弾クラス
-	作成者：くまち
 */
 #pragma once
 //前方宣言

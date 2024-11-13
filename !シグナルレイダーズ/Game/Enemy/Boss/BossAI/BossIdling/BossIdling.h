@@ -1,7 +1,6 @@
 /*
 	@file	BossIdling.h
 	@brief	ボス徘徊クラス
-	作成者：くまち
 */
 #pragma once
 #ifndef BOSS_IDLING_DEFINED

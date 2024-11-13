@@ -1,7 +1,6 @@
 /*
 	@file	EnemyCounter.h
 	@brief	敵カウントクラス
-	作成者：くまち
 */
 #pragma once
 #include "Game/CommonResources.h"

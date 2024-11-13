@@ -1,7 +1,6 @@
 /*
 	@file	Radar.h
 	@brief	レーダークラス
-	作成者：くまち
 */
 #pragma once
 #include "Game/CommonResources.h"

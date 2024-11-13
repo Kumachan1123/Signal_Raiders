@@ -1,7 +1,6 @@
 /*
 	@file	Boss.cpp
 	@brief	ボスクラス
-	作成者：くまち
 */
 #include "pch.h"
 #include <SimpleMath.h>
@@ -80,6 +79,7 @@ void Boss::Initialize(CommonResources* resources, int hp)
 			m_inputLayout.ReleaseAndGetAddressOf()
 		)
 	);
+	// 影用のシェーダーを読み込む
 	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_EnemyShadow.cso");
 	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pixelShader.ReleaseAndGetAddressOf()));
 	// モデルを読み込む準備

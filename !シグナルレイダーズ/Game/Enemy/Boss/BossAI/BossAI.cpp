@@ -1,7 +1,6 @@
 /*
 	@file	BossAI.cpp
 	@brief	“GAIƒNƒ‰ƒX
-	ì¬ÒF‚­‚Ü‚¿
 */
 #include "pch.h"
 #include <SimpleMath.h>

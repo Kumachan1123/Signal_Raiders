@@ -1,7 +1,6 @@
 /*
 	@file	EnemyAI.h
 	@brief	“GAIƒNƒ‰ƒX
-	ì¬ÒF‚­‚Ü‚¿
 */
 #pragma once
 #ifndef BOSS_AI_DEFINED

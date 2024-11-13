@@ -1,7 +1,6 @@
 /*
 	@file	Sky.h
 	@brief	スカイクラス
-	作成者：くまち
 */
 #pragma once
 

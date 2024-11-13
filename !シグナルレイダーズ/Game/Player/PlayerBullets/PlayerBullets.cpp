@@ -1,7 +1,6 @@
 /*
 	@file	PlayerBullets.cpp
 	@brief	プレイヤーの弾全体を管理するクラス
-	作成者：くまち
 */
 #include "pch.h"
 #include "PlayerBullets.h"

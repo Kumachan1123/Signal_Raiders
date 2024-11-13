@@ -1,7 +1,6 @@
 /*
 	@file	EnemyBullets.h
 	@brief	敵の弾全体を管理するクラス
-	作成者：くまち
 */
 #pragma once
 #include "Game/Enemy/Enemy.h"

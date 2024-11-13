@@ -1,7 +1,6 @@
 /*
 	@file	AreaAttacker.h
 	@brief	”ÍˆÍUŒ‚“GƒNƒ‰ƒX
-	ì¬ÒF‚­‚Ü‚¿
 */
 #pragma once
 #include "Game/KumachiLib/AudioManager.h"

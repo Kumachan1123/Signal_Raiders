@@ -1,7 +1,6 @@
 /*
 	@file	AreaAttackerModel.cpp
 	@brief	範囲攻撃敵モデルクラス
-	作成者：くまち
 */
 #include "pch.h"
 #include "Game/Enemy/AreaAttacker/AreaAttacker.h"

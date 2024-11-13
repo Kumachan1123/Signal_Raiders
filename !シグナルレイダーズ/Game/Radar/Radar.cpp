@@ -1,7 +1,6 @@
 /*
 	@file	Radar.cpp
 	@brief	レーダークラス
-	作成者：くまち
 */
 #include "pch.h"
 #include "Radar.h"

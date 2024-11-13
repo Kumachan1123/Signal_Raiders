@@ -1,7 +1,6 @@
 /*
 	@file	Attack.h
 	@brief	“GAttackƒNƒ‰ƒX
-	ì¬ÒF‚­‚Ü‚¿
 */
 
 #pragma once

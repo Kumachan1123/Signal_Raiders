@@ -1,7 +1,6 @@
 /*
 	@file	Enemies.h
 	@brief	“G‚½‚¿ƒNƒ‰ƒX
-	ì¬ÒF‚­‚Ü‚¿
 */
 #pragma once
 #include "Game/Interface/IEnemy.h"

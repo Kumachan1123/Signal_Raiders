@@ -1,7 +1,6 @@
 /*
 	@file	EnemyIdling.h
 	@brief	“GIdlingƒNƒ‰ƒX
-	ì¬ÒF‚­‚Ü‚¿
 */
 #pragma once
 #ifndef ENEMY_IDLING_DEFINED

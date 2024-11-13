@@ -1,7 +1,6 @@
 /*
 	@file	Enemy.h
 	@brief	“GƒNƒ‰ƒX
-	ì¬ÒF‚­‚Ü‚¿
 */
 #pragma once
 #include "Game/KumachiLib/AudioManager.h"

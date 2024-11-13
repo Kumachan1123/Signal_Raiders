@@ -1,7 +1,6 @@
 /*
 	@file	BulletTrail.h
 	@brief	弾の軌跡クラス
-	作成者：くまち
 */
 #pragma once
 //前方宣言

@@ -1,7 +1,6 @@
 /*
 	@file	PlayerController.cpp
 	@brief	プレイヤーコントローラークラス
-	作成者：くまち
 */
 #include "pch.h"
 #include <SimpleMath.h>
@@ -75,7 +74,7 @@ void PlayerController::Initialize(CommonResources* resources)
 }
 
 void PlayerController::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>& kb,
-							  DirectX::SimpleMath::Vector3& Direction, float elapsedTime)
+	DirectX::SimpleMath::Vector3& Direction, float elapsedTime)
 {
 	MoveStop();
 

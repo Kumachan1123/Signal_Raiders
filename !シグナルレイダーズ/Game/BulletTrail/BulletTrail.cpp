@@ -1,7 +1,6 @@
 /*
 	@file	BulletTrail.cpp
 	@brief	’e‚Ì‹OÕƒNƒ‰ƒX
-	ì¬ÒF‚­‚Ü‚¿
 */
 #include "pch.h"
 #include "Game/BulletTrail/BulletTrail.h"

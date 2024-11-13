@@ -1,7 +1,6 @@
 /*
 	@file	BossIdling.cpp
 	@brief	ボス徘徊クラス
-	作成者：くまち
 */
 #include "pch.h"
 #include <SimpleMath.h>
