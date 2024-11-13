@@ -28,7 +28,6 @@ private:
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
-	std::unique_ptr<DirectX::Model> m_model;// 影用のモデル
 	std::unique_ptr<EnemyModel>		m_enemyModel;// 敵のモデル
 	std::unique_ptr<EnemyAI>		m_enemyAI;// 敵のAI
 	std::unique_ptr<EnemyHPBar>		m_HPBar;// 敵のHPバー
@@ -37,11 +36,6 @@ private:
 	// プレイヤーのポインター
 	Player* m_pPlayer;
 	FPS_Camera* m_pCamera;
-	// 影の深度ステンシルステート
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilState_Shadow;
-	// モデルの影
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilState>m_depthStencilState;
 	// 敵の情報
 	DirectX::SimpleMath::Vector3 m_position;		// 座標
 	DirectX::SimpleMath::Vector3 m_velocity;		// 速度
@@ -54,11 +48,11 @@ private:
 	DirectX::SimpleMath::Matrix m_matrix;// マトリクス
 
 	int m_currentHP;//敵の体力
-	bool m_isDead = false;//敵のHPが0になったらTrue
-	bool m_isHit = false;// プレイヤーとの判定
-	bool m_isHitToOtherEnemy = false;// その他の敵との判定
-	bool m_isHitToPlayerBullet = false;// 敵がプレイヤーの弾に当たったか
-	bool m_isBullethit = false;// 敵の弾がプレイヤーに当たったか
+	bool m_isDead;//敵のHPが0になったらTrue
+	bool m_isHit;// プレイヤーとの判定
+	bool m_isHitToOtherEnemy;// その他の敵との判定
+	bool m_isHitToPlayerBullet;// 敵がプレイヤーの弾に当たったか
+	bool m_isBullethit;// 敵の弾がプレイヤーに当たったか
 	float m_attackCooldown;  // 攻撃のクールダウンタイ
 	// プレイヤーに与えるダメージ
 	const float PLAYER_DAMAGE = 1.0f;

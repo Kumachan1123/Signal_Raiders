@@ -37,7 +37,6 @@ private:
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
-	std::unique_ptr<DirectX::Model> m_model;// 影用のモデル
 	std::unique_ptr<BossAI>		m_pBossAI;// AI
 	std::unique_ptr<BossModel>		m_bossModel;//モデル
 	std::unique_ptr<EnemyHPBar>		m_HPBar;// HPバー
@@ -50,8 +49,7 @@ private:
 	// プレイヤーのポインター
 	Player* m_pPlayer;
 	FPS_Camera* m_pCamera;
-	// モデルの影
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
+
 	// 敵の情報
 	DirectX::SimpleMath::Vector3 m_position;		// 座標
 	DirectX::SimpleMath::Vector3 m_velocity;		// 速度

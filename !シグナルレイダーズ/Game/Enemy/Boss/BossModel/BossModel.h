@@ -20,6 +20,8 @@ private:
 
 	std::unique_ptr<DirectX::Model> m_attackFaceModel;//攻撃時の顔
 	std::unique_ptr<DirectX::Model> m_idlingFaceModel;//普段の顔
+	// モデルの影用のピクセルシェーダー
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 
 	// 敵の情報
 	DirectX::SimpleMath::Vector3 m_position;		// 座標

@@ -15,7 +15,7 @@
 #include "DeviceResources.h"
 #include "Libraries/MyLib/DebugString.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
-#include "Libraries/Microsoft/ReadData.h"
+
 #include <cassert>
 #include <random>
 #include <memory>
@@ -34,7 +34,6 @@ Boss::Boss(Player* pPlayer)
 	, m_pBossAI{}
 	, m_HPBar{}
 	, m_time{ 0.0f }
-	, m_pixelShader{}
 	, m_position{}
 	, m_velocity{}
 	, m_rotate{}
@@ -79,14 +78,7 @@ void Boss::Initialize(CommonResources* resources, int hp)
 			m_inputLayout.ReleaseAndGetAddressOf()
 		)
 	);
-	// 影用のシェーダーを読み込む
-	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_EnemyShadow.cso");
-	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pixelShader.ReleaseAndGetAddressOf()));
-	// モデルを読み込む準備
-	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);
-	fx->SetDirectory(L"Resources/Models/Boss");
-	// 影用のモデルを読み込む
-	m_model = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss.cmo", *fx);
+
 	m_bossModel = std::make_unique<BossModel>();
 	m_bossModel->Initialize(m_commonResources);
 	// 敵の体力を設定
@@ -101,11 +93,12 @@ void Boss::Initialize(CommonResources* resources, int hp)
 	//// 弾全体生成
 	m_enemyBullets = std::make_unique<EnemyBullets>(this);
 	m_enemyBullets->Initialize(resources);
-	// 初期位置を設定
-	m_position = Vector3(0.0f, 10.0f, 0.0f);
+
 
 	// プリミティブバッチを作成する
 	m_primitiveBatch = std::make_unique<DirectX::DX11::PrimitiveBatch<DirectX::DX11::VertexPositionColor>>(context);
+	// 初期位置を設定
+	m_position = Vector3(0.0f, 10.0f, 0.0f);
 	// 敵の座標を設定
 	m_pBossAI->SetPosition(m_position);
 
@@ -141,20 +134,6 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	// HPBar描画
 	m_HPBar->Render(view, proj, hpBarPos, m_rotate);
 
-	// ライトの方向
-	Vector3 lightDir = Vector3::UnitY;
-	lightDir.Normalize();
-	// 影行列の元を作る
-	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, 0.01f));
-	enemyWorld *= shadowMatrix;
-	// 影描画
-	m_model->Draw(context, *states, enemyWorld * Matrix::Identity, view, proj, true, [&]()
-		{
-			context->OMSetBlendState(states->Opaque(), nullptr, 0xffffffff);
-			context->OMSetDepthStencilState(states->DepthNone(), 0);
-			context->RSSetState(states->CullClockwise());
-			context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
-		});
 	// 敵の弾描画
 	m_enemyBullets->Render(view, proj);
 

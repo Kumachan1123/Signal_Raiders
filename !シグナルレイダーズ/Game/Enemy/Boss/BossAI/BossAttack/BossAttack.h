@@ -31,9 +31,9 @@ private:
 
 public:
 	//	getter
-	DirectX::SimpleMath::Vector3 GetPosition() { return m_position; }
-	DirectX::SimpleMath::Quaternion GetRotation() { return m_rotation; }
-	float GetCoolTime() { return m_attackCooldown; }
+	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
+	DirectX::SimpleMath::Quaternion GetRotation() const { return m_rotation; }
+	float GetCoolTime() const { return m_attackCooldown; }
 	//  setter
 	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }
 	void SetRotation(DirectX::SimpleMath::Quaternion rot) { m_rotation = rot; }
@@ -46,5 +46,10 @@ public:
 
 	void Initialize() override;
 	void Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool isHitToPlayer) override;
+private:
+	DirectX::SimpleMath::Vector3 CalculateToPlayerVector(const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Vector3& playerPos);
+	void RotateTowardsPlayer(float elapsedTime, const DirectX::SimpleMath::Vector3& toPlayerVector);
+	void MoveTowardsPlayer(float elapsedTime, const DirectX::SimpleMath::Vector3& toPlayerVector, DirectX::SimpleMath::Vector3& pos);
+	void ManageAttackCooldown(float elapsedTime);
 };
 #endif //BOSS_ATTACK_DEFINED

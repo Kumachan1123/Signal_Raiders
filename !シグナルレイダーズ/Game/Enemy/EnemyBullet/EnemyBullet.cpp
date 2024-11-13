@@ -133,22 +133,23 @@ void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	// ‹OÕ•`‰æ
 	m_bulletTrail->CreateBillboard(m_cameraTarget, m_cameraEye, m_cameraUp);
 	m_bulletTrail->Render(view, proj);
-	// ’e•`‰æ
-	m_model->Draw(context, *states, bulletWorld, view, proj);
+
 	// ƒ‰ƒCƒg‚Ì•ûŒü
 	Vector3 lightDir = Vector3::UnitY;
 	lightDir.Normalize();
 	// ‰es—ñ‚ÌŒ³‚ðì‚é
 	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, 0.01f));
-	bulletWorld *= shadowMatrix;
+	shadowMatrix = bulletWorld * shadowMatrix;
 	// ‰e•`‰æ
-	m_model->Draw(context, *states, bulletWorld * Matrix::Identity, view, proj, true, [&]()
+	m_model->Draw(context, *states, shadowMatrix * Matrix::Identity, view, proj, true, [&]()
 		{
 			context->OMSetBlendState(states->Opaque(), nullptr, 0xffffffff);
 			context->OMSetDepthStencilState(states->DepthNone(), 0);
 			context->RSSetState(states->CullClockwise());
 			context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
 		});
+	// ’e•`‰æ
+	m_model->Draw(context, *states, bulletWorld, view, proj);
 	// Šeƒpƒ‰ƒ[ƒ^‚ðÝ’è‚·‚é
 	context->OMSetBlendState(states->Additive(), nullptr, 0xFFFFFFFF);
 	context->OMSetDepthStencilState(states->DepthRead(), 0);

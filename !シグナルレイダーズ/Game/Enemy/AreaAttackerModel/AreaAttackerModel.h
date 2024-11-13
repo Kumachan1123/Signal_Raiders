@@ -21,6 +21,9 @@ private:
 	std::unique_ptr<DirectX::Model> m_angryFaceModel;//おこの時の顔
 	std::unique_ptr<DirectX::Model> m_idlingFaceModel;//普段の顔
 	std::unique_ptr<DirectX::Model> m_damageFaceModel;	// 攻撃を受けた時の顔
+	// モデルの影用のピクセルシェーダー
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
+
 	// 現在のステータス
 	IState::EnemyState m_nowState;
 public:

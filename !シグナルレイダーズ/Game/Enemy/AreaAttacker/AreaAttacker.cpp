@@ -33,9 +33,6 @@ AreaAttacker::AreaAttacker(Player* pPlayer)
 	, m_enemyAI{}
 	, m_HPBar{}
 	, m_bullets{}
-	, m_depthStencilState_Shadow{}
-	, m_pixelShader{}
-	, m_depthStencilState{}
 	, m_position{}
 	, m_velocity{}
 	, m_rotate{}
@@ -43,11 +40,11 @@ AreaAttacker::AreaAttacker(Player* pPlayer)
 	, m_enemyBulletBS{}
 	, m_playerBS{}
 	, m_matrix{}
-	, m_isDead{}
-	, m_isHit{}
-	, m_isHitToOtherEnemy{}
-	, m_isHitToPlayerBullet{}
-	, m_isBullethit{}
+	, m_isDead{ false }
+	, m_isHit{ false }
+	, m_isHitToOtherEnemy{ false }
+	, m_isHitToPlayerBullet{ false }
+	, m_isBullethit{ false }
 	, m_audioManager{ AudioManager::GetInstance() }
 {}
 
@@ -76,13 +73,7 @@ void AreaAttacker::Initialize(CommonResources* resources, int hp)
 			m_inputLayout.ReleaseAndGetAddressOf()
 		)
 	);
-	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_EnemyShadow.cso");
-	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pixelShader.ReleaseAndGetAddressOf()));
-	// ƒ‚ƒfƒ‹‚ğ“Ç‚İ‚Ş€”õ
-	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);
-	fx->SetDirectory(L"Resources/Models/AreaAttacker");
 	// ‰e—p‚Ìƒ‚ƒfƒ‹‚ğ“Ç‚İ‚Ş
-	m_shadowModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/AreaAttacker/AreaAttacker.cmo", *fx);
 	m_pAreaAttackerModel = std::make_unique<AreaAttackerModel>();
 	m_pAreaAttackerModel->Initialize(m_commonResources);
 	// “G‚Ì‘Ì—Í‚ğİ’è
@@ -165,20 +156,7 @@ void AreaAttacker::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 	m_HPBar->Render(view, proj, hpBarPos, m_rotate);
 	// “G•`‰æ	
 	m_pAreaAttackerModel->Render(context, states, enemyWorld, view, proj);
-	// ƒ‰ƒCƒg‚Ì•ûŒü
-	Vector3 lightDir = Vector3::UnitY;
-	lightDir.Normalize();
-	// ‰es—ñ‚ÌŒ³‚ğì‚é
-	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, -0.01f));
-	enemyWorld *= shadowMatrix;
-	// ‰e•`‰æ
-	m_shadowModel->Draw(context, *states, enemyWorld * Matrix::Identity, view, proj, true, [&]()
-		{
-			context->OMSetBlendState(states->Opaque(), nullptr, 0xffffffff);
-			context->OMSetDepthStencilState(m_depthStencilState_Shadow.Get(), 0);
-			context->RSSetState(states->CullClockwise());
-			context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
-		});
+
 	// •`‰æ‚·‚é
 	// Šeƒpƒ‰ƒ[ƒ^‚ğİ’è‚·‚é
 	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);

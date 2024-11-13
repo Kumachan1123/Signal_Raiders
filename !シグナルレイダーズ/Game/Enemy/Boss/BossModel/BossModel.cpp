@@ -8,15 +8,15 @@
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
 #include <SimpleMath.h>
-
+#include "Libraries/Microsoft/ReadData.h"
 
 BossModel::BossModel()
-	:
-	m_commonResources{},
-	m_bodyModel{},
-	m_idlingFaceModel{},
-	m_attackFaceModel{},
-	m_nowState{ IState::EnemyState::IDLING }
+	: m_commonResources{}
+	, m_bodyModel{}
+	, m_pixelShader{}
+	, m_idlingFaceModel{}
+	, m_attackFaceModel{}
+	, m_nowState{ IState::EnemyState::IDLING }
 {}
 
 BossModel::~BossModel() {}
@@ -27,6 +27,9 @@ void BossModel::Initialize(CommonResources* resources)
 	using namespace DirectX::SimpleMath;
 	m_commonResources = resources;
 	auto device = resources->GetDeviceResources()->GetD3DDevice();
+	// 影用のシェーダーを読み込む
+	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_EnemyShadow.cso");
+	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pixelShader.ReleaseAndGetAddressOf()));
 	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);
 	fx->SetDirectory(L"Resources/Models/Boss");
 	// モデルを読み込む（ 胴体、表情差分）
@@ -52,6 +55,20 @@ void BossModel::Render(ID3D11DeviceContext1* context,
 	using namespace DirectX::SimpleMath;
 	m_bodyModel->Draw(context, *states, world, view, proj);// 胴体
 
+	// ライトの方向
+	Vector3 lightDir = Vector3::UnitY;
+	lightDir.Normalize();
+	// 影行列の元を作る
+	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, 0.01f));
+	shadowMatrix = world * shadowMatrix;
+	// 影描画
+	m_bodyModel->Draw(context, *states, shadowMatrix * Matrix::Identity, view, proj, true, [&]()
+		{
+			context->OMSetBlendState(states->Opaque(), nullptr, 0xffffffff);
+			context->OMSetDepthStencilState(states->DepthNone(), 0);
+			context->RSSetState(states->CullClockwise());
+			context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
+		});
 	// 表情差分
 	switch (m_nowState)
 	{

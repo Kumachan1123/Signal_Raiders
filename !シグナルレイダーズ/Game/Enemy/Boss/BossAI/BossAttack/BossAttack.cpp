@@ -14,6 +14,7 @@
 #include <cassert>
 #include <random>
 #include "Game/Template/Template.h"
+#include <cmath>
 
 using namespace DirectX::SimpleMath;
 
@@ -38,17 +39,20 @@ void BossAttack::Initialize()
 	m_rotationSpeed = 3.0f; // 回転速度
 }
 
-void BossAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool isHitToPlayer)
+// プレイヤー方向のベクトルを計算する
+DirectX::SimpleMath::Vector3 BossAttack::CalculateToPlayerVector(const Vector3& pos, const Vector3& playerPos)
 {
-	UNREFERENCED_PARAMETER(isHitToPlayer);
-
-	// プレイヤーへのベクトルを計算
 	Vector3 toPlayerVector = playerPos - pos;
 	if (toPlayerVector.LengthSquared() > 0.0f)
 	{
 		toPlayerVector.Normalize();
 	}
+	return toPlayerVector;
+}
 
+// プレイヤーに向かって回転する
+void BossAttack::RotateTowardsPlayer(float elapsedTime, const Vector3& toPlayerVector)
+{
 	// 現在の前方ベクトルを取得
 	Vector3 forward = Vector3::Transform(Vector3::Forward, m_rotation);
 	if (forward.LengthSquared() > 0.0f)
@@ -57,43 +61,63 @@ void BossAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Di
 	}
 
 	// 内積を使って角度を計算
-	float dot = toPlayerVector.Dot(forward);
-	dot = clamp(dot, -1.0f, 1.0f);
+	float dot = clamp(toPlayerVector.Dot(forward), -1.0f, 1.0f);
 	float angle = std::acos(dot);
 
-	// プレイヤーの方向に向くための回転を計算
-	if (dot > 0.9f)  // ほぼ向いたら回転処理をスキップする（内積が1に近いとき）
+	// 回転処理
+	if (dot < 0.999f)  // プレイヤーの方向を向いていない場合のみ回転
 	{
-		// すでにプレイヤーの方向を向いているので回転を止める
-	}
-	else
-	{
-		// 外積を使って回転方向を決定
 		Vector3 cross = toPlayerVector.Cross(forward);
 		if (cross.y < 0) angle = -angle;
 
-		// プレイヤーの方向に向くための回転を計算
 		Quaternion toPlayerRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, angle);
-
-		// 回転をスムーズに補間する
 		m_rotation = Quaternion::Slerp(m_rotation, toPlayerRotation * m_rotation, elapsedTime * m_rotationSpeed);
 		m_rotation.Normalize();
 	}
+}
 
-	// プレイヤーの方向に移動
+// ボスの位置をプレイヤー方向に更新
+void BossAttack::MoveTowardsPlayer(float elapsedTime, const Vector3& toPlayerVector, Vector3& pos)
+{
 	float moveSpeed = m_velocity.Length() * 2.0f;
 	pos += toPlayerVector * moveSpeed * elapsedTime;
+}
 
-	// 攻撃のクールダウンタイムを管理
+// クールダウンの管理
+void BossAttack::ManageAttackCooldown(float elapsedTime)
+{
 	m_attackCooldown -= elapsedTime;
-	if (m_attackCooldown <= .250f)
+	if (m_attackCooldown <= 0.250f)
 	{
 		m_pBoss->SetState(IState::EnemyState::ANGRY);
-		if (m_attackCooldown <= 0.0f) m_attackCooldown = 1.0f;
+		if (m_attackCooldown <= 0.0f)
+		{
+			m_attackCooldown = 1.0f;  // クールダウンリセット
+		}
 	}
+}
 
+// 更新関数
+void BossAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool isHitToPlayer)
+{
+	UNREFERENCED_PARAMETER(isHitToPlayer);
+
+	// プレイヤーへの方向を計算
+	Vector3 toPlayerVector = CalculateToPlayerVector(pos, playerPos);
+
+	// プレイヤーの方向に回転
+	RotateTowardsPlayer(elapsedTime, toPlayerVector);
+
+	// プレイヤーの方向に移動
+	MoveTowardsPlayer(elapsedTime, toPlayerVector, pos);
+
+	// クールダウンの更新
+	ManageAttackCooldown(elapsedTime);
+
+	// 回転速度を減速し、最小値を確保
+	m_rotationSpeed = std::max(m_rotationSpeed - 0.01f, 0.1f);
+
+	// ボスの状態を更新
 	m_pBoss->SetRotation(m_rotation);
 	m_pBoss->SetVelocity(m_velocity);
-	m_rotationSpeed -= .01f;
-	if (m_rotationSpeed < 0.1f) m_rotationSpeed = 0.1f;
 }

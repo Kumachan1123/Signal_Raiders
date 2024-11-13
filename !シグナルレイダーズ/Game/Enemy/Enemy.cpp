@@ -34,9 +34,6 @@ Enemy::Enemy(Player* pPlayer)
 	, m_enemyAI{}
 	, m_HPBar{}
 	, m_bullets{}
-	, m_depthStencilState_Shadow{}
-	, m_pixelShader{}
-	, m_depthStencilState{}
 	, m_position{}
 	, m_velocity{}
 	, m_rotate{}
@@ -44,11 +41,11 @@ Enemy::Enemy(Player* pPlayer)
 	, m_enemyBulletBS{}
 	, m_playerBS{}
 	, m_matrix{}
-	, m_isDead{}
-	, m_isHit{}
-	, m_isHitToOtherEnemy{}
-	, m_isHitToPlayerBullet{}
-	, m_isBullethit{}
+	, m_isDead{ false }
+	, m_isHit{ false }
+	, m_isHitToOtherEnemy{ false }
+	, m_isHitToPlayerBullet{ false }
+	, m_isBullethit{ false }
 	, m_audioManager{ AudioManager::GetInstance() }
 
 
@@ -80,13 +77,6 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 			m_inputLayout.ReleaseAndGetAddressOf()
 		)
 	);
-	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_EnemyShadow.cso");
-	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pixelShader.ReleaseAndGetAddressOf()));
-	// ÉÇÉfÉãÇì«Ç›çûÇﬁèÄîı
-	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);
-	fx->SetDirectory(L"Resources/Models/Enemy");
-	// âeópÇÃÉÇÉfÉãÇì«Ç›çûÇﬁ
-	m_model = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy.cmo", *fx);
 	m_enemyModel = std::make_unique<EnemyModel>();
 	m_enemyModel->Initialize(m_commonResources);
 	// ìGÇÃëÃóÕÇê›íË
@@ -138,20 +128,7 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	m_HPBar->Render(view, proj, hpBarPos, m_rotate);
 	// ìGï`âÊ	
 	m_enemyModel->Render(context, states, enemyWorld, view, proj);
-	// ÉâÉCÉgÇÃï˚å¸
-	Vector3 lightDir = Vector3::UnitY;
-	lightDir.Normalize();
-	// âeçsóÒÇÃå≥ÇçÏÇÈ
-	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, -0.01f));
-	enemyWorld *= shadowMatrix;
-	// âeï`âÊ
-	m_model->Draw(context, *states, enemyWorld * Matrix::Identity, view, proj, true, [&]()
-		{
-			context->OMSetBlendState(states->Opaque(), nullptr, 0xffffffff);
-			context->OMSetDepthStencilState(m_depthStencilState_Shadow.Get(), 0);
-			context->RSSetState(states->CullClockwise());
-			context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
-		});
+
 	// ï`âÊÇ∑ÇÈ
 	// äeÉpÉâÉÅÅ[É^Çê›íËÇ∑ÇÈ
 	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
@@ -232,6 +209,3 @@ void Enemy::CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::BoundingSph
 	A.Center = m_position;
 	A.Center.y -= 2.0f;
 }
-
-
-
