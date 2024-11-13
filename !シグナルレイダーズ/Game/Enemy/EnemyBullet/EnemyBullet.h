@@ -59,7 +59,8 @@ private:
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
-
+	// モデルの影
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 public:
 	EnemyBullet(float size);
 	~EnemyBullet();

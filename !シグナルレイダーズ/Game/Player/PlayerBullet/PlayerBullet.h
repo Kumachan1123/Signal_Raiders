@@ -33,6 +33,8 @@ private:
 	DirectX::SimpleMath::Matrix m_worldMatrix;
 	// 「弾」境界ボックス
 	DirectX::BoundingSphere m_boundingSphere;
+	// モデルの影
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 
 	// 弾の自転
 	float m_angle;

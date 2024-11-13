@@ -13,7 +13,7 @@
 #include "Libraries/MyLib/MemoryLeakDetector.h"
 #include <cassert>
 #include <Libraries/Microsoft/DebugDraw.h>
-
+#include "Libraries/Microsoft/ReadData.h"
 //-------------------------------------------------------------------
 // コンストラクタ
 //-------------------------------------------------------------------
@@ -59,22 +59,26 @@ void PlayerBullet::Initialize(CommonResources* resources)
 	m_bulletTrail = std::make_unique<BulletTrail>(ParticleUtility::Type::PLAYERTRAIL, SIZE);
 	m_bulletTrail->Initialize(m_commonResources);
 
+	// 影用のピクセルシェーダー
+	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_EnemyShadow.cso");
+	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pixelShader.ReleaseAndGetAddressOf()));
+
 	// モデルを読み込む準備
 	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);
 	fx->SetDirectory(L"Resources/Models");
 	// モデルを読み込む
 	m_model = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Bullet.cmo", *fx);
 	m_model->UpdateEffects([&](DirectX::IEffect* effect)
-						   {
-							   // ベイシックエフェクトを取得する
-							   auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);
+		{
+			// ベイシックエフェクトを取得する
+			auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);
 
-							   // ディフューズカラーを設定する
-							   basicEffect->SetDiffuseColor(DirectX::Colors::SkyBlue);
+			// ディフューズカラーを設定する
+			basicEffect->SetDiffuseColor(DirectX::Colors::SkyBlue);
 
-							   // エミッションカラーを設定する
-							   basicEffect->SetEmissiveColor(DirectX::Colors::Cyan);
-						   });
+			// エミッションカラーを設定する
+			basicEffect->SetEmissiveColor(DirectX::Colors::Cyan);
+		});
 
 
 	m_direction = Vector3::Zero;
@@ -134,8 +138,24 @@ void PlayerBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 	// 軌跡描画
 	m_bulletTrail->CreateBillboard(m_cameraTarget, m_cameraEye, m_cameraUp);
 	m_bulletTrail->Render(view, proj);
+
+
 	// 弾描画
 	m_model->Draw(context, *states, bulletWorld, view, proj);
+	// ライトの方向
+	Vector3 lightDir = Vector3::UnitY;
+	lightDir.Normalize();
+	// 影行列の元を作る
+	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, 0.01f));
+	bulletWorld *= shadowMatrix;
+	// 影描画
+	m_model->Draw(context, *states, bulletWorld * Matrix::Identity, view, proj, true, [&]()
+		{
+			context->OMSetBlendState(states->Opaque(), nullptr, 0xffffffff);
+			context->OMSetDepthStencilState(states->DepthNone(), 0);
+			context->RSSetState(states->CullClockwise());
+			context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
+		});
 	// 各パラメータを設定する
 	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
 	context->OMSetDepthStencilState(states->DepthRead(), 0);

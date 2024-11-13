@@ -35,9 +35,7 @@ Boss::Boss(Player* pPlayer)
 	, m_pBossAI{}
 	, m_HPBar{}
 	, m_time{ 0.0f }
-	, m_depthStencilState_Shadow{}
 	, m_pixelShader{}
-	, m_depthStencilState{}
 	, m_position{}
 	, m_velocity{}
 	, m_rotate{}

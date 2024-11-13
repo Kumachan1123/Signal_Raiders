@@ -6,6 +6,7 @@
 #include "Libraries/MyLib/DebugString.h"
 #include "Libraries/MyLib/InputManager.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
+#include "Libraries/Microsoft/ReadData.h"
 #include <cassert>
 #include <Libraries/Microsoft/DebugDraw.h>
 //-------------------------------------------------------------------
@@ -55,6 +56,10 @@ void EnemyBullet::Initialize(CommonResources* resources, BulletType type)
 			m_inputLayout.ReleaseAndGetAddressOf()
 		)
 	);
+	// 影用のピクセルシェーダー
+	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_EnemyShadow.cso");
+	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pixelShader.ReleaseAndGetAddressOf()));
+
 	// モデルを読み込む準備
 	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);
 	fx->SetDirectory(L"Resources/Models");
@@ -130,6 +135,20 @@ void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	m_bulletTrail->Render(view, proj);
 	// 弾描画
 	m_model->Draw(context, *states, bulletWorld, view, proj);
+	// ライトの方向
+	Vector3 lightDir = Vector3::UnitY;
+	lightDir.Normalize();
+	// 影行列の元を作る
+	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, 0.01f));
+	bulletWorld *= shadowMatrix;
+	// 影描画
+	m_model->Draw(context, *states, bulletWorld * Matrix::Identity, view, proj, true, [&]()
+		{
+			context->OMSetBlendState(states->Opaque(), nullptr, 0xffffffff);
+			context->OMSetDepthStencilState(states->DepthNone(), 0);
+			context->RSSetState(states->CullClockwise());
+			context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
+		});
 	// 各パラメータを設定する
 	context->OMSetBlendState(states->Additive(), nullptr, 0xFFFFFFFF);
 	context->OMSetDepthStencilState(states->DepthRead(), 0);

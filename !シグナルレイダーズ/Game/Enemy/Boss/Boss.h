@@ -51,11 +51,8 @@ private:
 	// プレイヤーのポインター
 	Player* m_pPlayer;
 	FPS_Camera* m_pCamera;
-	// 影の深度ステンシルステート
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilState_Shadow;
 	// モデルの影
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilState>m_depthStencilState;
 	// 敵の情報
 	DirectX::SimpleMath::Vector3 m_position;		// 座標
 	DirectX::SimpleMath::Vector3 m_velocity;		// 速度
