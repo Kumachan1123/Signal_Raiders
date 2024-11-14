@@ -31,29 +31,29 @@ private:
 	// ボス
 	std::unique_ptr<Boss> m_boss;
 	// ステージ番号（0から4をプレイシーンから参照）
-	int m_stageNumber = 0;
+	int m_stageNumber;
 	// 敵生成フラグ
-	bool m_isEnemyBorn = false;
+	bool m_isEnemyBorn;
 	// 敵生成済み
-	bool m_isBorned = false;
+	bool m_isBorned;
 	// プレイヤーと敵の当たり判定
-	bool m_isHitPlayerToEnemy = false;
+	bool m_isHitPlayerToEnemy;
 	// 敵の数
-	int m_enemyIndex = 0;
+	int m_enemyIndex;
 	// 敵の生成上限
-	int m_enemyMax = 0;
+	int m_enemyMax;
 	// 敵の生成間隔
-	float m_enemyBornInterval = 0.0f;
+	float m_enemyBornInterval;
 	// 敵の生成タイミングを管理
-	float m_enemyBornTimer = 0.0f;
+	float m_enemyBornTimer;
 	// 敵の生成開始時間
-	float m_startTime = 0.0f;
+	float m_startTime;
 	// ボス生成フラグ
-	bool m_isBossBorn = false;
+	bool m_isBossBorn;
 	// ボス生成済み
-	bool m_isBossBorned = false;
+	bool m_isBossBorned;
 	// ボス生存フラグ
-	bool m_isBossAlive = true;
+	bool m_isBossAlive;
 	// ボスの体力
 	int m_bossHP;
 	// wi-fi
@@ -94,7 +94,7 @@ public:
 	// Setter
 	void SetVolume(float volume) { m_SEVolume = volume; }// 音量取得
 	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; }// ステージ番号
-	void SetWall(Wall* pWall) { m_pWall = pWall; };// 壁
+	void SetWall(Wall* pWall) { m_pWall = pWall; };// 壁のポインター
 private:
 	// 敵の生成上限設定
 	void SetEnemyMax();

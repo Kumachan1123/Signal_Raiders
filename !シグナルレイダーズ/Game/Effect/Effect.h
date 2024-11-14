@@ -12,6 +12,7 @@ public:
 	enum class ParticleType
 	{
 		ENEMY_DEAD = 0,
+		BOSS_DEAD,
 		ENEMY_HIT,
 		ENEMY_SPAWN,
 		NONE
@@ -75,10 +76,10 @@ public:
 public:
 
 	Effect(CommonResources* resources,
-		   ParticleType type,
-		   DirectX::SimpleMath::Vector3 playPos,
-		   float scale,
-		   DirectX::SimpleMath::Matrix world);// Ä¶ˆÊ’u‚ğó‚¯æ‚é
+		ParticleType type,
+		DirectX::SimpleMath::Vector3 playPos,
+		float scale,
+		DirectX::SimpleMath::Matrix world);// Ä¶ˆÊ’u‚ğó‚¯æ‚é
 	~Effect();
 	void Update(float elapsedTime);
 	void Render(ID3D11DeviceContext1* context, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);

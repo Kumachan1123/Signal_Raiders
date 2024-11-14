@@ -20,7 +20,7 @@ Effect::Effect(CommonResources* resources, ParticleType type, DirectX::SimpleMat
 	, m_world{ world }
 	, m_isPlaying{ true }
 	, m_anim{ 0 }
-	, m_animSpeed{ 30 }
+	, m_animSpeed{ 30.0f }
 	, m_elapsedTime{ 0.0f }
 	, m_frameRows{}
 	, m_frameCols{}
@@ -42,6 +42,17 @@ Effect::Effect(CommonResources* resources, ParticleType type, DirectX::SimpleMat
 		m_vertexMaxX = 2.0f;
 		m_vertexMinY = -2.0f;
 		m_vertexMaxY = 2.0f;
+		break;
+	case ParticleType::BOSS_DEAD:// ボス死亡エフェクト
+		texturePath = L"Resources/Textures/BossDead.png";// 保留
+		m_frameRows = 5; // 画像の行数
+		m_frameCols = 5; // 画像の列数
+		m_offSetY = 2.0f;// 高さを変える
+		m_vertexMinX = -2.0f;
+		m_vertexMaxX = 2.0f;
+		m_vertexMinY = -2.0f;
+		m_vertexMaxY = 2.0f;
+		m_animSpeed = 20.0f;// アニメーションスピードを遅くする
 		break;
 	case ParticleType::ENEMY_HIT:// 敵ヒットエフェクト
 		texturePath = L"Resources/Textures/hit.png";

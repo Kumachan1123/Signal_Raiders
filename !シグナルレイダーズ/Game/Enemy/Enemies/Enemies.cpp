@@ -22,23 +22,29 @@ using namespace DirectX::SimpleMath;
 // コンストラクタ
 //---------------------------------------------------------
 Enemies::Enemies(CommonResources* commonResources)
-	:
-	m_commonResources{ commonResources },
-	m_enemies{},
-	m_boss{},
-	m_isEnemyBorn{ false },
-	m_isBorned{ false },
-	m_enemyIndex{ 0 },
-	m_stageNumber{ 0 },
-	m_enemyMax{ 0 },
-	m_enemyBornInterval{ 0.5f },
-	m_enemyBornTimer{ 0.0f },
-	m_bossHP{ 100 },
-	m_bossBulletType{ Boss::BossBulletType::NORMAL },
-	m_startTime{ 0.0f },
-	m_pWifi{ nullptr },
-	m_pPlayer{ nullptr },
-	m_audioManager{ AudioManager::GetInstance() }
+	: m_commonResources{ commonResources }
+	, m_enemies{}
+	, m_boss{}
+	, m_isEnemyBorn{ false }
+	, m_isBorned{ false }
+	, m_isHitPlayerToEnemy{ false }
+	, m_isBossBorn{ false }
+	, m_isBossBorned{ false }
+	, m_isBossAlive{ true }
+	, m_enemyIndex{ 0 }
+	, m_stageNumber{ 0 }
+	, m_enemyMax{ 0 }
+	, m_enemyBornInterval{ 0.5f }
+	, m_enemyBornTimer{ 0.0f }
+	, m_bossHP{ 100 }
+	, m_bossBulletType{ Boss::BossBulletType::NORMAL }
+	, m_startTime{ 0.0f }
+	, m_pWifi{ nullptr }
+	, m_pWall{ nullptr }
+	, m_pPlayer{ nullptr }
+	, m_audioManager{ AudioManager::GetInstance() }
+	, m_SEVolume{ 0.0f }
+
 {
 	// Wi-Fiを初期化する
 	m_pWifi = std::make_unique<Wifi>();
@@ -374,7 +380,7 @@ void Enemies::HandleEnemyDeath(std::unique_ptr<IEnemy>& enemy)
 	if (auto boss = dynamic_cast<Boss*>(enemy.get()))
 	{
 		m_effect.push_back(std::make_unique<Effect>(m_commonResources,
-			Effect::ParticleType::ENEMY_DEAD,
+			Effect::ParticleType::BOSS_DEAD,
 			enemy->GetPosition(),
 			10.0f,
 			enemy->GetMatrix()));
