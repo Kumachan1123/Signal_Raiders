@@ -380,7 +380,7 @@ void Enemies::HandleEnemyDeath(std::unique_ptr<IEnemy>& enemy)
 	if (auto boss = dynamic_cast<Boss*>(enemy.get()))
 	{
 		m_effect.push_back(std::make_unique<Effect>(m_commonResources,
-			Effect::ParticleType::BOSS_DEAD,
+			Effect::ParticleType::ENEMY_DEAD,
 			enemy->GetPosition(),
 			10.0f,
 			enemy->GetMatrix()));
