@@ -53,8 +53,8 @@ void ResultMenu::Initialize(CommonResources* resources, int width, int height)
 		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y + 250)
 		, SimpleMath::Vector2(.5, .5)
 		, kumachi::ANCHOR::MIDDLE_CENTER);
-	// 　「おわる」を読み込む
-	Add(L"Resources/Textures/ToTitle.png"
+	// 　「ステージをえらぶ」を読み込む
+	Add(L"Resources/Textures/ToStageSelect.png"
 		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y + 400)
 		, SimpleMath::Vector2(.5, .5)
 		, kumachi::ANCHOR::MIDDLE_CENTER);
@@ -126,10 +126,10 @@ void ResultMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position,
 	std::unique_ptr<UI> userInterface = std::make_unique<UI>();
 	//  指定された画像を表示するためのアイテムを作成する
 	userInterface->Create(m_pDR
-						  , path
-						  , position
-						  , scale
-						  , anchor);
+		, path
+		, position
+		, scale
+		, anchor);
 	userInterface->SetWindowSize(m_windowWidth, m_windowHeight);
 
 	//  アイテムを新しく追加
@@ -138,10 +138,10 @@ void ResultMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position,
 	//  背景用のウィンドウ画像も追加する
 	std::unique_ptr<UI> base = std::make_unique<UI>();
 	base->Create(m_pDR
-				 , m_pSelectTexturePath
-				 , position
-				 , scale
-				 , anchor);
+		, m_pSelectTexturePath
+		, position
+		, scale
+		, anchor);
 	base->SetWindowSize(m_windowWidth, m_windowHeight);
 
 	//  背景用のアイテムも新しく追加する
