@@ -25,7 +25,7 @@ private:
 	DirectX::SimpleMath::Vector3 m_scale;//サイズ
 	float m_attackCooldown;  // 攻撃のクールダウンタイム
 	float m_rotationSpeed;//回転速度
-	const float ROTATION_SPEED = 3.0f;// 回転速度
+	const float ROTATION_SPEED = 1.5f;// 回転速度
 	const float RANDOM_MAX = 2.0f;// ランダムの最大値
 	const float RANDOM_MIN = 0.5f;// ランダムの最小値
 	const float ATTACK_INTERVAL = 1.0f; // 攻撃間隔

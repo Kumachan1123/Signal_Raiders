@@ -21,6 +21,8 @@ private:
 
 	//UŒ‚
 	std::unique_ptr<BossAttack> m_pBossAttack;
+	//‘Ò‹@
+	std::unique_ptr<BossIdling> m_pBossIdling;
 	// Œ»İ‚Ìó‘Ô
 	IState* m_currentState;
 	IState::EnemyState m_enemyState;

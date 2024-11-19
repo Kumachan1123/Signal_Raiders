@@ -29,6 +29,7 @@ Boss::Boss(Player* pPlayer)
 	, m_enemyBS()
 	, m_commonResources{}
 	, m_currentHP{}
+	, m_maxHP{}
 	, m_attackCooldown{ 3.0f }
 	, m_bossModel{}
 	, m_pBossAI{}
@@ -83,6 +84,7 @@ void Boss::Initialize(CommonResources* resources, int hp)
 	m_bossModel->Initialize(m_commonResources);
 	// “G‚Ì‘Ì—Í‚ğİ’è
 	m_currentHP = hp;
+	m_maxHP = hp;
 	// HPBar¶¬
 	m_HPBar = std::make_unique<EnemyHPBar>();
 	m_HPBar->SetEnemyHP(m_currentHP);
@@ -125,6 +127,8 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	Matrix enemyWorld = Matrix::CreateScale(m_pBossAI->GetScale() * 2);
 	// “G‚ÌÀ•W‚ğİ’è
 	enemyWorld *= world;
+	m_bossModel->SetPosition(m_position);
+	m_bossModel->SetRotation(m_pBossAI->GetRotation());
 
 	// “G•`‰æ	
 	m_bossModel->Render(context, states, enemyWorld, view, proj);
@@ -185,6 +189,8 @@ void Boss::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 	BulletPotsitioning();
 	// HPBarXV
 	m_HPBar->Update(elapsedTime, m_currentHP);
+	if (m_currentHP <= m_maxHP / 2)m_bossModel->SetSheild(true);
+	else m_bossModel->SetSheild(false);
 	m_isDead = m_HPBar->GetIsDead();
 }
 

@@ -20,19 +20,17 @@ private:
 
 	std::unique_ptr<DirectX::Model> m_attackFaceModel;//攻撃時の顔
 	std::unique_ptr<DirectX::Model> m_idlingFaceModel;//普段の顔
+
+	std::unique_ptr < DirectX::Model> m_sheildModel;//シールド
 	// モデルの影用のピクセルシェーダー
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 
-	// 敵の情報
-	DirectX::SimpleMath::Vector3 m_position;		// 座標
-	DirectX::SimpleMath::Vector3 m_velocity;		// 速度
-	DirectX::SimpleMath::Vector3 m_rotate;		// 回転
-	DirectX::SimpleMath::Vector3 m_accele;		// 加速度
-	DirectX::SimpleMath::Vector3 m_nowScale;		// 現在スケール
-	DirectX::SimpleMath::Vector3 m_startScale;		// 初期スケール
-	DirectX::SimpleMath::Vector3 m_endScale;		// 最終スケール
-	DirectX::SimpleMath::Quaternion m_rotation; // クォータニオン (追加)
+	DirectX::SimpleMath::Vector3 m_sheildSize;
+	DirectX::SimpleMath::Vector3 m_sheildPosition;
+	DirectX::SimpleMath::Quaternion m_sheildRotation;
 	IState::EnemyState m_nowState;
+	// シールド展開フラグ
+	bool m_isSheild;
 public:
 	// 初期ステータスを設定
 	BossModel();
@@ -44,6 +42,10 @@ public:
 		DirectX::SimpleMath::Matrix world,
 		DirectX::SimpleMath::Matrix view,
 		DirectX::SimpleMath::Matrix proj);
+
+	void SetSheild(bool isSheild) { m_isSheild = isSheild; }
+	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_sheildPosition = pos; }
+	void SetRotation(DirectX::SimpleMath::Quaternion rot) { m_sheildRotation = rot; }
 
 };
 #endif //BOSS_MODEL_DEFINED

@@ -78,6 +78,7 @@ private:
 	float m_time;
 	// 敵のステータス
 	int m_currentHP;//敵の体力
+	int m_maxHP;//敵の最大体力
 	bool m_isDead = false;//敵のHPが0になったらTrue
 	bool m_isHit = false;// プレイヤーとの判定
 	bool m_isHitToOtherEnemy = false;// その他の敵との判定

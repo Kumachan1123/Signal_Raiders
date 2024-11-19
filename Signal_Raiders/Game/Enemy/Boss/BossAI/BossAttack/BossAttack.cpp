@@ -21,10 +21,12 @@ using namespace DirectX::SimpleMath;
 // コンストラクタ
 BossAttack::BossAttack(BossAI* pBoss)
 	: m_pBoss(pBoss)
-	, m_attackCooldown{ ATTACK_INTERVAL }
-	, m_rotationSpeed{ ROTATION_SPEED }
+	, m_attackCooldown{  }
+	, m_rotationSpeed{  }
 	, m_commonResources{}
 {
+	m_attackCooldown = ATTACK_INTERVAL;
+	m_rotationSpeed = ROTATION_SPEED;
 }
 
 // デストラクタ
@@ -59,7 +61,7 @@ void BossAttack::RotateTowardsPlayer(float elapsedTime, const Vector3& toPlayerV
 		forward.Normalize();
 	}
 
-	// 内積を使って角度を計算
+	// atan2を使って角度を計算
 	float dot = clamp(toPlayerVector.Dot(forward), -1.0f, 1.0f);
 	float angle = std::acos(dot);
 

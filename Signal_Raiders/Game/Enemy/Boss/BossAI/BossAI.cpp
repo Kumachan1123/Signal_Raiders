@@ -17,6 +17,7 @@ BossAI::BossAI()
 	: m_currentState(nullptr), m_rotationSpeed(0.5f), m_attackCooldown(0.0f), m_pBossAttack(nullptr), m_enemyState(IState::EnemyState::IDLING)
 {
 	m_pBossAttack = std::make_unique<BossAttack>(this);
+	m_pBossIdling = std::make_unique<BossIdling>(this);
 
 }
 // デストラクタ
