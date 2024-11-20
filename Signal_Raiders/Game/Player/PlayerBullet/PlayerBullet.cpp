@@ -56,7 +56,7 @@ void PlayerBullet::Initialize(CommonResources* resources)
 		)
 	);
 	// 弾の軌道ポインター
-	m_bulletTrail = std::make_unique<BulletTrail>(ParticleUtility::Type::PLAYERTRAIL, SIZE);
+	m_bulletTrail = std::make_unique<Particle>(ParticleUtility::Type::PLAYERTRAIL, SIZE);
 	m_bulletTrail->Initialize(m_commonResources);
 
 	// 影用のピクセルシェーダー
@@ -144,11 +144,11 @@ void PlayerBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, 0.01f));
 	shadowMatrix = bulletWorld * shadowMatrix;
 	// 影描画
-	m_model->Draw(context, *states, shadowMatrix * Matrix::Identity, view, proj, true, [&]()
+	m_model->Draw(context, *states, shadowMatrix, view, proj, true, [&]()
 		{
 			context->OMSetBlendState(states->Opaque(), nullptr, 0xffffffff);
-			context->OMSetDepthStencilState(states->DepthDefault(), 0);
-			context->RSSetState(states->CullClockwise());
+			context->OMSetDepthStencilState(states->DepthNone(), 0);
+			context->RSSetState(states->CullNone());
 			context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
 		});
 	// 弾描画

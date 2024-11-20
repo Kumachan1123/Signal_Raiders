@@ -72,7 +72,7 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 	if (mtracker->GetLastState().rightButton && m_isCheat == false)
 	{
 		m_isCheat = true;
-		for (auto& enemy : m_pEnemies->GetEnemies())enemy->SetEnemyHP(0);
+		for (auto& enemy : m_pEnemies->GetEnemies())enemy->SetEnemyHP(1000);
 	}
 	// 右クリックされてないときはチートコマンドを無効にする
 	if (!mtracker->GetLastState().rightButton)

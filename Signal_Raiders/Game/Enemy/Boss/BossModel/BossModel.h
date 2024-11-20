@@ -7,7 +7,7 @@
 #define BOSS_MODEL_DEFINED
 #include "Game/CommonResources.h"
 #include "Game/Interface/IState.h"
-class Enemy;
+class Boss;
 class CommonResources;
 class IState;
 class BossModel
@@ -42,10 +42,5 @@ public:
 		DirectX::SimpleMath::Matrix world,
 		DirectX::SimpleMath::Matrix view,
 		DirectX::SimpleMath::Matrix proj);
-
-	void SetSheild(bool isSheild) { m_isSheild = isSheild; }
-	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_sheildPosition = pos; }
-	void SetRotation(DirectX::SimpleMath::Quaternion rot) { m_sheildRotation = rot; }
-
 };
 #endif //BOSS_MODEL_DEFINED

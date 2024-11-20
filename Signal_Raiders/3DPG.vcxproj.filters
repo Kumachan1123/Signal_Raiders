@@ -261,7 +261,7 @@
     <ClInclude Include="Game\Player\Player.h" />
     <ClInclude Include="Game\Player\PlayerBullet\PlayerBullet.h" />
     <ClInclude Include="Game\Player\PlayerBullets\PlayerBullets.h" />
-    <ClInclude Include="Game\BulletTrail\BulletTrail.h" />
+    <ClInclude Include="Game\Particle\Particle.h" />
     <ClInclude Include="Game\ParticleUtility\ParticleUtility.h" />
     <ClInclude Include="Game\Enemy\EnemyBullets\EnemyBullets.h" />
     <ClInclude Include="Game\Stage\Stage.h" />
@@ -289,6 +289,7 @@
     <ClInclude Include="Game\UI\UI.h" />
     <ClInclude Include="Game\Enemy\AreaAttacker\AreaAttacker.h" />
     <ClInclude Include="Game\Enemy\AreaAttackerModel\AreaAttackerModel.h" />
+    <ClInclude Include="Game\Enemy\Boss\BossSheild\BossSheild.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -401,7 +402,7 @@
     <ClCompile Include="Game\Player\Player.cpp" />
     <ClCompile Include="Game\Player\PlayerBullet\PlayerBullet.cpp" />
     <ClCompile Include="Game\Player\PlayerBullets\PlayerBullets.cpp" />
-    <ClCompile Include="Game\BulletTrail\BulletTrail.cpp" />
+    <ClCompile Include="Game\Particle\Particle.cpp" />
     <ClCompile Include="Game\ParticleUtility\ParticleUtility.cpp" />
     <ClCompile Include="Game\Enemy\EnemyBullets\EnemyBullets.cpp" />
     <ClCompile Include="Game\Stage\Stage.cpp" />
@@ -428,6 +429,7 @@
     <ClCompile Include="Game\UI\UI.cpp" />
     <ClCompile Include="Game\Enemy\AreaAttacker\AreaAttacker.cpp" />
     <ClCompile Include="Game\Enemy\AreaAttackerModel\AreaAttackerModel.cpp" />
+    <ClCompile Include="Game\Enemy\Boss\BossSheild\BossSheild.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -451,6 +453,7 @@
     <None Include="HLSL\Menu\Menu.hlsli" />
     <None Include="ClassDiagram.cd" />
     <None Include="ClassDiagram1.cd" />
+    <None Include="HLSL\Particle\Particle.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\EnemyShadow\PS_EnemyShadow.hlsl">
@@ -472,5 +475,8 @@
     <FxCompile Include="HLSL\CRT\VS_CRT.hlsl" />
     <FxCompile Include="HLSL\Damage\PS_Damage.hlsl" />
     <FxCompile Include="HLSL\Damage\VS_Damage.hlsl" />
+    <FxCompile Include="HLSL\Particle\GS_Particle.hlsl" />
+    <FxCompile Include="HLSL\Particle\PS_Particle.hlsl" />
+    <FxCompile Include="HLSL\Particle\VS_Particle.hlsl" />
   </ItemGroup>
 </Project>

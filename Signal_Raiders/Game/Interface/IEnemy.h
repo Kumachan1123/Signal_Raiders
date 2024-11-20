@@ -39,6 +39,9 @@ public:
 	virtual void SetPlayerHP(float& HP) const = 0;
 	virtual void SetBulletHitToPlayer(bool hit) = 0;
 	virtual void SetHitToPlayerBullet(bool hit) = 0;
+	virtual void SetCameraEye(DirectX::SimpleMath::Vector3 eye) = 0;
+	virtual void SetCameraTarget(DirectX::SimpleMath::Vector3 target) = 0;
+	virtual void SetCameraUp(DirectX::SimpleMath::Vector3 up) = 0;
 public:
 	IEnemy(Player* pPlayer) : m_pPlayer(pPlayer) {}
 	virtual ~IEnemy() = default;

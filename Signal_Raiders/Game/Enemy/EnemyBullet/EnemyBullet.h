@@ -7,7 +7,7 @@
 #ifndef ENEMY_BULLET_DEFINED
 #define ENEMY_BULLET_DEFINED
 #include "Game/CommonResources.h"
-#include "Game/BulletTrail/BulletTrail.h"
+#include "Game/Particle/Particle.h"
 
 class CommonResources;
 
@@ -30,7 +30,7 @@ public:
 	const int DAMAGE = 10;						// 敵に与えるダメージ
 	// ジオメトリックプリミティブ弾
 	std::unique_ptr<DirectX::Model> m_model;
-	const float BULLET_LIFETIME = 20.0f;				// 寿命
+	const float BULLET_LIFETIME = 10.0f;				// 寿命
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
@@ -52,7 +52,7 @@ private:
 	// 弾の速度
 	float m_bulletSpeed;
 	// 弾の軌道
-	std::unique_ptr<BulletTrail> m_bulletTrail;
+	std::unique_ptr<Particle> m_bulletTrail;
 	// 	//デバッグ用
 	// ベーシックエフェクト
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;

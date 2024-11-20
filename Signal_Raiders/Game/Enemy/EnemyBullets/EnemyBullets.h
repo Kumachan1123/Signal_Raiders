@@ -6,13 +6,13 @@
 #include "Game/Enemy/Enemy.h"
 #include "Game/Interface/IEnemy.h"
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
-#include "Game/BulletTrail/BulletTrail.h"
+#include "Game/Particle/Particle.h"
 #include "Game/CommonResources.h"
 #include "Game/Player/Player.h"
 
 class CommonResources;
 class EnemyBullet;
-class BulletTrail;
+class Particle;
 class Player;
 class Enemy;
 class IEnemy;
@@ -26,7 +26,7 @@ public:
 	IEnemy* m_pEnemy;// 敵のポインター
 	bool m_isBullethit = false;// 敵の弾がプレイヤーに当たったか
 	std::vector<std::unique_ptr<EnemyBullet>> m_bullets; // 弾のリスト
-	std::vector<std::unique_ptr<BulletTrail>> m_bulletTrails; // 弾の軌跡リスト
+	std::vector<std::unique_ptr<Particle>> m_bulletTrails; // 弾の軌跡リスト
 	DirectX::SimpleMath::Vector3 m_position;		// 敵の座標
 	// 関数
 	EnemyBullets(IEnemy* pEnemy);

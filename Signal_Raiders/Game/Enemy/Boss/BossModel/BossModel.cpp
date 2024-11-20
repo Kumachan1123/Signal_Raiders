@@ -3,7 +3,7 @@
 	@brief	敵モデルクラス
 */
 #include "pch.h"
-#include "Game/Enemy/Enemy.h"
+#include "Game/Enemy/Boss/Boss.h"
 #include "BossModel.h"
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
@@ -39,7 +39,7 @@ void BossModel::Initialize(CommonResources* resources)
 	m_bodyModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss.cmo", *fx);
 	m_idlingFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss_Face_Idling.cmo", *fx);
 	m_attackFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss_Face_Attack.cmo", *fx);
-	m_sheildModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss_Barrier.cmo", *fx);
+	//m_sheildModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss_Barrier.cmo", *fx);
 }
 void BossModel::Update(float elapsedTime, IState::EnemyState State)
 {
@@ -47,8 +47,8 @@ void BossModel::Update(float elapsedTime, IState::EnemyState State)
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	m_nowState = State;
-	if (m_isSheild)
-		m_sheildSize = Vector3::SmoothStep(m_sheildSize, Vector3::One, 0.2f);
+	//if (m_isSheild)
+	//	m_sheildSize = Vector3::SmoothStep(m_sheildSize, Vector3::One, 0.2f);
 }
 void BossModel::Render(ID3D11DeviceContext1* context,
 	DirectX::DX11::CommonStates* states,
@@ -74,19 +74,19 @@ void BossModel::Render(ID3D11DeviceContext1* context,
 			context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
 		});
 	m_bodyModel->Draw(context, *states, world, view, proj);// 胴体
-	if (m_isSheild)
-	{
-		// シールド用のスケール行列を適用
-		Matrix shieldWorld = Matrix::CreateScale(m_sheildSize) * world;
+	//if (m_isSheild)
+	//{
+	//	// シールド用のスケール行列を適用
+	//	Matrix shieldWorld = Matrix::CreateScale(m_sheildSize) * world;
 
-		// シールド
-		m_sheildModel->Draw(context, *states, shieldWorld, view, proj, false, [&]()
-			{
-				context->OMSetDepthStencilState(states->DepthRead(), 0);
-				context->RSSetState(states->CullClockwise());
-				context->OMSetBlendState(states->Additive(), nullptr, 0xffffffff);
-			});
-	}
+	//	// シールド
+	//	m_sheildModel->Draw(context, *states, shieldWorld, view, proj, false, [&]()
+	//		{
+	//			context->OMSetDepthStencilState(states->DepthRead(), 0);
+	//			context->RSSetState(states->CullClockwise());
+	//			context->OMSetBlendState(states->Additive(), nullptr, 0xffffffff);
+	//		});
+	//}
 
 	// 表情差分
 	switch (m_nowState)

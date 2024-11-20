@@ -6,6 +6,8 @@
 #include "Game/KumachiLib/AudioManager.h"
 #include "Game/Interface/IEnemy.h"
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
+
+#include "Game/Enemy/Boss/BossSheild/BossSheild.h"
 //前方宣言
 class CommonResources;
 class PlayScene;
@@ -13,6 +15,7 @@ class Player;
 class FPS_Camera;
 class BossAI;
 class BossModel;
+class BossSheild;
 class EnemyHPBar;
 class EnemyBullet;
 class EnemyBullets;
@@ -38,10 +41,10 @@ private:
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 	std::unique_ptr<BossAI>		m_pBossAI;// AI
-	std::unique_ptr<BossModel>		m_bossModel;//モデル
-	std::unique_ptr<EnemyHPBar>		m_HPBar;// HPバー
-	std::unique_ptr<EnemyBullets>	m_enemyBullets;// 弾
-	std::vector<std::unique_ptr<EnemyBullet>> m_bullets; // 弾のリスト
+	std::unique_ptr<BossModel>		m_pBossModel;//モデル
+	std::unique_ptr<BossSheild>		m_pBossSheild;// シールド
+	std::unique_ptr<EnemyHPBar>		m_pHPBar;// HPバー
+	std::unique_ptr<EnemyBullets>	m_pEnemyBullets;// 弾
 	const float BULLET_SIZE = 0.25f; // 弾の大きさ
 
 
@@ -55,7 +58,7 @@ private:
 	DirectX::SimpleMath::Vector3 m_velocity;		// 速度
 	DirectX::SimpleMath::Vector3 m_rotate;		// 回転
 	// 砲塔境界球
-	DirectX::BoundingSphere m_enemyBS;	//敵の境界球
+	DirectX::BoundingSphere m_BossBS;	//敵の境界球
 	DirectX::BoundingSphere m_enemyBSToPlayerArea;// 敵とPlayerとの一定範囲の当たり判定に使う
 	DirectX::BoundingSphere m_enemyBulletBS;// 敵の弾の境界球
 	DirectX::BoundingSphere m_playerBS;// プレイヤーの境界球
@@ -84,14 +87,20 @@ private:
 	bool m_isHitToOtherEnemy = false;// その他の敵との判定
 	bool m_isHitToPlayerBullet = false;// 敵がプレイヤーの弾に当たったか
 	bool m_isBullethit = false;// 敵の弾がプレイヤーに当たったか
-	float m_attackCooldown;  // 攻撃のクールダウンタイ
+	float m_attackCooldown;  // 攻撃のクールダウン(フレームごとに発射することを防ぐ用）
+	float m_bulletCooldown;  // 弾のクールダウン
+
 	// プレイヤーに与えるダメージ
 	const float PLAYER_DAMAGE = 5.0f;
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
+	// プレイヤーのカメラの情報
+	DirectX::SimpleMath::Vector3 m_cameraEye;
+	DirectX::SimpleMath::Vector3 m_cameraTarget;
+	DirectX::SimpleMath::Vector3 m_cameraUp;
 public:
 	//	getter
-	DirectX::BoundingSphere& GetBoundingSphere() override { return m_enemyBS; }
+	DirectX::BoundingSphere& GetBoundingSphere() override { return m_BossBS; }
 	DirectX::BoundingSphere& GetBulletBoundingSphere()override { return m_enemyBulletBS; }
 	DirectX::BoundingSphere& GetPlayerBoundingSphere() override { return m_playerBS; }
 	DirectX::SimpleMath::Matrix GetMatrix() const override { return m_matrix; }
@@ -107,9 +116,16 @@ public:
 	bool GetBulletHitToPlayer() const override { return m_isBullethit; }// 敵の弾がプレイヤーに当たったか
 	bool GetHitToPlayerBullet()const override { return m_isHitToPlayerBullet; }
 	float GetToPlayerDamage() const override { return PLAYER_DAMAGE; }
+	DirectX::SimpleMath::Vector3 GetCameraEye()const { return m_cameraEye; }
+	DirectX::SimpleMath::Vector3 GetCameraTarget()const { return m_cameraTarget; }
+	DirectX::SimpleMath::Vector3 GetCameraUp()const { return m_cameraUp; }
+
 	// setter
 	void SetPosition(DirectX::SimpleMath::Vector3& pos) override { m_position = pos; }
-	void SetEnemyHP(int hp) override { m_currentHP = hp; }
+	void SetEnemyHP(int hp) override;
+	void SetCameraEye(DirectX::SimpleMath::Vector3 eye)override { m_cameraEye = eye; }
+	void SetCameraTarget(DirectX::SimpleMath::Vector3 target)override { m_cameraTarget = target; }
+	void SetCameraUp(DirectX::SimpleMath::Vector3 up)override { m_cameraUp = up; }
 	void SetEnemyIsDead(bool isDead) override { m_isDead = isDead; }
 	void SetHitToPlayer(bool isHitToPlayer)override { m_isHit = isHitToPlayer; }
 	void SetHitToOtherEnemy(bool isHitToOtherEnemy) override { m_isHitToOtherEnemy = isHitToOtherEnemy; }
@@ -118,6 +134,7 @@ public:
 	void SetPlayerHP(float& HP) const override { HP -= PLAYER_DAMAGE; }
 	void SetBulletHitToPlayer(bool hit) override { m_isBullethit = hit; }// 敵の弾がプレイヤーに当たったか
 	void SetHitToPlayerBullet(bool hit)override { m_isHitToPlayerBullet = hit; }
+	void SetBulletCooldown(float cooldown) { m_bulletCooldown = cooldown; }// シールドを展開した後に実行する
 public:
 	// 初期ステータスを設定
 	Boss(Player* pPlayer);
@@ -130,6 +147,7 @@ public:
 
 	void SetBulletType(BossBulletType bossBulletType) { m_bossBulletType = bossBulletType; };// 弾のタイプ設定
 	BossBulletType GetBulletType() const { return m_bossBulletType; };// 弾のタイプ取得
+	void PlayBarrierSE();// バリアSE再生
 private:
 	void ShootBullet();// 弾発射
 	void BulletPotsitioning();// 弾の位置設定

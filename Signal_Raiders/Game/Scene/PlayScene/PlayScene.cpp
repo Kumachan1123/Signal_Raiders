@@ -114,10 +114,11 @@ void PlayScene::Update(float elapsedTime)
 	m_audioManager->PlaySound("BGM", m_BGMvolume);
 	// カメラが向いている方向を取得する
 	DirectX::SimpleMath::Vector3 cameraDirection = m_pPlayer->GetCamera()->GetDirection();
-	m_pPlayer->Update(kb, elapsedTime);
+
 	m_pWall->Update(elapsedTime);
 	m_audioManager->Update();// オーディオマネージャーの更新
 	m_pEnemies->Update(elapsedTime);// 敵の更新
+	m_pPlayer->Update(kb, elapsedTime);
 	m_pEnemyCounter->SetEnemyIndex(m_pEnemies->GetEnemyIndex());// 敵の総数を取得
 	m_pEnemyCounter->SetNowEnemy(m_pEnemies->GetEnemySize());// 現在の敵の数を取得
 	m_pEnemyCounter->Update(elapsedTime);// 敵カウンターの更新

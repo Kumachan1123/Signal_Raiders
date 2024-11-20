@@ -60,7 +60,7 @@ void PlayerBullets::Update(float elapsedTime)
 				if ((*it)->GetBoundingSphere().Intersects(enemy->GetBoundingSphere()))
 				{
 					isHit = true;// ヒットフラグを立てる
-					enemy->SetEnemyHP(enemy->GetHP() - (*it)->Damage());// 敵のHPを減らす
+					enemy->SetEnemyHP((*it)->Damage());// 敵のHPを減らす
 					// エフェクトを追加
 					m_pEnemies->GetEffect().push_back(std::make_unique<Effect>(m_commonResources,
 						Effect::ParticleType::ENEMY_HIT,
@@ -69,7 +69,7 @@ void PlayerBullets::Update(float elapsedTime)
 						enemy->GetMatrix()));
 					// プレイヤーの弾が敵に当たったフラグを立てる
 					enemy->SetHitToPlayerBullet(true);
-					m_audioManager->PlaySound("Hit", m_pPlayer->GetVolume());// ヒットSEを再生
+					m_audioManager->PlaySound("Hit", m_pPlayer->GetVolume() * 0.8f);// ヒットSEを再生
 					break;
 				}
 			}

@@ -1,10 +1,7 @@
-//--------------------------------------------------------------------------------------
-// File: ParticleUtil.h
-//
-// パーティクルユーティリティクラス
-//
-//-------------------------------------------------------------------------------------
-
+/*
+	@file	ParticleUtility.h
+	@brief	パーティクルユーティリティクラス
+*/
 #pragma once
 
 #include "StepTimer.h"
@@ -21,11 +18,9 @@ class ParticleUtility
 public:
 	enum class Type
 	{
-		SPIRAL = 0,//	螺旋
-		KAMEHAMEHA,//	かめはめ波
-		ONIBI,//	鬼火
-		ENEMYTRAIL,//	火花
-		PLAYERTRAIL//	軌跡
+		ENEMYTRAIL,//	敵の弾の軌跡
+		PLAYERTRAIL,//	プレイヤーの弾の軌跡
+		BARRIERDESTROYED,//	バリア破壊
 	};
 	//	変数
 
@@ -99,9 +94,6 @@ public:
 
 private:
 	// タイプごとの処理
-	void Spiral(float elapsedTime);//	螺旋
-	void Onibi(float elapsedTime);//	鬼火
-	void Kamehameha(float elapsedTime);//	かめはめ波
-	void Trail(float elapsedTime);//	火花
-
+	void Trail(float elapsedTime);// 弾の軌跡
+	void BarrierDestroyed(float elapsedTime);//	バリア破壊
 };

@@ -1,6 +1,6 @@
 /*
-	@file	BulletTrail.h
-	@brief	弾の軌跡クラス
+	@file	Particle.h
+	@brief	パーティクルクラス
 */
 #pragma once
 //前方宣言
@@ -10,7 +10,7 @@ class CommonResources;
 #include <list>
 
 #include <Game/ParticleUtility/ParticleUtility.h>
-class BulletTrail
+class Particle
 {
 public:
 	//	データ受け渡し用コンスタントバッファ(送信側)
@@ -26,8 +26,8 @@ public:
 	//変数
 public:
 
-	DirectX::SimpleMath::Vector3 m_bulletPos;// 弾の座標
-
+	DirectX::SimpleMath::Vector3 m_bulletPosition;// 弾の座標
+	DirectX::SimpleMath::Vector3 m_bossPosition;// ボスの座標
 	// 共通リソース
 	CommonResources* m_commonResources;
 	//	関数
@@ -73,8 +73,8 @@ public:
 	float m_size;
 	//	関数
 public:
-	BulletTrail(ParticleUtility::Type type, float size);
-	~BulletTrail();
+	Particle(ParticleUtility::Type type, float size);
+	~Particle();
 	void Initialize(CommonResources* resources);
 	void LoadTexture(const wchar_t* path);
 	void Update(float elapsedTime);
@@ -84,12 +84,14 @@ public:
 		DirectX::SimpleMath::Vector3 eye,
 		DirectX::SimpleMath::Vector3 up);
 	//	Setter
-	void SetBulletPosition(DirectX::SimpleMath::Vector3 bulletPos) { m_bulletPos = bulletPos; }
+	void SetBulletPosition(DirectX::SimpleMath::Vector3 bulletPos) { m_bulletPosition = bulletPos; }
+	void SetBossPosition(DirectX::SimpleMath::Vector3 bossPos) { m_bossPosition = bossPos; }
+
 	void SetCameraPosition(DirectX::SimpleMath::Vector3 cameraPos) { m_cameraPosition = cameraPos; }
 	void SetCameraTarget(DirectX::SimpleMath::Vector3 cameraTarget) { m_cameraTarget = cameraTarget; }
 	void SetCameraUp(DirectX::SimpleMath::Vector3 cameraUp) { m_cameraUp = cameraUp; }
 private:
 	void CreateShader();
 	void Trail();
-
+	void BarrierBreak();
 };

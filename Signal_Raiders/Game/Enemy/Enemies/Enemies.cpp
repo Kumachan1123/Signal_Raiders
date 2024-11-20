@@ -106,7 +106,11 @@ void Enemies::Render()
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	Matrix view = m_pPlayer->GetCamera()->GetViewMatrix();
 	Matrix projection = m_pPlayer->GetCamera()->GetProjectionMatrix();
-	if (m_enemies.size() > 0)for (const auto& enemy : m_enemies)enemy->Render(view, projection);
+	if (m_enemies.size() > 0)for (const auto& enemy : m_enemies)
+	{
+		enemy->Render(view, projection);
+	}
+
 	// エフェクトを描画する
 	GetEffect().erase
 	(std::remove_if(GetEffect().begin(), GetEffect().end(), [&](const std::unique_ptr<Effect>& effect)//	再生終了したパーティクルを削除する
@@ -303,7 +307,9 @@ void Enemies::HandlePlayerCollisions(float elapsedTime)
 	for (auto& enemy : m_enemies)
 	{
 		m_isHitPlayerToEnemy = false; // フラグを初期化
-
+		enemy->SetCameraEye(m_pPlayer->GetCamera()->GetEyePosition());// カメラの位置を設定
+		enemy->SetCameraTarget(m_pPlayer->GetCamera()->GetTargetPosition());// カメラの注視点を設定
+		enemy->SetCameraUp(m_pPlayer->GetCamera()->GetUpVector());// カメラの上方向を設定
 		enemy->Update(elapsedTime, m_pPlayer->GetCamera()->GetEyePosition());// 敵の更新
 
 		// 敵の弾がプレイヤーに当たったら
@@ -337,9 +343,9 @@ void Enemies::HandleEnemyPlayerCollision(std::unique_ptr<IEnemy>& enemy)
 	if (enemy->GetBoundingSphere().Intersects(m_pPlayer->GetInPlayerArea()))
 	{
 		m_isHitPlayerToEnemy = true;
-		BoundingSphere playerSphere = m_pPlayer->GetInPlayerArea();
-		playerSphere.Radius /= 3.0f;
-
+		BoundingSphere playerSphere = m_pPlayer->GetInPlayerArea();// プレイヤーの当たり判定を取得
+		playerSphere.Radius /= 3.0f;// プレイヤーの当たり判定を縮小
+		// 敵がプレイヤーを認識する範囲 / 3.0f = プレイヤーの当たり判定の半径
 		if (enemy->GetBoundingSphere().Intersects(playerSphere))
 		{
 			enemy->CheckHitOtherObject(enemy->GetBoundingSphere(), playerSphere);

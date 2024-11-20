@@ -101,7 +101,8 @@ void StageSelectScene::Update(float elapsedTime)
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
 	// マウスのトラッカーを取得する
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
-
+	if (kbTracker->pressed.A || kbTracker->pressed.D)
+		m_audioManager->PlaySound("Select", m_SEvolume);// SEの再生
 	// スペースキーが押されたら
 	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd && (kbTracker->pressed.Space || mtracker->GetLastState().leftButton))
 	{
@@ -118,8 +119,7 @@ void StageSelectScene::Update(float elapsedTime)
 
 			m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
 		}		// WかSのいずれかが押されたら
-		if (kbTracker->pressed.A || kbTracker->pressed.D)
-			m_audioManager->PlaySound("Select", m_SEvolume);// SEの再生
+
 
 	}
 	// フェードアウトが終了したら

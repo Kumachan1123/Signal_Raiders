@@ -58,6 +58,10 @@ private:
 	const float PLAYER_DAMAGE = 1.0f;
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
+	// カメラ
+	DirectX::SimpleMath::Vector3 m_cameraEye;
+	DirectX::SimpleMath::Vector3 m_cameraTarget;
+	DirectX::SimpleMath::Vector3 m_cameraUp;
 public:
 	//	getter
 	DirectX::BoundingSphere& GetBoundingSphere() override { return m_enemyBS; }
@@ -78,7 +82,7 @@ public:
 	float GetToPlayerDamage() const override { return PLAYER_DAMAGE; }
 	// setter
 	void SetPosition(DirectX::SimpleMath::Vector3& pos)override { m_position = pos; }
-	void SetEnemyHP(int hp)override { m_currentHP = hp; }
+	void SetEnemyHP(int hp)override { m_currentHP -= hp; }
 	void SetEnemyIsDead(bool isDead)override { m_isDead = isDead; }
 	void SetHitToPlayer(bool isHitToPlayer)override { m_isHit = isHitToPlayer; }
 	void SetHitToOtherEnemy(bool isHitToOtherEnemy) override { m_isHitToOtherEnemy = isHitToOtherEnemy; }
@@ -87,6 +91,9 @@ public:
 	void SetPlayerHP(float& HP) const override { HP -= PLAYER_DAMAGE; }
 	void SetBulletHitToPlayer(bool hit)override { m_isBullethit = hit; }// 敵の弾がプレイヤーに当たったか
 	void SetHitToPlayerBullet(bool hit) override { m_isHitToPlayerBullet = hit; }
+	void SetCameraEye(DirectX::SimpleMath::Vector3 eye)override { m_cameraEye = eye; }
+	void SetCameraTarget(DirectX::SimpleMath::Vector3 target)override { m_cameraTarget = target; }
+	void SetCameraUp(DirectX::SimpleMath::Vector3 up)override { m_cameraUp = up; }
 public:
 	// 初期ステータスを設定
 	Enemy(Player* pPlayer);

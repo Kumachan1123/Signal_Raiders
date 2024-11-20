@@ -6,7 +6,7 @@
 //前方宣言
 class CommonResources;
 #include "Game/CommonResources.h"
-#include "Game/BulletTrail/BulletTrail.h"
+#include "Game/Particle/Particle.h"
 #include "Game/ParticleUtility/ParticleUtility.h"
 class PlayerBullet
 {
@@ -38,7 +38,7 @@ private:
 	// 弾の自転
 	float m_angle;
 	// 弾の軌跡ポインター
-	std::unique_ptr<BulletTrail> m_bulletTrail;
+	std::unique_ptr<Particle> m_bulletTrail;
 
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
 	// 	//デバッグ用

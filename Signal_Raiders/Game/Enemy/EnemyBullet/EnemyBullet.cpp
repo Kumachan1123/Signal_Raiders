@@ -76,7 +76,7 @@ void EnemyBullet::Initialize(CommonResources* resources, BulletType type)
 
 		});
 	// ’e‚Ì‹O“¹¶¬
-	m_bulletTrail = std::make_unique<BulletTrail>(ParticleUtility::Type::ENEMYTRAIL, m_size);
+	m_bulletTrail = std::make_unique<Particle>(ParticleUtility::Type::ENEMYTRAIL, m_size);
 	m_bulletTrail->Initialize(resources);
 	m_direction = Vector3::Zero;// •ûŒü‚ğ‰Šú‰»
 	m_velocity = Vector3::Zero;// ‘¬“x‚ğ‰Šú‰»
