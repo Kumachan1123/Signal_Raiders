@@ -14,6 +14,15 @@
 #include "Libraries/MyLib/DebugString.h"
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
+
+// フェード最小値
+const float Fade::FADE_MIN = -1.01f;
+// フェード最大値
+const float Fade::FADE_MAX = 1.01f;
+// フェード速度
+const float Fade::FADE_SPEED = 1.5f;
+
+
 // インプットレイアウト
 const std::vector<D3D11_INPUT_ELEMENT_DESC> Fade::INPUT_LAYOUT =
 {
@@ -88,9 +97,9 @@ void Fade::CreateShader()
 
 	// インプットレイアウトの作成
 	device->CreateInputLayout(&INPUT_LAYOUT[0],
-							  static_cast<UINT>(INPUT_LAYOUT.size()),
-							  VSFade.GetData(), VSFade.GetSize(),
-							  m_inputLayout.GetAddressOf());
+		static_cast<UINT>(INPUT_LAYOUT.size()),
+		VSFade.GetData(), VSFade.GetSize(),
+		m_inputLayout.GetAddressOf());
 
 	// 頂点シェーダーの作成
 	if (FAILED(device->CreateVertexShader(VSFade.GetData(), VSFade.GetSize(), nullptr, m_vertexShader.GetAddressOf())))
@@ -122,9 +131,9 @@ void Fade::Update(float elapsedTime)
 	if (m_fadeState == FadeState::FadeIn)
 	{
 		// 時間を減算
-		m_time += elapsedTime;
-		m_time = clamp(m_time, -1.01f, 1.01f);
-		if (m_time >= 1.01f)
+		m_time += elapsedTime * FADE_SPEED;
+		m_time = clamp(m_time, FADE_MIN, FADE_MAX);
+		if (m_time >= FADE_MAX)
 		{
 			m_fadeState = FadeState::FadeInEnd;
 		}
@@ -134,9 +143,9 @@ void Fade::Update(float elapsedTime)
 	if (m_fadeState == FadeState::FadeOut)
 	{
 		// 時間を加算
-		m_time -= elapsedTime;
-		m_time = clamp(m_time, -1.01f, 1.01f);
-		if (m_time <= -1.01f)
+		m_time -= elapsedTime * FADE_SPEED;
+		m_time = clamp(m_time, FADE_MIN, FADE_MAX);
+		if (m_time <= FADE_MIN)
 		{
 			m_fadeState = FadeState::FadeOutEnd;
 		}

@@ -73,6 +73,12 @@ private:
 	float m_time;
 	// テクスチャ番号
 	int m_fadeTexNum;
+	// フェード最小値
+	static const float FADE_MIN;
+	// フェード最大値
+	static const float FADE_MAX;
+	// フェード速度
+	static const float FADE_SPEED;
 public:
 	//	関数
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
