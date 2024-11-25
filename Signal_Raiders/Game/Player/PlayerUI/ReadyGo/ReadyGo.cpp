@@ -130,7 +130,7 @@ void  ReadyGo::Update(float elapsedTime)
 
 
 
-	m_constBuffer.colors = DirectX::SimpleMath::Vector4(0.0f, 1.0f, 1.0f, m_constBuffer.colors.w);
+	m_constBuffer.colors = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 0.0f, m_constBuffer.colors.w);
 
 }
 
