@@ -92,7 +92,7 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_fade = std::make_unique<Fade>(m_commonResources);
 	m_fade->Create(DR);
 	m_fade->SetState(Fade::FadeState::FadeIn);
-	m_fade->SetTextureNum((int)(Fade::TextureNum::GO));
+	m_fade->SetTextureNum((int)(Fade::TextureNum::BLACK));
 	// ƒŒ[ƒ_[‚ğ‰Šú‰»‚·‚é
 	m_pRadar = std::make_unique<Radar>(resources);
 	m_pRadar->Initialize(m_pPlayer.get(), m_pEnemies.get());
