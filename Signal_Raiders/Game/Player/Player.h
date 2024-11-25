@@ -6,6 +6,7 @@
 #include "Game/Player/PlayerUI/PlayerHP/PlayerHP.h"
 #include "Game/Player/PlayerUI/PlayerPointer/PlayerPointer.h"
 #include "Game/Player/PlayerUI/Crisis/Crisis.h"
+#include "Game/Player/PlayerUI/ReadyGo/ReadyGo.h"
 #include "Game/DamageEffect/DamageEffect.h"
 #include "Game/Enemy/Enemies/Enemies.h"
 #include "Game/FPS_Camera/FPS_Camera.h"
@@ -14,6 +15,7 @@ class CommonResources;
 class PlayerController;
 class PlayerUI;
 class PlayerBullets;
+class ReadyGo;
 class PlayerPointer;
 class PlayerHP;
 class Crisis;
@@ -47,6 +49,8 @@ private:
 	std::unique_ptr<PlayerController> m_pPlayerController;
 	// 危機状態
 	std::unique_ptr<Crisis> m_pCrisis;
+	// 準備
+	std::unique_ptr<ReadyGo> m_pReadyGo;
 	// 境界球
 	DirectX::BoundingSphere m_inPlayerArea;// プレイヤーと敵との一定範囲内での境界球
 	DirectX::BoundingSphere m_playerSphere;// プレイヤーの境界球
@@ -65,7 +69,8 @@ private:
 	bool m_isKillAll;
 	// チートコマンドが有効か
 	bool m_isCheat = false;
-
+	// 経過時間
+	float m_timer = 0.0f;
 public:
 	Player(CommonResources* commonResources);
 	~Player();

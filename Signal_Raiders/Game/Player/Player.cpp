@@ -19,6 +19,7 @@ Player::Player(CommonResources* commonResources)
 	m_mouseSensitive{ 0.1f },
 	m_isDamage{ false },
 	m_damageTime{ 0.0f },
+	m_timer{ 0.0f },
 	m_playerDir{},
 	m_isKillAll{ false },
 	m_isCheat{ false }
@@ -55,47 +56,24 @@ void Player::Initialize(Enemies* pEnemies)
 	// 危険状態
 	m_pCrisis = std::make_unique<Crisis>(m_commonResources);
 	m_pCrisis->Create(DR);
-
+	// 準備
+	m_pReadyGo = std::make_unique<ReadyGo>(m_commonResources);
+	m_pReadyGo->Create(DR);
 }
 
 void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>& kb, float elapsedTime)
 {
-
+	m_timer += elapsedTime;
 	// マウスのトラッカーを取得する
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
 	// カメラが向いている方向を取得する
 	DirectX::SimpleMath::Vector3 cameraDirection = m_pCamera->GetDirection();
-#ifdef _DEBUG// デバッグ
-
-#endif
-	// 右クリックで敵を一掃
-	if (mtracker->GetLastState().rightButton && m_isCheat == false)
-	{
-		m_isCheat = true;
-		for (auto& enemy : m_pEnemies->GetEnemies())enemy->SetEnemyHP(1000);
-	}
-	// 右クリックされてないときはチートコマンドを無効にする
-	if (!mtracker->GetLastState().rightButton)
-	{
-		m_isCheat = false;
-	}
-	//for (auto& enemy : m_pEnemies->GetEnemies())enemy->SetEnemyHP(0);
-	// スペースキーでプレイヤーのHPを0にする
-	if (kb->pressed.Space)SetPlayerHP(0.0f);
-	// 左クリックで弾発射
-	if (mtracker->GetLastState().leftButton && m_pPlayerBullets->GetIsBullet() == false)
-	{
-		// 弾を生成する
-		m_pPlayerBullets->CreateBullet(GetPlayerController()->GetPlayerPosition(), cameraDirection);
-	}
-	if (!mtracker->GetLastState().leftButton)m_pPlayerBullets->SetIsBullet(false);
-	// プレイヤーコントローラー更新
-	m_pPlayerController->Update(kb, cameraDirection, elapsedTime);
-	// プレイヤーの位置を取得
-	m_playerPos = m_pPlayerController->GetPlayerPosition();
-
 	// カメラ更新
 	m_pCamera->Update(m_pPlayerController->GetPlayerPosition(), m_pPlayerController->GetYawX());
+
+	// プレイヤーコントローラー更新
+	m_pPlayerController->Update(kb, cameraDirection, elapsedTime);
+
 	// プレイヤーの回転を取得
 	m_playerDir = cameraDirection;
 	// プレイヤーがダメージを受けた時、カメラをsin波を使って上下に揺らす
@@ -124,6 +102,42 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 		}
 	}
 	else m_pCamera->SetTargetPositionY(m_pPlayerController->GetPitch());// カメラの注視点を設定
+	if (m_timer <= 5.0f)// 開始後秒間はReady？Go！を表示
+	{
+		m_pReadyGo->Update(elapsedTime);
+
+		return;
+	}
+
+#ifdef _DEBUG// デバッグ
+
+#endif
+	// プレイヤーの位置を取得
+	m_playerPos = m_pPlayerController->GetPlayerPosition();
+
+	// 右クリックで敵を一掃
+	if (mtracker->GetLastState().rightButton && m_isCheat == false)
+	{
+		m_isCheat = true;
+		for (auto& enemy : m_pEnemies->GetEnemies())enemy->SetEnemyHP(1000);
+	}
+	// 右クリックされてないときはチートコマンドを無効にする
+	if (!mtracker->GetLastState().rightButton)
+	{
+		m_isCheat = false;
+	}
+	//for (auto& enemy : m_pEnemies->GetEnemies())enemy->SetEnemyHP(0);
+	// スペースキーでプレイヤーのHPを0にする
+	if (kb->pressed.Space)SetPlayerHP(0.0f);
+	// 左クリックで弾発射
+	if (mtracker->GetLastState().leftButton && m_pPlayerBullets->GetIsBullet() == false)
+	{
+		// 弾を生成する
+		m_pPlayerBullets->CreateBullet(GetPlayerController()->GetPlayerPosition(), cameraDirection);
+	}
+	if (!mtracker->GetLastState().leftButton)m_pPlayerBullets->SetIsBullet(false);
+
+
 	// 弾更新
 	m_pPlayerBullets->Update(elapsedTime);
 	// HP更新
@@ -153,6 +167,11 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 
 void Player::Render()
 {
+	if (m_timer <= 5.0f)// 開始後秒間はReady？Go！を表示
+	{
+		m_pReadyGo->Render();
+		return;
+	}
 	if (m_playerHP <= 10.0f)m_pCrisis->Render();// HPが10以下で危機状態描画
 	m_pPlayerHP->Render();// HP描画
 	m_pPlayerPointer->Render();// 照準描画

@@ -1,11 +1,9 @@
-//--------------------------------------------------------------------------------------
-// File: BackGround.cpp
-//
-// 背景クラス
-//-------------------------------------------------------------------------------------
-
+/*
+	@file	ReadyGo.cpp
+	@brief	準備クラス
+*/
 #include "pch.h"
-#include "BackGround.h"
+#include "ReadyGo.h"
 #include "Game/CommonResources.h"
 #include "Game/KumachiLib/BinaryFile.h"
 #include "DeviceResources.h"
@@ -17,41 +15,35 @@
 #include <CommonStates.h>
 #include <vector>
 #include "Libraries/MyLib/DebugString.h"
+
 using namespace DirectX;
 
-/// <summary>
-/// インプットレイアウト
-/// </summary>
-const std::vector<D3D11_INPUT_ELEMENT_DESC>  BackGround::INPUT_LAYOUT =
+// インプットレイアウト
+const std::vector<D3D11_INPUT_ELEMENT_DESC>  ReadyGo::INPUT_LAYOUT =
 {
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 
 };
-
-/// <summary>
-/// コンストラクタ
-/// </summary>
-BackGround::BackGround(CommonResources* resources)
+// コンストラクタ
+ReadyGo::ReadyGo(CommonResources* resources)
 	:m_pDR(nullptr)
 	, m_time(0.0f)
 	, m_constBuffer()
 {
 	m_commonResources = resources;
+	// 色の初期化
+	m_constBuffer.colors = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 0.0f);
+
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-BackGround::~BackGround()
+// デストラクタ
+ReadyGo::~ReadyGo()
 {
 }
 
-/// <summary>
-/// テクスチャリソース読み込み関数
-/// </summary>
-/// <param name="path">相対パス(Resources/Textures/・・・.pngなど）</param>
-void  BackGround::LoadTexture(const wchar_t* path)
+// テクスチャリソース読み込み関数
+void  ReadyGo::LoadTexture(const wchar_t* path)
 {
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;
 	DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, nullptr, texture.ReleaseAndGetAddressOf());
@@ -59,11 +51,8 @@ void  BackGround::LoadTexture(const wchar_t* path)
 	m_texture.push_back(texture);
 }
 
-/// <summary>
-/// 生成関数
-/// </summary>
-/// <param name="pDR">ユーザーリソース等から持ってくる</param>
-void  BackGround::Create(DX::DeviceResources* pDR)
+// 生成関数
+void  ReadyGo::Create(DX::DeviceResources* pDR)
 {
 	m_pDR = pDR;
 
@@ -73,7 +62,8 @@ void  BackGround::Create(DX::DeviceResources* pDR)
 	CreateShader();
 
 	//	画像の読み込み（2枚ともデフォルトは読み込み失敗でnullptr)
-	LoadTexture(L"Resources/Textures/Back.png");
+	LoadTexture(L"Resources/Textures/crisis.png");
+	LoadTexture(L"Resources/Textures/killAll.png");
 
 	//	プリミティブバッチの作成
 	m_batch = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(pDR->GetD3DDeviceContext());
@@ -82,22 +72,20 @@ void  BackGround::Create(DX::DeviceResources* pDR)
 
 }
 
-/// <summary>
-/// Shader作成部分だけ分離した関数
-/// </summary>
-void  BackGround::CreateShader()
+// シェーダー作成部分
+void  ReadyGo::CreateShader()
 {
 	ID3D11Device1* device = m_pDR->GetD3DDevice();
 
 	//	コンパイルされたシェーダファイルを読み込み
-	kumachi::BinaryFile VSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/CRT/VS_CRT.cso");
-	kumachi::BinaryFile PSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/CRT/PS_CRT.cso");
+	kumachi::BinaryFile VSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/ReadyGo/VS_ReadyGo.cso");
+	kumachi::BinaryFile PSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/ReadyGo/PS_ReadyGo.cso");
 
 	//	インプットレイアウトの作成
 	device->CreateInputLayout(&INPUT_LAYOUT[0],
-							  static_cast<UINT>(INPUT_LAYOUT.size()),
-							  VSData.GetData(), VSData.GetSize(),
-							  m_inputLayout.GetAddressOf());
+		static_cast<UINT>(INPUT_LAYOUT.size()),
+		VSData.GetData(), VSData.GetSize(),
+		m_inputLayout.GetAddressOf());
 
 	//	頂点シェーダ作成
 	if (FAILED(device->CreateVertexShader(VSData.GetData(), VSData.GetSize(), NULL, m_vertexShader.ReleaseAndGetAddressOf())))
@@ -124,18 +112,31 @@ void  BackGround::CreateShader()
 }
 
 //更新
-void  BackGround::Update(float elapsedTime)
+void  ReadyGo::Update(float elapsedTime)
 {
 	//	時間更新（m_timeを0.1ずつ増やし、１を超えたら０からやり直し）
 	m_time += elapsedTime;
+	// 色の更新
+	// alpha値が0.7f未満だったらまず0.9fまで少しずつ上げる
+	if (m_constBuffer.colors.w < 0.7f)
+	{
+		m_constBuffer.colors.w += 0.15f * elapsedTime;
+	}
+	else
+	{
+		// alpha値を0.7fから0.9fまでを往復する
+		m_constBuffer.colors.w = 0.8f + 0.1f * sin(m_time);
+	}
+
+
+
+	m_constBuffer.colors = DirectX::SimpleMath::Vector4(0.0f, 1.0f, 1.0f, m_constBuffer.colors.w);
+
 }
 
-/// <summary>
-/// 描画関数
-/// </summary>
-/// <param name="view">ビュー行列</param>
-/// <param name="proj">射影行列</param>
-void  BackGround::Render()
+
+// 描画関数
+void  ReadyGo::Render()
 {
 
 	ID3D11DeviceContext1* context = m_pDR->GetD3DDeviceContext();
@@ -152,7 +153,6 @@ void  BackGround::Render()
 	m_constBuffer.matView = m_view.Transpose();
 	m_constBuffer.matProj = m_proj.Transpose();
 	m_constBuffer.matWorld = m_world.Transpose();
-	m_constBuffer.colors = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	m_constBuffer.time = m_time;
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(m_cBuffer.Get(), 0, NULL, &m_constBuffer, 0, 0);
@@ -171,7 +171,7 @@ void  BackGround::Render()
 	context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
 
 	//	深度バッファに書き込み参照する
-	context->OMSetDepthStencilState(m_states->DepthDefault(), 0);
+	context->OMSetDepthStencilState(m_states->DepthNone(), 0);
 
 	//	カリングはなし
 	context->RSSetState(m_states->CullNone());

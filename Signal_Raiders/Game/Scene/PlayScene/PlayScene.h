@@ -87,7 +87,9 @@ private:
 	const float VOLUME = 1.0f;
 	float m_BGMvolume;	// ボリューム
 	float m_SEvolume;	// ボリューム
-	float m_mouseSensitivity;
+	float m_mouseSensitivity;	// マウス感度
+	// 経過時間
+	float m_timer;
 	//デバッグ用
 	// ベーシックエフェクト
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;

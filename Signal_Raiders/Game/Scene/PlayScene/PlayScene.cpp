@@ -39,6 +39,7 @@ PlayScene::PlayScene(IScene::SceneID sceneID)
 	m_SEvolume{ VOLUME },
 	m_mouseSensitivity{ },
 	m_nowSceneID{ sceneID },
+	m_timer{ 0.0f },
 	m_stageNumber{ 0 }
 
 {
@@ -109,7 +110,8 @@ void PlayScene::Update(float elapsedTime)
 	ShowCursor(FALSE);//カーソルを見えないようにする
 	// キーボードステートトラッカーを取得する
 	const auto& kb = m_commonResources->GetInputManager()->GetKeyboardTracker();
-
+	// 経過時間
+	m_timer += elapsedTime;
 	// 二重再生しない
 	m_audioManager->PlaySound("BGM", m_BGMvolume);
 	// カメラが向いている方向を取得する
@@ -157,10 +159,14 @@ void PlayScene::Render()
 	m_pEnemies->Render();
 	// プレイヤーを描画する
 	m_pPlayer->Render();
-	// 敵カウンターを描画する
-	m_pEnemyCounter->Render();
-	// レーダーを描画する
-	m_pRadar->Render();
+	if (m_timer >= 5.0f)
+	{
+		// 敵カウンターを描画する
+		m_pEnemyCounter->Render();
+		// レーダーを描画する
+		m_pRadar->Render();
+	}
+
 	// フェードの描画
 	m_fade->Render();
 
