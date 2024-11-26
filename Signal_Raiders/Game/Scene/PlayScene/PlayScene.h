@@ -90,6 +90,8 @@ private:
 	float m_mouseSensitivity;	// マウス感度
 	// 経過時間
 	float m_timer;
+	// 敵が全滅した時のフェード処理までの待ち時間
+	float m_waitTime;
 	//デバッグ用
 	// ベーシックエフェクト
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;

@@ -40,6 +40,7 @@ PlayScene::PlayScene(IScene::SceneID sceneID)
 	m_mouseSensitivity{ },
 	m_nowSceneID{ sceneID },
 	m_timer{ 0.0f },
+	m_waitTime{ 0.0f },
 	m_stageNumber{ 0 }
 
 {
@@ -124,9 +125,15 @@ void PlayScene::Update(float elapsedTime)
 	m_pEnemyCounter->SetEnemyIndex(m_pEnemies->GetEnemyIndex());// 敵の総数を取得
 	m_pEnemyCounter->SetNowEnemy(m_pEnemies->GetEnemySize());// 現在の敵の数を取得
 	m_pEnemyCounter->Update(elapsedTime);// 敵カウンターの更新
-	// プレイヤーのHPが0以下、または敵がいないなら
-	if (m_pPlayer->GetPlayerHP() <= 0.0f ||
-		(m_pEnemies->GetEnemySize() <= 0 && m_pEnemies->GetisBorned() && m_pEnemies->GetIsBossAlive() == false))
+
+	if (m_pPlayer->GetPlayerHP() <= 0.0f ||// プレイヤーのHPが0以下
+		(m_pEnemies->GetEnemySize() <= 0 &&// 敵がいない
+			m_pEnemies->GetisBorned() &&// 生成が完了している
+			m_pEnemies->GetIsBossAlive() == false))// ボスがいない
+	{
+		m_waitTime += elapsedTime;// 待ち時間を加算する
+	}
+	if (m_waitTime >= 1.0f)// 待ち時間が5秒以上なら
 	{
 		m_fade->SetTextureNum((int)(Fade::TextureNum::BLACK));
 		m_fade->SetState(Fade::FadeState::FadeOut);
@@ -159,6 +166,7 @@ void PlayScene::Render()
 	m_pEnemies->Render();
 	// プレイヤーを描画する
 	m_pPlayer->Render();
+	// 経過時間が5秒以上なら
 	if (m_timer >= 5.0f)
 	{
 		// 敵カウンターを描画する
