@@ -13,7 +13,7 @@
 #include "Libraries/MyLib/MemoryLeakDetector.h"
 #include <cassert>
 #include <random>
-#include "Game/Template/Template.h"
+#include "Game/KumachiLib/KumachiLib.h"
 #include <cmath>
 
 using namespace DirectX::SimpleMath;
@@ -62,7 +62,7 @@ void BossAttack::RotateTowardsPlayer(float elapsedTime, const Vector3& toPlayerV
 	}
 
 	// atan2‚ğg‚Á‚ÄŠp“x‚ğŒvZ
-	float dot = clamp(toPlayerVector.Dot(forward), -1.0f, 1.0f);
+	float dot = Clamp(toPlayerVector.Dot(forward), -1.0f, 1.0f);
 	float angle = std::acos(dot);
 
 	// ‰ñ“]ˆ—

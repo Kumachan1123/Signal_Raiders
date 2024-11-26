@@ -9,7 +9,7 @@
 #include "DeviceResources.h"
 #include <SimpleMath.h>
 #include "Libraries/Microsoft/ReadData.h"
-#include "Game/Template/Template.h"
+#include "Game/KumachiLib/KumachiLib.h"
 BossModel::BossModel()
 	: m_commonResources{}
 	, m_bodyModel{}

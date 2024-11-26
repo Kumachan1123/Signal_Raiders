@@ -10,7 +10,7 @@
 #include <WICTextureLoader.h>
 #include <CommonStates.h>
 #include <vector>
-#include "Game/Template/Template.h"
+#include "Game/KumachiLib/KumachiLib.h"
 #include "Libraries/MyLib/DebugString.h"
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -132,7 +132,7 @@ void Fade::Update(float elapsedTime)
 	{
 		// ŽžŠÔ‚ðŒ¸ŽZ
 		m_time += elapsedTime * FADE_SPEED;
-		m_time = clamp(m_time, FADE_MIN, FADE_MAX);
+		m_time = Clamp(m_time, FADE_MIN, FADE_MAX);
 		if (m_time >= FADE_MAX)
 		{
 			m_fadeState = FadeState::FadeInEnd;
@@ -144,7 +144,7 @@ void Fade::Update(float elapsedTime)
 	{
 		// ŽžŠÔ‚ð‰ÁŽZ
 		m_time -= elapsedTime * FADE_SPEED;
-		m_time = clamp(m_time, FADE_MIN, FADE_MAX);
+		m_time = Clamp(m_time, FADE_MIN, FADE_MAX);
 		if (m_time <= FADE_MIN)
 		{
 			m_fadeState = FadeState::FadeOutEnd;

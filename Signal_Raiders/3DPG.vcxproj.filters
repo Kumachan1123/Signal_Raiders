@@ -237,7 +237,7 @@
     <ClInclude Include="Game\Enemy\EnemyBullet\EnemyBullet.h">
       <Filter>Game\Enemy\EnemyBullet</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Template\Template.h">
+    <ClInclude Include="Game\KumachiLib\KumachiLib.h">
       <Filter>Game\Template</Filter>
     </ClInclude>
     <ClInclude Include="Game\KumachiLib\BinaryFile.h">

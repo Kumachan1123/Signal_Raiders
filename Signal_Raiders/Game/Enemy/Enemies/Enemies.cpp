@@ -13,7 +13,7 @@
 #include <Model.h>
 #include <Effects.h>
 #include <memory>
-#include "Game/Template/Template.h"
+#include "Game/KumachiLib/KumachiLib.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;

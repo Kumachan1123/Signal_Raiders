@@ -13,7 +13,7 @@
 #include "Libraries/MyLib/MemoryLeakDetector.h"
 #include <cassert>
 #include <random>  
-#include "Game/Template/Template.h"
+#include "Game/KumachiLib/KumachiLib.h"
 
 using namespace DirectX::SimpleMath;
 // コンストラクタ
@@ -58,7 +58,7 @@ void EnemyAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, D
 	}
 	// 内積を使って角度を計算
 	float dot = toPlayerVector.Dot(forward);
-	dot = clamp(dot, -1.0f, 1.0f); // acosの引数が範囲外になるのを防ぐため
+	dot = Clamp(dot, -1.0f, 1.0f); // acosの引数が範囲外になるのを防ぐため
 	float angle = std::acos(dot);
 	// 外積を使って回転方向を決定
 	Vector3 cross = toPlayerVector.Cross(forward);

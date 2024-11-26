@@ -8,7 +8,7 @@
 #include "DeviceResources.h"
 #include <SimpleMath.h>
 #include "Libraries/Microsoft/ReadData.h"
-#include "Game/Template/Template.h"
+#include "Game/KumachiLib/KumachiLib.h"
 BossSheild::BossSheild(int sheildHP, Boss* pBoss)
 	: m_commonResources{}
 	, m_isSheild{ false }

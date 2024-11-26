@@ -121,25 +121,28 @@ void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	using namespace DirectX::SimpleMath;
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
-	// 弾のサイズを設定
-	Matrix bulletWorld = Matrix::CreateScale(m_size);
-	Matrix boundingbulletWorld = Matrix::CreateScale(Vector3::One);
-	// 弾の自転
-	bulletWorld *= Matrix::CreateRotationX(DirectX::XMConvertToRadians(m_angle));
-	// 弾の座標を設定
-	bulletWorld *= Matrix::CreateTranslation(m_position);
-	boundingbulletWorld *= Matrix::CreateTranslation(m_position);
 
 	// 軌跡描画
 	m_bulletTrail->CreateBillboard(m_cameraTarget, m_cameraEye, m_cameraUp);
 	m_bulletTrail->Render(view, proj);
 
+
+	// 弾描画
+	m_model->Draw(context, *states, BulletWorldMatrix(), view, proj);
+
+}
+
+void EnemyBullet::RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+{
+	using namespace DirectX::SimpleMath;
+	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
+	auto states = m_commonResources->GetCommonStates();
 	// ライトの方向
 	Vector3 lightDir = Vector3::UnitY;
 	lightDir.Normalize();
 	// 影行列の元を作る
 	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, 0.01f));
-	shadowMatrix = bulletWorld * shadowMatrix;
+	shadowMatrix = BulletWorldMatrix() * shadowMatrix;
 	// 影描画
 	m_model->Draw(context, *states, shadowMatrix * Matrix::Identity, view, proj, true, [&]()
 		{
@@ -148,10 +151,16 @@ void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 			context->RSSetState(states->CullClockwise());
 			context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
 		});
-	// 弾描画
-	m_model->Draw(context, *states, bulletWorld, view, proj);
+}
 
+void EnemyBullet::RenderBoundingSphere(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+{
+	using namespace DirectX::SimpleMath;
+	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
+	auto states = m_commonResources->GetCommonStates();
 #ifdef _DEBUG
+	Matrix boundingbulletWorld = Matrix::CreateScale(Vector3::One);
+	boundingbulletWorld *= Matrix::CreateTranslation(m_position);
 	// 各パラメータを設定する
 	context->OMSetBlendState(states->Additive(), nullptr, 0xFFFFFFFF);
 	context->OMSetDepthStencilState(states->DepthDefault(), 0);
@@ -169,6 +178,7 @@ void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	DX::Draw(m_primitiveBatch.get(), m_boundingSphere, DirectX::Colors::Black);
 	m_primitiveBatch->End();
 #endif
+
 }
 
 // 直線弾
@@ -190,17 +200,28 @@ void EnemyBullet::StraightBullet(DirectX::SimpleMath::Vector3& pos)
 	m_boundingSphere.Center = m_position;//境界球に座標を渡す
 }
 
-// 垂直弾
+DirectX::SimpleMath::Matrix EnemyBullet::BulletWorldMatrix()
+{
+	using namespace DirectX::SimpleMath;
+	// 弾のサイズを設定
+	Matrix bulletWorld = Matrix::CreateScale(m_size);
+	// 弾の自転
+	bulletWorld *= Matrix::CreateRotationX(DirectX::XMConvertToRadians(m_angle));
+	// 弾の座標を設定
+	bulletWorld *= Matrix::CreateTranslation(m_position);
+	return bulletWorld;
+}
+
+// 垂直直進弾
 void EnemyBullet::VerticalBullet(DirectX::SimpleMath::Vector3& pos)
 {
 	using namespace DirectX::SimpleMath;
 	if (m_position.y >= 0.50f)
 	{
 		// 真下に落とす
-		m_velocity = Vector3(0.0f, -0.1f, 0.0f);
-
+		m_velocity = Vector3(0.0f, -0.15f, 0.0f);
 	}
-	else
+	else//着弾してから
 	{
 		// プレイヤーの方向ベクトルを計算
 		Vector3 toPlayer = m_target - pos;

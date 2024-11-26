@@ -66,6 +66,8 @@ public:
 	void Initialize(CommonResources* resources, BulletType type);
 	void Update(DirectX::SimpleMath::Vector3& pos, float elapsedTime);
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+	void RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+	void RenderBoundingSphere(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 	void MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir, DirectX::SimpleMath::Vector3& target);
 	//Getter
 	DirectX::SimpleMath::Vector3 GetBulletPosition()const { return m_position; }
@@ -83,19 +85,15 @@ public:
 	void SetCameraUp(DirectX::SimpleMath::Vector3 up) { m_bulletTrail->SetCameraUp(up); m_cameraUp = up; }
 
 	// ’e‚ª¶¬‚³‚ê‚Ä‚©‚ç‚ÌŒo‰ßŠÔ‚ªõ–½‚ğ’´‚¦‚½‚©‚Ç‚¤‚©‚ğ”»’è‚·‚é
-	bool IsExpired() const
-	{
+	bool IsExpired() const { return GetTime() >= BULLET_LIFETIME; }
 
-
-		return GetTime() >= BULLET_LIFETIME;
-	}
 	// —†ù’e‚Ì‰ñ“]•ûŒü‚ğŒˆ‚ß‚é
 	void SetRotateDirection(int direction) { m_rotateDirection = direction; }
 private:
 	void SpiralBullet();//—†ù’e
-	void VerticalBullet(DirectX::SimpleMath::Vector3& pos);//‚’¼’e
+	void VerticalBullet(DirectX::SimpleMath::Vector3& pos);//‚’¼’¼i’e
 	void StraightBullet(DirectX::SimpleMath::Vector3& pos);//’¼ü’e
-
+	DirectX::SimpleMath::Matrix BulletWorldMatrix();//’e‚Ìƒ[ƒ‹ƒhs—ñ‚ğì¬
 };
 #endif //ENEMY_BULLET_DEFINED
 

@@ -57,8 +57,8 @@ float4 main(PS_INPUT input) : SV_TARGET
     killAllColor = float4(killAllColor.rgba);
     float4 clearColor = float4(0, 0, 0, 0);
     // 時間経過で指示テクスチャからLerpで透明に変える
-    killAllColor = lerp(killAllColor, clearColor, cos(time) + 0.5);
-    background = lerp(background, clearColor, cos(time) + 0.5);
+    killAllColor = lerp(killAllColor, clearColor, cos(time * 1.1) + 0.65);
+    background = lerp(background, clearColor, cos(time * 1.1) + 0.65);
     // 結果を返す
     return background + killAllColor;
 

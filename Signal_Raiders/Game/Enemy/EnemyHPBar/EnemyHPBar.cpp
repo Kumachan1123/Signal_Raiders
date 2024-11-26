@@ -17,7 +17,7 @@
 #include <random>
 #include <memory>
 #include <Libraries/Microsoft/DebugDraw.h>
-#include "Game/Template/Template.h"
+#include "Game/KumachiLib/KumachiLib.h"
 // コンストラクタ
 EnemyHPBar::EnemyHPBar()
 	: m_commonResources{}, m_maxHP(100), m_currentHP(100), m_displayedHP(100), m_lerpSpeed(5.0f), m_scale(1.5f), m_isDead(false)

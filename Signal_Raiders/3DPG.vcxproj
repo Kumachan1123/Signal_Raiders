@@ -249,7 +249,7 @@
     <ClInclude Include="Game\Sky\Sky.h" />
     <ClInclude Include="Game\Stage\Stage.h" />
     <ClInclude Include="Game\Stage\Wall\Wall.h" />
-    <ClInclude Include="Game\Template\Template.h" />
+    <ClInclude Include="Game\KumachiLib\KumachiLib.h" />
     <ClInclude Include="Game\UI\UI.h" />
     <ClInclude Include="Game\Wifi\CheckVersion\CheckVersion.h" />
     <ClInclude Include="Game\Wifi\GetListOfInterfaces\GetListOfInterfaces.h" />
