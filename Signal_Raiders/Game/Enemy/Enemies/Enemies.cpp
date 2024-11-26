@@ -387,7 +387,7 @@ void Enemies::HandleEnemyDeath(std::unique_ptr<IEnemy>& enemy)
 	{
 		m_effect.push_back(std::make_unique<Effect>(m_commonResources,
 			Effect::ParticleType::ENEMY_DEAD,
-			DirectX::SimpleMath::Vector3(enemy->GetPosition().x, enemy->GetPosition().y, enemy->GetPosition().z),
+			enemy->GetPosition(),
 			10.0f,
 			enemy->GetMatrix()));
 		m_isBossAlive = false; // ¶‘¶ƒtƒ‰ƒO‚ğfalse‚É‚·‚é

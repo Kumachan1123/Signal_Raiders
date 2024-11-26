@@ -304,11 +304,11 @@ void Boss::BulletPotsitioning()
 	Matrix transform = Matrix::CreateFromQuaternion(m_pBossAI->GetRotation())
 		* Matrix::CreateTranslation(m_position);
 	// 中央の座標に回転を適用
-	m_bulletPosCenter = Vector3::Transform(Vector3(0, 5.0f, 3), transform);
+	m_bulletPosCenter = Vector3::Transform(Vector3(0, 4.0f, 3), transform);
 	// 左の座標に回転を適用
-	m_bulletPosLeft = Vector3::Transform(Vector3(-2.5f, 2.5f, 3), transform);
+	m_bulletPosLeft = Vector3::Transform(Vector3(-2.5f, 1.5f, 3), transform);
 	// 右の座標に回転を適用
-	m_bulletPosRight = Vector3::Transform(Vector3(2.5f, 2.5f, 3), transform);
+	m_bulletPosRight = Vector3::Transform(Vector3(2.5f, 1.5f, 3), transform);
 }
 
 

@@ -60,7 +60,7 @@ void BossAttack::RotateTowardsPlayer(DirectX::SimpleMath::Vector3& playerPos)
 // ボスの位置をプレイヤー方向に更新
 void BossAttack::MoveTowardsPlayer(float elapsedTime, DirectX::SimpleMath::Vector3& playerPos)
 {
-	m_position += Seek(m_position, playerPos, elapsedTime);
+	m_position += Seek(m_position, playerPos, elapsedTime * 2);
 }
 
 // クールダウンの管理

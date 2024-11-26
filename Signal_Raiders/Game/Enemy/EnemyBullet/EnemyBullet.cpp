@@ -103,7 +103,7 @@ void EnemyBullet::Update(DirectX::SimpleMath::Vector3& pos, float elapsedTime)
 	m_angle += 6.0f;
 	if (m_angle > 360) m_angle = 0;
 
-	if (m_bulletType == BulletType::SPIRAL) SpiralBullet();
+	if (m_bulletType == BulletType::SPIRAL)   SpiralBullet();
 	else if (m_bulletType == BulletType::STRAIGHT) StraightBullet(pos);
 	else if (m_bulletType == BulletType::VERTICAL) VerticalBullet(pos);
 
@@ -192,6 +192,7 @@ void EnemyBullet::StraightBullet(DirectX::SimpleMath::Vector3& pos)
 	}
 	// 弾の方向をプレイヤーの方向に向ける
 	m_direction = toPlayer;
+	m_direction.y -= 0.1f;// 下に若干ずらす
 	// 弾の速度を遅くする
 	float bulletSpeed = .2f; // 適当な速度を設定する（任意の値、調整可能）
 	m_velocity = m_direction * bulletSpeed;
