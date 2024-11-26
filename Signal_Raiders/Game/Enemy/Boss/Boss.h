@@ -92,6 +92,7 @@ private:
 
 	// プレイヤーに与えるダメージ
 	const float PLAYER_DAMAGE = 5.0f;
+	const DirectX::SimpleMath::Vector3 SPHERE_OFFSET = DirectX::SimpleMath::Vector3(0.0f, 0.5f, 0.0f);
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
 	// プレイヤーのカメラの情報

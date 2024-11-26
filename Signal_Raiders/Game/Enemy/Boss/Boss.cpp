@@ -129,12 +129,13 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	// 基準となる座標やら回転やら
 	Matrix world = Matrix::CreateFromQuaternion(m_pBossAI->GetRotation())
 		* Matrix::CreateTranslation(m_position)
-		* Matrix::CreateTranslation(Vector3{ 0,-2,0 });
+		/*	* Matrix::CreateTranslation(Vector3{ 0,-2,0 })*/;
 	// 敵のサイズを設定
 	Matrix enemyWorld = Matrix::CreateScale(m_pBossAI->GetScale() * 2);
 	// 敵の座標を設定
 	enemyWorld *= world;
-	m_pBossSheild->SetPosition(m_position);
+
+	m_pBossSheild->SetPosition(m_BossBS.Center);
 	m_pBossSheild->SetRotation(m_pBossAI->GetRotation());
 
 	// 敵描画	
@@ -186,14 +187,15 @@ void Boss::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	m_pBossModel->Update(elapsedTime, m_pBossAI->GetState());// モデルのアニメーション更新
-	m_pBossAI->Update(elapsedTime, m_position, playerPos, m_isHit, m_isHitToPlayerBullet);// AIの更新
+	m_pBossAI->Update(elapsedTime, playerPos, m_isHit, m_isHitToPlayerBullet);// AIの更新
+	m_position = m_pBossAI->GetPosition();// 敵の座標を更新
 	m_audioManager->Update();// オーディオマネージャーの更新
 
 	m_attackCooldown = m_pBossAI->GetBossAttack()->GetCoolTime();
 	ShootBullet();// 弾発射
 
-	m_pEnemyBullets->Update(elapsedTime, GetPosition());// 敵の弾の更新
-	m_BossBS.Center = Vector3(m_position.x, m_position.y - 1.0f, m_position.z);
+	m_pEnemyBullets->Update(elapsedTime, m_position);// 敵の弾の更新
+	m_BossBS.Center = m_position + SPHERE_OFFSET;// 境界球の中心座標を更新
 	// 弾の位置設定
 	BulletPotsitioning();
 	// HPBar更新
@@ -259,7 +261,7 @@ void Boss::CheckHitWall(DirectX::BoundingSphere& A, DirectX::BoundingBox& B)
 
 		m_position += pushBackVec;
 		A.Center = m_position;
-		A.Center.y -= 2.0f;
+
 	}
 }
 
@@ -302,11 +304,11 @@ void Boss::BulletPotsitioning()
 	Matrix transform = Matrix::CreateFromQuaternion(m_pBossAI->GetRotation())
 		* Matrix::CreateTranslation(m_position);
 	// 中央の座標に回転を適用
-	m_bulletPosCenter = Vector3::Transform(Vector3(0, 2.5f, 3), transform);
+	m_bulletPosCenter = Vector3::Transform(Vector3(0, 5.0f, 3), transform);
 	// 左の座標に回転を適用
-	m_bulletPosLeft = Vector3::Transform(Vector3(-2.5f, 0, 3), transform);
+	m_bulletPosLeft = Vector3::Transform(Vector3(-2.5f, 2.5f, 3), transform);
 	// 右の座標に回転を適用
-	m_bulletPosRight = Vector3::Transform(Vector3(2.5f, 0, 3), transform);
+	m_bulletPosRight = Vector3::Transform(Vector3(2.5f, 2.5f, 3), transform);
 }
 
 

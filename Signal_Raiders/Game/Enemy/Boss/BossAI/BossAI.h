@@ -66,7 +66,6 @@ public:
 	~BossAI();
 	void Initialize();
 	void Update(float elapsedTime,
-		DirectX::SimpleMath::Vector3& pos,
 		DirectX::SimpleMath::Vector3& playerPos,
 		bool& isHitToPlayer,
 		bool& isHitToPlayerBullet);

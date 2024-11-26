@@ -40,7 +40,7 @@ inline float CalculateAngle(const DirectX::SimpleMath::Vector3& eye,
 }
 
 
-// •¨‘ÌA‚ª•¨‘ÌB‚ÉŒü‚©‚Á‚Ä“®‚­
+// •¨‘ÌA‚ª•¨‘ÌB‚ÉŒü‚©‚Á‚Ä“®‚­(‚‚³‚Í–³‹)
 inline DirectX::SimpleMath::Vector3 Seek(const DirectX::SimpleMath::Vector3& A,
 	const DirectX::SimpleMath::Vector3& B,
 	float maxSpeed)
@@ -48,5 +48,6 @@ inline DirectX::SimpleMath::Vector3 Seek(const DirectX::SimpleMath::Vector3& A,
 	DirectX::SimpleMath::Vector3 desired = B - A;
 	desired.Normalize();
 	desired *= maxSpeed;
+	desired.y = 0;
 	return desired;
 }

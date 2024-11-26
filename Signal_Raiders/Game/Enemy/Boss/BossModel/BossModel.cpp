@@ -74,19 +74,6 @@ void BossModel::Render(ID3D11DeviceContext1* context,
 			context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
 		});
 	m_bodyModel->Draw(context, *states, world, view, proj);// 胴体
-	//if (m_isSheild)
-	//{
-	//	// シールド用のスケール行列を適用
-	//	Matrix shieldWorld = Matrix::CreateScale(m_sheildSize) * world;
-
-	//	// シールド
-	//	m_sheildModel->Draw(context, *states, shieldWorld, view, proj, false, [&]()
-	//		{
-	//			context->OMSetDepthStencilState(states->DepthRead(), 0);
-	//			context->RSSetState(states->CullClockwise());
-	//			context->OMSetBlendState(states->Additive(), nullptr, 0xffffffff);
-	//		});
-	//}
 
 	// 表情差分
 	switch (m_nowState)

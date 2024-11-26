@@ -52,36 +52,15 @@ DirectX::SimpleMath::Vector3 BossAttack::CalculateToPlayerVector(const Vector3& 
 }
 
 // プレイヤーに向かって回転する
-void BossAttack::RotateTowardsPlayer(float elapsedTime, const Vector3& toPlayerVector)
+void BossAttack::RotateTowardsPlayer(DirectX::SimpleMath::Vector3& playerPos)
 {
-	// 現在の前方ベクトルを取得
-	Vector3 forward = Vector3::Transform(Vector3::Forward, m_rotation);
-	if (forward.LengthSquared() > 0.0f)
-	{
-		forward.Normalize();
-	}
-
-	// atan2を使って角度を計算
-	float dot = Clamp(toPlayerVector.Dot(forward), -1.0f, 1.0f);
-	float angle = std::acos(dot);
-
-	// 回転処理
-	if (dot < 0.999f)  // プレイヤーの方向を向いていない場合のみ回転
-	{
-		Vector3 cross = toPlayerVector.Cross(forward);
-		if (cross.y < 0) angle = -angle;
-
-		Quaternion toPlayerRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, angle);
-		m_rotation = Quaternion::Slerp(m_rotation, toPlayerRotation * m_rotation, elapsedTime * m_rotationSpeed);
-		m_rotation.Normalize();
-	}
+	m_rotation = DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(CalculateAngle(m_position, playerPos), 0.0f, 0.0f);
 }
 
 // ボスの位置をプレイヤー方向に更新
-void BossAttack::MoveTowardsPlayer(float elapsedTime, const Vector3& toPlayerVector, Vector3& pos)
+void BossAttack::MoveTowardsPlayer(float elapsedTime, DirectX::SimpleMath::Vector3& playerPos)
 {
-	float moveSpeed = m_velocity.Length() * 2.0f;
-	pos += toPlayerVector * moveSpeed * elapsedTime;
+	m_position += Seek(m_position, playerPos, elapsedTime);
 }
 
 // クールダウンの管理
@@ -102,23 +81,20 @@ void BossAttack::ManageAttackCooldown(float elapsedTime)
 void BossAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool isHitToPlayer)
 {
 	UNREFERENCED_PARAMETER(isHitToPlayer);
-
-	// プレイヤーへの方向を計算
-	Vector3 toPlayerVector = CalculateToPlayerVector(pos, playerPos);
-
+	UNREFERENCED_PARAMETER(pos);
 	// プレイヤーの方向に回転
-	RotateTowardsPlayer(elapsedTime, toPlayerVector);
+	RotateTowardsPlayer(playerPos);
 
 	// プレイヤーの方向に移動
-	MoveTowardsPlayer(elapsedTime, toPlayerVector, pos);
+	MoveTowardsPlayer(elapsedTime, playerPos);
 
 	// クールダウンの更新
 	ManageAttackCooldown(elapsedTime);
 
-	// 回転速度を減速し、最小値を確保
-	m_rotationSpeed = std::max(m_rotationSpeed - 0.05f, 0.1f);
+
 
 	// ボスの状態を更新
 	m_pBoss->SetRotation(m_rotation);
 	m_pBoss->SetVelocity(m_velocity);
+	m_pBoss->SetPosition(m_position);
 }

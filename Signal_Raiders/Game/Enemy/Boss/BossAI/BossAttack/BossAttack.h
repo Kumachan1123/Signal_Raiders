@@ -48,8 +48,8 @@ public:
 	void Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool isHitToPlayer) override;
 private:
 	DirectX::SimpleMath::Vector3 CalculateToPlayerVector(const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Vector3& playerPos);
-	void RotateTowardsPlayer(float elapsedTime, const DirectX::SimpleMath::Vector3& toPlayerVector);
-	void MoveTowardsPlayer(float elapsedTime, const DirectX::SimpleMath::Vector3& toPlayerVector, DirectX::SimpleMath::Vector3& pos);
+	void RotateTowardsPlayer(DirectX::SimpleMath::Vector3& playerPos);
+	void MoveTowardsPlayer(float elapsedTime, DirectX::SimpleMath::Vector3& playerPos);
 	void ManageAttackCooldown(float elapsedTime);
 };
 #endif //BOSS_ATTACK_DEFINED

@@ -40,26 +40,27 @@ void BossAI::Initialize()
 	m_enemyState = IState::EnemyState::ATTACK;// 待機態勢
 }
 // 更新
-void BossAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool& isHitToPlayer, bool& isHitToPlayerBullet)
+void BossAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& playerPos, bool& isHitToPlayer, bool& isHitToPlayerBullet)
 {
 	using namespace DirectX::SimpleMath;
 	if (isHitToPlayerBullet)m_isHitPlayerBullet = true;
 	// sin波を用いた浮遊動作の実装
 	m_time += elapsedTime;
+	m_currentState->Update(elapsedTime, playerPos, playerPos, isHitToPlayer);
 	// sin波を用いた浮遊動作の実装
 	float amplitude = 2.0f;  // 振幅
 	float frequency = 0.5f;  // 周波数
 	// 敵をふわふわ浮遊させる
-	pos.y = m_initialPosition.y + amplitude * std::sin(frequency * m_time);
-	pos.y += m_velocity.y * elapsedTime;
+	m_position.y = m_initialPosition.y + amplitude * std::sin(frequency * m_time);
+	m_position.y += m_velocity.y * elapsedTime;
 
-	m_currentState->Update(elapsedTime, pos, playerPos, isHitToPlayer);
+
 	// プレイヤーの弾に当たった場合
-	if (isHitToPlayerBullet)
+	//if (isHitToPlayerBullet)
 		//KnockBack(elapsedTime, pos, isHitToPlayerBullet, playerPos);
 
 
-		m_position = pos;
+	/*m_position = pos;*/
 }
 // ステート変更
 void BossAI::ChangeState(IState* newState)

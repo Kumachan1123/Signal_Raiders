@@ -56,17 +56,32 @@ void PlayerBullets::Update(float elapsedTime)
 			bool isHit = false;// ヒットフラグを初期化
 			for (auto& enemy : m_pEnemies->GetEnemies())
 			{
+
 				// 敵とプレイヤーの弾の当たり判定
 				if ((*it)->GetBoundingSphere().Intersects(enemy->GetBoundingSphere()))
 				{
+
 					isHit = true;// ヒットフラグを立てる
 					enemy->SetEnemyHP((*it)->Damage());// 敵のHPを減らす
-					// エフェクトを追加
-					m_pEnemies->GetEffect().push_back(std::make_unique<Effect>(m_commonResources,
-						Effect::ParticleType::ENEMY_HIT,
-						enemy->GetPosition(),
-						3.0f,
-						enemy->GetMatrix()));
+					if (auto boss = dynamic_cast<Boss*>(enemy.get()))
+					{
+						m_pEnemies->GetEffect().push_back(std::make_unique<Effect>(m_commonResources,
+							Effect::ParticleType::ENEMY_HIT,
+							DirectX::SimpleMath::Vector3(enemy->GetPosition().x, enemy->GetPosition().y + 2, enemy->GetPosition().z),
+							10.0f,
+							enemy->GetMatrix()));
+
+					}
+					else
+					{
+						// エフェクトを追加
+						m_pEnemies->GetEffect().push_back(std::make_unique<Effect>(m_commonResources,
+							Effect::ParticleType::ENEMY_HIT,
+							enemy->GetPosition(),
+							3.0f,
+							enemy->GetMatrix()));
+					}
+
 					// プレイヤーの弾が敵に当たったフラグを立てる
 					enemy->SetHitToPlayerBullet(true);
 					m_audioManager->PlaySound("Hit", m_pPlayer->GetVolume() * 0.8f);// ヒットSEを再生
