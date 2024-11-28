@@ -2,6 +2,8 @@
 #include <SimpleMath.h>
 #include <cmath>
 #include <algorithm>
+#include <random>
+#include <type_traits> 
 
 // üŒ`•âŠÔ
 template <typename T>
@@ -50,4 +52,22 @@ inline DirectX::SimpleMath::Vector3 Seek(const DirectX::SimpleMath::Vector3& A,
 	desired *= maxSpeed;
 	desired.y = 0;
 	return desired;
+}
+
+// ®”Œ^—p‚Ìƒ‰ƒ“ƒ_ƒ€‚È”{—¦‚ğ¶¬‚·‚éŠÖ”
+inline int GenerateRandomMultiplier(int min, int max)
+{
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> dis(min, max);
+	return dis(gen);
+}
+
+// •‚“®¬”“_Œ^—p‚Ìƒ‰ƒ“ƒ_ƒ€‚È”{—¦‚ğ¶¬‚·‚éŠÖ”
+inline float GenerateRandomMultiplier(float min, float max)
+{
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<float> dis(min, max);
+	return dis(gen);
 }

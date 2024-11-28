@@ -21,7 +21,6 @@
 #include <memory>
 #include <Libraries/Microsoft/DebugDraw.h>
 
-
 // コンストラクタ
 Boss::Boss(Player* pPlayer)
 	: IEnemy(pPlayer)
@@ -52,8 +51,9 @@ Boss::Boss(Player* pPlayer)
 	, m_bossBulletType{ BossBulletType::NORMAL }
 	, m_bulletType{ EnemyBullet::BulletType::STRAIGHT }
 	, m_audioManager{ AudioManager::GetInstance() }
+{
 
-{}
+}
 // デストラクタ
 Boss::~Boss() {}
 //---------------------------------------------------------
@@ -104,14 +104,14 @@ void Boss::Initialize(CommonResources* resources, int hp)
 	// プリミティブバッチを作成する
 	m_primitiveBatch = std::make_unique<DirectX::DX11::PrimitiveBatch<DirectX::DX11::VertexPositionColor>>(context);
 	// 初期位置を設定
-	m_position = Vector3(0.0f, 10.0f, 0.0f);
+	m_position = INITIAL_POSITION;
 	// 敵の座標を設定
 	m_pBossAI->SetPosition(m_position);
 
 
 	// 境界球の初期化
 	m_BossBS.Center = m_position;
-	m_BossBS.Radius = 2.5f;
+	m_BossBS.Radius = SPHERE_RADIUS;
 	// オーディオマネージャー
 	m_audioManager->LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet");// 弾発射音
 	m_audioManager->LoadSound("Resources/Sounds/Barrier.mp3", "Barrier");// シールド音
@@ -128,8 +128,7 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	auto states = m_commonResources->GetCommonStates();
 	// 基準となる座標やら回転やら
 	Matrix world = Matrix::CreateFromQuaternion(m_pBossAI->GetRotation())
-		* Matrix::CreateTranslation(m_position)
-		/*	* Matrix::CreateTranslation(Vector3{ 0,-2,0 })*/;
+		* Matrix::CreateTranslation(m_position);
 	// 敵のサイズを設定
 	Matrix enemyWorld = Matrix::CreateScale(m_pBossAI->GetScale() * 2);
 	// 敵の座標を設定
@@ -149,8 +148,8 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	m_pEnemyBullets->Render(view, proj);
 
 	// HPBarの座標を設定
-	Vector3 hpBarPos = Vector3(m_position.x, m_position.y - 5, m_position.z);
-	m_pHPBar->SetScale(Vector3(3.0f));
+	Vector3 hpBarPos = m_position - HPBAR_OFFSET;
+	m_pHPBar->SetScale(Vector3(HPBAR_SCALE));
 	// HPBar描画
 	m_pHPBar->Render(view, proj, hpBarPos, m_rotate);
 #ifdef _DEBUG
@@ -304,11 +303,11 @@ void Boss::BulletPotsitioning()
 	Matrix transform = Matrix::CreateFromQuaternion(m_pBossAI->GetRotation())
 		* Matrix::CreateTranslation(m_position);
 	// 中央の座標に回転を適用
-	m_bulletPosCenter = Vector3::Transform(Vector3(0, 4.0f, 3), transform);
+	m_bulletPosCenter = Vector3::Transform(TOP_OFFSET, transform);
 	// 左の座標に回転を適用
-	m_bulletPosLeft = Vector3::Transform(Vector3(-2.5f, 1.5f, 3), transform);
+	m_bulletPosLeft = Vector3::Transform(LEFT_OFFSET, transform);
 	// 右の座標に回転を適用
-	m_bulletPosRight = Vector3::Transform(Vector3(2.5f, 1.5f, 3), transform);
+	m_bulletPosRight = Vector3::Transform(RIGHT_OFFSET, transform);
 }
 
 
@@ -318,7 +317,7 @@ void Boss::CreateBullet()
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	// 角度をずらして左右の弾を発射
-	constexpr float angleOffset = XMConvertToRadians(30.0f); // 30度の角度オフセット
+	float angleOffset = XMConvertToRadians(ANGLE_OFFSET); // 30度の角度オフセット
 	// Enemiesクラスで設定した弾のタイプによって処理を分岐
 	switch (GetBulletType())
 	{
@@ -327,17 +326,17 @@ void Boss::CreateBullet()
 		break;
 	case BossBulletType::TWIN:
 
-		CreateLeftBullet(angleOffset, EnemyBullet::BulletType::STRAIGHT);// 左の弾を発射
+		CreateLeftBullet(-angleOffset, EnemyBullet::BulletType::STRAIGHT);// 左の弾を発射
 		CreateRightBullet(angleOffset, EnemyBullet::BulletType::STRAIGHT);// 右の弾を発射
 		break;
 	case BossBulletType::THREE:
 		CreateCenterBullet(EnemyBullet::BulletType::STRAIGHT);// 中央の弾を発射
-		CreateLeftBullet(angleOffset, EnemyBullet::BulletType::STRAIGHT);// 左の弾を発射
+		CreateLeftBullet(-angleOffset, EnemyBullet::BulletType::STRAIGHT);// 左の弾を発射
 		CreateRightBullet(angleOffset, EnemyBullet::BulletType::STRAIGHT);// 右の弾を発射
 		break;
 	case BossBulletType::SPIRAL:
-		CreateCenterBullet(EnemyBullet::BulletType::SPIRAL);// 中央の弾を発射
-		CreateLeftBullet(angleOffset, EnemyBullet::BulletType::SPIRAL);// 左の弾を発射
+		CreateCenterBullet(EnemyBullet::BulletType::STRAIGHT);// 中央の弾を発射
+		CreateLeftBullet(-angleOffset, EnemyBullet::BulletType::SPIRAL);// 左の弾を発射
 		CreateRightBullet(angleOffset, EnemyBullet::BulletType::SPIRAL);// 右の弾を発射
 		CreateVerticalBullet();// 真下に落ちて着弾したら加速する弾を発射
 		break;
@@ -350,7 +349,6 @@ void Boss::CreateCenterBullet(EnemyBullet::BulletType type)
 {
 	m_pEnemyBullets->CreateBullet(m_bulletPosCenter, m_bulletDirection, m_pPlayer->GetPlayerPos(),
 		BULLET_SIZE, type);
-	m_pEnemyBullets->SetRotateDirection(-1);// 螺旋弾の回転方向を設定（左回り
 }
 
 // 左の弾を発射
@@ -383,7 +381,7 @@ void Boss::CreateVerticalBullet()
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	// 真下に落ちる弾を発射
-	m_pEnemyBullets->CreateBullet(m_bulletPosCenter, Vector3(0, 0, 0), m_pPlayer->GetPlayerPos(),
+	m_pEnemyBullets->CreateBullet(m_bulletPosCenter, Vector3::Zero, m_pPlayer->GetPlayerPos(),
 		BULLET_SIZE, EnemyBullet::BulletType::VERTICAL);
 }
 void Boss::SetEnemyHP(int hp)

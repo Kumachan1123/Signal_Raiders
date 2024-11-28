@@ -20,6 +20,8 @@
 #include <random>
 #include <memory>
 #include <Libraries/Microsoft/DebugDraw.h>
+#include "Game/KumachiLib/KumachiLib.h"
+
 
 // コンストラクタ
 Enemy::Enemy(Player* pPlayer)
@@ -92,10 +94,9 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 	m_enemyBullets = std::make_unique<EnemyBullets>(this);
 	m_enemyBullets->Initialize(resources);
 	// 乱数生成
-	std::random_device rd;  // シード生成器
-	std::mt19937 gen(rd()); // メルセンヌ・ツイスタの乱数生成器
-	std::uniform_real_distribution<float> dist(-50.0f, 50.0f); // 一様分布
-	m_position = Vector3{ dist(gen), 0.0f, dist(gen) };// 敵の初期位置を設定
+	Vector3 position = Vector3(GenerateRandomMultiplier(-50.0f, 50.0f)); // 一様分布
+	// 敵の初期位置を設定
+	m_position = Vector3{ position.x, 0.0f,position.z };// 敵の初期位置を設定
 	// プリミティブバッチを作成する
 	m_primitiveBatch = std::make_unique<DirectX::DX11::PrimitiveBatch<DirectX::DX11::VertexPositionColor>>(context);
 	// 敵の座標を設定
@@ -168,7 +169,7 @@ void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 	{
 		m_attackCooldown = m_enemyAI->GetEnemyAttack()->GetCoolTime();
 		// 攻撃のクールダウンタイムを管理
-		if (m_attackCooldown <= 0.1f)
+		if (m_attackCooldown <= ATTACK_INTERVAL)
 		{
 			m_audioManager->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
 			// クォータニオンから方向ベクトルを計算

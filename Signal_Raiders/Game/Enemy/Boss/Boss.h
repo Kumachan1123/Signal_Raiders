@@ -90,15 +90,37 @@ private:
 	float m_attackCooldown;  // 攻撃のクールダウン(フレームごとに発射することを防ぐ用）
 	float m_bulletCooldown;  // 弾のクールダウン
 
-	// プレイヤーに与えるダメージ
-	const float PLAYER_DAMAGE = 5.0f;
-	const DirectX::SimpleMath::Vector3 SPHERE_OFFSET = DirectX::SimpleMath::Vector3(0.0f, 0.5f, 0.0f);
+
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
 	// プレイヤーのカメラの情報
 	DirectX::SimpleMath::Vector3 m_cameraEye;
 	DirectX::SimpleMath::Vector3 m_cameraTarget;
 	DirectX::SimpleMath::Vector3 m_cameraUp;
+
+private:
+	// 定数
+	// 初期位置
+	const DirectX::SimpleMath::Vector3 INITIAL_POSITION = DirectX::SimpleMath::Vector3(0.0f, 10.0f, 0.0f);
+	// プレイヤーに与えるダメージ
+	const float PLAYER_DAMAGE = 5.0f;
+	// 弾の角度オフセット
+	const float ANGLE_OFFSET = 30.0f;
+	// 境界球のオフセット
+	const DirectX::SimpleMath::Vector3 SPHERE_OFFSET = DirectX::SimpleMath::Vector3(0.0f, 0.5f, 0.0f);
+	// 境界球の半径
+	const float SPHERE_RADIUS = 2.5f;
+	// ボスの頭の砲口のオフセット
+	const DirectX::SimpleMath::Vector3 TOP_OFFSET = DirectX::SimpleMath::Vector3(0.0f, 4.0f, 3.0f);
+	// ボスの左の砲口のオフセット
+	const DirectX::SimpleMath::Vector3 LEFT_OFFSET = DirectX::SimpleMath::Vector3(-2.5f, 1.5f, 3.0f);
+	// ボスの右の砲口のオフセット
+	const DirectX::SimpleMath::Vector3 RIGHT_OFFSET = DirectX::SimpleMath::Vector3(2.5f, 1.5f, 3.0f);
+	// HPバーのオフセット
+	const DirectX::SimpleMath::Vector3 HPBAR_OFFSET = DirectX::SimpleMath::Vector3(0.0f, 5.0f, 0.0f);
+	// HPバーのスケール
+	const float HPBAR_SCALE = 3.0f;
+
 public:
 	//	getter
 	DirectX::BoundingSphere& GetBoundingSphere() override { return m_BossBS; }
@@ -132,7 +154,7 @@ public:
 	void SetHitToOtherEnemy(bool isHitToOtherEnemy) override { m_isHitToOtherEnemy = isHitToOtherEnemy; }
 	void SetBulletBoundingSphere(DirectX::BoundingSphere& bs) override { m_enemyBulletBS = bs; }
 	void SetPlayerBoundingSphere(DirectX::BoundingSphere playerBS) override { m_playerBS = playerBS; }
-	void SetPlayerHP(float& HP) const override { HP -= PLAYER_DAMAGE; }
+	void SetPlayerHP(float& HP) const override { HP -= Boss::PLAYER_DAMAGE; }
 	void SetBulletHitToPlayer(bool hit) override { m_isBullethit = hit; }// 敵の弾がプレイヤーに当たったか
 	void SetHitToPlayerBullet(bool hit)override { m_isHitToPlayerBullet = hit; }
 	void SetBulletCooldown(float cooldown) { m_bulletCooldown = cooldown; }// シールドを展開した後に実行する

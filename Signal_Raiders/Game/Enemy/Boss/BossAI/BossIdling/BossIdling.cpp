@@ -9,6 +9,7 @@
 #include "Libraries/MyLib/DebugString.h"
 #include "Libraries/MyLib/InputManager.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
+#include "Game/KumachiLib/KumachiLib.h"
 #include <cassert>
 #include <random>  
 
@@ -44,13 +45,13 @@ void BossIdling::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Di
 	// sin”g‚ðŽg‚Á‚½‰ñ“]‚ÌXV
 	float rotationAmplitude = 1.0f;  // ‰ñ“]U•
 	float rotationFrequency = 1.0f;  // ‰ñ“]Žü”g”
-	float randomMultiplier = m_pBoss->GenerateRandomMultiplier(RANDOM_MIN, RANDOM_MAX);  // ƒ‰ƒ“ƒ_ƒ€‚È”{—¦‚ð¶¬
+	float randomMultiplier = GenerateRandomMultiplier(RANDOM_MIN, RANDOM_MAX);  // ƒ‰ƒ“ƒ_ƒ€‚È”{—¦‚ð¶¬
 	float sinRotationSpeed = m_rotationSpeed + rotationAmplitude * std::sin(rotationFrequency * m_time);  // ‰ñ“]‘¬“x‚ðsin”g‚Å•Ï‰»‚³‚¹‚é
 	Quaternion deltaRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, sinRotationSpeed * randomMultiplier * elapsedTime);  // ¶¬‚µ‚½‰ñ“]‘¬“x‚ÉŠî‚Ã‚«Aã•ûŒüiYŽ²j‚ð’†S‚É‰ñ“]‚ð¶¬
 	m_rotation *= deltaRotation;  // Šù‘¶‚Ì‰ñ“]‚ÉV‚µ‚¢‰ñ“]‚ð“K—p
 	m_rotation.Normalize();  // ‰ñ“]‚ð³‹K‰»‚µAˆÀ’è‚µ‚½ƒNƒH[ƒ^ƒjƒIƒ“‚ðˆÛŽ
 	// Œü‚¢‚Ä‚¢‚é•ûŒü‚ÉŠî‚Ã‚¢‚ÄXÀ•W‚ÆZÀ•W‚ðˆÚ“®
-	float moveCorrect = m_pBoss->GenerateRandomMultiplier(10.0f, 10.0f);
+	float moveCorrect = GenerateRandomMultiplier(10.0f, 10.0f);
 	Vector3 forward = Vector3::Transform(Vector3::Backward * moveCorrect, m_rotation);
 	pos += forward * (m_velocity.Length() * 1.5f) * elapsedTime;
 	m_pBoss->SetRotation(m_rotation);

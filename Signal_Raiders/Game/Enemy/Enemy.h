@@ -56,12 +56,15 @@ private:
 	float m_attackCooldown;  // 攻撃のクールダウンタイ
 	// プレイヤーに与えるダメージ
 	const float PLAYER_DAMAGE = 1.0f;
+	// 攻撃の間隔
+	const float ATTACK_INTERVAL = 1.0f;
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
 	// カメラ
 	DirectX::SimpleMath::Vector3 m_cameraEye;
 	DirectX::SimpleMath::Vector3 m_cameraTarget;
 	DirectX::SimpleMath::Vector3 m_cameraUp;
+
 public:
 	//	getter
 	DirectX::BoundingSphere& GetBoundingSphere() override { return m_enemyBS; }

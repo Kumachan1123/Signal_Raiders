@@ -9,6 +9,7 @@
 #include "Libraries/MyLib/InputManager.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
 #include <cassert>
+#include "Game/KumachiLib/KumachiLib.h"
 #include <random>
 #include <type_traits> // std::enable_if, std::is_integral
 
@@ -53,14 +54,6 @@ void BossAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& playerPos, 
 	// 敵をふわふわ浮遊させる
 	m_position.y = m_initialPosition.y + amplitude * std::sin(frequency * m_time);
 	m_position.y += m_velocity.y * elapsedTime;
-
-
-	// プレイヤーの弾に当たった場合
-	//if (isHitToPlayerBullet)
-		//KnockBack(elapsedTime, pos, isHitToPlayerBullet, playerPos);
-
-
-	/*m_position = pos;*/
 }
 // ステート変更
 void BossAI::ChangeState(IState* newState)
@@ -70,23 +63,6 @@ void BossAI::ChangeState(IState* newState)
 		m_currentState = newState;
 		m_currentState->Initialize();
 	}
-}
-// 整数型用のランダムな倍率を生成する関数
-int BossAI::GenerateRandomMultiplier(int min, int max)
-{
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<int> dis(min, max);
-	return dis(gen);
-}
-
-// 浮動小数点型用のランダムな倍率を生成する関数
-float BossAI::GenerateRandomMultiplier(float min, float max)
-{
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_real_distribution<float> dis(min, max);
-	return dis(gen);
 }
 
 // ノックバック処理

@@ -40,16 +40,6 @@ void BossAttack::Initialize()
 	m_scale = m_pBoss->GetScale();// スケール
 }
 
-// プレイヤー方向のベクトルを計算する
-DirectX::SimpleMath::Vector3 BossAttack::CalculateToPlayerVector(const Vector3& pos, const Vector3& playerPos)
-{
-	Vector3 toPlayerVector = playerPos - pos;
-	if (toPlayerVector.LengthSquared() > 0.0f)
-	{
-		toPlayerVector.Normalize();
-	}
-	return toPlayerVector;
-}
 
 // プレイヤーに向かって回転する
 void BossAttack::RotateTowardsPlayer(DirectX::SimpleMath::Vector3& playerPos)
@@ -70,9 +60,10 @@ void BossAttack::ManageAttackCooldown(float elapsedTime)
 	if (m_attackCooldown <= 0.250f)
 	{
 		m_pBoss->SetState(IState::EnemyState::ANGRY);
-		if (m_attackCooldown <= 0.0f)
+		if (m_attackCooldown <= 0.0f)// クールダウンが0を下回ったら
 		{
 			m_attackCooldown = ATTACK_INTERVAL;  // クールダウンリセット
+			m_pBoss->SetState(IState::EnemyState::ATTACK);  // 攻撃状態に遷移
 		}
 	}
 }
@@ -90,8 +81,6 @@ void BossAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Di
 
 	// クールダウンの更新
 	ManageAttackCooldown(elapsedTime);
-
-
 
 	// ボスの状態を更新
 	m_pBoss->SetRotation(m_rotation);

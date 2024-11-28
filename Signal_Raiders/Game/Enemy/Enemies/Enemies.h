@@ -70,6 +70,7 @@ private:
 	float m_SEVolume = 0.0f;
 	// ƒ{ƒX‚Ì’e‚ÌŽí—Þ
 	Boss::BossBulletType m_bossBulletType;
+
 public:
 	Enemies(CommonResources* commonResources);
 	~Enemies();
