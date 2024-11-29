@@ -165,6 +165,7 @@ public:
 	void Initialize(CommonResources* resources, int hp) override;// ‰Šú‰»
 	void Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)override;// XV
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;// •`‰æ
+	void DrawCollision(CommonResources* resources, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;// Õ“Ë”»’è‚Ì•`‰æ
 	void CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::BoundingSphere& B)override;// Õ“Ë”»’è
 	void CheckHitWall(DirectX::BoundingSphere& A, DirectX::BoundingBox& B)override;// •Ç‚Æ‚ÌÕ“Ë”»’è
 

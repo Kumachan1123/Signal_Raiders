@@ -160,9 +160,18 @@ void AreaAttacker::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 
 	// “G‚Ì’e•`‰æ
 	m_enemyBullets->Render(view, proj);
+
+}
+
+void AreaAttacker::DrawCollision(CommonResources* resources, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+{
 #ifdef _DEBUG
 	// •`‰æ‚·‚é
 	// Šeƒpƒ‰ƒ[ƒ^‚ðÝ’è‚·‚é
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
+	auto context = resources->GetDeviceResources()->GetD3DDeviceContext();
+	auto states = resources->GetCommonStates();
 	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
 	context->OMSetDepthStencilState(states->DepthRead(), 0);
 	context->RSSetState(states->CullNone());

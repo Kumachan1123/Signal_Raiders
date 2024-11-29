@@ -110,7 +110,8 @@ void Enemies::Render()
 	Matrix projection = m_pPlayer->GetCamera()->GetProjectionMatrix();
 	if (m_enemies.size() > 0)for (const auto& enemy : m_enemies)
 	{
-		enemy->Render(view, projection);
+		enemy->Render(view, projection);//	敵を描画する
+		enemy->DrawCollision(m_commonResources, view, projection);//	当たり判定を描画する
 	}
 
 	// エフェクトを描画する

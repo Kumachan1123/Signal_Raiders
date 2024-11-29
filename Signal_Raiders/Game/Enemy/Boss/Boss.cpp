@@ -152,7 +152,16 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	m_pHPBar->SetScale(Vector3(HPBAR_SCALE));
 	// HPBar•`‰æ
 	m_pHPBar->Render(view, proj, hpBarPos, m_rotate);
+
+}
+void Boss::DrawCollision(CommonResources* resources, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+{
+
 #ifdef _DEBUG
+	auto context = resources->GetDeviceResources()->GetD3DDeviceContext();
+	auto states = resources->GetCommonStates();
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
 	// ‹«ŠE‹…‚ð•`‰æ‚·‚é
 	// Šeƒpƒ‰ƒ[ƒ^‚ðÝ’è‚·‚é
 	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);

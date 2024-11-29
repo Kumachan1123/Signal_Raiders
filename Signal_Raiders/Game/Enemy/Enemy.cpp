@@ -130,6 +130,17 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	// “G•`‰æ	
 	m_enemyModel->Render(context, states, enemyWorld, view, proj);
 
+	// “G‚Ì’e•`‰æ
+	m_enemyBullets->Render(view, proj);
+
+}
+void Enemy::DrawCollision(CommonResources* resources, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+{
+#ifdef _DEBUG
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
+	auto context = resources->GetDeviceResources()->GetD3DDeviceContext();
+	auto states = resources->GetCommonStates();
 	// •`‰æ‚·‚é
 	// Šeƒpƒ‰ƒ[ƒ^‚ðÝ’è‚·‚é
 	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
@@ -140,9 +151,6 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	m_basicEffect->SetView(view);
 	m_basicEffect->SetProjection(proj);
 	m_basicEffect->Apply(context);
-	// “G‚Ì’e•`‰æ
-	m_enemyBullets->Render(view, proj);
-#ifdef _DEBUG
 	m_primitiveBatch->Begin();
 	if (!m_isHit)
 	{
