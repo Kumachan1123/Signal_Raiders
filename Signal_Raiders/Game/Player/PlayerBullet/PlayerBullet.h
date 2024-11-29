@@ -61,6 +61,8 @@ public:
 	void Initialize(CommonResources* resources);
 	void Update(DirectX::SimpleMath::Vector3& Direction, float elapsedTime);
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+	void RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+	void DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 	void MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir);
 	//Getter
 	DirectX::SimpleMath::Vector3 GetBulletPosition()const { return m_position; }

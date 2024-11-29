@@ -9,6 +9,7 @@
 #include "Libraries/Microsoft/ReadData.h"
 #include <cassert>
 #include <Libraries/Microsoft/DebugDraw.h>
+#include "Game/KumachiLib/DrawCollision/DrawCollision.h"
 //-------------------------------------------------------------------
 // コンストラクタ
 //-------------------------------------------------------------------
@@ -37,25 +38,8 @@ void EnemyBullet::Initialize(CommonResources* resources, BulletType type)
 	using namespace DirectX::SimpleMath;
 	m_commonResources = resources;
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	m_bulletType = type;// 弾の種類を設定する
-	// プリミティブバッチを作成する
-	m_primitiveBatch = std::make_unique<DirectX::DX11::PrimitiveBatch<DirectX::DX11::VertexPositionColor>>(context);
-	/*
-		デバッグドローの表示用オブジェクトを生成する
-	*/
-	// ベーシックエフェクトを作成する
-	m_basicEffect = std::make_unique<BasicEffect>(device);
-	m_basicEffect->SetVertexColorEnabled(true);
-
-	// 入力レイアウトを作成する
-	DX::ThrowIfFailed(
-		CreateInputLayoutFromEffect<VertexPositionColor>(
-			device,
-			m_basicEffect.get(),
-			m_inputLayout.ReleaseAndGetAddressOf()
-		)
-	);
+	DrawCollision::Initialize(m_commonResources);
 	// 影用のピクセルシェーダー
 	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_EnemyShadow.cso");
 	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pixelShader.ReleaseAndGetAddressOf()));
@@ -120,12 +104,9 @@ void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	using namespace DirectX::SimpleMath;
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
-
 	// 軌跡描画
 	m_bulletTrail->CreateBillboard(m_cameraTarget, m_cameraEye, m_cameraUp);
 	m_bulletTrail->Render(view, proj);
-
-
 	// 弾描画
 	m_model->Draw(context, *states, BulletWorldMatrix(), view, proj);
 
@@ -154,28 +135,17 @@ void EnemyBullet::RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::Simple
 
 void EnemyBullet::RenderBoundingSphere(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
+	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-	auto states = m_commonResources->GetCommonStates();
 #ifdef _DEBUG
+	DrawCollision::DrawStart(view, proj);
 	Matrix boundingbulletWorld = Matrix::CreateScale(Vector3::One);
 	boundingbulletWorld *= Matrix::CreateTranslation(m_position);
-	// 各パラメータを設定する
-	context->OMSetBlendState(states->Additive(), nullptr, 0xFFFFFFFF);
-	context->OMSetDepthStencilState(states->DepthDefault(), 0);
-	context->RSSetState(states->CullNone());
-	context->IASetInputLayout(m_inputLayout.Get());
-	//** デバッグドローでは、ワールド変換いらない
-	m_basicEffect->SetView(view);
-	m_basicEffect->SetProjection(proj);
-	m_basicEffect->Apply(context);
 	// 境界球の変換を同じワールドマトリックスに基づいて行う
 	DirectX::BoundingSphere transformedBoundingSphere = m_boundingSphere;
 	m_boundingSphere.Transform(transformedBoundingSphere, boundingbulletWorld);
-	// 描画する
-	m_primitiveBatch->Begin();
-	DX::Draw(m_primitiveBatch.get(), m_boundingSphere, DirectX::Colors::Black);
-	m_primitiveBatch->End();
+	DrawCollision::DrawBoundingSphere(m_boundingSphere, Colors::Red);
+	DrawCollision::DrawEnd();
 #endif
 
 }

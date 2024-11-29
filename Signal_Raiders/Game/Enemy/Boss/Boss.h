@@ -172,7 +172,7 @@ public:
 	void PlayBarrierSE();// ƒoƒŠƒASEÄ¶
 private:
 	void ShootBullet();// ’e”­Ë
-	void BulletPotsitioning();// ’e‚ÌˆÊ’uİ’è
+	void BulletPositioning();// ’e‚ÌˆÊ’uİ’è
 	void CreateBullet();// ’e‚ğ¶¬
 	void CreateCenterBullet(EnemyBullet::BulletType type);// ’†‰›‚Ì’e‚ğ¶¬
 	void CreateLeftBullet(float angleOffset, EnemyBullet::BulletType type);// ¶‚Ì’e‚ğ¶¬

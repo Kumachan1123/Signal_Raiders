@@ -104,19 +104,15 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
 	// Šî€‚Æ‚È‚éÀ•W‚â‚ç‰ñ“]‚â‚ç
-	Matrix world = Matrix::CreateFromQuaternion(m_enemyAI->GetRotation())
-		* Matrix::CreateTranslation(m_position)
-		/*	* Matrix::CreateTranslation(Vector3{ 0,-2,0 })*/;
-	// “G‚ÌƒTƒCƒY‚ğİ’è
-	Matrix enemyWorld = Matrix::CreateScale(m_enemyAI->GetScale());
-	// “G‚ÌÀ•W‚ğİ’è
-	enemyWorld *= world;
+	Matrix world = Matrix::CreateScale(m_enemyAI->GetScale())
+		* Matrix::CreateFromQuaternion(m_enemyAI->GetRotation())
+		* Matrix::CreateTranslation(m_position);
 	// HPBar‚ÌÀ•W‚ğİ’è
 	Vector3 hpBarPos = Vector3(m_position.x, m_position.y - 1, m_position.z);
 	// HPBar•`‰æ
 	m_HPBar->Render(view, proj, hpBarPos, m_rotate);
 	// “G•`‰æ	
-	m_enemyModel->Render(context, states, enemyWorld, view, proj);
+	m_enemyModel->Render(context, states, world, view, proj);
 
 	// “G‚Ì’e•`‰æ
 	m_enemyBullets->Render(view, proj);
@@ -124,29 +120,22 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 }
 void Enemy::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
-
 #ifdef _DEBUG
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-
 	// •`‰æŠJn
 	DrawCollision::DrawStart(view, proj);
 	// Fİ’è
 	DirectX::XMVECTOR color = Colors::Black;
-	if (m_isHit)// “–‚½‚Á‚½
-	{
-		color = m_isHitToOtherEnemy ? Colors::Tomato : Colors::Blue;
-	}
-	else// “–‚½‚Á‚Ä‚¢‚È‚¢
-	{
-		color = m_isHitToOtherEnemy ? Colors::White : Colors::Black;
-	}
+	// “–‚½‚Á‚½
+	if (m_isHit) color = m_isHitToOtherEnemy ? Colors::Tomato : Colors::Blue;
+	// “–‚½‚Á‚Ä‚¢‚È‚¢
+	else color = m_isHitToOtherEnemy ? Colors::White : Colors::Black;
 	// ‹«ŠE‹…•`‰æ
 	DrawCollision::DrawBoundingSphere(m_enemyBS, color);
 	// •`‰æI—¹
 	DrawCollision::DrawEnd();
 #endif
-
 }
 // XV
 void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)

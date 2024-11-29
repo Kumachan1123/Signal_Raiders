@@ -49,6 +49,6 @@ public:
 public:
 	void SetIsBullet(bool isBullet) { m_isBullet = isBullet; }
 	void SetIsBulletBorned(bool isBulletBorned) { m_isBulletBorned = isBulletBorned; }
-
-
+private:
+	bool CheckCollisionWithEnemies(const std::unique_ptr<PlayerBullet>& bullet);
 };

@@ -123,15 +123,18 @@ void Enemies::Render()
 	);
 
 }
+//---------------------------------------------------------
 // FMODシステムの初期化
+//---------------------------------------------------------
 void Enemies::InitializeFMOD()
 {
 	m_audioManager->Initialize();
 	m_audioManager->LoadSound("Resources/Sounds/Explosion.mp3", "EnemyDead");
 	m_audioManager->LoadSound("Resources/Sounds/damage.mp3", "Damage");
 }
-
+//---------------------------------------------------------
 // 敵の生成上限設定
+//---------------------------------------------------------
 void Enemies::SetEnemyMax()
 {
 	// ステージ番号によって敵の生成上限を設定

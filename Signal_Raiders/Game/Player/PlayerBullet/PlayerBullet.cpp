@@ -13,6 +13,7 @@
 #include <cassert>
 #include <Libraries/Microsoft/DebugDraw.h>
 #include "Libraries/Microsoft/ReadData.h"
+#include "Game/KumachiLib//DrawCollision/DrawCollision.h"
 //-------------------------------------------------------------------
 // コンストラクタ
 //-------------------------------------------------------------------
@@ -41,20 +42,8 @@ void PlayerBullet::Initialize(CommonResources* resources)
 	using namespace DirectX::SimpleMath;
 	m_commonResources = resources;
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-	// プリミティブバッチを作成する
-	m_primitiveBatch = std::make_unique<DirectX::DX11::PrimitiveBatch<DirectX::DX11::VertexPositionColor>>(context);
-	// ベーシックエフェクトを作成する
-	m_basicEffect = std::make_unique<BasicEffect>(device);
-	m_basicEffect->SetVertexColorEnabled(true);
-	// 入力レイアウトを作成する
-	DX::ThrowIfFailed(
-		CreateInputLayoutFromEffect<VertexPositionColor>(
-			device,
-			m_basicEffect.get(),
-			m_inputLayout.ReleaseAndGetAddressOf()
-		)
-	);
+	// 当たり判定可視化用クラスの初期化
+	DrawCollision::Initialize(m_commonResources);
 	// 弾の軌道ポインター
 	m_bulletTrail = std::make_unique<Particle>(ParticleUtility::Type::PLAYERTRAIL, SIZE);
 	m_bulletTrail->Initialize(m_commonResources);
@@ -127,22 +116,29 @@ void PlayerBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
 	// 弾のサイズを設定
-	Matrix bulletWorld = Matrix::CreateScale(SIZE);
-	Matrix boundingbulletWorld = Matrix::CreateScale(Vector3::One);
-	bulletWorld *= Matrix::CreateRotationX(DirectX::XMConvertToRadians(m_angle));
+	m_worldMatrix = Matrix::CreateScale(SIZE);
+	m_worldMatrix *= Matrix::CreateRotationX(DirectX::XMConvertToRadians(m_angle));
 	// 弾の座標を設定
-	bulletWorld *= Matrix::CreateTranslation(m_position);
-	boundingbulletWorld *= Matrix::CreateTranslation(m_position);
-
+	m_worldMatrix *= Matrix::CreateTranslation(m_position);
 	// 軌跡描画
 	m_bulletTrail->CreateBillboard(m_cameraTarget, m_cameraEye, m_cameraUp);
 	m_bulletTrail->Render(view, proj);
+	// 弾描画
+	m_model->Draw(context, *states, m_worldMatrix, view, proj);
+
+}
+
+void PlayerBullet::RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+{
+	using namespace DirectX::SimpleMath;
+	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
+	auto states = m_commonResources->GetCommonStates();
 	// ライトの方向
 	Vector3 lightDir = Vector3::UnitY;
 	lightDir.Normalize();
 	// 影行列の元を作る
 	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, 0.01f));
-	shadowMatrix = bulletWorld * shadowMatrix;
+	shadowMatrix = m_worldMatrix * shadowMatrix;
 	// 影描画
 	m_model->Draw(context, *states, shadowMatrix, view, proj, true, [&]()
 		{
@@ -151,25 +147,15 @@ void PlayerBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 			context->RSSetState(states->CullNone());
 			context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
 		});
-	// 弾描画
-	m_model->Draw(context, *states, bulletWorld, view, proj);
-	// 各パラメータを設定する
-	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
-	context->OMSetDepthStencilState(states->DepthRead(), 0);
-	context->RSSetState(states->CullNone());
-	context->IASetInputLayout(m_inputLayout.Get());
-	//　デバッグドローでは、ワールド変換いらない
-	m_basicEffect->SetView(view);
-	m_basicEffect->SetProjection(proj);
-	m_basicEffect->Apply(context);
+}
 
-	// 境界球の変換を同じワールドマトリックスに基づいて行う
-	BoundingSphere transformedBoundingSphere = m_boundingSphere;
-	m_boundingSphere.Transform(transformedBoundingSphere, boundingbulletWorld);
+void PlayerBullet::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+{
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
 #ifdef _DEBUG
-	// 描画する
-	m_primitiveBatch->Begin();
-	DX::Draw(m_primitiveBatch.get(), m_boundingSphere, DirectX::Colors::Red);
-	m_primitiveBatch->End();
+	DrawCollision::DrawStart(view, proj);
+	DrawCollision::DrawBoundingSphere(m_boundingSphere, Colors::Blue);
+	DrawCollision::DrawEnd();
 #endif
 }

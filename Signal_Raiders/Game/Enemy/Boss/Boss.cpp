@@ -53,7 +53,6 @@ Boss::Boss(Player* pPlayer)
 	, m_bulletType{ EnemyBullet::BulletType::STRAIGHT }
 	, m_audioManager{ AudioManager::GetInstance() }
 {
-
 }
 // デストラクタ
 Boss::~Boss() {}
@@ -66,7 +65,7 @@ void Boss::Initialize(CommonResources* resources, int hp)
 	using namespace DirectX::SimpleMath;
 	// 共通リソースを設定
 	m_commonResources = resources;
-
+	// 当たり判定描画用クラスの初期化
 	DrawCollision::Initialize(m_commonResources);
 	// ボスモデル生成
 	m_pBossModel = std::make_unique<BossModel>();
@@ -87,13 +86,10 @@ void Boss::Initialize(CommonResources* resources, int hp)
 	// シールド生成
 	m_pBossSheild = std::make_unique<BossSheild>(m_maxHP, this);
 	m_pBossSheild->Initialize(m_commonResources);
-
 	// 初期位置を設定
 	m_position = INITIAL_POSITION;
 	// 敵の座標を設定
 	m_pBossAI->SetPosition(m_position);
-
-
 	// 境界球の初期化
 	m_bossBS.Center = m_position;
 	m_bossBS.Radius = SPHERE_RADIUS;
@@ -101,8 +97,6 @@ void Boss::Initialize(CommonResources* resources, int hp)
 	m_audioManager->LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet");// 弾発射音
 	m_audioManager->LoadSound("Resources/Sounds/Barrier.mp3", "Barrier");// シールド音
 	m_audioManager->LoadSound("Resources/Sounds/BarrierBreak.mp3", "BarrierBreak");// シールド破壊音
-
-
 }
 // 描画
 void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
@@ -118,30 +112,23 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	Matrix enemyWorld = Matrix::CreateScale(m_pBossAI->GetScale() * 2);
 	// 敵の座標を設定
 	enemyWorld *= world;
-
+	// シールドの座標を設定
 	m_pBossSheild->SetPosition(m_bossBS.Center);
 	m_pBossSheild->SetRotation(m_pBossAI->GetRotation());
-
 	// 敵描画	
 	m_pBossModel->Render(context, states, enemyWorld, view, proj);
-
 	// シールド描画
 	m_pBossSheild->Render(context, states, enemyWorld, view, proj);
-
-
 	// 敵の弾描画
 	m_pEnemyBullets->Render(view, proj);
-
 	// HPBarの座標を設定
 	Vector3 hpBarPos = m_position - HPBAR_OFFSET;
 	m_pHPBar->SetScale(Vector3(HPBAR_SCALE));
 	// HPBar描画
 	m_pHPBar->Render(view, proj, hpBarPos, m_rotate);
-
 }
 void Boss::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
-
 #ifdef _DEBUG
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
@@ -149,21 +136,13 @@ void Boss::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	DrawCollision::DrawStart(view, proj);
 	// 色設定
 	DirectX::XMVECTOR color = Colors::Black;
-	if (m_isHit)// 当たった
-	{
-		color = m_isHitToOtherEnemy ? Colors::Tomato : Colors::Blue;
-	}
-	else// 当たっていない
-	{
-		color = m_isHitToOtherEnemy ? Colors::White : Colors::Black;
-	}
+	if (m_isHit)color = m_isHitToOtherEnemy ? Colors::Tomato : Colors::Blue;// 当たった
+	else color = m_isHitToOtherEnemy ? Colors::White : Colors::Black;// 当たっていない
 	// 境界球描画
 	DrawCollision::DrawBoundingSphere(m_bossBS, color);
 	// 描画終了
 	DrawCollision::DrawEnd();
-
 #endif
-
 }
 // 更新
 void Boss::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
@@ -174,14 +153,12 @@ void Boss::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 	m_pBossAI->Update(elapsedTime, playerPos, m_isHit, m_isHitToPlayerBullet);// AIの更新
 	m_position = m_pBossAI->GetPosition();// 敵の座標を更新
 	m_audioManager->Update();// オーディオマネージャーの更新
-
 	m_attackCooldown = m_pBossAI->GetBossAttack()->GetCoolTime();
 	ShootBullet();// 弾発射
-
 	m_pEnemyBullets->Update(elapsedTime, m_position);// 敵の弾の更新
 	m_bossBS.Center = m_position + SPHERE_OFFSET;// 境界球の中心座標を更新
 	// 弾の位置設定
-	BulletPotsitioning();
+	BulletPositioning();
 	// HPBar更新
 	m_pHPBar->Update(elapsedTime, m_currentHP);
 	// 最大HPの半分になったらシールドを展開
@@ -191,15 +168,16 @@ void Boss::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 	// 死んだかどうかを受け取る
 	m_isDead = m_pHPBar->GetIsDead();
 }
-
+//---------------------------------------------------------
+// バリアSE再生
+//---------------------------------------------------------
 void Boss::PlayBarrierSE()
 {
 	m_audioManager->PlaySound("Barrier", m_pPlayer->GetVolume() / 2);// サウンド再生 
 }
-
-
-
+//---------------------------------------------------------
 // 弾発射
+//---------------------------------------------------------
 void Boss::ShootBullet()
 {
 	using namespace DirectX;
@@ -210,10 +188,8 @@ void Boss::ShootBullet()
 		m_audioManager->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
 		// クォータニオンから方向ベクトルを計算
 		m_bulletDirection = Vector3::Transform(Vector3::Backward, m_pBossAI->GetRotation());
-
 		// 弾を発射
 		CreateBullet();
-
 		// クールダウンタイムをリセット
 		m_pBossAI->GetBossAttack()->SetCoolTime(m_bulletCooldown);
 	}
@@ -221,7 +197,7 @@ void Boss::ShootBullet()
 }
 
 // 弾の位置設定
-void Boss::BulletPotsitioning()
+void Boss::BulletPositioning()
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
@@ -314,15 +290,12 @@ void Boss::CreateVerticalBullet()
 }
 void Boss::SetEnemyHP(int hp)
 {
-
 	// シールドがある場合はシールドのHPを減らす
 	if (m_pBossSheild->GetSheildHP() > 0 && m_pBossSheild->GetSheild() == true)
 	{
-
 		m_pBossSheild->SetSheildHP(m_pBossSheild->GetSheildHP() - hp);
 		if (m_pBossSheild->GetSheildHP() <= 0)
 		{
-
 			m_audioManager->PlaySound("BarrierBreak", m_pPlayer->GetVolume() * 3);// サウンド再生 
 		}
 	}
@@ -331,6 +304,5 @@ void Boss::SetEnemyHP(int hp)
 		// シールドがない場合は敵のHPを減らす
 		m_currentHP -= hp;
 	}
-
 
 }
