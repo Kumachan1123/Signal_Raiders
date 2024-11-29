@@ -20,6 +20,7 @@
 #include <memory>
 #include <Libraries/Microsoft/DebugDraw.h>
 #include "Game/KumachiLib/KumachiLib.h"
+#include <Game/KumachiLib/DrawCollision/DrawCollision.h>
 
 // コンストラクタ
 AreaAttacker::AreaAttacker(Player* pPlayer)
@@ -59,22 +60,9 @@ void AreaAttacker::Initialize(CommonResources* resources, int hp)
 	using namespace DirectX::SimpleMath;
 	// 共通リソースを設定
 	m_commonResources = resources;
-	// デバイスとコンテキストを取得
-	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-	// ベーシックエフェクトを作成する
-	m_basicEffect = std::make_unique<BasicEffect>(device);
-	m_basicEffect->SetVertexColorEnabled(true);
 
-	// 入力レイアウトを作成する
-	DX::ThrowIfFailed(
-		CreateInputLayoutFromEffect<VertexPositionColor>(
-			device,
-			m_basicEffect.get(),
-			m_inputLayout.ReleaseAndGetAddressOf()
-		)
-	);
-	// 影用のモデルを読み込む
+	DrawCollision::Initialize(resources);
+	// モデルを読み込む
 	m_pAreaAttackerModel = std::make_unique<AreaAttackerModel>();
 	m_pAreaAttackerModel->Initialize(m_commonResources);
 	// 敵の体力を設定
@@ -94,8 +82,6 @@ void AreaAttacker::Initialize(CommonResources* resources, int hp)
 	// 敵の初期位置を設定
 	m_position = Vector3{ position.x, 0.0f,position.z };// 敵の初期位置を設定
 
-	// プリミティブバッチを作成する
-	m_primitiveBatch = std::make_unique<DirectX::DX11::PrimitiveBatch<DirectX::DX11::VertexPositionColor>>(context);
 	// 敵の座標を設定
 	m_enemyAI->SetPosition(m_position);
 	// 境界球の初期化
@@ -122,7 +108,7 @@ void AreaAttacker::Update(float elapsedTime, DirectX::SimpleMath::Vector3 player
 			// クォータニオンから方向ベクトルを計算
 			DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_enemyAI->GetRotation());
 			// 弾を発射
-			m_enemyBullets->CreateBullet(GetPosition(), direction, playerPos, 0.15f, EnemyBullet::BulletType::VERTICAL);
+			m_enemyBullets->CreateBullet(m_enemyBS.Center, direction, playerPos, 0.15f, EnemyBullet::BulletType::VERTICAL);
 			// クールダウンタイムをリセット
 			m_enemyAI->GetEnemyAttack()->SetCoolTime(3.0f);
 		}
@@ -130,7 +116,7 @@ void AreaAttacker::Update(float elapsedTime, DirectX::SimpleMath::Vector3 player
 	m_enemyBullets->Update(elapsedTime, GetPosition());// 敵の弾の更新
 	// 敵の当たり判定の座標を更新
 	m_enemyBS.Center = m_position;
-	m_enemyBS.Center.y -= 2.0f;
+	//m_enemyBS.Center.y -= 2.0f;
 	m_HPBar->Update(elapsedTime, m_currentHP);// HPBarの更新
 	m_isDead = m_HPBar->GetIsDead();// 敵のHPが0になったら死亡
 }
@@ -145,13 +131,13 @@ void AreaAttacker::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 	// 基準となる座標やら回転やら
 	Matrix world = Matrix::CreateFromQuaternion(m_enemyAI->GetRotation())
 		* Matrix::CreateTranslation(m_position)
-		* Matrix::CreateTranslation(Vector3{ 0,-2,0 });
+		/** Matrix::CreateTranslation(Vector3{ 0,-2,0 })*/;
 	// 敵のサイズを設定
 	Matrix enemyWorld = Matrix::CreateScale(m_enemyAI->GetScale());
 	// 敵の座標を設定
 	enemyWorld *= world;
 	// HPBarの座標を設定
-	Vector3 hpBarPos = Vector3(m_position.x, m_position.y - 3.0f, m_position.z);
+	Vector3 hpBarPos = Vector3(m_position.x, m_position.y - 1, m_position.z);
 	// HPBar描画
 	m_HPBar->Render(view, proj, hpBarPos, m_rotate);
 	// 敵描画	
@@ -163,94 +149,34 @@ void AreaAttacker::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 
 }
 
-void AreaAttacker::DrawCollision(CommonResources* resources, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void AreaAttacker::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
 #ifdef _DEBUG
+
 	// 描画する
 	// 各パラメータを設定する
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	auto context = resources->GetDeviceResources()->GetD3DDeviceContext();
-	auto states = resources->GetCommonStates();
-	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
-	context->OMSetDepthStencilState(states->DepthRead(), 0);
-	context->RSSetState(states->CullNone());
-	context->IASetInputLayout(m_inputLayout.Get());
-	//** デバッグドローでは、ワールド変換いらない
-	m_basicEffect->SetView(view);
-	m_basicEffect->SetProjection(proj);
-	m_basicEffect->Apply(context);
-	m_primitiveBatch->Begin();
-	if (!m_isHit)
+	// 描画開始
+	DrawCollision::DrawStart(view, proj);
+	// 色設定
+	DirectX::XMVECTOR color = Colors::Black;
+	if (m_isHit)// 当たった
 	{
-		if (!m_isHitToOtherEnemy)DX::Draw(m_primitiveBatch.get(), m_enemyBS, Colors::Black);
-		else					DX::Draw(m_primitiveBatch.get(), m_enemyBS, Colors::White);
+		color = m_isHitToOtherEnemy ? Colors::Tomato : Colors::Blue;
 	}
-	else
+	else// 当たっていない
 	{
-		if (!m_isHitToOtherEnemy)DX::Draw(m_primitiveBatch.get(), m_enemyBS, Colors::Blue);
-		else					 DX::Draw(m_primitiveBatch.get(), m_enemyBS, Colors::Tomato);
+		color = m_isHitToOtherEnemy ? Colors::White : Colors::Black;
+	}
+	// 境界球描画
+	DrawCollision::DrawBoundingSphere(m_enemyBS, color);
+	// 描画終了
+	DrawCollision::DrawEnd();
 
-	}
-	m_primitiveBatch->End();
 #endif
 
 }
 
-// オブジェクト同士が衝突したら押し戻す(境界球同士の場合）
-void AreaAttacker::CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::BoundingSphere& B)
-{
-	using namespace DirectX::SimpleMath;
-	// 押し戻す処理
-	// Ａの中心とＢの中心との差分ベクトル（ＢからＡに向かうベクトル）…①
-	Vector3 diffVector = A.Center - B.Center;
-	// Ａの中心とＢの中心との距離（①の長さ）…②
-	float distance = diffVector.Length();
-	// Ａの半径とＢの半径の合計…③
-	float sumRadius = A.Radius + B.Radius;
-	// （ＡがＢに）めり込んだ距離（③－②）…④
-	float penetrationDistance = sumRadius - distance;
-	// ①を正規化する…⑤
-	diffVector.Normalize();
-	// 押し戻すベクトルを計算する（⑤と④で表現する）…⑥
-	Vector3 pushBackVec = diffVector * penetrationDistance;
-	// ⑥を使用して、Ａの座標とＡのコライダー座標を更新する（実際に押し戻す）
-	m_position += pushBackVec;
-	A.Center = m_position;
-	A.Center.y -= 2.0f;
-}
 
 
-// オブジェクト同士が衝突したら押し戻す(境界球と境界ボックスの場合）
-void AreaAttacker::CheckHitWall(DirectX::BoundingSphere& A, DirectX::BoundingBox& B)
-{
-	using namespace DirectX::SimpleMath;
-	// 押し戻しベクトルを計算
-	Vector3 pushBackVec = Vector3::Zero;
-	// 球体の中心とボックスのクランプされた位置の差分を求める
-	Vector3 closestPoint; // ボックスの最も近い点
-
-	// 各軸でクランプして、最も近い位置を取得
-	closestPoint.x = std::max(B.Center.x - B.Extents.x, std::min(A.Center.x, B.Center.x + B.Extents.x));
-	closestPoint.y = std::max(B.Center.y - B.Extents.y, std::min(A.Center.y, B.Center.y + B.Extents.y));
-	closestPoint.z = std::max(B.Center.z - B.Extents.z, std::min(A.Center.z, B.Center.z + B.Extents.z));
-
-	// 球体の中心と最も近い点のベクトル差
-	Vector3 diffVector = A.Center - closestPoint;
-
-	// 距離を計算
-	float distance = diffVector.Length();
-
-	// 距離が球体の半径より小さい場合は押し戻し処理
-	if (distance < A.Radius)
-	{
-		// 押し戻し量を計算 (正規化して押し戻しベクトルを作成)
-		float penetrationDistance = A.Radius - distance;
-		diffVector.Normalize();
-		pushBackVec = diffVector * penetrationDistance;
-
-		m_position += pushBackVec;
-		A.Center = m_position;
-		A.Center.y -= 2.0f;
-	}
-}

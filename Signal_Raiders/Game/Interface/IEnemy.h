@@ -49,9 +49,7 @@ public:
 
 	virtual void Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos) = 0;
 	virtual	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) = 0;
-	virtual void DrawCollision(CommonResources* resources, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) = 0;
-	virtual void CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::BoundingSphere& B) = 0;
-	virtual void CheckHitWall(DirectX::BoundingSphere& A, DirectX::BoundingBox& B) = 0;
+	virtual void DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) = 0;
 
 
 };

@@ -37,7 +37,6 @@ Effect::Effect(CommonResources* resources, ParticleType type, DirectX::SimpleMat
 		texturePath = L"Resources/Textures/effect.png";
 		m_frameRows = 4; // ‰æ‘œ‚Ìs”
 		m_frameCols = 5; // ‰æ‘œ‚Ì—ñ”
-		m_offSetY = 2.0f;// ‚‚³‚ğ•Ï‚¦‚é
 		m_vertexMinX = -2.0f;
 		m_vertexMaxX = 2.0f;
 		m_vertexMinY = -2.0f;
@@ -58,7 +57,6 @@ Effect::Effect(CommonResources* resources, ParticleType type, DirectX::SimpleMat
 		texturePath = L"Resources/Textures/hit.png";
 		m_frameRows = 2; // ‰æ‘œ‚Ìs”
 		m_frameCols = 4; // ‰æ‘œ‚Ì—ñ”
-		m_offSetY = 2.0f;// ‚‚³‚ğ•Ï‚¦‚é
 		m_vertexMinX = -1.0f;
 		m_vertexMaxX = 1.0f;
 		m_vertexMinY = -1.0f;

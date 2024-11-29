@@ -20,13 +20,14 @@
 #include <random>
 #include <memory>
 #include <Libraries/Microsoft/DebugDraw.h>
+#include "Game/KumachiLib/DrawCollision/DrawCollision.h"
 
 // コンストラクタ
 Boss::Boss(Player* pPlayer)
 	: IEnemy(pPlayer)
 	, m_pPlayer{ pPlayer }
 	, m_pCamera{ pPlayer->GetCamera() }
-	, m_BossBS{}
+	, m_bossBS{}
 	, m_commonResources{}
 	, m_currentHP{}
 	, m_maxHP{}
@@ -65,22 +66,8 @@ void Boss::Initialize(CommonResources* resources, int hp)
 	using namespace DirectX::SimpleMath;
 	// 共通リソースを設定
 	m_commonResources = resources;
-	// デバイスとコンテキストを取得
-	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 
-	// ベーシックエフェクトを作成する
-	m_basicEffect = std::make_unique<BasicEffect>(device);
-	m_basicEffect->SetVertexColorEnabled(true);
-
-	// 入力レイアウトを作成する
-	DX::ThrowIfFailed(
-		CreateInputLayoutFromEffect<VertexPositionColor>(
-			device,
-			m_basicEffect.get(),
-			m_inputLayout.ReleaseAndGetAddressOf()
-		)
-	);
+	DrawCollision::Initialize(m_commonResources);
 	// ボスモデル生成
 	m_pBossModel = std::make_unique<BossModel>();
 	m_pBossModel->Initialize(m_commonResources);
@@ -101,8 +88,6 @@ void Boss::Initialize(CommonResources* resources, int hp)
 	m_pBossSheild = std::make_unique<BossSheild>(m_maxHP, this);
 	m_pBossSheild->Initialize(m_commonResources);
 
-	// プリミティブバッチを作成する
-	m_primitiveBatch = std::make_unique<DirectX::DX11::PrimitiveBatch<DirectX::DX11::VertexPositionColor>>(context);
 	// 初期位置を設定
 	m_position = INITIAL_POSITION;
 	// 敵の座標を設定
@@ -110,8 +95,8 @@ void Boss::Initialize(CommonResources* resources, int hp)
 
 
 	// 境界球の初期化
-	m_BossBS.Center = m_position;
-	m_BossBS.Radius = SPHERE_RADIUS;
+	m_bossBS.Center = m_position;
+	m_bossBS.Radius = SPHERE_RADIUS;
 	// オーディオマネージャー
 	m_audioManager->LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet");// 弾発射音
 	m_audioManager->LoadSound("Resources/Sounds/Barrier.mp3", "Barrier");// シールド音
@@ -134,7 +119,7 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	// 敵の座標を設定
 	enemyWorld *= world;
 
-	m_pBossSheild->SetPosition(m_BossBS.Center);
+	m_pBossSheild->SetPosition(m_bossBS.Center);
 	m_pBossSheild->SetRotation(m_pBossAI->GetRotation());
 
 	// 敵描画	
@@ -154,38 +139,29 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	m_pHPBar->Render(view, proj, hpBarPos, m_rotate);
 
 }
-void Boss::DrawCollision(CommonResources* resources, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void Boss::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
 
 #ifdef _DEBUG
-	auto context = resources->GetDeviceResources()->GetD3DDeviceContext();
-	auto states = resources->GetCommonStates();
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	// 境界球を描画する
-	// 各パラメータを設定する
-	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
-	context->OMSetDepthStencilState(states->DepthRead(), 0);
-	context->RSSetState(states->CullNone());
-	context->IASetInputLayout(m_inputLayout.Get());
-	//** デバッグドローでは、ワールド変換いらない
-	m_basicEffect->SetView(view);
-	m_basicEffect->SetProjection(proj);
-	m_basicEffect->Apply(context);
-	m_primitiveBatch->Begin();
-	if (!m_isHit)
+	// 描画開始
+	DrawCollision::DrawStart(view, proj);
+	// 色設定
+	DirectX::XMVECTOR color = Colors::Black;
+	if (m_isHit)// 当たった
 	{
-		if (!m_isHitToOtherEnemy)DX::Draw(m_primitiveBatch.get(), m_BossBS, Colors::Black);
-		else					DX::Draw(m_primitiveBatch.get(), m_BossBS, Colors::White);
+		color = m_isHitToOtherEnemy ? Colors::Tomato : Colors::Blue;
 	}
-	else
+	else// 当たっていない
 	{
-		if (!m_isHitToOtherEnemy)DX::Draw(m_primitiveBatch.get(), m_BossBS, Colors::Blue);
-		else					 DX::Draw(m_primitiveBatch.get(), m_BossBS, Colors::Tomato);
-
+		color = m_isHitToOtherEnemy ? Colors::White : Colors::Black;
 	}
+	// 境界球描画
+	DrawCollision::DrawBoundingSphere(m_bossBS, color);
+	// 描画終了
+	DrawCollision::DrawEnd();
 
-	m_primitiveBatch->End();
 #endif
 
 }
@@ -203,74 +179,17 @@ void Boss::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 	ShootBullet();// 弾発射
 
 	m_pEnemyBullets->Update(elapsedTime, m_position);// 敵の弾の更新
-	m_BossBS.Center = m_position + SPHERE_OFFSET;// 境界球の中心座標を更新
+	m_bossBS.Center = m_position + SPHERE_OFFSET;// 境界球の中心座標を更新
 	// 弾の位置設定
 	BulletPotsitioning();
 	// HPBar更新
 	m_pHPBar->Update(elapsedTime, m_currentHP);
 	// 最大HPの半分になったらシールドを展開
 	if (m_currentHP <= m_maxHP / 2)m_pBossSheild->SetSheild(true);
-	//m_pBossSheild->SetSheild(false);
 	// シールド更新
 	m_pBossSheild->Update(elapsedTime);
 	// 死んだかどうかを受け取る
 	m_isDead = m_pHPBar->GetIsDead();
-}
-
-// オブジェクト同士が衝突したら押し戻す
-void Boss::CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::BoundingSphere& B)
-{
-	using namespace DirectX::SimpleMath;
-	// 押し戻す処理
-	// Ａの中心とＢの中心との差分ベクトル（ＢからＡに向かうベクトル）…①
-	Vector3 diffVector = A.Center - B.Center;
-	// Ａの中心とＢの中心との距離（①の長さ）…②
-	float distance = diffVector.Length();
-	// Ａの半径とＢの半径の合計…③
-	float sumRadius = A.Radius + B.Radius;
-	// （ＡがＢに）めり込んだ距離（③－②）…④
-	float penetrationDistance = sumRadius - distance;
-	// ①を正規化する…⑤
-	diffVector.Normalize();
-	// 押し戻すベクトルを計算する（⑤と④で表現する）…⑥
-	Vector3 pushBackVec = diffVector * penetrationDistance;
-	// ⑥を使用して、Ａの座標とＡのコライダー座標を更新する（実際に押し戻す）
-	m_position += pushBackVec;
-	A.Center = m_position;
-}
-
-// 壁との衝突判定
-void Boss::CheckHitWall(DirectX::BoundingSphere& A, DirectX::BoundingBox& B)
-{
-	using namespace DirectX::SimpleMath;
-	// 押し戻しベクトルを計算
-	Vector3 pushBackVec = Vector3::Zero;
-	// 球体の中心とボックスのクランプされた位置の差分を求める
-	Vector3 closestPoint; // ボックスの最も近い点
-
-	// 各軸でクランプして、最も近い位置を取得
-	closestPoint.x = std::max(B.Center.x - B.Extents.x, std::min(A.Center.x, B.Center.x + B.Extents.x));
-	closestPoint.y = std::max(B.Center.y - B.Extents.y, std::min(A.Center.y, B.Center.y + B.Extents.y));
-	closestPoint.z = std::max(B.Center.z - B.Extents.z, std::min(A.Center.z, B.Center.z + B.Extents.z));
-
-	// 球体の中心と最も近い点のベクトル差
-	Vector3 diffVector = A.Center - closestPoint;
-
-	// 距離を計算
-	float distance = diffVector.Length();
-
-	// 距離が球体の半径より小さい場合は押し戻し処理
-	if (distance < A.Radius)
-	{
-		// 押し戻し量を計算 (正規化して押し戻しベクトルを作成)
-		float penetrationDistance = A.Radius - distance;
-		diffVector.Normalize();
-		pushBackVec = diffVector * penetrationDistance;
-
-		m_position += pushBackVec;
-		A.Center = m_position;
-
-	}
 }
 
 void Boss::PlayBarrierSE()

@@ -11,7 +11,7 @@
 #include <cassert>
 #include <random>
 #include <type_traits> // std::enable_if, std::is_integral
-
+#include "Game/KumachiLib/KumachiLib.h"
 class EnemyAttack;
 class EnemyIdling;
 // コンストラクタ
@@ -30,7 +30,7 @@ void EnemyAI::Initialize()
 	using namespace DirectX::SimpleMath;
 	m_rotation = (GenerateRandomMultiplier(0, 2) <= 1.0f) ? Quaternion::Identity : -Quaternion::Identity;// 回転の初期化
 	m_initialPosition = Vector3::Zero;  // 初期位置を初期化
-	m_initialPosition.y = 2 * GenerateRandomMultiplier(RANDOM_MIN, RANDOM_MAX) + 5; // 初期位置のY座標を設定
+	m_initialPosition.y = GenerateRandomMultiplier(RANDOM_MIN, RANDOM_MAX) + 5; // 初期位置のY座標を設定
 	m_rotation.y = GenerateRandomMultiplier(RANDOM_MIN, RANDOM_MAX); // Y軸の回転を設定
 	m_velocity = Vector3(0.0f, 0.5f, 0.0f); // 浮遊の初期速度
 	m_scale = Vector3::One; // スケール初期化
@@ -81,23 +81,7 @@ void EnemyAI::ChangeState(IState* newState)
 		m_currentState->Initialize();
 	}
 }
-// 整数型用のランダムな倍率を生成する関数
-int EnemyAI::GenerateRandomMultiplier(int min, int max)
-{
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<int> dis(min, max);
-	return dis(gen);
-}
 
-// 浮動小数点型用のランダムな倍率を生成する関数
-float EnemyAI::GenerateRandomMultiplier(float min, float max)
-{
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_real_distribution<float> dis(min, max);
-	return dis(gen);
-}
 
 // ノックバック処理
 void EnemyAI::KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bool& isHitToPlayerBullet, const DirectX::SimpleMath::Vector3& playerPos)

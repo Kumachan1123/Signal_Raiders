@@ -90,7 +90,6 @@ void EnemyBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::Sim
 {
 	using namespace DirectX::SimpleMath;
 	m_position = pos;
-	m_position.y -= 2.5f;
 	m_direction = dir;
 	m_target = target;
 	m_bulletSpeed = 0.5f;

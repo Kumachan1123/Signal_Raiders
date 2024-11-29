@@ -58,7 +58,7 @@ private:
 	DirectX::SimpleMath::Vector3 m_velocity;		// 速度
 	DirectX::SimpleMath::Vector3 m_rotate;		// 回転
 	// 砲塔境界球
-	DirectX::BoundingSphere m_BossBS;	//敵の境界球
+	DirectX::BoundingSphere m_bossBS;	//敵の境界球
 	DirectX::BoundingSphere m_enemyBSToPlayerArea;// 敵とPlayerとの一定範囲の当たり判定に使う
 	DirectX::BoundingSphere m_enemyBulletBS;// 敵の弾の境界球
 	DirectX::BoundingSphere m_playerBS;// プレイヤーの境界球
@@ -111,19 +111,19 @@ private:
 	// 境界球の半径
 	const float SPHERE_RADIUS = 2.5f;
 	// ボスの頭の砲口のオフセット
-	const DirectX::SimpleMath::Vector3 TOP_OFFSET = DirectX::SimpleMath::Vector3(0.0f, 4.0f, 3.0f);
+	const DirectX::SimpleMath::Vector3 TOP_OFFSET = DirectX::SimpleMath::Vector3(0.0f, 2.5f, 3.0f);
 	// ボスの左の砲口のオフセット
-	const DirectX::SimpleMath::Vector3 LEFT_OFFSET = DirectX::SimpleMath::Vector3(-2.5f, 1.5f, 3.0f);
+	const DirectX::SimpleMath::Vector3 LEFT_OFFSET = DirectX::SimpleMath::Vector3(-2.5f, 1.0f, 3.0f);
 	// ボスの右の砲口のオフセット
-	const DirectX::SimpleMath::Vector3 RIGHT_OFFSET = DirectX::SimpleMath::Vector3(2.5f, 1.5f, 3.0f);
+	const DirectX::SimpleMath::Vector3 RIGHT_OFFSET = DirectX::SimpleMath::Vector3(2.5f, 1.0f, 3.0f);
 	// HPバーのオフセット
-	const DirectX::SimpleMath::Vector3 HPBAR_OFFSET = DirectX::SimpleMath::Vector3(0.0f, 5.0f, 0.0f);
+	const DirectX::SimpleMath::Vector3 HPBAR_OFFSET = DirectX::SimpleMath::Vector3(0.0f, 3.0f, 0.0f);
 	// HPバーのスケール
 	const float HPBAR_SCALE = 3.0f;
 
 public:
 	//	getter
-	DirectX::BoundingSphere& GetBoundingSphere() override { return m_BossBS; }
+	DirectX::BoundingSphere& GetBoundingSphere() override { return m_bossBS; }
 	DirectX::BoundingSphere& GetBulletBoundingSphere()override { return m_enemyBulletBS; }
 	DirectX::BoundingSphere& GetPlayerBoundingSphere() override { return m_playerBS; }
 	DirectX::SimpleMath::Matrix GetMatrix() const override { return m_matrix; }
@@ -165,9 +165,7 @@ public:
 	void Initialize(CommonResources* resources, int hp) override;// 初期化
 	void Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)override;// 更新
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;// 描画
-	void DrawCollision(CommonResources* resources, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;// 衝突判定の描画
-	void CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::BoundingSphere& B)override;// 衝突判定
-	void CheckHitWall(DirectX::BoundingSphere& A, DirectX::BoundingBox& B)override;// 壁との衝突判定
+	void DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;// 衝突判定の描画
 
 	void SetBulletType(BossBulletType bossBulletType) { m_bossBulletType = bossBulletType; };// 弾のタイプ設定
 	BossBulletType GetBulletType() const { return m_bossBulletType; };// 弾のタイプ取得

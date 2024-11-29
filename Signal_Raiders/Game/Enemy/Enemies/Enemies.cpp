@@ -17,9 +17,6 @@
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
-
-
-
 //---------------------------------------------------------
 // コンストラクタ
 //---------------------------------------------------------
@@ -111,7 +108,7 @@ void Enemies::Render()
 	if (m_enemies.size() > 0)for (const auto& enemy : m_enemies)
 	{
 		enemy->Render(view, projection);//	敵を描画する
-		enemy->DrawCollision(m_commonResources, view, projection);//	当たり判定を描画する
+		enemy->DrawCollision(view, projection);//	当たり判定を描画する
 	}
 
 	// エフェクトを描画する
@@ -284,7 +281,9 @@ void Enemies::HandleEnemyCollisions()
 
 			if (hit)// 当たり判定があったら
 			{
-				m_enemies[i]->CheckHitOtherObject(m_enemies[i]->GetBoundingSphere(), m_enemies[j]->GetBoundingSphere());
+				// m_enemies[i]の新しい座標
+				Vector3 newPos = CheckHitOtherObject(m_enemies[i]->GetBoundingSphere(), m_enemies[j]->GetBoundingSphere());
+				m_enemies[i]->SetPosition(newPos);
 			}
 		}
 	}
@@ -297,7 +296,10 @@ void Enemies::HandleWallCollision()
 	for (auto& enemy : m_enemies)
 	{
 		for (int i = 0; i < 4; i++)
-			enemy->CheckHitWall(enemy->GetBoundingSphere(), m_pWall->GetBoundingBox(i));
+		{
+			Vector3 newPos = CheckHitWall(enemy->GetBoundingSphere(), m_pWall->GetBoundingBox(i));
+			enemy->SetPosition(newPos);
+		}
 
 	}
 }
@@ -351,7 +353,8 @@ void Enemies::HandleEnemyPlayerCollision(std::unique_ptr<IEnemy>& enemy)
 		// 敵がプレイヤーを認識する範囲 / 3.0f = プレイヤーの当たり判定の半径
 		if (enemy->GetBoundingSphere().Intersects(playerSphere))
 		{
-			enemy->CheckHitOtherObject(enemy->GetBoundingSphere(), playerSphere);
+			Vector3 newPos = CheckHitOtherObject(enemy->GetBoundingSphere(), playerSphere);
+			enemy->SetPosition(newPos);
 		}
 	}
 
