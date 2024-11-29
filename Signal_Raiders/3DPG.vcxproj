@@ -189,6 +189,7 @@
     <ClInclude Include="DeviceResources.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Game\Enemy\Boss\BossSheild\BossSheild.h" />
+    <ClInclude Include="Game\Enemy\EnemyAI\EnemyEscape\EnemyEscape.h" />
     <ClInclude Include="Game\KumachiLib\DrawCollision\DrawCollision.h" />
     <ClInclude Include="Game\Particle\Particle.h" />
     <ClInclude Include="Game\CommonResources.h" />
@@ -278,6 +279,7 @@
     <ClCompile Include="DeviceResources.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Game\Enemy\Boss\BossSheild\BossSheild.cpp" />
+    <ClCompile Include="Game\Enemy\EnemyAI\EnemyEscape\EnemyEscape.cpp" />
     <ClCompile Include="Game\KumachiLib\DrawCollision\DrawCollision.cpp" />
     <ClCompile Include="Game\Particle\Particle.cpp" />
     <ClCompile Include="Game\CommonResources.cpp" />

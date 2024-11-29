@@ -2,7 +2,6 @@
 #ifndef ISTATE_DEFINED
 #define ISTATE_DEFINED
 #include <SimpleMath.h>
-// IStateインタフェースを定義する(GOF Stateパターン)
 class EnemyAI;
 
 class IState
@@ -12,6 +11,7 @@ public:
 	{
 		IDLING = 0,
 		ATTACK,
+		ESCAPE,
 		ANGRY,
 		DAMAGE
 	};

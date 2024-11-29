@@ -15,11 +15,13 @@
 class EnemyAttack;
 class EnemyIdling;
 // コンストラクタ
-EnemyAI::EnemyAI()
-	: m_currentState(nullptr), m_rotationSpeed(0.5f), m_attackCooldown(0.0f), m_enemyAttack(nullptr), m_enemyIdling(nullptr), m_enemyState(IState::EnemyState::IDLING)
+EnemyAI::EnemyAI(IEnemy* pEnemy)
+	: m_currentState(nullptr), m_rotationSpeed(0.5f), m_attackCooldown(0.0f), m_enemyAttack(nullptr), m_enemyEscape(nullptr), m_enemyIdling(nullptr), m_enemyState(IState::EnemyState::IDLING), m_pEnemy(pEnemy)
 {
+	m_pEnemy = pEnemy;
 	m_enemyAttack = std::make_unique<EnemyAttack>(this);
 	m_enemyIdling = std::make_unique<EnemyIdling>(this);
+	m_enemyEscape = std::make_unique<EnemyEscape>(this);
 }
 // デストラクタ
 EnemyAI::~EnemyAI() {}
@@ -64,11 +66,14 @@ void EnemyAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Direc
 		ChangeState(m_enemyIdling.get());//徘徊態勢にする
 		m_enemyState = IState::EnemyState::IDLING;// 徘徊態勢
 	}
-	m_currentState->Update(elapsedTime, pos, playerPos, isHitToPlayer);
 	// プレイヤーの弾に当たった場合
 	if (isHitToPlayerBullet)
+	{
 		KnockBack(elapsedTime, pos, isHitToPlayerBullet, playerPos);
-
+		ChangeState(m_enemyEscape.get());//逃避態勢にする
+		m_enemyState = IState::EnemyState::ESCAPE;// 逃避態勢
+	}
+	m_currentState->Update(elapsedTime, pos, playerPos, isHitToPlayer);
 
 	m_position = pos;
 }
@@ -94,8 +99,8 @@ void EnemyAI::KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bo
 		m_knockStartPosition = pos; // ノックバック開始位置
 		Vector3 knockBackDirection = (pos - playerPos); // プレイヤーから敵への方向ベクトル
 		knockBackDirection.Normalize(); // 正規化して方向ベクトルにする
-		m_knockEndPosition = pos + knockBackDirection * 10; // ノックバック終了位置
-		m_initialVelocity = knockBackDirection * 15; // 初期速度
+		m_knockEndPosition = pos + knockBackDirection; // ノックバック終了位置
+		m_initialVelocity = knockBackDirection * 30; // 初期速度
 
 	}
 
@@ -106,7 +111,7 @@ void EnemyAI::KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bo
 	const float knockBackDuration = 2.0f;
 
 	// ノックバックの進行度
-	float t = std::min(m_knockTime / knockBackDuration, 3.0f);
+	float t = std::min(m_knockTime / knockBackDuration, 2.0f);
 
 	// 減衰係数の計算（指数関数的減衰）
 	float decayFactor = std::exp(-3.0f * t); // 減衰速度を調整するために指数のベースを調整
@@ -115,7 +120,7 @@ void EnemyAI::KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bo
 	Vector3 velocity = m_initialVelocity * decayFactor;
 	pos += velocity * elapsedTime;
 	if (m_enemyState != IState::EnemyState::ANGRY)// 怒り態勢でない場合
-		m_enemyState = IState::EnemyState::DAMAGE;// ダメージ態勢にする
+		m_enemyState = IState::EnemyState::ESCAPE;// ダメージ態勢にする
 	// ノックバックが終了したかどうかチェック
 	if (t >= 1.0f)
 	{

@@ -105,13 +105,10 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	using namespace DirectX::SimpleMath;
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
-	// 基準となる座標やら回転やら
-	Matrix world = Matrix::CreateFromQuaternion(m_pBossAI->GetRotation())
+	// 敵のワールド行列を設定
+	Matrix enemyWorld = Matrix::CreateScale(m_pBossAI->GetScale() * 2)
+		* Matrix::CreateFromQuaternion(m_pBossAI->GetRotation())
 		* Matrix::CreateTranslation(m_position);
-	// 敵のサイズを設定
-	Matrix enemyWorld = Matrix::CreateScale(m_pBossAI->GetScale() * 2);
-	// 敵の座標を設定
-	enemyWorld *= world;
 	// シールドの座標を設定
 	m_pBossSheild->SetPosition(m_bossBS.Center);
 	m_pBossSheild->SetRotation(m_pBossAI->GetRotation());

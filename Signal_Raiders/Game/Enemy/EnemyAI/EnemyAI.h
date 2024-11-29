@@ -11,21 +11,27 @@ class CommonResources;
 #include "Game/CommonResources.h"
 #include "Game/Enemy/EnemyAI/EnemyAttack/EnemyAttack.h"
 #include "Game/Enemy/EnemyAI/EnemyIdling/EnemyIdling.h"
-
+#include "Game/Enemy/EnemyAI/EnemyEscape/EnemyEscape.h"
 #include "Game/Interface/IState.h"
+#include "Game/Interface/IEnemy.h"
 class EnemyAttack;
+class EnemyEscape;
 class EnemyIdling;
+class IEnemy;
 class EnemyAI
 {
 private:
 	//平常時
-
 	std::unique_ptr<EnemyIdling> m_enemyIdling;
 	//攻撃時
 	std::unique_ptr<EnemyAttack> m_enemyAttack;
+	//逃避時
+	std::unique_ptr<EnemyEscape> m_enemyEscape;
 	// 現在の状態
 	IState* m_currentState;
 	IState::EnemyState m_enemyState;
+	// 敵のポインター
+	IEnemy* m_pEnemy;
 	DirectX::SimpleMath::Vector3 m_position;//移動
 	DirectX::SimpleMath::Vector3 m_initialPosition;// 座標初期値
 	DirectX::SimpleMath::Vector3 m_bsPosition;//当たり判定用座標
@@ -51,6 +57,7 @@ public:
 	DirectX::SimpleMath::Vector3 GetScale() const { return m_scale; }
 	EnemyAttack* GetEnemyAttack()const { return m_enemyAttack.get(); }
 	EnemyIdling* GetEnemyIdling()const { return m_enemyIdling.get(); }
+	EnemyEscape* GetEnemyEscape()const { return m_enemyEscape.get(); }
 	IState* GetNowState()const { return m_currentState; }
 	IState::EnemyState GetState()const { return m_enemyState; }
 	//  setter
@@ -62,7 +69,7 @@ public:
 	void SetState(IState::EnemyState state) { m_enemyState = state; }
 	void SetHitPlayerBullet(bool hit) { m_isHitPlayerBullet = hit; }
 public:
-	EnemyAI();
+	EnemyAI(IEnemy* pEnemy);
 	~EnemyAI();
 	void Initialize();
 	void Update(float elapsedTime,

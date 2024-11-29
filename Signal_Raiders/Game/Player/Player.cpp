@@ -83,7 +83,7 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 		if (m_isPlayEffect == true)
 		{
 			// ダメージエフェクト生成
-			auto damageEffect = std::make_unique<DamageEffect>(m_commonResources);
+			std::unique_ptr<DamageEffect> damageEffect = std::make_unique<DamageEffect>(m_commonResources);
 			damageEffect->Initialize(this);
 			damageEffect->Create(m_commonResources->GetDeviceResources());
 			damageEffect->SetEnemyDirection(GetEnemyDir());// ダメージを受けた敵の向きを設定
@@ -102,19 +102,13 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 		}
 	}
 	else m_pCamera->SetTargetPositionY(m_pPlayerController->GetPitch());// カメラの注視点を設定
-	if (m_timer <= 5.0f)// 開始後秒間はReady？Go！を表示
+	if (m_timer <= 5.0f)// 開始後秒間はてきをすべてたおせ！を表示
 	{
 		m_pReadyGo->Update(elapsedTime);
-
-		return;
+		return;// テロップを表示している間はこれ以降の処理をしない
 	}
 
 #ifdef _DEBUG// デバッグ
-
-#endif
-	// プレイヤーの位置を取得
-	m_playerPos = m_pPlayerController->GetPlayerPosition();
-
 	// 右クリックで敵を一掃
 	if (mtracker->GetLastState().rightButton && m_isCheat == false)
 	{
@@ -126,9 +120,13 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 	{
 		m_isCheat = false;
 	}
-	//for (auto& enemy : m_pEnemies->GetEnemies())enemy->SetEnemyHP(0);
 	// スペースキーでプレイヤーのHPを0にする
 	if (kb->pressed.Space)SetPlayerHP(0.0f);
+#endif
+	// プレイヤーの位置を取得
+	m_playerPos = m_pPlayerController->GetPlayerPosition();
+
+
 	// 左クリックで弾発射
 	if (mtracker->GetLastState().leftButton && m_pPlayerBullets->GetIsBullet() == false)
 	{
@@ -136,8 +134,6 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 		m_pPlayerBullets->CreateBullet(GetPlayerController()->GetPlayerPosition(), cameraDirection);
 	}
 	if (!mtracker->GetLastState().leftButton)m_pPlayerBullets->SetIsBullet(false);
-
-
 	// 弾更新
 	m_pPlayerBullets->Update(elapsedTime);
 	// HP更新
@@ -147,7 +143,7 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 	// 照準更新
 	m_pPlayerPointer->Update();
 	// ダメージエフェクトを更新する
-	std::vector<std::unique_ptr<DamageEffect>> newDE;
+	std::vector<std::unique_ptr<DamageEffect>> newDamageEffect;
 	for (auto& damageEffect : m_pDamageEffect)
 	{
 		// 更新する
@@ -155,10 +151,10 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 		// 再生が終わったダメージエフェクトだったら次のエフェクトへ
 		if (damageEffect->Destroy())continue;
 		// 再生が終了していないエフェクトは新しいリストに移動
-		newDE.push_back(std::move(damageEffect));
+		newDamageEffect.push_back(std::move(damageEffect));
 	}
 	// ダメージエフェクトを新しいリストに置き換える
-	m_pDamageEffect = std::move(newDE);
+	m_pDamageEffect = std::move(newDamageEffect);
 	// プレイヤーの境界球を更新
 	m_inPlayerArea.Center = GetPlayerController()->GetPlayerPosition();// プレイヤーの位置を取得
 	m_playerSphere.Center = m_inPlayerArea.Center;// プレイヤーの位置を取得

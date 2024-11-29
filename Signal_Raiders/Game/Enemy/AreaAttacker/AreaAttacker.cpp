@@ -72,7 +72,7 @@ void AreaAttacker::Initialize(CommonResources* resources, int hp)
 	m_HPBar->SetEnemyHP(m_currentHP);
 	m_HPBar->Initialize(resources);
 	// AI¶¬
-	m_enemyAI = std::make_unique<EnemyAI>();
+	m_enemyAI = std::make_unique<EnemyAI>(this);
 	m_enemyAI->Initialize();
 	// ’e‘S‘Ì¶¬
 	m_enemyBullets = std::make_unique<EnemyBullets>(this);
@@ -81,7 +81,6 @@ void AreaAttacker::Initialize(CommonResources* resources, int hp)
 	Vector3 position = Vector3(GenerateRandomMultiplier(-50.0f, 50.0f)); // ˆê—l•ª•z
 	// “G‚Ì‰ŠúˆÊ’u‚ğİ’è
 	m_position = Vector3{ position.x, 0.0f,position.z };// “G‚Ì‰ŠúˆÊ’u‚ğİ’è
-
 	// “G‚ÌÀ•W‚ğİ’è
 	m_enemyAI->SetPosition(m_position);
 	// ‹«ŠE‹…‚Ì‰Šú‰»

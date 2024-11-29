@@ -389,10 +389,7 @@ void Particle::BarrierBreak()
 				SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 0.0f), // 最終カラー（白→透明）
 				ParticleUtility::Type::BARRIERDESTROYED // タイプを追加
 			);
-
 			m_particleUtility.push_back(pU);
 		}
-
-		//m_timer = 0.0f;  // タイマーをリセット
 	}
 }

@@ -78,7 +78,7 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 	m_HPBar->SetEnemyHP(m_currentHP);
 	m_HPBar->Initialize(resources);
 	// AI¶¬
-	m_enemyAI = std::make_unique<EnemyAI>();
+	m_enemyAI = std::make_unique<EnemyAI>(this);
 	m_enemyAI->Initialize();
 	// ’e‘S‘Ì¶¬
 	m_enemyBullets = std::make_unique<EnemyBullets>(this);

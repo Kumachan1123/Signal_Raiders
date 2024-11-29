@@ -88,7 +88,7 @@ void AreaAttackerModel::Render(ID3D11DeviceContext1* context,
 	case IState::EnemyState::ANGRY:// “{‚è
 		m_angryFaceModel->Draw(context, *states, world, view, proj);
 		break;
-	case IState::EnemyState::DAMAGE:// ”í’e
+	case IState::EnemyState::ESCAPE:// ”í’e
 		m_damageFaceModel->Draw(context, *states, world, view, proj);
 		break;
 
