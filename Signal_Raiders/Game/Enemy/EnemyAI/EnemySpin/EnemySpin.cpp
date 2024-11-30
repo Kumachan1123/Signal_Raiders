@@ -1,10 +1,10 @@
 /*
-	@file	EnemyEscape.cpp
-	@brief	敵逃避クラス
+	@file	EnemySpin.cpp
+	@brief	敵スピンクラス
 */
 #include "pch.h"
 #include <SimpleMath.h>
-#include "Game/Enemy/EnemyAI/EnemyEscape/EnemyEscape.h"
+#include "Game/Enemy/EnemyAI/EnemySpin/EnemySpin.h"
 #include "Game/Enemy/EnemyAI/EnemyAI.h"
 #include "Libraries/MyLib/DebugString.h"
 #include "Libraries/MyLib/InputManager.h"
@@ -15,7 +15,7 @@
 
 using namespace DirectX::SimpleMath;
 // コンストラクタ
-EnemyEscape::EnemyEscape(EnemyAI* enemy)
+EnemySpin::EnemySpin(EnemyAI* enemy)
 	: m_enemy(enemy),
 	m_rotation(Quaternion::Identity),
 	m_velocity(Vector3::Zero),
@@ -27,9 +27,9 @@ EnemyEscape::EnemyEscape(EnemyAI* enemy)
 {
 }
 // デストラクタ
-EnemyEscape::~EnemyEscape() {}
+EnemySpin::~EnemySpin() {}
 // 初期化する
-void EnemyEscape::Initialize()
+void EnemySpin::Initialize()
 {
 	m_rotation = m_enemy->GetRotation();
 	m_velocity = m_enemy->GetVelocity();
@@ -38,7 +38,7 @@ void EnemyEscape::Initialize()
 	m_rotationSpeed = 0.5f; // 回転速度
 }
 
-void EnemyEscape::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool isHitToPlayer)
+void EnemySpin::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool isHitToPlayer)
 {
 	UNREFERENCED_PARAMETER(isHitToPlayer);
 	//UNREFERENCED_PARAMETER(playerPos);

@@ -1,5 +1,5 @@
 /*
-	@file	EnemyEscape.h
+	@file	EnemySpin.h
 	@brief	“G“¦”ğƒNƒ‰ƒX
 */
 #pragma once
@@ -9,7 +9,7 @@
 class EnemyAI;
 //‘O•ûéŒ¾
 
-class EnemyEscape : public IState
+class EnemySpin : public IState
 {
 private:
 	EnemyAI* m_enemy;//“GAI
@@ -33,8 +33,8 @@ public:
 	void SetScale(DirectX::SimpleMath::Vector3 sca) { m_scale = sca; }
 
 public:
-	EnemyEscape(EnemyAI* enemy);
-	virtual ~EnemyEscape();
+	EnemySpin(EnemyAI* enemy);
+	virtual ~EnemySpin();
 
 	void Initialize() override;
 	void Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool isHitToPlayer) override;

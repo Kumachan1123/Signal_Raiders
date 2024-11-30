@@ -16,12 +16,12 @@ class EnemyAttack;
 class EnemyIdling;
 // コンストラクタ
 EnemyAI::EnemyAI(IEnemy* pEnemy)
-	: m_currentState(nullptr), m_rotationSpeed(0.5f), m_attackCooldown(0.0f), m_enemyAttack(nullptr), m_enemyEscape(nullptr), m_enemyIdling(nullptr), m_enemyState(IState::EnemyState::IDLING), m_pEnemy(pEnemy)
+	: m_currentState(nullptr), m_rotationSpeed(0.5f), m_attackCooldown(0.0f), m_enemyAttack(nullptr), m_EnemySpin(nullptr), m_enemyIdling(nullptr), m_enemyState(IState::EnemyState::IDLING), m_pEnemy(pEnemy)
 {
 	m_pEnemy = pEnemy;
 	m_enemyAttack = std::make_unique<EnemyAttack>(this);
 	m_enemyIdling = std::make_unique<EnemyIdling>(this);
-	m_enemyEscape = std::make_unique<EnemyEscape>(this);
+	m_EnemySpin = std::make_unique<EnemySpin>(this);
 }
 // デストラクタ
 EnemyAI::~EnemyAI() {}
@@ -70,7 +70,7 @@ void EnemyAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Direc
 	if (isHitToPlayerBullet)
 	{
 		KnockBack(elapsedTime, pos, isHitToPlayerBullet, playerPos);
-		ChangeState(m_enemyEscape.get());//逃避態勢にする
+		ChangeState(m_EnemySpin.get());//逃避態勢にする
 		m_enemyState = IState::EnemyState::ESCAPE;// 逃避態勢
 	}
 	m_currentState->Update(elapsedTime, pos, playerPos, isHitToPlayer);

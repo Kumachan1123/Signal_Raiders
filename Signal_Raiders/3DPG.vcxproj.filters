@@ -292,6 +292,7 @@
     <ClInclude Include="Game\Enemy\Boss\BossSheild\BossSheild.h" />
     <ClInclude Include="Game\Player\PlayerUI\ReadyGo\ReadyGo.h" />
     <ClInclude Include="Game\KumachiLib\DrawCollision\DrawCollision.h" />
+    <ClInclude Include="Game\Enemy\EnemyAI\EnemySpin\EnemySpin.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -434,6 +435,7 @@
     <ClCompile Include="Game\Enemy\Boss\BossSheild\BossSheild.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\ReadyGo\ReadyGo.cpp" />
     <ClCompile Include="Game\KumachiLib\DrawCollision\DrawCollision.cpp" />
+    <ClCompile Include="Game\Enemy\EnemyAI\EnemySpin\EnemySpin.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

@@ -11,11 +11,11 @@ class CommonResources;
 #include "Game/CommonResources.h"
 #include "Game/Enemy/EnemyAI/EnemyAttack/EnemyAttack.h"
 #include "Game/Enemy/EnemyAI/EnemyIdling/EnemyIdling.h"
-#include "Game/Enemy/EnemyAI/EnemyEscape/EnemyEscape.h"
+#include "Game/Enemy/EnemyAI/EnemySpin/EnemySpin.h"
 #include "Game/Interface/IState.h"
 #include "Game/Interface/IEnemy.h"
 class EnemyAttack;
-class EnemyEscape;
+class EnemySpin;
 class EnemyIdling;
 class IEnemy;
 class EnemyAI
@@ -26,7 +26,7 @@ private:
 	//UŒ‚
 	std::unique_ptr<EnemyAttack> m_enemyAttack;
 	//“¦”ğ
-	std::unique_ptr<EnemyEscape> m_enemyEscape;
+	std::unique_ptr<EnemySpin> m_EnemySpin;
 	// Œ»İ‚Ìó‘Ô
 	IState* m_currentState;
 	IState::EnemyState m_enemyState;
@@ -57,7 +57,7 @@ public:
 	DirectX::SimpleMath::Vector3 GetScale() const { return m_scale; }
 	EnemyAttack* GetEnemyAttack()const { return m_enemyAttack.get(); }
 	EnemyIdling* GetEnemyIdling()const { return m_enemyIdling.get(); }
-	EnemyEscape* GetEnemyEscape()const { return m_enemyEscape.get(); }
+	EnemySpin* GetEnemySpin()const { return m_EnemySpin.get(); }
 	IState* GetNowState()const { return m_currentState; }
 	IState::EnemyState GetState()const { return m_enemyState; }
 	//  setter
