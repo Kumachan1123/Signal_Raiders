@@ -44,11 +44,13 @@ void EnemySpin::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Dir
 	//UNREFERENCED_PARAMETER(playerPos);
 	m_time += elapsedTime;
 	using namespace DirectX::SimpleMath;
-	m_angle = CalculateAngle(pos, playerPos);
-	m_angle = Lerp(m_angle, CalculateAngle(playerPos, pos), m_time);
-	// 徐々にプレイヤーに背を向ける
+
+	m_angle = CalculateAngle(pos, playerPos);// プレイヤーの方向を取得し、正面を向かせる
+	m_angle = Lerp(m_angle, CalculateAngle(playerPos, pos), m_time);// プレイヤーの方向を取得し、一回転させる
+	// 敵を回転させる
 	m_rotation = Quaternion::CreateFromYawPitchRoll(m_angle, 0.0f, 0.0f);
 	m_enemy->SetRotation(m_rotation);
 	m_enemy->SetVelocity(m_velocity);
 }
+
 

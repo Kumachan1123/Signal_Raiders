@@ -71,7 +71,7 @@ void EnemyAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Direc
 	{
 		KnockBack(elapsedTime, pos, isHitToPlayerBullet, playerPos);
 		ChangeState(m_EnemySpin.get());//逃避態勢にする
-		m_enemyState = IState::EnemyState::ESCAPE;// 逃避態勢
+		m_enemyState = IState::EnemyState::HIT;// 逃避態勢
 	}
 	m_currentState->Update(elapsedTime, pos, playerPos, isHitToPlayer);
 
@@ -119,14 +119,14 @@ void EnemyAI::KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bo
 	// 減衰した速度を使って位置を更新
 	Vector3 velocity = m_initialVelocity * decayFactor;
 	pos += velocity * elapsedTime;
-	if (m_enemyState != IState::EnemyState::ANGRY)// 怒り態勢でない場合
-		m_enemyState = IState::EnemyState::ESCAPE;// ダメージ態勢にする
+	if (GetState() != IState::EnemyState::ANGRY)// 怒り態勢でない場合
+		SetState(IState::EnemyState::HIT);// ダメージ態勢にする
 	// ノックバックが終了したかどうかチェック
 	if (t >= 1.0f)
 	{
 		m_knockEndPosition = pos;
 		m_knockTime = 0.0f; // ノックバック時間のリセット
 		isHitToPlayerBullet = false; // ノックバック終了
-		m_enemyState = IState::EnemyState::IDLING;// 待機態勢
+		SetState(IState::EnemyState::IDLING);// 待機態勢
 	}
 }

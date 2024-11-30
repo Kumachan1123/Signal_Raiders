@@ -23,6 +23,7 @@ private:
 	const float RANDOM_MAX = 2.0f;
 	const float RANDOM_MIN = 0.5f;
 	float  m_time = 0.0f;  // ŠÔ‚Ì‰Šú‰»
+
 public:
 	//	getter
 	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
@@ -38,5 +39,6 @@ public:
 
 	void Initialize() override;
 	void Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool isHitToPlayer) override;
+
 };
 #endif //ENEMY_ESCAPE_DEFINED

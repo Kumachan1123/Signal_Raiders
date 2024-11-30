@@ -11,7 +11,7 @@ public:
 	{
 		IDLING = 0,
 		ATTACK,
-		ESCAPE,
+		HIT,
 		ANGRY,
 		DAMAGE
 	};

@@ -40,7 +40,9 @@ private:
 	DirectX::SimpleMath::Vector3 m_velocity;// ˆÚ“®‘¬“x
 
 	float m_knockTime = 0.0f;// knockBack‚·‚éŽžŠÔ
-	DirectX::SimpleMath::Vector3 m_knockStartPosition, m_knockEndPosition, m_initialVelocity;
+	DirectX::SimpleMath::Vector3 m_knockStartPosition;
+	DirectX::SimpleMath::Vector3 m_knockEndPosition;
+	DirectX::SimpleMath::Vector3 m_initialVelocity;
 	float m_rotationSpeed;//‰ñ“]‘¬“x
 	const float RANDOM_MAX = 2.0f;
 	const float RANDOM_MIN = 0.5f;

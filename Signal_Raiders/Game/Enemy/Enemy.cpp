@@ -96,6 +96,33 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 	m_audioManager->LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet");
 
 }
+// 更新
+void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
+{
+	m_enemyModel->Update(elapsedTime, m_enemyAI->GetState());// モデルのアニメーション更新
+	m_enemyAI->Update(elapsedTime, m_position, playerPos, m_isHit, m_isHitToPlayerBullet);// AIの更新
+	m_audioManager->Update();// オーディオマネージャーの更新
+	if (m_enemyAI->GetNowState() == m_enemyAI->GetEnemyAttack())// 攻撃態勢なら
+	{
+		m_attackCooldown = m_enemyAI->GetEnemyAttack()->GetCoolTime();
+		// 攻撃のクールダウンタイムを管理
+		if (m_attackCooldown <= ATTACK_INTERVAL)
+		{
+			m_audioManager->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
+			// クォータニオンから方向ベクトルを計算
+			DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_enemyAI->GetRotation());
+			// 弾を発射
+			m_enemyBullets->CreateBullet(m_position, direction, playerPos, 0.15f, EnemyBullet::BulletType::STRAIGHT);
+			// クールダウンタイムをリセット
+			m_enemyAI->GetEnemyAttack()->SetCoolTime(3.0f);
+		}
+	}
+	m_enemyBullets->Update(elapsedTime, GetPosition());// 敵の弾の更新
+	// 敵の当たり判定の座標を更新
+	m_enemyBS.Center = m_position;
+	m_HPBar->Update(elapsedTime, m_currentHP);// HPBarの更新
+	m_isDead = m_HPBar->GetIsDead();// 敵のHPが0になったら死亡
+}
 // 描画
 void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
@@ -137,31 +164,3 @@ void Enemy::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 	DrawCollision::DrawEnd();
 #endif
 }
-// 更新
-void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
-{
-	m_enemyModel->Update(elapsedTime, m_enemyAI->GetState());// モデルのアニメーション更新
-	m_enemyAI->Update(elapsedTime, m_position, playerPos, m_isHit, m_isHitToPlayerBullet);// AIの更新
-	m_audioManager->Update();// オーディオマネージャーの更新
-	if (m_enemyAI->GetNowState() == m_enemyAI->GetEnemyAttack())// 攻撃態勢なら
-	{
-		m_attackCooldown = m_enemyAI->GetEnemyAttack()->GetCoolTime();
-		// 攻撃のクールダウンタイムを管理
-		if (m_attackCooldown <= ATTACK_INTERVAL)
-		{
-			m_audioManager->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
-			// クォータニオンから方向ベクトルを計算
-			DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_enemyAI->GetRotation());
-			// 弾を発射
-			m_enemyBullets->CreateBullet(m_position, direction, playerPos, 0.15f, EnemyBullet::BulletType::STRAIGHT);
-			// クールダウンタイムをリセット
-			m_enemyAI->GetEnemyAttack()->SetCoolTime(3.0f);
-		}
-	}
-	m_enemyBullets->Update(elapsedTime, GetPosition());// 敵の弾の更新
-	// 敵の当たり判定の座標を更新
-	m_enemyBS.Center = m_position;
-	m_HPBar->Update(elapsedTime, m_currentHP);// HPBarの更新
-	m_isDead = m_HPBar->GetIsDead();// 敵のHPが0になったら死亡
-}
-

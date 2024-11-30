@@ -84,7 +84,7 @@ void EnemyModel::Render(ID3D11DeviceContext1* context,
 	// •\î·•ª
 	switch (m_nowState)
 	{
-	case IState::EnemyState::IDLING:// ƒAƒCƒhƒŠƒ“ƒO
+	case IState::EnemyState::IDLING:// œpœj
 		m_idlingFaceModel->Draw(context, *states, world, view, proj);
 		break;
 	case IState::EnemyState::ATTACK:// UŒ‚
@@ -93,7 +93,7 @@ void EnemyModel::Render(ID3D11DeviceContext1* context,
 	case IState::EnemyState::ANGRY:// “{‚è
 		m_angryFaceModel->Draw(context, *states, world, view, proj);
 		break;
-	case IState::EnemyState::ESCAPE:// ”í’e
+	case IState::EnemyState::HIT:// ”í’e’†
 		m_damageFaceModel->Draw(context, *states, world, view, proj);
 		break;
 
