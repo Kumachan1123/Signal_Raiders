@@ -143,6 +143,8 @@ void AreaAttacker::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 
 void AreaAttacker::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
+	UNREFERENCED_PARAMETER(view);
+	UNREFERENCED_PARAMETER(proj);
 #ifdef _DEBUG
 	// •`‰æ‚·‚é
 	using namespace DirectX;

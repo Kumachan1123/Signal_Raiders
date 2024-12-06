@@ -135,6 +135,8 @@ void EnemyBullet::RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::Simple
 
 void EnemyBullet::RenderBoundingSphere(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
+	UNREFERENCED_PARAMETER(view);
+	UNREFERENCED_PARAMETER(proj);
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 #ifdef _DEBUG
