@@ -223,12 +223,12 @@ void Enemies::HandleEnemySpawning(float elapsedTime)
 //---------------------------------------------------------
 void Enemies::SpawnEnemy()
 {
-	auto enemy = std::make_unique<Enemy>(m_pPlayer);
-	enemy->Initialize(m_commonResources, m_pWifi->GetWifiLevels()[m_enemyIndex]);
-	m_enemies.push_back(std::move(enemy));
+	auto enemy = std::make_unique<Enemy>(m_pPlayer);// 敵を生成
+	enemy->Initialize(m_commonResources, m_pWifi->GetWifiLevels()[m_enemyIndex]);// 敵を初期化
+	m_enemies.push_back(std::move(enemy));// 敵リストに追加
 
-	m_enemyBornTimer = 0.0f;
-	m_enemyIndex++;
+	m_enemyBornTimer = 0.0f;// 敵生成タイマーを初期化
+	m_enemyIndex++; // 敵インデックスを増加
 }
 
 //---------------------------------------------------------
