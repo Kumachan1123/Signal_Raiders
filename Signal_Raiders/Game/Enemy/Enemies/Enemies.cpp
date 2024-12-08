@@ -108,7 +108,11 @@ void Enemies::Render()
 	if (m_enemies.size() > 0)for (const auto& enemy : m_enemies)
 	{
 		enemy->Render(view, projection);//	敵を描画する
+#ifdef _DEBUG
+
 		enemy->DrawCollision(view, projection);//	当たり判定を描画する
+#endif
+
 	}
 
 	// エフェクトを描画する

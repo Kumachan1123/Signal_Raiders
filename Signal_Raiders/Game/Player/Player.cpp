@@ -163,6 +163,7 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 
 void Player::Render()
 {
+	m_pPlayerBullets->Render();// ’e•`‰æ
 	if (m_timer <= 5.0f)// ŠJŽnŒã•bŠÔ‚ÍReadyHGoI‚ð•\Ž¦
 	{
 		m_pReadyGo->Render();
@@ -171,7 +172,7 @@ void Player::Render()
 	if (m_playerHP <= 10.0f)m_pCrisis->Render();// HP‚ª10ˆÈ‰º‚ÅŠë‹@ó‘Ô•`‰æ
 	m_pPlayerHP->Render();// HP•`‰æ
 	m_pPlayerPointer->Render();// Æ€•`‰æ
-	m_pPlayerBullets->Render();// ’e•`‰æ
+
 	// ƒ_ƒ[ƒWƒGƒtƒFƒNƒg‚ðXV‚·‚é
 	for (auto& damageEffect : m_pDamageEffect)damageEffect->Render();
 

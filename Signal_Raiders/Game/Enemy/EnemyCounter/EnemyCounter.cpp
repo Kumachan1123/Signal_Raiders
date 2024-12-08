@@ -86,6 +86,16 @@ void EnemyCounter::Initialize(CommonResources* commonResources)
 	// 共通ステート生成
 	m_states = std::make_unique<CommonStates>(device);
 
+	// 各頂点の初期化
+	for (int i = 0; i < 4; i++)
+	{
+		m_verticesEnemyIndex10[i] = {};
+		m_verticesEnemyIndex1[i] = {};
+		m_verticesNowEnemy10[i] = {};
+		m_verticesNowEnemy1[i] = {};
+		m_verticesRemaining[i] = {};
+		m_verticesSlash[i] = {};
+	}
 }
 
 //---------------------------------------------------------
@@ -113,14 +123,14 @@ void EnemyCounter::Render()
 
 	// 深度ステンシル状態を設定（深度バッファを有効にする）
 
-	context->OMSetDepthStencilState(m_states->DepthDefault(), 0);
+	context->OMSetDepthStencilState(m_states->DepthNone(), 0);
 	context->OMSetBlendState(m_states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
 
 
 
-	//	不透明のみ描画する設定 
-	m_batchEffect->SetAlphaFunction(D3D11_COMPARISON_GREATER);
-	m_batchEffect->SetReferenceAlpha(0);
+	////	不透明のみ描画する設定 
+	//m_batchEffect->SetAlphaFunction(D3D11_COMPARISON_GREATER);
+	//m_batchEffect->SetReferenceAlpha(0);
 
 
 	DrawRemaining();
@@ -172,7 +182,6 @@ void EnemyCounter::DrawNowEnemy10()
 void EnemyCounter::DrawNowEnemy1()
 {
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-
 	int currentRow = m_nowEnemy1 / m_frameCols;
 	int currentCol = m_nowEnemy1 % m_frameCols;
 
