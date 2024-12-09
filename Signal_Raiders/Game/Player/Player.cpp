@@ -164,7 +164,7 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 void Player::Render()
 {
 	m_pPlayerBullets->Render();// 弾描画
-	if (m_timer <= 5.0f)// 開始後秒間はReady？Go！を表示
+	if (m_timer <= 5.0f)// 開始後秒間は指示画像を表示
 	{
 		m_pReadyGo->Render();
 		return;
