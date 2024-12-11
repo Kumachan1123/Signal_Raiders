@@ -80,22 +80,36 @@ void EnemyBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::Sim
 }
 
 // 更新
-void EnemyBullet::Update(DirectX::SimpleMath::Vector3& pos, float elapsedTime)
+void EnemyBullet::Update(float elapsedTime)
 {
 	// 角度を増加させる
 	m_angle += 6.0f;
 	if (m_angle > 360) m_angle = 0;
 
-	if (m_bulletType == BulletType::SPIRAL)   SpiralBullet();
-	else if (m_bulletType == BulletType::STRAIGHT) StraightBullet(pos);
-	else if (m_bulletType == BulletType::VERTICAL) VerticalBullet(pos);
+	// 弾の種類によって処理を分岐
+	switch (m_bulletType)
+	{
+	case BulletType::SPIRAL:
+		SpiralBullet();
+		break;
+	case BulletType::STRAIGHT:
+		StraightBullet();
+		break;
+	case BulletType::VERTICAL:
+		VerticalBullet();
+		break;
+	default:
+		break;
+	}
 
 	// 現在の弾の位置を軌跡リストに追加
 	m_bulletTrail->SetBulletPosition(m_position);
 
 	// 軌跡の更新
 	m_bulletTrail->Update(elapsedTime);
-	m_time += elapsedTime; // 経過時間を更新
+
+	// 経過時間を更新
+	m_time += elapsedTime;
 
 }
 
@@ -153,9 +167,9 @@ void EnemyBullet::RenderBoundingSphere(DirectX::SimpleMath::Matrix view, DirectX
 }
 
 // 直線弾
-void EnemyBullet::StraightBullet(DirectX::SimpleMath::Vector3& pos)
+void EnemyBullet::StraightBullet()
 {	// プレイヤーの方向ベクトルを計算
-	DirectX::SimpleMath::Vector3 toPlayer = m_target - pos;
+	DirectX::SimpleMath::Vector3 toPlayer = m_target - m_enemyPosition;
 	// ベクトルを正規化
 	if (toPlayer.LengthSquared() > 0)
 	{
@@ -172,6 +186,7 @@ void EnemyBullet::StraightBullet(DirectX::SimpleMath::Vector3& pos)
 	m_boundingSphere.Center = m_position;//境界球に座標を渡す
 }
 
+// 弾のワールド行列を取得
 DirectX::SimpleMath::Matrix EnemyBullet::BulletWorldMatrix()
 {
 	using namespace DirectX::SimpleMath;
@@ -185,7 +200,7 @@ DirectX::SimpleMath::Matrix EnemyBullet::BulletWorldMatrix()
 }
 
 // 垂直直進弾
-void EnemyBullet::VerticalBullet(DirectX::SimpleMath::Vector3& pos)
+void EnemyBullet::VerticalBullet()
 {
 	using namespace DirectX::SimpleMath;
 	if (m_position.y >= 0.50f)
@@ -196,7 +211,7 @@ void EnemyBullet::VerticalBullet(DirectX::SimpleMath::Vector3& pos)
 	else//着弾してから
 	{
 		// プレイヤーの方向ベクトルを計算
-		Vector3 toPlayer = m_target - pos;
+		Vector3 toPlayer = m_target - m_enemyPosition;
 		// ベクトルを正規化
 		if (toPlayer.LengthSquared() > 0)
 		{
@@ -216,7 +231,7 @@ void EnemyBullet::VerticalBullet(DirectX::SimpleMath::Vector3& pos)
 void EnemyBullet::SpiralBullet()
 {
 	// プレイヤー方向ベクトルを計算
-	DirectX::SimpleMath::Vector3 toPlayer = m_target - m_position;
+	DirectX::SimpleMath::Vector3 toPlayer = m_target - m_enemyPosition;
 
 	// プレイヤーとの距離を取得してスパイラルの半径に使う
 	float distanceToPlayer = toPlayer.Length();

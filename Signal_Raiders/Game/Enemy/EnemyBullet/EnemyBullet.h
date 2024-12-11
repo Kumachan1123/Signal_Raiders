@@ -22,20 +22,22 @@ public:
 
 	};
 	BulletType m_bulletType;
-	DirectX::SimpleMath::Vector3 m_position;		// 弾の座標
-	DirectX::SimpleMath::Vector3 m_velocity;		// 弾の速さ
-	float m_size;			// 弾の大きさ
-	DirectX::SimpleMath::Vector3 m_direction;		// 弾が飛ぶ方向
-	float m_time;									// 生存時間
+
 	const int DAMAGE = 10;						// 敵に与えるダメージ
-	// ジオメトリックプリミティブ弾
-	std::unique_ptr<DirectX::Model> m_model;
+
 	const float BULLET_LIFETIME = 10.0f;				// 寿命
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
 	// ワールド行列
 	DirectX::SimpleMath::Matrix m_worldMatrix;
+	DirectX::SimpleMath::Vector3 m_enemyPosition;	// 敵の座標
+	DirectX::SimpleMath::Vector3 m_position;		// 弾の座標
+	DirectX::SimpleMath::Vector3 m_velocity;		// 弾の速さ
+	float m_size;			// 弾の大きさ
+	DirectX::SimpleMath::Vector3 m_direction;		// 弾が飛ぶ方向
+	std::unique_ptr<DirectX::Model> m_model;
+	float m_time;									// 生存時間
 	// 「弾」境界ボックス
 	DirectX::BoundingSphere m_boundingSphere;
 	DirectX::SimpleMath::Vector3 m_target;
@@ -64,7 +66,7 @@ public:
 	EnemyBullet(float size);
 	~EnemyBullet();
 	void Initialize(CommonResources* resources, BulletType type);
-	void Update(DirectX::SimpleMath::Vector3& pos, float elapsedTime);
+	void Update(float elapsedTime);
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 	void RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 	void RenderBoundingSphere(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
@@ -79,6 +81,7 @@ public:
 	BulletType GetBulletType()const { return m_bulletType; }// 弾の種類を取得
 
 	//Setter
+	void SetEnemyPosition(DirectX::SimpleMath::Vector3 pos) { m_enemyPosition = pos; }
 	void SetBulletPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }
 	void SetCameraEye(DirectX::SimpleMath::Vector3 eye) { m_bulletTrail->SetCameraPosition(eye); m_cameraEye = eye; }
 	void SetCameraTarget(DirectX::SimpleMath::Vector3 target) { m_bulletTrail->SetCameraTarget(target); m_cameraTarget = target; }
@@ -91,8 +94,8 @@ public:
 	void SetRotateDirection(int direction) { m_rotateDirection = direction; }
 private:
 	void SpiralBullet();//螺旋弾
-	void VerticalBullet(DirectX::SimpleMath::Vector3& pos);//垂直直進弾
-	void StraightBullet(DirectX::SimpleMath::Vector3& pos);//直線弾
+	void VerticalBullet();//垂直直進弾
+	void StraightBullet();//直線弾
 	DirectX::SimpleMath::Matrix BulletWorldMatrix();//弾のワールド行列を作成
 };
 #endif //ENEMY_BULLET_DEFINED

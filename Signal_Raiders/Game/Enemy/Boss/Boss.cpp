@@ -154,7 +154,7 @@ void Boss::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 	m_audioManager->Update();// オーディオマネージャーの更新
 	m_attackCooldown = m_pBossAI->GetBossAttack()->GetCoolTime();
 	ShootBullet();// 弾発射
-	m_pEnemyBullets->Update(elapsedTime, m_position);// 敵の弾の更新
+	m_pEnemyBullets->Update(elapsedTime);// 敵の弾の更新
 	m_bossBS.Center = m_position + SPHERE_OFFSET;// 境界球の中心座標を更新
 	// 弾の位置設定
 	BulletPositioning();
@@ -250,8 +250,9 @@ void Boss::CreateBullet()
 // 中央の弾を発射
 void Boss::CreateCenterBullet(EnemyBullet::BulletType type)
 {
-	m_pEnemyBullets->CreateBullet(m_bulletPosCenter, m_bulletDirection, m_pPlayer->GetPlayerPos(),
-		BULLET_SIZE, type);
+	m_pEnemyBullets->SetEnemyPosition(m_bulletPosCenter);
+	m_pEnemyBullets->SetDirection(m_bulletDirection);
+	m_pEnemyBullets->CreateBullet(BULLET_SIZE, type);
 }
 
 // 左の弾を発射
@@ -262,8 +263,10 @@ void Boss::CreateLeftBullet(float angleOffset, EnemyBullet::BulletType type)
 	// 左方向
 	Quaternion leftRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, angleOffset);
 	Vector3 leftDirection = Vector3::Transform(m_bulletDirection, leftRotation);
-	m_pEnemyBullets->CreateBullet(m_bulletPosLeft, m_bulletDirection, m_pPlayer->GetPlayerPos(),
-		BULLET_SIZE, type);
+	// 発射位置を設定
+	m_pEnemyBullets->SetEnemyPosition(m_bulletPosLeft);
+	m_pEnemyBullets->SetDirection(leftDirection);
+	m_pEnemyBullets->CreateBullet(BULLET_SIZE, type);
 }
 
 // 右の弾を発射
@@ -274,8 +277,10 @@ void Boss::CreateRightBullet(float angleOffset, EnemyBullet::BulletType type)
 	// 右方向
 	Quaternion rightRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, -angleOffset);
 	Vector3 rightDirection = Vector3::Transform(m_bulletDirection, rightRotation);
-	m_pEnemyBullets->CreateBullet(m_bulletPosRight, m_bulletDirection, m_pPlayer->GetPlayerPos(),
-		BULLET_SIZE, type);
+	// 発射位置を設定
+	m_pEnemyBullets->SetEnemyPosition(m_bulletPosRight);
+	m_pEnemyBullets->SetDirection(rightDirection);
+	m_pEnemyBullets->CreateBullet(BULLET_SIZE, type);
 }
 
 // 真下に落ちる弾を発射
@@ -284,8 +289,8 @@ void Boss::CreateVerticalBullet()
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	// 真下に落ちる弾を発射
-	m_pEnemyBullets->CreateBullet(m_bulletPosCenter, Vector3::Zero, m_pPlayer->GetPlayerPos(),
-		BULLET_SIZE, EnemyBullet::BulletType::VERTICAL);
+	m_pEnemyBullets->SetEnemyPosition(m_bulletPosCenter);
+	m_pEnemyBullets->CreateBullet(BULLET_SIZE, EnemyBullet::BulletType::VERTICAL);
 }
 void Boss::SetEnemyHP(int hp)
 {

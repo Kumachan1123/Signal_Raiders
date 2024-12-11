@@ -27,14 +27,15 @@ public:
 	bool m_isBullethit = false;// “G‚Ì’e‚ªƒvƒŒƒCƒ„[‚É“–‚½‚Á‚½‚©
 	std::vector<std::unique_ptr<EnemyBullet>> m_bullets; // ’e‚ÌƒŠƒXƒg
 	std::vector<std::unique_ptr<Particle>> m_bulletTrails; // ’e‚Ì‹OÕƒŠƒXƒg
-	DirectX::SimpleMath::Vector3 m_position;		// “G‚ÌÀ•W
+	DirectX::SimpleMath::Vector3 m_enemyPosition;		// “G‚ÌÀ•W
+	DirectX::SimpleMath::Vector3 m_direction;		// ’e‚Ì•ûŒü
 	// ŠÖ”
 	EnemyBullets(IEnemy* pEnemy);
 	~EnemyBullets();
 	void Initialize(CommonResources* resources);
-	void Update(float elapsedTime, DirectX::SimpleMath::Vector3 enemyPos);
+	void Update(float elapsedTime);
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
-	void CreateBullet(DirectX::SimpleMath::Vector3 enemyPos, DirectX::SimpleMath::Vector3 dir, DirectX::SimpleMath::Vector3 playerPos, float size, EnemyBullet::BulletType type);
+	void CreateBullet(float size, EnemyBullet::BulletType type);
 	// Getter
 	DirectX::BoundingSphere& GetBulletBoundingSphere() { return m_enemyBulletBS; }
 	DirectX::BoundingSphere& GetPlayerBoundingSphere() { return m_playerBS; }
@@ -43,4 +44,6 @@ public:
 	void SetPlayerBoundingSphere(DirectX::BoundingSphere playerBS) { m_playerBS = playerBS; }
 	void SetBulletHitToPlayer(bool hit) { m_isBullethit = hit; }// “G‚Ì’e‚ªƒvƒŒƒCƒ„[‚É“–‚½‚Á‚½‚©
 	void SetRotateDirection(int direction);
+	void SetDirection(DirectX::SimpleMath::Vector3 dir) { m_direction = dir; }
+	void SetEnemyPosition(DirectX::SimpleMath::Vector3 pos) { m_enemyPosition = pos; }
 };

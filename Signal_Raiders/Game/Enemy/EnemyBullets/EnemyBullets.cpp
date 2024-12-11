@@ -30,10 +30,10 @@ void EnemyBullets::Initialize(CommonResources* resources)
 }
 
 // 更新
-void EnemyBullets::Update(float elapsedTime, DirectX::SimpleMath::Vector3 enemyPos)
+void EnemyBullets::Update(float elapsedTime)
 {
 	std::vector<std::unique_ptr<EnemyBullet>> newBullets;
-	Vector3 position = m_pEnemy->GetPosition();
+	Vector3 enemyPosition = m_pEnemy->GetPosition();
 	Vector3 playerPos = m_pEnemy->GetCamera()->GetEyePosition();
 	Vector3 playerTarget = m_pEnemy->GetCamera()->GetTargetPosition();
 	Vector3 playerUp = m_pEnemy->GetCamera()->GetUpVector();
@@ -44,7 +44,8 @@ void EnemyBullets::Update(float elapsedTime, DirectX::SimpleMath::Vector3 enemyP
 		bullet->SetCameraEye(playerPos);// カメラの位置を設定
 		bullet->SetCameraTarget(playerTarget);// カメラの注視点を設定
 		bullet->SetCameraUp(playerUp);	// カメラの上方向を設定
-		bullet->Update(enemyPos, elapsedTime); // 弾の更新
+		bullet->SetEnemyPosition(enemyPosition);// 敵の位置を設定
+		bullet->Update(elapsedTime); // 弾の更新
 
 		// 寿命を迎えていない弾だけを新しいリストに追加する
 		if (!bullet->IsExpired() && !m_pEnemy->GetBulletHitToPlayer())
@@ -82,13 +83,15 @@ void EnemyBullets::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 }
 
 // 弾の生成
-void EnemyBullets::CreateBullet(Vector3 enemyPos, Vector3 dir, Vector3 playerPos, float size, EnemyBullet::BulletType type)
+void EnemyBullets::CreateBullet(float size, EnemyBullet::BulletType type)
 {
-	m_position = enemyPos;
+	// プレイヤーからカメラの情報を取得
+	Vector3 playerPos = m_pEnemy->GetCamera()->GetEyePosition();
+
 	// 弾を発射する
 	auto bullet = std::make_unique<EnemyBullet>(size);
 	bullet->Initialize(m_commonResources, type);
-	bullet->MakeBall(m_position, dir, playerPos);
+	bullet->MakeBall(m_enemyPosition, m_direction, playerPos);
 	m_bullets.push_back(std::move(bullet));
 }
 
