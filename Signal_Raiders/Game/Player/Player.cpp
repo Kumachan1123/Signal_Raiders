@@ -109,6 +109,8 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 	}
 
 #ifdef _DEBUG// デバッグ
+
+#endif
 	// 右クリックで敵を一掃
 	if (mtracker->GetLastState().rightButton && m_isCheat == false)
 	{
@@ -122,7 +124,6 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 	}
 	// スペースキーでプレイヤーのHPを0にする
 	if (kb->pressed.Space)SetPlayerHP(0.0f);
-#endif
 	// プレイヤーの位置を取得
 	m_playerPos = m_pPlayerController->GetPlayerPosition();
 
