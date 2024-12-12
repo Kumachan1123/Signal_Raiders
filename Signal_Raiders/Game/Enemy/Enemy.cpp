@@ -104,22 +104,7 @@ void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 	m_audioManager->Update();// オーディオマネージャーの更新
 	if (m_enemyAI->GetNowState() == m_enemyAI->GetEnemyAttack())// 攻撃態勢なら
 	{
-		m_attackCooldown = m_enemyAI->GetEnemyAttack()->GetCoolTime();
-		// 攻撃のクールダウンタイムを管理
-		if (m_attackCooldown <= ATTACK_INTERVAL)
-		{
-			m_audioManager->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
-			// クォータニオンから方向ベクトルを計算
-			DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_enemyAI->GetRotation());
-			// 弾が飛ぶ方向を設定
-			m_enemyBullets->SetDirection(direction);
-			// 発射位置を設定
-			m_enemyBullets->SetEnemyPosition(m_position);
-			// 弾を発射
-			m_enemyBullets->CreateBullet(0.15f, EnemyBullet::BulletType::STRAIGHT);
-			// クールダウンタイムをリセット
-			m_enemyAI->GetEnemyAttack()->SetCoolTime(3.0f);
-		}
+		ShootBullet();// 弾を発射
 	}
 	m_enemyBullets->Update(elapsedTime);// 敵の弾の更新
 	// 敵の当たり判定の座標を更新
@@ -169,4 +154,25 @@ void Enemy::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 	// 描画終了
 	DrawCollision::DrawEnd();
 #endif
+}
+
+// 敵の弾を発射
+void Enemy::ShootBullet()
+{
+	m_attackCooldown = m_enemyAI->GetEnemyAttack()->GetCoolTime();
+	// 攻撃のクールダウンタイムを管理
+	if (m_attackCooldown <= ATTACK_INTERVAL)
+	{
+		m_audioManager->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
+		// クォータニオンから方向ベクトルを計算
+		DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_enemyAI->GetRotation());
+		// 弾が飛ぶ方向を設定
+		m_enemyBullets->SetDirection(direction);
+		// 発射位置を設定
+		m_enemyBullets->SetEnemyPosition(m_position);
+		// 弾を発射
+		m_enemyBullets->CreateBullet(0.15f, EnemyBullet::BulletType::STRAIGHT);
+		// クールダウンタイムをリセット
+		m_enemyAI->GetEnemyAttack()->SetCoolTime(3.0f);
+	}
 }

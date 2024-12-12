@@ -1,16 +1,16 @@
 /*
-	@file	AreaAttackerModel.cpp
+	@file	VerticalAttackerModel.cpp
 	@brief	範囲攻撃敵モデルクラス
 */
 #include "pch.h"
-#include "Game/Enemy/AreaAttacker/AreaAttacker.h"
-#include "Game/Enemy/AreaAttackerModel/AreaAttackerModel.h"
+#include "Game/Enemy/VerticalAttacker/VerticalAttacker.h"
+#include "Game/Enemy/VerticalAttackerModel/VerticalAttackerModel.h"
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
 #include <SimpleMath.h>
 #include "Libraries/Microsoft/ReadData.h"
 // コンストラクタ
-AreaAttackerModel::AreaAttackerModel()
+VerticalAttackerModel::VerticalAttackerModel()
 	:
 	m_commonResources{},
 	m_bodyModel{},
@@ -20,10 +20,10 @@ AreaAttackerModel::AreaAttackerModel()
 {}
 
 // デストラクタ
-AreaAttackerModel::~AreaAttackerModel() {}
+VerticalAttackerModel::~VerticalAttackerModel() {}
 
 // 初期化する
-void AreaAttackerModel::Initialize(CommonResources* resources)
+void VerticalAttackerModel::Initialize(CommonResources* resources)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
@@ -34,9 +34,9 @@ void AreaAttackerModel::Initialize(CommonResources* resources)
 	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pixelShader.ReleaseAndGetAddressOf()));
 	// モデルを読み込む準備
 	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);
-	fx->SetDirectory(L"Resources/Models/AreaAttacker");
+	fx->SetDirectory(L"Resources/Models/VerticalAttacker");
 	// モデルを読み込む（ 頭、表情差分）
-	m_bodyModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/AreaAttacker/AreaAttacker.cmo", *fx);
+	m_bodyModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/VerticalAttacker/VerticalAttacker.cmo", *fx);
 	fx->SetDirectory(L"Resources/Models/Enemy");
 	m_attackFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_Face.cmo", *fx);
 	m_idlingFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_IdlingHead.cmo", *fx);
@@ -45,7 +45,7 @@ void AreaAttackerModel::Initialize(CommonResources* resources)
 
 
 }
-void AreaAttackerModel::Update(float elapsedTime, IState::EnemyState State)
+void VerticalAttackerModel::Update(float elapsedTime, IState::EnemyState State)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
 	using namespace DirectX;
@@ -53,7 +53,7 @@ void AreaAttackerModel::Update(float elapsedTime, IState::EnemyState State)
 	m_nowState = State;
 }
 
-void AreaAttackerModel::Render(ID3D11DeviceContext1* context,
+void VerticalAttackerModel::Render(ID3D11DeviceContext1* context,
 	DirectX::DX11::CommonStates* states,
 	DirectX::SimpleMath::Matrix world,
 	DirectX::SimpleMath::Matrix view,

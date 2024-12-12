@@ -1,6 +1,6 @@
 /*
-	@file	AreaAttacker.h
-	@brief	範囲攻撃敵クラス
+	@file	VerticalAttacker.h
+	@brief	垂直攻撃敵クラス
 */
 #pragma once
 #include "Game/KumachiLib/AudioManager.h"
@@ -12,11 +12,11 @@ class Player;
 class EnemyAI;
 class EnemyHPBar;
 class EnemyBullet;
-class AreaAttackerModel;
+class VerticalAttackerModel;
 class EnemyBullets;
 class Enemies;
 class FPS_Camera;
-class AreaAttacker : public IEnemy
+class VerticalAttacker : public IEnemy
 {
 private:
 	// 共通リソース
@@ -28,7 +28,7 @@ private:
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
-	std::unique_ptr<AreaAttackerModel>		m_pAreaAttackerModel;// 敵のモデル
+	std::unique_ptr<VerticalAttackerModel>		m_pVerticalAttackerModel;// 敵のモデル
 	std::unique_ptr<EnemyAI>		m_enemyAI;// 敵のAI
 	std::unique_ptr<EnemyHPBar>		m_HPBar;// 敵のHPバー
 	std::unique_ptr<EnemyBullets>	m_enemyBullets;// 敵の弾
@@ -56,6 +56,8 @@ private:
 	float m_attackCooldown;  // 攻撃のクールダウンタイ
 	// プレイヤーに与えるダメージ
 	const float PLAYER_DAMAGE = 1.0f;
+	// 攻撃の間隔（１秒）
+	const float ATTACK_INTERVAL = 1.0f;
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
 	// カメラ
@@ -96,11 +98,13 @@ public:
 	void SetCameraUp(DirectX::SimpleMath::Vector3 up)override { m_cameraUp = up; }
 public:
 	// 初期ステータスを設定
-	AreaAttacker(Player* pPlayer);
-	~AreaAttacker();
+	VerticalAttacker(Player* pPlayer);
+	~VerticalAttacker();
 	void Initialize(CommonResources* resources, int hp) override;
 	void Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos) override;
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;
 	void DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;
+private:
+	void ShootBullet();// 弾を撃つ
 };
 

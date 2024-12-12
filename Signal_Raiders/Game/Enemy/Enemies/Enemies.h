@@ -5,7 +5,7 @@
 #pragma once
 #include "Game/Interface/IEnemy.h"
 #include "Game/Enemy/Enemy.h"
-#include "Game/Enemy/AreaAttacker/AreaAttacker.h"
+#include "Game/Enemy/VerticalAttacker/VerticalAttacker.h"
 #include "Game/Enemy/Boss/Boss.h"
 #include "Game/Effect/Effect.h"
 #include "Game/Player/Player.h"
@@ -105,7 +105,7 @@ private:
 	void UpdateEffects(float elapsedTime);// エフェクト
 	void HandleEnemySpawning(float elapsedTime);// 敵生成
 	void SpawnEnemy();// 敵生成(通常タイプ)
-	void SpawnAreaAttacker();// 敵生成(範囲攻撃タイプ)
+	void SpawnVerticalAttacker();// 敵生成(範囲攻撃タイプ)
 	void FinalizeEnemySpawn();// 敵生成終了
 	void SpawnBoss();// ボス生成
 	void HandleEnemyCollisions();// 敵の当たり判定

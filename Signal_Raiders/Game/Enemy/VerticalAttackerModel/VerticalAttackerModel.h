@@ -1,5 +1,5 @@
 /*
-	@file	AreaAttackerModel.h
+	@file	VerticalAttackerModel.h
 	@brief	範囲攻撃敵モデルクラス
 */
 #pragma once
@@ -7,10 +7,10 @@
 #define AREA_ATTACKER_MODEL_DEFINED
 #include "Game/CommonResources.h"
 #include "Game/Interface/IState.h"
-class AreaAttacker;
+class VerticalAttacker;
 class CommonResources;
 class IState;
-class AreaAttackerModel
+class VerticalAttackerModel
 {
 private:
 	// 共通リソース
@@ -28,8 +28,8 @@ private:
 	IState::EnemyState m_nowState;
 public:
 	// 初期ステータスを設定
-	AreaAttackerModel();
-	~AreaAttackerModel();
+	VerticalAttackerModel();
+	~VerticalAttackerModel();
 	void Initialize(CommonResources* resources);
 	void Update(float elapsedTime, IState::EnemyState State);
 	void Render(ID3D11DeviceContext1* context,

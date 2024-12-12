@@ -1,15 +1,15 @@
 /*
-	@file	AreaAttacker.cpp
-	@brief	範囲攻撃敵クラス
+	@file	VerticalAttacker.cpp
+	@brief	垂直攻撃敵クラス
 */
 #include "pch.h"
-#include "AreaAttacker.h"
+#include "VerticalAttacker.h"
 #include "Game/CommonResources.h"
 #include "Game/Enemy/EnemyAI/EnemyAI.h"
 #include "Game/Enemy/EnemyHPBar/EnemyHPBar.h"
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 #include "Game/Enemy/EnemyBullets/EnemyBullets.h"
-#include "Game/Enemy/AreaAttackerModel/AreaAttackerModel.h"
+#include "Game/Enemy/VerticalAttackerModel/VerticalAttackerModel.h"
 #include "Game/Enemy/Enemies/Enemies.h"
 #include "DeviceResources.h"
 #include "Libraries/MyLib/DebugString.h"
@@ -23,7 +23,7 @@
 #include <Game/KumachiLib/DrawCollision/DrawCollision.h>
 
 // コンストラクタ
-AreaAttacker::AreaAttacker(Player* pPlayer)
+VerticalAttacker::VerticalAttacker(Player* pPlayer)
 	: IEnemy(pPlayer)
 	, m_pPlayer{ pPlayer }
 	, m_pCamera{ pPlayer->GetCamera() }
@@ -31,7 +31,7 @@ AreaAttacker::AreaAttacker(Player* pPlayer)
 	, m_commonResources{}
 	, m_currentHP{}
 	, m_attackCooldown{ 3.0f }
-	, m_pAreaAttackerModel{}
+	, m_pVerticalAttackerModel{}
 	, m_enemyAI{}
 	, m_HPBar{}
 	, m_bullets{}
@@ -51,10 +51,10 @@ AreaAttacker::AreaAttacker(Player* pPlayer)
 {}
 
 // デストラクタ
-AreaAttacker::~AreaAttacker() {}
+VerticalAttacker::~VerticalAttacker() {}
 
 // 初期化する
-void AreaAttacker::Initialize(CommonResources* resources, int hp)
+void VerticalAttacker::Initialize(CommonResources* resources, int hp)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
@@ -63,8 +63,8 @@ void AreaAttacker::Initialize(CommonResources* resources, int hp)
 
 	DrawCollision::Initialize(resources);
 	// モデルを読み込む
-	m_pAreaAttackerModel = std::make_unique<AreaAttackerModel>();
-	m_pAreaAttackerModel->Initialize(m_commonResources);
+	m_pVerticalAttackerModel = std::make_unique<VerticalAttackerModel>();
+	m_pVerticalAttackerModel->Initialize(m_commonResources);
 	// 敵の体力を設定
 	m_currentHP = hp;
 	// HPBar生成
@@ -92,41 +92,24 @@ void AreaAttacker::Initialize(CommonResources* resources, int hp)
 }
 
 // 更新する
-void AreaAttacker::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
+void VerticalAttacker::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 {
-	m_pAreaAttackerModel->Update(elapsedTime, m_enemyAI->GetState());// モデルのアニメーション更新
+	m_pVerticalAttackerModel->Update(elapsedTime, m_enemyAI->GetState());// モデルのアニメーション更新
 	m_enemyAI->Update(elapsedTime, m_position, playerPos, m_isHit, m_isHitToPlayerBullet);// AIの更新
 	m_audioManager->Update();// オーディオマネージャーの更新
 	if (m_enemyAI->GetNowState() == m_enemyAI->GetEnemyAttack())// 攻撃態勢なら
 	{
-		m_attackCooldown = m_enemyAI->GetEnemyAttack()->GetCoolTime();
-		// 攻撃のクールダウンタイムを管理
-		if (m_attackCooldown <= 0.1f)
-		{
-			m_audioManager->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
-			// クォータニオンから方向ベクトルを計算
-			DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_enemyAI->GetRotation());
-			// 弾が飛ぶ方向を設定
-			m_enemyBullets->SetDirection(direction);
-			// 発射位置を設定
-			m_enemyBullets->SetEnemyPosition(m_position);
-
-			// 弾を発射
-			m_enemyBullets->CreateBullet(0.15f, EnemyBullet::BulletType::VERTICAL);
-			// クールダウンタイムをリセット
-			m_enemyAI->GetEnemyAttack()->SetCoolTime(3.0f);
-		}
+		ShootBullet();// 弾を発射
 	}
 	m_enemyBullets->Update(elapsedTime);// 敵の弾の更新
 	// 敵の当たり判定の座標を更新
 	m_enemyBS.Center = m_position;
-	//m_enemyBS.Center.y -= 2.0f;
 	m_HPBar->Update(elapsedTime, m_currentHP);// HPBarの更新
 	m_isDead = m_HPBar->GetIsDead();// 敵のHPが0になったら死亡
 }
 
 // 描画
-void AreaAttacker::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void VerticalAttacker::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
@@ -141,12 +124,12 @@ void AreaAttacker::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 	// HPBar描画
 	m_HPBar->Render(view, proj, hpBarPos, m_rotate);
 	// 敵描画	
-	m_pAreaAttackerModel->Render(context, states, world, view, proj);
+	m_pVerticalAttackerModel->Render(context, states, world, view, proj);
 	// 敵の弾描画
 	m_enemyBullets->Render(view, proj);
 }
 
-void AreaAttacker::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void VerticalAttacker::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
 	UNREFERENCED_PARAMETER(view);
 	UNREFERENCED_PARAMETER(proj);
@@ -167,4 +150,26 @@ void AreaAttacker::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::Simp
 	// 描画終了
 	DrawCollision::DrawEnd();
 #endif
+}
+
+void VerticalAttacker::ShootBullet()
+{
+	m_attackCooldown = m_enemyAI->GetEnemyAttack()->GetCoolTime();
+	// 攻撃のクールダウンタイムを管理
+	if (m_attackCooldown <= ATTACK_INTERVAL)
+	{
+		m_audioManager->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
+		// クォータニオンから方向ベクトルを計算
+		DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_enemyAI->GetRotation());
+		// 弾が飛ぶ方向を設定
+		m_enemyBullets->SetDirection(direction);
+		// 発射位置を設定
+		m_enemyBullets->SetEnemyPosition(m_position);
+
+		// 弾を発射
+		m_enemyBullets->CreateBullet(0.15f, EnemyBullet::BulletType::VERTICAL);
+		// クールダウンタイムをリセット
+		m_enemyAI->GetEnemyAttack()->SetCoolTime(3.0f);
+	}
+
 }

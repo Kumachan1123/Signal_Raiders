@@ -53,10 +53,10 @@ private:
 	bool m_isHitToOtherEnemy;// その他の敵との判定
 	bool m_isHitToPlayerBullet;// 敵がプレイヤーの弾に当たったか
 	bool m_isBullethit;// 敵の弾がプレイヤーに当たったか
-	float m_attackCooldown;  // 攻撃のクールダウンタイ
-	// プレイヤーに与えるダメージ
+	float m_attackCooldown;  // 攻撃のクールダウンタイム
+	// プレイヤーに与えるダメージ（１ダメージ）
 	const float PLAYER_DAMAGE = 1.0f;
-	// 攻撃の間隔
+	// 攻撃の間隔（１秒）
 	const float ATTACK_INTERVAL = 1.0f;
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
@@ -105,4 +105,6 @@ public:
 	void Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos) override;
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;
 	void DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;
+private:
+	void ShootBullet();// 弾を撃つ
 };

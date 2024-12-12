@@ -287,8 +287,8 @@
     <ClInclude Include="Game\Scene\StageSelectScene\Stage\StageSelect.h" />
     <ClInclude Include="Game\Scene\StageSelectScene\StageSelectScene.h" />
     <ClInclude Include="Game\UI\UI.h" />
-    <ClInclude Include="Game\Enemy\AreaAttacker\AreaAttacker.h" />
-    <ClInclude Include="Game\Enemy\AreaAttackerModel\AreaAttackerModel.h" />
+    <ClInclude Include="Game\Enemy\VerticalAttacker\VerticalAttacker.h" />
+    <ClInclude Include="Game\Enemy\VerticalAttackerModel\VerticalAttackerModel.h" />
     <ClInclude Include="Game\Enemy\Boss\BossSheild\BossSheild.h" />
     <ClInclude Include="Game\Player\PlayerUI\ReadyGo\ReadyGo.h" />
     <ClInclude Include="Game\KumachiLib\DrawCollision\DrawCollision.h" />
@@ -430,8 +430,8 @@
     <ClCompile Include="Game\Scene\StageSelectScene\Stage\StageSelect.cpp" />
     <ClCompile Include="Game\Scene\StageSelectScene\StageSelectScene.cpp" />
     <ClCompile Include="Game\UI\UI.cpp" />
-    <ClCompile Include="Game\Enemy\AreaAttacker\AreaAttacker.cpp" />
-    <ClCompile Include="Game\Enemy\AreaAttackerModel\AreaAttackerModel.cpp" />
+    <ClCompile Include="Game\Enemy\VerticalAttacker\VerticalAttacker.cpp" />
+    <ClCompile Include="Game\Enemy\VerticalAttackerModel\VerticalAttackerModel.cpp" />
     <ClCompile Include="Game\Enemy\Boss\BossSheild\BossSheild.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\ReadyGo\ReadyGo.cpp" />
     <ClCompile Include="Game\KumachiLib\DrawCollision\DrawCollision.cpp" />
