@@ -30,7 +30,7 @@ void VerticalAttackerModel::Initialize(CommonResources* resources)
 	m_commonResources = resources;
 	auto device = resources->GetDeviceResources()->GetD3DDevice();
 	// 影用のシェーダーを読み込む
-	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_EnemyShadow.cso");
+	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_Shadow.cso");
 	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pixelShader.ReleaseAndGetAddressOf()));
 	// モデルを読み込む準備
 	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);

@@ -462,7 +462,7 @@
     <None Include="HLSL\Particle\Particle.hlsli" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="HLSL\EnemyShadow\PS_EnemyShadow.hlsl">
+    <FxCompile Include="HLSL\Shadow\PS_Shadow.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\PlayerHP\GS_PlayerHP.hlsl" />

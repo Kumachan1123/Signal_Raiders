@@ -41,7 +41,7 @@ void EnemyBullet::Initialize(CommonResources* resources, BulletType type)
 	m_bulletType = type;// 弾の種類を設定する
 	DrawCollision::Initialize(m_commonResources);
 	// 影用のピクセルシェーダー
-	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_EnemyShadow.cso");
+	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_Shadow.cso");
 	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pixelShader.ReleaseAndGetAddressOf()));
 
 	// モデルを読み込む準備
