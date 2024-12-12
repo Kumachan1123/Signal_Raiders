@@ -6,9 +6,9 @@
 #ifndef ENEMY_ESCAPE_DEFINED
 #define ENEMY_ESCAPE_DEFINED
 #include "Game/Interface/IState.h"
-class EnemyAI;
-//前方宣言
 
+//前方宣言
+class EnemyAI;
 class EnemySpin : public IState
 {
 private:
@@ -18,7 +18,6 @@ private:
 	DirectX::SimpleMath::Vector3 m_scale;//サイズ
 	DirectX::SimpleMath::Quaternion m_rotation;//回転
 	DirectX::SimpleMath::Vector3 m_velocity;// 移動速度
-	float m_rotationSpeed;//回転速度
 	float m_angle;//角度
 	const float RANDOM_MAX = 2.0f;
 	const float RANDOM_MIN = 0.5f;

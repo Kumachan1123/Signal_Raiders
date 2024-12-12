@@ -126,19 +126,12 @@ void EnemyCounter::Render()
 	context->OMSetDepthStencilState(m_states->DepthNone(), 0);
 	context->OMSetBlendState(m_states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
 
-
-
-	////	•s“§–¾‚Ì‚İ•`‰æ‚·‚éİ’è 
-	//m_batchEffect->SetAlphaFunction(D3D11_COMPARISON_GREATER);
-	//m_batchEffect->SetReferenceAlpha(0);
-
-
-	DrawRemaining();
-	DrawEnemyIndex1();
-	DrawEnemyIndex10();
-	DrawSlash();
-	DrawNowEnemy1();
-	DrawNowEnemy10();
+	DrawRemaining();// u‚Ì‚±‚èFv‚ğ•`‰æ
+	DrawEnemyIndex1();// ‘”‚Ì1‚ÌˆÊ‚ğ•`‰æ
+	DrawEnemyIndex10();// ‘”‚Ì10‚ÌˆÊ‚ğ•`‰æ
+	DrawSlash();// u/v‚ğ•`‰æ
+	DrawNowEnemy1();// Œ»İ‚Ì“G‚Ì”‚Ì1‚ÌˆÊ‚ğ•`‰æ
+	DrawNowEnemy10();// Œ»İ‚Ì“G‚Ì”‚Ì10‚ÌˆÊ‚ğ•`‰æ
 }
 
 

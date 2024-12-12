@@ -240,12 +240,12 @@ void Enemies::SpawnEnemy()
 //---------------------------------------------------------
 void Enemies::SpawnVerticalAttacker()
 {
-	auto verticalAttacker = std::make_unique<VerticalAttacker>(m_pPlayer);
-	verticalAttacker->Initialize(m_commonResources, m_pWifi->GetWifiLevels()[m_enemyIndex]);
-	m_enemies.push_back(std::move(verticalAttacker));
+	auto verticalAttacker = std::make_unique<VerticalAttacker>(m_pPlayer);// 垂直弾タイプの敵を生成
+	verticalAttacker->Initialize(m_commonResources, m_pWifi->GetWifiLevels()[m_enemyIndex]); // 敵を初期化
+	m_enemies.push_back(std::move(verticalAttacker));// 敵リストに追加
 
-	m_enemyBornTimer = 0.0f;
-	m_enemyIndex++;
+	m_enemyBornTimer = 0.0f;// 敵生成タイマーを初期化
+	m_enemyIndex++; // 敵インデックスを増加
 }
 
 
@@ -282,7 +282,7 @@ void Enemies::HandleEnemyCollisions()
 	{
 		for (size_t j = i + 1; j < m_enemies.size(); ++j)
 		{
-			bool hit = m_enemies[i]->GetBoundingSphere().Intersects(m_enemies[j]->GetBoundingSphere());
+			bool hit = m_enemies[i]->GetBoundingSphere().Intersects(m_enemies[j]->GetBoundingSphere());// 当たり判定を取得
 			m_enemies[i]->SetHitToOtherEnemy(hit);// 当たり判定結果を設定
 			m_enemies[j]->SetHitToOtherEnemy(hit);// 当たり判定結果を設定
 

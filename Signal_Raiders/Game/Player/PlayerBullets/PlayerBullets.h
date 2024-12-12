@@ -32,7 +32,10 @@ public:
 	bool m_isBullet = false;
 	// ’e¶¬Ï‚İ
 	bool m_isBulletBorned = false;
-
+	// ’e‚ğÁ‚·À•W
+	const float DELETE_BULLET_POSITION = -0.25f;
+	// ƒqƒbƒg‚µ‚½‚Æ‚«‚Ì‰¹‚Ì‰¹—Ê
+	const float HIT_VOLUME = 0.8f;
 public:
 	PlayerBullets(CommonResources* commonResources);
 	~PlayerBullets();

@@ -22,7 +22,6 @@ EnemySpin::EnemySpin(EnemyAI* enemy)
 	m_scale(Vector3::One),
 	m_initialPosition(Vector3::Zero),
 	m_time(0.0f),
-	m_rotationSpeed(0.0f),
 	m_angle(0.0f)
 {
 }
@@ -35,7 +34,6 @@ void EnemySpin::Initialize()
 	m_velocity = m_enemy->GetVelocity();
 	m_scale = m_enemy->GetScale();
 	m_initialPosition = m_enemy->GetPosition();
-	m_rotationSpeed = 0.5f; // ‰ñ“]‘¬“x
 }
 
 void EnemySpin::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool isHitToPlayer)

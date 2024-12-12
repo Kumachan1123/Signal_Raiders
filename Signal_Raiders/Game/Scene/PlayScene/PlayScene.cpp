@@ -35,8 +35,8 @@ PlayScene::PlayScene(IScene::SceneID sceneID)
 	m_fadeState{ },
 	m_fadeTexNum{ 2 },
 	m_audioManager{ AudioManager::GetInstance() },
-	m_BGMvolume{ VOLUME },
-	m_SEvolume{ VOLUME },
+	m_BGMvolume{ BGM_VOLUME },
+	m_SEvolume{ SE_VOLUME },
 	m_mouseSensitivity{ },
 	m_nowSceneID{ sceneID },
 	m_timer{ 0.0f },
@@ -64,8 +64,8 @@ void PlayScene::Initialize(CommonResources* resources)
 	// 設定データを取得する
 	m_pSettingData = std::make_unique<SettingData>();
 	m_pSettingData->Load();
-	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume()) / 2;// BGMの音量を設定する(若干音量を補正)
-	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume());// SEの音量を設定する
+	m_BGMvolume = BGM_VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume());// BGMの音量を設定する(若干音量を補正)
+	m_SEvolume = SE_VOLUME * static_cast<float>(m_pSettingData->GetSEVolume());// SEの音量を設定する
 	m_mouseSensitivity = static_cast<float>(m_pSettingData->GetMouseSensitivity());// マウス感度を設定する
 	// 地面（ステージ生成）
 	m_pStage = std::make_unique<Stage>();

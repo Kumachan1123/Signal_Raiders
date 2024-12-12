@@ -57,13 +57,13 @@ public:
 	PlayerBullet();
 	~PlayerBullet();
 
-	void MoveStop();
-	void Initialize(CommonResources* resources);
-	void Update(DirectX::SimpleMath::Vector3& Direction, float elapsedTime);
-	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
-	void RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
-	void DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
-	void MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir);
+	void MoveStop();// ’e‚ÌˆÚ“®‚ğ~‚ß‚é
+	void Initialize(CommonResources* resources);// ‰Šú‰»
+	void Update(DirectX::SimpleMath::Vector3& Direction, float elapsedTime);// XV
+	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);// •`‰æ
+	void RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);// ‰e‚Ì•`‰æ
+	void DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);// “–‚½‚è”»’è‚Ì•`‰æ
+	void MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir);// ’e‚ğ¶¬
 	//Getter
 	DirectX::SimpleMath::Vector3 GetBulletPosition()const { return m_position; }
 	DirectX::BoundingSphere& GetBoundingSphere() { return m_boundingSphere; }

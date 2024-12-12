@@ -49,7 +49,7 @@ void PlayerBullets::Update(float elapsedTime)
 		(*it)->SetCameraTarget(m_pPlayer->GetCamera()->GetTargetPosition());// ƒJƒƒ‰‚Ì’Ž‹“_‚ðÝ’è
 		(*it)->SetCameraUp(m_pPlayer->GetCamera()->GetUpVector());	// ƒJƒƒ‰‚Ìã•ûŒü‚ðÝ’è
 		(*it)->Update(dir, elapsedTime);// ’e‚ðXV
-		if ((*it)->IsExpired() || (*it)->GetBulletPosition().y <= -0.25f)
+		if ((*it)->IsExpired() || (*it)->GetBulletPosition().y <= DELETE_BULLET_POSITION)
 		{
 			it = m_playerBullet.erase(it);// ’e‚ªŽõ–½‚ðŒ}‚¦‚é‚©’n–Ê‚É’…‚¢‚½‚çíœ
 		}
@@ -94,7 +94,7 @@ bool PlayerBullets::CheckCollisionWithEnemies(const std::unique_ptr<PlayerBullet
 			// ƒvƒŒƒCƒ„[‚Ì’e‚ª“G‚É“–‚½‚Á‚½ƒtƒ‰ƒO‚ð—§‚Ä‚é
 			enemy->SetHitToPlayerBullet(true);
 			// ƒqƒbƒgSE‚ðÄ¶
-			m_audioManager->PlaySound("Hit", m_pPlayer->GetVolume() * 0.8f);
+			m_audioManager->PlaySound("Hit", m_pPlayer->GetVolume() * HIT_VOLUME);
 			return true; // “–‚½‚Á‚½‚çtrue‚ð•Ô‚·
 		}
 	}
