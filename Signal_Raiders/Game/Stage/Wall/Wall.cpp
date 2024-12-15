@@ -1,6 +1,6 @@
 #include "pch.h"
-
-#include "Game/Stage/Wall/Wall.h"
+#include "Wall.h"
+#include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 
 const std::vector<D3D11_INPUT_ELEMENT_DESC>  Wall::INPUT_LAYOUT =
 {
@@ -31,9 +31,6 @@ void  Wall::Create(DX::DeviceResources* pDR)
 {
 	using namespace DirectX;
 	m_pDR = pDR;
-
-	ID3D11Device1* device = pDR->GetD3DDevice();
-
 	//	シェーダーの作成
 	CreateShader();
 
@@ -41,15 +38,8 @@ void  Wall::Create(DX::DeviceResources* pDR)
 	Initialize();
 	//	画像の読み込み（2枚ともデフォルトは読み込み失敗でnullptr)
 	LoadTexture(L"Resources/Textures/Wall.png");
-
-	//	プリミティブバッチの作成
-	m_pPrimitiveBatch = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(pDR->GetD3DDeviceContext());
-	m_pPrimitiveBatchColor = std::make_unique<PrimitiveBatch<VertexPositionColor>>(pDR->GetD3DDeviceContext());
-	m_pStates = std::make_unique<CommonStates>(device);
-	// ベーシックエフェクトを作成する
-	m_pBasicEffect = std::make_unique<BasicEffect>(device);
-	m_pBasicEffect->SetVertexColorEnabled(true);
-
+	// 板ポリゴン描画用
+	DrawPolygon::InitializePositionTexture(m_pDR);
 }
 void Wall::CreateShader()
 {
@@ -154,44 +144,25 @@ void Wall::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	m_constBuffer.matProj = proj.Transpose();
 	m_constBuffer.matWorld = m_world.Transpose();
 	m_constBuffer.colors = DirectX::SimpleMath::Vector4(0, 1.0f, 1.0f, 0.0f);
-	m_constBuffer.time = m_time;
-	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(m_cBuffer.Get(), 0, NULL, &m_constBuffer, 0, 0);
-	//	シェーダーにバッファを渡す
+	m_constBuffer.time = DirectX::SimpleMath::Vector4(m_time);
+	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
+	DrawPolygon::UpdateSubResources(context, m_cBuffer.Get(), &m_constBuffer);
+	// シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_cBuffer.Get() };
-	//	頂点シェーダもピクセルシェーダも、同じ値を渡す
+	// 頂点シェーダもピクセルシェーダも、同じ値を渡す
 	context->VSSetConstantBuffers(0, 1, cb);
 	context->PSSetConstantBuffers(0, 1, cb);
-	//	シェーダをセットする
+	// シェーダをセットする
 	context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
 	context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
-
-	//	テクスチャを設定する
-	context->PSSetShaderResources(0, 1, m_pWallTexture[0].GetAddressOf());
-	context->IASetInputLayout(m_pInputLayout.Get());
+	// 描画準備
+	DrawPolygon::DrawStartTexture(context, m_pInputLayout.Get(), m_pWallTexture);
 	// 壁を描画
-	m_pPrimitiveBatch->Begin();
-	for (int i = 0; i < 4; i++)m_pPrimitiveBatch->DrawQuad(m_wall[i][0], m_wall[i][1], m_wall[i][2], m_wall[i][3]);
-
-	m_pPrimitiveBatch->End();
-	//	シェーダの登録を解除しておく
+	for (int i = 0; i < 4; i++)	DrawPolygon::DrawTexture(m_wall[i]);
+	// シェーダの登録を解除しておく
 	context->VSSetShader(nullptr, nullptr, 0);
 	context->PSSetShader(nullptr, nullptr, 0);
 
-	// 描画する
-	auto states = m_commonResources->GetCommonStates();
 
-	// 各パラメータを設定する
-	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
-	context->OMSetDepthStencilState(states->DepthRead(), 0);
-	context->RSSetState(states->CullNone());
-	context->IASetInputLayout(m_pInputLayout.Get());
-	//** デバッグドローでは、ワールド変換いらない
-	m_pBasicEffect->SetView(view);
-	m_pBasicEffect->SetProjection(proj);
-	m_pBasicEffect->Apply(context);
-	//m_pPrimitiveBatchColor->Begin();
-	//DX::Draw(m_pPrimitiveBatchColor.get(), m_wallBox[0], Colors::Black);
-	//m_pPrimitiveBatchColor->End();
 }
 

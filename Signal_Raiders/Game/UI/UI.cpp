@@ -13,6 +13,7 @@
 #include <WICTextureLoader.h>
 #include <CommonStates.h>
 #include <vector>
+#include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 using namespace DirectX;
 const std::vector<D3D11_INPUT_ELEMENT_DESC> UI::INPUT_LAYOUT =
 {
@@ -48,7 +49,7 @@ void UI::LoadTexture(const wchar_t* path)
 	//	読み込んだ画像の情報を取得する
 	D3D11_TEXTURE2D_DESC desc;
 	tex->GetDesc(&desc);
-
+	m_pTextures.push_back(m_pTexture);
 	//	読み込んだ画像のサイズを取得する
 	m_textureWidth = desc.Width;
 	m_textureHeight = desc.Height;
@@ -68,12 +69,8 @@ void UI::Create(DX::DeviceResources* pDR, const wchar_t* path
 	CreateShader();
 	//	テクスチャを読み込む
 	LoadTexture(path);
-
-	//	プリミティブバッチを生成
-	m_pPrimitiveBatch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>>(m_pDR->GetD3DDeviceContext());
-
-	//	ステートを生成
-	m_pStates = std::make_unique<DirectX::CommonStates>(m_pDR->GetD3DDevice());
+	// 板ポリゴン描画用
+	DrawPolygon::InitializePositionColorTexture(m_pDR);
 
 }
 
@@ -139,36 +136,24 @@ void UI::Render()
 	m_constBuffer.time = m_time;
 	m_constBuffer.color = Vector3(0.5, 0.5, 0.5);
 
-	// 受け渡し用バッファの内容更新
-	context->UpdateSubresource(m_pCBuffer.Get(), 0, NULL, &m_constBuffer, 0, 0);
-	// シェーダーにバッファを渡す
-	ID3D11Buffer* pCB[1] = { m_pCBuffer.Get() };
-	context->VSSetConstantBuffers(0, 1, pCB);
-	context->GSSetConstantBuffers(0, 1, pCB);
-	context->PSSetConstantBuffers(0, 1, pCB);
-	// 画像用サンプラーステートの設定
-	ID3D11SamplerState* sampler[1] = { m_pStates->LinearWrap() };
-	context->PSSetSamplers(0, 1, sampler);
-	// 半透明描画指定
-	ID3D11BlendState* pBlendState = m_pStates->NonPremultiplied();
-	// 透明判定
-	context->OMSetBlendState(pBlendState, nullptr, 0xFFFFFFFF);
-	// 深度バッファに書き込み参照
-	context->OMSetDepthStencilState(m_pStates->DepthDefault(), 0);
-	// カリングなし
-	context->RSSetState(m_pStates->CullNone());
-	// シェーダーの設定
+	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
+	DrawPolygon::UpdateSubResources(context, m_pCBuffer.Get(), &m_constBuffer);
+	//	シェーダーにバッファを渡す
+	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };
+	context->VSSetConstantBuffers(0, 1, cb);
+	context->GSSetConstantBuffers(0, 1, cb);
+	context->PSSetConstantBuffers(0, 1, cb);
+
+	// 描画準備
+	DrawPolygon::DrawStartColorTexture(context, m_pInputLayout.Get(), m_pTextures);
+
+	//	シェーダをセットする
 	context->VSSetShader(m_pVertexShader.Get(), nullptr, 0);
 	context->GSSetShader(m_pGeometryShader.Get(), nullptr, 0);
 	context->PSSetShader(m_pPixelShader.Get(), nullptr, 0);
-	// ピクセルシェーダーにテクスチャを渡す
-	context->PSSetShaderResources(0, 1, m_pTexture.GetAddressOf());
-	// インプットレイアウトを設定
-	context->IASetInputLayout(m_pInputLayout.Get());
+
 	//	板ポリゴンを描画
-	m_pPrimitiveBatch->Begin();
-	m_pPrimitiveBatch->Draw(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex[0], 1);
-	m_pPrimitiveBatch->End();
+	DrawPolygon::DrawColorTexture(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex[0], 1);
 	//	シェーダの登録を解除しておく
 	context->VSSetShader(nullptr, nullptr, 0);
 	context->GSSetShader(nullptr, nullptr, 0);

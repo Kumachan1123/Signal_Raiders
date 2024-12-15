@@ -23,8 +23,7 @@ public:
 		DirectX::SimpleMath::Matrix matView;    // ビュー行列
 		DirectX::SimpleMath::Matrix matProj;    // プロジェクション行列
 		DirectX::SimpleMath::Vector4 colors;    // カラー
-		float time = 0.0f;                             // 時間
-		DirectX::SimpleMath::Vector3 padding;// パディング
+		DirectX::SimpleMath::Vector4 time;     // 時間
 	}m_constBuffer;
 
 private:

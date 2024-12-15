@@ -1,5 +1,4 @@
 #pragma once
-#include "StepTimer.h"
 #include "Game/CommonResources.h"
 #include <DeviceResources.h>
 #include <SimpleMath.h>
@@ -46,8 +45,6 @@ private:
 	DX::DeviceResources* m_pDR;
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
-
-	DX::StepTimer                           m_timer;
 	//	入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 	// 共通リソース

@@ -5,8 +5,11 @@
 
 
 #pragma once
+#include "Game/KumachiLib/BinaryFile.h"
+#include "Game/CommonResources.h"
+#include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "Game/KumachiLib/Anchor.h"
-#include <DeviceResources.h>
+#include "DeviceResources.h"
 #include <SimpleMath.h>
 #include <Effects.h>
 #include <PrimitiveBatch.h>
@@ -42,6 +45,7 @@ private:
 	std::unique_ptr<DirectX::CommonStates> m_states;
 	// テクスチャハンドル
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_textures;
 	Microsoft::WRL::ComPtr<ID3D11Resource> m_res;
 	// 頂点シェーダ
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;

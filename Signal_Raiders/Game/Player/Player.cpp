@@ -149,8 +149,12 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 	{
 		// 更新する
 		damageEffect->Update(elapsedTime);
-		// 再生が終わったダメージエフェクトだったら次のエフェクトへ
-		if (damageEffect->Destroy())continue;
+		// 再生が終わったダメージエフェクトだったらそのエフェクトを完全に破棄
+		if (damageEffect->Destroy())
+		{
+			damageEffect.reset();
+			continue;
+		}
 		// 再生が終了していないエフェクトは新しいリストに移動
 		newDamageEffect.push_back(std::move(damageEffect));
 	}
@@ -175,6 +179,8 @@ void Player::Render()
 	m_pPlayerPointer->Render();// 照準描画
 
 	// ダメージエフェクトを更新する
-	for (auto& damageEffect : m_pDamageEffect)damageEffect->Render();
-
+	for (auto& damageEffect : m_pDamageEffect)
+	{
+		if (damageEffect->GetPlayEffect())damageEffect->Render();
+	}
 }

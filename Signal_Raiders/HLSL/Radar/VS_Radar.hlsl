@@ -5,8 +5,7 @@ cbuffer ConstBuffer : register(b0)
     matrix matView; //    ビュー行列
     matrix matProj; //    プロジェクション行列
     float4 color; //   色
-    float time; //    時間
-    float3 padding; //    パディング
+    float4 time; //    時間
 };
 
 //	このシェーダが受け取る引数の内容

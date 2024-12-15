@@ -18,6 +18,7 @@
 #include "Game/Enemy/Enemies/Enemies.h"
 #include "Game/Enemy/Enemy.h"
 #include "Game/Enemy/EnemyAI/EnemyAI.h"
+#include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 class CommonResources;
 class Player;
 class Enemies;
@@ -33,8 +34,7 @@ public:
 		DirectX::SimpleMath::Matrix matView;    // ビュー行列
 		DirectX::SimpleMath::Matrix matProj;    // プロジェクション行列
 		DirectX::SimpleMath::Vector4 colors;    // カラー
-		float time = 0.0f;                             // 時間
-		DirectX::SimpleMath::Vector3 padding;// パディング
+		DirectX::SimpleMath::Vector4 time;      // 時間
 	}m_constBuffer;
 private:
 	enum class RadarState
@@ -76,10 +76,12 @@ private:
 	DirectX::SimpleMath::Vector2 m_enemySize;
 	// 時間
 	float m_time;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_backTexture;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_playerTexture;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_enemyTexture;
-
+	//Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_backTexture;
+	//Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_playerTexture;
+	//Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_enemyTexture;
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_backTextures;
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_playerTextures;
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_enemyTextures;
 	//	頂点シェーダ
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
 	//	ピクセルシェーダ
@@ -99,7 +101,7 @@ public:
 	void Render();
 
 	// テクスチャの読み込み
-	void LoadTexture(const wchar_t* path, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& tex);
+	void LoadTexture(const wchar_t* path, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& textures);
 
 	void DrawBackground();// 背景を描画する
 	void DrawPlayer();// プレイヤーを描画する

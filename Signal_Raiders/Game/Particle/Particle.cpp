@@ -7,6 +7,7 @@
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
 #include  "Game/KumachiLib/BinaryFile.h"
+#include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include <Effects.h>
 #include <PrimitiveBatch.h>
 #include <VertexTypes.h>
@@ -55,8 +56,7 @@ void Particle::Initialize(CommonResources* resources)
 {
 	m_commonResources = resources;
 	m_pDR = m_commonResources->GetDeviceResources();
-	auto device = m_pDR->GetD3DDevice();
-	//	シェーダーの作成
+	// シェーダーの作成
 	CreateShader();
 	// 画像の読み込み
 	switch (m_type)
@@ -71,12 +71,8 @@ void Particle::Initialize(CommonResources* resources)
 	default:
 		break;
 	}
-
-
-	//	プリミティブバッチの作成
-	m_batch = std::make_unique<PrimitiveBatch<VertexPositionColorTexture>>(m_pDR->GetD3DDeviceContext());
-
-	m_states = std::make_unique<CommonStates>(device);
+	// 板ポリゴン描画用
+	DrawPolygon::InitializePositionColorTexture(m_pDR);
 }
 
 void Particle::CreateShader()
@@ -160,7 +156,7 @@ void Particle::Update(float elapsedTime)
 
 void Particle::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
-	if (m_timer >= 2.0f)return;
+	if (m_timer >= 1.9f)return;
 	auto context = m_pDR->GetD3DDeviceContext();
 	DirectX::SimpleMath::Vector3 cameraDir = m_cameraTarget - m_cameraPosition;
 	cameraDir.Normalize();
@@ -201,51 +197,24 @@ void Particle::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Mat
 	m_constantBuffer.matWorld = m_billboard.Transpose();
 	m_constantBuffer.colors = SimpleMath::Vector4(1, 1, 1, 0);
 
-	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(m_CBuffer.Get(), 0, NULL, &m_constantBuffer, 0, 0);
-
-	//	シェーダーにバッファを渡す
+	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
+	DrawPolygon::UpdateSubResources(context, m_CBuffer.Get(), &m_constantBuffer);
+	// シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };
 	context->VSSetConstantBuffers(0, 1, cb);
 	context->GSSetConstantBuffers(0, 1, cb);
 	context->PSSetConstantBuffers(0, 1, cb);
 
-	//	画像用サンプラーの登録
-	ID3D11SamplerState* sampler[1] = { m_states->LinearWrap() };
-	context->PSSetSamplers(0, 1, sampler);
+	// 描画準備
+	DrawPolygon::DrawStartColorTexture(context, m_inputLayout.Get(), m_texture);
 
-	//	半透明描画指定		補間アルファ合成
-	ID3D11BlendState* blendstate = m_states->NonPremultiplied();
-
-	//	透明判定処理
-	context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-
-	//	深度バッファに書き込み参照する
-	context->OMSetDepthStencilState(m_states->DepthRead(), 0);
-
-	//	カリングはなし
-	context->RSSetState(m_states->CullCounterClockwise());
-
-	//	シェーダをセットする
+	// シェーダをセットする
 	context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
 	context->GSSetShader(m_geometryShader.Get(), nullptr, 0);
 	context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
-
-	//	ピクセルシェーダにテクスチャを登録する。
-	for (int i = 0; i < m_texture.size(); i++)
-	{
-		context->PSSetShaderResources(i, 1, m_texture[i].GetAddressOf());
-	}
-
-	//	インプットレイアウトの登録
-	context->IASetInputLayout(m_inputLayout.Get());
-
-	//	指定した座標を中心に、シェーダ側で板ポリゴンを生成・描画させる
-	m_batch->Begin();
-	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &m_vertices[0], m_vertices.size());
-	m_batch->End();
-
-	//	シェーダの登録を解除しておく
+	// 指定した座標を中心に、シェーダ側で板ポリゴンを生成・描画させる
+	DrawPolygon::DrawColorTexture(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &m_vertices[0], m_vertices.size());
+	// シェーダの登録を解除しておく
 	context->VSSetShader(nullptr, nullptr, 0);
 	context->GSSetShader(nullptr, nullptr, 0);
 	context->PSSetShader(nullptr, nullptr, 0);

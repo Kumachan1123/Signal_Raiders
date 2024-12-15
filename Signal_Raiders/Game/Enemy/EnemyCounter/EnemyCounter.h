@@ -94,4 +94,9 @@ private:
 	void DrawRemaining();
 	// u/v‚ğ•`‰æ
 	void DrawSlash();
+	// ‰æ‘œ‚ğ•\¦
+	void DrawQuad(Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& texture,
+		DirectX::VertexPositionTexture* vertices,
+		float startX, float startY, float width, float height,
+		int frameIndex, int frameCols, int frameRows);
 };

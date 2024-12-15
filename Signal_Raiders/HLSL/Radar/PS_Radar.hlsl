@@ -5,8 +5,8 @@ cbuffer ConstBuffer : register(b0)
     matrix matView; // ビュー行列
     matrix matProj; // プロジェクション行列
     float4 color; // 色
-    float time; // 時間
-    float3 padding; // パディング
+    float4 time; // 時間
+   
 };
 
 // C++側から設定されるデータ②
@@ -29,7 +29,7 @@ float4 main(PS_INPUT input) : SV_TARGET
     float distanceFromCenter = length(input.Tex - float2(0.5, 0.5));
 
     // グラデーションエフェクトの強度を距離に基づいて調整する
-    float gradient = exp(-abs(sin(time * 1.0 + distanceFromCenter * -2.0)));
+    float gradient = exp(-abs(sin(time.x * 1.0 + distanceFromCenter * -2.0)));
 
     // テクスチャをサンプリング
     float4 output = tex.Sample(samLinear, input.Tex);

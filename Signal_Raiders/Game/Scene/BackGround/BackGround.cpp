@@ -17,6 +17,7 @@
 #include <CommonStates.h>
 #include <vector>
 #include "Libraries/MyLib/DebugString.h"
+#include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 using namespace DirectX;
 
 /// <summary>
@@ -45,6 +46,7 @@ BackGround::BackGround(CommonResources* resources)
 /// </summary>
 BackGround::~BackGround()
 {
+	DrawPolygon::ReleasePositionTexture();
 }
 
 /// <summary>
@@ -66,20 +68,12 @@ void  BackGround::LoadTexture(const wchar_t* path)
 void  BackGround::Create(DX::DeviceResources* pDR)
 {
 	m_pDR = pDR;
-
-	ID3D11Device1* device = pDR->GetD3DDevice();
-
-	//	シェーダーの作成
+	// シェーダーの作成
 	CreateShader();
-
-	//	画像の読み込み（2枚ともデフォルトは読み込み失敗でnullptr)
+	// 画像の読み込み（2枚ともデフォルトは読み込み失敗でnullptr)
 	LoadTexture(L"Resources/Textures/Back.png");
-
-	//	プリミティブバッチの作成
-	m_batch = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(pDR->GetD3DDeviceContext());
-
-	m_states = std::make_unique<CommonStates>(device);
-
+	// 板ポリゴン描画用
+	DrawPolygon::InitializePositionTexture(m_pDR);
 }
 
 /// <summary>
@@ -137,7 +131,6 @@ void  BackGround::Update(float elapsedTime)
 /// <param name="proj">射影行列</param>
 void  BackGround::Render()
 {
-
 	ID3D11DeviceContext1* context = m_pDR->GetD3DDeviceContext();
 	//	頂点情報(板ポリゴンの４頂点の座標情報）
 	VertexPositionTexture vertex[4] =
@@ -153,47 +146,23 @@ void  BackGround::Render()
 	m_constBuffer.matProj = m_proj.Transpose();
 	m_constBuffer.matWorld = m_world.Transpose();
 	m_constBuffer.colors = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	m_constBuffer.time = m_time;
+	m_constBuffer.time = DirectX::SimpleMath::Vector4(m_time);
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(m_cBuffer.Get(), 0, NULL, &m_constBuffer, 0, 0);
+	DrawPolygon::UpdateSubResources(context, m_cBuffer.Get(), &m_constBuffer);
 	//	シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_cBuffer.Get() };
 	//	頂点シェーダもピクセルシェーダも、同じ値を渡す
 	context->VSSetConstantBuffers(0, 1, cb);
 	context->PSSetConstantBuffers(0, 1, cb);
-	//	画像用サンプラーの登録
-	ID3D11SamplerState* sampler[1] = { m_states->LinearWrap() };
-	context->PSSetSamplers(0, 1, sampler);
-	//	半透明描画指定
-	ID3D11BlendState* blendstate = m_states->NonPremultiplied();
-
-	//	透明判定処理
-	context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-
-	//	深度バッファに書き込み参照する
-	context->OMSetDepthStencilState(m_states->DepthDefault(), 0);
-
-	//	カリングはなし
-	context->RSSetState(m_states->CullNone());
+	// 描画準備
+	DrawPolygon::DrawStartTexture(context, m_inputLayout.Get(), m_texture);
 
 	//	シェーダをセットする
 	context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
 	context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
-
-	//	Create関数で読み込んだ画像をピクセルシェーダに登録する。
-	for (int i = 0; i < m_texture.size(); i++)
-	{
-		//	for文で一気に設定する
-		context->PSSetShaderResources(i, 1, m_texture[i].GetAddressOf());
-	}
-
-	//	インプットレイアウトの登録
-	context->IASetInputLayout(m_inputLayout.Get());
-
+ 
 	//	板ポリゴンを描画
-	m_batch->Begin();
-	m_batch->DrawQuad(vertex[0], vertex[1], vertex[2], vertex[3]);
-	m_batch->End();
+	DrawPolygon::DrawTexture(vertex);
 
 	//	シェーダの登録を解除しておく
 	context->VSSetShader(nullptr, nullptr, 0);

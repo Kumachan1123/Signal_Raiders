@@ -293,6 +293,7 @@
     <ClInclude Include="Game\Player\PlayerUI\ReadyGo\ReadyGo.h" />
     <ClInclude Include="Game\KumachiLib\DrawCollision\DrawCollision.h" />
     <ClInclude Include="Game\Enemy\EnemyAI\EnemySpin\EnemySpin.h" />
+    <ClInclude Include="Game\KumachiLib\DrawPolygon\DrawPolygon.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -436,6 +437,7 @@
     <ClCompile Include="Game\Player\PlayerUI\ReadyGo\ReadyGo.cpp" />
     <ClCompile Include="Game\KumachiLib\DrawCollision\DrawCollision.cpp" />
     <ClCompile Include="Game\Enemy\EnemyAI\EnemySpin\EnemySpin.cpp" />
+    <ClCompile Include="Game\KumachiLib\DrawPolygon\DrawPolygon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

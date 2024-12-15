@@ -22,8 +22,7 @@ public:
 		DirectX::SimpleMath::Matrix matView;    // ビュー行列
 		DirectX::SimpleMath::Matrix matProj;    // プロジェクション行列
 		DirectX::SimpleMath::Vector4 colors;    // カラー
-		float time = 0.0f;                             // 時間
-		DirectX::SimpleMath::Vector3 padding;// パディング
+		DirectX::SimpleMath::Vector4 time;    // 時間
 	}m_constBuffer;
 private:
 	// 共通リソース
@@ -48,7 +47,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 	//	プリミティブバッチ 
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_pPrimitiveBatch;
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_pPrimitiveBatchColor;
+
 
 	//	入力レイアウト 
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;

@@ -16,6 +16,7 @@
 #include <WICTextureLoader.h>
 #include <CommonStates.h>
 #include <vector>
+#include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
@@ -38,10 +39,10 @@ DamageEffect::DamageEffect(CommonResources* resources)
 	, m_commonResources{ resources }
 	, m_pPlayer{ nullptr }
 	, m_enemyDirection{  }
+	, m_playEffect{ false }
 {
 	// 色の初期化
 	m_constBuffer.colors = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 0.0f);
-
 }
 
 /// <summary>
@@ -49,6 +50,7 @@ DamageEffect::DamageEffect(CommonResources* resources)
 /// </summary>
 DamageEffect::~DamageEffect()
 {
+	DrawPolygon::ReleasePositionTexture();
 }
 
 /// <summary>
@@ -57,6 +59,7 @@ DamageEffect::~DamageEffect()
 void DamageEffect::Initialize(Player* pPlayer)
 {
 	m_pPlayer = pPlayer;
+	m_playEffect = true;
 }
 
 /// <summary>
@@ -78,20 +81,12 @@ void  DamageEffect::LoadTexture(const wchar_t* path)
 void  DamageEffect::Create(DX::DeviceResources* pDR)
 {
 	m_pDR = pDR;
-
-	ID3D11Device1* device = pDR->GetD3DDevice();
-
-	//	シェーダーの作成
+	// シェーダーの作成
 	CreateShader();
-
-	//	画像の読み込み（2枚ともデフォルトは読み込み失敗でnullptr)
+	// 画像の読み込み（2枚ともデフォルトは読み込み失敗でnullptr)
 	LoadTexture(L"Resources/Textures/crisis.png");
-
-	//	プリミティブバッチの作成
-	m_batch = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(pDR->GetD3DDeviceContext());
-
-	m_states = std::make_unique<CommonStates>(device);
-
+	// 板ポリゴン描画用
+	DrawPolygon::InitializePositionTexture(m_pDR);
 }
 
 
@@ -108,9 +103,9 @@ void  DamageEffect::CreateShader()
 
 	//	インプットレイアウトの作成
 	device->CreateInputLayout(&INPUT_LAYOUT[0],
-							  static_cast<UINT>(INPUT_LAYOUT.size()),
-							  VSData.GetData(), VSData.GetSize(),
-							  m_inputLayout.GetAddressOf());
+		static_cast<UINT>(INPUT_LAYOUT.size()),
+		VSData.GetData(), VSData.GetSize(),
+		m_inputLayout.GetAddressOf());
 
 	//	頂点シェーダ作成
 	if (FAILED(device->CreateVertexShader(VSData.GetData(), VSData.GetSize(), NULL, m_vertexShader.ReleaseAndGetAddressOf())))
@@ -136,15 +131,16 @@ void  DamageEffect::CreateShader()
 	device->CreateBuffer(&bd, nullptr, &m_cBuffer);
 }
 
-//更新
+// 更新
 void  DamageEffect::Update(float elapsedTime)
 {
 
-	if (m_time >= 2.0f)
+	if (m_time >= PLAY_TIME)
 	{
 		m_time = 0.0f;
 		m_constBuffer.colors.w = 0.0f;
-		m_pPlayer->SetisPlayEffect(false);
+		m_playEffect = false;
+		m_pPlayer->SetisPlayEffect(m_playEffect);
 		return;
 	}
 	// 時間更新
@@ -152,8 +148,6 @@ void  DamageEffect::Update(float elapsedTime)
 	m_constBuffer.time = m_time;
 	// アルファ値(sin関数を使って二秒以内に0から1を往復する)
 	m_constBuffer.colors.w = 0.5f + 0.5f * sin(m_time * 2.0f);
-	// 攻撃してきた敵のいる向き
-	//m_enemyDirection = m_pPlayer->GetEnemyDir();
 	// プレイヤーの向き
 	m_playerDirection = m_pPlayer->GetPlayerDir();
 	// プレイヤーの向きと敵の向きの差から0から360の間の角度を求める
@@ -161,10 +155,8 @@ void  DamageEffect::Update(float elapsedTime)
 	// ラジアンから度に変換
 	angle = angle * 180 / DirectX::XM_PI;
 	// 0から360の間に収める
-	if (angle < 0)
-	{
-		angle += 360;
-	}
+	if (angle < 0)angle += 360;
+
 	// プレイヤーの向きによってUV座標を変える（16方向）
 	if (angle >= 11.25 && angle < 33.75)           m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_W, UV_H); // 右後1
 	else if (angle >= 33.75 && angle < 56.25)      m_constBuffer.uv = DirectX::SimpleMath::Vector2((UV_W + UV_C) / 2, UV_H); // 右後2
@@ -181,10 +173,7 @@ void  DamageEffect::Update(float elapsedTime)
 	else if (angle >= 281.25 && angle < 303.75)    m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_X, (UV_H + UV_C) / 2); // 左後1
 	else if (angle >= 303.75 && angle < 326.25)    m_constBuffer.uv = DirectX::SimpleMath::Vector2((UV_X + UV_C) / 2, UV_H); // 左後2
 	else if (angle >= 326.25 && angle < 348.75)    m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_X, UV_H); // 左後3
-	else                                            m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_C, UV_H); // 後
-
-
-
+	else                                           m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_C, UV_H); // 後
 }
 
 /// <summary>
@@ -196,10 +185,10 @@ void  DamageEffect::Render()
 {
 
 	ID3D11DeviceContext1* context = m_pDR->GetD3DDeviceContext();
-	//	頂点情報(板ポリゴンの４頂点の座標情報）
+	// 頂点情報(板ポリゴンの４頂点の座標情報）
 	VertexPositionTexture vertex[4] =
 	{
-		//	頂点情報													UV情報
+		// 頂点情報													UV情報
 		VertexPositionTexture(SimpleMath::Vector3(-SIZE_X * SCALE,  SIZE_Y * SCALE, 0.0f), SimpleMath::Vector2(0.0f, 0.0f)),
 		VertexPositionTexture(SimpleMath::Vector3(SIZE_X * SCALE,  SIZE_Y * SCALE, 0.0f), SimpleMath::Vector2(1.0f, 0.0f)),
 		VertexPositionTexture(SimpleMath::Vector3(SIZE_X * SCALE, -SIZE_Y * SCALE, 0.0f), SimpleMath::Vector2(1.0f, 1.0f)),
@@ -210,40 +199,20 @@ void  DamageEffect::Render()
 	m_constBuffer.matProj = m_proj.Transpose();
 	m_constBuffer.matWorld = m_world.Transpose();
 
-	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(m_cBuffer.Get(), 0, NULL, &m_constBuffer, 0, 0);
-	//	シェーダーにバッファを渡す
+	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
+	DrawPolygon::UpdateSubResources(context, m_cBuffer.Get(), &m_constBuffer);
+	// シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_cBuffer.Get() };
-	//	頂点シェーダもピクセルシェーダも、同じ値を渡す
+	// 頂点シェーダもピクセルシェーダも、同じ値を渡す
 	context->VSSetConstantBuffers(0, 1, cb);
 	context->PSSetConstantBuffers(0, 1, cb);
-	//	画像用サンプラーの登録
-	ID3D11SamplerState* sampler[1] = { m_states->LinearWrap() };
-	context->PSSetSamplers(0, 1, sampler);
-	//	半透明描画指定
-	ID3D11BlendState* blendstate = m_states->NonPremultiplied();
-
-	//	透明判定処理
-	context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-
-	//	深度バッファに書き込み参照する
-	context->OMSetDepthStencilState(m_states->DepthDefault(), 0);
-
-	//	カリングはなし
-	context->RSSetState(m_states->CullNone());
-
-	//	シェーダをセットする
+	// 描画準備
+	DrawPolygon::DrawStartTexture(context, m_inputLayout.Get(), m_texture);
+	// シェーダをセットする
 	context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
 	context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
-
-	//	インプットレイアウトの登録
-	context->IASetInputLayout(m_inputLayout.Get());
-
-	//	板ポリゴンを描画
-	m_batch->Begin();
-	m_batch->DrawQuad(vertex[0], vertex[1], vertex[2], vertex[3]);
-	m_batch->End();
-
+	// 板ポリゴンを描画
+	DrawPolygon::DrawTexture(vertex);
 	//	シェーダの登録を解除しておく
 	context->VSSetShader(nullptr, nullptr, 0);
 	context->PSSetShader(nullptr, nullptr, 0);

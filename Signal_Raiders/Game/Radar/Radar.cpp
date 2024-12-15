@@ -34,13 +34,14 @@ Radar::Radar(CommonResources* commonResources)
 //---------------------------------------------------------
 Radar::~Radar()
 {
+	DrawPolygon::ReleasePositionTexture();
 }
-void Radar::LoadTexture(const wchar_t* path, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& tex)
+void Radar::LoadTexture(const wchar_t* path, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& textures)
 {
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;
 	DirectX::CreateWICTextureFromFile(device, path, nullptr, texture.ReleaseAndGetAddressOf());
-	tex = texture;
+	textures.push_back(texture);
 }
 
 //---------------------------------------------------------
@@ -49,19 +50,15 @@ void Radar::LoadTexture(const wchar_t* path, Microsoft::WRL::ComPtr<ID3D11Shader
 void Radar::Initialize(Player* pPlayer, Enemies* pEnemies)
 {
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	m_pPlayer = pPlayer;
 	m_pEnemies = pEnemies;
-	// プリミティブバッチの作成
-	m_primitiveBatch = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(context);
-
-	// 共通ステート生成
-	m_states = std::make_unique<CommonStates>(device);
+	// 板ポリゴン描画準備
+	DrawPolygon::InitializePositionTexture(m_commonResources->GetDeviceResources());
 
 	// 画像の読み込み 
-	LoadTexture(L"Resources/Textures/RadarBack.png", m_backTexture);
-	LoadTexture(L"Resources/Textures/PlayerPin.png", m_playerTexture);
-	LoadTexture(L"Resources/Textures/EnemyPin.png", m_enemyTexture);
+	LoadTexture(L"Resources/Textures/RadarBack.png", m_backTextures);
+	LoadTexture(L"Resources/Textures/PlayerPin.png", m_playerTextures);
+	LoadTexture(L"Resources/Textures/EnemyPin.png", m_enemyTextures);
 	//	コンパイルされたシェーダファイルを読み込み
 	kumachi::BinaryFile VSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/Radar/VS_Radar.cso");
 	kumachi::BinaryFile PSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/Radar/PS_Radar.cso");
@@ -120,26 +117,10 @@ void Radar::Update(float elapsedTime)
 //---------------------------------------------------------
 void Radar::Render()
 {
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-
-	//	画像用サンプラーの登録
-	ID3D11SamplerState* sampler[1] = { m_states->LinearWrap() };
-	context->PSSetSamplers(0, 1, sampler);
-
-	// 半透明描画指定
-	ID3D11BlendState* blendstate = m_states->NonPremultiplied();
-	//	透明判定処理
-	context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-	//	深度バッファに書き込み参照する
-	context->OMSetDepthStencilState(m_states->DepthDefault(), 0);
-	//	カリングはなし
-	context->RSSetState(m_states->CullNone());
-
+	// レーダー描画
 	DrawBackground();// 背景描画
 	DrawPlayer();// プレイヤー描画
 	DrawEnemy();// 敵描画
-
-
 }
 
 
@@ -159,23 +140,15 @@ void Radar::DrawBackground()
 		VertexPositionTexture(Vector3(0.5f, -1.0f, 0.0f), SimpleMath::Vector2(0.0f, 1.0f)),
 
 	};
-	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	// グラデーションエフェクトの色設定 
 	m_constBuffer.colors = SimpleMath::Vector4(0.0f, 0.5f, 0.0f, 0);
 	// バッファを作成
 	CreateBuffer(context);
-
-	// 画像設定
-	context->PSSetShaderResources(0, 1, m_backTexture.GetAddressOf());
-	// インプットレイアウトの登録
-	context->IASetInputLayout(m_inputLayout.Get());
+	// 描画準備
+	DrawPolygon::DrawStartTexture(context, m_inputLayout.Get(), m_backTextures);
 	// ポリゴンを描画
-	m_primitiveBatch->Begin();
-
-	m_primitiveBatch->DrawQuad(vertex[0], vertex[1], vertex[2], vertex[3]);
-
-	m_primitiveBatch->End();
-	//	シェーダの登録を解除しておく
+	DrawPolygon::DrawTexture(vertex);
+	// シェーダの登録を解除しておく
 	context->VSSetShader(nullptr, nullptr, 0);
 	context->PSSetShader(nullptr, nullptr, 0);
 }
@@ -200,17 +173,11 @@ void Radar::DrawPlayer()
 	m_constBuffer.colors = SimpleMath::Vector4(0.0f, 0.5f, 0.0f, 0);
 	// バッファを作成
 	CreateBuffer(context);
-
-	// 画像設定
-	context->PSSetShaderResources(0, 1, m_playerTexture.GetAddressOf());
-	// インプットレイアウトの登録
-	context->IASetInputLayout(m_inputLayout.Get());
-	// バッチの開始
+	// 描画準備
+	DrawPolygon::DrawStartTexture(context, m_inputLayout.Get(), m_playerTextures);
 	// 板ポリゴンを描画
-	m_primitiveBatch->Begin();
-	m_primitiveBatch->DrawQuad(playerVertex[0], playerVertex[1], playerVertex[2], playerVertex[3]);
-	m_primitiveBatch->End();
-	//	シェーダの登録を解除しておく
+	DrawPolygon::DrawTexture(playerVertex);
+	// シェーダの登録を解除しておく
 	context->VSSetShader(nullptr, nullptr, 0);
 	context->PSSetShader(nullptr, nullptr, 0);
 }
@@ -229,9 +196,8 @@ void Radar::DrawEnemy()
 	// 敵の位置を描画	 
 	for (const auto& enemyPos : m_enemyPos)
 	{
-		Vector3 relativePos = enemyPos - m_playerPos;// プレイヤーから敵への相対位置を計算
-
-
+		// プレイヤーから敵への相対位置を計算
+		Vector3 relativePos = enemyPos - m_playerPos;
 		// カメラの向きを取得
 		Vector3 cameraDirection = m_pPlayer->GetPlayerDir(); // カメラの向き（前方ベクトル）
 
@@ -253,21 +219,18 @@ void Radar::DrawEnemy()
 		if (radarPos.x > 0.5f + m_enemySize.x && radarPos.x < 1.0f + m_enemySize.x &&
 			radarPos.y > -1.0f + m_enemySize.y && radarPos.y < -0.16f + m_enemySize.y)
 		{
-			// 画像設定
-			context->PSSetShaderResources(0, 1, m_enemyTexture.GetAddressOf());
-			// インプットレイアウトの登録
-			context->IASetInputLayout(m_inputLayout.Get());
-			// バッチの開始
-			m_primitiveBatch->Begin();
-			// 敵の位置を描画
-			m_primitiveBatch->DrawQuad(
+			// 描画準備
+			DrawPolygon::DrawStartTexture(context, m_inputLayout.Get(), m_enemyTextures);
+			VertexPositionTexture enemyVertex[4] =
+			{
+				//	頂点情報													UV情報
 				VertexPositionTexture(Vector3(radarPos.x, radarPos.y, 0.0f), SimpleMath::Vector2(0.0f, 0.0f)),
 				VertexPositionTexture(Vector3(radarPos.x + 0.01f, radarPos.y, 0.0f), SimpleMath::Vector2(1.0f, 0.0f)),
 				VertexPositionTexture(Vector3(radarPos.x + 0.01f, radarPos.y + 0.02f, 0.0f), SimpleMath::Vector2(1.0f, 1.0f)),
 				VertexPositionTexture(Vector3(radarPos.x, radarPos.y + 0.02f, 0.0f), SimpleMath::Vector2(0.0f, 1.0f))
-			);
-			// バッチの終了
-			m_primitiveBatch->End();
+			};
+			// 板ポリゴンを描画
+			DrawPolygon::DrawTexture(enemyVertex);
 		}
 	}
 	//	シェーダの登録を解除しておく
@@ -282,17 +245,15 @@ void Radar::DrawEnemy()
 void Radar::CreateBuffer(ID3D11DeviceContext1* context)
 {
 	// 時間設定
-	m_constBuffer.time = m_time;
-	//	パディング
-	m_constBuffer.padding = SimpleMath::Vector3(0, 0, 0);
-	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(m_cBuffer.Get(), 0, NULL, &m_constBuffer, 0, 0);
-	//	シェーダーにバッファを渡す
+	m_constBuffer.time = SimpleMath::Vector4(m_time);
+	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
+	DrawPolygon::UpdateSubResources(context, m_cBuffer.Get(), &m_constBuffer);
+	// シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_cBuffer.Get() };
-	//	頂点シェーダもピクセルシェーダも、同じ値を渡す
+	// 頂点シェーダもピクセルシェーダも、同じ値を渡す
 	context->VSSetConstantBuffers(0, 1, cb);
 	context->PSSetConstantBuffers(0, 1, cb);
-	//	シェーダをセットする
+	// シェーダをセットする
 	context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
 	context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
 }

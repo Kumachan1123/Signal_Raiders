@@ -5,8 +5,8 @@ cbuffer ConstBuffer : register(b0)
     matrix matView; // ビュー行列
     matrix matProj; // プロジェクション行列
     float4 color; // 色
-    float time; // 時間
-    float3 padding; // パディング
+    float4 time; // 時間
+ 
 };
 
 // C++側から設定されるデータ②
@@ -29,7 +29,7 @@ float3 HSVtoRGB(float3 hsv)
 float4 main(PS_INPUT input) : SV_TARGET
 {
     // 時間に基づいてグラデーションエフェクトを生成
-    float gradient = exp(-abs(sin(time * 1.0 + input.Tex.y * 5.0)));
+    float gradient = exp(-abs(sin(time.x * 1.0 + input.Tex.y * 5.0)));
     
     // テクスチャをサンプリング
     float4 output = tex.Sample(samLinear, input.Tex);
@@ -38,7 +38,7 @@ float4 main(PS_INPUT input) : SV_TARGET
     float isColorZero = step(0.001, dot(color.rgb, color.rgb)); // colorが(0,0,0)なら0、そうでなければ1
     
     // HSV値を時間とテクスチャ座標に基づいて生成
-    float3 hsv = float3(fmod(time * 0.5 + input.Tex.y, 1.0), 1.0, 1.0); // Hueの変化で虹色を生成
+    float3 hsv = float3(fmod(time.x * 0.5 + input.Tex.y, 1.0), 1.0, 1.0); // Hueの変化で虹色を生成
     float3 rgb = HSVtoRGB(hsv); // RGBに変換
     
     // 発光色を混ぜる

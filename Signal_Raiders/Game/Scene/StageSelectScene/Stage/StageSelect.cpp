@@ -4,12 +4,7 @@
 */
 #include "pch.h"
 #include "StageSelect.h"
-#include "Game/CommonResources.h"
-#include "DeviceResources.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
-#include "Libraries/MyLib/InputManager.h"
-#include <cassert>
-#include "Game/KumachiLib//BinaryFile.h"
+
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 const std::vector<D3D11_INPUT_ELEMENT_DESC>  StageSelect::INPUT_LAYOUT =
@@ -50,7 +45,6 @@ void StageSelect::Create(DX::DeviceResources* pDR)
 {
 	m_pDR = pDR;
 
-	ID3D11Device1* device = pDR->GetD3DDevice();
 	// シェーダーの作成
 	CreateShader();
 	// 画像の読み込み
@@ -76,10 +70,8 @@ void StageSelect::Create(DX::DeviceResources* pDR)
 	{
 		m_vertex[i].position.y += 1.0f;
 	}
-	// プリミティブバッチの作成
-	m_batch = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(pDR->GetD3DDeviceContext());
-	// コモンステートの作成
-	m_states = std::make_unique<CommonStates>(device);
+	// 板ポリゴン描画用
+	DrawPolygon::InitializePositionTexture(m_pDR);
 }
 
 void StageSelect::CreateShader()
@@ -129,44 +121,21 @@ void StageSelect::Render()
 	m_ConstBuffer.matWorld = m_world.Transpose();
 	// グラデーションエフェクトの色設定はCreate関数で設定済み
 	// 時間設定
-	m_ConstBuffer.time = m_time;
-	//	パディング
-	m_ConstBuffer.padding = SimpleMath::Vector3(0, 0, 0);
-
-
+	m_ConstBuffer.time = SimpleMath::Vector4(m_time);
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(m_CBuffer.Get(), 0, NULL, &m_ConstBuffer, 0, 0);
+	DrawPolygon::UpdateSubResources(context, m_CBuffer.Get(), &m_ConstBuffer);
 	//	シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };
 	//	頂点シェーダもピクセルシェーダも、同じ値を渡す
 	context->VSSetConstantBuffers(0, 1, cb);
 	context->PSSetConstantBuffers(0, 1, cb);
-	//	画像用サンプラーの登録
-	ID3D11SamplerState* sampler[1] = { m_states->AnisotropicWrap() };
-	context->PSSetSamplers(0, 1, sampler);
-	// 半透明描画指定
-	ID3D11BlendState* blendstate = m_states->NonPremultiplied();
-	//	透明判定処理
-	context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-	//	深度バッファに書き込み参照する
-	context->OMSetDepthStencilState(m_states->DepthDefault(), 0);
-	//	カリングはなし
-	context->RSSetState(m_states->CullNone());
 	//	シェーダをセットする
 	context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
 	context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
-	//	Create関数で読み込んだ画像をピクセルシェーダに登録する。
-	for (int i = 0; i < m_texture.size(); i++)
-	{
-		//	for文で一気に設定する
-		context->PSSetShaderResources(i, 1, m_texture[i].GetAddressOf());
-	}
-	//	インプットレイアウトの登録
-	context->IASetInputLayout(m_inputLayout.Get());
+	//	テクスチャ描画開始
+	DrawPolygon::DrawStartTexture(context, m_inputLayout.Get(), m_texture);
 	//	板ポリゴンを描画
-	m_batch->Begin();
-	m_batch->DrawQuad(m_vertex[0], m_vertex[1], m_vertex[2], m_vertex[3]);
-	m_batch->End();
+	DrawPolygon::DrawTexture(m_vertex);
 	//	シェーダの登録を解除しておく
 	context->VSSetShader(nullptr, nullptr, 0);
 	context->PSSetShader(nullptr, nullptr, 0);

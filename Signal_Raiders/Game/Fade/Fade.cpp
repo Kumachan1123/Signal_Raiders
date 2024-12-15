@@ -12,6 +12,7 @@
 #include <vector>
 #include "Game/KumachiLib/KumachiLib.h"
 #include "Libraries/MyLib/DebugString.h"
+#include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
@@ -34,7 +35,6 @@ Fade::Fade(CommonResources* commonResources)
 	:
 	m_pDR{ },
 	m_CBuffer{},
-	m_timer{},
 	m_inputLayout{},
 	m_commonResources{ commonResources },
 	m_batch{},
@@ -65,42 +65,30 @@ void Fade::Create(DX::DeviceResources* pDR)
 {
 	// デバイスリソースの取得
 	m_pDR = pDR;
-	ID3D11Device1* device = m_pDR->GetD3DDevice();
-
 	// シェーダーの作成
 	CreateShader();
-
 	// 画像の読み込み
 	LoadTexture(L"Resources/Textures/fade2.png");//fadeTex
 	LoadTexture(L"Resources/Textures/Ready.png");//readyTex
 	LoadTexture(L"Resources/Textures/Go.png");//goTex
 	LoadTexture(L"Resources/Textures/Black.png");//backTex
-
-	// プリミティブバッチの作成
-	m_batch = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(pDR->GetD3DDeviceContext());
-
-	// コモンステートの作成
-	m_states = std::make_unique<CommonStates>(device);
-
+	// 板ポリゴン描画用
+	DrawPolygon::InitializePositionTexture(m_pDR);
 }
 // シェーダー作成部分
 void Fade::CreateShader()
 {
 	// デバイスリソースの取得
 	auto device = m_pDR->GetD3DDevice();
-
 	// 頂点シェーダーの作成
 	kumachi::BinaryFile VSFade = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/Fade/VS_Fade.cso");
 	// ピクセルシェーダーの作成
 	kumachi::BinaryFile PSFade = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/Fade/PS_Fade.cso");
-
-
 	// インプットレイアウトの作成
 	device->CreateInputLayout(&INPUT_LAYOUT[0],
 		static_cast<UINT>(INPUT_LAYOUT.size()),
 		VSFade.GetData(), VSFade.GetSize(),
 		m_inputLayout.GetAddressOf());
-
 	// 頂点シェーダーの作成
 	if (FAILED(device->CreateVertexShader(VSFade.GetData(), VSFade.GetSize(), nullptr, m_vertexShader.GetAddressOf())))
 	{
@@ -121,12 +109,10 @@ void Fade::CreateShader()
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bd.CPUAccessFlags = 0;
 	device->CreateBuffer(&bd, nullptr, &m_CBuffer);
-
 }
 // 更新
 void Fade::Update(float elapsedTime)
 {
-
 	// フェードイン
 	if (m_fadeState == FadeState::FadeIn)
 	{
@@ -138,7 +124,6 @@ void Fade::Update(float elapsedTime)
 			m_fadeState = FadeState::FadeInEnd;
 		}
 	}
-
 	// フェードアウト
 	if (m_fadeState == FadeState::FadeOut)
 	{
@@ -150,16 +135,11 @@ void Fade::Update(float elapsedTime)
 			m_fadeState = FadeState::FadeOutEnd;
 		}
 	}
-
-
-
 }
 
 // 描画
 void Fade::Render()
 {
-	// 時間
-
 	ID3D11DeviceContext1* context = m_pDR->GetD3DDeviceContext();
 	//	頂点情報(板ポリゴンの４頂点の座標情報）
 	VertexPositionTexture vertex[4] =
@@ -172,54 +152,22 @@ void Fade::Render()
 	};
 	// シェーダーに渡す追加のバッファを作成する(ConstBuffer)
 	ConstBuffer cbuff;
-
-	cbuff.power = 0.01f;
-
-	// フェードとディゾルブの設定
+	cbuff.power = 0.01f;// フェードとディゾルブの設定
 	cbuff.fadeAmount = m_time;
-	// 画像番号
-	cbuff.num = m_fadeTexNum;
+	cbuff.num = m_fadeTexNum;	// 画像番号
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(m_CBuffer.Get(), 0, NULL, &cbuff, 0, 0);
-
+	DrawPolygon::UpdateSubResources(context, m_CBuffer.Get(), &cbuff);
 	//	シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };
 	//	頂点シェーダもピクセルシェーダも、同じ値を渡す
 	context->VSSetConstantBuffers(0, 1, cb);
 	context->PSSetConstantBuffers(0, 1, cb);
-	//	画像用サンプラーの登録
-	ID3D11SamplerState* sampler[1] = { m_states->PointWrap() };
-	context->PSSetSamplers(0, 1, sampler);
-
-	//	半透明描画指定
-	ID3D11BlendState* blendstate = m_states->NonPremultiplied();
-
-	//	透明判定処理
-	context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-
-	//	深度バッファに書き込み参照する
-	context->OMSetDepthStencilState(m_states->DepthDefault(), 0);
-
-	//	カリングはなし
-	context->RSSetState(m_states->CullNone());
-
+	DrawPolygon::DrawStartTexture(context, m_inputLayout.Get(), m_texture);
 	//	シェーダをセットする
 	context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
 	context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
-
-	for (int i = 0; i < m_texture.size(); i++)
-	{
-		//	for文で一気に設定する
-		context->PSSetShaderResources(i, 1, m_texture[i].GetAddressOf());
-	}
-	//	インプットレイアウトの登録
-	context->IASetInputLayout(m_inputLayout.Get());
-
 	//	板ポリゴンを描画
-	m_batch->Begin();
-	m_batch->DrawQuad(vertex[0], vertex[1], vertex[2], vertex[3]);
-	m_batch->End();
-
+	DrawPolygon::DrawTexture(vertex);
 	//	シェーダの登録を解除しておく
 	context->VSSetShader(nullptr, nullptr, 0);
 	context->PSSetShader(nullptr, nullptr, 0);

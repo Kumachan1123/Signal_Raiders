@@ -4,6 +4,12 @@
 */
 #pragma once
 #include <DeviceResources.h>
+#include "Game/CommonResources.h"
+#include "Libraries/MyLib/MemoryLeakDetector.h"
+#include "Libraries/MyLib/InputManager.h"
+#include <cassert>
+#include "Game/KumachiLib//BinaryFile.h"
+#include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 // 前方宣言
 class CommonResources;
 
@@ -17,8 +23,7 @@ public:
 		DirectX::SimpleMath::Matrix		matView;	//	ビュー行列
 		DirectX::SimpleMath::Matrix		matProj;	//	プロジェクション行列
 		DirectX::SimpleMath::Vector4	color;
-		float time = 0.0f;
-		DirectX::SimpleMath::Vector3 padding;
+		DirectX::SimpleMath::Vector4	time;	//	時間
 	};
 	ConstBuffer m_constBuffer;
 private:
@@ -40,7 +45,7 @@ private:
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_batch;
 	// コモンステート
 	std::unique_ptr<DirectX::CommonStates> m_states;
-	// タイトル画像
+	// 画像
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_texture;
 	// テクスチャパス
 	wchar_t* m_texturePath;

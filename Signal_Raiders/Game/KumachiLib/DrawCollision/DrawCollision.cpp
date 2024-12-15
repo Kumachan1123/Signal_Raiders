@@ -9,6 +9,7 @@ std::unique_ptr<DirectX::BasicEffect> DrawCollision::m_basicEffect = nullptr;
 Microsoft::WRL::ComPtr<ID3D11InputLayout> DrawCollision::m_inputLayout = nullptr;
 std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> DrawCollision::m_primitiveBatch = nullptr;
 CommonResources* DrawCollision::m_commonResources = nullptr;
+
 // èâä˙âª
 void DrawCollision::Initialize(CommonResources* commonResources)
 {

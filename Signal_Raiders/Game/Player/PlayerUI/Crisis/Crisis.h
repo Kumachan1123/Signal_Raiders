@@ -9,7 +9,8 @@
 
 
 #include "Game/CommonResources.h"
-#include <DeviceResources.h>
+#include "Game/KumachiLib/BinaryFile.h"
+#include "DeviceResources.h"
 #include <SimpleMath.h>
 #include <Effects.h>
 #include <PrimitiveBatch.h>
@@ -17,6 +18,8 @@
 #include <WICTextureLoader.h>
 #include <CommonStates.h>
 #include <vector>
+#include "Libraries/MyLib/DebugString.h"
+#include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 class CommonResources;
 class Crisis
 {
@@ -28,8 +31,7 @@ public:
 		DirectX::SimpleMath::Matrix matView;    // ビュー行列
 		DirectX::SimpleMath::Matrix matProj;    // プロジェクション行列
 		DirectX::SimpleMath::Vector4 colors;    // カラー
-		float time = 0.0f;                             // 時間
-		DirectX::SimpleMath::Vector3 padding;// パディング
+		DirectX::SimpleMath::Vector4 time;		// 時間                             // 時間
 	}m_constBuffer;
 
 private:

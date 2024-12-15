@@ -4,6 +4,11 @@
 */
 #pragma once
 #include <DeviceResources.h>
+#include "Game/KumachiLib//BinaryFile.h"
+#include <cassert>
+#include "Libraries/MyLib/InputManager.h"
+#include "Game/CommonResources.h"
+#include "DeviceResources.h"
 // 前方宣言
 class CommonResources;
 
@@ -17,8 +22,7 @@ public:
 		DirectX::SimpleMath::Matrix		matView;	//	ビュー行列
 		DirectX::SimpleMath::Matrix		matProj;	//	プロジェクション行列
 		DirectX::SimpleMath::Vector4	Colors;
-		float time = 0.0f;
-		DirectX::SimpleMath::Vector3 padding;
+		DirectX::SimpleMath::Vector4 time;	//	時間
 	};
 
 private:

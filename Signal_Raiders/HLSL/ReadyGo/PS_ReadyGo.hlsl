@@ -5,8 +5,7 @@ cbuffer ConstBuffer : register(b0)
     matrix matView; // ビュー行列
     matrix matProj; // プロジェクション行列
     float4 color; // 色
-    float time; // 時間
-    float3 padding; // パディング
+    float4 time; // 時間
 };
 
 // C++側から設定されるデータ②
@@ -29,7 +28,7 @@ float4 main(PS_INPUT input) : SV_TARGET
     float4 output = tex.Sample(samLinear, input.Tex);
    
     // 線の強度を計算
-    float lineIntensity = sin(input.Tex.y * 200.0 + time * 10.0) * 0.05;
+    float lineIntensity = sin(input.Tex.y * 200.0 + time.x * 10.0) * 0.05;
 
     // ノイズの強度を計算
     float noise = (frac(sin(dot(input.Tex.xy * float2(12.9898, 78.233), float2(12.9898, 78.233))) * 43758.5453) - 0.5) * 0.125;
@@ -38,7 +37,7 @@ float4 main(PS_INPUT input) : SV_TARGET
     output.rgb += lineIntensity + noise;
 
     // 時間に基づいてグラデーションエフェクトを生成
-    float gradient = exp(-abs(sin(time * 0.50 - input.Tex.y * 15.0)));
+    float gradient = exp(-abs(sin(time.x * 0.50 - input.Tex.y * 15.0)));
     
     // グラデーションエフェクトを加える
     output.rgb += gradient * float3(.5, .5, .5);
@@ -57,8 +56,8 @@ float4 main(PS_INPUT input) : SV_TARGET
     killAllColor = float4(killAllColor.rgba);
     float4 clearColor = float4(0, 0, 0, 0);
     // 時間経過で指示テクスチャからLerpで透明に変える
-    killAllColor = lerp(killAllColor, clearColor, cos(time * 1.1) + 0.65);
-    background = lerp(background, clearColor, cos(time * 1.1) + 0.65);
+    killAllColor = lerp(killAllColor, clearColor, cos(time.x * 1.1) + 0.65);
+    background = lerp(background, clearColor, cos(time.x * 1.1) + 0.65);
     // 結果を返す
     return background + killAllColor;
 

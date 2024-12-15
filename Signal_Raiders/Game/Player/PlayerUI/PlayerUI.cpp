@@ -4,16 +4,8 @@
 //-------------------------------------------------------------------------------------
 
 #include "pch.h"
-#include "Game/Player/PlayerUI/PlayerUI.h"
-#include "Game/KumachiLib/BinaryFile.h"
-#include "DeviceResources.h"
-#include <SimpleMath.h>
-#include <Effects.h>
-#include <PrimitiveBatch.h>
-#include <VertexTypes.h>
-#include <WICTextureLoader.h>
-#include <CommonStates.h>
-#include <vector>
+#include "PlayerUI.h"
+
 using namespace DirectX;
 
 /// <summary>
@@ -44,13 +36,14 @@ PlayerUI::PlayerUI()
 {
 
 }
-PlayerUI::~PlayerUI() {}
+PlayerUI::~PlayerUI() { DrawPolygon::ReleasePositionColorTexture(); }
 /// <summary>
 /// テクスチャリソース読み込み関数
 /// </summary>
 /// <param name="path">相対パス(Resources/Textures/・・・.pngなど）</param>
 void PlayerUI::LoadTexture(const wchar_t* path)
 {
+
 
 	DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, m_res.ReleaseAndGetAddressOf(), m_texture.ReleaseAndGetAddressOf());
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> tex;
@@ -59,6 +52,7 @@ void PlayerUI::LoadTexture(const wchar_t* path)
 	D3D11_TEXTURE2D_DESC desc;
 	tex->GetDesc(&desc);
 
+	m_textures.push_back(m_texture);
 	m_textureWidth = desc.Width;
 	m_textureHeight = desc.Height;
 
@@ -75,7 +69,6 @@ void PlayerUI::Create(DX::DeviceResources* pDR
 	, kumachi::ANCHOR anchor)
 {
 	m_pDR = pDR;
-	auto device = pDR->GetD3DDevice();
 	m_position = position;
 	m_baseScale = m_scale = scale;
 	m_anchor = anchor;
@@ -85,11 +78,8 @@ void PlayerUI::Create(DX::DeviceResources* pDR
 
 	//	画像の読み込み
 	LoadTexture(path);
-
-	//	プリミティブバッチの作成
-	m_batch = std::make_unique<PrimitiveBatch<VertexPositionColorTexture>>(pDR->GetD3DDeviceContext());
-
-	m_states = std::make_unique<CommonStates>(device);
+	// 板ポリゴン描画用
+	DrawPolygon::InitializePositionColorTexture(m_pDR);
 
 }
 
@@ -161,48 +151,23 @@ void PlayerUI::Render()
 	m_constBuffer.windowSize = SimpleMath::Vector4(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 1, 1);
 	m_constBuffer.renderRatio = m_renderRatio - m_renderRatioOffset;
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(m_CBuffer.Get(), 0, NULL, &m_constBuffer, 0, 0);
-
+	DrawPolygon::UpdateSubResources(context, m_CBuffer.Get(), &m_constBuffer);
 	//	シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };
 	context->VSSetConstantBuffers(0, 1, cb);
 	context->GSSetConstantBuffers(0, 1, cb);
 	context->PSSetConstantBuffers(0, 1, cb);
 
-	//	画像用サンプラーの登録
-	ID3D11SamplerState* sampler[1] = { m_states->AnisotropicWrap() };
-	context->PSSetSamplers(0, 1, sampler);
-
-
-	//	半透明描画指定
-	ID3D11BlendState* blendstate = m_states->NonPremultiplied();
-
-	//	透明判定処理
-	context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-
-	//	深度バッファに書き込み参照する
-	context->OMSetDepthStencilState(m_states->DepthNone(), 0);
-
-	//	カリングは左周り
-	context->RSSetState(m_states->CullNone());
+	// 描画準備
+	DrawPolygon::DrawStartColorTexture(context, m_inputLayout.Get(), m_textures);
 
 	//	シェーダをセットする
 	context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
 	context->GSSetShader(m_geometryShader.Get(), nullptr, 0);
 	context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
 
-	//	ピクセルシェーダにテクスチャを登録する。
-	context->PSSetShaderResources(0, 1, m_texture.GetAddressOf());
-
-
-	//	インプットレイアウトの登録
-	context->IASetInputLayout(m_inputLayout.Get());
-
 	//	板ポリゴンを描画
-	m_batch->Begin();
-	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex[0], 1);
-	m_batch->End();
-
+	DrawPolygon::DrawColorTexture(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex[0], 1);
 	//	シェーダの登録を解除しておく
 	context->VSSetShader(nullptr, nullptr, 0);
 	context->GSSetShader(nullptr, nullptr, 0);

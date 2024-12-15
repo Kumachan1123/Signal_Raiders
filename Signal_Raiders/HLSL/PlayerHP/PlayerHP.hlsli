@@ -1,21 +1,20 @@
 cbuffer ConstBuffer : register(b0)
 {
     float4 windowSize;
-	
     float3 nul;
     float renderRatio;
 };
 
 struct VS_INPUT
 {
-    float3 pos : POSITION;
-    float4 color : COLOR;
-    float2 tex : TEXCOORD;
+    float3 Pos : POSITION;
+    float4 Color : COLOR;
+    float2 Tex : TEXCOORD;
 };
 
 struct PS_INPUT
 {
-    float4 pos : SV_POSITION;
-    float4 color : COLOR;
-    float2 tex : TEXCOORD;
+    float4 Pos : SV_POSITION;
+    float4 Color : COLOR;
+    float2 Tex : TEXCOORD;
 };

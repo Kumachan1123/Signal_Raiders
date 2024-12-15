@@ -39,7 +39,6 @@ void BossModel::Initialize(CommonResources* resources)
 	m_bodyModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss.cmo", *fx);
 	m_idlingFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss_Face_Idling.cmo", *fx);
 	m_attackFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss_Face_Attack.cmo", *fx);
-	//m_sheildModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss_Barrier.cmo", *fx);
 }
 void BossModel::Update(float elapsedTime, IState::EnemyState State)
 {
@@ -47,8 +46,6 @@ void BossModel::Update(float elapsedTime, IState::EnemyState State)
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	m_nowState = State;
-	//if (m_isSheild)
-	//	m_sheildSize = Vector3::SmoothStep(m_sheildSize, Vector3::One, 0.2f);
 }
 void BossModel::Render(ID3D11DeviceContext1* context,
 	DirectX::DX11::CommonStates* states,

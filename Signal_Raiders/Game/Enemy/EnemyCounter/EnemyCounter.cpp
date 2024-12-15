@@ -109,8 +109,6 @@ void EnemyCounter::Update(float elapsedTime)
 	m_enemyIndex1 = m_enemyIndex % 10;
 	m_nowEnemy10 = m_nowEnemy / 10;
 	m_nowEnemy1 = m_nowEnemy % 10;
-
-
 }
 
 //---------------------------------------------------------
@@ -125,11 +123,10 @@ void EnemyCounter::Render()
 
 	context->OMSetDepthStencilState(m_states->DepthNone(), 0);
 	context->OMSetBlendState(m_states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
-
-	DrawRemaining();// 「のこり：」を描画
+	DrawQuad(m_remaining, m_verticesRemaining, 0.4f, 1.0f, 0.25f, 0.18f, 0, 1, 1); // 「残り：」
+	DrawQuad(m_slash, m_verticesSlash, 0.8f, 1.0f, 0.05f, 0.18f, 0, 1, 1);       // 「/」
 	DrawEnemyIndex1();// 総数の1の位を描画
 	DrawEnemyIndex10();// 総数の10の位を描画
-	DrawSlash();// 「/」を描画
 	DrawNowEnemy1();// 現在の敵の数の1の位を描画
 	DrawNowEnemy10();// 現在の敵の数の10の位を描画
 }
@@ -141,32 +138,11 @@ void EnemyCounter::Render()
 //---------------------------------------------------------
 void EnemyCounter::DrawNowEnemy10()
 {
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-
-	int currentRow = m_nowEnemy10 / m_frameCols;
-	int currentCol = m_nowEnemy10 % m_frameCols;
-
-
-
-	// テクスチャ座標の計算
-	float uMin = static_cast<float>(currentCol) / m_frameCols;
-	float vMin = static_cast<float>(currentRow) / m_frameRows;
-	float uMax = static_cast<float>(currentCol + 1) / m_frameCols;
-	float vMax = static_cast<float>(currentRow + 1) / m_frameRows;
-
-	// 頂点情報
-	// 頂点情報（板ポリゴンの頂点）を上下反転
-	m_verticesNowEnemy10[0] = { VertexPositionTexture(SimpleMath::Vector3(0.66f, 1.0f, 0), SimpleMath::Vector2(uMin,vMin)) };
-	m_verticesNowEnemy10[1] = { VertexPositionTexture(SimpleMath::Vector3(0.74f, 1.0f, 0), SimpleMath::Vector2(uMax,vMin)) };
-	m_verticesNowEnemy10[2] = { VertexPositionTexture(SimpleMath::Vector3(0.74f, 0.82f, 0), SimpleMath::Vector2(uMax, vMax)) };
-	m_verticesNowEnemy10[3] = { VertexPositionTexture(SimpleMath::Vector3(0.66f, 0.82f, 0), SimpleMath::Vector2(uMin, vMax)) };
-	m_batchEffect->SetTexture(m_texture.Get());
-	m_batchEffect->Apply(context);
-	context->IASetInputLayout(m_inputLayout.Get());
-	//	半透明部分を描画 
-	m_primitiveBatch->Begin();
-	m_primitiveBatch->DrawQuad(m_verticesNowEnemy10[0], m_verticesNowEnemy10[1], m_verticesNowEnemy10[2], m_verticesNowEnemy10[3]);
-	m_primitiveBatch->End();
+	DrawQuad(
+		m_texture, m_verticesNowEnemy10,
+		0.66f, 1.0f, 0.08f, 0.18f, // 位置とサイズ
+		m_nowEnemy10, m_frameCols, m_frameRows // フレーム情報
+	);
 }
 
 //---------------------------------------------------------
@@ -174,31 +150,11 @@ void EnemyCounter::DrawNowEnemy10()
 //---------------------------------------------------------
 void EnemyCounter::DrawNowEnemy1()
 {
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-	int currentRow = m_nowEnemy1 / m_frameCols;
-	int currentCol = m_nowEnemy1 % m_frameCols;
-
-
-
-	// テクスチャ座標の計算
-	float uMin = static_cast<float>(currentCol) / m_frameCols;
-	float vMin = static_cast<float>(currentRow) / m_frameRows;
-	float uMax = static_cast<float>(currentCol + 1) / m_frameCols;
-	float vMax = static_cast<float>(currentRow + 1) / m_frameRows;
-
-	// 頂点情報
-	// 頂点情報（板ポリゴンの頂点）を上下反転
-	m_verticesNowEnemy1[0] = { VertexPositionTexture(SimpleMath::Vector3(0.72f, 1.0f, 0), SimpleMath::Vector2(uMin,vMin)) };
-	m_verticesNowEnemy1[1] = { VertexPositionTexture(SimpleMath::Vector3(0.8f, 1.0f, 0), SimpleMath::Vector2(uMax,vMin)) };
-	m_verticesNowEnemy1[2] = { VertexPositionTexture(SimpleMath::Vector3(0.8f, 0.82f, 0), SimpleMath::Vector2(uMax, vMax)) };
-	m_verticesNowEnemy1[3] = { VertexPositionTexture(SimpleMath::Vector3(0.72f, 0.82f, 0), SimpleMath::Vector2(uMin, vMax)) };
-	m_batchEffect->SetTexture(m_texture.Get());
-	m_batchEffect->Apply(context);
-	context->IASetInputLayout(m_inputLayout.Get());
-	//	半透明部分を描画 
-	m_primitiveBatch->Begin();
-	m_primitiveBatch->DrawQuad(m_verticesNowEnemy1[0], m_verticesNowEnemy1[1], m_verticesNowEnemy1[2], m_verticesNowEnemy1[3]);
-	m_primitiveBatch->End();
+	DrawQuad(
+		m_texture, m_verticesNowEnemy1,
+		0.72f, 1.0f, 0.08f, 0.18f, // 位置とサイズ
+		m_nowEnemy1, m_frameCols, m_frameRows // フレーム情報
+	);
 }
 
 //---------------------------------------------------------
@@ -206,32 +162,12 @@ void EnemyCounter::DrawNowEnemy1()
 //---------------------------------------------------------
 void EnemyCounter::DrawEnemyIndex10()
 {
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
+	DrawQuad(
+		m_texture, m_verticesEnemyIndex10,
+		0.86f, 1.0f, 0.08f, 0.18f, // 位置とサイズ
+		m_enemyIndex10, m_frameCols, m_frameRows // フレーム情報
+	);
 
-	int currentRow = m_enemyIndex10 / m_frameCols;
-	int currentCol = m_enemyIndex10 % m_frameCols;
-
-
-
-	// テクスチャ座標の計算
-	float uMin = static_cast<float>(currentCol) / m_frameCols;
-	float vMin = static_cast<float>(currentRow) / m_frameRows;
-	float uMax = static_cast<float>(currentCol + 1) / m_frameCols;
-	float vMax = static_cast<float>(currentRow + 1) / m_frameRows;
-
-	// 頂点情報
-	// 頂点情報（板ポリゴンの頂点）を上下反転
-	m_verticesEnemyIndex10[0] = { VertexPositionTexture(SimpleMath::Vector3(0.86, 1.0f, 0), SimpleMath::Vector2(uMin,vMin)) };
-	m_verticesEnemyIndex10[1] = { VertexPositionTexture(SimpleMath::Vector3(0.94, 1.0f, 0), SimpleMath::Vector2(uMax,vMin)) };
-	m_verticesEnemyIndex10[2] = { VertexPositionTexture(SimpleMath::Vector3(0.94, 0.82f, 0), SimpleMath::Vector2(uMax, vMax)) };
-	m_verticesEnemyIndex10[3] = { VertexPositionTexture(SimpleMath::Vector3(0.86, 0.82f, 0), SimpleMath::Vector2(uMin, vMax)) };
-	m_batchEffect->SetTexture(m_texture.Get());
-	m_batchEffect->Apply(context);
-	context->IASetInputLayout(m_inputLayout.Get());
-	//	半透明部分を描画 
-	m_primitiveBatch->Begin();
-	m_primitiveBatch->DrawQuad(m_verticesEnemyIndex10[0], m_verticesEnemyIndex10[1], m_verticesEnemyIndex10[2], m_verticesEnemyIndex10[3]);
-	m_primitiveBatch->End();
 }
 
 //---------------------------------------------------------
@@ -239,74 +175,41 @@ void EnemyCounter::DrawEnemyIndex10()
 //---------------------------------------------------------
 void EnemyCounter::DrawEnemyIndex1()
 {
+	DrawQuad(
+		m_texture, m_verticesEnemyIndex1,
+		0.92f, 1.0f, 0.08f, 0.18f, // 位置とサイズ
+		m_enemyIndex1, m_frameCols, m_frameRows // フレーム情報
+	);
+}
+
+//---------------------------------------------------------
+// テクスチャを描画
+//---------------------------------------------------------
+void EnemyCounter::DrawQuad(Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& texture, DirectX::VertexPositionTexture* vertices, float startX, float startY, float width, float height, int frameIndex, int frameCols, int frameRows)
+{
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 
-	int currentRow = m_enemyIndex1 / m_frameCols;
-	int currentCol = m_enemyIndex1 % m_frameCols;
-
-
+	// フレーム位置の計算
+	int currentRow = frameIndex / frameCols;
+	int currentCol = frameIndex % frameCols;
 
 	// テクスチャ座標の計算
-	float uMin = static_cast<float>(currentCol) / m_frameCols;
-	float vMin = static_cast<float>(currentRow) / m_frameRows;
-	float uMax = static_cast<float>(currentCol + 1) / m_frameCols;
-	float vMax = static_cast<float>(currentRow + 1) / m_frameRows;
+	float uMin = static_cast<float>(currentCol) / frameCols;
+	float vMin = static_cast<float>(currentRow) / frameRows;
+	float uMax = static_cast<float>(currentCol + 1) / frameCols;
+	float vMax = static_cast<float>(currentRow + 1) / frameRows;
 
-	// 頂点情報
-	// 頂点情報（板ポリゴンの頂点）を上下反転
-	m_verticesEnemyIndex1[0] = { VertexPositionTexture(SimpleMath::Vector3(0.92f, 1.0f, 0), SimpleMath::Vector2(uMin,vMin)) };
-	m_verticesEnemyIndex1[1] = { VertexPositionTexture(SimpleMath::Vector3(1.0f, 1.0f, 0), SimpleMath::Vector2(uMax,vMin)) };
-	m_verticesEnemyIndex1[2] = { VertexPositionTexture(SimpleMath::Vector3(1.0f, 0.82f, 0), SimpleMath::Vector2(uMax,vMax)) };
-	m_verticesEnemyIndex1[3] = { VertexPositionTexture(SimpleMath::Vector3(0.92f, 0.82f, 0), SimpleMath::Vector2(uMin,vMax)) };
-	m_batchEffect->SetTexture(m_texture.Get());
+	// 頂点座標の設定
+	vertices[0] = { VertexPositionTexture(Vector3(startX, startY, 0), Vector2(uMin, vMin)) };
+	vertices[1] = { VertexPositionTexture(Vector3(startX + width, startY, 0), Vector2(uMax, vMin)) };
+	vertices[2] = { VertexPositionTexture(Vector3(startX + width, startY - height, 0), Vector2(uMax, vMax)) };
+	vertices[3] = { VertexPositionTexture(Vector3(startX, startY - height, 0), Vector2(uMin, vMax)) };
+
+	// テクスチャ適用と描画
+	m_batchEffect->SetTexture(texture.Get());
 	m_batchEffect->Apply(context);
 	context->IASetInputLayout(m_inputLayout.Get());
-	//	半透明部分を描画 
 	m_primitiveBatch->Begin();
-	m_primitiveBatch->DrawQuad(m_verticesEnemyIndex1[0], m_verticesEnemyIndex1[1], m_verticesEnemyIndex1[2], m_verticesEnemyIndex1[3]);
-	m_primitiveBatch->End();
-}
-
-//---------------------------------------------------------
-// 「のこり：」を描画
-//---------------------------------------------------------
-void EnemyCounter::DrawRemaining()
-{
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-
-	// 頂点情報
-	// 頂点情報（板ポリゴンの頂点）を上下反転
-	m_verticesRemaining[0] = { VertexPositionTexture(SimpleMath::Vector3(0.4f, 1.0f, 0), SimpleMath::Vector2(0,0)) };
-	m_verticesRemaining[1] = { VertexPositionTexture(SimpleMath::Vector3(0.65f, 1.0f, 0), SimpleMath::Vector2(1,0)) };
-	m_verticesRemaining[2] = { VertexPositionTexture(SimpleMath::Vector3(0.65f, 0.82f, 0), SimpleMath::Vector2(1,1)) };
-	m_verticesRemaining[3] = { VertexPositionTexture(SimpleMath::Vector3(0.4f, 0.82f, 0), SimpleMath::Vector2(0,1)) };
-	m_batchEffect->SetTexture(m_remaining.Get());
-	m_batchEffect->Apply(context);
-	context->IASetInputLayout(m_inputLayout.Get());
-	//	半透明部分を描画 
-	m_primitiveBatch->Begin();
-	m_primitiveBatch->DrawQuad(m_verticesRemaining[0], m_verticesRemaining[1], m_verticesRemaining[2], m_verticesRemaining[3]);
-	m_primitiveBatch->End();
-}
-
-//---------------------------------------------------------
-// 「/」を描画
-//---------------------------------------------------------
-void EnemyCounter::DrawSlash()
-{
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-
-	// 頂点情報
-	// 頂点情報（板ポリゴンの頂点）を上下反転
-	m_verticesSlash[0] = { VertexPositionTexture(SimpleMath::Vector3(0.8f, 1.0f, 0), SimpleMath::Vector2(0,0)) };
-	m_verticesSlash[1] = { VertexPositionTexture(SimpleMath::Vector3(0.85f, 1.0f, 0), SimpleMath::Vector2(1,0)) };
-	m_verticesSlash[2] = { VertexPositionTexture(SimpleMath::Vector3(0.85f, 0.82f, 0), SimpleMath::Vector2(1,1)) };
-	m_verticesSlash[3] = { VertexPositionTexture(SimpleMath::Vector3(0.8f, 0.82f, 0), SimpleMath::Vector2(0,1)) };
-	m_batchEffect->SetTexture(m_slash.Get());
-	m_batchEffect->Apply(context);
-	context->IASetInputLayout(m_inputLayout.Get());
-	//	半透明部分を描画 
-	m_primitiveBatch->Begin();
-	m_primitiveBatch->DrawQuad(m_verticesSlash[0], m_verticesSlash[1], m_verticesSlash[2], m_verticesSlash[3]);
+	m_primitiveBatch->DrawQuad(vertices[0], vertices[1], vertices[2], vertices[3]);
 	m_primitiveBatch->End();
 }

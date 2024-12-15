@@ -7,10 +7,10 @@ SamplerState samLinear : register(s0);
 float4 main(PS_INPUT input) : SV_TARGET
 {
 	//	指定された画像の表示
-    float4 output = tex.Sample(samLinear, input.tex);
+    float4 output = tex.Sample(samLinear, input.Tex);
 
 	// 画像の透過度を変更
     float smoothValue = renderRatio;
-    output.a *= lerp(1.0f, 0.0f, smoothstep(smoothValue, smoothValue + 0.00000001f, input.tex.x));
+    output.a *= lerp(1.0f, 0.0f, smoothstep(smoothValue, smoothValue + 0.00000001f, input.Tex.x));
     return output;
 }
