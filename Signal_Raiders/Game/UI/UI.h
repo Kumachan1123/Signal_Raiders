@@ -14,7 +14,7 @@
 #include <WICTextureLoader.h>
 #include <CommonStates.h>
 #include <vector>
-
+#include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 class  UI
 {
 public:
@@ -44,6 +44,9 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
 	// ジオメトリシェーダ
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_pGeometryShader;
+	// シェーダーの構造体
+	DrawPolygon::Shaders m_shaders;
+
 	int m_windowWidth, m_windowHeight;
 	int m_textureWidth, m_textureHeight;
 	DirectX::SimpleMath::Vector2 m_scale;// スケール

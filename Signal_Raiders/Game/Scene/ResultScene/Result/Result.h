@@ -3,6 +3,7 @@
 	@brief	結果クラス
 */
 #pragma once
+#include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include <DeviceResources.h>
 // 前方宣言
 class CommonResources;
@@ -28,6 +29,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
 	// ピクセルシェーダ
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
+	// シェーダーの構造体
+	DrawPolygon::Shaders m_shaders;
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 	// 変数

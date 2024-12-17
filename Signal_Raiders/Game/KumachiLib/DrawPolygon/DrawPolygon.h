@@ -18,6 +18,15 @@ class CommonResources;
 class DrawPolygon
 {
 public:
+	// 三つのシェーダーをひとまとめにして送るための構造体
+	struct Shaders
+	{
+		Microsoft::WRL::ComPtr<ID3D11VertexShader> vs;
+		Microsoft::WRL::ComPtr<ID3D11PixelShader> ps;
+		Microsoft::WRL::ComPtr<ID3D11GeometryShader> gs;
+	};
+
+public:
 
 	// 初期化（頂点、テクスチャ）
 	static void InitializePositionTexture(DX::DeviceResources* pDR);
@@ -37,6 +46,12 @@ public:
 	static void ReleasePositionTexture();
 	// 解放（頂点、色、テクスチャ）
 	static void ReleasePositionColorTexture();
+	// シェーダーにバッファを送る
+	static void SetShaderBuffer(ID3D11DeviceContext1* context, UINT startSlot, UINT numBuffers, ID3D11Buffer* const* ppBuffer);
+	// シェーダーをセットする
+	static void SetShader(ID3D11DeviceContext1* context, const Shaders& shaders, ID3D11ClassInstance* const* ppClassInstances, UINT nubClassInstances);
+	// シェーダーを解放する
+	static void ReleaseShader(ID3D11DeviceContext1* context);
 
 private:
 	// ベーシックエフェクト

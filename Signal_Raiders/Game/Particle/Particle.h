@@ -8,7 +8,7 @@ class CommonResources;
 #include "Game/CommonResources.h"
 #include <vector>
 #include <list>
-
+#include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include <Game/ParticleUtility/ParticleUtility.h>
 class Particle
 {
@@ -55,7 +55,8 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 	//	ジオメトリシェーダ
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_geometryShader;
-
+	// シェーダーの構造体
+	DrawPolygon::Shaders m_shaders;
 	DirectX::SimpleMath::Matrix m_world;// ワールド行列
 	DirectX::SimpleMath::Matrix m_view;// ビュー行列
 	DirectX::SimpleMath::Matrix m_proj;	// プロジェクション行列

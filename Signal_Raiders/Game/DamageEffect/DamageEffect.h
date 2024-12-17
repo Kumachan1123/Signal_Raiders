@@ -33,7 +33,7 @@ public:
 		float alpha = 0.0f;// アルファ値
 	}m_constBuffer;
 private:
-	//	変数
+	// 変数
 	DX::DeviceResources* m_pDR;
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_cBuffer;
@@ -41,22 +41,24 @@ private:
 	CommonResources* m_commonResources;
 	// プレイヤーのポインター
 	Player* m_pPlayer;
-	//	入力レイアウト
+	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 
-	//	プリミティブバッチ
+	// プリミティブバッチ
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_batch;
-	//	コモンステート
+	// コモンステート
 	std::unique_ptr<DirectX::CommonStates> m_states;
-	//	テクスチャハンドル
+	// テクスチャハンドル
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_texture;
 
-	//	頂点シェーダ
+	// 頂点シェーダ
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
-	//	ピクセルシェーダ
+	// ピクセルシェーダ
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
+	// シェーダーの構造体
+	DrawPolygon::Shaders m_shaders;
 
-	//	ワールドビュープロジェクション行列
+	// ワールドビュープロジェクション行列
 	DirectX::SimpleMath::Matrix m_world;
 	DirectX::SimpleMath::Matrix m_view;
 	DirectX::SimpleMath::Matrix m_proj;

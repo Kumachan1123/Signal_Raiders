@@ -10,7 +10,6 @@
 #include "Libraries/MyLib/InputManager.h"
 #include <cassert>
 #include "Game/KumachiLib//BinaryFile.h"
-#include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 const std::vector<D3D11_INPUT_ELEMENT_DESC>  Result::INPUT_LAYOUT =
@@ -128,6 +127,10 @@ void Result::CreateShader()
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bd.CPUAccessFlags = 0;
 	device->CreateBuffer(&bd, nullptr, &m_CBuffer);
+	// シェーダーの構造体にシェーダーを渡す
+	m_shaders.vs = m_vertexShader.Get();
+	m_shaders.ps = m_pixelShader.Get();
+	m_shaders.gs = nullptr;
 }
 
 void Result::Update(float elapsedTime)
@@ -150,23 +153,18 @@ void Result::Render()
 	m_ConstBuffer.time = m_time;
 	//	パディング
 	m_ConstBuffer.padding = SimpleMath::Vector3(0, 0, 0);
-
-
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	DrawPolygon::UpdateSubResources(context, m_CBuffer.Get(), &m_ConstBuffer);
 	//	シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };
 	//	頂点シェーダもピクセルシェーダも、同じ値を渡す
-	context->VSSetConstantBuffers(0, 1, cb);
-	context->PSSetConstantBuffers(0, 1, cb);
+	DrawPolygon::SetShaderBuffer(context, 0, 1, cb);
 	//	シェーダをセットする
-	context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
-	context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
+	DrawPolygon::SetShader(context, m_shaders, nullptr, 0);
 	// 描画準備
 	DrawPolygon::DrawStartTexture(context, m_inputLayout.Get(), m_texture);
 	// 板ポリゴンを描画
 	DrawPolygon::DrawTexture(m_vertex);
 	// シェーダの登録を解除しておく
-	context->VSSetShader(nullptr, nullptr, 0);
-	context->PSSetShader(nullptr, nullptr, 0);
+	DrawPolygon::ReleaseShader(context);
 }

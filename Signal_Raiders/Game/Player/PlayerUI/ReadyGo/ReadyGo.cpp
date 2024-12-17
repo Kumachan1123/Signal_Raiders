@@ -102,6 +102,10 @@ void  ReadyGo::CreateShader()
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bd.CPUAccessFlags = 0;
 	device->CreateBuffer(&bd, nullptr, &m_cBuffer);
+	// シェーダーの構造体にシェーダーを渡す
+	m_shaders.vs = m_vertexShader.Get();
+	m_shaders.ps = m_pixelShader.Get();
+	m_shaders.gs = nullptr;
 }
 
 //更新
@@ -150,18 +154,13 @@ void  ReadyGo::Render()
 	//	シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_cBuffer.Get() };
 	//	頂点シェーダもピクセルシェーダも、同じ値を渡す
-	context->VSSetConstantBuffers(0, 1, cb);
-	context->PSSetConstantBuffers(0, 1, cb);
+	DrawPolygon::SetShaderBuffer(context, 0, 1, cb);
 	//	シェーダをセットする
-	context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
-	context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
-
+	DrawPolygon::SetShader(context, m_shaders, nullptr, 0);
 	// 描画準備
 	DrawPolygon::DrawStartTexture(context, m_inputLayout.Get(), m_texture);
 	// 板ポリゴンを描画
 	DrawPolygon::DrawTexture(vertex);
-
 	// シェーダの登録を解除しておく
-	context->VSSetShader(nullptr, nullptr, 0);
-	context->PSSetShader(nullptr, nullptr, 0);
+	DrawPolygon::ReleaseShader(context);
 }

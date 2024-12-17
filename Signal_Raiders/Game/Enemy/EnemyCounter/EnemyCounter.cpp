@@ -1,6 +1,6 @@
 /*
 	@file	EnemyCounter.cpp
-	@brief	敵カウントクラス
+	@brief	敵カウントクラス(現在シェーダー未使用)
 */
 #include "pch.h"
 #include "EnemyCounter.h"

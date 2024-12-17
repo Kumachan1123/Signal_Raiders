@@ -133,3 +133,24 @@ void DrawPolygon::ReleasePositionColorTexture()
 	m_primitiveBatchColorTexture.reset();
 	m_commonResources = nullptr;
 }
+
+void DrawPolygon::SetShaderBuffer(ID3D11DeviceContext1* context, UINT startSlot, UINT numBuffers, ID3D11Buffer* const* ppBuffer)
+{
+	context->VSSetConstantBuffers(startSlot, numBuffers, ppBuffer);
+	context->GSSetConstantBuffers(startSlot, numBuffers, ppBuffer);
+	context->PSSetConstantBuffers(startSlot, numBuffers, ppBuffer);
+}
+
+void DrawPolygon::SetShader(ID3D11DeviceContext1* context, const Shaders& shaders, ID3D11ClassInstance* const* ppClassInstances, UINT nubClassInstances)
+{
+	if (shaders.vs.Get() != nullptr) context->VSSetShader(shaders.vs.Get(), ppClassInstances, nubClassInstances);
+	if (shaders.gs.Get() != nullptr) context->GSSetShader(shaders.gs.Get(), ppClassInstances, nubClassInstances);
+	if (shaders.ps.Get() != nullptr) context->PSSetShader(shaders.ps.Get(), ppClassInstances, nubClassInstances);
+}
+
+void DrawPolygon::ReleaseShader(ID3D11DeviceContext1* context)
+{
+	context->VSSetShader(nullptr, nullptr, 0);
+	context->GSSetShader(nullptr, nullptr, 0);
+	context->PSSetShader(nullptr, nullptr, 0);
+}

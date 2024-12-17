@@ -13,7 +13,6 @@
 #include <WICTextureLoader.h>
 #include <CommonStates.h>
 #include <vector>
-#include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 using namespace DirectX;
 const std::vector<D3D11_INPUT_ELEMENT_DESC> UI::INPUT_LAYOUT =
 {
@@ -113,6 +112,10 @@ void UI::CreateShader()
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bd.CPUAccessFlags = 0;
 	device->CreateBuffer(&bd, nullptr, &m_pCBuffer);
+	// シェーダーの構造体にシェーダーを渡す
+	m_shaders.vs = m_pVertexShader.Get();
+	m_shaders.gs = m_pGeometryShader.Get();
+	m_shaders.ps = m_pPixelShader.Get();
 }
 
 void UI::Update(float elapsedTime)
@@ -140,24 +143,15 @@ void UI::Render()
 	DrawPolygon::UpdateSubResources(context, m_pCBuffer.Get(), &m_constBuffer);
 	//	シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };
-	context->VSSetConstantBuffers(0, 1, cb);
-	context->GSSetConstantBuffers(0, 1, cb);
-	context->PSSetConstantBuffers(0, 1, cb);
-
+	DrawPolygon::SetShaderBuffer(context, 0, 1, cb);
 	// 描画準備
 	DrawPolygon::DrawStartColorTexture(context, m_pInputLayout.Get(), m_pTextures);
-
 	//	シェーダをセットする
-	context->VSSetShader(m_pVertexShader.Get(), nullptr, 0);
-	context->GSSetShader(m_pGeometryShader.Get(), nullptr, 0);
-	context->PSSetShader(m_pPixelShader.Get(), nullptr, 0);
-
+	DrawPolygon::SetShader(context, m_shaders, nullptr, 0);
 	//	板ポリゴンを描画
 	DrawPolygon::DrawColorTexture(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex[0], 1);
 	//	シェーダの登録を解除しておく
-	context->VSSetShader(nullptr, nullptr, 0);
-	context->GSSetShader(nullptr, nullptr, 0);
-	context->PSSetShader(nullptr, nullptr, 0);
+	DrawPolygon::ReleaseShader(context);
 }
 
 void UI::SetWindowSize(const int& width, const int& height)

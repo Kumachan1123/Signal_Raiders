@@ -53,7 +53,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 	// ジオメトリシェーダ
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_geometryShader;
-
+	// シェーダーの構造体
+	DrawPolygon::Shaders m_shaders;
 	int m_windowWidth, m_windowHeight;
 	int m_textureWidth, m_textureHeight;
 

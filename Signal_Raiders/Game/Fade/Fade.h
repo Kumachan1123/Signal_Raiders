@@ -8,6 +8,7 @@
 #include <WICTextureLoader.h>
 #include <CommonStates.h>
 #include <vector>
+#include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 class CommonResources;
 class Fade
 {
@@ -61,7 +62,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
 	//	ピクセルシェーダ
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
-
+	// シェーダーの構造体
+	DrawPolygon::Shaders m_shaders;
 	DirectX::SimpleMath::Matrix m_world;
 	DirectX::SimpleMath::Matrix m_view;
 	DirectX::SimpleMath::Matrix m_proj;

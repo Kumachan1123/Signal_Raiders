@@ -90,10 +90,6 @@ private:
 	void DrawNowEnemy10();
 	// 現在の敵の数の1の位を描画
 	void DrawNowEnemy1();
-	// 「のこり：」を描画
-	void DrawRemaining();
-	// 「/」を描画
-	void DrawSlash();
 	// 画像を表示
 	void DrawQuad(Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& texture,
 		DirectX::VertexPositionTexture* vertices,
