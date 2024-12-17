@@ -5,7 +5,7 @@
 #include "pch.h"
 #include "SettingBar.h"
 #include "Game/Screen.h"
-#include "Game/KumachiLib/BinaryFile.h"
+#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "DeviceResources.h"
 #include <SimpleMath.h>
 #include <Effects.h>
@@ -51,17 +51,17 @@ void SettingBar::Initialize(CommonResources* resources, int width, int height)
 	Add(m_pSettingBarTexturePath
 		, SimpleMath::Vector2(Screen::CENTER_X + 300, Screen::CENTER_Y - 300)
 		, SimpleMath::Vector2(1, 1)
-		, kumachi::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER);
 	//  「SE」の場所に配置
 	Add(m_pSettingBarTexturePath
 		, SimpleMath::Vector2(Screen::CENTER_X + 300, Screen::CENTER_Y - 150)
 		, SimpleMath::Vector2(1, 1)
-		, kumachi::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER);
 	//  「マウスかんど」の場所に配置
 	Add(m_pSettingBarTexturePath
 		, SimpleMath::Vector2(Screen::CENTER_X + 300, Screen::CENTER_Y)
 		, SimpleMath::Vector2(1, 1)
-		, kumachi::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER);
 
 	// Jsonファイルから設定を読み込む
 	m_pSettingData->Load();
@@ -136,18 +136,18 @@ void SettingBar::Render()
 }
 
 void SettingBar::Add(const wchar_t* path
-					 , DirectX::SimpleMath::Vector2 position
-					 , DirectX::SimpleMath::Vector2 scale
-					 , kumachi::ANCHOR anchor)
+	, DirectX::SimpleMath::Vector2 position
+	, DirectX::SimpleMath::Vector2 scale
+	, KumachiLib::ANCHOR anchor)
 {
 	//  メニューとしてアイテムを追加する
 	std::unique_ptr<UI> userInterface = std::make_unique<UI>();
 	//  指定された画像を表示するためのアイテムを作成する
 	userInterface->Create(m_pDR
-						  , path
-						  , position
-						  , Vector2(scale.x / 1.45f, scale.y / 2.0f)
-						  , anchor);
+		, path
+		, position
+		, Vector2(scale.x / 1.45f, scale.y / 2.0f)
+		, anchor);
 	userInterface->SetWindowSize(m_windowWidth, m_windowHeight);
 
 	//  アイテムを新しく追加
@@ -157,10 +157,10 @@ void SettingBar::Add(const wchar_t* path
 	//  背景用のウィンドウ画像も追加する
 	std::unique_ptr<UI> base = std::make_unique<UI>();
 	base->Create(m_pDR
-				 , m_pSettingBarPointerTexturePath
-				 , position
-				 , scale
-				 , anchor);
+		, m_pSettingBarPointerTexturePath
+		, position
+		, scale
+		, anchor);
 	base->SetWindowSize(m_windowWidth, m_windowHeight);
 
 	//  背景用のアイテムも新しく追加する

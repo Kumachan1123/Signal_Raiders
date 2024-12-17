@@ -59,23 +59,28 @@ void Radar::Initialize(Player* pPlayer, Enemies* pEnemies)
 	LoadTexture(L"Resources/Textures/RadarBack.png", m_backTextures);
 	LoadTexture(L"Resources/Textures/PlayerPin.png", m_playerTextures);
 	LoadTexture(L"Resources/Textures/EnemyPin.png", m_enemyTextures);
-	//	コンパイルされたシェーダファイルを読み込み
-	kumachi::BinaryFile VSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/Radar/VS_Radar.cso");
-	kumachi::BinaryFile PSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/Radar/PS_Radar.cso");
-	//	インプットレイアウトの作成
-	device->CreateInputLayout(&INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), VSData.GetData(), VSData.GetSize(), m_inputLayout.GetAddressOf());
-	//	頂点シェーダ作成
-	if (FAILED(device->CreateVertexShader(VSData.GetData(), VSData.GetSize(), NULL, m_vertexShader.ReleaseAndGetAddressOf())))
-	{// エラー
-		MessageBox(0, L"CreateVertexShader Failed.", NULL, MB_OK);
-		return;
-	}
-	//	ピクセルシェーダ作成
-	if (FAILED(device->CreatePixelShader(PSData.GetData(), PSData.GetSize(), NULL, m_pixelShader.ReleaseAndGetAddressOf())))
-	{// エラー
-		MessageBox(0, L"CreatePixelShader Failed.", NULL, MB_OK);
-		return;
-	}
+	////	コンパイルされたシェーダファイルを読み込み
+	//KumachiLib::BinaryFile VSData = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/Radar/VS_Radar.cso");
+	//KumachiLib::BinaryFile PSData = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/Radar/PS_Radar.cso");
+	////	頂点シェーダ作成
+	//if (FAILED(device->CreateVertexShader(VSData.GetData(), VSData.GetSize(), NULL, m_vertexShader.ReleaseAndGetAddressOf())))
+	//{// エラー
+	//	MessageBox(0, L"CreateVertexShader Failed.", NULL, MB_OK);
+	//	return;
+	//}
+	////	ピクセルシェーダ作成
+	//if (FAILED(device->CreatePixelShader(PSData.GetData(), PSData.GetSize(), NULL, m_pixelShader.ReleaseAndGetAddressOf())))
+	//{// エラー
+	//	MessageBox(0, L"CreatePixelShader Failed.", NULL, MB_OK);
+	//	return;
+	//}
+	////	インプットレイアウトの作成
+	//device->CreateInputLayout(&INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), VSData.GetData(), VSData.GetSize(), m_inputLayout.GetAddressOf());
+
+	// シェーダーを作成
+	KumachiLib::CreateShader::CreateVertexShader(device, L"Resources/Shaders/Radar/VS_Radar.cso", m_vertexShader, // 頂点シェーダ
+		&INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_inputLayout.GetAddressOf());  // 入力レイアウト
+	KumachiLib::CreateShader::CreatePixelShader(device, L"Resources/Shaders/Radar/PS_Radar.cso", m_pixelShader); // ピクセルシェーダ
 	//	シェーダーにデータを渡すためのコンスタントバッファ生成
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));

@@ -49,7 +49,7 @@ Boss::Boss(Player* pPlayer)
 	, m_isHitToOtherEnemy{}
 	, m_isHitToPlayerBullet{}
 	, m_isBullethit{}
-	, m_canAttack{}
+	, m_canAttack{ true }
 	, m_bossBulletType{ BossBulletType::NORMAL }
 	, m_bulletType{ EnemyBullet::BulletType::STRAIGHT }
 	, m_audioManager{ AudioManager::GetInstance() }

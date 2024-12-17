@@ -9,7 +9,7 @@
 #include "Libraries/MyLib/DebugString.h"
 #include "Game/Scene/BackGround/BackGround.h"
 #include "Game/Scene/TitleLogo/TitleLogo.h"
-#include "Game/KumachiLib/AudioManager.h"
+#include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/Scene/TitleScene/TitleMenu/TitleMenu.h"
 #include "Game/Scene/SettingScene/SettingMenu/SettingMenu.h"
 #include "Game/Scene/SettingScene/SettingBar/SettingBar.h"

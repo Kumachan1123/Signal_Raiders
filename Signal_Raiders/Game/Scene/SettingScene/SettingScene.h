@@ -7,7 +7,7 @@
 #include <DeviceResources.h>
 #include "Game/Fade/Fade.h"
 #include "Game/Scene/BackGround/BackGround.h"
-#include "Game/KumachiLib/AudioManager.h"
+#include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/Scene/SettingScene/SettingMenu/SettingMenu.h"
 #include "Game/Scene/SettingScene/SettingBar/SettingBar.h"
 #include "Game/Scene/SettingScene/SettingData/SettingData.h"

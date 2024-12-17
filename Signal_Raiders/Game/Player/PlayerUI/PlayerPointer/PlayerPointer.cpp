@@ -7,7 +7,7 @@
 #include "pch.h"
 #include "PlayerPointer.h"
 #include "Game/Player/PlayerUI/PlayerUI.h"
-#include "Game/KumachiLib/BinaryFile.h"
+#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "DeviceResources.h"
 #include <SimpleMath.h>
 #include <Effects.h>
@@ -43,7 +43,7 @@ void PlayerPointer::Initialize(DX::DeviceResources* pDR, int width, int height)
 	Add(L"Resources/Textures/pointer.png"
 		, SimpleMath::Vector2(640, 360)
 		, SimpleMath::Vector2(0.25f, 0.25f)
-		, kumachi::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER);
 }
 
 void PlayerPointer::Update()
@@ -60,15 +60,15 @@ void PlayerPointer::Render()
 	m_pointer->Render();
 }
 
-void PlayerPointer::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, kumachi::ANCHOR anchor)
+void PlayerPointer::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
 {
 
 	m_pointer = std::make_unique<PlayerUI>();
 	m_pointer->Create(m_pDR
-					  , path
-					  , position
-					  , scale
-					  , anchor);
+		, path
+		, position
+		, scale
+		, anchor);
 	m_pointer->SetWindowSize(m_windowWidth, m_windowHeight);
 
 

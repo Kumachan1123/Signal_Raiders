@@ -24,7 +24,7 @@
 #include "Game/Player/PlayerUI/PlayerPointer/PlayerPointer.h"
 #include "Game/Effect/Effect.h"
 #include "Game/Fade/Fade.h"
-#include "Game/KumachiLib/AudioManager.h"
+#include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/Radar/Radar.h"
 #include "Game/DamageEffect/DamageEffect.h"
 // ‘O•ûéŒ¾

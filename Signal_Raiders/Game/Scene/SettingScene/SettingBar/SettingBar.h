@@ -47,7 +47,7 @@ public:
 	void Add(const wchar_t* path
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
-		, kumachi::ANCHOR anchor);
+		, KumachiLib::ANCHOR anchor);
 	void SetStateIDNum(SettingMenu::StateID num) { m_num = num; }
 	int GetSetting(int index) const { return m_setting[index]; }
 };

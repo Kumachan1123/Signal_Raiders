@@ -11,16 +11,15 @@ protected:
 	Player* m_pPlayer;
 public:
 	//	getter										  
-	virtual DirectX::BoundingSphere& GetBoundingSphere() = 0;
-	virtual DirectX::BoundingSphere& GetBulletBoundingSphere() = 0;
-	virtual DirectX::BoundingSphere& GetPlayerBoundingSphere() = 0;
-	virtual DirectX::SimpleMath::Matrix GetMatrix() const = 0;
-	virtual DirectX::SimpleMath::Vector3 GetPosition() const = 0;
-	virtual DirectX::SimpleMath::Vector3 GetVelocity() const = 0;
-	virtual DirectX::SimpleMath::Vector3 GetRotate() const = 0;
+	virtual const DirectX::BoundingSphere& GetBoundingSphere() = 0;
+	virtual const DirectX::BoundingSphere& GetBulletBoundingSphere() = 0;
+	virtual const DirectX::BoundingSphere& GetPlayerBoundingSphere() = 0;
+	virtual const DirectX::SimpleMath::Matrix& GetMatrix() = 0;
+	virtual const  DirectX::SimpleMath::Vector3& GetPosition() = 0;
+	virtual const DirectX::SimpleMath::Vector3& GetVelocity() = 0;
+	virtual const DirectX::SimpleMath::Vector3& GetRotate() = 0;
 	virtual Player* GetPlayer()const = 0;
 	virtual FPS_Camera* GetCamera()const = 0;
-
 	virtual int GetHP() const = 0;
 	virtual bool GetEnemyIsDead() const = 0;
 	virtual bool GetHitToPlayer()const = 0;

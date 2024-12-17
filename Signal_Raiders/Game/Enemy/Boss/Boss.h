@@ -3,7 +3,7 @@
 	@brief	ボスクラス
 */
 #pragma once
-#include "Game/KumachiLib/AudioManager.h"
+#include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/Interface/IEnemy.h"
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 
@@ -127,10 +127,10 @@ public:
 	DirectX::BoundingSphere& GetBoundingSphere() override { return m_bossBS; }
 	DirectX::BoundingSphere& GetBulletBoundingSphere()override { return m_enemyBulletBS; }
 	DirectX::BoundingSphere& GetPlayerBoundingSphere() override { return m_playerBS; }
-	DirectX::SimpleMath::Matrix GetMatrix() const override { return m_matrix; }
-	DirectX::SimpleMath::Vector3 GetPosition() const override { return m_position; }
-	DirectX::SimpleMath::Vector3 GetVelocity() const override { return m_velocity; }
-	DirectX::SimpleMath::Vector3 GetRotate() const override { return m_rotate; }
+	const DirectX::SimpleMath::Matrix& GetMatrix()  override { return m_matrix; }
+	const DirectX::SimpleMath::Vector3& GetPosition()  override { return m_position; }
+	const DirectX::SimpleMath::Vector3& GetVelocity()  override { return m_velocity; }
+	const DirectX::SimpleMath::Vector3& GetRotate()  override { return m_rotate; }
 	Player* GetPlayer()const override { return m_pPlayer; }
 	FPS_Camera* GetCamera()const override { return m_pCamera; }
 	int GetHP() const override { return m_currentHP; }

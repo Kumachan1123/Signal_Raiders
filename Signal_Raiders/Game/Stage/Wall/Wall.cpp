@@ -46,8 +46,8 @@ void Wall::CreateShader()
 	using namespace DirectX::SimpleMath;
 	ID3D11Device1* device = m_pDR->GetD3DDevice();
 	//	コンパイルされたシェーダファイルを読み込み
-	kumachi::BinaryFile VSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/TitleScene/VS_Title.cso");
-	kumachi::BinaryFile PSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/TitleScene/PS_Title.cso");
+	KumachiLib::BinaryFile VSData = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/TitleScene/VS_Title.cso");
+	KumachiLib::BinaryFile PSData = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/TitleScene/PS_Title.cso");
 	//	インプットレイアウトの作成
 	device->CreateInputLayout(&INPUT_LAYOUT[0],
 		static_cast<UINT>(INPUT_LAYOUT.size()),

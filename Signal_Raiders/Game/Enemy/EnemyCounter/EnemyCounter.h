@@ -12,7 +12,7 @@
 #include <Model.h>
 #include <Effects.h>
 #include <Libraries/Microsoft/DebugDraw.h>
-#include "Game/KumachiLib/BinaryFile.h"
+#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include <memory>
 
 class CommonResources;

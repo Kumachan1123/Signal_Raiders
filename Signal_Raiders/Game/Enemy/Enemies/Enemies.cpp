@@ -289,7 +289,9 @@ void Enemies::HandleEnemyCollisions()
 			if (hit)// 当たり判定があったら
 			{
 				// m_enemies[i]の新しい座標
-				Vector3 newPos = CheckHitOtherObject(m_enemies[i]->GetBoundingSphere(), m_enemies[j]->GetBoundingSphere());
+				auto enemyA = m_enemies[i]->GetBoundingSphere();
+				auto enemyB = m_enemies[j]->GetBoundingSphere();
+				Vector3 newPos = CheckHitOtherObject(enemyA, enemyB);
 				m_enemies[i]->SetPosition(newPos);
 			}
 		}
@@ -304,7 +306,8 @@ void Enemies::HandleWallCollision()
 	{
 		for (int i = 0; i < 4; i++)
 		{
-			Vector3 newPos = CheckHitWall(enemy->GetBoundingSphere(), m_pWall->GetBoundingBox(i));
+			auto enemySphere = enemy->GetBoundingSphere();
+			Vector3 newPos = CheckHitWall(enemySphere, m_pWall->GetBoundingBox(i));
 			enemy->SetPosition(newPos);
 		}
 
@@ -360,7 +363,8 @@ void Enemies::HandleEnemyPlayerCollision(std::unique_ptr<IEnemy>& enemy)
 		// 敵がプレイヤーを認識する範囲 / 3.0f = プレイヤーの当たり判定の半径
 		if (enemy->GetBoundingSphere().Intersects(playerSphere))
 		{
-			Vector3 newPos = CheckHitOtherObject(enemy->GetBoundingSphere(), playerSphere);
+			auto enemySphere = enemy->GetBoundingSphere();
+			Vector3 newPos = CheckHitOtherObject(enemySphere, playerSphere);
 			enemy->SetPosition(newPos);
 		}
 	}

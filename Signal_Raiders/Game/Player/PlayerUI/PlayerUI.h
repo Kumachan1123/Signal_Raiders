@@ -5,7 +5,7 @@
 
 
 #pragma once
-#include "Game/KumachiLib/BinaryFile.h"
+#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "Game/CommonResources.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "Game/KumachiLib/Anchor.h"
@@ -62,7 +62,7 @@ private:
 	DirectX::SimpleMath::Vector2 m_baseScale;
 	DirectX::SimpleMath::Vector2 m_position;
 
-	kumachi::ANCHOR m_anchor;
+	KumachiLib::ANCHOR m_anchor;
 
 	float m_renderRatio;
 	float m_renderRatioOffset;
@@ -79,7 +79,7 @@ public:
 		, const wchar_t* path
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
-		, kumachi::ANCHOR anchor);
+		, KumachiLib::ANCHOR anchor);
 
 	void Render();
 
@@ -90,8 +90,8 @@ public:
 	DirectX::SimpleMath::Vector2 GetBaseScale() const { return m_baseScale; }
 	void SetPosition(DirectX::SimpleMath::Vector2 position) { m_position = position; };
 	DirectX::SimpleMath::Vector2 GetPosition() const { return m_position; }
-	void SetAnchor(kumachi::ANCHOR anchor) { m_anchor = anchor; };
-	kumachi::ANCHOR GetAnchor() const { return m_anchor; }
+	void SetAnchor(KumachiLib::ANCHOR anchor) { m_anchor = anchor; };
+	KumachiLib::ANCHOR GetAnchor() const { return m_anchor; }
 
 	void SetRenderRatio(float ratio) { m_renderRatio = ratio; };
 	float GetRenderRatio() const { return m_renderRatio; }

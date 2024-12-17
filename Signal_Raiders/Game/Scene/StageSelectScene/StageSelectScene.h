@@ -8,7 +8,7 @@
 #include "Game/Scene/SettingScene/SettingData/SettingData.h"
 #include "Game/Scene/BackGround/BackGround.h"
 #include "Game/Scene/StageSelectScene/Menu/StageSelectMenu.h"
-#include "Game/KumachiLib/AudioManager.h"
+#include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/Scene/StageSelectScene/Stage/StageSelect.h"
 // ‘O•ûéŒ¾
 class CommonResources;

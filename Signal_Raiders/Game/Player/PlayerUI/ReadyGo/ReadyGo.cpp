@@ -5,7 +5,7 @@
 #include "pch.h"
 #include "ReadyGo.h"
 #include "Game/CommonResources.h"
-#include "Game/KumachiLib/BinaryFile.h"
+#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "DeviceResources.h"
 #include <SimpleMath.h>
 #include <Effects.h>
@@ -71,8 +71,8 @@ void  ReadyGo::CreateShader()
 	ID3D11Device1* device = m_pDR->GetD3DDevice();
 
 	//	コンパイルされたシェーダファイルを読み込み
-	kumachi::BinaryFile VSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/ReadyGo/VS_ReadyGo.cso");
-	kumachi::BinaryFile PSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/ReadyGo/PS_ReadyGo.cso");
+	KumachiLib::BinaryFile VSData = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/ReadyGo/VS_ReadyGo.cso");
+	KumachiLib::BinaryFile PSData = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/ReadyGo/PS_ReadyGo.cso");
 
 	//	インプットレイアウトの作成
 	device->CreateInputLayout(&INPUT_LAYOUT[0],

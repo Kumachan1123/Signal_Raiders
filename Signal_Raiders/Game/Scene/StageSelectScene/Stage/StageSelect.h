@@ -8,7 +8,7 @@
 #include "Libraries/MyLib/MemoryLeakDetector.h"
 #include "Libraries/MyLib/InputManager.h"
 #include <cassert>
-#include "Game/KumachiLib//BinaryFile.h"
+#include "Game/KumachiLib//BinaryFile/BinaryFile.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 // ‘O•ûéŒ¾
 class CommonResources;

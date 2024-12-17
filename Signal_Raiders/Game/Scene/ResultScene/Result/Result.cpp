@@ -9,7 +9,7 @@
 #include "Libraries/MyLib/MemoryLeakDetector.h"
 #include "Libraries/MyLib/InputManager.h"
 #include <cassert>
-#include "Game/KumachiLib//BinaryFile.h"
+#include "Game/KumachiLib//BinaryFile/BinaryFile.h"
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 const std::vector<D3D11_INPUT_ELEMENT_DESC>  Result::INPUT_LAYOUT =
@@ -103,8 +103,8 @@ void Result::CreateShader()
 {
 	ID3D11Device1* device = m_pDR->GetD3DDevice();
 	//	コンパイルされたシェーダファイルを読み込み（タイトル画像のシェーダーを使いまわす）
-	kumachi::BinaryFile VSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/TitleScene/VS_Title.cso");
-	kumachi::BinaryFile PSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/TitleScene/PS_Title.cso");
+	KumachiLib::BinaryFile VSData = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/TitleScene/VS_Title.cso");
+	KumachiLib::BinaryFile PSData = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/TitleScene/PS_Title.cso");
 	//	インプットレイアウトの作成
 	device->CreateInputLayout(&INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), VSData.GetData(), VSData.GetSize(), m_inputLayout.GetAddressOf());
 	//	頂点シェーダ作成

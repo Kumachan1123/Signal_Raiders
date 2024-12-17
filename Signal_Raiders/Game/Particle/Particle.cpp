@@ -6,7 +6,7 @@
 #include "Particle.h"
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
-#include  "Game/KumachiLib/BinaryFile.h"
+#include  "Game/KumachiLib/BinaryFile/BinaryFile.h"
 
 #include <Effects.h>
 #include <PrimitiveBatch.h>
@@ -79,15 +79,12 @@ void Particle::CreateShader()
 {
 	ID3D11Device* device = m_pDR->GetD3DDevice();
 	// コンパイルされたシェーダーの読み込み
-	kumachi::BinaryFile VS = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/Particle/VS_Particle.cso");
-	kumachi::BinaryFile PS = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/Particle/PS_Particle.cso");
-	kumachi::BinaryFile GS = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/Particle/GS_Particle.cso");
+	KumachiLib::BinaryFile VS = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/Particle/VS_Particle.cso");
+	KumachiLib::BinaryFile PS = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/Particle/PS_Particle.cso");
+	KumachiLib::BinaryFile GS = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/Particle/GS_Particle.cso");
 
 	// インプットレイアウト作成
-	device->CreateInputLayout(&INPUT_LAYOUT[0],
-		static_cast<UINT>(INPUT_LAYOUT.size()),
-		VS.GetData(), VS.GetSize(),
-		m_inputLayout.GetAddressOf());
+	device->CreateInputLayout(&INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), VS.GetData(), VS.GetSize(), m_inputLayout.GetAddressOf());
 	// 頂点シェーダー作成
 	if (FAILED(device->CreateVertexShader(VS.GetData(), VS.GetSize(), nullptr, m_vertexShader.GetAddressOf())))
 	{

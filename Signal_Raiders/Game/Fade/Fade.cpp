@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Fade.h"
 #include "Game/CommonResources.h"
-#include "Game/KumachiLib/BinaryFile.h"
+#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "DeviceResources.h"
 #include <SimpleMath.h>
 #include <Effects.h>
@@ -81,9 +81,9 @@ void Fade::CreateShader()
 	// デバイスリソースの取得
 	auto device = m_pDR->GetD3DDevice();
 	// 頂点シェーダーの作成
-	kumachi::BinaryFile VSFade = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/Fade/VS_Fade.cso");
+	KumachiLib::BinaryFile VSFade = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/Fade/VS_Fade.cso");
 	// ピクセルシェーダーの作成
-	kumachi::BinaryFile PSFade = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/Fade/PS_Fade.cso");
+	KumachiLib::BinaryFile PSFade = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/Fade/PS_Fade.cso");
 	// インプットレイアウトの作成
 	device->CreateInputLayout(&INPUT_LAYOUT[0],
 		static_cast<UINT>(INPUT_LAYOUT.size()),

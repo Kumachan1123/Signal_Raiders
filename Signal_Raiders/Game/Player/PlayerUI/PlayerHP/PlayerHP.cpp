@@ -7,7 +7,7 @@
 #include "pch.h"
 #include "PlayerHP.h"
 #include "Game/Player/PlayerUI/PlayerUI.h"
-#include "Game/KumachiLib/BinaryFile.h"
+#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "DeviceResources.h"
 #include <SimpleMath.h>
 #include <Effects.h>
@@ -47,7 +47,7 @@ void PlayerHP::Initialize(DX::DeviceResources* pDR, int width, int height)
 	Add(L"Resources/Textures/HPBarFrame.png"
 		, SimpleMath::Vector2(328, 40)
 		, SimpleMath::Vector2(.50f, .50f)
-		, kumachi::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER);
 }
 
 void PlayerHP::Update(float PlayerHP)
@@ -70,40 +70,40 @@ void PlayerHP::Render()
 	m_heart->Render();
 }
 
-void PlayerHP::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, kumachi::ANCHOR anchor)
+void PlayerHP::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
 {
 	m_base = std::make_unique<PlayerUI>();
 	m_base->Create(m_pDR
-				   , L"Resources/Textures/HPBarBase.png"
-				   , position
-				   , scale
-				   , anchor);
+		, L"Resources/Textures/HPBarBase.png"
+		, position
+		, scale
+		, anchor);
 	m_base->SetWindowSize(m_windowWidth, m_windowHeight);
 
 
 	m_gauge = std::make_unique<PlayerUI>();
 	m_gauge->Create(m_pDR
-					, m_baseTexturePath
-					, position
-					, scale
-					, anchor);
+		, m_baseTexturePath
+		, position
+		, scale
+		, anchor);
 	m_gauge->SetWindowSize(m_windowWidth, m_windowHeight);
 	m_gauge->SetRenderRatioOffset(0);
 
 	m_frame = std::make_unique<PlayerUI>();
 	m_frame->Create(m_pDR
-					, path
-					, position
-					, scale
-					, anchor);
+		, path
+		, position
+		, scale
+		, anchor);
 	m_frame->SetWindowSize(m_windowWidth, m_windowHeight);
 
 	m_heart = std::make_unique<PlayerUI>();
 	m_heart->Create(m_pDR
-					, L"Resources/Textures/HP.png"
-					, SimpleMath::Vector2(0, -5)
-					, SimpleMath::Vector2(.50f, .50f)
-					, kumachi::ANCHOR::TOP_LEFT);
+		, L"Resources/Textures/HP.png"
+		, SimpleMath::Vector2(0, -5)
+		, SimpleMath::Vector2(.50f, .50f)
+		, KumachiLib::ANCHOR::TOP_LEFT);
 	m_heart->SetWindowSize(m_windowWidth, m_windowHeight);
 }
 

@@ -11,7 +11,7 @@
 #include "Libraries/MyLib/MemoryLeakDetector.h"
 #include "Libraries/MyLib/InputManager.h"
 #include <cassert>
-#include "Game/KumachiLib//BinaryFile.h"
+#include "Game/KumachiLib//BinaryFile/BinaryFile.h"
 #include <Libraries/Microsoft/DebugDraw.h>
 #include "Libraries/MyLib/DebugString.h"
 #include <Mouse.h>

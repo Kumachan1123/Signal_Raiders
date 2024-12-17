@@ -240,7 +240,7 @@
     <ClInclude Include="Game\KumachiLib\KumachiLib.h">
       <Filter>Game\Template</Filter>
     </ClInclude>
-    <ClInclude Include="Game\KumachiLib\BinaryFile.h">
+    <ClInclude Include="Game\KumachiLib\BinaryFile\BinaryFile.h">
       <Filter>Game\KumachiLib</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\Microsoft\ReadData.h">
@@ -255,7 +255,7 @@
     <ClInclude Include="Game\Scene\ResultScene\ResultScene.h" />
     <ClInclude Include="Game\Fade\Fade.h" />
     <ClInclude Include="Game\Scene\BackGround\BackGround.h" />
-    <ClInclude Include="Game\KumachiLib\AudioManager.h" />
+    <ClInclude Include="Game\KumachiLib\AudioManager\AudioManager.h" />
     <ClInclude Include="Game\Scene\TitleLogo\TitleLogo.h" />
     <ClInclude Include="Game\Enemy\Enemies\Enemies.h" />
     <ClInclude Include="Game\Player\Player.h" />
@@ -294,6 +294,8 @@
     <ClInclude Include="Game\KumachiLib\DrawCollision\DrawCollision.h" />
     <ClInclude Include="Game\Enemy\EnemyAI\EnemySpin\EnemySpin.h" />
     <ClInclude Include="Game\KumachiLib\DrawPolygon\DrawPolygon.h" />
+    <ClInclude Include="Game\KumachiLib\CreateShader\CreateShader.h" />
+    <ClInclude Include="Game\KumachiLib\json.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -389,7 +391,7 @@
     <ClCompile Include="Game\Enemy\EnemyBullet\EnemyBullet.cpp">
       <Filter>Game\Enemy\EnemyBullet</Filter>
     </ClCompile>
-    <ClCompile Include="Game\KumachiLib\BinaryFile.cpp">
+    <ClCompile Include="Game\KumachiLib\BinaryFile\BinaryFile.cpp">
       <Filter>Game\KumachiLib</Filter>
     </ClCompile>
     <ClCompile Include="Game\Player\PlayerUI\PlayerUI.cpp" />
@@ -400,7 +402,7 @@
     <ClCompile Include="Game\Scene\ResultScene\ResultScene.cpp" />
     <ClCompile Include="Game\Fade\Fade.cpp" />
     <ClCompile Include="Game\Scene\BackGround\BackGround.cpp" />
-    <ClCompile Include="Game\KumachiLib\AudioManager.cpp" />
+    <ClCompile Include="Game\KumachiLib\AudioManager\AudioManager.cpp" />
     <ClCompile Include="Game\Scene\TitleLogo\TitleLogo.cpp" />
     <ClCompile Include="Game\Enemy\Enemies\Enemies.cpp" />
     <ClCompile Include="Game\Player\Player.cpp" />
@@ -438,12 +440,16 @@
     <ClCompile Include="Game\KumachiLib\DrawCollision\DrawCollision.cpp" />
     <ClCompile Include="Game\Enemy\EnemyAI\EnemySpin\EnemySpin.cpp" />
     <ClCompile Include="Game\KumachiLib\DrawPolygon\DrawPolygon.cpp" />
+    <ClCompile Include="Game\KumachiLib\CreateShader\CreateShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="directx.ico">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="game.ico">
       <Filter>Assets</Filter>
     </Image>
   </ItemGroup>
@@ -462,6 +468,8 @@
     <None Include="ClassDiagram.cd" />
     <None Include="ClassDiagram1.cd" />
     <None Include="HLSL\Particle\Particle.hlsli" />
+    <None Include="fmodL.dll" />
+    <None Include="fmod.dll" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Shadow\PS_Shadow.hlsl">

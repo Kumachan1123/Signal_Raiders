@@ -1,5 +1,5 @@
 #pragma once
-namespace kumachi
+namespace KumachiLib
 {
 	//UIのアンカーポイントの列挙数
 	enum ANCHOR

@@ -4,7 +4,7 @@
 */
 #pragma once
 #include <DeviceResources.h>
-#include "Game/KumachiLib//BinaryFile.h"
+#include "Game/KumachiLib//BinaryFile/BinaryFile.h"
 #include <cassert>
 #include "Libraries/MyLib/InputManager.h"
 #include "Game/CommonResources.h"

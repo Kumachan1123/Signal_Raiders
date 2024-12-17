@@ -190,8 +190,10 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Game\Enemy\Boss\BossSheild\BossSheild.h" />
     <ClInclude Include="Game\Enemy\EnemyAI\EnemySpin\EnemySpin.h" />
+    <ClInclude Include="Game\KumachiLib\CreateShader\CreateShader.h" />
     <ClInclude Include="Game\KumachiLib\DrawCollision\DrawCollision.h" />
     <ClInclude Include="Game\KumachiLib\DrawPolygon\DrawPolygon.h" />
+    <ClInclude Include="Game\KumachiLib\json.hpp" />
     <ClInclude Include="Game\Particle\Particle.h" />
     <ClInclude Include="Game\CommonResources.h" />
     <ClInclude Include="Game\DamageEffect\DamageEffect.h" />
@@ -207,7 +209,7 @@
     <ClInclude Include="Game\Enemy\EnemyCounter\EnemyCounter.h" />
     <ClInclude Include="Game\Fade\Fade.h" />
     <ClInclude Include="Game\Interface\IEnemy.h" />
-    <ClInclude Include="Game\KumachiLib\AudioManager.h" />
+    <ClInclude Include="Game\KumachiLib\AudioManager\AudioManager.h" />
     <ClInclude Include="Game\Effect\Effect.h" />
     <ClInclude Include="Game\Enemy\Enemy.h" />
     <ClInclude Include="Game\Enemy\EnemyAI\EnemyAI.h" />
@@ -218,7 +220,7 @@
     <ClInclude Include="Game\Enemy\EnemyHPBar\EnemyHPBar.h" />
     <ClInclude Include="Game\FPS_Camera\FPS_Camera.h" />
     <ClInclude Include="Game\Interface\IState.h" />
-    <ClInclude Include="Game\KumachiLib\BinaryFile.h" />
+    <ClInclude Include="Game\KumachiLib\BinaryFile\BinaryFile.h" />
     <ClInclude Include="Game\ParticleUtility\ParticleUtility.h" />
     <ClInclude Include="Game\Player\PlayerBullets\PlayerBullets.h" />
     <ClInclude Include="Game\Player\PlayerBullet\PlayerBullet.h" />
@@ -281,6 +283,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Game\Enemy\Boss\BossSheild\BossSheild.cpp" />
     <ClCompile Include="Game\Enemy\EnemyAI\EnemySpin\EnemySpin.cpp" />
+    <ClCompile Include="Game\KumachiLib\CreateShader\CreateShader.cpp" />
     <ClCompile Include="Game\KumachiLib\DrawCollision\DrawCollision.cpp" />
     <ClCompile Include="Game\KumachiLib\DrawPolygon\DrawPolygon.cpp" />
     <ClCompile Include="Game\Particle\Particle.cpp" />
@@ -297,7 +300,7 @@
     <ClCompile Include="Game\Enemy\EnemyBullets\EnemyBullets.cpp" />
     <ClCompile Include="Game\Enemy\EnemyCounter\EnemyCounter.cpp" />
     <ClCompile Include="Game\Fade\Fade.cpp" />
-    <ClCompile Include="Game\KumachiLib\AudioManager.cpp" />
+    <ClCompile Include="Game\KumachiLib\AudioManager\AudioManager.cpp" />
     <ClCompile Include="Game\Effect\Effect.cpp" />
     <ClCompile Include="Game\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Enemy\EnemyAI\EnemyAI.cpp" />
@@ -307,7 +310,7 @@
     <ClCompile Include="Game\Enemy\EnemyBullet\EnemyBullet.cpp" />
     <ClCompile Include="Game\Enemy\EnemyHPBar\EnemyHPBar.cpp" />
     <ClCompile Include="Game\FPS_Camera\FPS_Camera.cpp" />
-    <ClCompile Include="Game\KumachiLib\BinaryFile.cpp" />
+    <ClCompile Include="Game\KumachiLib\BinaryFile\BinaryFile.cpp" />
     <ClCompile Include="Game\ParticleUtility\ParticleUtility.cpp" />
     <ClCompile Include="Game\Player\Player.cpp" />
     <ClCompile Include="Game\Player\PlayerBullets\PlayerBullets.cpp" />
@@ -368,6 +371,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="directx.ico" />
+    <Image Include="game.ico" />
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest" />
@@ -375,6 +379,8 @@
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
     <None Include="ClassDiagram1.cd" />
+    <None Include="fmod.dll" />
+    <None Include="fmodL.dll" />
     <None Include="HLSL\Particle\Particle.hlsli" />
     <None Include="packages.config" />
     <None Include="Resources\Shaders\PlayerHP\GS_PlayerHP.cso" />

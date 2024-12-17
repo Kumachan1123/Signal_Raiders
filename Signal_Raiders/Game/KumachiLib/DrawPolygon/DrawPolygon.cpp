@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "DrawPolygon.h"
+//シングルトンにする
 
 // 静的メンバーの初期化
 std::unique_ptr<DirectX::BasicEffect> DrawPolygon::m_basicEffect = nullptr;

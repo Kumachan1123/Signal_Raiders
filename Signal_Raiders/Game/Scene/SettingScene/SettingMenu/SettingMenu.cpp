@@ -6,7 +6,7 @@
 #include "SettingMenu.h"
 #include "Game/Screen.h"
 #include "Game/UI/UI.h"
-#include "Game/KumachiLib/BinaryFile.h"
+#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "DeviceResources.h"
 #include <SimpleMath.h>
 #include <Effects.h>
@@ -52,27 +52,27 @@ void SettingMenu::Initialize(CommonResources* resources, int width, int height)
 	Add(L"Resources/Textures/BGM.png"
 		, SimpleMath::Vector2(Screen::LEFT + 400, Screen::CENTER_Y - 300)
 		, SimpleMath::Vector2(.5, .5)
-		, kumachi::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER);
 	//  「SE」を読み込む
 	Add(L"Resources/Textures/SE.png"
 		, SimpleMath::Vector2(Screen::LEFT + 400, Screen::CENTER_Y - 150)
 		, SimpleMath::Vector2(.5, .5)
-		, kumachi::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER);
 	//  「マウスかんど」を読み込む
 	Add(L"Resources/Textures/Mouse.png"
 		, SimpleMath::Vector2(Screen::LEFT + 400, Screen::CENTER_Y)
 		, SimpleMath::Vector2(.5, .5)
-		, kumachi::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER);
 	//  「へんこう」を読み込む
 	Add(L"Resources/Textures/Apply.png"
 		, SimpleMath::Vector2(Screen::LEFT + 400, Screen::CENTER_Y + 150)
 		, SimpleMath::Vector2(.5, .5)
-		, kumachi::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER);
 	//  「おわる」を読み込む
 	Add(L"Resources/Textures/end.png"
 		, SimpleMath::Vector2(Screen::LEFT + 400, Screen::CENTER_Y + 300)
 		, SimpleMath::Vector2(.5, .5)
-		, kumachi::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER);
 
 }
 
@@ -134,16 +134,16 @@ void SettingMenu::Render()
 	}
 }
 
-void SettingMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, kumachi::ANCHOR anchor)
+void SettingMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
 {
 	//  メニューとしてアイテムを追加する
 	std::unique_ptr<UI> userInterface = std::make_unique<UI>();
 	//  指定された画像を表示するためのアイテムを作成する
 	userInterface->Create(m_pDR
-						  , path
-						  , position
-						  , scale
-						  , anchor);
+		, path
+		, position
+		, scale
+		, anchor);
 	userInterface->SetWindowSize(m_windowWidth, m_windowHeight);
 
 	//  アイテムを新しく追加
@@ -152,10 +152,10 @@ void SettingMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position
 	//  背景用のウィンドウ画像も追加する
 	std::unique_ptr<UI> base = std::make_unique<UI>();
 	base->Create(m_pDR
-				 , m_pSelectTexturePath
-				 , position
-				 , scale
-				 , anchor);
+		, m_pSelectTexturePath
+		, position
+		, scale
+		, anchor);
 	base->SetWindowSize(m_windowWidth, m_windowHeight);
 
 	//  背景用のアイテムも新しく追加する

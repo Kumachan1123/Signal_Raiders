@@ -6,7 +6,7 @@
 #include "StageSelectMenu.h"
 #include "Game/Screen.h"
 #include "Game/UI/UI.h"
-#include "Game/KumachiLib/BinaryFile.h"
+#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "DeviceResources.h"
 #include <SimpleMath.h>
 #include <Effects.h>
@@ -52,32 +52,32 @@ void StageSelectMenu::Initialize(CommonResources* resources, int width, int heig
 	Add(L"Resources/Textures/stage1.png"
 		, SimpleMath::Vector2(Screen::CENTER_X - 550, Screen::CENTER_Y)
 		, SimpleMath::Vector2(.75, .75)
-		, kumachi::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER);
 	//  「ステージ2の写真」を読み込む
 	Add(L"Resources/Textures/stage2.png"
 		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y)
 		, SimpleMath::Vector2(.75, .75)
-		, kumachi::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER);
 	//  「ステージ3の写真」を読み込む
 	Add(L"Resources/Textures/stage3.png"
 		, SimpleMath::Vector2(Screen::CENTER_X + 550, Screen::CENTER_Y)
 		, SimpleMath::Vector2(.75, .75)
-		, kumachi::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER);
 	//  「ステージ4の写真」を読み込む
 	Add(L"Resources/Textures/stage4.png"
 		, SimpleMath::Vector2(Screen::CENTER_X - 550, Screen::CENTER_Y + 300)
 		, SimpleMath::Vector2(.75, .75)
-		, kumachi::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER);
 	//  「ステージ5の写真」を読み込む
 	Add(L"Resources/Textures/stage5.png"
 		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y + 300)
 		, SimpleMath::Vector2(.75, .75)
-		, kumachi::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER);
 	//  「タイトルに戻る」を読み込む
 	Add(L"Resources/Textures/ToTitle.png"
 		, SimpleMath::Vector2(Screen::CENTER_X + 550, Screen::CENTER_Y + 300)
 		, SimpleMath::Vector2(.6, .6)
-		, kumachi::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER);
 
 
 
@@ -143,7 +143,7 @@ void StageSelectMenu::Render()
 	}
 }
 
-void StageSelectMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, kumachi::ANCHOR anchor)
+void StageSelectMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
 {
 	//  メニューとしてアイテムを追加する
 	std::unique_ptr<UI> userInterface = std::make_unique<UI>();

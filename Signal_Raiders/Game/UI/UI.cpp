@@ -4,7 +4,7 @@
 */
 #include "pch.h"
 #include "UI.h"
-#include "Game/KumachiLib/BinaryFile.h"
+#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "DeviceResources.h"
 #include <SimpleMath.h>
 #include <Effects.h>
@@ -30,7 +30,7 @@ UI::UI()
 	, m_scale{ DirectX::SimpleMath::Vector2::One }
 	, m_baseScale{ DirectX::SimpleMath::Vector2::One }
 	, m_position{ DirectX::SimpleMath::Vector2::Zero }
-	, m_anchor{ kumachi::ANCHOR::TOP_LEFT }
+	, m_anchor{ KumachiLib::ANCHOR::TOP_LEFT }
 {
 }
 
@@ -58,7 +58,7 @@ void UI::LoadTexture(const wchar_t* path)
 void UI::Create(DX::DeviceResources* pDR, const wchar_t* path
 	, DirectX::SimpleMath::Vector2 position
 	, DirectX::SimpleMath::Vector2 scale
-	, kumachi::ANCHOR anchor)
+	, KumachiLib::ANCHOR anchor)
 {
 	m_pDR = pDR;// デバイスリソース
 	m_position = position;// 位置
@@ -77,9 +77,9 @@ void UI::CreateShader()
 {
 	auto device = m_pDR->GetD3DDevice();// デバイス
 	// コンパイルされたシェーダーを読み込む
-	kumachi::BinaryFile VS = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/Menu/VS_Menu.cso");
-	kumachi::BinaryFile GS = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/Menu/GS_Menu.cso");
-	kumachi::BinaryFile PS = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/Menu/PS_Menu.cso");
+	KumachiLib::BinaryFile VS = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/Menu/VS_Menu.cso");
+	KumachiLib::BinaryFile GS = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/Menu/GS_Menu.cso");
+	KumachiLib::BinaryFile PS = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/Menu/PS_Menu.cso");
 	// インプットレイアウト作成
 	device->CreateInputLayout(&INPUT_LAYOUT[0],
 		static_cast<UINT>(INPUT_LAYOUT.size()),

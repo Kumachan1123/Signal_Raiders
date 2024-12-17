@@ -6,7 +6,7 @@
 #include "TitleMenu.h"
 #include "Game/Screen.h"
 #include "Game/UI/UI.h"
-#include "Game/KumachiLib/BinaryFile.h"
+#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "DeviceResources.h"
 #include <SimpleMath.h>
 #include <Effects.h>
@@ -51,17 +51,17 @@ void TitleMenu::Initialize(CommonResources* resources, int width, int height)
 	Add(L"Resources/Textures/play.png"
 		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y + 250)
 		, SimpleMath::Vector2(.5, .5)
-		, kumachi::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER);
 	//  「せってい」を読み込む
 	Add(L"Resources/Textures/setting.png"
 		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y + 350)
 		, SimpleMath::Vector2(.5, .5)
-		, kumachi::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER);
 	//  「おわる」を読み込む
 	Add(L"Resources/Textures/end.png"
 		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y + 450)
 		, SimpleMath::Vector2(.5, .5)
-		, kumachi::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER);
 
 }
 
@@ -122,7 +122,7 @@ void TitleMenu::Render()
 	}
 }
 
-void TitleMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, kumachi::ANCHOR anchor)
+void TitleMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
 {
 	//  メニューとしてアイテムを追加する
 	std::unique_ptr<UI> userInterface = std::make_unique<UI>();

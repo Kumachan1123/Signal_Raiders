@@ -12,7 +12,8 @@
 #include <Model.h>
 #include <Effects.h>
 #include <Libraries/Microsoft/DebugDraw.h>
-#include "Game/KumachiLib/BinaryFile.h"
+#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
+#include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include <memory>
 #include "Game/Player/Player.h"
 #include "Game/Enemy/Enemies/Enemies.h"

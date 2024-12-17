@@ -5,7 +5,7 @@
 #include <assert.h>
 
 
-kumachi::BinaryFile kumachi::BinaryFile::LoadFile(const wchar_t* fileName)
+KumachiLib::BinaryFile KumachiLib::BinaryFile::LoadFile(const wchar_t* fileName)
 {
 	BinaryFile bin;
 
@@ -37,12 +37,12 @@ kumachi::BinaryFile kumachi::BinaryFile::LoadFile(const wchar_t* fileName)
 	return std::move(bin);
 }
 
-kumachi::BinaryFile::BinaryFile()
+KumachiLib::BinaryFile::BinaryFile()
 {
 	m_size = 0;
 }
 
-kumachi::BinaryFile::BinaryFile(BinaryFile&& in)
+KumachiLib::BinaryFile::BinaryFile(BinaryFile&& in)
 {
 	m_data = std::move(in.m_data);
 	m_size = in.m_size;

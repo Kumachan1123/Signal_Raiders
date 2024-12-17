@@ -13,7 +13,7 @@
 #include <Libraries/Microsoft/DebugDraw.h>
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 
-#include "Game/KumachiLib/BinaryFile.h"
+#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 class Wall
 {
 public:

@@ -54,7 +54,7 @@ public:
 	void Render();
 
 	void Add(const wchar_t* path
-			 , DirectX::SimpleMath::Vector2 position
-			 , DirectX::SimpleMath::Vector2 scale
-			 , kumachi::ANCHOR anchor);
+		, DirectX::SimpleMath::Vector2 position
+		, DirectX::SimpleMath::Vector2 scale
+		, KumachiLib::ANCHOR anchor);
 };

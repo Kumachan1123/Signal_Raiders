@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Game/KumachiLib/AudioManager.h"
+#include "AudioManager.h"
 
 // シングルトンインスタンスの初期化
 std::unique_ptr<AudioManager> AudioManager::m_instance = nullptr;
@@ -10,6 +10,7 @@ AudioManager* const AudioManager::GetInstance()
 	if (m_instance == nullptr)
 	{
 		m_instance.reset(new AudioManager());
+		m_instance->Initialize();
 	}
 	return m_instance.get();
 }
@@ -45,12 +46,10 @@ void AudioManager::PlaySound(const std::string& soundKey, float volume)
 	{
 		FMOD::Sound* sound = soundIt->second;
 
-		// BGMの場合、既に再生中のチャンネルが存在する場合は再生しない
-		// ただし、音量だけは変更する
-		if (soundKey == "BGM")
+		// サウンドキーに「BGM」が含まれている場合、二重再生を防ぐ
+		if (soundKey.find("BGM") != std::string::npos)
 		{
-
-			auto channelIt = m_channels.find("BGM");
+			auto channelIt = m_channels.find(soundKey);
 			if (channelIt != m_channels.end())
 			{
 				FMOD::Channel* existingChannel = channelIt->second;
@@ -63,7 +62,6 @@ void AudioManager::PlaySound(const std::string& soundKey, float volume)
 				}
 			}
 		}
-
 
 
 		// 音を再生する

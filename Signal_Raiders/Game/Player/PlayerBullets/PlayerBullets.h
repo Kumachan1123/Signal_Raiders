@@ -5,7 +5,7 @@
 #pragma once
 #include "Game/Player/Player.h"
 #include "Game/Player/PlayerBullet/PlayerBullet.h"
-#include "Game/KumachiLib/AudioManager.h"
+#include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"

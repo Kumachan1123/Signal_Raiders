@@ -60,7 +60,7 @@ public:
 	void Add(const wchar_t* path
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
-		, kumachi::ANCHOR anchor);
+		, KumachiLib::ANCHOR anchor);
 
 public:
 	StateID GetStateIDNum() const { return m_num; }

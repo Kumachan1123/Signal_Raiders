@@ -30,7 +30,7 @@ PlayerUI::PlayerUI()
 	, m_res(nullptr)
 	, m_scale(SimpleMath::Vector2::One)
 	, m_position(SimpleMath::Vector2::Zero)
-	, m_anchor(kumachi::ANCHOR::TOP_LEFT)
+	, m_anchor(KumachiLib::ANCHOR::TOP_LEFT)
 	, m_renderRatio(1.0f)
 	, m_renderRatioOffset(0.0f)
 {
@@ -66,7 +66,7 @@ void PlayerUI::Create(DX::DeviceResources* pDR
 	, const wchar_t* path
 	, DirectX::SimpleMath::Vector2 position
 	, DirectX::SimpleMath::Vector2 scale
-	, kumachi::ANCHOR anchor)
+	, KumachiLib::ANCHOR anchor)
 {
 	m_pDR = pDR;
 	m_position = position;
@@ -92,9 +92,9 @@ void PlayerUI::CreateShader()
 	auto device = m_pDR->GetD3DDevice();
 
 	//	コンパイルされたシェーダファイルを読み込み
-	kumachi::BinaryFile VSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/PlayerHP/VS_PlayerHP.cso");
-	kumachi::BinaryFile GSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/PlayerHP/GS_PlayerHP.cso");
-	kumachi::BinaryFile PSData = kumachi::BinaryFile::LoadFile(L"Resources/Shaders/PlayerHP/PS_PlayerHP.cso");
+	KumachiLib::BinaryFile VSData = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/PlayerHP/VS_PlayerHP.cso");
+	KumachiLib::BinaryFile GSData = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/PlayerHP/GS_PlayerHP.cso");
+	KumachiLib::BinaryFile PSData = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/PlayerHP/PS_PlayerHP.cso");
 
 	//	インプットレイアウトの作成
 	device->CreateInputLayout(&INPUT_LAYOUT[0],

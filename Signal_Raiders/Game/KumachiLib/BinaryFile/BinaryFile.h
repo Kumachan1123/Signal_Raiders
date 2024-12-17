@@ -5,7 +5,7 @@
 
 
 #include <memory>
-namespace kumachi
+namespace KumachiLib
 {
 	class BinaryFile
 	{
@@ -20,7 +20,7 @@ namespace kumachi
 	public:
 
 		//	ファイル名を指定してロード
-		static kumachi::BinaryFile LoadFile(const wchar_t* fileName);
+		static KumachiLib::BinaryFile LoadFile(const wchar_t* fileName);
 
 		BinaryFile();
 
