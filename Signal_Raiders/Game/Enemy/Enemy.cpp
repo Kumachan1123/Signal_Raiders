@@ -93,8 +93,6 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 	// 境界球の初期化
 	m_enemyBS.Center = m_position;
 	m_enemyBS.Radius = 1.5f;
-	// オーディオマネージャー
-	m_audioManager->LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet");
 
 }
 // 更新

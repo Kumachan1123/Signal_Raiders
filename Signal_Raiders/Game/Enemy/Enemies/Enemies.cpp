@@ -132,7 +132,10 @@ void Enemies::Render()
 //---------------------------------------------------------
 void Enemies::InitializeFMOD()
 {
-	m_audioManager->Initialize();
+	// オーディオマネージャー
+	m_audioManager->LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet");// 弾発射音
+	m_audioManager->LoadSound("Resources/Sounds/Barrier.mp3", "Barrier");// シールド音
+	m_audioManager->LoadSound("Resources/Sounds/BarrierBreak.mp3", "BarrierBreak");// シールド破壊音
 	m_audioManager->LoadSound("Resources/Sounds/Explosion.mp3", "EnemyDead");
 	m_audioManager->LoadSound("Resources/Sounds/damage.mp3", "Damage");
 }
@@ -207,7 +210,7 @@ void Enemies::HandleEnemySpawning(float elapsedTime)
 		if (m_enemyBornTimer >= m_enemyBornInterval)// 敵生成間隔を超えたら
 		{
 			if (m_pWifi->GetEnemyTypes()[m_enemyIndex] == 0)SpawnEnemy();// 敵を生成
-			else SpawnVerticalAttacker();// 範囲攻撃タイプの敵を生成
+			else SpawnVerticalAttacker();// 垂直弾攻撃タイプの敵を生成
 		}
 	}
 
@@ -228,6 +231,7 @@ void Enemies::HandleEnemySpawning(float elapsedTime)
 void Enemies::SpawnEnemy()
 {
 	auto enemy = std::make_unique<Enemy>(m_pPlayer);// 敵を生成
+	enemy->SetAudioManager(m_audioManager);// オーディオマネージャーを設定
 	enemy->Initialize(m_commonResources, m_pWifi->GetWifiLevels()[m_enemyIndex]);// 敵を初期化
 	m_enemies.push_back(std::move(enemy));// 敵リストに追加
 
@@ -241,6 +245,7 @@ void Enemies::SpawnEnemy()
 void Enemies::SpawnVerticalAttacker()
 {
 	auto verticalAttacker = std::make_unique<VerticalAttacker>(m_pPlayer);// 垂直弾タイプの敵を生成
+	verticalAttacker->SetAudioManager(m_audioManager);// オーディオマネージャーを設定
 	verticalAttacker->Initialize(m_commonResources, m_pWifi->GetWifiLevels()[m_enemyIndex]); // 敵を初期化
 	m_enemies.push_back(std::move(verticalAttacker));// 敵リストに追加
 
@@ -266,8 +271,8 @@ void Enemies::SpawnBoss()
 {
 	m_isBossBorned = true; // ボス生成可能にする
 	m_enemies.clear(); // ザコ敵を削除
-
 	m_boss = std::make_unique<Boss>(m_pPlayer); // ボスを生成
+	m_boss->SetAudioManager(m_audioManager); // オーディオマネージャーを設定
 	m_boss->Initialize(m_commonResources, m_bossHP); // ボスを初期化
 	m_boss->SetBulletType(m_bossBulletType); // ボスの弾の種類を設定
 	m_enemies.push_back(std::move(m_boss)); // ボスを敵リストに追加

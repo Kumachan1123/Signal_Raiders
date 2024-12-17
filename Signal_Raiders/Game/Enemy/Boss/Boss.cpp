@@ -52,7 +52,7 @@ Boss::Boss(Player* pPlayer)
 	, m_canAttack{ true }
 	, m_bossBulletType{ BossBulletType::NORMAL }
 	, m_bulletType{ EnemyBullet::BulletType::STRAIGHT }
-	, m_audioManager{ AudioManager::GetInstance() }
+	, m_audioManager{ /*AudioManager::GetInstance() */ }
 {
 }
 // デストラクタ
@@ -94,10 +94,7 @@ void Boss::Initialize(CommonResources* resources, int hp)
 	// 境界球の初期化
 	m_bossBS.Center = m_position;
 	m_bossBS.Radius = SPHERE_RADIUS;
-	// オーディオマネージャー
-	m_audioManager->LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet");// 弾発射音
-	m_audioManager->LoadSound("Resources/Sounds/Barrier.mp3", "Barrier");// シールド音
-	m_audioManager->LoadSound("Resources/Sounds/BarrierBreak.mp3", "BarrierBreak");// シールド破壊音
+
 }
 // 描画
 void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
