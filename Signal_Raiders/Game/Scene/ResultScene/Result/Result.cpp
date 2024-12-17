@@ -162,7 +162,7 @@ void Result::Render()
 	//	シェーダをセットする
 	DrawPolygon::SetShader(context, m_shaders, nullptr, 0);
 	// 描画準備
-	DrawPolygon::DrawStartTexture(context, m_inputLayout.Get(), m_texture);
+	DrawPolygon::DrawStart(context, m_inputLayout.Get(), m_texture);
 	// 板ポリゴンを描画
 	DrawPolygon::DrawTexture(m_vertex);
 	// シェーダの登録を解除しておく

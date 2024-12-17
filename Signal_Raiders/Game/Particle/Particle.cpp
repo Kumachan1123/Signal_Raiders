@@ -207,7 +207,7 @@ void Particle::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Mat
 	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };
 	DrawPolygon::SetShaderBuffer(context, 0, 1, cb);
 	// 描画準備
-	DrawPolygon::DrawStartColorTexture(context, m_inputLayout.Get(), m_texture);
+	DrawPolygon::DrawStart(context, m_inputLayout.Get(), m_texture);
 	// シェーダをセットする
 	DrawPolygon::SetShader(context, m_shaders, nullptr, 0);
 	// 指定した座標を中心に、シェーダ側で板ポリゴンを生成・描画させる

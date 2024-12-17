@@ -156,7 +156,7 @@ void Wall::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	// シェーダをセットする
 	DrawPolygon::SetShader(context, m_shaders, nullptr, 0);
 	// 描画準備
-	DrawPolygon::DrawStartTexture(context, m_pInputLayout.Get(), m_pWallTexture);
+	DrawPolygon::DrawStart(context, m_pInputLayout.Get(), m_pWallTexture);
 	// 壁を描画
 	for (int i = 0; i < 4; i++)	DrawPolygon::DrawTexture(m_wall[i]);
 	// シェーダの登録を解除しておく

@@ -89,6 +89,7 @@ private:
 	bool m_isBullethit = false;// 敵の弾がプレイヤーに当たったか
 	float m_attackCooldown;  // 攻撃のクールダウン(フレームごとに発射することを防ぐ用）
 	float m_bulletCooldown;  // 弾のクールダウン
+	bool m_canAttack = false;// 攻撃可能か
 
 
 	// オーディオマネージャー
@@ -138,6 +139,7 @@ public:
 	bool GetHitToOtherEnemy() const override { return m_isHitToOtherEnemy; }
 	bool GetBulletHitToPlayer() const override { return m_isBullethit; }// 敵の弾がプレイヤーに当たったか
 	bool GetHitToPlayerBullet()const override { return m_isHitToPlayerBullet; }
+	bool GetCanAttack() const override { return m_canAttack; }// 攻撃可能か
 	float GetToPlayerDamage() const override { return PLAYER_DAMAGE; }
 	DirectX::SimpleMath::Vector3 GetCameraEye()const { return m_cameraEye; }
 	DirectX::SimpleMath::Vector3 GetCameraTarget()const { return m_cameraTarget; }
@@ -158,6 +160,8 @@ public:
 	void SetBulletHitToPlayer(bool hit) override { m_isBullethit = hit; }// 敵の弾がプレイヤーに当たったか
 	void SetHitToPlayerBullet(bool hit)override { m_isHitToPlayerBullet = hit; }
 	void SetBulletCooldown(float cooldown) { m_bulletCooldown = cooldown; }// シールドを展開した後に実行する
+	void SetCanAttack(bool canAttack)override { m_canAttack = canAttack; }// 攻撃可能か
+
 public:
 	// 初期ステータスを設定
 	Boss(Player* pPlayer);

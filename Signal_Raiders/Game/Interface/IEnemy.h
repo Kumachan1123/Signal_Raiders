@@ -28,6 +28,7 @@ public:
 	virtual bool GetBulletHitToPlayer() const = 0;
 	virtual bool GetHitToPlayerBullet()const = 0;
 	virtual float GetToPlayerDamage() const = 0;
+	virtual bool GetCanAttack() const = 0;
 	// setter
 	virtual void SetPosition(DirectX::SimpleMath::Vector3& pos) = 0;
 	virtual void SetEnemyHP(int hp) = 0;
@@ -39,6 +40,7 @@ public:
 	virtual void SetPlayerHP(float& HP) const = 0;
 	virtual void SetBulletHitToPlayer(bool hit) = 0;
 	virtual void SetHitToPlayerBullet(bool hit) = 0;
+	virtual void SetCanAttack(bool canAttack) = 0;
 	virtual void SetCameraEye(DirectX::SimpleMath::Vector3 eye) = 0;
 	virtual void SetCameraTarget(DirectX::SimpleMath::Vector3 target) = 0;
 	virtual void SetCameraUp(DirectX::SimpleMath::Vector3 up) = 0;

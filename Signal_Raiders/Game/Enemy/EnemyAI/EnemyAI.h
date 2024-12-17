@@ -22,11 +22,11 @@ class EnemyAI
 {
 private:
 	//平常時
-	std::unique_ptr<EnemyIdling> m_enemyIdling;
+	std::unique_ptr<EnemyIdling> m_pEnemyIdling;
 	//攻撃時
-	std::unique_ptr<EnemyAttack> m_enemyAttack;
+	std::unique_ptr<EnemyAttack> m_pEnemyAttack;
 	//逃避時
-	std::unique_ptr<EnemySpin> m_EnemySpin;
+	std::unique_ptr<EnemySpin> m_pEnemySpin;
 	// 現在の状態
 	IState* m_currentState;
 	IState::EnemyState m_enemyState;
@@ -49,6 +49,7 @@ private:
 	float  m_time = 0.0f;  // 時間の初期化
 	float m_attackCooldown;  // 攻撃のクールダウンタイム
 	bool m_isHitPlayerBullet = false;
+	bool m_canAttack = false;// 攻撃可能か
 public:
 	//	getter
 
@@ -57,9 +58,9 @@ public:
 	DirectX::SimpleMath::Quaternion GetRotation() const { return m_rotation; }
 	DirectX::SimpleMath::Vector3 GetVelocity() const { return m_velocity; }
 	DirectX::SimpleMath::Vector3 GetScale() const { return m_scale; }
-	EnemyAttack* GetEnemyAttack()const { return m_enemyAttack.get(); }
-	EnemyIdling* GetEnemyIdling()const { return m_enemyIdling.get(); }
-	EnemySpin* GetEnemySpin()const { return m_EnemySpin.get(); }
+	EnemyAttack* GetEnemyAttack()const { return m_pEnemyAttack.get(); }
+	EnemyIdling* GetEnemyIdling()const { return m_pEnemyIdling.get(); }
+	EnemySpin* GetEnemySpin()const { return m_pEnemySpin.get(); }
 	IState* GetNowState()const { return m_currentState; }
 	IState::EnemyState GetState()const { return m_enemyState; }
 	//  setter
@@ -69,6 +70,7 @@ public:
 	void SetVelocity(DirectX::SimpleMath::Vector3& vel) { m_velocity = vel; }
 	void KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bool& isHitToPlayerBullet, const DirectX::SimpleMath::Vector3& playerPos);
 	void SetState(IState::EnemyState state) { m_enemyState = state; }
+	void SetCanAttack(bool canAttack) { m_canAttack = canAttack; }
 	void SetHitPlayerBullet(bool hit) { m_isHitPlayerBullet = hit; }
 public:
 	EnemyAI(IEnemy* pEnemy);
@@ -80,7 +82,7 @@ public:
 		bool& isHitToPlayer,
 		bool& isHitToPlayerBullet);
 	void ChangeState(IState* newState);
-	// 攻撃ロジックを実装
+
 
 
 };

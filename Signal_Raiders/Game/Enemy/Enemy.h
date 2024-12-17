@@ -53,6 +53,7 @@ private:
 	bool m_isHitToOtherEnemy;// その他の敵との判定
 	bool m_isHitToPlayerBullet;// 敵がプレイヤーの弾に当たったか
 	bool m_isBullethit;// 敵の弾がプレイヤーに当たったか
+	bool m_canAttack;// 攻撃可能か
 	float m_attackCooldown;  // 攻撃のクールダウンタイム
 	// プレイヤーに与えるダメージ（１ダメージ）
 	const float PLAYER_DAMAGE = 1.0f;
@@ -83,6 +84,7 @@ public:
 	bool GetBulletHitToPlayer() const override { return m_isBullethit; }// 敵の弾がプレイヤーに当たったか
 	bool GetHitToPlayerBullet()const override { return m_isHitToPlayerBullet; }
 	float GetToPlayerDamage() const override { return PLAYER_DAMAGE; }
+	bool GetCanAttack() const override { return m_canAttack; }// 攻撃可能か
 	// setter
 	void SetPosition(DirectX::SimpleMath::Vector3& pos)override { m_position = pos; }
 	void SetEnemyHP(int hp)override { m_currentHP -= hp; }
@@ -94,6 +96,7 @@ public:
 	void SetPlayerHP(float& HP) const override { HP -= PLAYER_DAMAGE; }
 	void SetBulletHitToPlayer(bool hit)override { m_isBullethit = hit; }// 敵の弾がプレイヤーに当たったか
 	void SetHitToPlayerBullet(bool hit) override { m_isHitToPlayerBullet = hit; }
+	void SetCanAttack(bool canAttack)override { m_canAttack = canAttack; }// 攻撃可能か
 	void SetCameraEye(DirectX::SimpleMath::Vector3 eye)override { m_cameraEye = eye; }
 	void SetCameraTarget(DirectX::SimpleMath::Vector3 target)override { m_cameraTarget = target; }
 	void SetCameraUp(DirectX::SimpleMath::Vector3 up)override { m_cameraUp = up; }

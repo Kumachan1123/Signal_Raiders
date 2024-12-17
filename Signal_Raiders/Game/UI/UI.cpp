@@ -145,7 +145,7 @@ void UI::Render()
 	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };
 	DrawPolygon::SetShaderBuffer(context, 0, 1, cb);
 	// 描画準備
-	DrawPolygon::DrawStartColorTexture(context, m_pInputLayout.Get(), m_pTextures);
+	DrawPolygon::DrawStart(context, m_pInputLayout.Get(), m_pTextures);
 	//	シェーダをセットする
 	DrawPolygon::SetShader(context, m_shaders, nullptr, 0);
 	//	板ポリゴンを描画

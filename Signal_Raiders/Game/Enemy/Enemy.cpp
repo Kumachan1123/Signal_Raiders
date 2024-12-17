@@ -49,6 +49,7 @@ Enemy::Enemy(Player* pPlayer)
 	, m_isHitToOtherEnemy{ false }
 	, m_isHitToPlayerBullet{ false }
 	, m_isBullethit{ false }
+	, m_canAttack{ true }
 	, m_audioManager{ AudioManager::GetInstance() }
 
 
@@ -100,6 +101,7 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 {
 	m_enemyModel->Update(elapsedTime, m_enemyAI->GetState());// モデルのアニメーション更新
+	m_HPBar->Update(elapsedTime, m_currentHP);// HPBarの更新
 	m_enemyAI->Update(elapsedTime, m_position, playerPos, m_isHit, m_isHitToPlayerBullet);// AIの更新
 	m_audioManager->Update();// オーディオマネージャーの更新
 	if (m_enemyAI->GetNowState() == m_enemyAI->GetEnemyAttack())// 攻撃態勢なら
@@ -109,7 +111,6 @@ void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 	m_enemyBullets->Update(elapsedTime);// 敵の弾の更新
 	// 敵の当たり判定の座標を更新
 	m_enemyBS.Center = m_position;
-	m_HPBar->Update(elapsedTime, m_currentHP);// HPBarの更新
 	m_isDead = m_HPBar->GetIsDead();// 敵のHPが0になったら死亡
 }
 // 描画

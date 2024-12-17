@@ -34,40 +34,10 @@ void DrawPolygon::InitializePositionColorTexture(DX::DeviceResources* pDR)
 }
 
 // 描画開始（頂点、テクスチャ）
-void DrawPolygon::DrawStartTexture(ID3D11DeviceContext1* context, ID3D11InputLayout* pInputLayout, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures)
+void DrawPolygon::DrawStart(ID3D11DeviceContext1* context, ID3D11InputLayout* pInputLayout, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures)
 {
 
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
-	//	画像用サンプラーの登録
-	ID3D11SamplerState* sampler[1] = { m_states->LinearWrap() };
-	context->PSSetSamplers(0, 1, sampler);
-	//	半透明描画指定
-	ID3D11BlendState* blendstate = m_states->NonPremultiplied();
 
-	//	透明判定処理
-	context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-
-	//	深度バッファに書き込み参照する
-	context->OMSetDepthStencilState(m_states->DepthNone(), 0);
-
-	//	カリングはなし
-	context->RSSetState(m_states->CullNone());
-
-	//	ピクセルシェーダにテクスチャを登録する。
-	for (int i = 0; i < textures.size(); i++)
-	{
-		//	for文で一気に設定する
-		context->PSSetShaderResources(i, 1, textures[i].GetAddressOf());
-	}
-
-	//	インプットレイアウトの登録
-	context->IASetInputLayout(pInputLayout);
-}
-
-// 描画開始（頂点、色、テクスチャ）
-void DrawPolygon::DrawStartColorTexture(ID3D11DeviceContext1* context, ID3D11InputLayout* pInputLayout, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures)
-{
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	//	画像用サンプラーの登録

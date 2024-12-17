@@ -16,12 +16,13 @@ class EnemyAttack;
 class EnemyIdling;
 // コンストラクタ
 EnemyAI::EnemyAI(IEnemy* pEnemy)
-	: m_currentState(nullptr), m_rotationSpeed(0.5f), m_attackCooldown(0.0f), m_enemyAttack(nullptr), m_EnemySpin(nullptr), m_enemyIdling(nullptr), m_enemyState(IState::EnemyState::IDLING), m_pEnemy(pEnemy)
+	: m_currentState(nullptr), m_rotationSpeed(0.5f), m_attackCooldown(0.0f), m_pEnemyAttack(nullptr)
+	, m_pEnemySpin(nullptr), m_pEnemyIdling(nullptr), m_canAttack(true), m_enemyState(IState::EnemyState::IDLING), m_pEnemy(pEnemy)
 {
 	m_pEnemy = pEnemy;
-	m_enemyAttack = std::make_unique<EnemyAttack>(this);
-	m_enemyIdling = std::make_unique<EnemyIdling>(this);
-	m_EnemySpin = std::make_unique<EnemySpin>(this);
+	m_pEnemyAttack = std::make_unique<EnemyAttack>(this);
+	m_pEnemyIdling = std::make_unique<EnemyIdling>(this);
+	m_pEnemySpin = std::make_unique<EnemySpin>(this);
 }
 // デストラクタ
 EnemyAI::~EnemyAI() {}
@@ -38,7 +39,7 @@ void EnemyAI::Initialize()
 	m_scale = Vector3::One; // スケール初期化
 	m_time = 0.0f;  // 時間の初期化
 	m_position = m_initialPosition;
-	m_currentState = m_enemyIdling.get();
+	m_currentState = m_pEnemyIdling.get();
 	m_currentState->Initialize();
 	m_enemyState = IState::EnemyState::IDLING;// 待機態勢
 }
@@ -58,19 +59,19 @@ void EnemyAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Direc
 	// 敵がプレイヤーの一定範囲内に入っている場合
 	if ((isHitToPlayer || m_isHitPlayerBullet))
 	{
-		ChangeState(m_enemyAttack.get());//攻撃態勢にする
+		ChangeState(m_pEnemyAttack.get());//攻撃態勢にする
 		m_enemyState = IState::EnemyState::ATTACK;// 徘徊態勢
 	}
 	else
 	{
-		ChangeState(m_enemyIdling.get());//徘徊態勢にする
+		ChangeState(m_pEnemyIdling.get());//徘徊態勢にする
 		m_enemyState = IState::EnemyState::IDLING;// 徘徊態勢
 	}
 	// プレイヤーの弾に当たった場合
 	if (isHitToPlayerBullet)
 	{
 		KnockBack(elapsedTime, pos, isHitToPlayerBullet, playerPos);
-		ChangeState(m_EnemySpin.get());//逃避態勢にする
+		ChangeState(m_pEnemySpin.get());//逃避態勢にする
 		m_enemyState = IState::EnemyState::HIT;// 逃避態勢
 	}
 	m_currentState->Update(elapsedTime, pos, playerPos, isHitToPlayer);
@@ -101,7 +102,7 @@ void EnemyAI::KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bo
 		knockBackDirection.Normalize(); // 正規化して方向ベクトルにする
 		m_knockEndPosition = pos + knockBackDirection; // ノックバック終了位置
 		m_initialVelocity = knockBackDirection * 30; // 初期速度
-
+		m_pEnemy->SetCanAttack(false);// 攻撃不可能にする
 	}
 
 	// ノックバック時間の更新
@@ -128,5 +129,6 @@ void EnemyAI::KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bo
 		m_knockTime = 0.0f; // ノックバック時間のリセット
 		isHitToPlayerBullet = false; // ノックバック終了
 		SetState(IState::EnemyState::IDLING);// 待機態勢
+		m_pEnemy->SetCanAttack(true);// 攻撃可能にする
 	}
 }

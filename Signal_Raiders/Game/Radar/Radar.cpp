@@ -149,7 +149,7 @@ void Radar::DrawBackground()
 	// ƒoƒbƒtƒ@‚ðì¬
 	CreateBuffer(context);
 	// •`‰æ€”õ
-	DrawPolygon::DrawStartTexture(context, m_inputLayout.Get(), m_backTextures);
+	DrawPolygon::DrawStart(context, m_inputLayout.Get(), m_backTextures);
 	// ƒ|ƒŠƒSƒ“‚ð•`‰æ
 	DrawPolygon::DrawTexture(vertex);
 	// ƒVƒF[ƒ_‚Ì“o˜^‚ð‰ðœ‚µ‚Ä‚¨‚­
@@ -177,7 +177,7 @@ void Radar::DrawPlayer()
 	// ƒoƒbƒtƒ@‚ðì¬
 	CreateBuffer(context);
 	// •`‰æ€”õ
-	DrawPolygon::DrawStartTexture(context, m_inputLayout.Get(), m_playerTextures);
+	DrawPolygon::DrawStart(context, m_inputLayout.Get(), m_playerTextures);
 	// ”Âƒ|ƒŠƒSƒ“‚ð•`‰æ
 	DrawPolygon::DrawTexture(playerVertex);
 	// ƒVƒF[ƒ_‚Ì“o˜^‚ð‰ðœ‚µ‚Ä‚¨‚­
@@ -222,7 +222,7 @@ void Radar::DrawEnemy()
 			radarPos.y > -1.0f + m_enemySize.y && radarPos.y < -0.16f + m_enemySize.y)
 		{
 			// •`‰æ€”õ
-			DrawPolygon::DrawStartTexture(context, m_inputLayout.Get(), m_enemyTextures);
+			DrawPolygon::DrawStart(context, m_inputLayout.Get(), m_enemyTextures);
 			VertexPositionTexture enemyVertex[4] =
 			{
 				//	’¸“_î•ñ													UVî•ñ

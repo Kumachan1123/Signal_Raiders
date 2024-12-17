@@ -73,7 +73,8 @@ bool PlayerBullets::CheckCollisionWithEnemies(const std::unique_ptr<PlayerBullet
 		if (bullet->GetBoundingSphere().Intersects(enemy->GetBoundingSphere()))
 		{
 			isHit = true;// ƒqƒbƒgƒtƒ‰ƒO‚ð—§‚Ä‚é
-			enemy->SetEnemyHP(bullet->Damage());// “G‚ÌHP‚ðŒ¸‚ç‚·
+			if (enemy->GetCanAttack() == true)
+				enemy->SetEnemyHP(bullet->Damage());// “G‚ÌHP‚ðŒ¸‚ç‚·
 			if (auto boss = dynamic_cast<Boss*>(enemy.get()))
 			{
 				m_pEnemies->GetEffect().push_back(std::make_unique<Effect>(m_commonResources,

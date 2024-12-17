@@ -210,7 +210,7 @@ void  DamageEffect::Render()
 	// 頂点シェーダもピクセルシェーダも、同じ値を渡す
 	DrawPolygon::SetShaderBuffer(context, 0, 1, cb);
 	// 描画準備
-	DrawPolygon::DrawStartTexture(context, m_inputLayout.Get(), m_texture);
+	DrawPolygon::DrawStart(context, m_inputLayout.Get(), m_texture);
 	// シェーダをセットする
 	DrawPolygon::SetShader(context, m_shaders, nullptr, 0);
 	// 板ポリゴンを描画

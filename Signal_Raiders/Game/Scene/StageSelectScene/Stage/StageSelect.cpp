@@ -135,7 +135,7 @@ void StageSelect::Render()
 	//	シェーダをセットする
 	DrawPolygon::SetShader(context, m_shaders, nullptr, 0);
 	//	テクスチャ描画開始
-	DrawPolygon::DrawStartTexture(context, m_inputLayout.Get(), m_texture);
+	DrawPolygon::DrawStart(context, m_inputLayout.Get(), m_texture);
 	//	板ポリゴンを描画
 	DrawPolygon::DrawTexture(m_vertex);
 	//	シェーダの登録を解除しておく

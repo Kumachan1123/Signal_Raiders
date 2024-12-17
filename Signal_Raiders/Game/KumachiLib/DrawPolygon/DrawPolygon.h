@@ -32,10 +32,8 @@ public:
 	static void InitializePositionTexture(DX::DeviceResources* pDR);
 	// 初期化（頂点、色、テクスチャ）
 	static void InitializePositionColorTexture(DX::DeviceResources* pDR);
-	// 描画開始（頂点、テクスチャ）
-	static void DrawStartTexture(ID3D11DeviceContext1* context, ID3D11InputLayout* pInputLayout, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures);
-	// 描画開始（頂点、色、テクスチャ）
-	static void DrawStartColorTexture(ID3D11DeviceContext1* context, ID3D11InputLayout* pInputLayout, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures);
+	// 描画開始
+	static void DrawStart(ID3D11DeviceContext1* context, ID3D11InputLayout* pInputLayout, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures);
 	// サブリソースの更新
 	static void UpdateSubResources(ID3D11DeviceContext1* context, ID3D11Resource* resource, const void* pSrcData);
 	// 板ポリゴン描画（頂点、テクスチャ）
