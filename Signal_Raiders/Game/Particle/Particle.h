@@ -9,6 +9,7 @@ class CommonResources;
 #include <vector>
 #include <list>
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
+#include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include <Game/ParticleUtility/ParticleUtility.h>
 class Particle
 {
@@ -19,7 +20,7 @@ public:
 		DirectX::SimpleMath::Matrix		matWorld;
 		DirectX::SimpleMath::Matrix		matView;
 		DirectX::SimpleMath::Matrix		matProj;
-		DirectX::SimpleMath::Vector4	colors;//	色
+		DirectX::SimpleMath::Vector4	colors;
 
 	};
 
@@ -38,7 +39,7 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
 
 	//	入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	//	プリミティブバッチ
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_batch;
 	//	コモンステート
@@ -57,6 +58,10 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_geometryShader;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
+	// 描画クラス
+	DrawPolygon* m_pDrawPolygon;
+	// シェーダー作成クラス
+	CreateShader* m_pCreateShader;
 	DirectX::SimpleMath::Matrix m_world;// ワールド行列
 	DirectX::SimpleMath::Matrix m_view;// ビュー行列
 	DirectX::SimpleMath::Matrix m_proj;	// プロジェクション行列

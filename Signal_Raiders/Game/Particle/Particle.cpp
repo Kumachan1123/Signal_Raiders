@@ -32,7 +32,7 @@ Particle::Particle(ParticleUtility::Type type, float size)
 	, m_timer(0.0f)
 	, m_pDR{}
 	, m_CBuffer{}
-	, m_inputLayout{}
+	, m_pInputLayout{}
 	, m_batch{}
 	, m_states{}
 	, m_texture{}
@@ -45,6 +45,8 @@ Particle::Particle(ParticleUtility::Type type, float size)
 	, m_billboard{}
 	, m_type{ type }
 	, m_size{ size * 10 }
+	, m_pDrawPolygon{ DrawPolygon::GetInstance() }
+	, m_pCreateShader{ CreateShader::GetInstance() }
 {
 }
 
@@ -56,6 +58,8 @@ void Particle::Initialize(CommonResources* resources)
 {
 	m_commonResources = resources;
 	m_pDR = m_commonResources->GetDeviceResources();
+	// シェーダー作成クラスの初期化
+	m_pCreateShader->Initialize(m_pDR->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
 	// シェーダーの作成
 	CreateShader();
 	// 画像の読み込み
@@ -72,34 +76,18 @@ void Particle::Initialize(CommonResources* resources)
 		break;
 	}
 	// 板ポリゴン描画用
-	DrawPolygon::InitializePositionColorTexture(m_pDR);
+	m_pDrawPolygon->InitializePositionColorTexture(m_pDR);
 }
 
 void Particle::CreateShader()
 {
 	ID3D11Device* device = m_pDR->GetD3DDevice();
-	// コンパイルされたシェーダーの読み込み
-	KumachiLib::BinaryFile VS = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/Particle/VS_Particle.cso");
-	KumachiLib::BinaryFile PS = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/Particle/PS_Particle.cso");
-	KumachiLib::BinaryFile GS = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/Particle/GS_Particle.cso");
-
-	// インプットレイアウト作成
-	device->CreateInputLayout(&INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), VS.GetData(), VS.GetSize(), m_inputLayout.GetAddressOf());
-	// 頂点シェーダー作成
-	if (FAILED(device->CreateVertexShader(VS.GetData(), VS.GetSize(), nullptr, m_vertexShader.GetAddressOf())))
-	{
-		throw std::exception("頂点シェーダーの作成に失敗しました");
-	}
-	// ピクセルシェーダー作成
-	if (FAILED(device->CreatePixelShader(PS.GetData(), PS.GetSize(), nullptr, m_pixelShader.GetAddressOf())))
-	{
-		throw std::exception("ピクセルシェーダーの作成に失敗しました");
-	}
-	// ジオメトリシェーダー作成
-	if (FAILED(device->CreateGeometryShader(GS.GetData(), GS.GetSize(), nullptr, m_geometryShader.GetAddressOf())))
-	{
-		throw std::exception("ジオメトリシェーダーの作成に失敗しました");
-	}
+	// シェーダーの作成
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Particle/VS_Particle.cso", m_vertexShader);
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Particle/PS_Particle.cso", m_pixelShader);
+	m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/Particle/GS_Particle.cso", m_geometryShader);
+	// インプットレイアウトを受け取る
+	m_pInputLayout = m_pCreateShader->GetInputLayout();
 	// 定数バッファ作成
 	D3D11_BUFFER_DESC desc = {};
 	ZeroMemory(&desc, sizeof(desc));
@@ -199,18 +187,18 @@ void Particle::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Mat
 	m_constantBuffer.colors = SimpleMath::Vector4(1, 1, 1, 0);
 
 	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	DrawPolygon::UpdateSubResources(context, m_CBuffer.Get(), &m_constantBuffer);
+	m_pDrawPolygon->UpdateSubResources(context, m_CBuffer.Get(), &m_constantBuffer);
 	// シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };
-	DrawPolygon::SetShaderBuffer(context, 0, 1, cb);
+	m_pDrawPolygon->SetShaderBuffer(context, 0, 1, cb);
 	// 描画準備
-	DrawPolygon::DrawStart(context, m_inputLayout.Get(), m_texture);
+	m_pDrawPolygon->DrawStart(context, m_pInputLayout.Get(), m_texture);
 	// シェーダをセットする
-	DrawPolygon::SetShader(context, m_shaders, nullptr, 0);
+	m_pDrawPolygon->SetShader(context, m_shaders, nullptr, 0);
 	// 指定した座標を中心に、シェーダ側で板ポリゴンを生成・描画させる
-	DrawPolygon::DrawColorTexture(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &m_vertices[0], m_vertices.size());
+	m_pDrawPolygon->DrawColorTexture(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &m_vertices[0], m_vertices.size());
 	// シェーダの登録を解除しておく
-	DrawPolygon::ReleaseShader(context);
+	m_pDrawPolygon->ReleaseShader(context);
 }
 
 // ビルボードの作成

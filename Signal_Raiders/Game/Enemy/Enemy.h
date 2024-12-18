@@ -27,7 +27,7 @@ private:
 	// ベーシックエフェクト
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
 	// 入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	std::unique_ptr<EnemyModel>		m_enemyModel;// 敵のモデル
 	std::unique_ptr<EnemyAI>		m_enemyAI;// 敵のAI
 	std::unique_ptr<EnemyHPBar>		m_HPBar;// 敵のHPバー

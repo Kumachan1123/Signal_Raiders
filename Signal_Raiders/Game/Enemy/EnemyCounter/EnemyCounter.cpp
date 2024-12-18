@@ -25,7 +25,7 @@ EnemyCounter::EnemyCounter()
 	m_nowEnemy1{ 0 },
 	m_frameRows{ 1 },
 	m_frameCols{ 10 },
-	m_inputLayout{},
+	m_pInputLayout{},
 	m_states{},
 	m_batchEffect{},
 	m_verticesEnemyIndex10{},
@@ -80,7 +80,7 @@ void EnemyCounter::Initialize(CommonResources* commonResources)
 	device->CreateInputLayout(
 		VertexPositionTexture::InputElements,
 		VertexPositionTexture::InputElementCount,
-		shaderByteCode, byteCodeLength, m_inputLayout.GetAddressOf()
+		shaderByteCode, byteCodeLength, m_pInputLayout.GetAddressOf()
 	);
 
 	// 共通ステート生成
@@ -208,7 +208,7 @@ void EnemyCounter::DrawQuad(Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& te
 	// テクスチャ適用と描画
 	m_batchEffect->SetTexture(texture.Get());
 	m_batchEffect->Apply(context);
-	context->IASetInputLayout(m_inputLayout.Get());
+	context->IASetInputLayout(m_pInputLayout.Get());
 	m_primitiveBatch->Begin();
 	m_primitiveBatch->DrawQuad(vertices[0], vertices[1], vertices[2], vertices[3]);
 	m_primitiveBatch->End();

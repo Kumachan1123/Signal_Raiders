@@ -8,6 +8,7 @@
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "Game/CommonResources.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
+#include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/KumachiLib/Anchor.h"
 #include "DeviceResources.h"
 #include <SimpleMath.h>
@@ -37,7 +38,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
 
 	// 入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 
 	// プリミティブバッチ
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_batch;
@@ -55,6 +56,10 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_geometryShader;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
+	// 描画クラス
+	DrawPolygon* m_pDrawPolygon;
+	// シェーダー作成クラス
+	CreateShader* m_pCreateShader;
 	int m_windowWidth, m_windowHeight;
 	int m_textureWidth, m_textureHeight;
 

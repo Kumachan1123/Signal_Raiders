@@ -61,7 +61,7 @@ void EnemyHPBar::Initialize(CommonResources* resources)
 		CreateInputLayoutFromEffect<VertexPositionTexture>(
 			device,
 			m_basicEffect.get(),
-			m_inputLayout.ReleaseAndGetAddressOf()
+			m_pInputLayout.ReleaseAndGetAddressOf()
 		)
 	);
 	// ‰æ‘œ‚ðƒ[ƒh‚·‚é
@@ -102,7 +102,7 @@ void EnemyHPBar::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::M
 	context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
 	context->OMSetDepthStencilState(states->DepthDefault(), 0);
 	context->RSSetState(states->CullCounterClockwise());
-	context->IASetInputLayout(m_inputLayout.Get());
+	context->IASetInputLayout(m_pInputLayout.Get());
 	// HPbar(”w–Ê)•`‰æ///////////////////////////////////////////////////////////////////////////////
 	m_basicEffect->SetWorld(worldBillboard);
 	m_basicEffect->SetView(view);

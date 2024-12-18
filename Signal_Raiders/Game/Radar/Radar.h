@@ -20,6 +20,7 @@
 #include "Game/Enemy/Enemy.h"
 #include "Game/Enemy/EnemyAI/EnemyAI.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
+#include "Game/KumachiLib/CreateShader/CreateShader.h"
 class CommonResources;
 class Player;
 class Enemies;
@@ -52,7 +53,7 @@ private:
 	// ベーシックエフェクト
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
 	// 入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_cBuffer;
 
 
@@ -77,9 +78,6 @@ private:
 	DirectX::SimpleMath::Vector2 m_enemySize;
 	// 時間
 	float m_time;
-	//Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_backTexture;
-	//Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_playerTexture;
-	//Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_enemyTexture;
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_backTextures;
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_playerTextures;
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_enemyTextures;
@@ -89,6 +87,10 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
+	// 描画クラス
+	DrawPolygon* m_pDrawPolygon;
+	// シェーダー作成クラス
+	CreateShader* m_pCreateShader;
 public:
 	//	関数
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;

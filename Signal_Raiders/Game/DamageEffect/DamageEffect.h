@@ -16,6 +16,7 @@
 #include <CommonStates.h>
 #include <vector>
 #include "Game/Player/Player.h"
+#include "Game/KumachiLib/CreateShader/CreateShader.h"
 class Player;
 class CommonResources;
 class DamageEffect
@@ -41,8 +42,13 @@ private:
 	CommonResources* m_commonResources;
 	// プレイヤーのポインター
 	Player* m_pPlayer;
+	// 描画クラス
+	DrawPolygon* m_pDrawPolygon;
+	// シェーダー作成クラス
+	CreateShader* m_pCreateShader;
+
 	// 入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 
 	// プリミティブバッチ
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_batch;

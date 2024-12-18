@@ -210,8 +210,6 @@ IScene::SceneID PlayScene::GetNextSceneID() const
 
 void PlayScene::InitializeFMOD()
 {
-	// FMODシステムの初期化
-	m_audioManager->Initialize();
 	// ここで必要な音声データをAudioManagerにロードさせる
 	m_audioManager->LoadSound("Resources/Sounds/playbgm.mp3", "BGM");
 }

@@ -52,7 +52,7 @@ Boss::Boss(Player* pPlayer)
 	, m_canAttack{ true }
 	, m_bossBulletType{ BossBulletType::NORMAL }
 	, m_bulletType{ EnemyBullet::BulletType::STRAIGHT }
-	, m_audioManager{ /*AudioManager::GetInstance() */ }
+	, m_audioManager{ }
 {
 }
 // デストラクタ

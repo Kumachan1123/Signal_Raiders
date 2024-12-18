@@ -27,7 +27,7 @@ private:
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_primitiveBatch;
 
 	// 入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;	// 四角形で使用する 頂点情報
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;	// 四角形で使用する 頂点情報
 
 	DirectX::VertexPositionTexture	m_hpbarVert[4];
 	DirectX::VertexPositionTexture	m_hpbarBackVert[4];

@@ -25,7 +25,7 @@ private:
 	// ベーシックエフェクト
 	static std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
 	// 入力レイアウト
-	static Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+	static Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	// プリミティブバッチ
 	static std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
 	// 共通リソース

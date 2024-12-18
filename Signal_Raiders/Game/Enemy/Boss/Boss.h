@@ -6,7 +6,7 @@
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/Interface/IEnemy.h"
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
-
+#include "Game/KumachiLib/DrawCollision/DrawCollision.h"
 #include "Game/Enemy/Boss/BossSheild/BossSheild.h"
 //前方宣言
 class CommonResources;
@@ -39,7 +39,7 @@ private:
 	// ベーシックエフェクト
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
 	// 入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	std::unique_ptr<BossAI>		m_pBossAI;// AI
 	std::unique_ptr<BossModel>		m_pBossModel;//モデル
 	std::unique_ptr<BossSheild>		m_pBossSheild;// シールド
@@ -90,7 +90,6 @@ private:
 	float m_attackCooldown;  // 攻撃のクールダウン(フレームごとに発射することを防ぐ用）
 	float m_bulletCooldown;  // 弾のクールダウン
 	bool m_canAttack = false;// 攻撃可能か
-
 
 	// オーディオマネージャー
 	AudioManager* m_audioManager;

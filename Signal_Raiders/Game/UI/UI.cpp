@@ -31,6 +31,8 @@ UI::UI()
 	, m_baseScale{ DirectX::SimpleMath::Vector2::One }
 	, m_position{ DirectX::SimpleMath::Vector2::Zero }
 	, m_anchor{ KumachiLib::ANCHOR::TOP_LEFT }
+	, m_pDrawPolygon{ DrawPolygon::GetInstance() }
+	, m_pCreateShader{ CreateShader::GetInstance() }
 {
 }
 
@@ -44,7 +46,6 @@ void UI::LoadTexture(const wchar_t* path)
 	HRESULT result = DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, m_pTextureResource.ReleaseAndGetAddressOf(), m_pTexture.ReleaseAndGetAddressOf());
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> tex;
 	DX::ThrowIfFailed(m_pTextureResource.As(&tex));
-
 	//	読み込んだ画像の情報を取得する
 	D3D11_TEXTURE2D_DESC desc;
 	tex->GetDesc(&desc);
@@ -64,46 +65,26 @@ void UI::Create(DX::DeviceResources* pDR, const wchar_t* path
 	m_position = position;// 位置
 	m_baseScale = m_scale = scale;// スケール
 	m_anchor = anchor;// アンカー
+	//	シェーダー作成クラスの初期化
+	m_pCreateShader->Initialize(m_pDR->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
 	//	シェーダーの作成
 	CreateShader();
 	//	テクスチャを読み込む
 	LoadTexture(path);
 	// 板ポリゴン描画用
-	DrawPolygon::InitializePositionColorTexture(m_pDR);
+	m_pDrawPolygon->InitializePositionColorTexture(m_pDR);
 
 }
 
 void UI::CreateShader()
 {
 	auto device = m_pDR->GetD3DDevice();// デバイス
-	// コンパイルされたシェーダーを読み込む
-	KumachiLib::BinaryFile VS = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/Menu/VS_Menu.cso");
-	KumachiLib::BinaryFile GS = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/Menu/GS_Menu.cso");
-	KumachiLib::BinaryFile PS = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/Menu/PS_Menu.cso");
-	// インプットレイアウト作成
-	device->CreateInputLayout(&INPUT_LAYOUT[0],
-		static_cast<UINT>(INPUT_LAYOUT.size()),
-		VS.GetData(), VS.GetSize(),
-		m_pInputLayout.GetAddressOf());
-	//	頂点シェーダ作成
-	if (FAILED(device->CreateVertexShader(VS.GetData(), VS.GetSize(), NULL, m_pVertexShader.ReleaseAndGetAddressOf())))
-	{//	エラー
-		MessageBox(0, L"CreateVertexShader Failed.", NULL, MB_OK);
-		return;
-	}
-
-	//	ジオメトリシェーダ作成
-	if (FAILED(device->CreateGeometryShader(GS.GetData(), GS.GetSize(), NULL, m_pGeometryShader.ReleaseAndGetAddressOf())))
-	{// エラー
-		MessageBox(0, L"CreateGeometryShader Failed.", NULL, MB_OK);
-		return;
-	}
-	//	ピクセルシェーダ作成
-	if (FAILED(device->CreatePixelShader(PS.GetData(), PS.GetSize(), NULL, m_pPixelShader.ReleaseAndGetAddressOf())))
-	{// エラー
-		MessageBox(0, L"CreatePixelShader Failed.", NULL, MB_OK);
-		return;
-	}
+	// シェーダーを作成する
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Menu/VS_Menu.cso", m_pVertexShader);
+	m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/Menu/GS_Menu.cso", m_pGeometryShader);
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Menu/PS_Menu.cso", m_pPixelShader);
+	// インプットレイアウトを受け取る
+	m_pInputLayout = m_pCreateShader->GetInputLayout();
 	//	シェーダーにデータを渡すためのコンスタントバッファ生成
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
@@ -140,18 +121,18 @@ void UI::Render()
 	m_constBuffer.color = Vector3(0.5, 0.5, 0.5);
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	DrawPolygon::UpdateSubResources(context, m_pCBuffer.Get(), &m_constBuffer);
+	m_pDrawPolygon->UpdateSubResources(context, m_pCBuffer.Get(), &m_constBuffer);
 	//	シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };
-	DrawPolygon::SetShaderBuffer(context, 0, 1, cb);
+	m_pDrawPolygon->SetShaderBuffer(context, 0, 1, cb);
 	// 描画準備
-	DrawPolygon::DrawStart(context, m_pInputLayout.Get(), m_pTextures);
+	m_pDrawPolygon->DrawStart(context, m_pInputLayout.Get(), m_pTextures);
 	//	シェーダをセットする
-	DrawPolygon::SetShader(context, m_shaders, nullptr, 0);
+	m_pDrawPolygon->SetShader(context, m_shaders, nullptr, 0);
 	//	板ポリゴンを描画
-	DrawPolygon::DrawColorTexture(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex[0], 1);
+	m_pDrawPolygon->DrawColorTexture(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex[0], 1);
 	//	シェーダの登録を解除しておく
-	DrawPolygon::ReleaseShader(context);
+	m_pDrawPolygon->ReleaseShader(context);
 }
 
 void UI::SetWindowSize(const int& width, const int& height)

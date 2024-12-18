@@ -2,13 +2,32 @@
 #include "DrawPolygon.h"
 //シングルトンにする
 
-// 静的メンバーの初期化
-std::unique_ptr<DirectX::BasicEffect> DrawPolygon::m_basicEffect = nullptr;
-Microsoft::WRL::ComPtr<ID3D11InputLayout> DrawPolygon::m_inputLayout = nullptr;
-std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> DrawPolygon::m_primitiveBatchTexture = nullptr;
-CommonResources* DrawPolygon::m_commonResources = nullptr;
-std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> DrawPolygon::m_primitiveBatchColorTexture = nullptr;
-std::unique_ptr<DirectX::CommonStates> DrawPolygon::m_states = nullptr;
+std::unique_ptr<DrawPolygon> DrawPolygon::m_instance = nullptr;
+
+DrawPolygon* const DrawPolygon::GetInstance()
+{
+	if (m_instance == nullptr)
+	{
+		m_instance.reset(new DrawPolygon());
+	}
+	return m_instance.get();
+}
+
+// コンストラクタ
+DrawPolygon::DrawPolygon()
+	:
+	m_primitiveBatchTexture(nullptr),
+	m_primitiveBatchColorTexture(nullptr)
+{
+}
+
+// デストラクタ
+DrawPolygon::~DrawPolygon()
+{
+	// プリミティブバッチの解放
+	ReleasePositionTexture();
+	ReleasePositionColorTexture();
+}
 
 // 初期化（頂点、テクスチャ）
 void DrawPolygon::InitializePositionTexture(DX::DeviceResources* pDR)
@@ -87,22 +106,14 @@ void DrawPolygon::DrawColorTexture(D3D_PRIMITIVE_TOPOLOGY topology, const Direct
 
 void DrawPolygon::ReleasePositionTexture()
 {
-	// 静的メンバーを解放
-	m_basicEffect.reset();
-	m_inputLayout.Reset();
 	m_primitiveBatchTexture.reset();
-	m_commonResources = nullptr;
 }
 
 
 // 解放
 void DrawPolygon::ReleasePositionColorTexture()
 {
-	// 静的メンバーを解放
-	m_basicEffect.reset();
-	m_inputLayout.Reset();
 	m_primitiveBatchColorTexture.reset();
-	m_commonResources = nullptr;
 }
 
 void DrawPolygon::SetShaderBuffer(ID3D11DeviceContext1* context, UINT startSlot, UINT numBuffers, ID3D11Buffer* const* ppBuffer)

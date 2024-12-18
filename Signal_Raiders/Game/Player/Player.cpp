@@ -108,9 +108,7 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 		return;// テロップを表示している間はこれ以降の処理をしない
 	}
 
-#ifdef _DEBUG// デバッグ
-
-#endif
+#ifdef _DEBUG// デバッグ チートコマンド
 	// 右クリックで敵を一掃
 	if (mtracker->GetLastState().rightButton && m_isCheat == false)
 	{
@@ -124,6 +122,8 @@ void Player::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracke
 	}
 	// スペースキーでプレイヤーのHPを0にする
 	if (kb->pressed.Space)SetPlayerHP(0.0f);
+#endif
+
 	// プレイヤーの位置を取得
 	m_playerPos = m_pPlayerController->GetPlayerPosition();
 

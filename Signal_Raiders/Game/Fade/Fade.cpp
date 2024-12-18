@@ -35,7 +35,7 @@ Fade::Fade(CommonResources* commonResources)
 	:
 	m_pDR{ },
 	m_CBuffer{},
-	m_inputLayout{},
+	m_pInputLayout{},
 	m_commonResources{ commonResources },
 	m_batch{},
 	m_states{},
@@ -48,16 +48,18 @@ Fade::Fade(CommonResources* commonResources)
 	m_proj{},
 	m_time{ -0.75f },
 	m_fadeState{ FadeState::None },
-	m_fadeTexNum{ }
+	m_fadeTexNum{ },
+	m_pDrawPolygon{ DrawPolygon::GetInstance() },
+	m_pCreateShader{ CreateShader::GetInstance() }
 {
-	// do nothing.
+	// シェーダー作成クラスの初期化
+	m_pCreateShader->Initialize(m_commonResources->GetDeviceResources()->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
 }
 // テクスチャの読み込み
 void Fade::LoadTexture(const wchar_t* path)
 {
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;
 	DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, nullptr, texture.ReleaseAndGetAddressOf());
-
 	m_texture.push_back(texture);
 }
 // 生成
@@ -73,34 +75,18 @@ void Fade::Create(DX::DeviceResources* pDR)
 	LoadTexture(L"Resources/Textures/Go.png");//goTex
 	LoadTexture(L"Resources/Textures/Black.png");//backTex
 	// 板ポリゴン描画用
-	DrawPolygon::InitializePositionTexture(m_pDR);
+	m_pDrawPolygon->InitializePositionTexture(m_pDR);
 }
 // シェーダー作成部分
 void Fade::CreateShader()
 {
 	// デバイスリソースの取得
 	auto device = m_pDR->GetD3DDevice();
-	// 頂点シェーダーの作成
-	KumachiLib::BinaryFile VSFade = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/Fade/VS_Fade.cso");
-	// ピクセルシェーダーの作成
-	KumachiLib::BinaryFile PSFade = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/Fade/PS_Fade.cso");
-	// インプットレイアウトの作成
-	device->CreateInputLayout(&INPUT_LAYOUT[0],
-		static_cast<UINT>(INPUT_LAYOUT.size()),
-		VSFade.GetData(), VSFade.GetSize(),
-		m_inputLayout.GetAddressOf());
-	// 頂点シェーダーの作成
-	if (FAILED(device->CreateVertexShader(VSFade.GetData(), VSFade.GetSize(), nullptr, m_vertexShader.GetAddressOf())))
-	{
-		MessageBox(0, L"CreateVertexShader Failed.", NULL, MB_OK);
-		return;
-	}
-	// ピクセルシェーダーの作成
-	if (FAILED(device->CreatePixelShader(PSFade.GetData(), PSFade.GetSize(), nullptr, m_pixelShader.GetAddressOf())))
-	{
-		MessageBox(0, L"CreatePixelShader Failed.", NULL, MB_OK);
-		return;
-	}
+	// 頂点シェーダーとピクセルシェーダーの作成
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Fade/VS_Fade.cso", m_vertexShader);
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Fade/PS_Fade.cso", m_pixelShader);
+	// インプットレイアウトを受け取る
+	m_pInputLayout = m_pCreateShader->GetInputLayout();
 	//	シェーダーにデータを渡すためのコンスタントバッファ生成
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
@@ -160,17 +146,17 @@ void Fade::Render()
 	cbuff.fadeAmount = m_time;
 	cbuff.num = m_fadeTexNum;	// 画像番号
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	DrawPolygon::UpdateSubResources(context, m_CBuffer.Get(), &cbuff);
+	m_pDrawPolygon->UpdateSubResources(context, m_CBuffer.Get(), &cbuff);
 	//	シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };
 	//	頂点シェーダもピクセルシェーダも、同じ値を渡す
-	DrawPolygon::SetShaderBuffer(context, 0, 1, cb);
+	m_pDrawPolygon->SetShaderBuffer(context, 0, 1, cb);
 	//	描画準備
-	DrawPolygon::DrawStart(context, m_inputLayout.Get(), m_texture);
+	m_pDrawPolygon->DrawStart(context, m_pInputLayout.Get(), m_texture);
 	//	シェーダをセットする
-	DrawPolygon::SetShader(context, m_shaders, nullptr, 0);
+	m_pDrawPolygon->SetShader(context, m_shaders, nullptr, 0);
 	//	板ポリゴンを描画
-	DrawPolygon::DrawTexture(vertex);
+	m_pDrawPolygon->DrawTexture(vertex);
 	//	シェーダの登録を解除しておく
-	DrawPolygon::ReleaseShader(context);
+	m_pDrawPolygon->ReleaseShader(context);
 }

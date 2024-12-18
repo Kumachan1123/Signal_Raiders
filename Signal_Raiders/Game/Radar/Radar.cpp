@@ -24,9 +24,11 @@ Radar::Radar(CommonResources* commonResources)
 	m_radarPos{ 0.745f, -0.55f },
 	m_playerSize{ 0.018f, -0.032f },
 	m_enemySize{ 0.027f, -0.048f },
-	m_time{ 0.0f }
-
+	m_time{ 0.0f },
+	m_pDrawPolygon{ DrawPolygon::GetInstance() },
+	m_pCreateShader{ CreateShader::GetInstance() }
 {
+	m_pCreateShader->Initialize(m_commonResources->GetDeviceResources()->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
 }
 
 //---------------------------------------------------------
@@ -34,7 +36,7 @@ Radar::Radar(CommonResources* commonResources)
 //---------------------------------------------------------
 Radar::~Radar()
 {
-	DrawPolygon::ReleasePositionTexture();
+	m_pDrawPolygon->ReleasePositionTexture();
 }
 void Radar::LoadTexture(const wchar_t* path, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& textures)
 {
@@ -53,34 +55,17 @@ void Radar::Initialize(Player* pPlayer, Enemies* pEnemies)
 	m_pPlayer = pPlayer;
 	m_pEnemies = pEnemies;
 	// 板ポリゴン描画準備
-	DrawPolygon::InitializePositionTexture(m_commonResources->GetDeviceResources());
+	m_pDrawPolygon->InitializePositionTexture(m_commonResources->GetDeviceResources());
 
 	// 画像の読み込み 
 	LoadTexture(L"Resources/Textures/RadarBack.png", m_backTextures);
 	LoadTexture(L"Resources/Textures/PlayerPin.png", m_playerTextures);
 	LoadTexture(L"Resources/Textures/EnemyPin.png", m_enemyTextures);
-	////	コンパイルされたシェーダファイルを読み込み
-	//KumachiLib::BinaryFile VSData = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/Radar/VS_Radar.cso");
-	//KumachiLib::BinaryFile PSData = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/Radar/PS_Radar.cso");
-	////	頂点シェーダ作成
-	//if (FAILED(device->CreateVertexShader(VSData.GetData(), VSData.GetSize(), NULL, m_vertexShader.ReleaseAndGetAddressOf())))
-	//{// エラー
-	//	MessageBox(0, L"CreateVertexShader Failed.", NULL, MB_OK);
-	//	return;
-	//}
-	////	ピクセルシェーダ作成
-	//if (FAILED(device->CreatePixelShader(PSData.GetData(), PSData.GetSize(), NULL, m_pixelShader.ReleaseAndGetAddressOf())))
-	//{// エラー
-	//	MessageBox(0, L"CreatePixelShader Failed.", NULL, MB_OK);
-	//	return;
-	//}
-	////	インプットレイアウトの作成
-	//device->CreateInputLayout(&INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), VSData.GetData(), VSData.GetSize(), m_inputLayout.GetAddressOf());
-
 	// シェーダーを作成
-	KumachiLib::CreateShader::CreateVertexShader(device, L"Resources/Shaders/Radar/VS_Radar.cso", m_vertexShader, // 頂点シェーダ
-		&INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_inputLayout.GetAddressOf());  // 入力レイアウト
-	KumachiLib::CreateShader::CreatePixelShader(device, L"Resources/Shaders/Radar/PS_Radar.cso", m_pixelShader); // ピクセルシェーダ
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Radar/VS_Radar.cso", m_vertexShader); // 頂点シェーダ
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Radar/PS_Radar.cso", m_pixelShader); // ピクセルシェーダ
+	// インプットレイアウトを受け取る
+	m_pInputLayout = m_pCreateShader->GetInputLayout();
 	//	シェーダーにデータを渡すためのコンスタントバッファ生成
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
@@ -154,11 +139,11 @@ void Radar::DrawBackground()
 	// バッファを作成
 	CreateBuffer(context);
 	// 描画準備
-	DrawPolygon::DrawStart(context, m_inputLayout.Get(), m_backTextures);
+	m_pDrawPolygon->DrawStart(context, m_pInputLayout.Get(), m_backTextures);
 	// ポリゴンを描画
-	DrawPolygon::DrawTexture(vertex);
+	m_pDrawPolygon->DrawTexture(vertex);
 	// シェーダの登録を解除しておく
-	DrawPolygon::ReleaseShader(context);
+	m_pDrawPolygon->ReleaseShader(context);
 }
 
 //---------------------------------------------------------
@@ -182,11 +167,11 @@ void Radar::DrawPlayer()
 	// バッファを作成
 	CreateBuffer(context);
 	// 描画準備
-	DrawPolygon::DrawStart(context, m_inputLayout.Get(), m_playerTextures);
+	m_pDrawPolygon->DrawStart(context, m_pInputLayout.Get(), m_playerTextures);
 	// 板ポリゴンを描画
-	DrawPolygon::DrawTexture(playerVertex);
+	m_pDrawPolygon->DrawTexture(playerVertex);
 	// シェーダの登録を解除しておく
-	DrawPolygon::ReleaseShader(context);
+	m_pDrawPolygon->ReleaseShader(context);
 }
 
 //---------------------------------------------------------
@@ -227,7 +212,7 @@ void Radar::DrawEnemy()
 			radarPos.y > -1.0f + m_enemySize.y && radarPos.y < -0.16f + m_enemySize.y)
 		{
 			// 描画準備
-			DrawPolygon::DrawStart(context, m_inputLayout.Get(), m_enemyTextures);
+			m_pDrawPolygon->DrawStart(context, m_pInputLayout.Get(), m_enemyTextures);
 			VertexPositionTexture enemyVertex[4] =
 			{
 				//	頂点情報													UV情報
@@ -237,11 +222,11 @@ void Radar::DrawEnemy()
 				VertexPositionTexture(Vector3(radarPos.x, radarPos.y + 0.02f, 0.0f), SimpleMath::Vector2(0.0f, 1.0f))
 			};
 			// 板ポリゴンを描画
-			DrawPolygon::DrawTexture(enemyVertex);
+			m_pDrawPolygon->DrawTexture(enemyVertex);
 		}
 	}
 	//	シェーダの登録を解除しておく
-	DrawPolygon::ReleaseShader(context);
+	m_pDrawPolygon->ReleaseShader(context);
 }
 
 
@@ -253,11 +238,11 @@ void Radar::CreateBuffer(ID3D11DeviceContext1* context)
 	// 時間設定
 	m_constBuffer.time = SimpleMath::Vector4(m_time);
 	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	DrawPolygon::UpdateSubResources(context, m_cBuffer.Get(), &m_constBuffer);
+	m_pDrawPolygon->UpdateSubResources(context, m_cBuffer.Get(), &m_constBuffer);
 	// シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_cBuffer.Get() };
 	// 頂点シェーダもピクセルシェーダも、同じ値を渡す
-	DrawPolygon::SetShaderBuffer(context, 0, 1, cb);
+	m_pDrawPolygon->SetShaderBuffer(context, 0, 1, cb);
 	// シェーダをセットする
-	DrawPolygon::SetShader(context, m_shaders, nullptr, 0);
+	m_pDrawPolygon->SetShader(context, m_shaders, nullptr, 0);
 }

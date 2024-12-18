@@ -6,7 +6,7 @@
 
 // 静的メンバーの初期化
 std::unique_ptr<DirectX::BasicEffect> DrawCollision::m_basicEffect = nullptr;
-Microsoft::WRL::ComPtr<ID3D11InputLayout> DrawCollision::m_inputLayout = nullptr;
+Microsoft::WRL::ComPtr<ID3D11InputLayout> DrawCollision::m_pInputLayout = nullptr;
 std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> DrawCollision::m_primitiveBatch = nullptr;
 CommonResources* DrawCollision::m_commonResources = nullptr;
 
@@ -30,7 +30,7 @@ void DrawCollision::Initialize(CommonResources* commonResources)
 		CreateInputLayoutFromEffect<VertexPositionColor>(
 			device,
 			m_basicEffect.get(),
-			m_inputLayout.ReleaseAndGetAddressOf()
+			m_pInputLayout.ReleaseAndGetAddressOf()
 		)
 	);
 	// プリミティブバッチを作成する
@@ -49,7 +49,7 @@ void DrawCollision::DrawStart(DirectX::SimpleMath::Matrix view, DirectX::SimpleM
 	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
 	context->OMSetDepthStencilState(states->DepthRead(), 0);
 	context->RSSetState(states->CullNone());
-	context->IASetInputLayout(m_inputLayout.Get());
+	context->IASetInputLayout(m_pInputLayout.Get());
 	//** デバッグドローでは、ワールド変換いらない
 	m_basicEffect->SetView(view);
 	m_basicEffect->SetProjection(proj);
@@ -74,7 +74,7 @@ void DrawCollision::Finalize()
 {
 	// 静的メンバーを解放
 	m_basicEffect.reset();
-	m_inputLayout.Reset();
+	m_pInputLayout.Reset();
 	m_primitiveBatch.reset();
 	m_commonResources = nullptr;
 }

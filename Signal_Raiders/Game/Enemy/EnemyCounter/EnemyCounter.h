@@ -43,7 +43,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_slash;
 
 	//	入力レイアウト 
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 
 	//	共通ステートオブジェクトへのポインタ
 	std::unique_ptr<DirectX::CommonStates> m_states;

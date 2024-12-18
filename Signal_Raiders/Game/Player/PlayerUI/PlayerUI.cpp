@@ -8,18 +8,14 @@
 
 using namespace DirectX;
 
-/// <summary>
-/// インプットレイアウト
-/// </summary>
+// インプットレイアウト
 const std::vector<D3D11_INPUT_ELEMENT_DESC> PlayerUI::INPUT_LAYOUT =
 {
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "COLOR",	0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, sizeof(SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(SimpleMath::Vector3) + sizeof(SimpleMath::Vector4), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
-/// <summary>
-/// コンストラクタ
-/// </summary>
+// コンストラクタ
 PlayerUI::PlayerUI()
 	:m_pDR(nullptr)
 	, m_windowHeight(0)
@@ -33,35 +29,27 @@ PlayerUI::PlayerUI()
 	, m_anchor(KumachiLib::ANCHOR::TOP_LEFT)
 	, m_renderRatio(1.0f)
 	, m_renderRatioOffset(0.0f)
+	, m_pDrawPolygon{ DrawPolygon::GetInstance() }
+	, m_pCreateShader{ CreateShader::GetInstance() }
 {
-
 }
-PlayerUI::~PlayerUI() { DrawPolygon::ReleasePositionColorTexture(); }
-/// <summary>
-/// テクスチャリソース読み込み関数
-/// </summary>
-/// <param name="path">相対パス(Resources/Textures/・・・.pngなど）</param>
+PlayerUI::~PlayerUI() {  }
+
+// テクスチャを読み込む
 void PlayerUI::LoadTexture(const wchar_t* path)
 {
-
-
 	DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, m_res.ReleaseAndGetAddressOf(), m_texture.ReleaseAndGetAddressOf());
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> tex;
 	DX::ThrowIfFailed(m_res.As(&tex));
-
 	D3D11_TEXTURE2D_DESC desc;
 	tex->GetDesc(&desc);
-
 	m_textures.push_back(m_texture);
 	m_textureWidth = desc.Width;
 	m_textureHeight = desc.Height;
 
 }
 
-/// <summary>
-/// 生成関数
-/// </summary>
-/// <param name="pDR">ユーザーリソース等から持ってくる</param>
+// 生成関数
 void PlayerUI::Create(DX::DeviceResources* pDR
 	, const wchar_t* path
 	, DirectX::SimpleMath::Vector2 position
@@ -72,6 +60,8 @@ void PlayerUI::Create(DX::DeviceResources* pDR
 	m_position = position;
 	m_baseScale = m_scale = scale;
 	m_anchor = anchor;
+	// シェーダー作成クラスの初期化
+	m_pCreateShader->Initialize(m_pDR->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
 
 	//	シェーダーの作成
 	CreateShader();
@@ -79,49 +69,21 @@ void PlayerUI::Create(DX::DeviceResources* pDR
 	//	画像の読み込み
 	LoadTexture(path);
 	// 板ポリゴン描画用
-	DrawPolygon::InitializePositionColorTexture(m_pDR);
+	m_pDrawPolygon->InitializePositionColorTexture(m_pDR);
 
 }
 
 
-/// <summary>
-/// Shader作成部分だけ分離した関数
-/// </summary>
+// シェーダーの作成
 void PlayerUI::CreateShader()
 {
 	auto device = m_pDR->GetD3DDevice();
-
-	//	コンパイルされたシェーダファイルを読み込み
-	KumachiLib::BinaryFile VSData = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/PlayerHP/VS_PlayerHP.cso");
-	KumachiLib::BinaryFile GSData = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/PlayerHP/GS_PlayerHP.cso");
-	KumachiLib::BinaryFile PSData = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/PlayerHP/PS_PlayerHP.cso");
-
-	//	インプットレイアウトの作成
-	device->CreateInputLayout(&INPUT_LAYOUT[0],
-		static_cast<UINT>(INPUT_LAYOUT.size()),
-		VSData.GetData(), VSData.GetSize(),
-		m_inputLayout.GetAddressOf());
-
-	//	頂点シェーダ作成
-	if (FAILED(device->CreateVertexShader(VSData.GetData(), VSData.GetSize(), NULL, m_vertexShader.ReleaseAndGetAddressOf())))
-	{// エラー
-		MessageBox(0, L"CreateVertexShader Failed.", NULL, MB_OK);
-		return;
-	}
-
-	//	ジオメトリシェーダ作成
-	if (FAILED(device->CreateGeometryShader(GSData.GetData(), GSData.GetSize(), NULL, m_geometryShader.ReleaseAndGetAddressOf())))
-	{// エラー
-		MessageBox(0, L"CreateGeometryShader Failed.", NULL, MB_OK);
-		return;
-	}
-	//	ピクセルシェーダ作成
-	if (FAILED(device->CreatePixelShader(PSData.GetData(), PSData.GetSize(), NULL, m_pixelShader.ReleaseAndGetAddressOf())))
-	{// エラー
-		MessageBox(0, L"CreatePixelShader Failed.", NULL, MB_OK);
-		return;
-	}
-
+	// シェーダーの作成
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/PlayerHP/VS_PlayerHP.cso", m_vertexShader);
+	m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/PlayerHP/GS_PlayerHP.cso", m_geometryShader);
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/PlayerHP/PS_PlayerHP.cso", m_pixelShader);
+	// インプットレイアウトを受け取る
+	m_pInputLayout = m_pCreateShader->GetInputLayout();
 	//	シェーダーにデータを渡すためのコンスタントバッファ生成
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
@@ -155,18 +117,18 @@ void PlayerUI::Render()
 	m_constBuffer.windowSize = SimpleMath::Vector4(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 1, 1);
 	m_constBuffer.renderRatio = m_renderRatio - m_renderRatioOffset;
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	DrawPolygon::UpdateSubResources(context, m_CBuffer.Get(), &m_constBuffer);
+	m_pDrawPolygon->UpdateSubResources(context, m_CBuffer.Get(), &m_constBuffer);
 	//	シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };
-	DrawPolygon::SetShaderBuffer(context, 0, 1, cb);
+	m_pDrawPolygon->SetShaderBuffer(context, 0, 1, cb);
 	// 描画準備
-	DrawPolygon::DrawStart(context, m_inputLayout.Get(), m_textures);
+	m_pDrawPolygon->DrawStart(context, m_pInputLayout.Get(), m_textures);
 	//	シェーダをセットする
-	DrawPolygon::SetShader(context, m_shaders, nullptr, 0);
+	m_pDrawPolygon->SetShader(context, m_shaders, nullptr, 0);
 	//	板ポリゴンを描画
-	DrawPolygon::DrawColorTexture(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex[0], 1);
+	m_pDrawPolygon->DrawColorTexture(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex[0], 1);
 	//	シェーダの登録を解除しておく
-	DrawPolygon::ReleaseShader(context);
+	m_pDrawPolygon->ReleaseShader(context);
 
 }
 

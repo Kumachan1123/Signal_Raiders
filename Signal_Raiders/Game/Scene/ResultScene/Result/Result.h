@@ -4,6 +4,7 @@
 */
 #pragma once
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
+#include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include <DeviceResources.h>
 // 前方宣言
 class CommonResources;
@@ -31,8 +32,12 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
+	// 描画クラス
+	DrawPolygon* m_pDrawPolygon;
+	// シェーダー作成
+	CreateShader* m_pCreateShader;
 	// 入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	// 変数
 	DX::DeviceResources* m_pDR;
 	// 定数バッファ

@@ -23,9 +23,9 @@ mylib::GridFloor::GridFloor(
 )
 	:
 	m_commonStates(states),
-	m_color{color},
-	m_size{size},
-	m_divs{divs}
+	m_color{ color },
+	m_size{ size },
+	m_divs{ divs }
 {
 	assert(device);
 	assert(context);
@@ -45,7 +45,7 @@ mylib::GridFloor::GridFloor(
 		CreateInputLayoutFromEffect<VertexPositionColor>(
 			device,
 			m_basicEffect.get(),
-			m_inputLayout.ReleaseAndGetAddressOf()
+			m_pInputLayout.ReleaseAndGetAddressOf()
 		)
 	);
 }
@@ -74,7 +74,7 @@ void mylib::GridFloor::Render(
 	m_basicEffect->Apply(context);
 
 	// 入力レイアウトを指定する
-	context->IASetInputLayout(m_inputLayout.Get());
+	context->IASetInputLayout(m_pInputLayout.Get());
 
 	// グリッド床を描画する
 	m_primitiveBatch->Begin();

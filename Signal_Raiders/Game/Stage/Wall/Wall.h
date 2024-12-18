@@ -12,7 +12,7 @@
 #include <Effects.h>
 #include <Libraries/Microsoft/DebugDraw.h>
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
-
+#include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 class Wall
 {
@@ -49,6 +49,10 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
+	// 描画クラス
+	DrawPolygon* m_pDrawPolygon;
+	// シェーダー作成クラス
+	CreateShader* m_pCreateShader;
 
 	//	プリミティブバッチ 
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_pPrimitiveBatch;

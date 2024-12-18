@@ -13,7 +13,7 @@ namespace mylib
 		DirectX::CommonStates* m_commonStates;
 		std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
 		std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
-		Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+		Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 		DirectX::SimpleMath::Color m_color;
 		float m_size;
 		size_t m_divs;

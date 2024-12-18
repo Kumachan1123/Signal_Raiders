@@ -25,43 +25,51 @@ public:
 		Microsoft::WRL::ComPtr<ID3D11PixelShader> ps;
 		Microsoft::WRL::ComPtr<ID3D11GeometryShader> gs;
 	};
+public:
+	// シングルトンインスタンスを取得
+	static DrawPolygon* const GetInstance();
 
 public:
 
+	// デストラクタ
+	~DrawPolygon();
+
 	// 初期化（頂点、テクスチャ）
-	static void InitializePositionTexture(DX::DeviceResources* pDR);
+	void InitializePositionTexture(DX::DeviceResources* pDR);
 	// 初期化（頂点、色、テクスチャ）
-	static void InitializePositionColorTexture(DX::DeviceResources* pDR);
+	void InitializePositionColorTexture(DX::DeviceResources* pDR);
 	// 描画開始
-	static void DrawStart(ID3D11DeviceContext1* context, ID3D11InputLayout* pInputLayout, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures);
+	void DrawStart(ID3D11DeviceContext1* context, ID3D11InputLayout* pInputLayout, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures);
 	// サブリソースの更新
-	static void UpdateSubResources(ID3D11DeviceContext1* context, ID3D11Resource* resource, const void* pSrcData);
+	void UpdateSubResources(ID3D11DeviceContext1* context, ID3D11Resource* resource, const void* pSrcData);
 	// 板ポリゴン描画（頂点、テクスチャ）
-	static void DrawTexture(const DirectX::DX11::VertexPositionTexture* vertices);
+	void DrawTexture(const DirectX::DX11::VertexPositionTexture* vertices);
 	// 板ポリゴン描画（頂点、色、テクスチャ）
-	static void DrawColorTexture(D3D_PRIMITIVE_TOPOLOGY topology, const DirectX::DX11::VertexPositionColorTexture* vertices, size_t count);
+	void DrawColorTexture(D3D_PRIMITIVE_TOPOLOGY topology, const DirectX::DX11::VertexPositionColorTexture* vertices, size_t count);
 	// 解放（頂点、テクスチャ）
-	static void ReleasePositionTexture();
+	void ReleasePositionTexture();
 	// 解放（頂点、色、テクスチャ）
-	static void ReleasePositionColorTexture();
+	void ReleasePositionColorTexture();
 	// シェーダーにバッファを送る
-	static void SetShaderBuffer(ID3D11DeviceContext1* context, UINT startSlot, UINT numBuffers, ID3D11Buffer* const* ppBuffer);
+	void SetShaderBuffer(ID3D11DeviceContext1* context, UINT startSlot, UINT numBuffers, ID3D11Buffer* const* ppBuffer);
 	// シェーダーをセットする
-	static void SetShader(ID3D11DeviceContext1* context, const Shaders& shaders, ID3D11ClassInstance* const* ppClassInstances, UINT nubClassInstances);
+	void SetShader(ID3D11DeviceContext1* context, const Shaders& shaders, ID3D11ClassInstance* const* ppClassInstances, UINT nubClassInstances);
 	// シェーダーを解放する
-	static void ReleaseShader(ID3D11DeviceContext1* context);
+	void ReleaseShader(ID3D11DeviceContext1* context);
+private:
+	// コンストラクタ
+	DrawPolygon();
+	// コピーコンストラクタと代入演算子の禁止
+	DrawPolygon(const DrawPolygon&) = delete;
+	DrawPolygon& operator=(const DrawPolygon&) = delete;
 
 private:
-	// ベーシックエフェクト
-	static std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
-	// 入力レイアウト
-	static Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 	// プリミティブバッチ（頂点、テクスチャ）
-	static std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_primitiveBatchTexture;
+	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_primitiveBatchTexture;
 	// プリミティブバッチ（頂点、色、テクスチャ）
-	static std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_primitiveBatchColorTexture;
-	// 共通リソース
-	static CommonResources* m_commonResources;
+	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_primitiveBatchColorTexture;
 	//コモンステート
-	static std::unique_ptr<DirectX::CommonStates> m_states;
+	std::unique_ptr<DirectX::CommonStates> m_states;
+	// シングルトンインスタンス
+	static std::unique_ptr<DrawPolygon> m_instance;
 };

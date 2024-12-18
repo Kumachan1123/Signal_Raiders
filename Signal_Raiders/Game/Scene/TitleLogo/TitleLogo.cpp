@@ -21,7 +21,7 @@ TitleLogo::TitleLogo(CommonResources* resources)
 	m_commonResources{ resources },
 	m_vertexShader{},
 	m_pixelShader{},
-	m_inputLayout{},
+	m_pInputLayout{},
 	m_pDR{},
 	m_CBuffer{},
 	m_batch{},
@@ -31,12 +31,15 @@ TitleLogo::TitleLogo(CommonResources* resources)
 	m_world{},
 	m_view{},
 	m_proj{},
-	m_ConstBuffer{}
-{}
+	m_ConstBuffer{},
+	m_pDrawPolygon{ DrawPolygon::GetInstance() },
+	m_pCreateShader{ CreateShader::GetInstance() }
+{
+	m_pCreateShader->Initialize(m_commonResources->GetDeviceResources()->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
+}
 
 TitleLogo::~TitleLogo()
 {
-	DrawPolygon::ReleasePositionTexture();
 }
 
 void TitleLogo::LoadTexture(const wchar_t* path)
@@ -54,30 +57,18 @@ void TitleLogo::Create(DX::DeviceResources* pDR)
 	// 画像の読み込み（2枚ともデフォルトは読み込み失敗でnullptr)
 	LoadTexture(L"Resources/Textures/Title.png");
 	// 板ポリゴンの描画用
-	DrawPolygon::InitializePositionTexture(m_pDR);
+	m_pDrawPolygon->InitializePositionTexture(m_pDR);
 }
 
 void TitleLogo::CreateShader()
 {
 	ID3D11Device1* device = m_pDR->GetD3DDevice();
-	//	コンパイルされたシェーダファイルを読み込み
-	KumachiLib::BinaryFile VSData = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/TitleScene/VS_Title.cso");
-	KumachiLib::BinaryFile PSData = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/TitleScene/PS_Title.cso");
-	//	インプットレイアウトの作成
-	device->CreateInputLayout(&INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), VSData.GetData(), VSData.GetSize(), m_inputLayout.GetAddressOf());
-	//	頂点シェーダ作成
-	if (FAILED(device->CreateVertexShader(VSData.GetData(), VSData.GetSize(), NULL, m_vertexShader.ReleaseAndGetAddressOf())))
-	{// エラー
-		MessageBox(0, L"CreateVertexShader Failed.", NULL, MB_OK);
-		return;
-	}
-	//	ピクセルシェーダ作成
-	if (FAILED(device->CreatePixelShader(PSData.GetData(), PSData.GetSize(), NULL, m_pixelShader.ReleaseAndGetAddressOf())))
-	{// エラー
-		MessageBox(0, L"CreatePixelShader Failed.", NULL, MB_OK);
-		return;
-	}
-	//	シェーダーにデータを渡すためのコンスタントバッファ生成
+	// 頂点シェーダーとピクセルシェーダーの作成
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/TitleScene/VS_Title.cso", m_vertexShader);
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/TitleScene/PS_Title.cso", m_pixelShader);
+	// インプットレイアウトを受け取る
+	m_pInputLayout = m_pCreateShader->GetInputLayout();
+	// シェーダーにデータを渡すためのコンスタントバッファ生成
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
 	bd.Usage = D3D11_USAGE_DEFAULT;
@@ -121,16 +112,16 @@ void TitleLogo::Render()
 	// 時間設定
 	m_ConstBuffer.time = SimpleMath::Vector4(m_time);
 	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	DrawPolygon::UpdateSubResources(context, m_CBuffer.Get(), &m_ConstBuffer);
+	m_pDrawPolygon->UpdateSubResources(context, m_CBuffer.Get(), &m_ConstBuffer);
 	// シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };
-	DrawPolygon::SetShaderBuffer(context, 0, 1, cb);
+	m_pDrawPolygon->SetShaderBuffer(context, 0, 1, cb);
 	// 描画準備
-	DrawPolygon::DrawStart(context, m_inputLayout.Get(), m_titleTexture);
+	m_pDrawPolygon->DrawStart(context, m_pInputLayout.Get(), m_titleTexture);
 	// 頂点シェーダもピクセルシェーダも、同じ値を渡す
-	DrawPolygon::SetShader(context, m_shaders, nullptr, 0);
+	m_pDrawPolygon->SetShader(context, m_shaders, nullptr, 0);
 	// 板ポリゴンを描画
-	DrawPolygon::DrawTexture(vertex);
+	m_pDrawPolygon->DrawTexture(vertex);
 	// シェーダの登録を解除しておく
-	DrawPolygon::ReleaseShader(context);
+	m_pDrawPolygon->ReleaseShader(context);
 }

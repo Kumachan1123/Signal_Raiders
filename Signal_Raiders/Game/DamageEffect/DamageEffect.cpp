@@ -40,9 +40,14 @@ DamageEffect::DamageEffect(CommonResources* resources)
 	, m_pPlayer{ nullptr }
 	, m_enemyDirection{  }
 	, m_playEffect{ false }
+	, m_pDrawPolygon{ DrawPolygon::GetInstance() }
+	, m_pCreateShader{ CreateShader::GetInstance() }
 {
 	// 色の初期化
 	m_constBuffer.colors = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 0.0f);
+	// シェーダー作成クラスの初期化
+	m_pCreateShader->Initialize(m_commonResources->GetDeviceResources()->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
+
 }
 
 /// <summary>
@@ -50,7 +55,6 @@ DamageEffect::DamageEffect(CommonResources* resources)
 /// </summary>
 DamageEffect::~DamageEffect()
 {
-	DrawPolygon::ReleasePositionTexture();
 }
 
 /// <summary>
@@ -86,7 +90,7 @@ void  DamageEffect::Create(DX::DeviceResources* pDR)
 	// 画像の読み込み（2枚ともデフォルトは読み込み失敗でnullptr)
 	LoadTexture(L"Resources/Textures/crisis.png");
 	// 板ポリゴン描画用
-	DrawPolygon::InitializePositionTexture(m_pDR);
+	m_pDrawPolygon->InitializePositionTexture(m_pDR);
 }
 
 
@@ -97,30 +101,12 @@ void  DamageEffect::CreateShader()
 {
 	ID3D11Device1* device = m_pDR->GetD3DDevice();
 
-	//	コンパイルされたシェーダファイルを読み込み
-	KumachiLib::BinaryFile VSData = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/DamageEffect/VS_Damage.cso");
-	KumachiLib::BinaryFile PSData = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/DamageEffect/PS_Damage.cso");
-
-	//	インプットレイアウトの作成
-	device->CreateInputLayout(&INPUT_LAYOUT[0],
-		static_cast<UINT>(INPUT_LAYOUT.size()),
-		VSData.GetData(), VSData.GetSize(),
-		m_inputLayout.GetAddressOf());
-
-	//	頂点シェーダ作成
-	if (FAILED(device->CreateVertexShader(VSData.GetData(), VSData.GetSize(), NULL, m_vertexShader.ReleaseAndGetAddressOf())))
-	{// エラー
-		MessageBox(0, L"CreateVertexShader Failed.", NULL, MB_OK);
-		return;
-	}
-
-	//	ピクセルシェーダ作成
-	if (FAILED(device->CreatePixelShader(PSData.GetData(), PSData.GetSize(), NULL, m_pixelShader.ReleaseAndGetAddressOf())))
-	{// エラー
-		MessageBox(0, L"CreatePixelShader Failed.", NULL, MB_OK);
-		return;
-	}
-
+	// 頂点シェーダー作成
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/DamageEffect/VS_Damage.cso", m_vertexShader);
+	// ピクセルシェーダー作成
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/DamageEffect/PS_Damage.cso", m_pixelShader);
+	// インプットレイアウトを受け取る
+	m_pInputLayout = m_pCreateShader->GetInputLayout();
 	//	シェーダーにデータを渡すためのコンスタントバッファ生成
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
@@ -204,17 +190,17 @@ void  DamageEffect::Render()
 	m_constBuffer.matProj = m_proj.Transpose();
 	m_constBuffer.matWorld = m_world.Transpose();
 	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	DrawPolygon::UpdateSubResources(context, m_cBuffer.Get(), &m_constBuffer);
+	m_pDrawPolygon->UpdateSubResources(context, m_cBuffer.Get(), &m_constBuffer);
 	// シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_cBuffer.Get() };
 	// 頂点シェーダもピクセルシェーダも、同じ値を渡す
-	DrawPolygon::SetShaderBuffer(context, 0, 1, cb);
+	m_pDrawPolygon->SetShaderBuffer(context, 0, 1, cb);
 	// 描画準備
-	DrawPolygon::DrawStart(context, m_inputLayout.Get(), m_texture);
+	m_pDrawPolygon->DrawStart(context, m_pInputLayout.Get(), m_texture);
 	// シェーダをセットする
-	DrawPolygon::SetShader(context, m_shaders, nullptr, 0);
+	m_pDrawPolygon->SetShader(context, m_shaders, nullptr, 0);
 	// 板ポリゴンを描画
-	DrawPolygon::DrawTexture(vertex);
+	m_pDrawPolygon->DrawTexture(vertex);
 	//	シェーダの登録を解除しておく
-	DrawPolygon::ReleaseShader(context);
+	m_pDrawPolygon->ReleaseShader(context);
 }

@@ -20,6 +20,7 @@
 #include <vector>
 #include "Libraries/MyLib/DebugString.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
+#include "Game/KumachiLib/CreateShader/CreateShader.h"
 class CommonResources;
 class Crisis
 {
@@ -42,7 +43,7 @@ private:
 	// 共通リソース
 	CommonResources* m_commonResources;
 	//	入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 
 	//	プリミティブバッチ
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_batch;
@@ -57,6 +58,11 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
+	// 描画クラス
+	DrawPolygon* m_pDrawPolygon;
+	// シェーダー作成クラス
+	CreateShader* m_pCreateShader;
+
 	//	ワールドビュープロジェクション行列
 	DirectX::SimpleMath::Matrix m_world;
 	DirectX::SimpleMath::Matrix m_view;

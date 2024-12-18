@@ -27,7 +27,7 @@ private:
 	// ベーシックエフェクト
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
 	// 入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	std::unique_ptr<VerticalAttackerModel>		m_pVerticalAttackerModel;// 敵のモデル
 	std::unique_ptr<EnemyAI>		m_enemyAI;// 敵のAI
 	std::unique_ptr<EnemyHPBar>		m_HPBar;// 敵のHPバー
@@ -36,6 +36,7 @@ private:
 	// プレイヤーのポインター
 	Player* m_pPlayer;
 	FPS_Camera* m_pCamera;
+
 	// 敵の情報
 	DirectX::SimpleMath::Vector3 m_position;		// 座標
 	DirectX::SimpleMath::Vector3 m_velocity;		// 速度

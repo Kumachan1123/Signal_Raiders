@@ -9,6 +9,7 @@
 #include <CommonStates.h>
 #include <vector>
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
+#include "Game/KumachiLib/CreateShader/CreateShader.h"
 class CommonResources;
 class Fade
 {
@@ -47,9 +48,13 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
 	//	入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	// 共通リソース
 	CommonResources* m_commonResources;
+	// 描画クラス
+	DrawPolygon* m_pDrawPolygon;
+	// シェーダー作成クラス
+	CreateShader* m_pCreateShader;
 	//	プリミティブバッチ
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_batch;
 	//	コモンステート
@@ -64,9 +69,13 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
+	//	ワールド行列
 	DirectX::SimpleMath::Matrix m_world;
+	//	ビュー行列
 	DirectX::SimpleMath::Matrix m_view;
+	//	プロジェクション行列
 	DirectX::SimpleMath::Matrix m_proj;
+	// フェード状態
 	FadeState m_fadeState;
 	// 時間
 	float m_time;
