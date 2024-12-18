@@ -77,21 +77,14 @@ void PlayerUI::Create(DX::DeviceResources* pDR
 // シェーダーの作成
 void PlayerUI::CreateShader()
 {
-	auto device = m_pDR->GetD3DDevice();
 	// シェーダーの作成
 	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/PlayerHP/VS_PlayerHP.cso", m_vertexShader);
 	m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/PlayerHP/GS_PlayerHP.cso", m_geometryShader);
 	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/PlayerHP/PS_PlayerHP.cso", m_pixelShader);
 	// インプットレイアウトを受け取る
 	m_pInputLayout = m_pCreateShader->GetInputLayout();
-	//	シェーダーにデータを渡すためのコンスタントバッファ生成
-	D3D11_BUFFER_DESC bd;
-	ZeroMemory(&bd, sizeof(bd));
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(ConstBuffer);
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bd.CPUAccessFlags = 0;
-	device->CreateBuffer(&bd, nullptr, &m_CBuffer);
+	// シェーダーにデータを渡すためのコンスタントバッファ生成
+	m_pCreateShader->CreateConstantBuffer(m_CBuffer, sizeof(ConstBuffer));
 	// シェーダーの構造体にシェーダーを渡す
 	m_shaders.vs = m_vertexShader.Get();
 	m_shaders.ps = m_pixelShader.Get();

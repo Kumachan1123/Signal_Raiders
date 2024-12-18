@@ -78,7 +78,6 @@ void UI::Create(DX::DeviceResources* pDR, const wchar_t* path
 
 void UI::CreateShader()
 {
-	auto device = m_pDR->GetD3DDevice();// デバイス
 	// シェーダーを作成する
 	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Menu/VS_Menu.cso", m_pVertexShader);
 	m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/Menu/GS_Menu.cso", m_pGeometryShader);
@@ -86,13 +85,7 @@ void UI::CreateShader()
 	// インプットレイアウトを受け取る
 	m_pInputLayout = m_pCreateShader->GetInputLayout();
 	//	シェーダーにデータを渡すためのコンスタントバッファ生成
-	D3D11_BUFFER_DESC bd;
-	ZeroMemory(&bd, sizeof(bd));
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(ConstBuffer);
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bd.CPUAccessFlags = 0;
-	device->CreateBuffer(&bd, nullptr, &m_pCBuffer);
+	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));
 	// シェーダーの構造体にシェーダーを渡す
 	m_shaders.vs = m_pVertexShader.Get();
 	m_shaders.gs = m_pGeometryShader.Get();

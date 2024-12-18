@@ -49,9 +49,6 @@ void  Wall::Create(DX::DeviceResources* pDR)
 }
 void Wall::CreateShader()
 {
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
-	ID3D11Device1* device = m_pDR->GetD3DDevice();
 	// 頂点シェーダー作成
 	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/TitleScene/VS_Title.cso", m_vertexShader);
 	// ピクセルシェーダ作成
@@ -59,13 +56,7 @@ void Wall::CreateShader()
 	// インプットレイアウトを受け取る
 	m_pInputLayout = m_pCreateShader->GetInputLayout();
 	//	シェーダーにデータを渡すためのコンスタントバッファ生成
-	D3D11_BUFFER_DESC bd;
-	ZeroMemory(&bd, sizeof(bd));
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(ConstBuffer);
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bd.CPUAccessFlags = 0;
-	device->CreateBuffer(&bd, nullptr, &m_cBuffer);
+	m_pCreateShader->CreateConstantBuffer(m_cBuffer, sizeof(ConstBuffer));
 	// シェーダーの構造体にシェーダーを渡す
 	m_shaders.vs = m_vertexShader.Get();
 	m_shaders.ps = m_pixelShader.Get();

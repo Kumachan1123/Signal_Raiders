@@ -29,9 +29,7 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC>  DamageEffect::INPUT_LAYOUT =
 	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
 
-/// <summary>
-/// コンストラクタ
-/// </summary>
+// コンストラクタ
 DamageEffect::DamageEffect(CommonResources* resources)
 	:m_pDR{ nullptr }
 	, m_time{ 0.0f }
@@ -50,26 +48,19 @@ DamageEffect::DamageEffect(CommonResources* resources)
 
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
+// デストラクタ
 DamageEffect::~DamageEffect()
 {
 }
 
-/// <summary>
-/// 初期化関数
-/// </summary>
+// 初期化
 void DamageEffect::Initialize(Player* pPlayer)
 {
 	m_pPlayer = pPlayer;
 	m_playEffect = true;
 }
 
-/// <summary>
-/// テクスチャリソース読み込み関数
-/// </summary>
-/// <param name="path">相対パス(Resources/Textures/・・・.pngなど）</param>
+// テクスチャリソース読み込み関数
 void  DamageEffect::LoadTexture(const wchar_t* path)
 {
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;
@@ -78,10 +69,7 @@ void  DamageEffect::LoadTexture(const wchar_t* path)
 	m_texture.push_back(texture);
 }
 
-/// <summary>
-/// 生成関数
-/// </summary>
-/// <param name="pDR">ユーザーリソース等から持ってくる</param>
+// 生成関数
 void  DamageEffect::Create(DX::DeviceResources* pDR)
 {
 	m_pDR = pDR;
@@ -94,13 +82,9 @@ void  DamageEffect::Create(DX::DeviceResources* pDR)
 }
 
 
-/// <summary>
-/// Shader作成部分だけ分離した関数
-/// </summary>
+// シェーダー作成部分
 void  DamageEffect::CreateShader()
 {
-	ID3D11Device1* device = m_pDR->GetD3DDevice();
-
 	// 頂点シェーダー作成
 	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/DamageEffect/VS_Damage.cso", m_vertexShader);
 	// ピクセルシェーダー作成
@@ -108,14 +92,7 @@ void  DamageEffect::CreateShader()
 	// インプットレイアウトを受け取る
 	m_pInputLayout = m_pCreateShader->GetInputLayout();
 	//	シェーダーにデータを渡すためのコンスタントバッファ生成
-	D3D11_BUFFER_DESC bd;
-	ZeroMemory(&bd, sizeof(bd));
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(ConstBuffer);
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bd.CPUAccessFlags = 0;
-	device->CreateBuffer(&bd, nullptr, &m_cBuffer);
-
+	m_pCreateShader->CreateConstantBuffer(m_cBuffer, sizeof(ConstBuffer));
 	// シェーダーの構造体にセット
 	m_shaders.vs = m_vertexShader.Get();
 	m_shaders.ps = m_pixelShader.Get();
@@ -167,11 +144,7 @@ void  DamageEffect::Update(float elapsedTime)
 	else                                           m_constBuffer.uv = DirectX::SimpleMath::Vector2(UV_C, UV_H); // 後
 }
 
-/// <summary>
-/// 描画関数
-/// </summary>
-/// <param name="view">ビュー行列</param>
-/// <param name="proj">射影行列</param>
+// 描画
 void  DamageEffect::Render()
 {
 

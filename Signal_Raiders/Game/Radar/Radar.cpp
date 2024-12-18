@@ -51,7 +51,6 @@ void Radar::LoadTexture(const wchar_t* path, std::vector<Microsoft::WRL::ComPtr<
 //---------------------------------------------------------
 void Radar::Initialize(Player* pPlayer, Enemies* pEnemies)
 {
-	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	m_pPlayer = pPlayer;
 	m_pEnemies = pEnemies;
 	// 板ポリゴン描画準備
@@ -67,13 +66,7 @@ void Radar::Initialize(Player* pPlayer, Enemies* pEnemies)
 	// インプットレイアウトを受け取る
 	m_pInputLayout = m_pCreateShader->GetInputLayout();
 	//	シェーダーにデータを渡すためのコンスタントバッファ生成
-	D3D11_BUFFER_DESC bd;
-	ZeroMemory(&bd, sizeof(bd));
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(ConstBuffer);
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bd.CPUAccessFlags = 0;
-	device->CreateBuffer(&bd, nullptr, &m_cBuffer);
+	m_pCreateShader->CreateConstantBuffer(m_cBuffer, sizeof(ConstBuffer));
 	// シェーダーの構造体にシェーダーを渡す
 	m_shaders.vs = m_vertexShader.Get();
 	m_shaders.ps = m_pixelShader.Get();

@@ -14,6 +14,8 @@ CreateShader* const CreateShader::GetInstance()
 	return m_instance.get();
 }
 
+
+
 CreateShader::CreateShader()
 	: m_device(nullptr)
 	, m_pIDE(nullptr)
@@ -80,4 +82,15 @@ void CreateShader::CreateGeometryShader(const wchar_t* fileName, Microsoft::WRL:
 	}
 
 }
+//	シェーダーにデータを渡すためのコンスタントバッファ生成
+void CreateShader::CreateConstantBuffer(Microsoft::WRL::ComPtr<ID3D11Buffer>& cBuffer, UINT bufferSize)
+{
+	D3D11_BUFFER_DESC bd;
+	ZeroMemory(&bd, sizeof(bd));
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = bufferSize;
+	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bd.CPUAccessFlags = 0;
+	m_device->CreateBuffer(&bd, nullptr, &cBuffer);
 
+}

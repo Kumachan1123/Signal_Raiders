@@ -71,20 +71,13 @@ void  ReadyGo::Create(DX::DeviceResources* pDR)
 // シェーダー作成部分
 void  ReadyGo::CreateShader()
 {
-	ID3D11Device1* device = m_pDR->GetD3DDevice();
 	// 頂点シェーダーをピクセルシェーダーを作成
 	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/ReadyGo/VS_ReadyGo.cso", m_vertexShader);
 	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/ReadyGo/PS_ReadyGo.cso", m_pixelShader);
 	// インプットレイアウトを受け取る
 	m_pInputLayout = m_pCreateShader->GetInputLayout();
-	// シェーダーにデータを渡すためのコンスタントバッファ生成
-	D3D11_BUFFER_DESC bd;
-	ZeroMemory(&bd, sizeof(bd));
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(ConstBuffer);
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bd.CPUAccessFlags = 0;
-	device->CreateBuffer(&bd, nullptr, &m_cBuffer);
+	//	シェーダーにデータを渡すためのコンスタントバッファ生成
+	m_pCreateShader->CreateConstantBuffer(m_cBuffer, sizeof(ConstBuffer));
 	// シェーダーの構造体にシェーダーを渡す
 	m_shaders.vs = m_vertexShader.Get();
 	m_shaders.ps = m_pixelShader.Get();

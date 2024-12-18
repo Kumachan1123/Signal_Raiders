@@ -81,7 +81,6 @@ void Particle::Initialize(CommonResources* resources)
 
 void Particle::CreateShader()
 {
-	ID3D11Device* device = m_pDR->GetD3DDevice();
 	// シェーダーの作成
 	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Particle/VS_Particle.cso", m_vertexShader);
 	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Particle/PS_Particle.cso", m_pixelShader);
@@ -89,13 +88,7 @@ void Particle::CreateShader()
 	// インプットレイアウトを受け取る
 	m_pInputLayout = m_pCreateShader->GetInputLayout();
 	// 定数バッファ作成
-	D3D11_BUFFER_DESC desc = {};
-	ZeroMemory(&desc, sizeof(desc));
-	desc.Usage = D3D11_USAGE_DEFAULT;
-	desc.ByteWidth = sizeof(ConstBuffer);
-	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	desc.CPUAccessFlags = 0;
-	device->CreateBuffer(&desc, nullptr, &m_CBuffer);
+	m_pCreateShader->CreateConstantBuffer(m_CBuffer, sizeof(ConstBuffer));
 	// シェーダーの構造体にシェーダーを渡す
 	m_shaders.vs = m_vertexShader.Get();
 	m_shaders.ps = m_pixelShader.Get();
