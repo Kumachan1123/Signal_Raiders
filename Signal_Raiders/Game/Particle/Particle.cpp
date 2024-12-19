@@ -180,18 +180,18 @@ void Particle::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Mat
 	m_constantBuffer.colors = SimpleMath::Vector4(1, 1, 1, 0);
 
 	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	m_pDrawPolygon->UpdateSubResources(context, m_CBuffer.Get(), &m_constantBuffer);
+	m_pDrawPolygon->UpdateSubResources(m_CBuffer.Get(), &m_constantBuffer);
 	// シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };
-	m_pDrawPolygon->SetShaderBuffer(context, 0, 1, cb);
+	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
 	// 描画準備
-	m_pDrawPolygon->DrawStart(context, m_pInputLayout.Get(), m_texture);
+	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_texture);
 	// シェーダをセットする
-	m_pDrawPolygon->SetShader(context, m_shaders, nullptr, 0);
+	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);
 	// 指定した座標を中心に、シェーダ側で板ポリゴンを生成・描画させる
 	m_pDrawPolygon->DrawColorTexture(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &m_vertices[0], m_vertices.size());
 	// シェーダの登録を解除しておく
-	m_pDrawPolygon->ReleaseShader(context);
+	m_pDrawPolygon->ReleaseShader();
 }
 
 // ビルボードの作成

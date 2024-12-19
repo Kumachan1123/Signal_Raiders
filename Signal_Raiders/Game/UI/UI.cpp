@@ -114,18 +114,18 @@ void UI::Render()
 	m_constBuffer.color = Vector3(0.5, 0.5, 0.5);
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	m_pDrawPolygon->UpdateSubResources(context, m_pCBuffer.Get(), &m_constBuffer);
+	m_pDrawPolygon->UpdateSubResources(m_pCBuffer.Get(), &m_constBuffer);
 	//	シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };
-	m_pDrawPolygon->SetShaderBuffer(context, 0, 1, cb);
+	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
 	// 描画準備
-	m_pDrawPolygon->DrawStart(context, m_pInputLayout.Get(), m_pTextures);
+	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pTextures);
 	//	シェーダをセットする
-	m_pDrawPolygon->SetShader(context, m_shaders, nullptr, 0);
+	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);
 	//	板ポリゴンを描画
 	m_pDrawPolygon->DrawColorTexture(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex[0], 1);
 	//	シェーダの登録を解除しておく
-	m_pDrawPolygon->ReleaseShader(context);
+	m_pDrawPolygon->ReleaseShader();
 }
 
 void UI::SetWindowSize(const int& width, const int& height)

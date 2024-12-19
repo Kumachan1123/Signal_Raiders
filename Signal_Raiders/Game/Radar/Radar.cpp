@@ -132,11 +132,11 @@ void Radar::DrawBackground()
 	// バッファを作成
 	CreateBuffer(context);
 	// 描画準備
-	m_pDrawPolygon->DrawStart(context, m_pInputLayout.Get(), m_backTextures);
+	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_backTextures);
 	// ポリゴンを描画
 	m_pDrawPolygon->DrawTexture(vertex);
 	// シェーダの登録を解除しておく
-	m_pDrawPolygon->ReleaseShader(context);
+	m_pDrawPolygon->ReleaseShader();
 }
 
 //---------------------------------------------------------
@@ -160,11 +160,11 @@ void Radar::DrawPlayer()
 	// バッファを作成
 	CreateBuffer(context);
 	// 描画準備
-	m_pDrawPolygon->DrawStart(context, m_pInputLayout.Get(), m_playerTextures);
+	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_playerTextures);
 	// 板ポリゴンを描画
 	m_pDrawPolygon->DrawTexture(playerVertex);
 	// シェーダの登録を解除しておく
-	m_pDrawPolygon->ReleaseShader(context);
+	m_pDrawPolygon->ReleaseShader();
 }
 
 //---------------------------------------------------------
@@ -205,7 +205,7 @@ void Radar::DrawEnemy()
 			radarPos.y > -1.0f + m_enemySize.y && radarPos.y < -0.16f + m_enemySize.y)
 		{
 			// 描画準備
-			m_pDrawPolygon->DrawStart(context, m_pInputLayout.Get(), m_enemyTextures);
+			m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_enemyTextures);
 			VertexPositionTexture enemyVertex[4] =
 			{
 				//	頂点情報													UV情報
@@ -219,7 +219,7 @@ void Radar::DrawEnemy()
 		}
 	}
 	//	シェーダの登録を解除しておく
-	m_pDrawPolygon->ReleaseShader(context);
+	m_pDrawPolygon->ReleaseShader();
 }
 
 
@@ -231,11 +231,11 @@ void Radar::CreateBuffer(ID3D11DeviceContext1* context)
 	// 時間設定
 	m_constBuffer.time = SimpleMath::Vector4(m_time);
 	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	m_pDrawPolygon->UpdateSubResources(context, m_cBuffer.Get(), &m_constBuffer);
+	m_pDrawPolygon->UpdateSubResources(m_cBuffer.Get(), &m_constBuffer);
 	// シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_cBuffer.Get() };
 	// 頂点シェーダもピクセルシェーダも、同じ値を渡す
-	m_pDrawPolygon->SetShaderBuffer(context, 0, 1, cb);
+	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
 	// シェーダをセットする
-	m_pDrawPolygon->SetShader(context, m_shaders, nullptr, 0);
+	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);
 }

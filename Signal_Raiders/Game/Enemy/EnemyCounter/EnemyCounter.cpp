@@ -197,17 +197,17 @@ void EnemyCounter::DrawQuad(
 	m_constBuffer.height = Vector4(frameRows);
 	m_constBuffer.width = Vector4(frameCols);
 	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	m_pDrawPolygon->UpdateSubResources(context, m_cBuffer.Get(), &m_constBuffer);
+	m_pDrawPolygon->UpdateSubResources(m_cBuffer.Get(), &m_constBuffer);
 	// シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_cBuffer.Get() };
 	// 頂点シェーダもピクセルシェーダも、同じ値を渡す
-	m_pDrawPolygon->SetShaderBuffer(context, 0, 1, cb);
+	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
 	// 描画準備
-	m_pDrawPolygon->DrawStart(context, m_pInputLayout.Get(), texture);
+	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), texture);
 	// シェーダをセットする
-	m_pDrawPolygon->SetShader(context, m_shaders, nullptr, 0);
+	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);
 	// 板ポリゴンを描画
 	m_pDrawPolygon->DrawTexture(vertices);
 	//	シェーダの登録を解除しておく
-	m_pDrawPolygon->ReleaseShader(context);
+	m_pDrawPolygon->ReleaseShader();
 }

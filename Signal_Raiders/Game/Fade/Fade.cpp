@@ -138,17 +138,17 @@ void Fade::Render()
 	cbuff.fadeAmount = m_time;
 	cbuff.num = m_fadeTexNum;	// 画像番号
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	m_pDrawPolygon->UpdateSubResources(context, m_CBuffer.Get(), &cbuff);
+	m_pDrawPolygon->UpdateSubResources(m_CBuffer.Get(), &cbuff);
 	//	シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };
 	//	頂点シェーダもピクセルシェーダも、同じ値を渡す
-	m_pDrawPolygon->SetShaderBuffer(context, 0, 1, cb);
+	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
 	//	描画準備
-	m_pDrawPolygon->DrawStart(context, m_pInputLayout.Get(), m_texture);
+	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_texture);
 	//	シェーダをセットする
-	m_pDrawPolygon->SetShader(context, m_shaders, nullptr, 0);
+	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);
 	//	板ポリゴンを描画
 	m_pDrawPolygon->DrawTexture(vertex);
 	//	シェーダの登録を解除しておく
-	m_pDrawPolygon->ReleaseShader(context);
+	m_pDrawPolygon->ReleaseShader();
 }

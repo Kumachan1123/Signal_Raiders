@@ -110,18 +110,18 @@ void PlayerUI::Render()
 	m_constBuffer.windowSize = SimpleMath::Vector4(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 1, 1);
 	m_constBuffer.renderRatio = m_renderRatio - m_renderRatioOffset;
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	m_pDrawPolygon->UpdateSubResources(context, m_CBuffer.Get(), &m_constBuffer);
+	m_pDrawPolygon->UpdateSubResources(m_CBuffer.Get(), &m_constBuffer);
 	//	シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };
-	m_pDrawPolygon->SetShaderBuffer(context, 0, 1, cb);
+	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
 	// 描画準備
-	m_pDrawPolygon->DrawStart(context, m_pInputLayout.Get(), m_textures);
+	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_textures);
 	//	シェーダをセットする
-	m_pDrawPolygon->SetShader(context, m_shaders, nullptr, 0);
+	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);
 	//	板ポリゴンを描画
 	m_pDrawPolygon->DrawColorTexture(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex[0], 1);
 	//	シェーダの登録を解除しておく
-	m_pDrawPolygon->ReleaseShader(context);
+	m_pDrawPolygon->ReleaseShader();
 
 }
 
