@@ -9,7 +9,11 @@
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
-
+const std::vector<D3D11_INPUT_ELEMENT_DESC>  EnemyCounter::INPUT_LAYOUT =
+{
+	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+};
 //---------------------------------------------------------
 // コンストラクタ
 //---------------------------------------------------------
@@ -33,8 +37,9 @@ EnemyCounter::EnemyCounter()
 	m_verticesNowEnemy10{},
 	m_verticesNowEnemy1{},
 	m_verticesRemaining{},
-	m_verticesSlash{}
-
+	m_verticesSlash{},
+	m_pCreateShader{ CreateShader::GetInstance() },
+	m_pDrawPolygon{ DrawPolygon::GetInstance() }
 {}
 
 //---------------------------------------------------------
@@ -45,12 +50,12 @@ EnemyCounter::~EnemyCounter() {}
 //---------------------------------------------------------
 // 画像を読み込む
 //---------------------------------------------------------
-void EnemyCounter::LoadTexture(const wchar_t* path, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& tex)
+void EnemyCounter::LoadTexture(const wchar_t* path, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& tex)
 {
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;
 	DirectX::CreateWICTextureFromFile(device, path, nullptr, texture.ReleaseAndGetAddressOf());
-	tex = texture;
+	tex.push_back(texture);
 }
 
 //---------------------------------------------------------
@@ -65,27 +70,21 @@ void EnemyCounter::Initialize(CommonResources* commonResources)
 	LoadTexture(L"Resources/Textures/number.png", m_texture);//	数字
 	LoadTexture(L"Resources/Textures/remaining.png", m_remaining);//	「残り：」
 	LoadTexture(L"Resources/Textures/slash.png", m_slash);//	「/」
-	// プリミティブバッチ作成
-	m_primitiveBatch = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(context);
-
-	// エフェクトの作成 
-	m_batchEffect = std::make_unique<AlphaTestEffect>(device);
-	m_batchEffect->SetAlphaFunction(D3D11_COMPARISON_GREATER);
-	m_batchEffect->SetReferenceAlpha(1); // 0ではなく1に設定して完全な黒を除外する
-
-	// 入力レイアウト生成
-	void const* shaderByteCode;
-	size_t byteCodeLength;
-	m_batchEffect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
-	device->CreateInputLayout(
-		VertexPositionTexture::InputElements,
-		VertexPositionTexture::InputElementCount,
-		shaderByteCode, byteCodeLength, m_pInputLayout.GetAddressOf()
-	);
-
-	// 共通ステート生成
-	m_states = std::make_unique<CommonStates>(device);
-
+	// 板ポリゴン描画用
+	m_pDrawPolygon->InitializePositionTexture(m_commonResources->GetDeviceResources());
+	// シェーダー作成クラスの初期化
+	m_pCreateShader->Initialize(m_commonResources->GetDeviceResources()->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
+	// シェーダーの作成
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Counter/VS_Counter.cso", m_vertexShader);
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Counter/PS_Counter.cso", m_pixelShader);
+	// インプットレイアウトを受け取る
+	m_pInputLayout = m_pCreateShader->GetInputLayout();
+	// シェーダーにデータを渡すためのコンスタントバッファ生成
+	m_pCreateShader->CreateConstantBuffer(m_cBuffer, sizeof(ConstBuffer));
+	// シェーダーの構造体にセット
+	m_shaders.vs = m_vertexShader.Get();
+	m_shaders.ps = m_pixelShader.Get();
+	m_shaders.gs = nullptr;
 	// 各頂点の初期化
 	for (int i = 0; i < 4; i++)
 	{
@@ -116,15 +115,8 @@ void EnemyCounter::Update(float elapsedTime)
 //---------------------------------------------------------
 void EnemyCounter::Render()
 {
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-
-
-	// 深度ステンシル状態を設定（深度バッファを有効にする）
-
-	context->OMSetDepthStencilState(m_states->DepthNone(), 0);
-	context->OMSetBlendState(m_states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
 	DrawQuad(m_remaining, m_verticesRemaining, 0.4f, 1.0f, 0.25f, 0.18f, 0, 1, 1); // 「残り：」
-	DrawQuad(m_slash, m_verticesSlash, 0.8f, 1.0f, 0.05f, 0.18f, 0, 1, 1);       // 「/」
+	DrawQuad(m_slash, m_verticesSlash, 0.8f, 1.0f, 0.05f, 0.18f, 0, 1, 1); // 「/」
 	DrawEnemyIndex1();// 総数の1の位を描画
 	DrawEnemyIndex10();// 総数の10の位を描画
 	DrawNowEnemy1();// 現在の敵の数の1の位を描画
@@ -185,31 +177,37 @@ void EnemyCounter::DrawEnemyIndex1()
 //---------------------------------------------------------
 // テクスチャを描画
 //---------------------------------------------------------
-void EnemyCounter::DrawQuad(Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& texture, DirectX::VertexPositionTexture* vertices, float startX, float startY, float width, float height, int frameIndex, int frameCols, int frameRows)
+void EnemyCounter::DrawQuad(
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& texture,
+	DirectX::VertexPositionTexture* vertices,
+	float startX, float startY, float width, float height,
+	int frameIndex, int frameCols, int frameRows)
 {
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-
-	// フレーム位置の計算
-	int currentRow = frameIndex / frameCols;
-	int currentCol = frameIndex % frameCols;
-
-	// テクスチャ座標の計算
-	float uMin = static_cast<float>(currentCol) / frameCols;
-	float vMin = static_cast<float>(currentRow) / frameRows;
-	float uMax = static_cast<float>(currentCol + 1) / frameCols;
-	float vMax = static_cast<float>(currentRow + 1) / frameRows;
-
 	// 頂点座標の設定
-	vertices[0] = { VertexPositionTexture(Vector3(startX, startY, 0), Vector2(uMin, vMin)) };
-	vertices[1] = { VertexPositionTexture(Vector3(startX + width, startY, 0), Vector2(uMax, vMin)) };
-	vertices[2] = { VertexPositionTexture(Vector3(startX + width, startY - height, 0), Vector2(uMax, vMax)) };
-	vertices[3] = { VertexPositionTexture(Vector3(startX, startY - height, 0), Vector2(uMin, vMax)) };
+	vertices[0] = { VertexPositionTexture(Vector3(startX, startY, 0), Vector2(0, 0)) };
+	vertices[1] = { VertexPositionTexture(Vector3(startX + width, startY, 0), Vector2(1, 0)) };
+	vertices[2] = { VertexPositionTexture(Vector3(startX + width, startY - height, 0), Vector2(1, 1)) };
+	vertices[3] = { VertexPositionTexture(Vector3(startX, startY - height, 0), Vector2(0, 1)) };
+	m_constBuffer.matWorld = Matrix::Identity;
+	m_constBuffer.matView = Matrix::Identity;
+	m_constBuffer.matProj = Matrix::Identity;
 
-	// テクスチャ適用と描画
-	m_batchEffect->SetTexture(texture.Get());
-	m_batchEffect->Apply(context);
-	context->IASetInputLayout(m_pInputLayout.Get());
-	m_primitiveBatch->Begin();
-	m_primitiveBatch->DrawQuad(vertices[0], vertices[1], vertices[2], vertices[3]);
-	m_primitiveBatch->End();
+	m_constBuffer.count = Vector4(frameIndex);
+	m_constBuffer.height = Vector4(frameRows);
+	m_constBuffer.width = Vector4(frameCols);
+	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
+	m_pDrawPolygon->UpdateSubResources(context, m_cBuffer.Get(), &m_constBuffer);
+	// シェーダーにバッファを渡す
+	ID3D11Buffer* cb[1] = { m_cBuffer.Get() };
+	// 頂点シェーダもピクセルシェーダも、同じ値を渡す
+	m_pDrawPolygon->SetShaderBuffer(context, 0, 1, cb);
+	// 描画準備
+	m_pDrawPolygon->DrawStart(context, m_pInputLayout.Get(), texture);
+	// シェーダをセットする
+	m_pDrawPolygon->SetShader(context, m_shaders, nullptr, 0);
+	// 板ポリゴンを描画
+	m_pDrawPolygon->DrawTexture(vertices);
+	//	シェーダの登録を解除しておく
+	m_pDrawPolygon->ReleaseShader(context);
 }

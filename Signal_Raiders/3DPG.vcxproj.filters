@@ -470,6 +470,7 @@
     <None Include="HLSL\Particle\Particle.hlsli" />
     <None Include="fmodL.dll" />
     <None Include="fmod.dll" />
+    <None Include="HLSL\Counter\Counter.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Shadow\PS_Shadow.hlsl">
@@ -496,5 +497,8 @@
     <FxCompile Include="HLSL\Particle\VS_Particle.hlsl" />
     <FxCompile Include="HLSL\ReadyGo\PS_ReadyGo.hlsl" />
     <FxCompile Include="HLSL\ReadyGo\VS_ReadyGo.hlsl" />
+    <FxCompile Include="HLSL\Counter\PS_Counter.hlsl" />
+    <FxCompile Include="HLSL\Counter\VS_Counter.hlsl" />
+    <FxCompile Include="HLSL\Counter\GS_Counter.hlsl" />
   </ItemGroup>
 </Project>
