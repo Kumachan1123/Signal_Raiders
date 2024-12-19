@@ -12,9 +12,7 @@ public:
 	enum class ParticleType
 	{
 		ENEMY_DEAD = 0,
-		BOSS_DEAD,
 		ENEMY_HIT,
-		ENEMY_SPAWN,
 		NONE
 	};
 private:
