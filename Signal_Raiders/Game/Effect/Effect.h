@@ -4,6 +4,8 @@
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
 #include "Libraries/MyLib/DebugString.h"
+#include "Game/KumachiLib/CreateShader/CreateShader.h"
+#include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 class CommonResources;
 
 class Effect
@@ -16,7 +18,17 @@ public:
 		NONE
 	};
 private:
+	// データ受け渡し用コンスタントバッファ(送信側)
+	struct ConstBuffer
+	{
+		DirectX::SimpleMath::Matrix matWorld;   // ワールド行列
+		DirectX::SimpleMath::Matrix matView;    // ビュー行列
+		DirectX::SimpleMath::Matrix matProj;    // プロジェクション行列
+		DirectX::SimpleMath::Vector4 count;     // カウント
+		DirectX::SimpleMath::Vector4 height;    // 高さ
+		DirectX::SimpleMath::Vector4 width;     // 幅
 
+	}m_constBuffer;
 
 	// 共通リソース
 	CommonResources* m_commonResources;
@@ -87,5 +99,7 @@ public:
 public:
 	bool IsPlaying() const { return m_isPlaying; };
 	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; };
+private:
+	void LoadTexture(const wchar_t* path, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& tex);
 
 };

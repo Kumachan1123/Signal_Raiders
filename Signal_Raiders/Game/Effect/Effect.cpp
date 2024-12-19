@@ -98,7 +98,6 @@ void Effect::Update(float elapsedTime)
 	}
 	if (m_anim == m_frameRows * m_frameCols)
 	{
-
 		m_isPlaying = false;// 再生終了
 	}
 }
@@ -107,40 +106,30 @@ void Effect::Render(ID3D11DeviceContext1* context, SimpleMath::Matrix view, Simp
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-
 	int currentRow = m_anim / m_frameCols;
 	int currentCol = m_anim % m_frameCols;
-
-
-
 	// テクスチャ座標の計算
 	float uMin = static_cast<float>(currentCol) / m_frameCols;
 	float vMin = static_cast<float>(currentRow) / m_frameRows;
 	float uMax = static_cast<float>(currentCol + 1) / m_frameCols;
 	float vMax = static_cast<float>(currentRow + 1) / m_frameRows;
-
 	// 頂点情報
 	// 頂点情報（板ポリゴンの頂点）を上下反転
 	m_vertices[0] = { VertexPositionTexture(SimpleMath::Vector3(m_vertexMinX, m_vertexMaxY, 0), SimpleMath::Vector2(uMin, vMax)) };
 	m_vertices[1] = { VertexPositionTexture(SimpleMath::Vector3(m_vertexMaxX, m_vertexMaxY, 0), SimpleMath::Vector2(uMin, vMin)) };
 	m_vertices[2] = { VertexPositionTexture(SimpleMath::Vector3(m_vertexMaxX,m_vertexMinY, 0), SimpleMath::Vector2(uMax, vMin)) };
 	m_vertices[3] = { VertexPositionTexture(SimpleMath::Vector3(m_vertexMinX,m_vertexMinY, 0), SimpleMath::Vector2(uMax, vMax)) };
-
 	// プリミティブバッチ作成
 	m_Batch = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(context);
-
 	VertexPositionTexture billboardVertex[4]{};
 	for (int i = 0; i < 4; i++)
 	{
 		billboardVertex[i] = m_vertices[i];
-
 		// 大きさを変える場合は最初にかける
 		billboardVertex[i].position.x *= m_scale;
 		billboardVertex[i].position.y *= m_scale;
-
 		// 高さをちょっと下げる
 		billboardVertex[i].position.y -= m_offSetY;
-
 	}
 
 	// ビルボード行列を作成
@@ -148,42 +137,30 @@ void Effect::Render(ID3D11DeviceContext1* context, SimpleMath::Matrix view, Simp
 	billboardMatrix._41 = 0.0f;
 	billboardMatrix._42 = 0.0f;
 	billboardMatrix._43 = 0.0f;
-
-
 	// ビルボードをアフィン変換
 	Matrix worldBillboard = m_world * billboardMatrix;
 	worldBillboard *= Matrix::CreateTranslation(m_position);
-
 	// 深度ステンシル状態を設定（深度バッファを有効にする）
-
 	context->OMSetDepthStencilState(m_states->DepthDefault(), 0);
 	context->OMSetBlendState(m_states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
-
 	// カリングは左周り（反時計回り）
 	context->RSSetState(m_states->CullCounterClockwise());
-
 	// テクスチャサンプラーの設定（クランプテクスチャアドレッシングモード）
 	ID3D11SamplerState* samplers[1] = { m_states->AnisotropicWrap() };
 	context->PSSetSamplers(0, 1, samplers);
-
 	//	不透明のみ描画する設定 
 	m_batchEffect->SetAlphaFunction(D3D11_COMPARISON_GREATER);
 	m_batchEffect->SetReferenceAlpha(0);
-
-
 	m_batchEffect->SetWorld(worldBillboard);
 	m_batchEffect->SetView(view);
 	m_batchEffect->SetProjection(proj);
 	m_batchEffect->SetTexture(m_texture.Get());
 	m_batchEffect->Apply(context);
 	context->IASetInputLayout(m_InputLayout.Get());
-
 	//	半透明部分を描画 
 	m_Batch->Begin();
 	m_Batch->DrawQuad(billboardVertex[0], billboardVertex[1], billboardVertex[2], billboardVertex[3]);
 	m_Batch->End();
-
-
 }
 
 void Effect::Finalize()
