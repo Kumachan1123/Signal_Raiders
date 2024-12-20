@@ -120,8 +120,6 @@ void Wall::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-
 	// シェーダーに渡す追加のバッファを作成する(ConstBuffer)
 	m_constBuffer.matView = view.Transpose();
 	m_constBuffer.matProj = proj.Transpose();

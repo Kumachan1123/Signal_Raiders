@@ -97,7 +97,6 @@ void PlayerUI::CreateShader()
 /// </summary>
 void PlayerUI::Render()
 {
-	auto context = m_pDR->GetD3DDeviceContext();
 	//	’¸“_î•ñ
 	VertexPositionColorTexture vertex[1] = {
 		VertexPositionColorTexture(

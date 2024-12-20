@@ -64,8 +64,6 @@ void EnemyCounter::LoadTexture(const wchar_t* path, std::vector<Microsoft::WRL::
 void EnemyCounter::Initialize(CommonResources* commonResources)
 {
 	m_commonResources = commonResources;
-	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	// テクスチャの読み込み
 	LoadTexture(L"Resources/Textures/number.png", m_texture);//	数字
 	LoadTexture(L"Resources/Textures/remaining.png", m_remaining);//	「残り：」
@@ -183,7 +181,6 @@ void EnemyCounter::DrawQuad(
 	float startX, float startY, float width, float height,
 	int frameIndex, int frameCols, int frameRows)
 {
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	// 頂点座標の設定
 	vertices[0] = { VertexPositionTexture(Vector3(startX, startY, 0), Vector2(0, 0)) };
 	vertices[1] = { VertexPositionTexture(Vector3(startX + width, startY, 0), Vector2(1, 0)) };
@@ -193,9 +190,9 @@ void EnemyCounter::DrawQuad(
 	m_constBuffer.matView = Matrix::Identity;
 	m_constBuffer.matProj = Matrix::Identity;
 
-	m_constBuffer.count = Vector4(frameIndex);
-	m_constBuffer.height = Vector4(frameRows);
-	m_constBuffer.width = Vector4(frameCols);
+	m_constBuffer.count = Vector4((float)(frameIndex));
+	m_constBuffer.height = Vector4((float)(frameRows));
+	m_constBuffer.width = Vector4((float)(frameCols));
 	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	m_pDrawPolygon->UpdateSubResources(m_cBuffer.Get(), &m_constBuffer);
 	// シェーダーにバッファを渡す

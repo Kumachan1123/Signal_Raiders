@@ -139,7 +139,6 @@ void Particle::Update(float elapsedTime)
 void Particle::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
 	if (m_timer >= 1.9f)return;
-	auto context = m_pDR->GetD3DDeviceContext();
 	DirectX::SimpleMath::Vector3 cameraDir = m_cameraTarget - m_cameraPosition;
 	cameraDir.Normalize();
 	m_particleUtility.sort(

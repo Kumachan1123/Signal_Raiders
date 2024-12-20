@@ -125,8 +125,6 @@ void Result::Update(float elapsedTime)
 
 void Result::Render()
 {
-	//	板ポリ描画処理
-	ID3D11DeviceContext1* context = m_pDR->GetD3DDeviceContext();
 	//	ビュー設定
 	m_ConstBuffer.matView = m_view.Transpose();
 	//	プロジェクション設定

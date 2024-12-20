@@ -102,7 +102,6 @@ void Enemies::Update(float elapsedTime)
 //---------------------------------------------------------
 void Enemies::Render()
 {
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	Matrix view = m_pPlayer->GetCamera()->GetViewMatrix();
 	Matrix projection = m_pPlayer->GetCamera()->GetProjectionMatrix();
 	if (m_enemies.size() > 0)for (const auto& enemy : m_enemies)
@@ -120,7 +119,7 @@ void Enemies::Render()
 	(std::remove_if(GetEffect().begin(), GetEffect().end(), [&](const std::unique_ptr<Effect>& effect)//	再生終了したパーティクルを削除する
 		{
 			if (!effect->IsPlaying()) return true;// 再生終了したパーティクルは削除する
-			effect->Render(context, view, projection);// パーティクルを描画する
+			effect->Render(view, projection);// パーティクルを描画する
 			return false;//	再生中のパーティクルは削除しない
 		}),
 		GetEffect().end()//	削除対象のパーティクルを削除する

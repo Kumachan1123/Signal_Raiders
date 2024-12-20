@@ -116,7 +116,6 @@ void Radar::Render()
 // ---------------------------------------------------------
 void Radar::DrawBackground()
 {
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	//	頂点情報(板ポリゴンの４頂点の座標情報）
 	VertexPositionTexture vertex[4] =
 	{
@@ -130,7 +129,7 @@ void Radar::DrawBackground()
 	// グラデーションエフェクトの色設定 
 	m_constBuffer.colors = SimpleMath::Vector4(0.0f, 0.5f, 0.0f, 0);
 	// バッファを作成
-	CreateBuffer(context);
+	CreateBuffer();
 	// 描画前設定
 	m_pDrawPolygon->DrawSetting(
 		DrawPolygon::SamplerStates::LINEAR_WRAP,
@@ -150,7 +149,6 @@ void Radar::DrawBackground()
 //---------------------------------------------------------
 void Radar::DrawPlayer()
 {
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	VertexPositionTexture playerVertex[4] =
 	{
 		//	頂点情報													UV情報
@@ -164,7 +162,7 @@ void Radar::DrawPlayer()
 	// グラデーションエフェクトの色設定 
 	m_constBuffer.colors = SimpleMath::Vector4(0.0f, 0.5f, 0.0f, 0);
 	// バッファを作成
-	CreateBuffer(context);
+	CreateBuffer();
 	// 描画前設定
 	m_pDrawPolygon->DrawSetting(DrawPolygon::SamplerStates::LINEAR_WRAP, DrawPolygon::BlendStates::NONPREMULTIPLIED,
 		DrawPolygon::RasterizerStates::CULL_NONE, DrawPolygon::DepthStencilStates::DEPTH_NONE);
@@ -182,12 +180,11 @@ void Radar::DrawPlayer()
 //---------------------------------------------------------
 void Radar::DrawEnemy()
 {
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	// グラデーションエフェクトの色設定 
 	m_constBuffer.colors = SimpleMath::Vector4(0.9f, 0.0f, 0.0f, 0);
 	// バッファを作成
-	CreateBuffer(context);
+	CreateBuffer();
 	// 敵の位置を描画	 
 	for (const auto& enemyPos : m_enemyPos)
 	{
@@ -240,7 +237,7 @@ void Radar::DrawEnemy()
 //---------------------------------------------------------
 // バッファを作成
 //---------------------------------------------------------
-void Radar::CreateBuffer(ID3D11DeviceContext1* context)
+void Radar::CreateBuffer()
 {
 	// 時間設定
 	m_constBuffer.time = SimpleMath::Vector4(m_time);

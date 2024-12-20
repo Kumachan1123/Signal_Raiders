@@ -112,6 +112,6 @@ public:
 	void DrawPlayer();// プレイヤーを描画する
 	void DrawEnemy();// 敵を描画する
 
-	void CreateBuffer(ID3D11DeviceContext1* context);// バッファを作成する
+	void CreateBuffer();// バッファを作成する
 
 };

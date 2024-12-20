@@ -148,7 +148,6 @@ void  DamageEffect::Update(float elapsedTime)
 void  DamageEffect::Render()
 {
 
-	ID3D11DeviceContext1* context = m_pDR->GetD3DDeviceContext();
 	// 頂点情報(板ポリゴンの４頂点の座標情報）
 	VertexPositionTexture vertex[4] =
 	{

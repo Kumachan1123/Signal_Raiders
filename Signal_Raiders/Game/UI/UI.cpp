@@ -102,7 +102,6 @@ void UI::Render()
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	auto context = m_pDR->GetD3DDeviceContext();// コンテキスト
 
 	VertexPositionColorTexture vertex[1] = {
 		VertexPositionColorTexture(SimpleMath::Vector3(m_scale.x, m_scale.y, static_cast<float>(m_anchor))

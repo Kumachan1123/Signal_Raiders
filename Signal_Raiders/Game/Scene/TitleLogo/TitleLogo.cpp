@@ -82,8 +82,6 @@ void TitleLogo::Update(float elapsedTime)
 
 void TitleLogo::Render()
 {
-	//	板ポリ描画処理
-	ID3D11DeviceContext1* context = m_pDR->GetD3DDeviceContext();
 	//	頂点情報(板ポリゴンの４頂点の座標情報）
 	VertexPositionTexture vertex[4] =
 	{

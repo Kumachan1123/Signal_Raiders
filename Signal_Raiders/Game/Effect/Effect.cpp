@@ -104,7 +104,7 @@ void Effect::Update(float elapsedTime)
 	}
 }
 
-void Effect::Render(ID3D11DeviceContext1* context, SimpleMath::Matrix view, SimpleMath::Matrix proj)
+void Effect::Render(SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
 	// 頂点情報
 	m_vertices[0] = { VertexPositionTexture(SimpleMath::Vector3(m_vertexMinX, m_vertexMaxY, 0), SimpleMath::Vector2(0, 1)) };
@@ -133,9 +133,9 @@ void Effect::Render(ID3D11DeviceContext1* context, SimpleMath::Matrix view, Simp
 	m_constBuffer.matWorld = worldBillboard.Transpose();
 	m_constBuffer.matView = view.Transpose();
 	m_constBuffer.matProj = proj.Transpose();
-	m_constBuffer.count = Vector4(m_anim);
-	m_constBuffer.height = Vector4(m_frameRows);
-	m_constBuffer.width = Vector4(m_frameCols);
+	m_constBuffer.count = Vector4((float)(m_anim));
+	m_constBuffer.height = Vector4((float)(m_frameRows));
+	m_constBuffer.width = Vector4((float)(m_frameCols));
 	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	m_pDrawPolygon->UpdateSubResources(m_cBuffer.Get(), &m_constBuffer);
 	// シェーダーにバッファを渡す

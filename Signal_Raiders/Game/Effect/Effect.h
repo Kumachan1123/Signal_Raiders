@@ -106,7 +106,7 @@ public:
 		DirectX::SimpleMath::Matrix world);// Ä¶ˆÊ’u‚ğó‚¯æ‚é
 	~Effect();
 	void Update(float elapsedTime);
-	void Render(ID3D11DeviceContext1* context, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 	void Finalize();
 
 
