@@ -119,6 +119,12 @@ void StageSelect::Render()
 	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
 	//	シェーダをセットする
 	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);
+	// 描画前設定
+	m_pDrawPolygon->DrawSetting(
+		DrawPolygon::SamplerStates::LINEAR_WRAP,
+		DrawPolygon::BlendStates::NONPREMULTIPLIED,
+		DrawPolygon::RasterizerStates::CULL_NONE,
+		DrawPolygon::DepthStencilStates::DEPTH_NONE);
 	//	テクスチャ描画開始
 	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_texture);
 	//	板ポリゴンを描画

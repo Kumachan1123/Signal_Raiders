@@ -57,20 +57,13 @@ void DrawPolygon::InitializePositionColorTexture(DX::DeviceResources* pDR)
 	m_states = std::make_unique<CommonStates>(m_device);
 }
 
-// 描画開始（頂点、テクスチャ）
+
+
+// 描画開始
 void DrawPolygon::DrawStart(ID3D11InputLayout* pInputLayout, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	//	画像用サンプラーの登録
-	ID3D11SamplerState* sampler[1] = { m_states->LinearWrap() };
-	m_context->PSSetSamplers(0, 1, sampler);
-	//	透明判定処理
-	m_context->OMSetBlendState(m_states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
-	//	深度バッファに書き込み参照する
-	m_context->OMSetDepthStencilState(m_states->DepthNone(), 0);
-	//	カリングは左周り
-	m_context->RSSetState(m_states->CullNone());
 	//	ピクセルシェーダにテクスチャを登録する。
 	for (int i = 0; i < textures.size(); i++)
 	{
@@ -79,6 +72,108 @@ void DrawPolygon::DrawStart(ID3D11InputLayout* pInputLayout, std::vector<Microso
 	}
 	//	インプットレイアウトの登録
 	m_context->IASetInputLayout(pInputLayout);
+}
+
+// 描画前設定
+void DrawPolygon::DrawSetting(SamplerStates ss, BlendStates bs, RasterizerStates rs, DepthStencilStates dss)
+{
+	//	画像用サンプラーの登録
+	ID3D11SamplerState* sampler[1];
+	switch (ss)
+	{
+	case DrawPolygon::SamplerStates::ANISOTROPIC_CLAMP:
+		sampler[0] = m_states->AnisotropicClamp();
+		break;
+	case DrawPolygon::SamplerStates::ANISOTROPIC_WRAP:
+		sampler[0] = m_states->AnisotropicWrap();
+		break;
+	case DrawPolygon::SamplerStates::LINEAR_CLAMP:
+		sampler[0] = m_states->LinearClamp();
+		break;
+	case DrawPolygon::SamplerStates::LINEAR_WRAP:
+		sampler[0] = m_states->LinearWrap();
+		break;
+	case DrawPolygon::SamplerStates::POINT_CLAMP:
+		sampler[0] = m_states->PointClamp();
+		break;
+	case DrawPolygon::SamplerStates::POINT_WRAP:
+		sampler[0] = m_states->PointWrap();
+		break;
+	default:
+		sampler[0] = nullptr;
+		break;
+	}
+	m_context->PSSetSamplers(0, 1, sampler);
+
+	//	透明判定処理
+	ID3D11BlendState* blendState;
+	switch (bs)
+	{
+	case DrawPolygon::BlendStates::ALPHA:
+		blendState = m_states->AlphaBlend();
+		break;
+	case DrawPolygon::BlendStates::ADDITIVE:
+		blendState = m_states->Additive();
+		break;
+	case DrawPolygon::BlendStates::OPAQUE:
+		blendState = m_states->Opaque();
+		break;
+	case DrawPolygon::BlendStates::NONPREMULTIPLIED:
+		blendState = m_states->NonPremultiplied();
+		break;
+	default:
+		blendState = nullptr;
+		break;
+	}
+	m_context->OMSetBlendState(blendState, nullptr, 0xFFFFFFFF);
+
+	//	深度バッファに書き込み参照する
+	ID3D11DepthStencilState* depthStencilState;
+	switch (dss)
+	{
+	case DrawPolygon::DepthStencilStates::DEPTH_DEFAULT:
+		depthStencilState = m_states->DepthDefault();
+		break;
+	case DrawPolygon::DepthStencilStates::DEPTH_NONE:
+		depthStencilState = m_states->DepthNone();
+		break;
+	case DrawPolygon::DepthStencilStates::DEPTH_READ:
+		depthStencilState = m_states->DepthRead();
+		break;
+	case DrawPolygon::DepthStencilStates::DEPTH_READ_REVERSE_Z:
+		depthStencilState = m_states->DepthReadReverseZ();
+		break;
+	case DrawPolygon::DepthStencilStates::DEPTH_REVERSE_Z:
+		depthStencilState = m_states->DepthReverseZ();
+		break;
+	default:
+		depthStencilState = nullptr;
+		break;
+	}
+	m_context->OMSetDepthStencilState(depthStencilState, 0);
+
+	// カリング設定
+	ID3D11RasterizerState* rasterizerState;
+	switch (rs)
+	{
+	case DrawPolygon::RasterizerStates::CULL_CLOCKWISE:
+		rasterizerState = m_states->CullClockwise();
+		break;
+	case DrawPolygon::RasterizerStates::CULL_COUNTERCLOCKWISE:
+		rasterizerState = m_states->CullCounterClockwise();
+		break;
+	case DrawPolygon::RasterizerStates::CULL_NONE:
+		rasterizerState = m_states->CullNone();
+		break;
+	case DrawPolygon::RasterizerStates::WIREFRAME:
+		rasterizerState = m_states->Wireframe();
+		break;
+	default:
+		rasterizerState = nullptr;
+		break;
+	}
+	m_context->RSSetState(rasterizerState);
+
 }
 
 // サブリソースの更新

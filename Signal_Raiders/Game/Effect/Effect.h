@@ -36,6 +36,16 @@ private:
 	DirectX::SimpleMath::Vector3 m_position;// エフェクトを再生する座標
 	float m_scale;// エフェクトのスケール
 
+	// 描画クラス
+	DrawPolygon* m_pDrawPolygon;
+	// シェーダー作成クラス
+	CreateShader* m_pCreateShader;
+	// 頂点シェーダ
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
+	// ピクセルシェーダ
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
+	// シェーダーの構造体
+	DrawPolygon::Shaders m_shaders;
 
 	// ワールド行列
 	DirectX::SimpleMath::Matrix m_world;
@@ -47,10 +57,12 @@ private:
 	//	エフェクト 
 	std::unique_ptr<DirectX::AlphaTestEffect> m_batchEffect;
 	//	テクスチャハンドル 
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_textures;
 
 
-
+	// 入力レイアウト
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_cBuffer;
 	//	プリミティブバッチ 
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_Batch;
 
@@ -82,6 +94,8 @@ private:
 	float m_vertexMaxY;
 
 public:
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
+
 	static const DirectX::VertexPositionTexture Vertices[4];
 public:
 
@@ -100,6 +114,6 @@ public:
 	bool IsPlaying() const { return m_isPlaying; };
 	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; };
 private:
-	void LoadTexture(const wchar_t* path, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& tex);
+	void LoadTexture(const wchar_t* path);
 
 };

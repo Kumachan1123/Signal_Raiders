@@ -103,6 +103,7 @@ void UI::Render()
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	auto context = m_pDR->GetD3DDeviceContext();// コンテキスト
+
 	VertexPositionColorTexture vertex[1] = {
 		VertexPositionColorTexture(SimpleMath::Vector3(m_scale.x, m_scale.y, static_cast<float>(m_anchor))
 		, SimpleMath::Vector4(m_position.x, m_position.y, static_cast<float>(m_textureWidth), static_cast<float>(m_textureHeight))
@@ -118,7 +119,13 @@ void UI::Render()
 	//	シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };
 	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
-	// 描画準備
+	// 描画前設定
+	m_pDrawPolygon->DrawSetting(
+		DrawPolygon::SamplerStates::LINEAR_WRAP,
+		DrawPolygon::BlendStates::NONPREMULTIPLIED,
+		DrawPolygon::RasterizerStates::CULL_NONE,
+		DrawPolygon::DepthStencilStates::DEPTH_NONE);
+	// 描画
 	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pTextures);
 	//	シェーダをセットする
 	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);

@@ -109,7 +109,13 @@ void TitleLogo::Render()
 	// シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };
 	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
-	// 描画準備
+	// 描画前設定
+	m_pDrawPolygon->DrawSetting(
+		DrawPolygon::SamplerStates::LINEAR_WRAP,
+		DrawPolygon::BlendStates::NONPREMULTIPLIED,
+		DrawPolygon::RasterizerStates::CULL_NONE,
+		DrawPolygon::DepthStencilStates::DEPTH_NONE);
+	// 描画
 	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_titleTexture);
 	// 頂点シェーダもピクセルシェーダも、同じ値を渡す
 	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);

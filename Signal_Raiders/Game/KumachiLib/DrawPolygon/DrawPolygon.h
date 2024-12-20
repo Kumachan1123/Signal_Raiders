@@ -17,7 +17,7 @@ class CommonResources;
 
 class DrawPolygon
 {
-public:
+public:// 構造体
 	// 三つのシェーダーをひとまとめにして送るための構造体
 	struct Shaders
 	{
@@ -25,6 +25,43 @@ public:
 		Microsoft::WRL::ComPtr<ID3D11PixelShader> ps;
 		Microsoft::WRL::ComPtr<ID3D11GeometryShader> gs;
 	};
+public:// 列挙型
+	// サンプラーステートの種類
+	enum class SamplerStates
+	{
+		ANISOTROPIC_CLAMP,
+		ANISOTROPIC_WRAP,
+		LINEAR_CLAMP,
+		LINEAR_WRAP,
+		POINT_CLAMP,
+		POINT_WRAP
+	};
+	// ブレンドステートの種類
+	enum class BlendStates
+	{
+		ALPHA,
+		ADDITIVE,
+		OPAQUE,
+		NONPREMULTIPLIED
+	};
+	// ラスタライザーステートの種類
+	enum class RasterizerStates
+	{
+		CULL_CLOCKWISE,
+		CULL_COUNTERCLOCKWISE,
+		CULL_NONE,
+		WIREFRAME
+	};
+	// 深度ステンシルステートの種類
+	enum class DepthStencilStates
+	{
+		DEPTH_DEFAULT,
+		DEPTH_NONE,
+		DEPTH_READ,
+		DEPTH_READ_REVERSE_Z,
+		DEPTH_REVERSE_Z
+	};
+
 public:
 	// シングルトンインスタンスを取得
 	static DrawPolygon* const GetInstance();
@@ -40,6 +77,8 @@ public:
 	void InitializePositionColorTexture(DX::DeviceResources* pDR);
 	// 描画開始
 	void DrawStart(ID3D11InputLayout* pInputLayout, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures);
+	// 描画前設定
+	void DrawSetting(SamplerStates ss, BlendStates bs, RasterizerStates rs, DepthStencilStates dss);
 	// サブリソースの更新
 	void UpdateSubResources(ID3D11Resource* resource, const void* pSrcData);
 	// 板ポリゴン描画（頂点、テクスチャ）

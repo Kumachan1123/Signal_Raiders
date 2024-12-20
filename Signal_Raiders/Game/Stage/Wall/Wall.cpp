@@ -136,7 +136,13 @@ void Wall::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
 	// ƒVƒF[ƒ_‚ðƒZƒbƒg‚·‚é
 	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);
-	// •`‰æ€”õ
+	// •`‰æ‘OÝ’è
+	m_pDrawPolygon->DrawSetting(
+		DrawPolygon::SamplerStates::LINEAR_WRAP,
+		DrawPolygon::BlendStates::NONPREMULTIPLIED,
+		DrawPolygon::RasterizerStates::CULL_NONE,
+		DrawPolygon::DepthStencilStates::DEPTH_NONE);
+	// •`‰æ
 	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pWallTexture);
 	// •Ç‚ð•`‰æ
 	for (int i = 0; i < 4; i++)	m_pDrawPolygon->DrawTexture(m_wall[i]);

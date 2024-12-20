@@ -131,6 +131,12 @@ void Radar::DrawBackground()
 	m_constBuffer.colors = SimpleMath::Vector4(0.0f, 0.5f, 0.0f, 0);
 	// ƒoƒbƒtƒ@‚ðì¬
 	CreateBuffer(context);
+	// •`‰æ‘OÝ’è
+	m_pDrawPolygon->DrawSetting(
+		DrawPolygon::SamplerStates::LINEAR_WRAP,
+		DrawPolygon::BlendStates::NONPREMULTIPLIED,
+		DrawPolygon::RasterizerStates::CULL_NONE,
+		DrawPolygon::DepthStencilStates::DEPTH_NONE);
 	// •`‰æ€”õ
 	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_backTextures);
 	// ƒ|ƒŠƒSƒ“‚ð•`‰æ
@@ -159,6 +165,10 @@ void Radar::DrawPlayer()
 	m_constBuffer.colors = SimpleMath::Vector4(0.0f, 0.5f, 0.0f, 0);
 	// ƒoƒbƒtƒ@‚ðì¬
 	CreateBuffer(context);
+	// •`‰æ‘OÝ’è
+	m_pDrawPolygon->DrawSetting(DrawPolygon::SamplerStates::LINEAR_WRAP, DrawPolygon::BlendStates::NONPREMULTIPLIED,
+		DrawPolygon::RasterizerStates::CULL_NONE, DrawPolygon::DepthStencilStates::DEPTH_NONE);
+
 	// •`‰æ€”õ
 	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_playerTextures);
 	// ”Âƒ|ƒŠƒSƒ“‚ð•`‰æ
@@ -204,6 +214,10 @@ void Radar::DrawEnemy()
 		if (radarPos.x > 0.5f + m_enemySize.x && radarPos.x < 1.0f + m_enemySize.x &&
 			radarPos.y > -1.0f + m_enemySize.y && radarPos.y < -0.16f + m_enemySize.y)
 		{
+			// •`‰æ‘OÝ’è
+			m_pDrawPolygon->DrawSetting(DrawPolygon::SamplerStates::LINEAR_WRAP, DrawPolygon::BlendStates::NONPREMULTIPLIED,
+				DrawPolygon::RasterizerStates::CULL_NONE, DrawPolygon::DepthStencilStates::DEPTH_NONE);
+
 			// •`‰æ€”õ
 			m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_enemyTextures);
 			VertexPositionTexture enemyVertex[4] =
