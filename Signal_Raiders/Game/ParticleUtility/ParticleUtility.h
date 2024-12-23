@@ -29,7 +29,7 @@ private:
 	//	関数
 	//	座標
 	DirectX::SimpleMath::Vector3 m_position;
-
+	DirectX::SimpleMath::Vector3 m_startPosition;
 	//	速度
 	DirectX::SimpleMath::Vector3 m_velocity;
 
@@ -37,7 +37,7 @@ private:
 	DirectX::SimpleMath::Vector3 m_rotate;
 	//	加速度
 	DirectX::SimpleMath::Vector3 m_accele;
-	DirectX::SimpleMath::Vector3 m_accele2;
+	DirectX::SimpleMath::Vector3 m_rotateAccele;
 
 	//	スケール
 	DirectX::SimpleMath::Vector3 m_nowScale;
@@ -47,6 +47,9 @@ private:
 	//	生存時間
 	float m_life;
 	float m_startLife;
+
+	// 経過時間
+	float m_elapsedTime;
 
 	//	カラー
 	DirectX::SimpleMath::Color m_nowColor;
@@ -60,15 +63,15 @@ public:
 	//	関数
 	//	コンストラクタ（初期設定）
 	ParticleUtility(
-		float life,
-		DirectX::SimpleMath::Vector3 pos,
-		DirectX::SimpleMath::Vector3 velocity,
-		DirectX::SimpleMath::Vector3 accele,
-		DirectX::SimpleMath::Vector3 accele2,
-		DirectX::SimpleMath::Vector3 rotate,
-		DirectX::SimpleMath::Vector3 startScale, DirectX::SimpleMath::Vector3 endScale,
-		DirectX::SimpleMath::Color startColor, DirectX::SimpleMath::Color endColor,
-		Type type);
+		float life,//	生存時間
+		DirectX::SimpleMath::Vector3 pos,//	座標
+		DirectX::SimpleMath::Vector3 velocity,//	速度
+		DirectX::SimpleMath::Vector3 accele,//	加速度
+		DirectX::SimpleMath::Vector3 rotateAccele,// 回転加速度
+		DirectX::SimpleMath::Vector3 rotate,// 回転
+		DirectX::SimpleMath::Vector3 startScale, DirectX::SimpleMath::Vector3 endScale,//	スケール(最初の大きさ、最後の大きさ)
+		DirectX::SimpleMath::Color startColor, DirectX::SimpleMath::Color endColor,//	カラー(最初の色、最後の色)
+		Type type);//	タイプ
 	//	デストラクタ
 	~ParticleUtility();
 
@@ -93,6 +96,7 @@ public:
 	DirectX::SimpleMath::Color GetEndColor() const { return m_endColor; }
 
 private:
+	void SwitchType(float elapsedTime);
 	// タイプごとの処理
 	void Trail(float elapsedTime);// 弾の軌跡
 	void BarrierDestroyed(float elapsedTime);//	バリア破壊

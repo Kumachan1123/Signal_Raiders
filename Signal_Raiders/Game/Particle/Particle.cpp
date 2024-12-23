@@ -304,7 +304,7 @@ void Particle::BarrierBreak()
 		std::uniform_real_distribution<> sizeDist(1.5f, 5.0f);  // 破片のサイズをランダムに設定
 		std::uniform_real_distribution<> heightDist(-1.0f, 1.0f); // 高さ方向（-1～1）のランダム範囲
 
-		for (int i = 0; i < 20; ++i)  // 破片を複数生成
+		for (int i = 0; i < 50; ++i)  // 破片を複数生成
 		{
 			// ランダムな方向で飛ばすための球面座標
 			float theta = static_cast<float>(angleDist(engine)); // 水平方向の角度 (0～2π)
@@ -325,15 +325,15 @@ void Particle::BarrierBreak()
 
 			// パーティクルの生成
 			ParticleUtility pU(
-				2.0f,  // 破片の生存時間（短くして消えるように）
+				1.5f,  // 破片の生存時間（短くして消えるように）
 				m_bossPosition, // 初期位置 (基準座標)
-				randomVelocity * 4, // 初期速度（ランダムな方向）
+				randomVelocity * 3, // 初期速度（ランダムな方向）
 				SimpleMath::Vector3::Zero, // 重力加速度（Y軸方向に少し引っ張られる）
 				SimpleMath::Vector3::Zero, // 回転速度
 				SimpleMath::Vector3::Zero, // 初期回転
 				SimpleMath::Vector3(randomSize, randomSize, randomSize), // ランダムなサイズ
 				SimpleMath::Vector3(0.1f, 0.1f, 0.1f), // 最終スケール（小さくなる）
-				SimpleMath::Vector4(1.0f, 1.0f, 0.3f, 1.0f),  // 初期カラー（オレンジっぽい）
+				SimpleMath::Vector4(1.0f, 1.0f, 0.5f, 1.0f),  // 初期カラー（オレンジっぽい）
 				SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 0.0f), // 最終カラー（白→透明）
 				ParticleUtility::Type::BARRIERDESTROYED // タイプを追加
 			);

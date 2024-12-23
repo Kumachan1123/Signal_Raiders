@@ -471,6 +471,7 @@
     <None Include="fmodL.dll" />
     <None Include="fmod.dll" />
     <None Include="HLSL\Counter\Counter.hlsli" />
+    <None Include="HLSL\CRT\CRT.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Shadow\PS_Shadow.hlsl">

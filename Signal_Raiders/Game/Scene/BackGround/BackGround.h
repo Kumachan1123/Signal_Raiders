@@ -63,13 +63,14 @@ private:
 	DrawPolygon* m_pDrawPolygon;
 	// シェーダー作成クラス
 	CreateShader* m_pCreateShader;
-	//	ワールドビュープロジェクション行列
+	// ワールドビュープロジェクション行列
 	DirectX::SimpleMath::Matrix m_world;
 	DirectX::SimpleMath::Matrix m_view;
 	DirectX::SimpleMath::Matrix m_proj;
-
 	// 時間
 	float m_time;
+	// シェーダーに渡す色
+	DirectX::SimpleMath::Vector4 m_color;
 public:
 	//	関数
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
@@ -84,6 +85,8 @@ public:
 	void Update(float elapsedTime);
 
 	void Render();
+
+	void SetColor(DirectX::SimpleMath::Vector4 color) { m_color = color; }
 private:
 
 	void CreateShader();

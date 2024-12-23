@@ -40,7 +40,7 @@ BackGround::BackGround(CommonResources* resources)
 	// シェーダー作成クラスの初期化
 	m_pCreateShader->Initialize(m_commonResources->GetDeviceResources()->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
 	// 色の初期化
-	m_constBuffer.colors = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 0.0f);
+	m_color = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 // デストラクタ
@@ -106,7 +106,7 @@ void  BackGround::Render()
 	m_constBuffer.matView = m_view.Transpose();
 	m_constBuffer.matProj = m_proj.Transpose();
 	m_constBuffer.matWorld = m_world.Transpose();
-	m_constBuffer.colors = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_constBuffer.colors = DirectX::SimpleMath::Vector4(m_color);
 	m_constBuffer.time = DirectX::SimpleMath::Vector4(m_time);
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	m_pDrawPolygon->UpdateSubResources(m_cBuffer.Get(), &m_constBuffer);
