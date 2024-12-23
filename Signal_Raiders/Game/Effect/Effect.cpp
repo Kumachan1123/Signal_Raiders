@@ -144,10 +144,10 @@ void Effect::Render(SimpleMath::Matrix view, SimpleMath::Matrix proj)
 	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
 	// 描画前設定
 	m_pDrawPolygon->DrawSetting(
-		DrawPolygon::SamplerStates::LINEAR_WRAP,
-		DrawPolygon::BlendStates::NONPREMULTIPLIED,
-		DrawPolygon::RasterizerStates::CULL_NONE,
-		DrawPolygon::DepthStencilStates::DEPTH_READ);
+		DrawPolygon::SamplerStates::LINEAR_WRAP,// テクスチャのサンプラーステート(リニア、ラップ)
+		DrawPolygon::BlendStates::NONPREMULTIPLIED,// ブレンドステート(非乗算)
+		DrawPolygon::RasterizerStates::CULL_NONE,// ラスタライザーステート(カリングなし)
+		DrawPolygon::DepthStencilStates::DEPTH_READ);// 深度ステンシルステート(読み取りのみ)
 	// 描画準備
 	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_textures);
 	// シェーダをセットする
