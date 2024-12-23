@@ -33,7 +33,7 @@ void EnemyAI::Initialize()
 	using namespace DirectX::SimpleMath;
 	m_rotation = (GenerateRandomMultiplier(0, 2) <= 1.0f) ? Quaternion::Identity : -Quaternion::Identity;// 回転の初期化
 	m_initialPosition = Vector3::Zero;  // 初期位置を初期化
-	m_initialPosition.y = GenerateRandomMultiplier(RANDOM_MIN, RANDOM_MAX) + 5; // 初期位置のY座標を設定
+	m_initialPosition.y = GenerateRandomMultiplier(RANDOM_MIN, RANDOM_MAX) + 3; // 初期位置のY座標を設定
 	m_rotation.y = GenerateRandomMultiplier(RANDOM_MIN, RANDOM_MAX); // Y軸の回転を設定
 	m_velocity = Vector3(0.0f, 0.5f, 0.0f); // 浮遊の初期速度
 	m_scale = Vector3::One; // スケール初期化

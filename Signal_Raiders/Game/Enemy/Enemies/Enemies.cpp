@@ -199,8 +199,8 @@ void Enemies::HandleEnemySpawning(float elapsedTime)
 {
 	m_enemyBornTimer += elapsedTime;
 
-	int enemyNum = static_cast<int>(m_pWifi->GetWifiLevels().size());
-	if (enemyNum > m_enemyMax) enemyNum = m_enemyMax;
+	int enemyNum = static_cast<int>(m_pWifi->GetWifiLevels().size());// “G‚Ì”‚ðŽæ“¾
+	if (enemyNum > m_enemyMax) enemyNum = m_enemyMax;// “G‚Ì”‚ª“G‚Ì¶¬ãŒÀ‚ð’´‚¦‚½‚ç“G‚Ì¶¬ãŒÀ‚ÉÝ’è
 
 	if (m_startTime >= 5.0f) m_isEnemyBorn = true;// ƒUƒR“G¶¬‰Â”\‚É‚·‚é
 
@@ -258,7 +258,7 @@ void Enemies::SpawnVerticalAttacker()
 //---------------------------------------------------------
 void Enemies::FinalizeEnemySpawn()
 {
-	m_enemyBornTimer = 0.0f;
+	m_enemyBornTimer = 0.0f; // “G¶¬ƒ^ƒCƒ}[‚ð‰Šú‰»
 	m_isEnemyBorn = false; // ƒUƒR“G¶¬•s‰Â”\‚É‚·‚é
 	m_isBorned = true; // ƒUƒR“G¶¬Š®—¹
 }
@@ -293,8 +293,8 @@ void Enemies::HandleEnemyCollisions()
 			if (hit)// “–‚½‚è”»’è‚ª‚ ‚Á‚½‚ç
 			{
 				// m_enemies[i]‚ÌV‚µ‚¢À•W
-				auto enemyA = m_enemies[i]->GetBoundingSphere();
-				auto enemyB = m_enemies[j]->GetBoundingSphere();
+				auto& enemyA = m_enemies[i]->GetBoundingSphere();
+				auto& enemyB = m_enemies[j]->GetBoundingSphere();
 				Vector3 newPos = CheckHitOtherObject(enemyA, enemyB);
 				m_enemies[i]->SetPosition(newPos);
 			}
@@ -310,11 +310,12 @@ void Enemies::HandleWallCollision()
 	{
 		for (int i = 0; i < 4; i++)
 		{
-			auto enemySphere = enemy->GetBoundingSphere();
-			Vector3 newPos = CheckHitWall(enemySphere, m_pWall->GetBoundingBox(i));
-			enemy->SetPosition(newPos);
+			if (enemy->GetBoundingSphere().Intersects(m_pWall->GetBoundingBox(i)))
+			{
+				Vector3 newPos = CheckHitWall(enemy->GetBoundingSphere(), m_pWall->GetBoundingBox(i));
+				enemy->SetPosition(newPos);
+			}
 		}
-
 	}
 }
 

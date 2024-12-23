@@ -71,7 +71,7 @@ inline float GenerateRandomMultiplier(float min, float max)
 }
 
 // オブジェクト同士が衝突したら押し戻す(境界球同士の場合）
-inline DirectX::SimpleMath::Vector3 CheckHitOtherObject(DirectX::BoundingSphere& A, DirectX::BoundingSphere& B)
+inline DirectX::SimpleMath::Vector3 CheckHitOtherObject(DirectX::BoundingSphere A, DirectX::BoundingSphere B)
 {
 	using namespace DirectX::SimpleMath;
 	// 押し戻す処理
@@ -94,7 +94,7 @@ inline DirectX::SimpleMath::Vector3 CheckHitOtherObject(DirectX::BoundingSphere&
 }
 
 // オブジェクト同士が衝突したら押し戻す(境界球と境界ボックスの場合）
-inline DirectX::SimpleMath::Vector3 CheckHitWall(DirectX::BoundingSphere& A, DirectX::BoundingBox& B)
+inline DirectX::SimpleMath::Vector3 CheckHitWall(DirectX::BoundingSphere A, DirectX::BoundingBox& B)
 {
 	using namespace DirectX::SimpleMath;
 	// 押し戻しベクトルを計算
