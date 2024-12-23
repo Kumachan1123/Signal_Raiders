@@ -147,7 +147,7 @@ void Effect::Render(SimpleMath::Matrix view, SimpleMath::Matrix proj)
 		DrawPolygon::SamplerStates::LINEAR_WRAP,
 		DrawPolygon::BlendStates::NONPREMULTIPLIED,
 		DrawPolygon::RasterizerStates::CULL_NONE,
-		DrawPolygon::DepthStencilStates::DEPTH_DEFAULT);
+		DrawPolygon::DepthStencilStates::DEPTH_READ);
 	// 描画準備
 	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_textures);
 	// シェーダをセットする

@@ -100,7 +100,7 @@ void EnemyHPBar::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::M
 
 	// ƒ|ƒŠƒSƒ“‚ð•`‰æ‚·‚é‚½‚ß‚ÌÝ’è
 	context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
-	context->OMSetDepthStencilState(states->DepthDefault(), 0);
+	context->OMSetDepthStencilState(states->DepthNone(), 0);
 	context->RSSetState(states->CullCounterClockwise());
 	context->IASetInputLayout(m_pInputLayout.Get());
 	// HPbar(”w–Ê)•`‰æ///////////////////////////////////////////////////////////////////////////////

@@ -183,12 +183,26 @@ void Particle::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Mat
 	// シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };
 	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
-	// 描画前設定
-	m_pDrawPolygon->DrawSetting(
-		DrawPolygon::SamplerStates::LINEAR_WRAP,
-		DrawPolygon::BlendStates::NONPREMULTIPLIED,
-		DrawPolygon::RasterizerStates::CULL_NONE,
-		DrawPolygon::DepthStencilStates::DEPTH_NONE);
+
+	if (m_type == ParticleUtility::Type::BARRIERDESTROYED)// バリアが壊れたときの破片は深度バッファを使わない
+	{
+		// 描画前設定
+		m_pDrawPolygon->DrawSetting(
+			DrawPolygon::SamplerStates::ANISOTROPIC_WRAP,
+			DrawPolygon::BlendStates::NONPREMULTIPLIED,
+			DrawPolygon::RasterizerStates::CULL_NONE,
+			DrawPolygon::DepthStencilStates::DEPTH_READ);
+	}
+	else// それ以外のパーティクルは深度バッファを使う
+	{
+		// 描画前設定
+		m_pDrawPolygon->DrawSetting(
+			DrawPolygon::SamplerStates::LINEAR_WRAP,
+			DrawPolygon::BlendStates::NONPREMULTIPLIED,
+			DrawPolygon::RasterizerStates::CULL_NONE,
+			DrawPolygon::DepthStencilStates::DEPTH_READ);
+	}
+
 	// 描画準備
 	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_texture);
 	// シェーダをセットする

@@ -44,8 +44,8 @@ private:
 	DirectX::SimpleMath::Vector3 m_knockEndPosition;
 	DirectX::SimpleMath::Vector3 m_initialVelocity;
 	float m_rotationSpeed;//回転速度
-	const float RANDOM_MAX = 2.0f;
-	const float RANDOM_MIN = 0.5f;
+	const float RANDOM_MAX = 7.0f;
+	const float RANDOM_MIN = 5.5f;
 	float  m_time = 0.0f;  // 時間の初期化
 	float m_attackCooldown;  // 攻撃のクールダウンタイム
 	bool m_isHitPlayerBullet = false;
