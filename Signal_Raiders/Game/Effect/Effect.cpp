@@ -144,7 +144,7 @@ void Effect::Render(SimpleMath::Matrix view, SimpleMath::Matrix proj)
 	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
 	// •`‰æ‘OÝ’è
 	m_pDrawPolygon->DrawSetting(
-		DrawPolygon::SamplerStates::ANISOTROPIC_WRAP,
+		DrawPolygon::SamplerStates::LINEAR_WRAP,
 		DrawPolygon::BlendStates::NONPREMULTIPLIED,
 		DrawPolygon::RasterizerStates::CULL_NONE,
 		DrawPolygon::DepthStencilStates::DEPTH_DEFAULT);

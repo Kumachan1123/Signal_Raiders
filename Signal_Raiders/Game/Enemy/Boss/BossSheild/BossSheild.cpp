@@ -15,7 +15,7 @@ BossSheild::BossSheild(int sheildHP, Boss* pBoss)
 	, m_isParticle{ false }
 	, m_sheildSize{ 0,0,0 }
 	, m_sheildPosition{ 0,0,0 }
-	, m_sheildHP{ sheildHP * 2 }// シールドの耐久値 = 最大HPの2倍
+	, m_sheildHP{ sheildHP }// シールドの耐久値
 	, m_pBoss{ pBoss }
 {
 }

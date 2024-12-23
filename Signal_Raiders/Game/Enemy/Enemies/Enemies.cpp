@@ -423,5 +423,5 @@ void Enemies::HandleEnemyDeath(std::unique_ptr<IEnemy>& enemy)
 			enemy->GetMatrix()));
 	}
 
-	m_audioManager->PlaySound("EnemyDead", m_pPlayer->GetVolume() * 10); // “G‚ÌSE‚ğÄ¶(‚±‚¢‚Â‚¾‚¯‰¹—Ê10”{)
+	m_audioManager->PlaySound("EnemyDead", m_pPlayer->GetVolume() * 10); // “G‚ÌSE‚ğÄ¶(‚±‚¢‚Â‚¾‚¯‚È‚º‚©Œ³‚©‚ç‰¹‚ª¬‚³‚¢‚©‚ç‰¹—Ê10”{)
 }
