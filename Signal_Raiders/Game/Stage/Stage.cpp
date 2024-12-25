@@ -70,7 +70,7 @@ void Stage::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	};
 
 	//	深度バッファに書き込み参照する 
-	context->OMSetDepthStencilState(m_depthStencilState_Floor.Get(), 0);
+	context->OMSetDepthStencilState(m_pStates->DepthDefault(), 0);
 	//	テクスチャサンプラーの設定（クランプテクスチャアドレッシングモード） 
 	ID3D11SamplerState* samplers[1] = { m_pStates->PointWrap() };
 	context->PSSetSamplers(0, 1, samplers);
@@ -93,44 +93,6 @@ void Stage::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	m_pPrimitiveBatch->Begin();
 	m_pPrimitiveBatch->DrawQuad(vertex[0], vertex[1], vertex[2], vertex[3]);
 	m_pPrimitiveBatch->End();
-
-
-}
-//---------------------------------------------------------
-// 深度ステンシルステートを初期化する
-//---------------------------------------------------------
-void Stage::InitializeDepthStencilState(ID3D11Device* device)
-{
-	assert(device);
-
-	// 深度ステンシルバッファを設定する
-	D3D11_DEPTH_STENCIL_DESC desc{};
-
-	/*
-		床の設定
-	*/
-	// 床（描画時０を１にする）
-	desc.DepthEnable = TRUE;									// 深度テストを行う
-	desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;			// 深度バッファを更新する
-	desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;				// テストの条件：深度値以下なら→手前なら
-
-	desc.StencilEnable = TRUE;									// ステンシルテストを行う
-	desc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;		// 0xff
-	desc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;	// 0xff
-
-	// 表面
-	desc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;		// 参照値がステンシル値と同じなら：ゼロなら
-	desc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_INCR_SAT;	// OK　ステンシル値をインクリメントする
-	desc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;		// NG　何もしない
-	desc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;	// NG　何もしない
-
-	// 裏面も同じ設定
-	desc.BackFace = desc.FrontFace;
-
-	// 深度ステンシルステートを作成する
-	DX::ThrowIfFailed(
-		device->CreateDepthStencilState(&desc, m_depthStencilState_Floor.ReleaseAndGetAddressOf())
-	);
 
 
 }

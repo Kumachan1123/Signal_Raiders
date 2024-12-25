@@ -47,8 +47,5 @@ public:
 	~Stage();
 	void Initialize(CommonResources* resources);
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
-private:
-	// 深度ステンシルステートを初期化する
-	void InitializeDepthStencilState(ID3D11Device* device);
 
 };

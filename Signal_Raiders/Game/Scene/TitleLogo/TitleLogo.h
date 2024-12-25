@@ -24,7 +24,7 @@ public:
 		DirectX::SimpleMath::Matrix		matView;	//	ビュー行列
 		DirectX::SimpleMath::Matrix		matProj;	//	プロジェクション行列
 		DirectX::SimpleMath::Vector4	Colors;
-		DirectX::SimpleMath::Vector4 time;	//	時間
+		DirectX::SimpleMath::Vector4	time;	//	時間
 	};
 
 private:
