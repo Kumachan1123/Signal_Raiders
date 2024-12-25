@@ -21,6 +21,9 @@ public:
 		DirectX::SimpleMath::Matrix		matView;
 		DirectX::SimpleMath::Matrix		matProj;
 		DirectX::SimpleMath::Vector4	colors;
+		DirectX::SimpleMath::Vector4 count;     // カウント
+		DirectX::SimpleMath::Vector4 height;    // 高さ
+		DirectX::SimpleMath::Vector4 width;     // 幅
 
 	};
 
@@ -48,7 +51,15 @@ public:
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_texture;
 	// コンスタントバッファ
 	ConstBuffer m_constantBuffer;
-
+	// フレームの行数と列数
+	int m_frameRows;
+	int m_frameCols;
+	// フレーム数
+	int m_anim;
+	// アニメーションの速度
+	float m_animSpeed;
+	// アニメーション時間
+	float m_animTime;
 
 	//	頂点シェーダ
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;

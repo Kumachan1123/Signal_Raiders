@@ -29,8 +29,7 @@ PlayerController::PlayerController(Player* pPlayer)
 	, m_dash{}
 	, m_commonResources{}
 	, m_hWnd{ nullptr }
-	, m_sensitive{ pPlayer->GetMouseSensitive() + 1.0f }// マウス感度:Player->GetMouseSensitive()のままだと
-	// 最小値が0.0fになるので + 1.0fする
+	, m_sensitive{ pPlayer->GetMouseSensitive() + 1.0f }// マウス感度:Player->GetMouseSensitive()のままだと最小値が0.0fになるので + 1.0fする
 	, m_rotate{}
 {
 	// スクリーンの解像度を取得
@@ -73,9 +72,10 @@ void PlayerController::Initialize(CommonResources* resources)
 	m_commonResources = resources;
 }
 
-void PlayerController::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>& kb,
-	DirectX::SimpleMath::Vector3& Direction, float elapsedTime)
+void PlayerController::Update(float elapsedTime)
 {
+	// キーボードステートトラッカーを取得する
+	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
 	MoveStop();
 
 	// マウスの現在の位置を取得
@@ -105,32 +105,32 @@ void PlayerController::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardS
 	m_pitchY = clamp(m_pitchY, -pitchLimit, pitchLimit);
 
 	// 前後移動
-	if (kb->lastState.W)
+	if (kbTracker->lastState.W)
 	{
 		// カメラが向いている方向に移動する
-		m_velocity.x += Direction.x;
-		m_velocity.z += Direction.z;
+		m_velocity.x += m_pPlayer->GetPlayerDir().x;
+		m_velocity.z += m_pPlayer->GetPlayerDir().z;
 	}
-	if (kb->lastState.S)
+	if (kbTracker->lastState.S)
 	{
 		// カメラが逆向きの方向に移動する
-		m_velocity.x -= Direction.x;
-		m_velocity.z -= Direction.z;
+		m_velocity.x -= m_pPlayer->GetPlayerDir().x;
+		m_velocity.z -= m_pPlayer->GetPlayerDir().z;
 	}
 
 	// カメラの右方向ベクトルを計算する
 	Vector3 rightDirection;
-	rightDirection.x = Direction.z;
-	rightDirection.z = -Direction.x;
+	rightDirection.x = m_pPlayer->GetPlayerDir().z;
+	rightDirection.z = -m_pPlayer->GetPlayerDir().x;
 
 	// 左右移動
-	if (kb->lastState.A)
+	if (kbTracker->lastState.A)
 	{
 		// カメラの左方向に移動する 
 		m_velocity.x += rightDirection.x;
 		m_velocity.z += rightDirection.z;
 	}
-	if (kb->lastState.D)
+	if (kbTracker->lastState.D)
 	{
 		// カメラの右方向に移動する
 		m_velocity.x -= rightDirection.x;
@@ -138,7 +138,7 @@ void PlayerController::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardS
 	}
 
 	// ダッシュ
-	if (kb->lastState.LeftShift)
+	if (kbTracker->lastState.LeftShift)
 	{
 		m_dash = 0.2f;
 	}
@@ -166,4 +166,40 @@ void PlayerController::Update(const std::unique_ptr<DirectX::Keyboard::KeyboardS
 	if (m_position.z >= 98.5f) m_position.z = 98.5f;
 	// マウス位置を中央に戻す
 	SetCursorPos(m_point.x, m_point.y);
+}
+
+void PlayerController::DebugCommand()
+{
+	// キーボードステートトラッカーを取得する
+	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
+	// マウスのトラッカーを取得する
+	auto& mTracker = m_commonResources->GetInputManager()->GetMouseTracker();
+	// 右クリックで敵を一掃
+	if (mTracker->GetLastState().rightButton && m_pPlayer->GetisCheat() == false)
+	{
+		m_pPlayer->SetisCheat(true);
+		for (auto& enemy : m_pPlayer->GetEnemies()->GetEnemies())enemy->SetEnemyHP(1000);
+	}
+	// 右クリックされてないときはチートコマンドを無効にする
+	if (!mTracker->GetLastState().rightButton)
+	{
+		m_pPlayer->SetisCheat(false);
+	}
+	// スペースキーでプレイヤーのHPを0にする
+	if (kbTracker->pressed.Space)m_pPlayer->SetPlayerHP(0.0f);
+
+}
+
+void PlayerController::Shoot()
+{
+	// マウスのトラッカーを取得する
+	auto& mTracker = m_commonResources->GetInputManager()->GetMouseTracker();
+
+	// 左クリックで弾発射
+	if (mTracker->GetLastState().leftButton && m_pPlayer->GetPlayerBullets()->GetIsBullet() == false)
+	{
+		m_pPlayer->CreateBullet();
+	}
+	if (!mTracker->GetLastState().leftButton)m_pPlayer->GetPlayerBullets()->SetIsBullet(false);
+
 }

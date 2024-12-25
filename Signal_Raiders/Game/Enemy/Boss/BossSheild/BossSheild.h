@@ -31,7 +31,6 @@ private:
 	bool m_isParticle;
 	// シールドのHP
 	int m_sheildHP;
-
 public:
 	// 初期ステータスを設定
 	BossSheild(int sheildHP, Boss* pBoss);

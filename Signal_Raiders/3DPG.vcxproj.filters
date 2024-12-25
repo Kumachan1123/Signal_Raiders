@@ -276,7 +276,7 @@
     <ClInclude Include="Game\Radar\Radar.h" />
     <ClInclude Include="Game\Enemy\EnemyCounter\EnemyCounter.h" />
     <ClInclude Include="Game\Player\PlayerUI\Crisis\Crisis.h" />
-    <ClInclude Include="Game\DamageEffect\DamageEffect.h" />
+    <ClInclude Include="Game\DamageEffect\DamageEffect\DamageEffect.h" />
     <ClInclude Include="Game\Enemy\Boss\Boss.h" />
     <ClInclude Include="Game\Interface\IEnemy.h" />
     <ClInclude Include="Game\Enemy\Boss\BossAI\BossAI.h" />
@@ -290,12 +290,15 @@
     <ClInclude Include="Game\Enemy\VerticalAttacker\VerticalAttacker.h" />
     <ClInclude Include="Game\Enemy\VerticalAttackerModel\VerticalAttackerModel.h" />
     <ClInclude Include="Game\Enemy\Boss\BossSheild\BossSheild.h" />
-    <ClInclude Include="Game\Player\PlayerUI\ReadyGo\ReadyGo.h" />
+    <ClInclude Include="Game\Player\PlayerUI\Goal\Goal.h" />
     <ClInclude Include="Game\KumachiLib\DrawCollision\DrawCollision.h" />
     <ClInclude Include="Game\Enemy\EnemyAI\EnemySpin\EnemySpin.h" />
     <ClInclude Include="Game\KumachiLib\DrawPolygon\DrawPolygon.h" />
     <ClInclude Include="Game\KumachiLib\CreateShader\CreateShader.h" />
     <ClInclude Include="Game\KumachiLib\json.hpp" />
+    <ClInclude Include="Game\KumachiLib\RenderTexture\RenderTexture.h" />
+    <ClInclude Include="Game\KumachiLib\Bloom\Bloom.h" />
+    <ClInclude Include="Game\DamageEffect\DamageEffects\DamageEffects.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -423,7 +426,7 @@
     <ClCompile Include="Game\Radar\Radar.cpp" />
     <ClCompile Include="Game\Enemy\EnemyCounter\EnemyCounter.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\Crisis\Crisis.cpp" />
-    <ClCompile Include="Game\DamageEffect\DamageEffect.cpp" />
+    <ClCompile Include="Game\DamageEffect\DamageEffect\DamageEffect.cpp" />
     <ClCompile Include="Game\Enemy\Boss\Boss.cpp" />
     <ClCompile Include="Game\Enemy\Boss\BossAI\BossAttack\BossAttack.cpp" />
     <ClCompile Include="Game\Enemy\Boss\BossAI\BossIdling\BossIdling.cpp" />
@@ -436,11 +439,14 @@
     <ClCompile Include="Game\Enemy\VerticalAttacker\VerticalAttacker.cpp" />
     <ClCompile Include="Game\Enemy\VerticalAttackerModel\VerticalAttackerModel.cpp" />
     <ClCompile Include="Game\Enemy\Boss\BossSheild\BossSheild.cpp" />
-    <ClCompile Include="Game\Player\PlayerUI\ReadyGo\ReadyGo.cpp" />
+    <ClCompile Include="Game\Player\PlayerUI\Goal\Goal.cpp" />
     <ClCompile Include="Game\KumachiLib\DrawCollision\DrawCollision.cpp" />
     <ClCompile Include="Game\Enemy\EnemyAI\EnemySpin\EnemySpin.cpp" />
     <ClCompile Include="Game\KumachiLib\DrawPolygon\DrawPolygon.cpp" />
     <ClCompile Include="Game\KumachiLib\CreateShader\CreateShader.cpp" />
+    <ClCompile Include="Game\KumachiLib\RenderTexture\RenderTexture.cpp" />
+    <ClCompile Include="Game\KumachiLib\Bloom\Bloom.cpp" />
+    <ClCompile Include="Game\DamageEffect\DamageEffects\DamegeEffects.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

@@ -47,8 +47,6 @@ void Stage::Initialize(CommonResources* resources)
 	);
 
 
-	// 深度ステンシルバッファを初期化する
-	this->InitializeDepthStencilState(device);
 
 }
 
@@ -66,9 +64,9 @@ void Stage::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	VertexPositionTexture vertex[4] =
 	{//												座標					UV座標（ふつうは0～1の間で指定。超えた場合は繰り返す
 		VertexPositionTexture(SimpleMath::Vector3(100.0f, 0.00f, 100.0f),	SimpleMath::Vector2(.0f, 0.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(-100.0f, 0.0f, 100.0f),	SimpleMath::Vector2(50.0f, .0f)),
-		VertexPositionTexture(SimpleMath::Vector3(-100.0f, 0.f, -100.0f),	SimpleMath::Vector2(50.0f,50.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(100.0f,0.f, -100.0f),	SimpleMath::Vector2(0.0f, 50.0f)),
+		VertexPositionTexture(SimpleMath::Vector3(-100.0f, 0.0f, 100.0f),	SimpleMath::Vector2(25.0f, .0f)),
+		VertexPositionTexture(SimpleMath::Vector3(-100.0f, 0.f, -100.0f),	SimpleMath::Vector2(25.0f,25.0f)),
+		VertexPositionTexture(SimpleMath::Vector3(100.0f,0.f, -100.0f),	SimpleMath::Vector2(0.0f, 25.0f)),
 	};
 
 	//	深度バッファに書き込み参照する 

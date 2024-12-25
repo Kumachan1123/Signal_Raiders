@@ -45,6 +45,11 @@ Particle::Particle(ParticleUtility::Type type, float size)
 	, m_billboard{}
 	, m_type{ type }
 	, m_size{ size * 10 }
+	, m_anim{ 0 }
+	, m_animTime{ 0.0f }
+	, m_animSpeed{ 30.0f }
+	, m_frameRows{ 1 }
+	, m_frameCols{ 1 }
 	, m_pDrawPolygon{ DrawPolygon::GetInstance() }
 	, m_pCreateShader{ CreateShader::GetInstance() }
 {
@@ -67,9 +72,15 @@ void Particle::Initialize(CommonResources* resources)
 	{
 	case ParticleUtility::Type::ENEMYTRAIL:
 	case ParticleUtility::Type::PLAYERTRAIL:
+		m_animSpeed = 1;
+		m_frameCols = 1;
+		m_frameRows = 1;
 		LoadTexture(L"Resources/Textures/Trail.png");
 		break;
 	case ParticleUtility::Type::BARRIERDESTROYED:
+		m_animSpeed = 17.0f;
+		m_frameCols = 5;
+		m_frameRows = 4;
 		LoadTexture(L"Resources/Textures/break.png");
 		break;
 	default:
@@ -108,6 +119,13 @@ void Particle::LoadTexture(const wchar_t* path)
 void Particle::Update(float elapsedTime)
 {
 	m_timer += elapsedTime;
+	m_animTime += elapsedTime * m_animSpeed;//	アニメーションの更新
+	//	タイマーが一定時間を超えたらリセット
+	if (m_animTime >= 2.0f)
+	{
+		m_anim++;
+		m_animTime = 0.0f;
+	}
 	//	軌跡の更新
 	switch (m_type)
 	{
@@ -177,6 +195,9 @@ void Particle::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Mat
 	m_constantBuffer.matProj = proj.Transpose();
 	m_constantBuffer.matWorld = m_billboard.Transpose();
 	m_constantBuffer.colors = SimpleMath::Vector4(1, 1, 1, 0);
+	m_constantBuffer.count = Vector4((float)(m_anim));
+	m_constantBuffer.height = Vector4((float)(m_frameRows));
+	m_constantBuffer.width = Vector4((float)(m_frameCols));
 
 	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	m_pDrawPolygon->UpdateSubResources(m_CBuffer.Get(), &m_constantBuffer);
@@ -314,7 +335,7 @@ void Particle::BarrierBreak()
 		std::random_device seed;
 		std::default_random_engine engine(seed());
 		std::uniform_real_distribution<> angleDist(0, XM_2PI); // 全方向ランダムな角度
-		std::uniform_real_distribution<> speedDist(0.5f, 3.0f); // 粒子の速度範囲
+		std::uniform_real_distribution<> speedDist(2.5f, 3.0f); // 粒子の速度範囲
 		std::uniform_real_distribution<> sizeDist(1.5f, 5.0f);  // 破片のサイズをランダムに設定
 		std::uniform_real_distribution<> heightDist(-1.0f, 1.0f); // 高さ方向（-1～1）のランダム範囲
 
@@ -341,7 +362,7 @@ void Particle::BarrierBreak()
 			ParticleUtility pU(
 				1.5f,  // 破片の生存時間（短くして消えるように）
 				m_bossPosition, // 初期位置 (基準座標)
-				randomVelocity * 3, // 初期速度（ランダムな方向）
+				randomVelocity * 10, // 初期速度（ランダムな方向）
 				SimpleMath::Vector3::Zero, // 重力加速度（Y軸方向に少し引っ張られる）
 				SimpleMath::Vector3::Zero, // 回転速度
 				SimpleMath::Vector3::Zero, // 初期回転

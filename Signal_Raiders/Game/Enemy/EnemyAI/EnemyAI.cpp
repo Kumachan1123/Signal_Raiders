@@ -123,12 +123,16 @@ void EnemyAI::KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bo
 	if (GetState() != IState::EnemyState::ANGRY)// 怒り態勢でない場合
 		SetState(IState::EnemyState::HIT);// ダメージ態勢にする
 	// ノックバックが終了したかどうかチェック
+	if (t >= 0.5f)
+	{
+		m_pEnemy->SetCanAttack(true);// 攻撃可能にする
+	}
 	if (t >= 1.0f)
 	{
 		m_knockEndPosition = pos;
 		m_knockTime = 0.0f; // ノックバック時間のリセット
 		isHitToPlayerBullet = false; // ノックバック終了
 		SetState(IState::EnemyState::IDLING);// 待機態勢
-		m_pEnemy->SetCanAttack(true);// 攻撃可能にする
+
 	}
 }

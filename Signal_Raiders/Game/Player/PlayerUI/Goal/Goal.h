@@ -15,7 +15,7 @@
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
 class CommonResources;
-class ReadyGo
+class Goal
 {
 public:
 	// データ受け渡し用コンスタントバッファ(送信側)
@@ -66,8 +66,8 @@ public:
 	//	関数
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 
-	ReadyGo(CommonResources* resources);
-	~ReadyGo();
+	Goal(CommonResources* resources);
+	~Goal();
 
 	void LoadTexture(const wchar_t* path);
 

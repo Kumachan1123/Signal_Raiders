@@ -41,7 +41,8 @@ PlayScene::PlayScene(IScene::SceneID sceneID)
 	m_nowSceneID{ sceneID },
 	m_timer{ 0.0f },
 	m_waitTime{ 0.0f },
-	m_stageNumber{ 0 }
+	m_stageNumber{ 0 },
+	m_pBloom{ Bloom::GetInstance() }
 
 {
 
@@ -58,9 +59,6 @@ void PlayScene::Initialize(CommonResources* resources)
 	assert(resources);
 	m_commonResources = resources;
 	auto DR = m_commonResources->GetDeviceResources();
-
-
-
 	// 設定データを取得する
 	m_pSettingData = std::make_unique<SettingData>();
 	m_pSettingData->Load();
@@ -90,6 +88,18 @@ void PlayScene::Initialize(CommonResources* resources)
 	// 敵カウンター
 	m_pEnemyCounter = std::make_unique<EnemyCounter>();
 	m_pEnemyCounter->Initialize(resources);
+	// 準備
+	m_pGoal = std::make_unique<Goal>(m_commonResources);
+	m_pGoal->Create(DR);
+	// 危険状態
+	m_pCrisis = std::make_unique<Crisis>(m_commonResources);
+	m_pCrisis->Create(DR);
+	// HPゲージ作成
+	m_pPlayerHP = std::make_unique<PlayerHP>();
+	m_pPlayerHP->Initialize(DR, 1280, 720);
+	// 照準作成
+	m_pPlayerPointer = std::make_unique<PlayerPointer>();
+	m_pPlayerPointer->Initialize(DR, 1280, 720);
 	// フェードの初期化
 	m_fade = std::make_unique<Fade>(m_commonResources);
 	m_fade->Create(DR);
@@ -98,6 +108,9 @@ void PlayScene::Initialize(CommonResources* resources)
 	// レーダーを初期化する
 	m_pRadar = std::make_unique<Radar>(resources);
 	m_pRadar->Initialize(m_pPlayer.get(), m_pEnemies.get());
+	// ブルームエフェクトの生成
+	m_pBloom->CreatePostProcess(resources);
+
 	// Sound用のオブジェクトを初期化する
 	InitializeFMOD();
 
@@ -109,8 +122,6 @@ void PlayScene::Initialize(CommonResources* resources)
 void PlayScene::Update(float elapsedTime)
 {
 	ShowCursor(FALSE);//カーソルを見えないようにする
-	// キーボードステートトラッカーを取得する
-	const auto& kb = m_commonResources->GetInputManager()->GetKeyboardTracker();
 	// 経過時間
 	m_timer += elapsedTime;
 	// 二重再生しない
@@ -120,26 +131,41 @@ void PlayScene::Update(float elapsedTime)
 
 	m_pWall->Update(elapsedTime);
 	m_audioManager->Update();// オーディオマネージャーの更新
-	m_pEnemies->Update(elapsedTime);// 敵の更新
-	m_pPlayer->Update(kb, elapsedTime);
-	m_pEnemyCounter->SetEnemyIndex(m_pEnemies->GetEnemyIndex());// 敵の総数を取得
-	m_pEnemyCounter->SetNowEnemy(m_pEnemies->GetEnemySize());// 現在の敵の数を取得
-	m_pEnemyCounter->Update(elapsedTime);// 敵カウンターの更新
 
-	if (m_pPlayer->GetPlayerHP() <= 0.0f ||// プレイヤーのHPが0以下
-		(m_pEnemies->GetEnemySize() <= 0 &&// 敵がいない
-			m_pEnemies->GetisBorned() &&// 生成が完了している
-			m_pEnemies->GetIsBossAlive() == false))// ボスがいない
+	m_pEnemies->Update(elapsedTime);// 敵の更新
+	m_pPlayer->Update(elapsedTime);
+	if (m_timer <= 5.0f)// ゲーム開始から5秒間は指示画像を表示
 	{
-		m_waitTime += elapsedTime;// 待ち時間を加算する
+		m_pGoal->Update(elapsedTime);
 	}
-	if (m_waitTime >= 1.0f)// 待ち時間が5秒以上なら
+	else// 5秒以上経過したら
 	{
-		m_fade->SetTextureNum((int)(Fade::TextureNum::BLACK));
-		m_fade->SetState(Fade::FadeState::FadeOut);
+		// HP更新
+		m_pPlayerHP->Update(m_pPlayer->GetPlayerHP());
+		// 体力が10以下になったら危機状態更新
+		if (m_pPlayer->GetPlayerHP() <= 10.0f)m_pCrisis->Update(elapsedTime);
+		// 照準更新
+		m_pPlayerPointer->Update();
+		m_pEnemyCounter->SetEnemyIndex(m_pEnemies->GetEnemyIndex());// 敵の総数を取得
+		m_pEnemyCounter->SetNowEnemy(m_pEnemies->GetEnemySize());// 現在の敵の数を取得
+		m_pEnemyCounter->Update(elapsedTime);// 敵カウンターの更新
+
+		if (m_pPlayer->GetPlayerHP() <= 0.0f ||// プレイヤーのHPが0以下か、
+			(m_pEnemies->GetEnemySize() <= 0 &&// 敵がいなくて
+				m_pEnemies->GetisBorned() &&// 生成が完了していて
+				m_pEnemies->GetIsBossAlive() == false))// ボスがいないなら
+		{
+			m_waitTime += elapsedTime;// 待ち時間を加算する
+		}
+		if (m_waitTime >= 1.0f)// 待ち時間が5秒以上なら
+		{
+			m_fade->SetTextureNum((int)(Fade::TextureNum::BLACK));
+			m_fade->SetState(Fade::FadeState::FadeOut);
+		}
+		// レーダーを更新する
+		m_pRadar->Update(elapsedTime);
 	}
-	// レーダーを更新する
-	m_pRadar->Update(elapsedTime);
+
 
 	// 画面遷移フェード処理
 	m_fade->Update(elapsedTime);
@@ -156,6 +182,9 @@ void PlayScene::Render()
 	Matrix view = m_pPlayer->GetCamera()->GetViewMatrix();
 	Matrix projection = m_pPlayer->GetCamera()->GetProjectionMatrix();
 	Matrix skyWorld = Matrix::Identity * Matrix::CreateScale(10);
+	// オフスクリーンにオブジェクトを描画する
+	m_pBloom->ChangeOffScreenRT();
+
 	// 天球描画
 	m_skybox->Render(view, projection, skyWorld, m_pPlayer->GetPlayerController()->GetPlayerPosition());
 	// 地面描画
@@ -164,20 +193,36 @@ void PlayScene::Render()
 	m_pWall->Render(view, projection);
 	// 敵を描画する
 	m_pEnemies->Render();
+
 	// プレイヤーを描画する
 	m_pPlayer->Render();
-	// 経過時間が5秒以上なら
+
+	// ブルームエフェクトをかける
+	m_pBloom->PostProcess();
+
+	// レンダーターゲットを元に戻す
+	m_pBloom->ChangeDefaultRT();
+
+	// ゲーム開始から5秒以上経過したら
 	if (m_timer >= 5.0f)
 	{
 		// 敵カウンターを描画する
 		m_pEnemyCounter->Render();
 		// レーダーを描画する
 		m_pRadar->Render();
+		if (m_pPlayer->GetPlayerHP() <= 10.0f)m_pCrisis->Render();// HPが10以下で危機状態描画
+		m_pPlayerHP->Render();// HP描画
+		m_pPlayerPointer->Render();// 照準描画
+
 	}
+	else // ゲーム開始から5秒間は指示画像を表示
+	{
+		m_pGoal->Render();
+	}
+
 
 	// フェードの描画
 	m_fade->Render();
-
 
 }
 //---------------------------------------------------------

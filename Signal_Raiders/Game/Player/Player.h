@@ -6,8 +6,8 @@
 #include "Game/Player/PlayerUI/PlayerHP/PlayerHP.h"
 #include "Game/Player/PlayerUI/PlayerPointer/PlayerPointer.h"
 #include "Game/Player/PlayerUI/Crisis/Crisis.h"
-#include "Game/Player/PlayerUI/ReadyGo/ReadyGo.h"
-#include "Game/DamageEffect/DamageEffect.h"
+#include "Game/Player/PlayerUI/Goal/Goal.h"
+#include "Game/DamageEffect/DamageEffects/DamageEffects.h"
 #include "Game/Enemy/Enemies/Enemies.h"
 #include "Game/FPS_Camera/FPS_Camera.h"
 // 前方宣言
@@ -15,11 +15,11 @@ class CommonResources;
 class PlayerController;
 class PlayerUI;
 class PlayerBullets;
-class ReadyGo;
+class Goal;
 class PlayerPointer;
 class PlayerHP;
 class Crisis;
-class DamageEffect;
+class DamageEffects;
 class FPS_Camera;
 class Enemies;
 class Player
@@ -37,20 +37,15 @@ private:
 	std::unique_ptr<FPS_Camera> m_pCamera;
 	// プレイヤーのHP
 	float m_playerHP;
-	// プレイヤーのHPのUI
-	std::unique_ptr <PlayerHP> m_pPlayerHP;
 	// プレイヤーの弾
 	std::unique_ptr<PlayerBullets> m_pPlayerBullets;
-	// 照準
-	std::unique_ptr<PlayerPointer> m_pPlayerPointer;
-	// ダメージエフェクト
-	std::vector<std::unique_ptr<DamageEffect>> m_pDamageEffect;
+
+	// ダメージエフェクトを管理するクラス
+	std::unique_ptr<DamageEffects> m_pDamageEffects;
 	// プレイヤーコントローラー
 	std::unique_ptr<PlayerController> m_pPlayerController;
-	// 危機状態
-	std::unique_ptr<Crisis> m_pCrisis;
-	// 準備
-	std::unique_ptr<ReadyGo> m_pReadyGo;
+
+
 	// 境界球
 	DirectX::BoundingSphere m_inPlayerArea;// プレイヤーと敵との一定範囲内での境界球
 	DirectX::BoundingSphere m_playerSphere;// プレイヤーの境界球
@@ -78,30 +73,37 @@ public:
 	// 初期化
 	void Initialize(Enemies* pEnemies);
 	// 更新
-	void Update(const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>& kb, float elapsedTime);
+	void Update(float elapsedTime);
 	// 描画
 	void Render();
 	// Getter
 public:
 	float GetPlayerHP() const { return m_playerHP; }	// プレイヤーのHP
+	void SetPlayerHP(float playerHP) { m_playerHP = playerHP; }	// プレイヤーのHP
 	FPS_Camera* GetCamera() { return m_pCamera.get(); }// カメラ
+	Enemies* GetEnemies() { return m_pEnemies; }// 敵
+	PlayerBullets* GetPlayerBullets() { return m_pPlayerBullets.get(); }// プレイヤーの弾
 	DirectX::SimpleMath::Vector3 GetPlayerPos() const { return m_playerPos; }// プレイヤーの位置
 	DirectX::SimpleMath::Vector3 GetPlayerDir() const { return m_playerDir; }// プレイヤーの向き
 	PlayerController* GetPlayerController() { return m_pPlayerController.get(); }// プレイヤーコントローラー
 	DirectX::BoundingSphere GetPlayerSphere() const { return m_playerSphere; }// プレイヤーの境界球
 	DirectX::BoundingSphere GetInPlayerArea() const { return m_inPlayerArea; }// プレイヤーと敵との一定範囲内での境界球
 	float GetVolume() const { return m_SEVolume; }// 音量取得
-	float GetMouseSensitive() const { return m_mouseSensitive; }// マウス感度
-	DirectX::SimpleMath::Vector3 GetEnemyDir() const { return m_enemyDir; }// 攻撃してきた敵の向き
-	bool GetisPlayerDamage() const { return m_isDamage; }	// プレイヤーがダメージを受けたか
-	bool GetisPlayEffect() const { return m_isPlayEffect; }// エフェクト再生フラグ
-	bool GetisKillAll() const { return m_isKillAll; }// チートコマンド：敵を一掃するフラグ
-	// Setter
-public:
-	void SetPlayerHP(float playerHP) { m_playerHP = playerHP; }	// プレイヤーのHP
-	void SetisPlayerDamage(bool isDamage) { m_isDamage = isDamage; }// プレイヤーがダメージを受けたか
 	void SetVolume(float volume) { m_SEVolume = volume; }// 音量取得
+	float GetMouseSensitive() const { return m_mouseSensitive; }// マウス感度
 	void SetMouseSensitive(float sensitive) { m_mouseSensitive = sensitive; }// マウス感度
+	DirectX::SimpleMath::Vector3 GetEnemyBulletDirection() const { return m_enemyDir; }// 攻撃してきた敵の向き
 	void SetEnemyBulletDirection(DirectX::SimpleMath::Vector3 enemyDir) { m_enemyDir = enemyDir; }// 攻撃してきた敵の向き
+	bool GetisPlayerDamage() const { return m_isDamage; }	// プレイヤーがダメージを受けたか
+	void SetisPlayerDamage(bool isDamage) { m_isDamage = isDamage; }// プレイヤーがダメージを受けたか
+	bool GetisPlayEffect() const { return m_isPlayEffect; }// エフェクト再生フラグ
 	void SetisPlayEffect(bool isPlayEffect) { m_isPlayEffect = isPlayEffect; }// エフェクト再生フラグ
+	bool GetisKillAll() const { return m_isKillAll; }// チートコマンド：敵を一掃するフラグ
+	bool GetisCheat() const { return m_isCheat; }// チートコマンドが有効か
+	void SetisCheat(bool isCheat) { m_isCheat = isCheat; }// チートコマンドが有効か
+public:
+	void CreateBullet();// 弾を生成する
+private:
+	void PlayerDamage(float elapsedTime);// プレイヤーがダメージを受けた時の処理
+
 };

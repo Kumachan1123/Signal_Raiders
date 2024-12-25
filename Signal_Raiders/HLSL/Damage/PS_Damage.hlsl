@@ -5,9 +5,9 @@ cbuffer ConstBuffer : register(b0)
     matrix matView; // ビュー行列
     matrix matProj; // プロジェクション行列
     float4 color; // 色
-    float time; // 時間
-    float2 uv; // uv座標
-    float alpha; // アルファ
+    float4 time; // 時間
+    float4 uv; // uv座標
+    float4 alpha; // アルファ
 };
 
 
@@ -30,7 +30,7 @@ float3 HSVtoRGB(float3 hsv)
 float4 main(PS_INPUT input) : SV_TARGET
 {
   // UV座標の中心を(0.5, 0.5)に設定する
-    float2 center = uv;
+    float2 center = uv.xy;
     
     // 現在のUV座標と中心との距離を計算する
     float2 uvOffset = input.Tex - center;

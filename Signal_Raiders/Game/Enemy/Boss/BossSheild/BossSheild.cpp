@@ -17,6 +17,7 @@ BossSheild::BossSheild(int sheildHP, Boss* pBoss)
 	, m_sheildPosition{ 0,0,0 }
 	, m_sheildHP{ sheildHP }// シールドの耐久値
 	, m_pBoss{ pBoss }
+
 {
 }
 
@@ -83,6 +84,7 @@ void BossSheild::Render(ID3D11DeviceContext1* context, DirectX::DX11::CommonStat
 				context->OMSetBlendState(states->Additive(), nullptr, 0xffffffff);
 			});
 	}
+
 	// パーティクル描画
 	if (m_isParticle)
 	{

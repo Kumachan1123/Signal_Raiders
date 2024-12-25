@@ -26,7 +26,7 @@
 #include "Game/Fade/Fade.h"
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/Radar/Radar.h"
-#include "Game/DamageEffect/DamageEffect.h"
+#include "Game/KumachiLib/Bloom/Bloom.h"
 // 前方宣言
 class CommonResources;
 namespace mylib
@@ -67,10 +67,20 @@ private:
 	std::vector<std::unique_ptr<Effect>> m_pEffect;
 	// 敵カウンター
 	std::unique_ptr<EnemyCounter> m_pEnemyCounter;
+	// 準備
+	std::unique_ptr<Goal> m_pGoal;
+	// プレイヤーのHPのUI
+	std::unique_ptr <PlayerHP> m_pPlayerHP;
+	// 危機状態
+	std::unique_ptr<Crisis> m_pCrisis;
+	// 照準
+	std::unique_ptr<PlayerPointer> m_pPlayerPointer;
 	// フェード
 	std::unique_ptr<Fade> m_fade;
 	// 設定データ
 	std::unique_ptr<SettingData> m_pSettingData;
+	// ブルーム
+	Bloom* m_pBloom;
 	// フェードの状態
 	Fade::FadeState m_fadeState;
 	// フェード画像番号

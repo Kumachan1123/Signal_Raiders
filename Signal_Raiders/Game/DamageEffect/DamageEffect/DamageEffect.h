@@ -29,9 +29,9 @@ public:
 		DirectX::SimpleMath::Matrix matView;    // ビュー行列
 		DirectX::SimpleMath::Matrix matProj;    // プロジェクション行列
 		DirectX::SimpleMath::Vector4 colors;    // カラー
-		float time = 0.0f;                             // 時間
-		DirectX::SimpleMath::Vector2 uv;// uv座標
-		float alpha = 0.0f;// アルファ値
+		DirectX::SimpleMath::Vector4 time;                             // 時間
+		DirectX::SimpleMath::Vector4 uv;// uv座標
+		DirectX::SimpleMath::Vector4 alpha;// アルファ値
 	}m_constBuffer;
 private:
 	// 変数

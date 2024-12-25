@@ -1,9 +1,9 @@
 /*
-	@file	ReadyGo.cpp
+	@file	Goal.cpp
 	@brief	準備クラス
 */
 #include "pch.h"
-#include "ReadyGo.h"
+#include "Goal.h"
 #include "Game/CommonResources.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "DeviceResources.h"
@@ -19,14 +19,14 @@
 using namespace DirectX;
 
 // インプットレイアウト
-const std::vector<D3D11_INPUT_ELEMENT_DESC>  ReadyGo::INPUT_LAYOUT =
+const std::vector<D3D11_INPUT_ELEMENT_DESC>  Goal::INPUT_LAYOUT =
 {
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 
 };
 // コンストラクタ
-ReadyGo::ReadyGo(CommonResources* resources)
+Goal::Goal(CommonResources* resources)
 	:m_pDR(nullptr)
 	, m_time(0.0f)
 	, m_constBuffer()
@@ -42,12 +42,12 @@ ReadyGo::ReadyGo(CommonResources* resources)
 }
 
 // デストラクタ
-ReadyGo::~ReadyGo()
+Goal::~Goal()
 {
 }
 
 // テクスチャリソース読み込み関数
-void  ReadyGo::LoadTexture(const wchar_t* path)
+void  Goal::LoadTexture(const wchar_t* path)
 {
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;
 	DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, nullptr, texture.ReleaseAndGetAddressOf());
@@ -55,7 +55,7 @@ void  ReadyGo::LoadTexture(const wchar_t* path)
 }
 
 // 生成関数
-void  ReadyGo::Create(DX::DeviceResources* pDR)
+void  Goal::Create(DX::DeviceResources* pDR)
 {
 	m_pDR = pDR;
 	// シェーダーの作成
@@ -69,7 +69,7 @@ void  ReadyGo::Create(DX::DeviceResources* pDR)
 }
 
 // シェーダー作成部分
-void  ReadyGo::CreateShader()
+void  Goal::CreateShader()
 {
 	// 頂点シェーダーをピクセルシェーダーを作成
 	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/ReadyGo/VS_ReadyGo.cso", m_vertexShader);
@@ -85,7 +85,7 @@ void  ReadyGo::CreateShader()
 }
 
 //更新
-void  ReadyGo::Update(float elapsedTime)
+void  Goal::Update(float elapsedTime)
 {
 	//	時間更新（m_timeを0.1ずつ増やし、１を超えたら０からやり直し）
 	m_time += elapsedTime;
@@ -107,7 +107,7 @@ void  ReadyGo::Update(float elapsedTime)
 
 
 // 描画関数
-void  ReadyGo::Render()
+void  Goal::Render()
 {
 
 	//	頂点情報(板ポリゴンの４頂点の座標情報）

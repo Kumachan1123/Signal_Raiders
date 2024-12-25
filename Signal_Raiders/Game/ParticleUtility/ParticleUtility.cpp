@@ -106,6 +106,7 @@ void ParticleUtility::Trail(float elapsedTime)
 
 }
 
+// タイプ::バリア破壊の処理
 void ParticleUtility::BarrierDestroyed(float elapsedTime)
 {
 	// ランダムな動きを追加するための設定

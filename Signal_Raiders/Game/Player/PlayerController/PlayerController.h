@@ -35,8 +35,9 @@ public:
 	~PlayerController();
 	void Initialize(CommonResources* resources);
 	void MoveStop();
-	void Update(const std::unique_ptr < DirectX::Keyboard::KeyboardStateTracker>& kb, DirectX::SimpleMath::Vector3& Direction, float elapsedTime);
-
+	void Update(float elapsedTime);// 更新
+	void DebugCommand();// デバッグコマンド
+	void Shoot();// プレイヤーが弾を撃つ
 	//Getter
 	float GetYawX()const { return m_yawX; }
 	float GetPitch()const { return m_pitchY; }
