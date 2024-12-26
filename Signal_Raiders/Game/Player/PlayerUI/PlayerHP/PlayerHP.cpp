@@ -64,10 +64,10 @@ void PlayerHP::Update(float PlayerHP)
 
 void PlayerHP::Render()
 {
-	m_base->Render();
-	m_gauge->Render();
-	m_frame->Render();
-	m_heart->Render();
+	m_base->SetShaderType(PlayerUI::ShaderType::OTHER), m_base->Render();
+	m_gauge->SetShaderType(PlayerUI::ShaderType::HP), m_gauge->Render();
+	m_frame->SetShaderType(PlayerUI::ShaderType::OTHER), m_frame->Render();
+	m_heart->SetShaderType(PlayerUI::ShaderType::OTHER), m_heart->Render();
 }
 
 void PlayerHP::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)

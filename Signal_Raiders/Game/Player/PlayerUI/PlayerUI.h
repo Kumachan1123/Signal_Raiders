@@ -23,6 +23,12 @@
 class PlayerUI
 {
 public:
+	enum class ShaderType
+	{
+		HP = 0,
+		OTHER,
+	};
+
 	//データ受け渡し用コンスタントバッファ(送信側)
 	struct ConstBuffer
 	{
@@ -58,8 +64,6 @@ private:
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
 	// HPで使うシェーダー
-	// 頂点シェーダ
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_hpVertexShader;
 	// ピクセルシェーダ
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_hpPixelShader;
 	// シェーダーの構造体
@@ -79,6 +83,7 @@ private:
 
 	KumachiLib::ANCHOR m_anchor;
 
+	ShaderType m_shaderType;
 	float m_renderRatio;
 	float m_renderRatioOffset;
 	//関数
@@ -113,7 +118,7 @@ public:
 
 	void SetRenderRatioOffset(float offset) { m_renderRatioOffset = offset; };
 	float GetRenderRatioOffset() const { return m_renderRatioOffset; }
-
+	void SetShaderType(ShaderType type) { m_shaderType = type; }
 private:
 
 	void CreateShader();

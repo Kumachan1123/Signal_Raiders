@@ -466,9 +466,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Resources\Shaders\PlayerHP\GS_PlayerHP.cso" />
-    <None Include="Resources\Shaders\PlayerHP\PS_PlayerHP.cso" />
-    <None Include="Resources\Shaders\PlayerHP\VS_PlayerHP.cso" />
     <None Include="HLSL\Menu\Menu.hlsli" />
     <None Include="ClassDiagram.cd" />
     <None Include="ClassDiagram1.cd" />

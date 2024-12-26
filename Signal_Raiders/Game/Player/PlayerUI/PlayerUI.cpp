@@ -74,26 +74,32 @@ void PlayerUI::Create(DX::DeviceResources* pDR
 }
 
 
+
+
 // シェーダーの作成
 void PlayerUI::CreateShader()
 {
 	// シェーダーの作成
 	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/PlayerUI/VS_PlayerUI.cso", m_vertexShader);
 	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/PlayerUI/PS_PlayerUI.cso", m_pixelShader);
-	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/PlayerUI/VS_PlayerHP.cso", m_hpVertexShader);
-	m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/PlayerUI/GS_PlayerHP.cso", m_geometryShader);
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/PlayerUI/PS_PlayerHP.cso", m_hpPixelShader);
+	m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/PlayerUI/GS_PlayerUI.cso", m_geometryShader);
+
 	// インプットレイアウトを受け取る
 	m_pInputLayout = m_pCreateShader->GetInputLayout();
-	// シェーダーにデータを渡すためのコンスタントバッファ生成
+
+	// HP用シェーダーの作成
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/PlayerUI/PS_PlayerHP.cso", m_hpPixelShader);
+
+	// HP用シェーダーにデータを渡すためのコンスタントバッファ生成
 	m_pCreateShader->CreateConstantBuffer(m_CBuffer, sizeof(ConstBuffer));
 	// シェーダーの構造体にシェーダーを渡す
 	m_shaders.vs = m_vertexShader.Get();
 	m_shaders.ps = m_pixelShader.Get();
 	m_shaders.gs = m_geometryShader.Get();
-	m_hpShaders.vs = m_hpVertexShader.Get();
+
+	m_hpShaders.vs = m_vertexShader.Get();
 	m_hpShaders.ps = m_hpPixelShader.Get();
-	m_hpShaders.gs = m_geometryShader.Get();;
+	m_hpShaders.gs = m_geometryShader.Get();
 }
 
 
@@ -124,10 +130,22 @@ void PlayerUI::Render()
 		DrawPolygon::BlendStates::NONPREMULTIPLIED,
 		DrawPolygon::RasterizerStates::CULL_NONE,
 		DrawPolygon::DepthStencilStates::DEPTH_NONE);
-	// 描画準備
-	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_textures);
+
 	//	シェーダをセットする
-	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);
+	if (m_shaderType == ShaderType::HP)
+	{
+		// 描画準備
+		//m_pDrawPolygon->DrawStart(m_pHPInputLayout.Get(), m_textures);
+		m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_textures);
+
+		m_pDrawPolygon->SetShader(m_hpShaders, nullptr, 0);
+	}
+
+	else
+	{
+		m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_textures);
+		m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);
+	}
 	//	板ポリゴンを描画
 	m_pDrawPolygon->DrawColorTexture(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex[0], 1);
 	//	シェーダの登録を解除しておく

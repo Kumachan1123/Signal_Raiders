@@ -29,6 +29,8 @@ CreateShader::~CreateShader()
 	// インプットレイアウトの解放
 	m_pInputLayout.Reset();
 	m_pIDE = nullptr;
+	m_device = nullptr;
+
 
 }
 
