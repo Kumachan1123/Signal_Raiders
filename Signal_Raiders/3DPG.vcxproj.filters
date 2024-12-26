@@ -264,7 +264,6 @@
     <ClInclude Include="Game\Particle\Particle.h" />
     <ClInclude Include="Game\ParticleUtility\ParticleUtility.h" />
     <ClInclude Include="Game\Enemy\EnemyBullets\EnemyBullets.h" />
-    <ClInclude Include="Game\Stage\Stage.h" />
     <ClInclude Include="Game\Scene\TitleScene\TitleMenu\TitleMenu.h" />
     <ClInclude Include="Game\Scene\SettingScene\SettingScene.h" />
     <ClInclude Include="Game\Scene\SettingScene\SettingMenu\SettingMenu.h" />
@@ -299,6 +298,7 @@
     <ClInclude Include="Game\KumachiLib\RenderTexture\RenderTexture.h" />
     <ClInclude Include="Game\KumachiLib\Bloom\Bloom.h" />
     <ClInclude Include="Game\DamageEffect\DamageEffects\DamageEffects.h" />
+    <ClInclude Include="Game\Stage\Stage.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -414,7 +414,6 @@
     <ClCompile Include="Game\Particle\Particle.cpp" />
     <ClCompile Include="Game\ParticleUtility\ParticleUtility.cpp" />
     <ClCompile Include="Game\Enemy\EnemyBullets\EnemyBullets.cpp" />
-    <ClCompile Include="Game\Stage\Stage.cpp" />
     <ClCompile Include="Game\Scene\TitleScene\TitleMenu\TitleMenu.cpp" />
     <ClCompile Include="Game\Scene\SettingScene\SettingScene.cpp" />
     <ClCompile Include="Game\Scene\SettingScene\SettingMenu\SettingMenu.cpp" />
@@ -447,6 +446,7 @@
     <ClCompile Include="Game\KumachiLib\RenderTexture\RenderTexture.cpp" />
     <ClCompile Include="Game\KumachiLib\Bloom\Bloom.cpp" />
     <ClCompile Include="Game\DamageEffect\DamageEffects\DamegeEffects.cpp" />
+    <ClCompile Include="Game\Stage\Stage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -476,6 +476,7 @@
     <None Include="HLSL\CRT\CRT.hlsli" />
     <None Include="HLSL\EnemyHP\EnemyHP.hlsli" />
     <None Include="HLSL\PlayerUI\PlayerUI.hlsli" />
+    <None Include="HLSL\Stage\Stage.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Shadow\PS_Shadow.hlsl">
@@ -509,5 +510,7 @@
     <FxCompile Include="HLSL\PlayerUI\VS_PlayerHP.hlsl" />
     <FxCompile Include="HLSL\PlayerUI\PS_PlayerHP.hlsl" />
     <FxCompile Include="HLSL\PlayerUI\GS_PlayerUI.hlsl" />
+    <FxCompile Include="HLSL\Stage\PS_Stage.hlsl" />
+    <FxCompile Include="HLSL\Stage\VS_Stage.hlsl" />
   </ItemGroup>
 </Project>

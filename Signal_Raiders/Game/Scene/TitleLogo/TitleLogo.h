@@ -10,7 +10,6 @@
 #include "Game/CommonResources.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
-#include "DeviceResources.h"
 // ‘O•ûéŒ¾
 class CommonResources;
 

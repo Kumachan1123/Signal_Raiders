@@ -182,13 +182,14 @@ void PlayScene::Render()
 	Matrix view = m_pPlayer->GetCamera()->GetViewMatrix();
 	Matrix projection = m_pPlayer->GetCamera()->GetProjectionMatrix();
 	Matrix skyWorld = Matrix::Identity * Matrix::CreateScale(10);
+	Matrix world = Matrix::Identity;
 	// ƒIƒtƒXƒNƒŠ[ƒ“‚ÉƒIƒuƒWƒFƒNƒg‚ð•`‰æ‚·‚é
 	m_pBloom->ChangeOffScreenRT();
 
 	// “V‹…•`‰æ
 	m_skybox->Render(view, projection, skyWorld, m_pPlayer->GetPlayerController()->GetPlayerPosition());
 	// ’n–Ê•`‰æ
-	m_pStage->Render(view, projection);
+	m_pStage->Render(view, projection, world, Vector3(0, 0, 0));
 	// •Ç•`‰æ
 	m_pWall->Render(view, projection);
 	// “G‚ð•`‰æ‚·‚é

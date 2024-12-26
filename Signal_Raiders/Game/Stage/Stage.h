@@ -1,51 +1,36 @@
+/*
+	@file	Sky.h
+	@brief	スカイクラス
+*/
 #pragma once
-#include "Game/CommonResources.h"
-#include "DeviceResources.h"
-#include <PrimitiveBatch.h> 
-#include <VertexTypes.h> 
-#include <WICTextureLoader.h> 
-#include "Libraries/MyLib/DebugString.h"
-#include "Libraries/MyLib/InputManager.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
-#include <cassert>
-#include <SimpleMath.h>
-#include <Effects.h>
-#include <Libraries/Microsoft/DebugDraw.h>
+
+// 前方宣言
+class CommonResources;
 class Stage
 {
-
-
 private:
+
 	// 共通リソース
 	CommonResources* m_commonResources;
-	// モデル
-	std::unique_ptr<DirectX::Model> m_pStageModel;
-	//	入力レイアウト 
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
-	//	テクスチャハンドル 
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pTexture;
 
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_cBuffer;
-	//	共通ステートオブジェクトへのポインタ
-	std::unique_ptr<DirectX::CommonStates> m_pStates;
+	// モデルの描画で使用する
+	std::unique_ptr<DirectX::Model> m_model;	// モデル
 
-	//	エフェクト 
-	std::unique_ptr<DirectX::AlphaTestEffect> m_pBatchEffect;
+	// テクスチャパス
+	wchar_t m_texturePath[256];
 
-	//	プリミティブバッチ 
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_pPrimitiveBatch;
-
-	// 床の深度ステンシルステート
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilState_Floor;
-
-
-
+	// ステージID
+	int m_stageID;
 public:
-
-	// 初期ステータスを設定
 	Stage();
 	~Stage();
-	void Initialize(CommonResources* resources);
-	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 
+	void Initialize(CommonResources* resources);
+
+	void Render(DirectX::SimpleMath::Matrix view,
+		DirectX::SimpleMath::Matrix proj,
+		DirectX::SimpleMath::Matrix world,
+		DirectX::SimpleMath::Vector3 pos
+	);
+	//	関数
 };
