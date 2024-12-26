@@ -1,24 +1,18 @@
-#include "PlayerHP.hlsli"
-
+#include "PlayerUI.hlsli"
 static const unsigned int vnum = 4;
-
-//wが0だと行列計算がおかしくなるので1に変更
 static const float4 offset_array[vnum] =
 {
-    float4(0.0f, 1.0f, 0.0f, 1.0f), // 左上
-	float4(1.0f, 1.0f, 0.0f, 1.0f), // 右上
-	float4(0.0f, 0.0f, 0.0f, 1.0f), // 左下
-	float4(1.0f, 0.0f, 0.0f, 1.0f), // 右下
-
+    float4(0.0f, 1.0f, 0.0f, 1.0f),
+    float4(1.0f, 1.0f, 0.0f, 1.0f),
+    float4(0.0f, 0.0f, 0.0f, 1.0f),
+    float4(1.0f, 0.0f, 0.0f, 1.0f)
 };
 
 [maxvertexcount(vnum)]
 void main(
-	point PS_INPUT input[1],
-	inout TriangleStream<PS_INPUT> output
-)
+    point PS_INPUT input[1],
+    inout TriangleStream<PS_INPUT> output)
 {
-
     for (uint i = 0; i < vnum; i++)
     {
 		//ジオメトリ出力
@@ -58,4 +52,5 @@ void main(
         output.Append(element);
     }
     output.RestartStrip();
+
 }

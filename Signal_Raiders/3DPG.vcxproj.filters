@@ -466,7 +466,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="HLSL\PlayerHP\PlayerHP.hlsli" />
     <None Include="Resources\Shaders\PlayerHP\GS_PlayerHP.cso" />
     <None Include="Resources\Shaders\PlayerHP\PS_PlayerHP.cso" />
     <None Include="Resources\Shaders\PlayerHP\VS_PlayerHP.cso" />
@@ -478,14 +477,13 @@
     <None Include="fmod.dll" />
     <None Include="HLSL\Counter\Counter.hlsli" />
     <None Include="HLSL\CRT\CRT.hlsli" />
+    <None Include="HLSL\EnemyHP\EnemyHP.hlsli" />
+    <None Include="HLSL\PlayerUI\PlayerUI.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Shadow\PS_Shadow.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="HLSL\PlayerHP\GS_PlayerHP.hlsl" />
-    <FxCompile Include="HLSL\PlayerHP\PS_PlayerHP.hlsl" />
-    <FxCompile Include="HLSL\PlayerHP\VS_PlayerHP.hlsl" />
     <FxCompile Include="HLSL\Title\PS_Title.hlsl" />
     <FxCompile Include="HLSL\Title\VS_Title.hlsl" />
     <FxCompile Include="HLSL\Fade\VS_Fade.hlsl" />
@@ -507,5 +505,12 @@
     <FxCompile Include="HLSL\Counter\PS_Counter.hlsl" />
     <FxCompile Include="HLSL\Counter\VS_Counter.hlsl" />
     <FxCompile Include="HLSL\Counter\GS_Counter.hlsl" />
+    <FxCompile Include="HLSL\EnemyHP\PS_EnemyHP.hlsl" />
+    <FxCompile Include="HLSL\EnemyHP\VS_EnemyHP.hlsl" />
+    <FxCompile Include="HLSL\PlayerUI\VS_PlayerUI.hlsl" />
+    <FxCompile Include="HLSL\PlayerUI\PS_PlayerUI.hlsl" />
+    <FxCompile Include="HLSL\PlayerUI\VS_PlayerHP.hlsl" />
+    <FxCompile Include="HLSL\PlayerUI\PS_PlayerHP.hlsl" />
+    <FxCompile Include="HLSL\PlayerUI\GS_PlayerUI.hlsl" />
   </ItemGroup>
 </Project>

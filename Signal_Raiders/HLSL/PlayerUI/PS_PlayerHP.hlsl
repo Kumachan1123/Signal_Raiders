@@ -1,4 +1,4 @@
-#include "PlayerHP.hlsli"
+#include "PlayerUI.hlsli"
 
 Texture2D tex : register(t0);
 Texture2D tex2 : register(t1);

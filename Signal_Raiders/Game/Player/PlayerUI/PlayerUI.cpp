@@ -78,9 +78,11 @@ void PlayerUI::Create(DX::DeviceResources* pDR
 void PlayerUI::CreateShader()
 {
 	// シェーダーの作成
-	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/PlayerHP/VS_PlayerHP.cso", m_vertexShader);
-	m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/PlayerHP/GS_PlayerHP.cso", m_geometryShader);
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/PlayerHP/PS_PlayerHP.cso", m_pixelShader);
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/PlayerUI/VS_PlayerUI.cso", m_vertexShader);
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/PlayerUI/PS_PlayerUI.cso", m_pixelShader);
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/PlayerUI/VS_PlayerHP.cso", m_hpVertexShader);
+	m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/PlayerUI/GS_PlayerHP.cso", m_geometryShader);
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/PlayerUI/PS_PlayerHP.cso", m_hpPixelShader);
 	// インプットレイアウトを受け取る
 	m_pInputLayout = m_pCreateShader->GetInputLayout();
 	// シェーダーにデータを渡すためのコンスタントバッファ生成
@@ -89,6 +91,9 @@ void PlayerUI::CreateShader()
 	m_shaders.vs = m_vertexShader.Get();
 	m_shaders.ps = m_pixelShader.Get();
 	m_shaders.gs = m_geometryShader.Get();
+	m_hpShaders.vs = m_hpVertexShader.Get();
+	m_hpShaders.ps = m_hpPixelShader.Get();
+	m_hpShaders.gs = m_geometryShader.Get();;
 }
 
 

@@ -3,41 +3,74 @@
 	@brief	敵HPBarクラス
 */
 #include "pch.h"
-#include <SimpleMath.h>
-#include "Game/Enemy/Enemy.h"
-#include "Game/CommonResources.h"
-#include "Game/Enemy/EnemyHPBar/EnemyHPBar.h"
-#include "DeviceResources.h"
-#include "Libraries/MyLib/DebugString.h"
-#include "Libraries/MyLib/GridFloor.h"
-#include "Libraries/MyLib/InputManager.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
-#include "Game/FPS_Camera/FPS_Camera.h"
-#include <cassert>
-#include <random>
-#include <memory>
-#include <Libraries/Microsoft/DebugDraw.h>
-#include "Game/KumachiLib/KumachiLib.h"
+#include "EnemyHPBar.h"
+
+using namespace DirectX;
+using namespace DirectX::SimpleMath;
+
+const std::vector<D3D11_INPUT_ELEMENT_DESC>  EnemyHPBar::INPUT_LAYOUT =
+{
+	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+};
+
 // コンストラクタ
 EnemyHPBar::EnemyHPBar()
-	: m_commonResources{}, m_maxHP(100), m_currentHP(100), m_displayedHP(100), m_lerpSpeed(5.0f), m_scale(1.5f), m_isDead(false)
+	: m_commonResources{}
+	, m_maxHP(100)
+	, m_currentHP(100)
+	, m_displayedHP(100)
+	, m_lerpSpeed(5.0f)
+	, m_scale(1.5f)
+	, m_time{ 0.0f }
+	, m_isDead(false)
+	, m_pDrawPolygon{ DrawPolygon::GetInstance() }
+	, m_pCreateShader{ CreateShader::GetInstance() }
 {
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
 	// ビルボードの頂点情報を設定する
 	m_hpbarVert[0] = { Vector3(-1.5f,3.25f,0.0f),Vector2(0.0f,0.0f) };	// 左上
 	m_hpbarVert[1] = { Vector3(1.5f,3.25f,0.0f),Vector2(1.0f,0.0f) };	// 右上
-	m_hpbarVert[2] = { Vector3(-1.5f,3.0f,0.0f),Vector2(0.0f,1.0f) };	// 左下
-	m_hpbarVert[3] = { Vector3(1.5f,3.0f,0.0f),Vector2(1.0f,1.0f) };	// 右下
+	m_hpbarVert[2] = { Vector3(1.5f,3.0f,0.0f),Vector2(1.0f,1.0f) };	// 右下
+	m_hpbarVert[3] = { Vector3(-1.5f,3.0f,0.0f),Vector2(0.0f,1.0f) };	// 左下
 	// ビルボードの頂点情報を設定する
 	m_hpbarBackVert[0] = { Vector3(-1.60f,3.27f,0.0f),Vector2(0.0f,0.0f) };	// 左上
 	m_hpbarBackVert[1] = { Vector3(1.60f,3.27f,0.0f),Vector2(1.0f,0.0f) };	// 右上
-	m_hpbarBackVert[2] = { Vector3(-1.60f,2.98f,0.0f),Vector2(0.0f,1.0f) };	// 左下
-	m_hpbarBackVert[3] = { Vector3(1.60f,2.98f,0.0f),Vector2(1.0f,1.0f) };	// 右下
+	m_hpbarBackVert[2] = { Vector3(1.60f,2.98f,0.0f),Vector2(1.0f,1.0f) };	// 右下
+	m_hpbarBackVert[3] = { Vector3(-1.60f,2.98f,0.0f),Vector2(0.0f,1.0f) };	// 左下
 
 }
 // デストラクタ
 EnemyHPBar::~EnemyHPBar() {}
+
+//---------------------------------------------------------
+// 画像を読み込む
+//---------------------------------------------------------
+void EnemyHPBar::LoadTexture(const wchar_t* path)
+{
+	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;
+	DirectX::CreateWICTextureFromFile(device, path, nullptr, texture.ReleaseAndGetAddressOf());
+	m_gaugeTexture.push_back(texture);
+}
+
+
+
+void EnemyHPBar::CreateShader()
+{
+	// 頂点シェーダーとピクセルシェーダーの作成
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/EnemyHP/VS_EnemyHP.cso", m_vertexShader);
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/EnemyHP/PS_EnemyHP.cso", m_pixelShader);
+	// インプットレイアウトを受け取る
+	m_pInputLayout = m_pCreateShader->GetInputLayout();
+	//	シェーダーにデータを渡すためのコンスタントバッファ生成
+	m_pCreateShader->CreateConstantBuffer(m_CBuffer, sizeof(ConstBuffer));
+	// シェーダーの構造体にシェーダーを渡す
+	m_shaders.vs = m_vertexShader.Get();
+	m_shaders.ps = m_pixelShader.Get();
+	m_shaders.gs = nullptr;
+}
+
+
 //---------------------------------------------------------
 //// 初期化する
 ////---------------------------------------------------------
@@ -46,33 +79,30 @@ void EnemyHPBar::Initialize(CommonResources* resources)
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	m_commonResources = resources;
-	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 
-	// プリミティブバッチを作成する
-	m_primitiveBatch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>>(context);
+	m_pDrawPolygon->InitializePositionTexture(m_commonResources->GetDeviceResources());
+	m_pCreateShader->Initialize(m_commonResources->GetDeviceResources()->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
 
-	// ベーシックエフェクトを作成する
-	m_basicEffect = std::make_unique<BasicEffect>(device);
-	m_basicEffect->SetTextureEnabled(true);	// テクスチャを使用する
+	//auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
+	//auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 
-	// 入力レイアウトを作成する
-	DX::ThrowIfFailed(
-		CreateInputLayoutFromEffect<VertexPositionTexture>(
-			device,
-			m_basicEffect.get(),
-			m_pInputLayout.ReleaseAndGetAddressOf()
-		)
-	);
-	// 画像をロードする
-	DX::ThrowIfFailed(
-		CreateWICTextureFromFile(
-			device,
-			L"Resources/Textures/EnemyHPBar.png",
-			nullptr,
-			m_gaugeTexture.ReleaseAndGetAddressOf()
-		)
-	);
+	//// プリミティブバッチを作成する
+	//m_primitiveBatch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>>(context);
+
+	//// ベーシックエフェクトを作成する
+	//m_basicEffect = std::make_unique<BasicEffect>(device);
+	//m_basicEffect->SetTextureEnabled(true);	// テクスチャを使用する
+
+	//// 入力レイアウトを作成する
+	//DX::ThrowIfFailed(
+	//	CreateInputLayoutFromEffect<VertexPositionTexture>(
+	//		device,
+	//		m_basicEffect.get(),
+	//		m_pInputLayout.ReleaseAndGetAddressOf()
+	//	)
+	//);
+	CreateShader();
+	LoadTexture(L"Resources/Textures/EnemyHPBar.png");
 	m_displayedHP = (float)(m_maxHP);
 }
 // 描画
@@ -96,39 +126,53 @@ void EnemyHPBar::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::M
 	worldBillboard *= Matrix::CreateRotationY(XMConvertToRadians(-rot.y * 2.0f));	// ③
 	worldBillboard *= Matrix::CreateTranslation(pos);
 	worldBillboard *= Matrix::CreateRotationY(XMConvertToRadians(rot.y * 2.0f));	// ③
+	// ビュー設定
+	m_constBuffer.matView = view.Transpose();
+	// プロジェクション設定
+	m_constBuffer.matProj = proj.Transpose();
+	// ワールド設定
+	m_constBuffer.matWorld = worldBillboard.Transpose();
+	// 描画前設定
+	m_pDrawPolygon->DrawSetting(
+		DrawPolygon::SamplerStates::LINEAR_WRAP,
+		DrawPolygon::BlendStates::NONPREMULTIPLIED,
+		DrawPolygon::RasterizerStates::CULL_NONE,
+		DrawPolygon::DepthStencilStates::DEPTH_NONE);
+	// グラデーションエフェクトの色設定 
+	m_constBuffer.colors = SimpleMath::Vector4(0.0f, 0.0f, 0.0f, 1.0f);
 
+	CreateBuffer();
 
-	// ポリゴンを描画するための設定
-	context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
-	context->OMSetDepthStencilState(states->DepthNone(), 0);
-	context->RSSetState(states->CullCounterClockwise());
-	context->IASetInputLayout(m_pInputLayout.Get());
-	// HPbar(背面)描画///////////////////////////////////////////////////////////////////////////////
-	m_basicEffect->SetWorld(worldBillboard);
-	m_basicEffect->SetView(view);
-	m_basicEffect->SetProjection(proj);
-	m_basicEffect->SetTexture(m_gaugeTexture.Get());
-	m_basicEffect->SetColorAndAlpha(DirectX::Colors::Gray);
-	m_basicEffect->Apply(context);
+	// 描画準備
+	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_gaugeTexture);
+	// ポリゴンを描画
+	m_pDrawPolygon->DrawTexture(m_hpbarBackVert);
+	// シェーダの登録を解除しておく
+	m_pDrawPolygon->ReleaseShader();
 
-	// ビルボードを描画
-	m_primitiveBatch->Begin();
-	m_primitiveBatch->DrawQuad(m_hpbarBackVert[0], m_hpbarBackVert[1], m_hpbarBackVert[3], m_hpbarBackVert[2]);
-	m_primitiveBatch->End();
 	// HPbar(緑)描画///////////////////////////////////////////////////////////////////////////////
-	m_basicEffect->SetColorAndAlpha(DirectX::Colors::Lime);
-	m_basicEffect->Apply(context);
+	// 色をへんこう 
+	m_constBuffer.colors = SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 
-	// ビルボードを描画
-	m_primitiveBatch->Begin();
-	m_primitiveBatch->DrawQuad(m_hpbarVert[0], m_hpbarVert[1], m_hpbarVert[3], m_hpbarVert[2]);
-	m_primitiveBatch->End();
+	CreateBuffer();
+
+	// 描画準備
+	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_gaugeTexture);
+	// ポリゴンを描画
+	m_pDrawPolygon->DrawTexture(m_hpbarVert);
+	// シェーダの登録を解除しておく
+	m_pDrawPolygon->ReleaseShader();
+
+	//// ビルボードを描画
+	//m_primitiveBatch->Begin();
+	//m_primitiveBatch->DrawQuad(m_hpbarVert[0], m_hpbarVert[1], m_hpbarVert[3], m_hpbarVert[2]);
+	//m_primitiveBatch->End();
 }
 // 更新
 void EnemyHPBar::Update(float elapsedTime, int currentHP)
 {
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
+	// 時間
+	m_time += elapsedTime;
 
 	// 現在のHPを更新
 	m_currentHP = currentHP;
@@ -139,19 +183,34 @@ void EnemyHPBar::Update(float elapsedTime, int currentHP)
 	// 表示HPに基づいてHP割合を計算
 	float hpPercentage = m_displayedHP / static_cast<float>(m_maxHP);
 
-	// HPバーの幅を計算 (例として、最大幅を2.0fとする)
+	// HPバーの幅を計算 
 	float maxBarWidth = 3.0f;
 	float currentBarWidth = maxBarWidth * hpPercentage;
 
 	// HPバーの頂点を設定 (バーの左端を -1.50f として、右端を 1.50f にする)
 	m_hpbarVert[0].position.x = -1.50f;                    // 左上
 	m_hpbarVert[1].position.x = -1.50f + currentBarWidth;  // 右上
-	m_hpbarVert[2].position.x = -1.50f;                    // 左下
-	m_hpbarVert[3].position.x = -1.50f + currentBarWidth;  // 右下
+	m_hpbarVert[2].position.x = -1.50f + currentBarWidth;  // 右下
+	m_hpbarVert[3].position.x = -1.50f;                    // 左下
 
 	if (m_hpbarVert[1].position.x <= -1.50f)
 	{
 		m_isDead = true;
 	}
 
+}
+
+void EnemyHPBar::CreateBuffer()
+{
+	// 時間設定
+	// 時間設定
+	m_constBuffer.hp = SimpleMath::Vector4(float(m_currentHP), float(m_maxHP), 0, 0);
+	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
+	m_pDrawPolygon->UpdateSubResources(m_CBuffer.Get(), &m_constBuffer);
+	// シェーダーにバッファを渡す
+	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };
+	// 頂点シェーダもピクセルシェーダも、同じ値を渡す
+	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
+	// シェーダをセットする
+	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);
 }

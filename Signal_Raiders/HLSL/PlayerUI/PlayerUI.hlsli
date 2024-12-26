@@ -1,8 +1,9 @@
 cbuffer ConstBuffer : register(b0)
 {
     float4 windowSize;
-    float3 nul;
+    float3 null;
     float renderRatio;
+    
 };
 
 struct VS_INPUT

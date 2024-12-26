@@ -48,6 +48,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_textures;
 	Microsoft::WRL::ComPtr<ID3D11Resource> m_res;
+	// HP以外のシェーダー
 	// 頂点シェーダ
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
 	// ピクセルシェーダ
@@ -56,6 +57,15 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_geometryShader;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
+	// HPで使うシェーダー
+	// 頂点シェーダ
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_hpVertexShader;
+	// ピクセルシェーダ
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_hpPixelShader;
+	// シェーダーの構造体
+	DrawPolygon::Shaders m_hpShaders;
+
+
 	// 描画クラス
 	DrawPolygon* m_pDrawPolygon;
 	// シェーダー作成クラス
