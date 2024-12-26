@@ -64,6 +64,7 @@ void PlayerHP::Update(float PlayerHP)
 
 void PlayerHP::Render()
 {
+	//シェーダーの種類を設定して描画
 	m_base->SetShaderType(PlayerUI::ShaderType::OTHER), m_base->Render();
 	m_gauge->SetShaderType(PlayerUI::ShaderType::HP), m_gauge->Render();
 	m_frame->SetShaderType(PlayerUI::ShaderType::OTHER), m_frame->Render();
