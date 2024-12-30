@@ -18,14 +18,13 @@ public:
 	DirectX::SimpleMath::Vector3 m_velocity;		// 弾の速さ
 	DirectX::SimpleMath::Vector3 m_direction;		// 弾が飛ぶ方向
 	float m_time;									// 生存時間
-	const float BULLET_LIFETIME = 1;				// 寿命
+	const float BULLET_LIFETIME = 1.5;				// 寿命
 	const int DAMAGE = 10;						// 敵に与えるダメージ
 	// ジオメトリックプリミティブ弾
 	std::unique_ptr<DirectX::Model> m_model;
 private:
 	// 軌跡用の履歴を保存する配列
 	std::vector<DirectX::SimpleMath::Vector3> m_trailPositions;
-	const size_t MAX_TRAIL_LENGTH = 50;  // 軌跡の長さ
 	// 共通リソース
 	CommonResources* m_commonResources;
 	// ワールド行列

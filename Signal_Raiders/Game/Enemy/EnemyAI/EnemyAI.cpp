@@ -101,7 +101,7 @@ void EnemyAI::KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bo
 		Vector3 knockBackDirection = (pos - playerPos); // プレイヤーから敵への方向ベクトル
 		knockBackDirection.Normalize(); // 正規化して方向ベクトルにする
 		m_knockEndPosition = pos + knockBackDirection; // ノックバック終了位置
-		m_initialVelocity = knockBackDirection * 30; // 初期速度
+		m_initialVelocity = knockBackDirection * 20; // 初期速度
 		m_pEnemy->SetCanAttack(false);// 攻撃不可能にする
 	}
 

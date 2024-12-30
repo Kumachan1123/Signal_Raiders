@@ -57,6 +57,7 @@ void EnemyHPBar::LoadTexture(const wchar_t* path)
 
 void EnemyHPBar::CreateShader()
 {
+	m_pCreateShader->Initialize(m_commonResources->GetDeviceResources()->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
 	// 頂点シェーダーとピクセルシェーダーの作成
 	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/EnemyHP/VS_EnemyHP.cso", m_vertexShader);
 	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/EnemyHP/PS_EnemyHP.cso", m_pixelShader);
@@ -79,39 +80,18 @@ void EnemyHPBar::Initialize(CommonResources* resources)
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	m_commonResources = resources;
-
+	// 板ポリゴン描画用クラスの初期化
 	m_pDrawPolygon->InitializePositionTexture(m_commonResources->GetDeviceResources());
-	m_pCreateShader->Initialize(m_commonResources->GetDeviceResources()->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
-
-	//auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
-	//auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-
-	//// プリミティブバッチを作成する
-	//m_primitiveBatch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>>(context);
-
-	//// ベーシックエフェクトを作成する
-	//m_basicEffect = std::make_unique<BasicEffect>(device);
-	//m_basicEffect->SetTextureEnabled(true);	// テクスチャを使用する
-
-	//// 入力レイアウトを作成する
-	//DX::ThrowIfFailed(
-	//	CreateInputLayoutFromEffect<VertexPositionTexture>(
-	//		device,
-	//		m_basicEffect.get(),
-	//		m_pInputLayout.ReleaseAndGetAddressOf()
-	//	)
-	//);
+	// シェーダーの作成
 	CreateShader();
-	LoadTexture(L"Resources/Textures/EnemyHPBar.png");
-	m_displayedHP = (float)(m_maxHP);
+	LoadTexture(L"Resources/Textures/EnemyHPBar.png");// テクスチャ読み込み
+	m_displayedHP = (float)(m_maxHP);// 初期HP
 }
 // 描画
 void EnemyHPBar::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj, DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 rot)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-	auto states = m_commonResources->GetCommonStates();
 
 	// ビルボード行列を作成
 	Matrix billboardMatrix = view.Invert();

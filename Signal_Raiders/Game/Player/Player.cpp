@@ -33,7 +33,6 @@ Player::~Player()
 
 void Player::Initialize(Enemies* pEnemies)
 {
-	auto DR = m_commonResources->GetDeviceResources();
 	// “G
 	m_pEnemies = pEnemies;
 	// FPSƒJƒƒ‰‚ğì¬‚·‚é
