@@ -57,6 +57,7 @@ void PlayerPointer::Update()
 
 void PlayerPointer::Render()
 {
+	m_pointer->SetShaderType(PlayerUI::ShaderType::OTHER);
 	m_pointer->Render();
 }
 

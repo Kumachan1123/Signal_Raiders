@@ -12,5 +12,7 @@ float4 main(PS_INPUT input) : SV_TARGET
 	// ‰æ‘œ‚Ì“§‰ß“x‚ğ•ÏX
     float smoothValue = renderRatio;
     output.a *= lerp(1.0f, 0.0f, smoothstep(smoothValue, smoothValue + 0.00000001f, input.Tex.x));
+    output.rgb *= input.Color.rgb;
+
     return output;
 }

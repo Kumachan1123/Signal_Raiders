@@ -207,11 +207,11 @@ void PlayScene::Render()
 	// ゲーム開始から5秒以上経過したら
 	if (m_timer >= 5.0f)
 	{
+		if (m_pPlayer->GetPlayerHP() <= 10.0f)m_pCrisis->Render();// HPが10以下で危機状態描画
 		// 敵カウンターを描画する
 		m_pEnemyCounter->Render();
 		// レーダーを描画する
 		m_pRadar->Render();
-		if (m_pPlayer->GetPlayerHP() <= 10.0f)m_pCrisis->Render();// HPが10以下で危機状態描画
 		m_pPlayerHP->Render();// HP描画
 		m_pPlayerPointer->Render();// 照準描画
 
