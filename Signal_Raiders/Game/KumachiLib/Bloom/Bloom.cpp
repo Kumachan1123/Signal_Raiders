@@ -89,7 +89,7 @@ void Bloom::PostProcess()
 	// -----------------------------------------------------
 	m_context->OMSetRenderTargets(1, &m_blur2.RTV, nullptr);
 	m_basicPostProcess->SetEffect(BasicPostProcess::BloomBlur);
-	m_basicPostProcess->SetBloomBlurParameters(true, 1.50f, 1.10f);
+	m_basicPostProcess->SetBloomBlurParameters(true, 1.250f, 1.025f);
 	m_basicPostProcess->SetSourceTexture(m_blur1.SRV);
 	m_basicPostProcess->Process(m_context);
 	m_context->PSSetShaderResources(0, 1, nullsrv);
@@ -98,7 +98,7 @@ void Bloom::PostProcess()
 	// -----------------------------------------------------
 	m_context->OMSetRenderTargets(1, &m_blur1.RTV, nullptr);
 	m_basicPostProcess->SetEffect(BasicPostProcess::BloomBlur);
-	m_basicPostProcess->SetBloomBlurParameters(false, 1.50f, 1.10f);
+	m_basicPostProcess->SetBloomBlurParameters(false, 1.250f, 1.025f);
 	m_basicPostProcess->SetSourceTexture(m_blur2.SRV);
 	m_basicPostProcess->Process(m_context);
 	// -----------------------------------------------------

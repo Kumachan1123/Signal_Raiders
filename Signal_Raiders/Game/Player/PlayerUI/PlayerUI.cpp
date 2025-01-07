@@ -27,6 +27,7 @@ PlayerUI::PlayerUI()
 	, m_scale(SimpleMath::Vector2::One)
 	, m_position(SimpleMath::Vector2::Zero)
 	, m_anchor(KumachiLib::ANCHOR::TOP_LEFT)
+	, m_shaderType(ShaderType::OTHER)
 	, m_renderRatio(1.0f)
 	, m_renderRatioOffset(0.0f)
 	, m_pDrawPolygon{ DrawPolygon::GetInstance() }
