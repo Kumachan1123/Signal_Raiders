@@ -54,6 +54,7 @@ void BossAI::Update(float elapsedTime)
 	if (m_pBoss->GetEnemyHitByPlayerBullet())m_isHitPlayerBullet = true;
 	// sin”g‚ğ—p‚¢‚½•‚—V“®ì‚ÌÀ‘•
 	m_time += elapsedTime;
+
 	m_position = m_pBoss->GetPosition();
 	m_currentState->Update(elapsedTime);
 	// sin”g‚ğ—p‚¢‚½•‚—V“®ì‚ÌÀ‘•

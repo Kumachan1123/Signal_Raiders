@@ -35,6 +35,7 @@ BossAttack::~BossAttack() {}
 // 初期化する
 void BossAttack::Initialize()
 {
+	m_position = m_pBoss->GetPosition();// 位置
 	m_rotation = m_pBoss->GetRotation();// 回転
 	m_velocity = m_pBoss->GetVelocity();// 速度
 	m_scale = m_pBoss->GetScale();// スケール
@@ -50,7 +51,7 @@ void BossAttack::RotateTowardsPlayer(DirectX::SimpleMath::Vector3 playerPos)
 // ボスの位置をプレイヤー方向に更新
 void BossAttack::MoveTowardsPlayer(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 {
-	m_position += Seek(m_position, playerPos, elapsedTime * 2);
+	m_position += Seek(m_pBoss->GetPosition(), playerPos, elapsedTime * 2);
 }
 
 // クールダウンの管理
