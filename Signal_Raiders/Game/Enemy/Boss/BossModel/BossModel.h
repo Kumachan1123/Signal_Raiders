@@ -36,7 +36,7 @@ public:
 	BossModel();
 	~BossModel();
 	void Initialize(CommonResources* resources);
-	void Update(float elapsedTime, IState::EnemyState State);
+	void SetState(IState::EnemyState State) { m_nowState = State; }
 	void Render(ID3D11DeviceContext1* context,
 		DirectX::DX11::CommonStates* states,
 		DirectX::SimpleMath::Matrix world,

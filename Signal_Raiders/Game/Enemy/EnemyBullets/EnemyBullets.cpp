@@ -48,13 +48,13 @@ void EnemyBullets::Update(float elapsedTime)
 		bullet->Update(elapsedTime); // 弾の更新
 
 		// 寿命を迎えていない弾だけを新しいリストに追加する
-		if (!bullet->IsExpired() && !m_pEnemy->GetBulletHitToPlayer())
+		if (!bullet->IsExpired() && !m_pEnemy->GetPlayerHitByEnemyBullet())
 		{
 			m_pEnemy->SetBulletBoundingSphere(bullet->GetBoundingSphere());
-			m_pEnemy->SetBulletHitToPlayer(m_pEnemy->GetBulletBoundingSphere().Intersects(m_pEnemy->GetPlayerBoundingSphere()));
-			if (m_pEnemy->GetBulletHitToPlayer())
+			m_pEnemy->SetPlayerHitByEnemyBullet(m_pEnemy->GetBulletBoundingSphere().Intersects(m_pEnemy->GetPlayerBoundingSphere()));
+			if (m_pEnemy->GetPlayerHitByEnemyBullet())
 			{
-				m_pEnemy->SetBulletHitToPlayer(m_pEnemy->GetBulletHitToPlayer());// プレイヤーに当たったフラグを設定
+				m_pEnemy->SetPlayerHitByEnemyBullet(m_pEnemy->GetPlayerHitByEnemyBullet());// プレイヤーに当たったフラグを設定
 				m_pEnemy->GetPlayer()->SetEnemyBulletDirection(bullet->GetBulletDirection());// プレイヤーにダメージを与える敵の向きを設定
 				m_pEnemy->GetPlayer()->SetisPlayEffect(true);// エフェクト再生フラグを設定
 				m_pEnemy->GetPlayer()->SetisPlayerDamage(true);// プレイヤーにダメージを与える

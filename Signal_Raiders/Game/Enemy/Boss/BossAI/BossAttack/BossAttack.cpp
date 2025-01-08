@@ -42,13 +42,13 @@ void BossAttack::Initialize()
 
 
 // プレイヤーに向かって回転する
-void BossAttack::RotateTowardsPlayer(DirectX::SimpleMath::Vector3& playerPos)
+void BossAttack::RotateTowardsPlayer(DirectX::SimpleMath::Vector3 playerPos)
 {
 	m_rotation = DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(CalculateAngle(m_position, playerPos), 0.0f, 0.0f);
 }
 
 // ボスの位置をプレイヤー方向に更新
-void BossAttack::MoveTowardsPlayer(float elapsedTime, DirectX::SimpleMath::Vector3& playerPos)
+void BossAttack::MoveTowardsPlayer(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 {
 	m_position += Seek(m_position, playerPos, elapsedTime * 2);
 }
@@ -69,15 +69,13 @@ void BossAttack::ManageAttackCooldown(float elapsedTime)
 }
 
 // 更新関数
-void BossAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool isHitToPlayer)
+void BossAttack::Update(float elapsedTime)
 {
-	UNREFERENCED_PARAMETER(isHitToPlayer);
-	UNREFERENCED_PARAMETER(pos);
 	// プレイヤーの方向に回転
-	RotateTowardsPlayer(playerPos);
+	RotateTowardsPlayer(m_pBoss->GetEnemy()->GetPlayer()->GetPlayerPos());
 
 	// プレイヤーの方向に移動
-	MoveTowardsPlayer(elapsedTime, playerPos);
+	MoveTowardsPlayer(elapsedTime, m_pBoss->GetEnemy()->GetPlayer()->GetPlayerPos());
 
 	// クールダウンの更新
 	ManageAttackCooldown(elapsedTime);

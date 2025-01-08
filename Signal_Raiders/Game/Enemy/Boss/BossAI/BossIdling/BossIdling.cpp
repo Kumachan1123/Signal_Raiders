@@ -37,23 +37,16 @@ void BossIdling::Initialize()
 	m_rotationSpeed = 0.5f; // ‰ñ“]‘¬“x
 }
 
-void BossIdling::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool isHitToPlayer)
+void BossIdling::Update(float elapsedTime)
 {
-	UNREFERENCED_PARAMETER(isHitToPlayer);
-	UNREFERENCED_PARAMETER(playerPos);
 	using namespace DirectX::SimpleMath;
 	// sin”g‚ðŽg‚Á‚½‰ñ“]‚ÌXV
-	float rotationAmplitude = 1.0f;  // ‰ñ“]U•
-	float rotationFrequency = 1.0f;  // ‰ñ“]Žü”g”
-	float randomMultiplier = GenerateRandomMultiplier(RANDOM_MIN, RANDOM_MAX);  // ƒ‰ƒ“ƒ_ƒ€‚È”{—¦‚ð¶¬
-	float sinRotationSpeed = m_rotationSpeed + rotationAmplitude * std::sin(rotationFrequency * m_time);  // ‰ñ“]‘¬“x‚ðsin”g‚Å•Ï‰»‚³‚¹‚é
-	Quaternion deltaRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, sinRotationSpeed * randomMultiplier * elapsedTime);  // ¶¬‚µ‚½‰ñ“]‘¬“x‚ÉŠî‚Ã‚«Aã•ûŒüiYŽ²j‚ð’†S‚É‰ñ“]‚ð¶¬
-	m_rotation *= deltaRotation;  // Šù‘¶‚Ì‰ñ“]‚ÉV‚µ‚¢‰ñ“]‚ð“K—p
-	m_rotation.Normalize();  // ‰ñ“]‚ð³‹K‰»‚µAˆÀ’è‚µ‚½ƒNƒH[ƒ^ƒjƒIƒ“‚ðˆÛŽ
-	// Œü‚¢‚Ä‚¢‚é•ûŒü‚ÉŠî‚Ã‚¢‚ÄXÀ•W‚ÆZÀ•W‚ðˆÚ“®
-	float moveCorrect = GenerateRandomMultiplier(10.0f, 10.0f);
-	Vector3 forward = Vector3::Transform(Vector3::Backward * moveCorrect, m_rotation);
-	pos += forward * (m_velocity.Length() * 1.5f) * elapsedTime;
+	m_time += elapsedTime;
+
+	m_angle = CalculateAngle(m_pBoss->GetPosition(), m_pBoss->GetEnemy()->GetPlayer()->GetPlayerPos());// ƒvƒŒƒCƒ„[‚Ì•ûŒü‚ðŽæ“¾‚µA³–Ê‚ðŒü‚©‚¹‚é
+	m_angle = Lerp(m_angle, CalculateAngle(m_pBoss->GetEnemy()->GetPlayer()->GetPlayerPos(), m_pBoss->GetPosition()), m_time);// ƒvƒŒƒCƒ„[‚Ì•ûŒü‚ðŽæ“¾‚µAˆê‰ñ“]‚³‚¹‚é
+	m_rotation = Quaternion::CreateFromYawPitchRoll(m_angle, 0.0f, 0.0f);
+
 	m_pBoss->SetRotation(m_rotation);
 	m_pBoss->SetVelocity(m_velocity);
 }

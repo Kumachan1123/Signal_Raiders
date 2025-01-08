@@ -24,7 +24,7 @@ public:
 	DirectX::BoundingSphere m_enemyBulletBS;
 	DirectX::BoundingSphere m_playerBS;
 	IEnemy* m_pEnemy;// 敵のポインター
-	bool m_isBullethit = false;// 敵の弾がプレイヤーに当たったか
+	bool m_isPlayerHitByEnemyBullet = false;// 敵の弾がプレイヤーに当たったか
 	std::vector<std::unique_ptr<EnemyBullet>> m_bullets; // 弾のリスト
 	std::vector<std::unique_ptr<Particle>> m_bulletTrails; // 弾の軌跡リスト
 	DirectX::SimpleMath::Vector3 m_enemyPosition;		// 敵の座標
@@ -42,7 +42,7 @@ public:
 	// Setter
 	void SetBulletBoundingSphere(DirectX::BoundingSphere& bs) { m_enemyBulletBS = bs; }
 	void SetPlayerBoundingSphere(DirectX::BoundingSphere playerBS) { m_playerBS = playerBS; }
-	void SetBulletHitToPlayer(bool hit) { m_isBullethit = hit; }// 敵の弾がプレイヤーに当たったか
+	void SetPlayerHitByEnemyBullet(bool hit) { m_isPlayerHitByEnemyBullet = hit; }// 敵の弾がプレイヤーに当たったか
 	void SetRotateDirection(int direction);
 	void SetDirection(DirectX::SimpleMath::Vector3 dir) { m_direction = dir; }
 	void SetEnemyPosition(DirectX::SimpleMath::Vector3 pos) { m_enemyPosition = pos; }

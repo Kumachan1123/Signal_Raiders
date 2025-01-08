@@ -149,13 +149,11 @@ void EnemyHPBar::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::M
 	//m_primitiveBatch->End();
 }
 // 更新
-void EnemyHPBar::Update(float elapsedTime, int currentHP)
+void EnemyHPBar::Update(float elapsedTime)
 {
 	// 時間
 	m_time += elapsedTime;
 
-	// 現在のHPを更新
-	m_currentHP = currentHP;
 
 	// HPを滑らかに更新するための線形補間
 	m_displayedHP = Lerp(m_displayedHP, static_cast<float>(m_currentHP), elapsedTime * m_lerpSpeed);

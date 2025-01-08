@@ -48,13 +48,6 @@ void EnemyModel::Initialize(CommonResources* resources)
 	// âeópÇÃÉÇÉfÉãÇì«Ç›çûÇﬁ
 	m_shadowModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy.cmo", *fx);
 }
-void EnemyModel::Update(float elapsedTime, IState::EnemyState State)
-{
-	UNREFERENCED_PARAMETER(elapsedTime);
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
-	m_nowState = State;
-}
 void EnemyModel::Render(ID3D11DeviceContext1* context,
 	DirectX::DX11::CommonStates* states,
 	DirectX::SimpleMath::Matrix world,

@@ -26,10 +26,10 @@ public:
 	virtual bool GetHitToOtherEnemy() const = 0;
 	virtual void SetHitToOtherEnemy(bool isHitToOtherEnemy) = 0;
 	virtual void SetPlayerHP(float& HP) const = 0;
-	virtual bool GetBulletHitToPlayer() const = 0;
-	virtual void SetBulletHitToPlayer(bool hit) = 0;
-	virtual bool GetHitToPlayerBullet()const = 0;
-	virtual void SetHitToPlayerBullet(bool hit) = 0;
+	virtual bool GetPlayerHitByEnemyBullet() const = 0;
+	virtual void SetPlayerHitByEnemyBullet(bool hit) = 0;
+	virtual bool GetEnemyHitByPlayerBullet()const = 0;
+	virtual void SetEnemyHitByPlayerBullet(bool hit) = 0;
 	virtual float GetToPlayerDamage() const = 0;
 	virtual bool GetCanAttack() const = 0;
 	virtual void SetCanAttack(bool canAttack) = 0;
@@ -49,7 +49,7 @@ public:
 	virtual ~IEnemy() = default;
 	virtual void Initialize(CommonResources* resources, int hp) = 0;
 
-	virtual void Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos) = 0;
+	virtual void Update(float elapsedTime) = 0;
 	virtual	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) = 0;
 	virtual void DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) = 0;
 

@@ -40,13 +40,7 @@ void BossModel::Initialize(CommonResources* resources)
 	m_idlingFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss_Face_Idling.cmo", *fx);
 	m_attackFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss_Face_Attack.cmo", *fx);
 }
-void BossModel::Update(float elapsedTime, IState::EnemyState State)
-{
-	UNREFERENCED_PARAMETER(elapsedTime);
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
-	m_nowState = State;
-}
+
 void BossModel::Render(ID3D11DeviceContext1* context,
 	DirectX::DX11::CommonStates* states,
 	DirectX::SimpleMath::Matrix world,

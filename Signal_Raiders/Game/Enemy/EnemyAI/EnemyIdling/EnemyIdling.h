@@ -36,6 +36,6 @@ public:
 	virtual ~EnemyIdling();
 
 	void Initialize() override;
-	void Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool isHitToPlayer) override;
+	void Update(float elapsedTime) override;
 };
 #endif //ENEMY_IDLING_DEFINED

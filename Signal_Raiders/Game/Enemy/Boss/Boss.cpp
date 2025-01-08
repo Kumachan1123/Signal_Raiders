@@ -45,10 +45,10 @@ Boss::Boss(Player* pPlayer)
 	, m_playerBS{}
 	, m_matrix{}
 	, m_isDead{}
-	, m_isHit{}
+	, m_isHitToPlayer{}
 	, m_isHitToOtherEnemy{}
-	, m_isHitToPlayerBullet{}
-	, m_isBullethit{}
+	, m_isEnemyHitByPlayerBullet{}
+	, m_isPlayerHitByEnemyBullet{}
 	, m_canAttack{ true }
 	, m_bossBulletType{ BossBulletType::NORMAL }
 	, m_bulletType{ EnemyBullet::BulletType::STRAIGHT }
@@ -79,7 +79,7 @@ void Boss::Initialize(CommonResources* resources, int hp)
 	m_pHPBar->SetEnemyHP(m_currentHP);
 	m_pHPBar->Initialize(m_commonResources);
 	// AI生成
-	m_pBossAI = std::make_unique<BossAI>();
+	m_pBossAI = std::make_unique<BossAI>(this);
 	m_pBossAI->Initialize();
 	// 弾全体生成
 	m_pEnemyBullets = std::make_unique<EnemyBullets>(this);
@@ -133,7 +133,7 @@ void Boss::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	DrawCollision::DrawStart(view, proj);
 	// 色設定
 	DirectX::XMVECTOR color = Colors::Black;
-	if (m_isHit)color = m_isHitToOtherEnemy ? Colors::Tomato : Colors::Blue;// 当たった
+	if (m_isHitToPlayer)color = m_isHitToOtherEnemy ? Colors::Tomato : Colors::Blue;// 当たった
 	else color = m_isHitToOtherEnemy ? Colors::White : Colors::Black;// 当たっていない
 	// 境界球描画
 	DrawCollision::DrawBoundingSphere(m_bossBS, color);
@@ -142,12 +142,12 @@ void Boss::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 #endif
 }
 // 更新
-void Boss::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
+void Boss::Update(float elapsedTime)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	m_pBossModel->Update(elapsedTime, m_pBossAI->GetState());// モデルのアニメーション更新
-	m_pBossAI->Update(elapsedTime, playerPos, m_isHit, m_isHitToPlayerBullet);// AIの更新
+	m_pBossModel->SetState(m_pBossAI->GetState());// モデルのアニメーション更新
+	m_pBossAI->Update(elapsedTime);// AIの更新
 	m_position = m_pBossAI->GetPosition();// 敵の座標を更新
 	m_audioManager->Update();// オーディオマネージャーの更新
 	m_attackCooldown = m_pBossAI->GetBossAttack()->GetCoolTime();
@@ -157,7 +157,8 @@ void Boss::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 	// 弾の位置設定
 	BulletPositioning();
 	// HPBar更新
-	m_pHPBar->Update(elapsedTime, m_currentHP);
+	m_pHPBar->SetCurrentHP(m_currentHP);
+	m_pHPBar->Update(elapsedTime);
 	// 最大HPの半分になったらシールドを展開
 	if (m_currentHP <= m_maxHP / 2)m_pBossSheild->SetSheild(true);
 	// シールド更新

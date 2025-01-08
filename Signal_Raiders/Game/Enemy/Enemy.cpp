@@ -35,7 +35,7 @@ Enemy::Enemy(Player* pPlayer)
 	, m_attackCooldown{ 3.0f }
 	, m_enemyModel{}
 	, m_enemyAI{}
-	, m_HPBar{}
+	, m_pHPBar{}
 	, m_bullets{}
 	, m_position{}
 	, m_velocity{}
@@ -45,10 +45,10 @@ Enemy::Enemy(Player* pPlayer)
 	, m_playerBS{}
 	, m_matrix{}
 	, m_isDead{ false }
-	, m_isHit{ false }
+	, m_isHitToPlayer{ false }
 	, m_isHitToOtherEnemy{ false }
-	, m_isHitToPlayerBullet{ false }
-	, m_isBullethit{ false }
+	, m_isEnemyHitByPlayerBullet{ false }
+	, m_isPlayerHitByEnemyBullet{ false }
 	, m_canAttack{ true }
 	, m_audioManager{ AudioManager::GetInstance() }
 
@@ -75,9 +75,9 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 	// 敵の体力を設定
 	m_currentHP = hp;
 	// HPBar生成
-	m_HPBar = std::make_unique<EnemyHPBar>();
-	m_HPBar->SetEnemyHP(m_currentHP);
-	m_HPBar->Initialize(resources);
+	m_pHPBar = std::make_unique<EnemyHPBar>();
+	m_pHPBar->SetEnemyHP(m_currentHP);
+	m_pHPBar->Initialize(resources);
 	// AI生成
 	m_enemyAI = std::make_unique<EnemyAI>(this);
 	m_enemyAI->Initialize();
@@ -96,11 +96,12 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 
 }
 // 更新
-void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
+void Enemy::Update(float elapsedTime)
 {
-	m_enemyModel->Update(elapsedTime, m_enemyAI->GetState());// モデルのアニメーション更新
-	m_HPBar->Update(elapsedTime, m_currentHP);// HPBarの更新
-	m_enemyAI->Update(elapsedTime, m_position, playerPos, m_isHit, m_isHitToPlayerBullet);// AIの更新
+	m_enemyModel->SetState(m_enemyAI->GetState());// モデルの更新
+	m_pHPBar->SetCurrentHP(m_currentHP);
+	m_pHPBar->Update(elapsedTime);
+	m_enemyAI->Update(elapsedTime);// AIの更新
 	m_audioManager->Update();// オーディオマネージャーの更新
 	if (m_enemyAI->GetNowState() == m_enemyAI->GetEnemyAttack())// 攻撃態勢なら
 	{
@@ -109,7 +110,7 @@ void Enemy::Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 	m_enemyBullets->Update(elapsedTime);// 敵の弾の更新
 	// 敵の当たり判定の座標を更新
 	m_enemyBS.Center = m_position;
-	m_isDead = m_HPBar->GetIsDead();// 敵のHPが0になったら死亡
+	m_isDead = m_pHPBar->GetIsDead();// 敵のHPが0になったら死亡
 }
 // 描画
 void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
@@ -125,7 +126,7 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	// HPBarの座標を設定
 	Vector3 hpBarPos = Vector3(m_position.x, m_position.y - 1, m_position.z);
 	// HPBar描画
-	m_HPBar->Render(view, proj, hpBarPos, m_rotate);
+	m_pHPBar->Render(view, proj, hpBarPos, m_rotate);
 	// 敵描画	
 	m_enemyModel->Render(context, states, world, view, proj);
 
@@ -145,7 +146,7 @@ void Enemy::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 	// 色設定
 	DirectX::XMVECTOR color = Colors::Black;
 	// 当たった
-	if (m_isHit) color = m_isHitToOtherEnemy ? Colors::Tomato : Colors::Blue;
+	if (m_isHitToPlayer) color = m_isHitToOtherEnemy ? Colors::Tomato : Colors::Blue;
 	// 当たっていない
 	else color = m_isHitToOtherEnemy ? Colors::White : Colors::Black;
 	// 境界球描画

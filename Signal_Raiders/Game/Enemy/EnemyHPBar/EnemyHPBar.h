@@ -103,6 +103,7 @@ public:
 	void SetBoundingSphereCenter(DirectX::SimpleMath::Vector3& cen) { m_enemyBoundingSphere.Center = cen; }
 	void SetPosition(DirectX::SimpleMath::Vector3& pos) { m_position = pos; }
 	void SetEnemyHP(int& hp) { m_maxHP = hp; }
+	void SetCurrentHP(int& hp) { m_currentHP = hp; }
 	void SetScale(DirectX::SimpleMath::Vector3 scale) { m_scale = scale; }
 public:
 	// 初期ステータスを設定
@@ -110,7 +111,7 @@ public:
 	~EnemyHPBar();
 
 	void Initialize(CommonResources* resources);
-	void Update(float elapsedTime, int currentHP);
+	void Update(float elapsedTime);
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj, DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 rot);
 private:
 	void LoadTexture(const wchar_t* path);

@@ -45,13 +45,7 @@ void VerticalAttackerModel::Initialize(CommonResources* resources)
 
 
 }
-void VerticalAttackerModel::Update(float elapsedTime, IState::EnemyState State)
-{
-	UNREFERENCED_PARAMETER(elapsedTime);
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
-	m_nowState = State;
-}
+
 
 void VerticalAttackerModel::Render(ID3D11DeviceContext1* context,
 	DirectX::DX11::CommonStates* states,

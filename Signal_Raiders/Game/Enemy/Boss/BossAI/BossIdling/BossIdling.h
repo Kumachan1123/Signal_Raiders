@@ -22,6 +22,8 @@ private:
 	const float RANDOM_MAX = 2.0f;
 	const float RANDOM_MIN = 0.5f;
 	float  m_time = 0.0f;  // éûä‘ÇÃèâä˙âª
+	float m_angle;//äpìx
+
 public:
 	//	getter
 	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
@@ -36,6 +38,6 @@ public:
 	virtual ~BossIdling();
 
 	void Initialize() override;
-	void Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool isHitToPlayer) override;
+	void Update(float elapsedTime) override;
 };
 #endif //BOSS_IDLING_DEFINED

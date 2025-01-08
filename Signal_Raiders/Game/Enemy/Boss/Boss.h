@@ -83,10 +83,10 @@ private:
 	int m_currentHP;//敵の体力
 	int m_maxHP;//敵の最大体力
 	bool m_isDead = false;//敵のHPが0になったらTrue
-	bool m_isHit = false;// プレイヤーとの判定
+	bool m_isHitToPlayer = false;// プレイヤーとの判定
 	bool m_isHitToOtherEnemy = false;// その他の敵との判定
-	bool m_isHitToPlayerBullet = false;// 敵がプレイヤーの弾に当たったか
-	bool m_isBullethit = false;// 敵の弾がプレイヤーに当たったか
+	bool m_isEnemyHitByPlayerBullet = false;// 敵がプレイヤーの弾に当たったか
+	bool m_isPlayerHitByEnemyBullet = false;// 敵の弾がプレイヤーに当たったか
 	float m_attackCooldown;  // 攻撃のクールダウン(フレームごとに発射することを防ぐ用）
 	float m_bulletCooldown;  // 弾のクールダウン
 	bool m_canAttack = false;// 攻撃可能か
@@ -135,16 +135,16 @@ public:
 	void SetAudioManager(AudioManager* audioManager) override { m_audioManager = audioManager; }
 	int GetEnemyHP() const override { return m_currentHP; }
 	bool GetEnemyIsDead() const override { return m_isDead; }
-	bool GetHitToPlayer()const override { return m_isHit; }
+	bool GetHitToPlayer()const override { return m_isHitToPlayer; }
 	bool GetHitToOtherEnemy() const override { return m_isHitToOtherEnemy; }
-	bool GetBulletHitToPlayer() const override { return m_isBullethit; }// 敵の弾がプレイヤーに当たったか
-	bool GetHitToPlayerBullet()const override { return m_isHitToPlayerBullet; }
+	bool GetPlayerHitByEnemyBullet() const override { return m_isPlayerHitByEnemyBullet; }// 敵の弾がプレイヤーに当たったか
+	bool GetEnemyHitByPlayerBullet()const override { return m_isEnemyHitByPlayerBullet; }
 	bool GetCanAttack() const override { return m_canAttack; }// 攻撃可能か
 	float GetToPlayerDamage() const override { return PLAYER_DAMAGE; }
 	DirectX::SimpleMath::Vector3 GetCameraEye()const { return m_cameraEye; }
 	DirectX::SimpleMath::Vector3 GetCameraTarget()const { return m_cameraTarget; }
 	DirectX::SimpleMath::Vector3 GetCameraUp()const { return m_cameraUp; }
-
+	BossSheild* GetBossSheild()const { return m_pBossSheild.get(); }// シールド取得
 	// setter
 	void SetPosition(DirectX::SimpleMath::Vector3& pos) override { m_position = pos; }
 	void SetEnemyHP(int hp) override;
@@ -152,13 +152,13 @@ public:
 	void SetCameraTarget(DirectX::SimpleMath::Vector3 target)override { m_cameraTarget = target; }
 	void SetCameraUp(DirectX::SimpleMath::Vector3 up)override { m_cameraUp = up; }
 	void SetEnemyIsDead(bool isDead) override { m_isDead = isDead; }
-	void SetHitToPlayer(bool isHitToPlayer)override { m_isHit = isHitToPlayer; }
+	void SetHitToPlayer(bool isHitToPlayer)override { m_isHitToPlayer = isHitToPlayer; }
 	void SetHitToOtherEnemy(bool isHitToOtherEnemy) override { m_isHitToOtherEnemy = isHitToOtherEnemy; }
 	void SetBulletBoundingSphere(DirectX::BoundingSphere& bs) override { m_enemyBulletBS = bs; }
 	void SetPlayerBoundingSphere(DirectX::BoundingSphere playerBS) override { m_playerBS = playerBS; }
 	void SetPlayerHP(float& HP) const override { HP -= Boss::PLAYER_DAMAGE; }
-	void SetBulletHitToPlayer(bool hit) override { m_isBullethit = hit; }// 敵の弾がプレイヤーに当たったか
-	void SetHitToPlayerBullet(bool hit)override { m_isHitToPlayerBullet = hit; }
+	void SetPlayerHitByEnemyBullet(bool hit) override { m_isPlayerHitByEnemyBullet = hit; }// 敵の弾がプレイヤーに当たったか
+	void SetEnemyHitByPlayerBullet(bool hit)override { m_isEnemyHitByPlayerBullet = hit; }
 	void SetBulletCooldown(float cooldown) { m_bulletCooldown = cooldown; }// シールドを展開した後に実行する
 	void SetCanAttack(bool canAttack)override { m_canAttack = canAttack; }// 攻撃可能か
 
@@ -167,7 +167,7 @@ public:
 	Boss(Player* pPlayer);
 	~Boss();
 	void Initialize(CommonResources* resources, int hp) override;// 初期化
-	void Update(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)override;// 更新
+	void Update(float elapsedTime)override;// 更新
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;// 描画
 	void DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;// 衝突判定の描画
 

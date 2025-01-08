@@ -45,10 +45,10 @@ public:
 	~BossAttack();
 
 	void Initialize() override;
-	void Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool isHitToPlayer) override;
+	void Update(float elapsedTime) override;
 private:
-	void RotateTowardsPlayer(DirectX::SimpleMath::Vector3& playerPos);
-	void MoveTowardsPlayer(float elapsedTime, DirectX::SimpleMath::Vector3& playerPos);
+	void RotateTowardsPlayer(DirectX::SimpleMath::Vector3 playerPos);
+	void MoveTowardsPlayer(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos);
 	void ManageAttackCooldown(float elapsedTime);
 };
 #endif //BOSS_ATTACK_DEFINED

@@ -14,6 +14,7 @@ class CommonResources;
 #include "Game/Enemy/EnemyAI/EnemySpin/EnemySpin.h"
 #include "Game/Interface/IState.h"
 #include "Game/Interface/IEnemy.h"
+#include "Game/Player/Player.h"
 class EnemyAttack;
 class EnemySpin;
 class EnemyIdling;
@@ -61,14 +62,15 @@ public:
 	EnemyAttack* GetEnemyAttack()const { return m_pEnemyAttack.get(); }
 	EnemyIdling* GetEnemyIdling()const { return m_pEnemyIdling.get(); }
 	EnemySpin* GetEnemySpin()const { return m_pEnemySpin.get(); }
+	IEnemy* GetEnemy()const { return m_pEnemy; }
 	IState* GetNowState()const { return m_currentState; }
 	IState::EnemyState GetState()const { return m_enemyState; }
 	//  setter
-	void SetPosition(DirectX::SimpleMath::Vector3& pos) { m_position = pos; }
+	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }
 	void SetRotation(DirectX::SimpleMath::Quaternion rot) { m_rotation = rot; }
 	void SetScale(DirectX::SimpleMath::Vector3 sca) { m_scale = sca; }
 	void SetVelocity(DirectX::SimpleMath::Vector3& vel) { m_velocity = vel; }
-	void KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bool& isHitToPlayerBullet, const DirectX::SimpleMath::Vector3& playerPos);
+	void KnockBack(float elapsedTime);
 	void SetState(IState::EnemyState state) { m_enemyState = state; }
 	void SetCanAttack(bool canAttack) { m_canAttack = canAttack; }
 	void SetHitPlayerBullet(bool hit) { m_isHitPlayerBullet = hit; }
@@ -76,11 +78,7 @@ public:
 	EnemyAI(IEnemy* pEnemy);
 	~EnemyAI();
 	void Initialize();
-	void Update(float elapsedTime,
-		DirectX::SimpleMath::Vector3& pos,
-		DirectX::SimpleMath::Vector3& playerPos,
-		bool& isHitToPlayer,
-		bool& isHitToPlayerBullet);
+	void Update(float elapsedTime);
 	void ChangeState(IState* newState);
 
 

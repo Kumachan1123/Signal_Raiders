@@ -14,8 +14,15 @@
 #include <type_traits> // std::enable_if, std::is_integral
 
 // コンストラクタ
-BossAI::BossAI()
-	: m_currentState(nullptr), m_rotationSpeed(0.5f), m_attackCooldown(0.0f), m_pBossAttack(nullptr), m_enemyState(IState::EnemyState::IDLING)
+BossAI::BossAI(IEnemy* pBoss)
+	: m_currentState(nullptr)
+	, m_rotationSpeed(0.5f)
+	, m_attackCooldown(0.0f)
+	, m_pBossAttack(nullptr)
+	, m_enemyState(IState::EnemyState::IDLING)
+	, m_pBoss(pBoss)
+	, m_isHitPlayerBullet(false)
+	, m_isKnockBack(false)
 {
 	m_pBossAttack = std::make_unique<BossAttack>(this);
 	m_pBossIdling = std::make_unique<BossIdling>(this);
@@ -41,19 +48,32 @@ void BossAI::Initialize()
 	m_enemyState = IState::EnemyState::ATTACK;// 待機態勢
 }
 // 更新
-void BossAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& playerPos, bool& isHitToPlayer, bool& isHitToPlayerBullet)
+void BossAI::Update(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
-	if (isHitToPlayerBullet)m_isHitPlayerBullet = true;
+	if (m_pBoss->GetEnemyHitByPlayerBullet())m_isHitPlayerBullet = true;
 	// sin波を用いた浮遊動作の実装
 	m_time += elapsedTime;
-	m_currentState->Update(elapsedTime, playerPos, playerPos, isHitToPlayer);
+	m_position = m_pBoss->GetPosition();
+	m_currentState->Update(elapsedTime);
 	// sin波を用いた浮遊動作の実装
 	float amplitude = 2.0f;  // 振幅
 	float frequency = 0.5f;  // 周波数
 	// 敵をふわふわ浮遊させる
 	m_position.y = m_initialPosition.y + amplitude * std::sin(frequency * m_time);
 	m_position.y += m_velocity.y * elapsedTime;
+	// シールドが壊されたらノックバック
+	auto boss = dynamic_cast<Boss*>(m_pBoss);// IEnemyからBossのポインターを抽出
+	if (!m_isKnockBack && boss->GetBossSheild()->GetSheildHP() <= 0)
+	{
+		ChangeState(m_pBossIdling.get());//徘徊態勢にす
+		KnockBack(elapsedTime);
+	}
+	else
+	{
+		ChangeState(m_pBossAttack.get());//攻撃態勢にする
+	}
+	m_pBoss->SetPosition(m_position);
 }
 // ステート変更
 void BossAI::ChangeState(IState* newState)
@@ -66,19 +86,19 @@ void BossAI::ChangeState(IState* newState)
 }
 
 // ノックバック処理
-void BossAI::KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bool& isHitToPlayerBullet, const DirectX::SimpleMath::Vector3& playerPos)
+void BossAI::KnockBack(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
 
 	// ノックバックが始まったばかりなら初期設定を行う
 	if (m_knockTime == 0.0f)
 	{
-		m_knockStartPosition = pos; // ノックバック開始位置
-		Vector3 knockBackDirection = (pos - playerPos); // プレイヤーから敵への方向ベクトル
+		m_knockStartPosition = m_position; // ノックバック開始位置
+		Vector3 knockBackDirection = (m_position - m_pBoss->GetPlayer()->GetPlayerPos()); // プレイヤーから敵への方向ベクトル
 		knockBackDirection.Normalize(); // 正規化して方向ベクトルにする
-		m_knockEndPosition = pos + knockBackDirection * 10; // ノックバック終了位置
-		m_initialVelocity = knockBackDirection * 15; // 初期速度
-
+		m_knockEndPosition = m_position + knockBackDirection; // ノックバック終了位置
+		m_initialVelocity = knockBackDirection * 20; // 初期速度
+		m_pBoss->SetCanAttack(false);// 攻撃不可能にする
 	}
 
 	// ノックバック時間の更新
@@ -87,23 +107,27 @@ void BossAI::KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, boo
 	// ノックバックの長さ（秒）
 	const float knockBackDuration = 2.0f;
 
-	// ノックバックの進行度（0.0 ～ 1.0）
-	float t = std::min(m_knockTime / knockBackDuration, 3.0f);
+	// ノックバックの進行度
+	float t = std::min(m_knockTime / knockBackDuration, 2.0f);
 
 	// 減衰係数の計算（指数関数的減衰）
 	float decayFactor = std::exp(-3.0f * t); // 減衰速度を調整するために指数のベースを調整
 
 	// 減衰した速度を使って位置を更新
 	Vector3 velocity = m_initialVelocity * decayFactor;
-	pos += velocity * elapsedTime;
-	if (m_enemyState != IState::EnemyState::ANGRY)// 怒り態勢でない場合
-		m_enemyState = IState::EnemyState::DAMAGE;// ダメージ態勢にする
+	m_position += velocity * elapsedTime;
+	if (t >= 0.3f)
+	{
+		m_pBoss->SetCanAttack(true);// 攻撃可能にする
+	}
 	// ノックバックが終了したかどうかチェック
 	if (t >= 1.0f)
 	{
-		m_knockEndPosition = pos;
+		m_knockEndPosition = m_position;
 		m_knockTime = 0.0f; // ノックバック時間のリセット
-		isHitToPlayerBullet = false; // ノックバック終了
-		m_enemyState = IState::EnemyState::IDLING;// 待機態勢
+		m_pBoss->SetEnemyHitByPlayerBullet(false); // ノックバック終了
+
+		// これ以降ノックバック処理を行わない
+		m_isKnockBack = true;
 	}
 }

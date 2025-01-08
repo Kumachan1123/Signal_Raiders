@@ -18,6 +18,6 @@ public:
 public:
 	virtual ~IState() = default;
 	virtual void Initialize() = 0;
-	virtual void Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool isHitToPlayer) = 0;
+	virtual void Update(float elapsedTime) = 0;
 };
 #endif		// ISTATE_DEFINED

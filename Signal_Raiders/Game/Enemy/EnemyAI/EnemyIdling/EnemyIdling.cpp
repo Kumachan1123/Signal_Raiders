@@ -37,10 +37,8 @@ void EnemyIdling::Initialize()
 	m_rotationSpeed = 0.5f; // ‰ñ“]‘¬“x
 }
 
-void EnemyIdling::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool isHitToPlayer)
+void EnemyIdling::Update(float elapsedTime)
 {
-	UNREFERENCED_PARAMETER(isHitToPlayer);
-	UNREFERENCED_PARAMETER(playerPos);
 	using namespace DirectX::SimpleMath;
 	// sin”g‚ðŽg‚Á‚½‰ñ“]‚ÌXV
 	float rotationAmplitude = 2.5f;  // ‰ñ“]U•
@@ -53,7 +51,7 @@ void EnemyIdling::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, D
 	// Œü‚¢‚Ä‚¢‚é•ûŒü‚ÉŠî‚Ã‚¢‚ÄXÀ•W‚ÆZÀ•W‚ðˆÚ“®
 	float moveCorrect = GenerateRandomMultiplier(10.0f, 10.0f);
 	Vector3 forward = Vector3::Transform(Vector3::Backward * moveCorrect, m_rotation);
-	pos += forward * (m_velocity.Length() * 2.0f) * elapsedTime;
+	m_enemy->SetPosition(m_enemy->GetPosition() + forward * (m_velocity.Length() * 2.0f) * elapsedTime);
 	m_enemy->SetRotation(m_rotation);
 	m_enemy->SetVelocity(m_velocity);
 }

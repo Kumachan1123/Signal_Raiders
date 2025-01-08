@@ -35,9 +35,8 @@ void EnemyAttack::Initialize()
 	m_rotationSpeed = 1; // 回転速度
 }
 
-void EnemyAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool isHitToPlayer)
+void EnemyAttack::Update(float elapsedTime)
 {
-	UNREFERENCED_PARAMETER(isHitToPlayer);
 	using namespace DirectX::SimpleMath;
 	m_rotationSpeed -= (elapsedTime / 10);// 回転速度を減少
 	if (m_rotationSpeed <= 0.24f)// 回転速度が0.24以下になったら
@@ -45,7 +44,7 @@ void EnemyAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, D
 		m_rotationSpeed = 0.24f;// 回転速度を0.24に設定
 	}
 	// プレイヤーへのベクトルを計算
-	Vector3 toPlayerVector = playerPos - pos;
+	Vector3 toPlayerVector = m_enemy->GetEnemy()->GetPlayer()->GetPlayerPos() - m_enemy->GetPosition();
 	if (toPlayerVector.LengthSquared() > 0.0f)// プレイヤーへのベクトルが0より大きい場合
 	{
 		toPlayerVector.Normalize();// プレイヤーへのベクトルを正規化
@@ -75,7 +74,7 @@ void EnemyAttack::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, D
 	}
 
 	// プレイヤーの方向に移動
-	pos += toPlayerVector * (m_velocity.Length() * 5.0f) * elapsedTime;
+	m_enemy->SetPosition(m_enemy->GetPosition() + toPlayerVector * (m_velocity.Length() * 5.0f) * elapsedTime);
 
 	// 攻撃のクールダウンタイムを管理
 	m_attackCooldown -= elapsedTime;

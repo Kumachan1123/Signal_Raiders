@@ -330,7 +330,7 @@ void Enemies::HandlePlayerCollisions(float elapsedTime)
 		enemy->SetCameraEye(m_pPlayer->GetCamera()->GetEyePosition());// カメラの位置を設定
 		enemy->SetCameraTarget(m_pPlayer->GetCamera()->GetTargetPosition());// カメラの注視点を設定
 		enemy->SetCameraUp(m_pPlayer->GetCamera()->GetUpVector());// カメラの上方向を設定
-		enemy->Update(elapsedTime, m_pPlayer->GetCamera()->GetEyePosition());// 敵の更新
+		enemy->Update(elapsedTime);// 敵の更新
 
 		// 敵の弾がプレイヤーに当たったら
 		HandleEnemyBulletCollision(enemy);
@@ -345,12 +345,12 @@ void Enemies::HandlePlayerCollisions(float elapsedTime)
 //---------------------------------------------------------
 void Enemies::HandleEnemyBulletCollision(std::unique_ptr<IEnemy>& enemy)
 {
-	bool hit = enemy->GetBulletHitToPlayer();
+	bool hit = enemy->GetPlayerHitByEnemyBullet();
 	if (hit)
 	{
 		float playerHP = m_pPlayer->GetPlayerHP() - enemy->GetToPlayerDamage();
 		m_pPlayer->SetPlayerHP(playerHP);
-		enemy->SetBulletHitToPlayer(false);
+		enemy->SetPlayerHitByEnemyBullet(false);
 		m_audioManager->PlaySound("Damage", m_pPlayer->GetVolume());
 	}
 }

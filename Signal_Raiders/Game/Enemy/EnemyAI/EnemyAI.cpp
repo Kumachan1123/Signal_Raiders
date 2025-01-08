@@ -12,8 +12,7 @@
 #include <random>
 #include <type_traits> // std::enable_if, std::is_integral
 #include "Game/KumachiLib/KumachiLib.h"
-class EnemyAttack;
-class EnemyIdling;
+
 // コンストラクタ
 EnemyAI::EnemyAI(IEnemy* pEnemy)
 	: m_currentState(nullptr), m_rotationSpeed(0.5f), m_attackCooldown(0.0f), m_pEnemyAttack(nullptr)
@@ -44,20 +43,21 @@ void EnemyAI::Initialize()
 	m_enemyState = IState::EnemyState::IDLING;// 待機態勢
 }
 // 更新
-void EnemyAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& playerPos, bool& isHitToPlayer, bool& isHitToPlayerBullet)
+void EnemyAI::Update(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
-	if (isHitToPlayerBullet)m_isHitPlayerBullet = true;
+	m_position = m_pEnemy->GetPosition();// 位置を取得
+	if (m_pEnemy->GetEnemyHitByPlayerBullet())m_isHitPlayerBullet = true;// プレイヤーの弾に当たったかどうかを取得
 	// sin波を用いた浮遊動作の実装
 	m_time += elapsedTime;
 	// sin波を用いた浮遊動作の実装
 	float amplitude = 2.0f;  // 振幅
 	float frequency = 0.5f;  // 周波数
 	// 敵をふわふわ浮遊させる
-	pos.y = m_initialPosition.y + amplitude * std::sin(frequency * m_time);
-	pos.y += m_velocity.y * elapsedTime;
+	m_position.y = m_initialPosition.y + amplitude * std::sin(frequency * m_time);
+	m_position.y += m_velocity.y * elapsedTime;
 	// 敵がプレイヤーの一定範囲内に入っている場合
-	if ((isHitToPlayer || m_isHitPlayerBullet))
+	if ((m_pEnemy->GetHitToPlayer() || m_isHitPlayerBullet))
 	{
 		ChangeState(m_pEnemyAttack.get());//攻撃態勢にする
 		m_enemyState = IState::EnemyState::ATTACK;// 徘徊態勢
@@ -68,15 +68,14 @@ void EnemyAI::Update(float elapsedTime, DirectX::SimpleMath::Vector3& pos, Direc
 		m_enemyState = IState::EnemyState::IDLING;// 徘徊態勢
 	}
 	// プレイヤーの弾に当たった場合
-	if (isHitToPlayerBullet)
+	if (m_pEnemy->GetEnemyHitByPlayerBullet())
 	{
-		KnockBack(elapsedTime, pos, isHitToPlayerBullet, playerPos);
-		ChangeState(m_pEnemySpin.get());//逃避態勢にする
-		m_enemyState = IState::EnemyState::HIT;// 逃避態勢
+		KnockBack(elapsedTime);
+		ChangeState(m_pEnemySpin.get());//スピンする
+		m_enemyState = IState::EnemyState::HIT;// 攻撃を食らった状態にする
 	}
-	m_currentState->Update(elapsedTime, pos, playerPos, isHitToPlayer);
-
-	m_position = pos;
+	m_currentState->Update(elapsedTime);
+	m_pEnemy->SetPosition(m_position);
 }
 // ステート変更
 void EnemyAI::ChangeState(IState* newState)
@@ -90,17 +89,17 @@ void EnemyAI::ChangeState(IState* newState)
 
 
 // ノックバック処理
-void EnemyAI::KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bool& isHitToPlayerBullet, const DirectX::SimpleMath::Vector3& playerPos)
+void EnemyAI::KnockBack(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
 
 	// ノックバックが始まったばかりなら初期設定を行う
 	if (m_knockTime == 0.0f)
 	{
-		m_knockStartPosition = pos; // ノックバック開始位置
-		Vector3 knockBackDirection = (pos - playerPos); // プレイヤーから敵への方向ベクトル
+		m_knockStartPosition = m_position; // ノックバック開始位置
+		Vector3 knockBackDirection = (m_position - m_pEnemy->GetPlayer()->GetPlayerPos()); // プレイヤーから敵への方向ベクトル
 		knockBackDirection.Normalize(); // 正規化して方向ベクトルにする
-		m_knockEndPosition = pos + knockBackDirection; // ノックバック終了位置
+		m_knockEndPosition = m_position + knockBackDirection; // ノックバック終了位置
 		m_initialVelocity = knockBackDirection * 20; // 初期速度
 		m_pEnemy->SetCanAttack(false);// 攻撃不可能にする
 	}
@@ -119,9 +118,9 @@ void EnemyAI::KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bo
 
 	// 減衰した速度を使って位置を更新
 	Vector3 velocity = m_initialVelocity * decayFactor;
-	pos += velocity * elapsedTime;
+	m_position += velocity * elapsedTime;
 	if (GetState() != IState::EnemyState::ANGRY)// 怒り態勢でない場合
-		SetState(IState::EnemyState::HIT);// ダメージ態勢にする
+		SetState(IState::EnemyState::HIT);// 攻撃を食らった状態にする
 	// ノックバックが終了したかどうかチェック
 	if (t >= 0.5f)
 	{
@@ -129,9 +128,9 @@ void EnemyAI::KnockBack(float elapsedTime, DirectX::SimpleMath::Vector3& pos, bo
 	}
 	if (t >= 1.0f)
 	{
-		m_knockEndPosition = pos;
+		m_knockEndPosition = m_position;
 		m_knockTime = 0.0f; // ノックバック時間のリセット
-		isHitToPlayerBullet = false; // ノックバック終了
+		m_pEnemy->SetEnemyHitByPlayerBullet(false); // ノックバック終了
 		SetState(IState::EnemyState::IDLING);// 待機態勢
 
 	}

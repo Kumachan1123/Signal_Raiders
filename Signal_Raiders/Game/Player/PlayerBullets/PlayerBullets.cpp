@@ -93,7 +93,7 @@ bool PlayerBullets::CheckCollisionWithEnemies(const std::unique_ptr<PlayerBullet
 					enemy->GetMatrix()));
 			}
 			// プレイヤーの弾が敵に当たったフラグを立てる
-			enemy->SetHitToPlayerBullet(true);
+			enemy->SetEnemyHitByPlayerBullet(true);
 			// ヒットSEを再生
 			m_audioManager->PlaySound("Hit", m_pPlayer->GetVolume() * HIT_VOLUME);
 			return true; // 当たったらtrueを返す
