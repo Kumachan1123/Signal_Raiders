@@ -231,7 +231,8 @@
     <ClInclude Include="Game\KumachiLib\Anchor.h" />
     <ClInclude Include="Game\Player\PlayerUI\Crisis\Crisis.h" />
     <ClInclude Include="Game\Player\PlayerUI\PlayerHP\PlayerHP.h" />
-    <ClInclude Include="Game\Player\PlayerUI\PlayerPointer\PlayerPointer.h" />
+    <ClInclude Include="Game\Player\PlayerUI\PlayGuide\PlayGuide.h" />
+    <ClInclude Include="Game\Player\PlayerUI\Reticle\Reticle.h" />
     <ClInclude Include="Game\Player\PlayerUI\PlayerUI.h" />
     <ClInclude Include="Game\Player\Player.h" />
     <ClInclude Include="Game\Player\PlayerUI\Goal\Goal.h" />
@@ -324,7 +325,8 @@
     <ClCompile Include="Game\Player\PlayerController\PlayerController.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\Crisis\Crisis.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\PlayerHP\PlayerHP.cpp" />
-    <ClCompile Include="Game\Player\PlayerUI\PlayerPointer\PlayerPointer.cpp" />
+    <ClCompile Include="Game\Player\PlayerUI\PlayGuide\PlayGuide.cpp" />
+    <ClCompile Include="Game\Player\PlayerUI\Reticle\Reticle.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\PlayerUI.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\Goal\Goal.cpp" />
     <ClCompile Include="Game\Radar\Radar.cpp" />

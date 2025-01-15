@@ -98,8 +98,11 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pPlayerHP = std::make_unique<PlayerHP>();
 	m_pPlayerHP->Initialize(DR, 1280, 720);
 	// 照準作成
-	m_pPlayerPointer = std::make_unique<PlayerPointer>();
-	m_pPlayerPointer->Initialize(DR, 1280, 720);
+	m_pReticle = std::make_unique<Reticle>();
+	m_pReticle->Initialize(DR, 1280, 720);
+	// 操作説明
+	m_pPlayGuide = std::make_unique<PlayGuide>();
+	m_pPlayGuide->Initialize(DR);
 	// フェードの初期化
 	m_fade = std::make_unique<Fade>(m_commonResources);
 	m_fade->Create(DR);
@@ -145,7 +148,10 @@ void PlayScene::Update(float elapsedTime)
 		// 体力が10以下になったら危機状態更新
 		if (m_pPlayer->GetPlayerHP() <= 10.0f)m_pCrisis->Update(elapsedTime);
 		// 照準更新
-		m_pPlayerPointer->Update();
+		m_pReticle->Update();
+		// 操作説明更新
+		m_pPlayGuide->Update();
+		// 敵カウンターの更新
 		m_pEnemyCounter->SetEnemyIndex(m_pEnemies->GetEnemyIndex());// 敵の総数を取得
 		m_pEnemyCounter->SetNowEnemy(m_pEnemies->GetEnemySize());// 現在の敵の数を取得
 		m_pEnemyCounter->Update(elapsedTime);// 敵カウンターの更新
@@ -210,11 +216,11 @@ void PlayScene::Render()
 		if (m_pPlayer->GetPlayerHP() <= 10.0f)m_pCrisis->Render();// HPが10以下で危機状態描画
 		// 敵カウンターを描画する
 		m_pEnemyCounter->Render();
+		m_pPlayGuide->Render();// 操作説明描画
 		// レーダーを描画する
 		m_pRadar->Render();
 		m_pPlayerHP->Render();// HP描画
-		m_pPlayerPointer->Render();// 照準描画
-
+		m_pReticle->Render();// 照準描画
 	}
 	else // ゲーム開始から5秒間は指示画像を表示
 	{

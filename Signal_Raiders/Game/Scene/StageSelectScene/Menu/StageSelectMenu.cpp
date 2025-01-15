@@ -52,33 +52,44 @@ void StageSelectMenu::Initialize(CommonResources* resources, int width, int heig
 	Add(L"Resources/Textures/stage1.png"
 		, SimpleMath::Vector2(Screen::CENTER_X - 550, Screen::CENTER_Y)
 		, SimpleMath::Vector2(.75, .75)
-		, KumachiLib::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER
+		, UIType::SELECT);
 	//  「ステージ2の写真」を読み込む
 	Add(L"Resources/Textures/stage2.png"
 		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y)
 		, SimpleMath::Vector2(.75, .75)
-		, KumachiLib::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER
+		, UIType::SELECT);
 	//  「ステージ3の写真」を読み込む
 	Add(L"Resources/Textures/stage3.png"
 		, SimpleMath::Vector2(Screen::CENTER_X + 550, Screen::CENTER_Y)
 		, SimpleMath::Vector2(.75, .75)
-		, KumachiLib::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER
+		, UIType::SELECT);
 	//  「ステージ4の写真」を読み込む
 	Add(L"Resources/Textures/stage4.png"
 		, SimpleMath::Vector2(Screen::CENTER_X - 550, Screen::CENTER_Y + 300)
 		, SimpleMath::Vector2(.75, .75)
-		, KumachiLib::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER
+		, UIType::SELECT);
 	//  「ステージ5の写真」を読み込む
 	Add(L"Resources/Textures/stage5.png"
 		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y + 300)
 		, SimpleMath::Vector2(.75, .75)
-		, KumachiLib::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER
+		, UIType::SELECT);
 	//  「タイトルに戻る」を読み込む
 	Add(L"Resources/Textures/ToTitle.png"
 		, SimpleMath::Vector2(Screen::CENTER_X + 550, Screen::CENTER_Y + 300)
 		, SimpleMath::Vector2(.6, .6)
-		, KumachiLib::ANCHOR::MIDDLE_CENTER);
-
+		, KumachiLib::ANCHOR::MIDDLE_CENTER
+		, UIType::SELECT);
+	// 「操作説明」を読み込む
+	Add(L"Resources/Textures/Guide.png"
+		, SimpleMath::Vector2(Screen::RIGHT, Screen::BOTTOM)
+		, SimpleMath::Vector2(1, 1)
+		, KumachiLib::ANCHOR::BOTTOM_RIGHT
+		, UIType::NON_SELECT);
 
 
 }
@@ -133,6 +144,12 @@ void StageSelectMenu::Update(float elapsedTime)
 		m_pUI[i]->SetScale(m_pUI[i]->GetSelectScale());
 		m_pUI[i]->SetTime(m_pUI[i]->GetTime() + elapsedTime);
 	}
+	// 選択不可能なアイテムの選択状態を更新
+	for (int i = 0; i < m_pGuide.size(); i++)
+	{
+		m_pGuide[i]->SetScale(m_pGuide[i]->GetSelectScale());
+		m_pGuide[i]->SetTime(m_pGuide[i]->GetTime() + elapsedTime);
+	}
 	// 選択中の初期サイズを取得する
 	Vector2 select = m_pUI[m_menuIndex]->GetSelectScale();
 	//  選択状態とするための変化用サイズを算出する
@@ -145,6 +162,7 @@ void StageSelectMenu::Update(float elapsedTime)
 	if (m_menuIndex == 5) m_pUI[m_menuIndex]->SetScale(select * 0.75);
 	//  背景用のウィンドウ画像にも同じ割合の値を設定する
 	m_pSelect[m_menuIndex]->SetScale(select);
+
 }
 
 void StageSelectMenu::Render()
@@ -156,9 +174,14 @@ void StageSelectMenu::Render()
 		//  実際に表示したいアイテム画像を表示
 		m_pUI[i]->Render();
 	}
+	// 選択不可能なアイテムの画像を表示
+	for (unsigned int i = 0; i < m_pGuide.size(); i++)
+	{
+		m_pGuide[i]->Render();
+	}
 }
 
-void StageSelectMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
+void StageSelectMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor, UIType type)
 {
 	//  メニューとしてアイテムを追加する
 	std::unique_ptr<UI> userInterface = std::make_unique<UI>();
@@ -171,8 +194,12 @@ void StageSelectMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 posi
 	userInterface->SetWindowSize(m_windowWidth, m_windowHeight);
 
 	//  アイテムを新しく追加
-	m_pUI.push_back(std::move(userInterface));
-
+	if (type == UIType::SELECT)	m_pUI.push_back(std::move(userInterface));
+	else
+	{
+		m_pGuide.push_back(std::move(userInterface));
+		return;
+	}
 	//  背景用のウィンドウ画像も追加する
 	std::unique_ptr<UI> base = std::make_unique<UI>();
 	base->Create(m_pDR

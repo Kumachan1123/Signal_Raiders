@@ -1,11 +1,11 @@
 //--------------------------------------------------------------------------------------
-// File: PlayerPointer.cpp
+// File: Reticle.cpp
 //
 // è∆èÄÉNÉâÉX
 //
 //-------------------------------------------------------------------------------------
 #include "pch.h"
-#include "PlayerPointer.h"
+#include "Reticle.h"
 #include "Game/Player/PlayerUI/PlayerUI.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "DeviceResources.h"
@@ -16,37 +16,39 @@
 #include <WICTextureLoader.h>
 #include <CommonStates.h>
 #include <vector>
+#include "Game/Screen.h"
 using namespace DirectX;
 
 
-PlayerPointer::PlayerPointer()
+Reticle::Reticle()
 	: m_menuIndex(0)
 	, m_windowHeight(0)
 	, m_windowWidth(0)
 	, m_pDR(nullptr)
 	, m_baseTexturePath(nullptr)
-	, m_pointer(nullptr)
+	, m_reticle(nullptr)
 {
 }
 
-PlayerPointer::~PlayerPointer()
+Reticle::~Reticle()
 {
 }
 
-void PlayerPointer::Initialize(DX::DeviceResources* pDR, int width, int height)
+void Reticle::Initialize(DX::DeviceResources* pDR, int width, int height)
 {
 	m_pDR = pDR;
 	m_windowWidth = width;
 	m_windowHeight = height;
 
 
-	Add(L"Resources/Textures/pointer.png"
+	Add(L"Resources/Textures/Reticle.png"
 		, SimpleMath::Vector2(640, 360)
 		, SimpleMath::Vector2(0.25f, 0.25f)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER);
+
 }
 
-void PlayerPointer::Update()
+void Reticle::Update()
 {
 
 	auto keystate = Keyboard::Get().GetState();
@@ -55,22 +57,22 @@ void PlayerPointer::Update()
 
 }
 
-void PlayerPointer::Render()
+void Reticle::Render()
 {
-	m_pointer->SetShaderType(PlayerUI::ShaderType::OTHER);
-	m_pointer->Render();
+	m_reticle->SetShaderType(PlayerUI::ShaderType::OTHER);
+	m_reticle->Render();
 }
 
-void PlayerPointer::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
+void Reticle::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
 {
 
-	m_pointer = std::make_unique<PlayerUI>();
-	m_pointer->Create(m_pDR
+	m_reticle = std::make_unique<PlayerUI>();
+	m_reticle->Create(m_pDR
 		, path
 		, position
 		, scale
 		, anchor);
-	m_pointer->SetWindowSize(m_windowWidth, m_windowHeight);
+	m_reticle->SetWindowSize(m_windowWidth, m_windowHeight);
 
 
 }

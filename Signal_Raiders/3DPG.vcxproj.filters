@@ -249,7 +249,7 @@
     <ClInclude Include="Game\Player\PlayerUI\PlayerUI.h" />
     <ClInclude Include="Game\KumachiLib\Anchor.h" />
     <ClInclude Include="Game\Player\PlayerUI\PlayerHP\PlayerHP.h" />
-    <ClInclude Include="Game\Player\PlayerUI\PlayerPointer\PlayerPointer.h" />
+    <ClInclude Include="Game\Player\PlayerUI\Reticle\Reticle.h" />
     <ClInclude Include="Game\Enemy\EnemyModel\EnemyModel.h" />
     <ClInclude Include="Game\Effect\Effect.h" />
     <ClInclude Include="Game\Scene\ResultScene\ResultScene.h" />
@@ -299,6 +299,7 @@
     <ClInclude Include="Game\KumachiLib\Bloom\Bloom.h" />
     <ClInclude Include="Game\DamageEffect\DamageEffects\DamageEffects.h" />
     <ClInclude Include="Game\Stage\Stage.h" />
+    <ClInclude Include="Game\Player\PlayerUI\PlayGuide\PlayGuide.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -399,7 +400,7 @@
     </ClCompile>
     <ClCompile Include="Game\Player\PlayerUI\PlayerUI.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\PlayerHP\PlayerHP.cpp" />
-    <ClCompile Include="Game\Player\PlayerUI\PlayerPointer\PlayerPointer.cpp" />
+    <ClCompile Include="Game\Player\PlayerUI\Reticle\Reticle.cpp" />
     <ClCompile Include="Game\Enemy\EnemyModel\EnemyModel.cpp" />
     <ClCompile Include="Game\Effect\Effect.cpp" />
     <ClCompile Include="Game\Scene\ResultScene\ResultScene.cpp" />
@@ -447,6 +448,7 @@
     <ClCompile Include="Game\KumachiLib\Bloom\Bloom.cpp" />
     <ClCompile Include="Game\DamageEffect\DamageEffects\DamegeEffects.cpp" />
     <ClCompile Include="Game\Stage\Stage.cpp" />
+    <ClCompile Include="Game\Player\PlayerUI\PlayGuide\PlayGuide.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

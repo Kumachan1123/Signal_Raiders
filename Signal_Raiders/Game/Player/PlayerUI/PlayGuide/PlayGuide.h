@@ -1,7 +1,7 @@
 //--------------------------------------------------------------------------------------
-// File: PlayerHP.h
+// File: PlayGuide.h
 //
-// HPゲージクラス
+// プレイ操作説明クラス
 //
 //-------------------------------------------------------------------------------------
 
@@ -19,7 +19,7 @@
 #include <vector>
 #include "Keyboard.h"
 
-class PlayerPointer
+class PlayGuide
 {
 public:
 
@@ -44,10 +44,10 @@ private:
 
 	//関数
 public:
-	PlayerPointer();
-	~PlayerPointer();
+	PlayGuide();
+	~PlayGuide();
 
-	void Initialize(DX::DeviceResources* pDR, int width, int height);
+	void Initialize(DX::DeviceResources* pDR);
 	void Update();
 	void Render();
 

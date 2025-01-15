@@ -4,9 +4,7 @@
 #include "Game/Player/PlayerController/PlayerController.h"
 #include "Game/Player/PlayerBullets/PlayerBullets.h"
 #include "Game/Player/PlayerUI/PlayerHP/PlayerHP.h"
-#include "Game/Player/PlayerUI/PlayerPointer/PlayerPointer.h"
-#include "Game/Player/PlayerUI/Crisis/Crisis.h"
-#include "Game/Player/PlayerUI/Goal/Goal.h"
+
 #include "Game/DamageEffect/DamageEffects/DamageEffects.h"
 #include "Game/Enemy/Enemies/Enemies.h"
 #include "Game/FPS_Camera/FPS_Camera.h"
@@ -16,7 +14,7 @@ class PlayerController;
 class PlayerUI;
 class PlayerBullets;
 class Goal;
-class PlayerPointer;
+class Reticle;
 class PlayerHP;
 class Crisis;
 class DamageEffects;

@@ -28,6 +28,13 @@ public:
 		APPLY = 3,
 		END = 4
 	};
+	enum class UIType
+	{
+		// 選択可能UI
+		SELECT,
+		// 選択不可能UI
+		NON_SELECT
+	};
 	//	変数
 private:
 
@@ -35,6 +42,7 @@ private:
 	DX::DeviceResources* m_pDR;// デバイスリソース
 	CommonResources* m_commonResources;// 共通リソース
 	std::vector<std::unique_ptr<UI>> m_pUI;// UI
+	std::vector<std::unique_ptr<UI>> m_pGuide;// 選択不可能UI
 	std::vector<std::unique_ptr<UI>> m_pSelect;// 選択
 
 	const wchar_t* m_pSelectTexturePath;// 選択テクスチャパス
@@ -60,7 +68,8 @@ public:
 	void Add(const wchar_t* path
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
-		, KumachiLib::ANCHOR anchor);
+		, KumachiLib::ANCHOR anchor
+		, UIType type);
 
 public:
 	StateID GetStateIDNum() const { return m_num; }

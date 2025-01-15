@@ -21,7 +21,10 @@
 #include "Game/Stage/Stage.h"
 #include "Game/Stage/Wall/Wall.h"
 #include "Game/Player/PlayerUI/PlayerHP/PlayerHP.h"
-#include "Game/Player/PlayerUI/PlayerPointer/PlayerPointer.h"
+#include "Game/Player/PlayerUI/Reticle/Reticle.h"
+#include "Game/Player/PlayerUI/Crisis/Crisis.h"
+#include "Game/Player/PlayerUI/PlayGuide/PlayGuide.h"
+#include "Game/Player/PlayerUI/Goal/Goal.h"
 #include "Game/Effect/Effect.h"
 #include "Game/Fade/Fade.h"
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
@@ -74,7 +77,9 @@ private:
 	// 危機状態
 	std::unique_ptr<Crisis> m_pCrisis;
 	// 照準
-	std::unique_ptr<PlayerPointer> m_pPlayerPointer;
+	std::unique_ptr<Reticle> m_pReticle;
+	// 操作説明
+	std::unique_ptr<PlayGuide> m_pPlayGuide;
 	// フェード
 	std::unique_ptr<Fade> m_fade;
 	// 設定データ

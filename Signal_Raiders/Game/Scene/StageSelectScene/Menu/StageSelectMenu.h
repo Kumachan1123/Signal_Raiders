@@ -25,6 +25,13 @@ public:
 		PLAY = 0,
 		END
 	};
+	enum class UIType
+	{
+		// 選択可能UI
+		SELECT,
+		// 選択不可能UI
+		NON_SELECT
+	};
 	//	変数
 public:
 	unsigned int m_menuIndex;
@@ -33,7 +40,8 @@ private:
 
 	DX::DeviceResources* m_pDR;
 	CommonResources* m_commonResources;
-	std::vector<std::unique_ptr<UI>> m_pUI;
+	std::vector<std::unique_ptr<UI>> m_pUI;// 選択可能UI
+	std::vector<std::unique_ptr<UI>> m_pGuide;// 選択不可能UI
 	std::vector<std::unique_ptr<UI>> m_pSelect;
 
 	const wchar_t* m_pSelectTexturePath;
@@ -58,7 +66,8 @@ public:
 	void Add(const wchar_t* path
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
-		, KumachiLib::ANCHOR anchor);
+		, KumachiLib::ANCHOR anchor
+		, UIType type);
 
 public:
 	SceneID GetSceneNum() const { return m_num; }
