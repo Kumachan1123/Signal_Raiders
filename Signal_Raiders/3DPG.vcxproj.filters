@@ -514,5 +514,6 @@
     <FxCompile Include="HLSL\PlayerUI\GS_PlayerUI.hlsl" />
     <FxCompile Include="HLSL\Stage\PS_Stage.hlsl" />
     <FxCompile Include="HLSL\Stage\VS_Stage.hlsl" />
+    <FxCompile Include="HLSL\Menu\PS_StageMenu.hlsl" />
   </ItemGroup>
 </Project>

@@ -27,6 +27,12 @@ public:
 		DirectX::SimpleMath::Vector3 color;
 	};
 	ConstBuffer m_constBuffer{};
+	enum class ShaderType
+	{
+		NORMAL,
+		STAGE_SELECT
+	};
+
 public:
 	//	変数
 	DX::DeviceResources* m_pDR;// デバイスリソース
@@ -41,16 +47,22 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Resource> m_pTextureResource;
 	// 頂点シェーダー
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_pVertexShader;
-	// ピクセルシェーダー
+	// ピクセルシェーダー(普通のメニュー)
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
+	// ピクセルシェーダー(ステージセレクト用)
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShaderStageSelect;
 	// ジオメトリシェーダ
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_pGeometryShader;
-	// シェーダーの構造体
+	// シェーダーの構造体(普通のメニュー)
 	DrawPolygon::Shaders m_shaders;
+	// シェーダーの構造体(ステージセレクト用)
+	DrawPolygon::Shaders m_StageSelectShaders;
 	// 描画クラス
 	DrawPolygon* m_pDrawPolygon;
 	// シェーダー作成クラス
 	CreateShader* m_pCreateShader;
+	// シェーダータイプ
+	ShaderType m_shaderType;
 	int m_windowWidth, m_windowHeight;
 	int m_textureWidth, m_textureHeight;
 	DirectX::SimpleMath::Vector2 m_scale;// スケール
@@ -76,7 +88,7 @@ public:
 	void Render();
 
 	void SetWindowSize(const int& width, const int& height);
-
+	void SetShaderType(ShaderType shaderType) { m_shaderType = shaderType; };
 	void SetScale(DirectX::SimpleMath::Vector2 scale) { m_scale = scale; };
 	DirectX::SimpleMath::Vector2 GetScale() const { return m_scale; }
 	DirectX::SimpleMath::Vector2 GetSelectScale() const { return m_baseScale; }

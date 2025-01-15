@@ -31,6 +31,7 @@ UI::UI()
 	, m_baseScale{ DirectX::SimpleMath::Vector2::One }
 	, m_position{ DirectX::SimpleMath::Vector2::Zero }
 	, m_anchor{ KumachiLib::ANCHOR::TOP_LEFT }
+	, m_shaderType{ ShaderType::NORMAL }
 	, m_pDrawPolygon{ DrawPolygon::GetInstance() }
 	, m_pCreateShader{ CreateShader::GetInstance() }
 {
@@ -82,6 +83,7 @@ void UI::CreateShader()
 	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Menu/VS_Menu.cso", m_pVertexShader);
 	m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/Menu/GS_Menu.cso", m_pGeometryShader);
 	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Menu/PS_Menu.cso", m_pPixelShader);
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Menu/PS_StageMenu.cso", m_pPixelShaderStageSelect);
 	// インプットレイアウトを受け取る
 	m_pInputLayout = m_pCreateShader->GetInputLayout();
 	//	シェーダーにデータを渡すためのコンスタントバッファ生成
@@ -90,6 +92,9 @@ void UI::CreateShader()
 	m_shaders.vs = m_pVertexShader.Get();
 	m_shaders.gs = m_pGeometryShader.Get();
 	m_shaders.ps = m_pPixelShader.Get();
+	m_StageSelectShaders.vs = m_pVertexShader.Get();
+	m_StageSelectShaders.gs = m_pGeometryShader.Get();
+	m_StageSelectShaders.ps = m_pPixelShaderStageSelect.Get();
 }
 
 void UI::Update(float elapsedTime)
@@ -127,7 +132,11 @@ void UI::Render()
 	// 描画
 	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pTextures);
 	//	シェーダをセットする
-	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);
+	if (m_shaderType == ShaderType::NORMAL)
+		m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);
+	else
+		m_pDrawPolygon->SetShader(m_StageSelectShaders, nullptr, 0);
+
 	//	板ポリゴンを描画
 	m_pDrawPolygon->DrawColorTexture(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex[0], 1);
 	//	シェーダの登録を解除しておく

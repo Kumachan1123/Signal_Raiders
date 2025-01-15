@@ -50,38 +50,38 @@ void StageSelectMenu::Initialize(CommonResources* resources, int width, int heig
 	m_pSelectTexturePath = L"Resources/Textures/StageSelect.png";
 	//  「ステージ1の写真」を読み込む
 	Add(L"Resources/Textures/stage1.png"
-		, SimpleMath::Vector2(Screen::CENTER_X - 550, Screen::CENTER_Y)
-		, SimpleMath::Vector2(.75, .75)
+		, SimpleMath::Vector2(Screen::CENTER_X - 550, Screen::CENTER_Y - 50)
+		, SimpleMath::Vector2(.7, .7)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//  「ステージ2の写真」を読み込む
 	Add(L"Resources/Textures/stage2.png"
-		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y)
-		, SimpleMath::Vector2(.75, .75)
+		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y - 50)
+		, SimpleMath::Vector2(.7, .7)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//  「ステージ3の写真」を読み込む
 	Add(L"Resources/Textures/stage3.png"
-		, SimpleMath::Vector2(Screen::CENTER_X + 550, Screen::CENTER_Y)
-		, SimpleMath::Vector2(.75, .75)
+		, SimpleMath::Vector2(Screen::CENTER_X + 550, Screen::CENTER_Y - 50)
+		, SimpleMath::Vector2(.7, .7)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//  「ステージ4の写真」を読み込む
 	Add(L"Resources/Textures/stage4.png"
 		, SimpleMath::Vector2(Screen::CENTER_X - 550, Screen::CENTER_Y + 300)
-		, SimpleMath::Vector2(.75, .75)
+		, SimpleMath::Vector2(.7, .7)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//  「ステージ5の写真」を読み込む
 	Add(L"Resources/Textures/stage5.png"
 		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y + 300)
-		, SimpleMath::Vector2(.75, .75)
+		, SimpleMath::Vector2(.7, .7)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//  「タイトルに戻る」を読み込む
 	Add(L"Resources/Textures/ToTitle.png"
 		, SimpleMath::Vector2(Screen::CENTER_X + 550, Screen::CENTER_Y + 300)
-		, SimpleMath::Vector2(.6, .6)
+		, SimpleMath::Vector2(.7, .7)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	// 「操作説明」を読み込む
@@ -158,8 +158,8 @@ void StageSelectMenu::Update(float elapsedTime)
 	select = SimpleMath::Vector2((sin(m_time) * 0.1f) + 1.0f);
 	//  算出後のサイズを現在のサイズとして設定する
 	m_pUI[m_menuIndex]->SetScale(select);
-	//  メニューIDが5の時は、拡大率を少し抑える
-	if (m_menuIndex == 5) m_pUI[m_menuIndex]->SetScale(select * 0.75);
+	////  メニューIDが5の時は、拡大率を少し抑える
+	//if (m_menuIndex == 5) m_pUI[m_menuIndex]->SetScale(select * 0.75);
 	//  背景用のウィンドウ画像にも同じ割合の値を設定する
 	m_pSelect[m_menuIndex]->SetScale(select);
 
@@ -169,14 +169,21 @@ void StageSelectMenu::Render()
 {
 	for (unsigned int i = 0; i < m_pUI.size(); i++)
 	{
+		// シェーダータイプを設定
+		m_pUI[i]->SetShaderType(UI::ShaderType::STAGE_SELECT);
+		//m_pUI[2]->SetShaderType(UI::ShaderType::NORMAL);
 		//  アイテム用ウィンドウ背景を表示
-		if (i == m_menuIndex) m_pSelect[i]->Render();
+		//if (i == m_menuIndex) m_pSelect[i]->Render();
 		//  実際に表示したいアイテム画像を表示
 		m_pUI[i]->Render();
 	}
+
 	// 選択不可能なアイテムの画像を表示
 	for (unsigned int i = 0; i < m_pGuide.size(); i++)
 	{
+		// シェーダータイプを設定
+		m_pGuide[i]->SetShaderType(UI::ShaderType::NORMAL);
+
 		m_pGuide[i]->Render();
 	}
 }
