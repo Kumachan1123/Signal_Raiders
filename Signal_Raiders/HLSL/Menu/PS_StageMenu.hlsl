@@ -43,7 +43,7 @@ float4 oldTV(float2 inUV)
                 random(uv + float2(123 + time.x, 0)),
                 random(uv + float2(123 + time.x, 1)),
                 random(uv + float2(123 + time.x, 2))),
-                step(random(floor(texUV.y * 500) + time.x * 0.0005f), 0.001f));
+                step(random(floor(texUV.y * 500) + time.x * 0.005f), 0.005f));
     
  //   col *= 1 - vignette * 0.5f;
     

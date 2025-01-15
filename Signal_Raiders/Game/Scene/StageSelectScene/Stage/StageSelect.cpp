@@ -72,7 +72,7 @@ void StageSelect::Create(DX::DeviceResources* pDR)
 	// 頂点の座標を調整
 	for (int i = 0; i < 4; i++)
 	{
-		m_vertex[i].position.y += 1.0f;
+		m_vertex[i].position.y += 1.05f;
 	}
 	// 板ポリゴン描画用
 	m_pDrawPolygon->InitializePositionTexture(m_pDR);

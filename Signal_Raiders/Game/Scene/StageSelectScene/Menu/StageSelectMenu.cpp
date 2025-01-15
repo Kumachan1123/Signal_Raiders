@@ -50,37 +50,37 @@ void StageSelectMenu::Initialize(CommonResources* resources, int width, int heig
 	m_pSelectTexturePath = L"Resources/Textures/StageSelect.png";
 	//  「ステージ1の写真」を読み込む
 	Add(L"Resources/Textures/stage1.png"
-		, SimpleMath::Vector2(Screen::CENTER_X - 550, Screen::CENTER_Y - 50)
+		, SimpleMath::Vector2(Screen::CENTER_X - 550, Screen::CENTER_Y - 70)
 		, SimpleMath::Vector2(.7, .7)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//  「ステージ2の写真」を読み込む
 	Add(L"Resources/Textures/stage2.png"
-		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y - 50)
+		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y - 70)
 		, SimpleMath::Vector2(.7, .7)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//  「ステージ3の写真」を読み込む
 	Add(L"Resources/Textures/stage3.png"
-		, SimpleMath::Vector2(Screen::CENTER_X + 550, Screen::CENTER_Y - 50)
+		, SimpleMath::Vector2(Screen::CENTER_X + 550, Screen::CENTER_Y - 70)
 		, SimpleMath::Vector2(.7, .7)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//  「ステージ4の写真」を読み込む
 	Add(L"Resources/Textures/stage4.png"
-		, SimpleMath::Vector2(Screen::CENTER_X - 550, Screen::CENTER_Y + 300)
+		, SimpleMath::Vector2(Screen::CENTER_X - 550, Screen::CENTER_Y + 250)
 		, SimpleMath::Vector2(.7, .7)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//  「ステージ5の写真」を読み込む
 	Add(L"Resources/Textures/stage5.png"
-		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y + 300)
+		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y + 250)
 		, SimpleMath::Vector2(.7, .7)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//  「タイトルに戻る」を読み込む
 	Add(L"Resources/Textures/ToTitle.png"
-		, SimpleMath::Vector2(Screen::CENTER_X + 550, Screen::CENTER_Y + 300)
+		, SimpleMath::Vector2(Screen::CENTER_X + 550, Screen::CENTER_Y + 250)
 		, SimpleMath::Vector2(.7, .7)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
@@ -171,9 +171,7 @@ void StageSelectMenu::Render()
 	{
 		// シェーダータイプを設定
 		m_pUI[i]->SetShaderType(UI::ShaderType::STAGE_SELECT);
-		//m_pUI[2]->SetShaderType(UI::ShaderType::NORMAL);
-		//  アイテム用ウィンドウ背景を表示
-		//if (i == m_menuIndex) m_pSelect[i]->Render();
+
 		//  実際に表示したいアイテム画像を表示
 		m_pUI[i]->Render();
 	}
