@@ -14,7 +14,7 @@ class EnemyHPBar;
 class EnemyBullet;
 class VerticalAttackerModel;
 class EnemyBullets;
-class Enemies;
+class EnemyManager;
 class FPS_Camera;
 class VerticalAttacker : public IEnemy
 {
@@ -98,14 +98,15 @@ public:
 	void SetPlayerHitByEnemyBullet(bool hit)override { m_isPlayerHitByEnemyBullet = hit; }// 敵の弾がプレイヤーに当たったか
 	void SetEnemyHitByPlayerBullet(bool hit) override { m_isEnemyHitByPlayerBullet = hit; }
 	void SetCanAttack(bool canAttack)override { m_canAttack = canAttack; }// 攻撃可能か
-	void SetCameraEye(DirectX::SimpleMath::Vector3 eye)override { m_cameraEye = eye; }
-	void SetCameraTarget(DirectX::SimpleMath::Vector3 target)override { m_cameraTarget = target; }
-	void SetCameraUp(DirectX::SimpleMath::Vector3 up)override { m_cameraUp = up; }
+	//void SetCameraEye(DirectX::SimpleMath::Vector3 eye)override { m_cameraEye = eye; }
+	//void SetCameraTarget(DirectX::SimpleMath::Vector3 target)override { m_cameraTarget = target; }
+	//void SetCameraUp(DirectX::SimpleMath::Vector3 up)override { m_cameraUp = up; }
+	void SetCamera(FPS_Camera* camera) { m_pCamera = camera; }
 public:
 	// 初期ステータスを設定
-	VerticalAttacker(Player* pPlayer);
+	VerticalAttacker(Player* pPlayer, CommonResources* resources, int hp);
 	~VerticalAttacker();
-	void Initialize(CommonResources* resources, int hp) override;
+	void Initialize() override;
 	void Update(float elapsedTime) override;
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;
 	void DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;

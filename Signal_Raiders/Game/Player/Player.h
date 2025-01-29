@@ -6,7 +6,7 @@
 #include "Game/Player/PlayerUI/PlayerHP/PlayerHP.h"
 
 #include "Game/DamageEffect/DamageEffects/DamageEffects.h"
-#include "Game/Enemy/Enemies/Enemies.h"
+#include "Game/Enemy/EnemyManager/EnemyManager.h"
 #include "Game/FPS_Camera/FPS_Camera.h"
 // 前方宣言
 class CommonResources;
@@ -26,7 +26,7 @@ private:
 	// コモンリソース
 	CommonResources* m_commonResources;
 	// 敵
-	Enemies* m_pEnemies;
+	EnemyManager* m_pEnemyManager;
 	// プレイヤーの位置
 	DirectX::SimpleMath::Vector3 m_playerPos;
 	// プレイヤーの向き
@@ -69,7 +69,7 @@ public:
 	~Player();
 
 	// 初期化
-	void Initialize(Enemies* pEnemies);
+	void Initialize(EnemyManager* pEnemies);
 	// 更新
 	void Update(float elapsedTime);
 	// 描画
@@ -79,7 +79,7 @@ public:
 	float GetPlayerHP() const { return m_playerHP; }	// プレイヤーのHP
 	void SetPlayerHP(float playerHP) { m_playerHP = playerHP; }	// プレイヤーのHP
 	FPS_Camera* GetCamera() { return m_pCamera.get(); }// カメラ
-	Enemies* GetEnemies() { return m_pEnemies; }// 敵
+	EnemyManager* GetEnemies() { return m_pEnemyManager; }// 敵
 	PlayerBullets* GetPlayerBullets() { return m_pPlayerBullets.get(); }// プレイヤーの弾
 	DirectX::SimpleMath::Vector3 GetPlayerPos() const { return m_playerPos; }// プレイヤーの位置
 	DirectX::SimpleMath::Vector3 GetPlayerDir() const { return m_playerDir; }// プレイヤーの向き

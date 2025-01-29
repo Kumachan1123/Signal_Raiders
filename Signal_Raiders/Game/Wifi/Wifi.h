@@ -74,7 +74,7 @@ private:
 	std::vector<int> m_enemyTypes;// 敵の種類(ssidの文字のASCIIコードの合計をssidの文字数で割ったもののあまり)
 
 	float m_time;				  // Wi-Fi取得時間（５秒過ぎたら５秒で固定）
-
+	const int ENEMY_TYPE_MAX = 2;// ザコ敵の種類の最大値
 public:
 	// コンストラクタ
 	Wifi();

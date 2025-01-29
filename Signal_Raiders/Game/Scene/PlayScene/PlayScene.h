@@ -10,7 +10,7 @@
 #include "Game/Player/PlayerController/PlayerController.h"
 #include "Game/Player/PlayerBullet/PlayerBullet.h"
 #include "Game/Enemy/Enemy.h"
-#include "Game/Enemy/Enemies/Enemies.h"
+#include "Game/Enemy/EnemyManager/EnemyManager.h"
 #include "Game/Enemy/EnemyCounter/EnemyCounter.h"
 #include "Game/Wifi/ReleaseMemory/ReleaseMemory.h"
 #include "Game/Wifi/Output/Output.h"
@@ -53,7 +53,7 @@ private:
 	// スカイボックス用のメンバ変数
 	std::unique_ptr<Sky> m_skybox;
 	// 敵全体
-	std::unique_ptr<Enemies> m_pEnemies;
+	std::unique_ptr<EnemyManager> m_pEnemyManager;
 	// 敵
 	std::vector<std::unique_ptr<Enemy>> m_enemy;
 	// レーダー

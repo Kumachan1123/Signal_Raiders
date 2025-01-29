@@ -14,7 +14,7 @@
 
 class CommonResources;
 class Player;
-class Enemies;
+class EnemyManager;
 class PlayerBullets
 {
 public:
@@ -27,7 +27,7 @@ public:
 	// プレイヤー
 	Player* m_pPlayer;
 	// 敵全体
-	Enemies* m_pEnemies;
+	EnemyManager* m_pEnemyManager;
 	// 弾生成フラグ
 	bool m_isBullet = false;
 	// 弾生成済み
@@ -39,7 +39,7 @@ public:
 public:
 	PlayerBullets(CommonResources* commonResources);
 	~PlayerBullets();
-	void Initialize(Player* pPlayer, Enemies* pEnemies);
+	void Initialize(Player* pPlayer, EnemyManager* pEnemies);
 	void Update(float elapsedTime);
 	void Render();
 	void CreateBullet(const DirectX::SimpleMath::Vector3& position, DirectX::SimpleMath::Vector3& direction);

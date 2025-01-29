@@ -11,7 +11,7 @@
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 #include "Game/Enemy/EnemyBullets/EnemyBullets.h"
 #include "Game/Enemy/EnemyModel/EnemyModel.h"
-#include "Game/Enemy/Enemies/Enemies.h"
+#include "Game/Enemy/EnemyManager/EnemyManager.h"
 #include "DeviceResources.h"
 #include "Libraries/MyLib/DebugString.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
@@ -22,16 +22,18 @@
 #include <Libraries/Microsoft/DebugDraw.h>
 #include "Game/KumachiLib/KumachiLib.h"
 #include <Game/KumachiLib/DrawCollision/DrawCollision.h>
+using namespace DirectX;
+using namespace DirectX::SimpleMath;
 
 
 // コンストラクタ
-Enemy::Enemy(Player* pPlayer)
-	: IEnemy(pPlayer)
+Enemy::Enemy(Player* pPlayer, CommonResources* resources, int hp)
+	: IEnemy(pPlayer, resources, hp)
 	, m_pPlayer{ pPlayer }
 	, m_pCamera{ pPlayer->GetCamera() }
 	, m_enemyBS{}
-	, m_commonResources{}
-	, m_currentHP{}
+	, m_commonResources{ resources }
+	, m_currentHP{ hp }
 	, m_attackCooldown{ 3.0f }
 	, m_enemyModel{}
 	, m_enemyAI{}
@@ -59,31 +61,25 @@ Enemy::~Enemy() {}
 //---------------------------------------------------------
 // 初期化する
 //---------------------------------------------------------
-void Enemy::Initialize(CommonResources* resources, int hp)
+void Enemy::Initialize()
 {
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
-	// 共通リソースを設定
-	m_commonResources = resources;
 
 	// デバッグ用の初期化
-	DrawCollision::Initialize(resources);
+	DrawCollision::Initialize(m_commonResources);
 
 	// 敵のモデルを読み込む
 	m_enemyModel = std::make_unique<EnemyModel>();
 	m_enemyModel->Initialize(m_commonResources);
-	// 敵の体力を設定
-	m_currentHP = hp;
 	// HPBar生成
 	m_pHPBar = std::make_unique<EnemyHPBar>();
 	m_pHPBar->SetEnemyHP(m_currentHP);
-	m_pHPBar->Initialize(resources);
+	m_pHPBar->Initialize(m_commonResources);
 	// AI生成
 	m_enemyAI = std::make_unique<EnemyAI>(this);
 	m_enemyAI->Initialize();
 	// 弾全体生成
 	m_enemyBullets = std::make_unique<EnemyBullets>(this);
-	m_enemyBullets->Initialize(resources);
+	m_enemyBullets->Initialize(m_commonResources);
 	// 乱数生成
 	Vector3 position = Vector3(GenerateRandomMultiplier(-50.0f, 50.0f)); // 一様分布
 	// 敵の初期位置を設定
@@ -98,6 +94,7 @@ void Enemy::Initialize(CommonResources* resources, int hp)
 // 更新
 void Enemy::Update(float elapsedTime)
 {
+
 	m_enemyModel->SetState(m_enemyAI->GetState());// モデルの更新
 	m_pHPBar->SetCurrentHP(m_currentHP);
 	m_pHPBar->Update(elapsedTime);
@@ -139,8 +136,6 @@ void Enemy::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 	UNREFERENCED_PARAMETER(view);
 	UNREFERENCED_PARAMETER(proj);
 #ifdef _DEBUG
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
 	// 描画開始
 	DrawCollision::DrawStart(view, proj);
 	// 色設定

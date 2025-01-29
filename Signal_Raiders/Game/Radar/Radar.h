@@ -16,14 +16,14 @@
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include <memory>
 #include "Game/Player/Player.h"
-#include "Game/Enemy/Enemies/Enemies.h"
+#include "Game/Enemy/EnemyManager/EnemyManager.h"
 #include "Game/Enemy/Enemy.h"
 #include "Game/Enemy/EnemyAI/EnemyAI.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
 class CommonResources;
 class Player;
-class Enemies;
+class EnemyManager;
 class Enemy;
 class EnemyAI;
 class Radar
@@ -48,7 +48,7 @@ private:
 	// 変数
 	CommonResources* m_commonResources;
 	Player* m_pPlayer;
-	Enemies* m_pEnemies;
+	EnemyManager* m_pEnemyManager;
 	// 	//デバッグ用
 	// ベーシックエフェクト
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
@@ -99,7 +99,7 @@ public:
 	// デストラクタ
 	~Radar();
 	// 初期化
-	void Initialize(Player* pPlayer, Enemies* pEnemies);
+	void Initialize(Player* pPlayer, EnemyManager* pEnemies);
 	// 更新
 	void Update(float elapsedTime);
 	// 描画

@@ -77,14 +77,14 @@ void PlayScene::Initialize(CommonResources* resources)
 	// プレイヤーを初期化する
 	m_pPlayer = std::make_unique<Player>(resources);
 	// 敵全体を初期化する
-	m_pEnemies = std::make_unique<Enemies>(resources);
-	m_pEnemies->SetStageNumber(m_stageNumber);// ステージ番号を設定する
+	m_pEnemyManager = std::make_unique<EnemyManager>(resources);
+	m_pEnemyManager->SetStageNumber(m_stageNumber);// ステージ番号を設定する
 	m_pPlayer->SetVolume(m_SEvolume);// プレイヤーが出す効果音の音量を設定する
 	m_pPlayer->SetMouseSensitive(m_mouseSensitivity);// マウス感度を設定する
-	m_pPlayer->Initialize(m_pEnemies.get());// プレイヤーを初期化する
-	m_pEnemies->Initialize(m_pPlayer.get());// 敵を初期化する
-	m_pEnemies->SetVolume(m_SEvolume);// 敵が出す効果音の音量を設定する
-	m_pEnemies->SetWall(m_pWall.get());// 敵に壁の情報を渡す
+	m_pPlayer->Initialize(m_pEnemyManager.get());// プレイヤーを初期化する
+	m_pEnemyManager->Initialize(m_pPlayer.get());// 敵を初期化する
+	m_pEnemyManager->SetVolume(m_SEvolume);// 敵が出す効果音の音量を設定する
+	m_pEnemyManager->SetWall(m_pWall.get());// 敵に壁の情報を渡す
 	// 敵カウンター
 	m_pEnemyCounter = std::make_unique<EnemyCounter>();
 	m_pEnemyCounter->Initialize(resources);
@@ -110,7 +110,7 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_fade->SetTextureNum((int)(Fade::TextureNum::BLACK));
 	// レーダーを初期化する
 	m_pRadar = std::make_unique<Radar>(resources);
-	m_pRadar->Initialize(m_pPlayer.get(), m_pEnemies.get());
+	m_pRadar->Initialize(m_pPlayer.get(), m_pEnemyManager.get());
 	// ブルームエフェクトの生成
 	m_pBloom->CreatePostProcess(resources);
 
@@ -135,7 +135,7 @@ void PlayScene::Update(float elapsedTime)
 	m_pWall->Update(elapsedTime);
 	m_audioManager->Update();// オーディオマネージャーの更新
 
-	m_pEnemies->Update(elapsedTime);// 敵の更新
+	m_pEnemyManager->Update(elapsedTime);// 敵の更新
 	m_pPlayer->Update(elapsedTime);
 	if (m_timer <= 5.0f)// ゲーム開始から5秒間は指示画像を表示
 	{
@@ -152,14 +152,14 @@ void PlayScene::Update(float elapsedTime)
 		// 操作説明更新
 		m_pPlayGuide->Update();
 		// 敵カウンターの更新
-		m_pEnemyCounter->SetEnemyIndex(m_pEnemies->GetEnemyIndex());// 敵の総数を取得
-		m_pEnemyCounter->SetNowEnemy(m_pEnemies->GetEnemySize());// 現在の敵の数を取得
+		m_pEnemyCounter->SetEnemyIndex(m_pEnemyManager->GetEnemyIndex());// 敵の総数を取得
+		m_pEnemyCounter->SetNowEnemy(m_pEnemyManager->GetEnemySize());// 現在の敵の数を取得
 		m_pEnemyCounter->Update(elapsedTime);// 敵カウンターの更新
 
 		if (m_pPlayer->GetPlayerHP() <= 0.0f ||// プレイヤーのHPが0以下か、
-			(m_pEnemies->GetEnemySize() <= 0 &&// 敵がいなくて
-				m_pEnemies->GetisBorned() &&// 生成が完了していて
-				m_pEnemies->GetIsBossAlive() == false))// ボスがいないなら
+			(m_pEnemyManager->GetEnemySize() <= 0 &&// 敵がいなくて
+				m_pEnemyManager->GetisBorned() &&// 生成が完了していて
+				m_pEnemyManager->GetIsBossAlive() == false))// ボスがいないなら
 		{
 			m_waitTime += elapsedTime;// 待ち時間を加算する
 		}
@@ -199,7 +199,7 @@ void PlayScene::Render()
 	// 壁描画
 	m_pWall->Render(view, projection);
 	// 敵を描画する
-	m_pEnemies->Render();
+	m_pEnemyManager->Render();
 
 	// プレイヤーを描画する
 	m_pPlayer->Render();

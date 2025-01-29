@@ -11,7 +11,7 @@
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 #include "Game/Enemy/EnemyBullets/EnemyBullets.h"
 #include "Game/Enemy/Boss/BossModel/BossModel.h"
-#include "Game/Enemy/Enemies/Enemies.h"
+#include "Game/Enemy/EnemyManager/EnemyManager.h"
 #include "DeviceResources.h"
 #include "Libraries/MyLib/DebugString.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
@@ -21,15 +21,17 @@
 #include <memory>
 #include <Libraries/Microsoft/DebugDraw.h>
 #include "Game/KumachiLib/DrawCollision/DrawCollision.h"
+using namespace DirectX;
+using namespace DirectX::SimpleMath;
 
 // コンストラクタ
-Boss::Boss(Player* pPlayer)
-	: IEnemy(pPlayer)
+Boss::Boss(Player* pPlayer, CommonResources* resources, int hp)
+	: IEnemy(pPlayer, resources, hp)
 	, m_pPlayer{ pPlayer }
 	, m_pCamera{ pPlayer->GetCamera() }
 	, m_bossBS{}
-	, m_commonResources{}
-	, m_currentHP{}
+	, m_commonResources{ resources }
+	, m_currentHP{ hp }
 	, m_maxHP{}
 	, m_attackCooldown{ 3.0f }
 	, m_bulletCooldown{ 1.0f }
@@ -60,20 +62,14 @@ Boss::~Boss() {}
 //---------------------------------------------------------
 // 初期化する
 //---------------------------------------------------------
-void Boss::Initialize(CommonResources* resources, int hp)
+void Boss::Initialize()
 {
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
-	// 共通リソースを設定
-	m_commonResources = resources;
 	// 当たり判定描画用クラスの初期化
 	DrawCollision::Initialize(m_commonResources);
 	// ボスモデル生成
 	m_pBossModel = std::make_unique<BossModel>();
 	m_pBossModel->Initialize(m_commonResources);
-	// 敵の体力を設定
-	m_currentHP = hp;
-	m_maxHP = hp;
+	m_maxHP = m_currentHP;
 	// HPBar生成
 	m_pHPBar = std::make_unique<EnemyHPBar>();
 	m_pHPBar->SetEnemyHP(m_currentHP);
@@ -99,8 +95,6 @@ void Boss::Initialize(CommonResources* resources, int hp)
 // 描画
 void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
 	// 敵のワールド行列を設定
@@ -127,8 +121,6 @@ void Boss::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	UNREFERENCED_PARAMETER(view);
 	UNREFERENCED_PARAMETER(proj);
 #ifdef _DEBUG
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
 	// 描画開始
 	DrawCollision::DrawStart(view, proj);
 	// 色設定
@@ -144,8 +136,11 @@ void Boss::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 // 更新
 void Boss::Update(float elapsedTime)
 {
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
+	// カメラの情報を取得
+	m_cameraEye = m_pCamera->GetEyePosition();
+	m_cameraTarget = m_pCamera->GetTargetPosition();
+	m_cameraUp = m_pCamera->GetUpVector();
+	// ボスのモデルの状態を更新
 	m_pBossModel->SetState(m_pBossAI->GetState());// モデルのアニメーション更新
 	m_pBossAI->Update(elapsedTime);// AIの更新
 	m_position = m_pBossAI->GetPosition();// 敵の座標を更新
@@ -178,8 +173,6 @@ void Boss::PlayBarrierSE()
 //---------------------------------------------------------
 void Boss::ShootBullet()
 {
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
 	// 攻撃のクールダウンタイムを管理
 	if (m_attackCooldown <= 0.1f)
 	{
@@ -197,9 +190,6 @@ void Boss::ShootBullet()
 // 弾の位置設定
 void Boss::BulletPositioning()
 {
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
-
 
 	// 弾の発射位置を設定
 	Matrix transform = Matrix::CreateFromQuaternion(m_pBossAI->GetRotation())
@@ -216,8 +206,6 @@ void Boss::BulletPositioning()
 // 弾を生成
 void Boss::CreateBullet()
 {
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
 	// 角度をずらして左右の弾を発射
 	float angleOffset = XMConvertToRadians(ANGLE_OFFSET); // 30度の角度オフセット
 	// Enemiesクラスで設定した弾のタイプによって処理を分岐
@@ -257,8 +245,6 @@ void Boss::CreateCenterBullet(EnemyBullet::BulletType type)
 // 左の弾を発射
 void Boss::CreateLeftBullet(float angleOffset, EnemyBullet::BulletType type)
 {
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
 	// 左方向
 	Quaternion leftRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, angleOffset);
 	Vector3 leftDirection = Vector3::Transform(m_bulletDirection, leftRotation);
@@ -271,8 +257,6 @@ void Boss::CreateLeftBullet(float angleOffset, EnemyBullet::BulletType type)
 // 右の弾を発射
 void Boss::CreateRightBullet(float angleOffset, EnemyBullet::BulletType type)
 {
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
 	// 右方向
 	Quaternion rightRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, -angleOffset);
 	Vector3 rightDirection = Vector3::Transform(m_bulletDirection, rightRotation);
@@ -285,8 +269,6 @@ void Boss::CreateRightBullet(float angleOffset, EnemyBullet::BulletType type)
 // 真下に落ちる弾を発射
 void Boss::CreateVerticalBullet()
 {
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
 	// 真下に落ちる弾を発射
 	m_pEnemyBullets->SetEnemyPosition(m_bulletPosCenter);
 	m_pEnemyBullets->CreateBullet(BULLET_SIZE, EnemyBullet::BulletType::VERTICAL);

@@ -20,7 +20,7 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC>  Radar::INPUT_LAYOUT =
 Radar::Radar(CommonResources* commonResources)
 	: m_commonResources{ commonResources },
 	m_pPlayer{ nullptr },
-	m_pEnemies{ nullptr },
+	m_pEnemyManager{ nullptr },
 	m_radarPos{ 0.745f, -0.55f },
 	m_playerSize{ 0.018f, -0.032f },
 	m_enemySize{ 0.027f, -0.048f },
@@ -49,10 +49,10 @@ void Radar::LoadTexture(const wchar_t* path, std::vector<Microsoft::WRL::ComPtr<
 //---------------------------------------------------------
 // ‰Šú‰»
 //---------------------------------------------------------
-void Radar::Initialize(Player* pPlayer, Enemies* pEnemies)
+void Radar::Initialize(Player* pPlayer, EnemyManager* pEnemies)
 {
 	m_pPlayer = pPlayer;
-	m_pEnemies = pEnemies;
+	m_pEnemyManager = pEnemies;
 	// ”Âƒ|ƒŠƒSƒ“•`‰æ€”õ
 	m_pDrawPolygon->InitializePositionTexture(m_commonResources->GetDeviceResources());
 
@@ -85,7 +85,7 @@ void Radar::Update(float elapsedTime)
 	// “G‚ÌˆÊ’u‚ðƒNƒŠƒA
 	m_enemyPos.clear();
 	// “G‚ÌˆÊ’u‚ðŽæ“¾
-	for (auto& enemy : m_pEnemies->GetEnemies())
+	for (auto& enemy : m_pEnemyManager->GetEnemies())
 	{
 		Vector3 enemyPos = enemy->GetPosition();
 		float distance = Vector3::Distance(m_playerPos, enemyPos);

@@ -19,7 +19,7 @@ class BossSheild;
 class EnemyHPBar;
 class EnemyBullet;
 class EnemyBullets;
-class Enemies;
+class EnemyManager;
 class Boss : public IEnemy
 {
 public:
@@ -148,9 +148,6 @@ public:
 	// setter
 	void SetPosition(DirectX::SimpleMath::Vector3& pos) override { m_position = pos; }
 	void SetEnemyHP(int hp) override;
-	void SetCameraEye(DirectX::SimpleMath::Vector3 eye)override { m_cameraEye = eye; }
-	void SetCameraTarget(DirectX::SimpleMath::Vector3 target)override { m_cameraTarget = target; }
-	void SetCameraUp(DirectX::SimpleMath::Vector3 up)override { m_cameraUp = up; }
 	void SetEnemyIsDead(bool isDead) override { m_isDead = isDead; }
 	void SetHitToPlayer(bool isHitToPlayer)override { m_isHitToPlayer = isHitToPlayer; }
 	void SetHitToOtherEnemy(bool isHitToOtherEnemy) override { m_isHitToOtherEnemy = isHitToOtherEnemy; }
@@ -161,12 +158,12 @@ public:
 	void SetEnemyHitByPlayerBullet(bool hit)override { m_isEnemyHitByPlayerBullet = hit; }
 	void SetBulletCooldown(float cooldown) { m_bulletCooldown = cooldown; }// シールドを展開した後に実行する
 	void SetCanAttack(bool canAttack)override { m_canAttack = canAttack; }// 攻撃可能か
-
+	void SetCamera(FPS_Camera* camera) { m_pCamera = camera; }
 public:
 	// 初期ステータスを設定
-	Boss(Player* pPlayer);
+	Boss(Player* pPlayer, CommonResources* resources, int hp);
 	~Boss();
-	void Initialize(CommonResources* resources, int hp) override;// 初期化
+	void Initialize() override;// 初期化
 	void Update(float elapsedTime)override;// 更新
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;// 描画
 	void DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;// 衝突判定の描画

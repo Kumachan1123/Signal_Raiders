@@ -1,5 +1,5 @@
 /*
-	@file	Enemies.h
+	@file	EnemyManager.h
 	@brief	敵たちクラス
 */
 #pragma once
@@ -7,6 +7,8 @@
 #include "Game/Enemy/Enemy.h"
 #include "Game/Enemy/VerticalAttacker/VerticalAttacker.h"
 #include "Game/Enemy/Boss/Boss.h"
+#include "Game/Enemy/EnemyFactory/EnemyFactory.h"
+#include "Game/Enemy/EnemyType/EnemyType.h"
 #include "Game/Effect/Effect.h"
 #include "Game/Player/Player.h"
 #include "Game/Wifi/Wifi.h"
@@ -19,7 +21,7 @@ class Player;
 class Effect;
 class Wifi;
 class Wall;
-class Enemies
+class EnemyManager
 {
 public:
 
@@ -72,8 +74,8 @@ private:
 	Boss::BossBulletType m_bossBulletType;
 
 public:
-	Enemies(CommonResources* commonResources);
-	~Enemies();
+	EnemyManager(CommonResources* commonResources);
+	~EnemyManager();
 	// 初期化
 	void Initialize(Player* pPlayer);
 	// 更新
@@ -104,8 +106,7 @@ private:
 	void UpdateStartTime(float elapsedTime);// 敵生成開始時間
 	void UpdateEffects(float elapsedTime);// エフェクト
 	void HandleEnemySpawning(float elapsedTime);// 敵生成
-	void SpawnEnemy();// 敵生成(通常タイプ)
-	void SpawnVerticalAttacker();// 敵生成(範囲攻撃タイプ)
+	void SpawnEnemy(EnemyType type);// 敵生成(指定タイプ
 	void FinalizeEnemySpawn();// 敵生成終了
 	void SpawnBoss();// ボス生成
 	void HandleEnemyCollisions();// 敵の当たり判定

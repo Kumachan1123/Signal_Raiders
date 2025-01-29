@@ -10,6 +10,8 @@ class IEnemy
 {
 protected:
 	Player* m_pPlayer;
+	CommonResources* m_commonResources;
+	int m_currentHP;
 public:
 	//	getter										  
 	virtual const DirectX::SimpleMath::Matrix& GetMatrix() = 0;
@@ -33,9 +35,9 @@ public:
 	virtual float GetToPlayerDamage() const = 0;
 	virtual bool GetCanAttack() const = 0;
 	virtual void SetCanAttack(bool canAttack) = 0;
-	virtual void SetCameraEye(DirectX::SimpleMath::Vector3 eye) = 0;
-	virtual void SetCameraTarget(DirectX::SimpleMath::Vector3 target) = 0;
-	virtual void SetCameraUp(DirectX::SimpleMath::Vector3 up) = 0;
+	//virtual void SetCameraEye(DirectX::SimpleMath::Vector3 eye) = 0;
+	//virtual void SetCameraTarget(DirectX::SimpleMath::Vector3 target) = 0;
+	//virtual void SetCameraUp(DirectX::SimpleMath::Vector3 up) = 0;
 	virtual const DirectX::BoundingSphere& GetBoundingSphere() = 0;
 	virtual void SetBulletBoundingSphere(DirectX::BoundingSphere& bs) = 0;
 	virtual const DirectX::BoundingSphere& GetBulletBoundingSphere() = 0;
@@ -43,11 +45,12 @@ public:
 	virtual const DirectX::BoundingSphere& GetPlayerBoundingSphere() = 0;
 	virtual Player* GetPlayer()const = 0;
 	virtual FPS_Camera* GetCamera()const = 0;
+	virtual void SetCamera(FPS_Camera* camera) = 0;
 	virtual void SetAudioManager(AudioManager* audioManager) = 0;
 public:
-	IEnemy(Player* pPlayer) : m_pPlayer(pPlayer) {}
+	IEnemy(Player* pPlayer, CommonResources* resources, int hp) : m_pPlayer(pPlayer), m_commonResources(resources), m_currentHP(hp) {}
 	virtual ~IEnemy() = default;
-	virtual void Initialize(CommonResources* resources, int hp) = 0;
+	virtual void Initialize() = 0;
 
 	virtual void Update(float elapsedTime) = 0;
 	virtual	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) = 0;

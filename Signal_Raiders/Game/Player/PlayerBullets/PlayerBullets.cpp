@@ -9,7 +9,7 @@ PlayerBullets::PlayerBullets(CommonResources* commonResources)
 	:
 	m_commonResources{ commonResources },
 	m_pPlayer{ nullptr },
-	m_pEnemies{ nullptr },
+	m_pEnemyManager{ nullptr },
 	m_audioManager{ AudioManager::GetInstance() }
 {
 }
@@ -22,10 +22,10 @@ PlayerBullets::~PlayerBullets()
 }
 
 
-void PlayerBullets::Initialize(Player* pPlayer, Enemies* pEnemies)
+void PlayerBullets::Initialize(Player* pPlayer, EnemyManager* pEnemies)
 {
 	m_pPlayer = pPlayer;// プレイヤーのポインターを取得
-	m_pEnemies = pEnemies;// 敵全体のポインターを取得
+	m_pEnemyManager = pEnemies;// 敵全体のポインターを取得
 	// オーディオマネージャーを初期化する
 	m_audioManager->Initialize();
 	// 効果音の初期化
@@ -67,7 +67,7 @@ void PlayerBullets::Update(float elapsedTime)
 bool PlayerBullets::CheckCollisionWithEnemies(const std::unique_ptr<PlayerBullet>& bullet)
 {
 	bool isHit = false;// ヒットフラグを初期化
-	for (auto& enemy : m_pEnemies->GetEnemies())
+	for (auto& enemy : m_pEnemyManager->GetEnemies())
 	{
 		// 敵とプレイヤーの弾の当たり判定
 		if (bullet->GetBoundingSphere().Intersects(enemy->GetBoundingSphere()))
@@ -77,7 +77,7 @@ bool PlayerBullets::CheckCollisionWithEnemies(const std::unique_ptr<PlayerBullet
 				enemy->SetEnemyHP(bullet->Damage());// 敵のHPを減らす
 			if (auto boss = dynamic_cast<Boss*>(enemy.get()))
 			{
-				m_pEnemies->GetEffect().push_back(std::make_unique<Effect>(m_commonResources,
+				m_pEnemyManager->GetEffect().push_back(std::make_unique<Effect>(m_commonResources,
 					Effect::ParticleType::ENEMY_HIT,
 					enemy->GetPosition(),
 					10.0f,
@@ -86,7 +86,7 @@ bool PlayerBullets::CheckCollisionWithEnemies(const std::unique_ptr<PlayerBullet
 			else
 			{
 				// エフェクトを追加
-				m_pEnemies->GetEffect().push_back(std::make_unique<Effect>(m_commonResources,
+				m_pEnemyManager->GetEffect().push_back(std::make_unique<Effect>(m_commonResources,
 					Effect::ParticleType::ENEMY_HIT,
 					enemy->GetPosition(),
 					3.0f,

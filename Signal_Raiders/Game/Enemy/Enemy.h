@@ -14,7 +14,7 @@ class EnemyHPBar;
 class EnemyBullet;
 class EnemyModel;
 class EnemyBullets;
-class Enemies;
+class EnemyManager;
 class FPS_Camera;
 class Enemy : public IEnemy
 {
@@ -61,10 +61,10 @@ private:
 	const float ATTACK_INTERVAL = 1.0f;
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
-	// カメラ
-	DirectX::SimpleMath::Vector3 m_cameraEye;
-	DirectX::SimpleMath::Vector3 m_cameraTarget;
-	DirectX::SimpleMath::Vector3 m_cameraUp;
+	//// カメラ
+	//DirectX::SimpleMath::Vector3 m_cameraEye;
+	//DirectX::SimpleMath::Vector3 m_cameraTarget;
+	//DirectX::SimpleMath::Vector3 m_cameraUp;
 
 public:
 	//	getter
@@ -98,14 +98,15 @@ public:
 	void SetPlayerHitByEnemyBullet(bool hit)override { m_isPlayerHitByEnemyBullet = hit; }// 敵の弾がプレイヤーに当たったか
 	void SetEnemyHitByPlayerBullet(bool hit) override { m_isEnemyHitByPlayerBullet = hit; }// 敵がプレイヤーの弾に当たったか
 	void SetCanAttack(bool canAttack)override { m_canAttack = canAttack; }// 攻撃可能か
-	void SetCameraEye(DirectX::SimpleMath::Vector3 eye)override { m_cameraEye = eye; }
-	void SetCameraTarget(DirectX::SimpleMath::Vector3 target)override { m_cameraTarget = target; }
-	void SetCameraUp(DirectX::SimpleMath::Vector3 up)override { m_cameraUp = up; }
+	//void SetCameraEye(DirectX::SimpleMath::Vector3 eye)override { m_cameraEye = eye; }
+	//void SetCameraTarget(DirectX::SimpleMath::Vector3 target)override { m_cameraTarget = target; }
+	//void SetCameraUp(DirectX::SimpleMath::Vector3 up)override { m_cameraUp = up; }
+	void SetCamera(FPS_Camera* camera) { m_pCamera = camera; }
 public:
 	// 初期ステータスを設定
-	Enemy(Player* pPlayer);
+	Enemy(Player* pPlayer, CommonResources* resources, int hp);
 	~Enemy();
-	void Initialize(CommonResources* resources, int hp) override;
+	void Initialize() override;
 	void Update(float elapsedTime) override;
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;
 	void DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;

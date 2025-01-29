@@ -13,7 +13,7 @@ Player::Player(CommonResources* commonResources)
 	m_playerSphere{},
 	m_pCamera{},
 	m_pPlayerBullets{},
-	m_pEnemies{ nullptr },
+	m_pEnemyManager{ nullptr },
 	m_mouseSensitive{ 0.1f },
 	m_isDamage{ false },
 	m_damageTime{ 0.0f },
@@ -31,10 +31,10 @@ Player::~Player()
 {
 }
 
-void Player::Initialize(Enemies* pEnemies)
+void Player::Initialize(EnemyManager* pEnemies)
 {
 	// 敵
-	m_pEnemies = pEnemies;
+	m_pEnemyManager = pEnemies;
 	// FPSカメラを作成する
 	m_pCamera = std::make_unique<FPS_Camera>();
 
@@ -44,7 +44,7 @@ void Player::Initialize(Enemies* pEnemies)
 	m_pPlayerController->SetPlayetPosition(m_pCamera->GetEyePosition());
 	// 弾
 	m_pPlayerBullets = std::make_unique<PlayerBullets>(m_commonResources);
-	m_pPlayerBullets->Initialize(this, m_pEnemies);
+	m_pPlayerBullets->Initialize(this, m_pEnemyManager);
 	// ダメージエフェクトを管理するクラス
 	m_pDamageEffects = std::make_unique<DamageEffects>(m_commonResources);
 	m_pDamageEffects->Initialize(this);

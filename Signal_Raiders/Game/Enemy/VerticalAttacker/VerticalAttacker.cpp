@@ -10,7 +10,7 @@
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 #include "Game/Enemy/EnemyBullets/EnemyBullets.h"
 #include "Game/Enemy/VerticalAttackerModel/VerticalAttackerModel.h"
-#include "Game/Enemy/Enemies/Enemies.h"
+#include "Game/Enemy/EnemyManager/EnemyManager.h"
 #include "DeviceResources.h"
 #include "Libraries/MyLib/DebugString.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
@@ -21,15 +21,17 @@
 #include <Libraries/Microsoft/DebugDraw.h>
 #include "Game/KumachiLib/KumachiLib.h"
 #include <Game/KumachiLib/DrawCollision/DrawCollision.h>
+using namespace DirectX;
+using namespace DirectX::SimpleMath;
 
 // コンストラクタ
-VerticalAttacker::VerticalAttacker(Player* pPlayer)
-	: IEnemy(pPlayer)
+VerticalAttacker::VerticalAttacker(Player* pPlayer, CommonResources* resources, int hp)
+	: IEnemy(pPlayer, resources, hp)
 	, m_pPlayer{ pPlayer }
 	, m_pCamera{ pPlayer->GetCamera() }
 	, m_enemyBS{}
-	, m_commonResources{}
-	, m_currentHP{}
+	, m_commonResources{ resources }
+	, m_currentHP{ hp }
 	, m_attackCooldown{ 3.0f }
 	, m_pVerticalAttackerModel{}
 	, m_enemyAI{}
@@ -54,29 +56,22 @@ VerticalAttacker::VerticalAttacker(Player* pPlayer)
 VerticalAttacker::~VerticalAttacker() {}
 
 // 初期化する
-void VerticalAttacker::Initialize(CommonResources* resources, int hp)
+void VerticalAttacker::Initialize()
 {
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
-	// 共通リソースを設定
-	m_commonResources = resources;
-
-	DrawCollision::Initialize(resources);
+	DrawCollision::Initialize(m_commonResources);
 	// モデルを読み込む
 	m_pVerticalAttackerModel = std::make_unique<VerticalAttackerModel>();
 	m_pVerticalAttackerModel->Initialize(m_commonResources);
-	// 敵の体力を設定
-	m_currentHP = hp;
 	// HPBar生成
 	m_pHPBar = std::make_unique<EnemyHPBar>();
 	m_pHPBar->SetEnemyHP(m_currentHP);
-	m_pHPBar->Initialize(resources);
+	m_pHPBar->Initialize(m_commonResources);
 	// AI生成
 	m_enemyAI = std::make_unique<EnemyAI>(this);
 	m_enemyAI->Initialize();
 	// 弾全体生成
 	m_enemyBullets = std::make_unique<EnemyBullets>(this);
-	m_enemyBullets->Initialize(resources);
+	m_enemyBullets->Initialize(m_commonResources);
 	// 乱数生成
 	Vector3 position = Vector3(GenerateRandomMultiplier(-50.0f, 50.0f)); // 一様分布
 	// 敵の初期位置を設定
@@ -109,8 +104,6 @@ void VerticalAttacker::Update(float elapsedTime)
 // 描画
 void VerticalAttacker::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
 	// 基準となる座標やら回転やら
@@ -132,9 +125,6 @@ void VerticalAttacker::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::
 	UNREFERENCED_PARAMETER(view);
 	UNREFERENCED_PARAMETER(proj);
 #ifdef _DEBUG
-	// 描画する
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
 	// 描画開始
 	DrawCollision::DrawStart(view, proj);
 	// 色設定
