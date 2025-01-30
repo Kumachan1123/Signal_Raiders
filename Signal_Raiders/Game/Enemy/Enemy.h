@@ -61,10 +61,7 @@ private:
 	const float ATTACK_INTERVAL = 1.0f;
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
-	//// カメラ
-	//DirectX::SimpleMath::Vector3 m_cameraEye;
-	//DirectX::SimpleMath::Vector3 m_cameraTarget;
-	//DirectX::SimpleMath::Vector3 m_cameraUp;
+
 
 public:
 	//	getter

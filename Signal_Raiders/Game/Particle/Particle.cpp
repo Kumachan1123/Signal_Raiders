@@ -23,8 +23,8 @@ using namespace Microsoft::WRL;
 const std::vector<D3D11_INPUT_ELEMENT_DESC> Particle::INPUT_LAYOUT =
 {
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0,							 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "COLOR",	0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,	sizeof(SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,	0, sizeof(SimpleMath::Vector3) + sizeof(SimpleMath::Vector4), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "COLOR",	0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,	sizeof(Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,	0, sizeof(Vector3) + sizeof(Vector4), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
 
 Particle::Particle(ParticleUtility::Type type, float size)
@@ -154,10 +154,10 @@ void Particle::Update(float elapsedTime)
 	}
 }
 
-void Particle::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void Particle::Render(Matrix view, Matrix proj)
 {
 	if (m_timer >= 1.9f)return;
-	DirectX::SimpleMath::Vector3 cameraDir = m_cameraTarget - m_cameraPosition;
+	Vector3 cameraDir = m_cameraTarget - m_cameraPosition;
 	cameraDir.Normalize();
 	m_particleUtility.sort(
 		[&](ParticleUtility lhs, ParticleUtility  rhs)
@@ -194,7 +194,7 @@ void Particle::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Mat
 	m_constantBuffer.matView = view.Transpose();
 	m_constantBuffer.matProj = proj.Transpose();
 	m_constantBuffer.matWorld = m_billboard.Transpose();
-	m_constantBuffer.colors = SimpleMath::Vector4(1, 1, 1, 0);
+	m_constantBuffer.colors = Vector4(1, 1, 1, 0);
 	m_constantBuffer.count = Vector4((float)(m_anim));
 	m_constantBuffer.height = Vector4((float)(m_frameRows));
 	m_constantBuffer.width = Vector4((float)(m_frameCols));
@@ -235,12 +235,12 @@ void Particle::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Mat
 }
 
 // ビルボードの作成
-void Particle::CreateBillboard(DirectX::SimpleMath::Vector3 target, DirectX::SimpleMath::Vector3 eye, DirectX::SimpleMath::Vector3 up)
+void Particle::CreateBillboard(Vector3 target, Vector3 eye, Vector3 up)
 {
 	m_billboard =
-		SimpleMath::Matrix::CreateBillboard(SimpleMath::Vector3::Zero, eye - target, up);
+		Matrix::CreateBillboard(Vector3::Zero, eye - target, up);
 
-	SimpleMath::Matrix rot = SimpleMath::Matrix::Identity;
+	Matrix rot = Matrix::Identity;
 	rot._11 = -1;
 	rot._33 = -1;
 
@@ -252,7 +252,7 @@ void Particle::CreateBillboard(DirectX::SimpleMath::Vector3 target, DirectX::Sim
 // パーティクルの生成
 void Particle::Trail()
 {
-	// タイマーが一定時間（0.05秒）を超えたら新しいパーティクルを生成
+	// タイマーが一定時間を超えたら新しいパーティクルを生成
 	if (m_timer >= 0.00025f)
 	{
 		// 乱数の設定
@@ -273,7 +273,7 @@ void Particle::Trail()
 		float speed = static_cast<float>(speedDist(engine));
 
 		// ランダムな方向の速度ベクトル
-		SimpleMath::Vector3 randomVelocity = speed * SimpleMath::Vector3(
+		Vector3 randomVelocity = speed * Vector3(
 			cosf(randAngleXY) * sinf(randAngleXZ),
 			cosf(randAngleXZ),
 			sinf(randAngleXY) * sinf(randAngleXZ)
@@ -288,13 +288,13 @@ void Particle::Trail()
 				1.0f,  // 生存時間(s)
 				m_bulletPosition, // 初期位置 (基準座標)
 				randomVelocity, // 初期速度（ランダムな方向）
-				SimpleMath::Vector3::One, // 加速度
-				SimpleMath::Vector3::One, // 回転速度
-				SimpleMath::Vector3(0, 0, 10), // 初期回転
-				SimpleMath::Vector3(m_size, m_size, 0), // 初期スケール
-				SimpleMath::Vector3(m_size / 10, m_size / 10, 0), // 最終スケール（小さくなる）
-				SimpleMath::Vector4(0, 0.2, 1, .5), // 初期カラー（白）
-				SimpleMath::Vector4(0, 1, 1, 0.5), // 最終カラー（白→透明）
+				Vector3::One, // 加速度
+				Vector3::One, // 回転速度
+				Vector3(0, 0, 10), // 初期回転
+				Vector3(m_size, m_size, 0), // 初期スケール
+				Vector3(m_size / 10, m_size / 10, 0), // 最終スケール（小さくなる）
+				Vector4(0, 0.2, 1, .5), // 初期カラー（白）
+				Vector4(0, 1, 1, 0.5), // 最終カラー（白→透明）
 				m_type // パーティクルのタイプ
 
 			);
@@ -309,13 +309,13 @@ void Particle::Trail()
 				1.0f,  // 生存時間(s)
 				m_bulletPosition, // 初期位置 (基準座標)
 				randomVelocity, // 初期速度（ランダムな方向）
-				SimpleMath::Vector3::One, // 加速度
-				SimpleMath::Vector3::One, // 回転速度
-				SimpleMath::Vector3(0, 0, 10), // 初期回転
-				SimpleMath::Vector3(1, 1, 0), // 初期スケール
-				SimpleMath::Vector3(0, 0, 0), // 最終スケール（小さくなる）
-				SimpleMath::Vector4(1, 0, 1, 1), // 初期カラー（白）
-				SimpleMath::Vector4(0, 1, 1, 0.25), // 最終カラー（白→透明）
+				Vector3::One, // 加速度
+				Vector3::One, // 回転速度
+				Vector3(0, 0, 10), // 初期回転
+				Vector3(1, 1, 0), // 初期スケール
+				Vector3(0, 0, 0), // 最終スケール（小さくなる）
+				Vector4(1, 0, 1, 1), // 初期カラー（白）
+				Vector4(0, 1, 1, 0.25), // 最終カラー（白→透明）
 				m_type // パーティクルのタイプ
 
 			);
@@ -349,7 +349,7 @@ void Particle::BarrierBreak()
 			float speed = static_cast<float>(speedDist(engine)) * 5.0f;
 
 			// 球面座標系をデカルト座標系に変換して速度ベクトルを計算
-			SimpleMath::Vector3 randomVelocity = speed * SimpleMath::Vector3(
+			Vector3 randomVelocity = speed * Vector3(
 				sinf(phi) * cosf(theta), // X成分
 				cosf(phi),              // Y成分
 				sinf(phi) * sinf(theta) // Z成分
@@ -363,13 +363,13 @@ void Particle::BarrierBreak()
 				1.5f,  // 破片の生存時間（短くして消えるように）
 				m_bossPosition, // 初期位置 (基準座標)
 				randomVelocity * 10, // 初期速度（ランダムな方向）
-				SimpleMath::Vector3::Zero, // 重力加速度（Y軸方向に少し引っ張られる）
-				SimpleMath::Vector3::Zero, // 回転速度
-				SimpleMath::Vector3::Zero, // 初期回転
-				SimpleMath::Vector3(randomSize, randomSize, randomSize), // ランダムなサイズ
-				SimpleMath::Vector3(0.1f, 0.1f, 0.1f), // 最終スケール（小さくなる）
-				SimpleMath::Vector4(1.0f, 1.0f, 0.5f, 1.0f),  // 初期カラー（オレンジっぽい）
-				SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 0.0f), // 最終カラー（白→透明）
+				Vector3::Zero, // 重力加速度（Y軸方向に少し引っ張られる）
+				Vector3::Zero, // 回転速度
+				Vector3::Zero, // 初期回転
+				Vector3(randomSize, randomSize, randomSize), // ランダムなサイズ
+				Vector3(0.1f, 0.1f, 0.1f), // 最終スケール（小さくなる）
+				Vector4(1.0f, 1.0f, 0.5f, 1.0f),  // 初期カラー（オレンジっぽい）
+				Vector4(1.0f, 1.0f, 1.0f, 0.0f), // 最終カラー（白→透明）
 				ParticleUtility::Type::BARRIERDESTROYED // タイプを追加
 			);
 			m_particleUtility.push_back(pU);

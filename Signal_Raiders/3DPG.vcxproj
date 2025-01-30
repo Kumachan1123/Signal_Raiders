@@ -193,6 +193,7 @@
     <ClInclude Include="Game\Enemy\EnemyAI\EnemySpin\EnemySpin.h" />
     <ClInclude Include="Game\Enemy\EnemyFactory\EnemyFactory.h" />
     <ClInclude Include="Game\Enemy\EnemyType\EnemyType.h" />
+    <ClInclude Include="Game\Enemy\Parameters\EnemyParameters.h" />
     <ClInclude Include="Game\KumachiLib\Bloom\Bloom.h" />
     <ClInclude Include="Game\KumachiLib\CreateShader\CreateShader.h" />
     <ClInclude Include="Game\KumachiLib\DrawCollision\DrawCollision.h" />
@@ -291,6 +292,7 @@
     <ClCompile Include="Game\Enemy\Boss\BossSheild\BossSheild.cpp" />
     <ClCompile Include="Game\Enemy\EnemyAI\EnemySpin\EnemySpin.cpp" />
     <ClCompile Include="Game\Enemy\EnemyFactory\EnemyFactory.cpp" />
+    <ClCompile Include="Game\Enemy\Parameters\EnemyParameters.cpp" />
     <ClCompile Include="Game\KumachiLib\Bloom\Bloom.cpp" />
     <ClCompile Include="Game\KumachiLib\CreateShader\CreateShader.cpp" />
     <ClCompile Include="Game\KumachiLib\DrawCollision\DrawCollision.cpp" />

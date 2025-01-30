@@ -35,9 +35,6 @@ public:
 	virtual float GetToPlayerDamage() const = 0;
 	virtual bool GetCanAttack() const = 0;
 	virtual void SetCanAttack(bool canAttack) = 0;
-	//virtual void SetCameraEye(DirectX::SimpleMath::Vector3 eye) = 0;
-	//virtual void SetCameraTarget(DirectX::SimpleMath::Vector3 target) = 0;
-	//virtual void SetCameraUp(DirectX::SimpleMath::Vector3 up) = 0;
 	virtual const DirectX::BoundingSphere& GetBoundingSphere() = 0;
 	virtual void SetBulletBoundingSphere(DirectX::BoundingSphere& bs) = 0;
 	virtual const DirectX::BoundingSphere& GetBulletBoundingSphere() = 0;

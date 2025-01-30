@@ -58,14 +58,10 @@ void BossAttack::MoveTowardsPlayer(float elapsedTime, DirectX::SimpleMath::Vecto
 void BossAttack::ManageAttackCooldown(float elapsedTime)
 {
 	m_attackCooldown -= elapsedTime;
-	if (m_attackCooldown <= 0.250f)
+	if (m_attackCooldown <= 0.0f)// クールダウンが0を下回ったら
 	{
-		m_pBoss->SetState(IState::EnemyState::ANGRY);
-		if (m_attackCooldown <= 0.0f)// クールダウンが0を下回ったら
-		{
-			m_attackCooldown = ATTACK_INTERVAL;  // クールダウンリセット
-			m_pBoss->SetState(IState::EnemyState::ATTACK);  // 攻撃状態に遷移
-		}
+		m_attackCooldown = ATTACK_INTERVAL;  // クールダウンリセット
+		m_pBoss->SetState(IState::EnemyState::ATTACK);  // 攻撃状態に遷移
 	}
 }
 

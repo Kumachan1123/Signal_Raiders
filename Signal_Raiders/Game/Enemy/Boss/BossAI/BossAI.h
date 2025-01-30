@@ -35,16 +35,16 @@ private:
 	DirectX::SimpleMath::Quaternion m_rotation;//回転
 	DirectX::SimpleMath::Vector3 m_velocity;// 移動速度
 
-	float m_knockTime = 0.0f;// knockBackする時間
+	float m_knockTime;// knockBackする時間
 	DirectX::SimpleMath::Vector3 m_knockStartPosition, m_knockEndPosition, m_initialVelocity;
-	float m_rotationSpeed;//回転速度
-	const float RANDOM_MAX = 2.0f;
-	const float RANDOM_MIN = 0.5f;
-	float  m_time = 0.0f;  // 時間の初期化
+
+	float m_time;  // 時間の初期化
 	float m_attackCooldown;  // 攻撃のクールダウンタイム
 	bool m_isHitPlayerBullet;
 	// 一度でもノックバックが完了したらノックバック処理をしないためのフラグ
 	bool m_isKnockBack;
+
+
 public:
 	//	getter
 

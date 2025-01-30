@@ -9,6 +9,10 @@
 #include <SimpleMath.h>
 #include "Libraries/Microsoft/ReadData.h"
 #include "Game/KumachiLib/KumachiLib.h"
+#include "Game/Enemy/Parameters/EnemyParameters.h"
+using namespace DirectX;
+using namespace DirectX::SimpleMath;
+
 BossSheild::BossSheild(int sheildHP, Boss* pBoss)
 	: m_commonResources{}
 	, m_isSheild{ false }
@@ -27,8 +31,6 @@ BossSheild::~BossSheild()
 
 void BossSheild::Initialize(CommonResources* resources)
 {
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
 	m_commonResources = resources;
 	auto device = resources->GetDeviceResources()->GetD3DDevice();
 	// パーティクル生成
@@ -43,34 +45,29 @@ void BossSheild::Initialize(CommonResources* resources)
 
 void BossSheild::Update(float elapsedTime)
 {
-	UNREFERENCED_PARAMETER(elapsedTime);
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
-	if (m_isSheild)
+	if (m_isSheild)// シールドが展開されている間
 	{
 		m_pBoss->PlayBarrierSE();// シールドSE再生
 		// シールドが展開されている間はサイズを拡大
-		m_sheildSize = Vector3::SmoothStep(m_sheildSize, Vector3::One, 0.2f);
-		m_pBoss->GetBoundingSphere().Radius = 5.5f;
+		m_sheildSize = Vector3::SmoothStep(m_sheildSize, Vector3::One, EnemyParameters::BOSS_SHIELD_SCALE_SPEED);
+		// ボスの境界球を大きくする
+		m_pBoss->GetBoundingSphere().Radius = EnemyParameters::BOSS_SHIELD_RADIUS;
 		// 攻撃の間隔を速くする
-		m_pBoss->SetBulletCooldown(0.75f);
+		m_pBoss->SetBulletCooldown(EnemyParameters::BOSS_SHIELD_ATTACK_COOLDOWN);
 	}
 	// シールドが破壊されたらパーティクルを再生
 	if (m_sheildHP <= 0)
 	{
-		m_isParticle = true;
-		m_isSheild = false;
-		//m_pBoss->PlayBarrierBreakSE();// シールド破壊SE再生
-		m_pBoss->GetBoundingSphere().Radius = 2.5f;
-		m_pParticle->SetBossPosition(m_pBoss->GetPosition());
-		m_pParticle->Update(elapsedTime);
+		m_isParticle = true;// パーティクル再生
+		m_isSheild = false;// シールド破壊
+		m_pBoss->GetBoundingSphere().Radius = EnemyParameters::NORMAL_BOSS_RADIUS;// ボスの境界球を元に戻す
+		m_pParticle->SetBossPosition(m_pBoss->GetPosition());// ボスの位置を設定
+		m_pParticle->Update(elapsedTime);// パーティクル更新
 	}
 }
 
-void BossSheild::Render(ID3D11DeviceContext1* context, DirectX::DX11::CommonStates* states, DirectX::SimpleMath::Matrix world, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void BossSheild::Render(ID3D11DeviceContext1* context, DirectX::DX11::CommonStates* states, Matrix world, Matrix view, Matrix proj)
 {
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
 	if (m_isSheild)
 	{
 		// シールド用のスケール行列を適用

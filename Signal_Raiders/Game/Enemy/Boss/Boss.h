@@ -8,6 +8,8 @@
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 #include "Game/KumachiLib/DrawCollision/DrawCollision.h"
 #include "Game/Enemy/Boss/BossSheild/BossSheild.h"
+
+
 //前方宣言
 class CommonResources;
 class PlayScene;
@@ -47,7 +49,9 @@ private:
 	std::unique_ptr<EnemyBullets>	m_pEnemyBullets;// 弾
 	const float BULLET_SIZE = 0.25f; // 弾の大きさ
 
-
+	// 音量
+	float m_SEVolume;// SEの音量
+	float m_SEVolumeCorrection;// SEの音量補正
 
 	// プレイヤーのポインター
 	Player* m_pPlayer;
@@ -82,14 +86,14 @@ private:
 	// 敵のステータス
 	int m_currentHP;//敵の体力
 	int m_maxHP;//敵の最大体力
-	bool m_isDead = false;//敵のHPが0になったらTrue
-	bool m_isHitToPlayer = false;// プレイヤーとの判定
-	bool m_isHitToOtherEnemy = false;// その他の敵との判定
-	bool m_isEnemyHitByPlayerBullet = false;// 敵がプレイヤーの弾に当たったか
-	bool m_isPlayerHitByEnemyBullet = false;// 敵の弾がプレイヤーに当たったか
+	bool m_isDead;//敵のHPが0になったらTrue
+	bool m_isHitToPlayer;// プレイヤーとの判定
+	bool m_isHitToOtherEnemy;// その他の敵との判定
+	bool m_isEnemyHitByPlayerBullet;// 敵がプレイヤーの弾に当たったか
+	bool m_isPlayerHitByEnemyBullet;// 敵の弾がプレイヤーに当たったか
 	float m_attackCooldown;  // 攻撃のクールダウン(フレームごとに発射することを防ぐ用）
 	float m_bulletCooldown;  // 弾のクールダウン
-	bool m_canAttack = false;// 攻撃可能か
+	bool m_canAttack;// 攻撃可能か
 
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
@@ -132,7 +136,6 @@ public:
 	const DirectX::SimpleMath::Vector3& GetRotate()  override { return m_rotate; }
 	Player* GetPlayer()const override { return m_pPlayer; }
 	FPS_Camera* GetCamera()const override { return m_pCamera; }
-	void SetAudioManager(AudioManager* audioManager) override { m_audioManager = audioManager; }
 	int GetEnemyHP() const override { return m_currentHP; }
 	bool GetEnemyIsDead() const override { return m_isDead; }
 	bool GetHitToPlayer()const override { return m_isHitToPlayer; }
@@ -145,6 +148,7 @@ public:
 	DirectX::SimpleMath::Vector3 GetCameraTarget()const { return m_cameraTarget; }
 	DirectX::SimpleMath::Vector3 GetCameraUp()const { return m_cameraUp; }
 	BossSheild* GetBossSheild()const { return m_pBossSheild.get(); }// シールド取得
+	float GetSheildSEVolume() { return m_SEVolume - m_SEVolumeCorrection; }//シールド展開音の音量を取得
 	// setter
 	void SetPosition(DirectX::SimpleMath::Vector3& pos) override { m_position = pos; }
 	void SetEnemyHP(int hp) override;
@@ -159,6 +163,7 @@ public:
 	void SetBulletCooldown(float cooldown) { m_bulletCooldown = cooldown; }// シールドを展開した後に実行する
 	void SetCanAttack(bool canAttack)override { m_canAttack = canAttack; }// 攻撃可能か
 	void SetCamera(FPS_Camera* camera) { m_pCamera = camera; }
+	void SetAudioManager(AudioManager* audioManager) override { m_audioManager = audioManager; }
 public:
 	// 初期ステータスを設定
 	Boss(Player* pPlayer, CommonResources* resources, int hp);

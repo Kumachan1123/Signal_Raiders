@@ -80,6 +80,7 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pEnemyManager = std::make_unique<EnemyManager>(resources);
 	m_pEnemyManager->SetStageNumber(m_stageNumber);// ステージ番号を設定する
 	m_pPlayer->SetVolume(m_SEvolume);// プレイヤーが出す効果音の音量を設定する
+	if (m_SEvolume > m_BGMvolume)m_pPlayer->SetVolumeCorrection(m_SEvolume - m_BGMvolume);// プレイヤーが出す効果音の音量を補正する
 	m_pPlayer->SetMouseSensitive(m_mouseSensitivity);// マウス感度を設定する
 	m_pPlayer->Initialize(m_pEnemyManager.get());// プレイヤーを初期化する
 	m_pEnemyManager->Initialize(m_pPlayer.get());// 敵を初期化する

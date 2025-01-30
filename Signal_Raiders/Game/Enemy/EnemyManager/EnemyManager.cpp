@@ -144,35 +144,14 @@ void EnemyManager::InitializeFMOD()
 //---------------------------------------------------------
 void EnemyManager::SetEnemyMax()
 {
-	// ステージ番号によって敵の生成上限を設定
-	switch (m_stageNumber)
+	auto it = stageData.find(m_stageNumber);
+	if (it != stageData.end())
 	{
-	case 0:
-		m_enemyMax = 5;// 敵の生成上限を設定
-		m_bossHP = 100;// ボスの体力を設定
-		m_bossBulletType = Boss::BossBulletType::NORMAL;// ボスの弾を一発に設定
-		break;
-	case 1:
-		m_enemyMax = 10;// 敵の生成上限を設定
-		m_bossHP = 200;// ボスの体力を設定
-		m_bossBulletType = Boss::BossBulletType::NORMAL;// ボスの弾を一発に設定
-		break;
-	case 2:
-		m_enemyMax = 20;// 敵の生成上限を設定
-		m_bossHP = 300;// ボスの体力を設定
-		m_bossBulletType = Boss::BossBulletType::TWIN;// ボスの弾を二発に設定
-		break;
-	case 3:
-		m_enemyMax = 30;// 敵の生成上限を設定
-		m_bossHP = 500;// ボスの体力を設定
-		m_bossBulletType = Boss::BossBulletType::THREE;// ボスの弾を三発に設定
-		break;
-	case 4:
-		m_enemyMax = 40;// 敵の生成上限を設定
-		m_bossHP = 1000;// ボスの体力を設定
-		m_bossBulletType = Boss::BossBulletType::SPIRAL;// ボスの弾を螺旋に設定
-		break;
+		m_enemyMax = it->second.enemyMax;
+		m_bossHP = it->second.bossHP;
+		m_bossBulletType = it->second.bulletType;
 	}
+
 }
 //---------------------------------------------------------
 // ゲーム開始時間を更新
@@ -317,7 +296,6 @@ void EnemyManager::HandlePlayerCollisions(float elapsedTime)
 {
 	for (auto& enemy : m_enemies)
 	{
-		m_isHitPlayerToEnemy = false; // フラグを初期化
 		enemy->Update(elapsedTime);// 敵の更新
 
 		// 敵の弾がプレイヤーに当たったら
@@ -348,6 +326,8 @@ void EnemyManager::HandleEnemyBulletCollision(std::unique_ptr<IEnemy>& enemy)
 //---------------------------------------------------------
 void EnemyManager::HandleEnemyPlayerCollision(std::unique_ptr<IEnemy>& enemy)
 {
+	m_isHitPlayerToEnemy = false; // フラグを初期化
+
 	if (enemy->GetBoundingSphere().Intersects(m_pPlayer->GetInPlayerArea()))
 	{
 		m_isHitPlayerToEnemy = true;
@@ -356,7 +336,7 @@ void EnemyManager::HandleEnemyPlayerCollision(std::unique_ptr<IEnemy>& enemy)
 		// 敵がプレイヤーを認識する範囲 / 3.0f = プレイヤーの当たり判定の半径
 		if (enemy->GetBoundingSphere().Intersects(playerSphere))
 		{
-			auto enemySphere = enemy->GetBoundingSphere();
+			auto& enemySphere = enemy->GetBoundingSphere();
 			Vector3 newPos = CheckHitOtherObject(enemySphere, playerSphere);
 			enemy->SetPosition(newPos);
 		}
@@ -389,23 +369,21 @@ void EnemyManager::RemoveDeadEnemies()
 //---------------------------------------------------------
 void EnemyManager::HandleEnemyDeath(std::unique_ptr<IEnemy>& enemy)
 {
+	// 敵が死んだ場合の処理
+	float effectScale = 1.0f;// 初期値
 	if (auto boss = dynamic_cast<Boss*>(enemy.get()))
 	{
-		m_effect.push_back(std::make_unique<Effect>(m_commonResources,
-			Effect::ParticleType::ENEMY_DEAD,
-			enemy->GetPosition(),
-			10.0f,
-			enemy->GetMatrix()));
+		effectScale = 10.0f;// ボスの場合はエフェクトのスケールを大きくする
 		m_isBossAlive = false; // 生存フラグをfalseにする
 	}
 	else
 	{
-		m_effect.push_back(std::make_unique<Effect>(m_commonResources,
-			Effect::ParticleType::ENEMY_DEAD,
-			enemy->GetPosition(),
-			3.0f,
-			enemy->GetMatrix()));
+		effectScale = 3.0f;// ザコ敵の場合はエフェクトのスケールを小さくする
 	}
-
+	m_effect.push_back(std::make_unique<Effect>(m_commonResources,
+		Effect::ParticleType::ENEMY_DEAD,
+		enemy->GetPosition(),
+		effectScale,
+		enemy->GetMatrix()));
 	m_audioManager->PlaySound("EnemyDead", m_pPlayer->GetVolume() * 10); // 敵のSEを再生(こいつだけなぜか元から音が小さいから音量10倍)
 }

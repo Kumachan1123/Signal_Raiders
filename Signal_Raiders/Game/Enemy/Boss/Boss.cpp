@@ -12,6 +12,7 @@
 #include "Game/Enemy/EnemyBullets/EnemyBullets.h"
 #include "Game/Enemy/Boss/BossModel/BossModel.h"
 #include "Game/Enemy/EnemyManager/EnemyManager.h"
+#include "Game/Enemy/Parameters/EnemyParameters.h"
 #include "DeviceResources.h"
 #include "Libraries/MyLib/DebugString.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
@@ -35,6 +36,8 @@ Boss::Boss(Player* pPlayer, CommonResources* resources, int hp)
 	, m_maxHP{}
 	, m_attackCooldown{ 3.0f }
 	, m_bulletCooldown{ 1.0f }
+	, m_SEVolume{ 0.0f }
+	, m_SEVolumeCorrection{ 0.0f }
 	, m_pBossModel{}
 	, m_pBossAI{}
 	, m_pHPBar{}
@@ -46,15 +49,16 @@ Boss::Boss(Player* pPlayer, CommonResources* resources, int hp)
 	, m_enemyBulletBS{}
 	, m_playerBS{}
 	, m_matrix{}
-	, m_isDead{}
-	, m_isHitToPlayer{}
-	, m_isHitToOtherEnemy{}
-	, m_isEnemyHitByPlayerBullet{}
-	, m_isPlayerHitByEnemyBullet{}
+	, m_isDead{ false }
+	, m_isHitToPlayer{ false }
+	, m_isHitToOtherEnemy{ false }
+	, m_isEnemyHitByPlayerBullet{ false }
+	, m_isPlayerHitByEnemyBullet{ false }
 	, m_canAttack{ true }
 	, m_bossBulletType{ BossBulletType::NORMAL }
 	, m_bulletType{ EnemyBullet::BulletType::STRAIGHT }
 	, m_audioManager{ }
+
 {
 }
 // デストラクタ
@@ -90,7 +94,9 @@ void Boss::Initialize()
 	// 境界球の初期化
 	m_bossBS.Center = m_position;
 	m_bossBS.Radius = SPHERE_RADIUS;
-
+	// 音量の設定
+	m_SEVolume = m_pPlayer->GetVolume();
+	m_SEVolumeCorrection = m_pPlayer->GetVolumeCorrection();
 }
 // 描画
 void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
@@ -98,7 +104,7 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
 	// 敵のワールド行列を設定
-	Matrix enemyWorld = Matrix::CreateScale(m_pBossAI->GetScale() * 2)
+	Matrix enemyWorld = Matrix::CreateScale(m_pBossAI->GetScale())
 		* Matrix::CreateFromQuaternion(m_pBossAI->GetRotation())
 		* Matrix::CreateTranslation(m_position);
 	// シールドの座標を設定
@@ -146,11 +152,11 @@ void Boss::Update(float elapsedTime)
 	m_position = m_pBossAI->GetPosition();// 敵の座標を更新
 	m_audioManager->Update();// オーディオマネージャーの更新
 	m_attackCooldown = m_pBossAI->GetBossAttack()->GetCoolTime();
-	ShootBullet();// 弾発射
+	this->ShootBullet();// 弾発射
 	m_pEnemyBullets->Update(elapsedTime);// 敵の弾の更新
 	m_bossBS.Center = m_position + SPHERE_OFFSET;// 境界球の中心座標を更新
 	// 弾の位置設定
-	BulletPositioning();
+	this->BulletPositioning();
 	// HPBar更新
 	m_pHPBar->SetCurrentHP(m_currentHP);
 	m_pHPBar->Update(elapsedTime);
@@ -166,7 +172,7 @@ void Boss::Update(float elapsedTime)
 //---------------------------------------------------------
 void Boss::PlayBarrierSE()
 {
-	m_audioManager->PlaySound("Barrier", m_pPlayer->GetVolume() / 2);// サウンド再生 
+	m_audioManager->PlaySound("Barrier", this->GetSheildSEVolume());// サウンド再生 
 }
 //---------------------------------------------------------
 // 弾発射
@@ -174,13 +180,13 @@ void Boss::PlayBarrierSE()
 void Boss::ShootBullet()
 {
 	// 攻撃のクールダウンタイムを管理
-	if (m_attackCooldown <= 0.1f)
+	if (m_attackCooldown <= EnemyParameters::ATTACK_COOLDOWN_THRESHOLD)
 	{
 		m_audioManager->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
 		// クォータニオンから方向ベクトルを計算
 		m_bulletDirection = Vector3::Transform(Vector3::Backward, m_pBossAI->GetRotation());
 		// 弾を発射
-		CreateBullet();
+		this->CreateBullet();
 		// クールダウンタイムをリセット
 		m_pBossAI->GetBossAttack()->SetCoolTime(m_bulletCooldown);
 	}
@@ -273,6 +279,8 @@ void Boss::CreateVerticalBullet()
 	m_pEnemyBullets->SetEnemyPosition(m_bulletPosCenter);
 	m_pEnemyBullets->CreateBullet(BULLET_SIZE, EnemyBullet::BulletType::VERTICAL);
 }
+
+// 敵のHPに関する処理
 void Boss::SetEnemyHP(int hp)
 {
 	// シールドがある場合はシールドのHPを減らす
@@ -281,10 +289,10 @@ void Boss::SetEnemyHP(int hp)
 		m_pBossSheild->SetSheildHP(m_pBossSheild->GetSheildHP() - hp);
 		if (m_pBossSheild->GetSheildHP() <= 0)
 		{
-			m_audioManager->PlaySound("BarrierBreak", m_pPlayer->GetVolume() * 3);// サウンド再生 
+			m_audioManager->PlaySound("BarrierBreak", m_pPlayer->GetVolume());// サウンド再生 
 		}
 	}
-	else //if (m_pBossSheild->GetSheildHP() <= 0)
+	else
 	{
 		// シールドがない場合は敵のHPを減らす
 		m_currentHP -= hp;

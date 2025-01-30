@@ -25,14 +25,12 @@ private:
 	DirectX::SimpleMath::Vector3 m_scale;//サイズ
 
 	float m_rotationSpeed;//回転速度
-	const float RANDOM_MAX = 2.0f;
-	const float RANDOM_MIN = 0.5f;
 	float m_attackCooldown;  // 攻撃のクールダウンタイム
 
 public:
 	//	getter
-	DirectX::SimpleMath::Vector3 GetPosition() { return m_position; }
-	DirectX::SimpleMath::Quaternion GetRotation() { return m_rotation; }
+	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
+	DirectX::SimpleMath::Quaternion GetRotation() const { return m_rotation; }
 	float GetCoolTime() { return m_attackCooldown; }
 	//  setter
 	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }

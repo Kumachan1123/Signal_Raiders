@@ -23,7 +23,21 @@ class Wifi;
 class Wall;
 class EnemyManager
 {
-public:
+private:
+	// ステージごとの設定
+	struct StageSettings
+	{
+		int enemyMax;
+		int bossHP;
+		Boss::BossBulletType bulletType;
+	};
+	const std::unordered_map<int, StageSettings> stageData = {
+	{0, {5, 100, Boss::BossBulletType::NORMAL}},
+	{1, {10, 200, Boss::BossBulletType::NORMAL}},
+	{2, {20, 300, Boss::BossBulletType::TWIN}},
+	{3, {30, 500, Boss::BossBulletType::THREE}},
+	{4, {40, 1000, Boss::BossBulletType::SPIRAL}}
+	};
 
 private:
 	// コモンリソース
