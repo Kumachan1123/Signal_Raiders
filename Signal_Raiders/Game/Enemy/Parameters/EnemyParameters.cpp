@@ -79,6 +79,10 @@ const float EnemyParameters::ENEMY_SPAWN_START_TIME = 5.0f;// 敵が出現し始める時
 
 const float EnemyParameters::ENEMY_SPAWN_INTERVAL = 0.5f;// 敵が出現する間隔
 
+const float EnemyParameters::ENEMY_BULLET_SIZE = 0.15f;// 敵の弾の大きさ
+
+const float EnemyParameters::BOSS_BULLET_SIZE = 0.25f;// ボスの弾の大きさ
+
 const Vector3 EnemyParameters::INITIAL_VELOCITY{ 0.0f,0.5f,0.0f };// 浮遊の初期速度
 
 const Vector3 EnemyParameters::INITIAL_BOSS_POSITION{ 0.0f,10.0f,0.0f };// ボスの初期位置
@@ -94,6 +98,8 @@ const Vector3 EnemyParameters::BOSS_LEFT_GUN_OFFSET{ -2.5f, 1.0f, 3.0f };// 上の
 const Vector3 EnemyParameters::BOSS_RIGHT_GUN_OFFSET{ 2.5f, 1.0f, 3.0f };// 右の座標
 
 const Vector3 EnemyParameters::BOSS_HPBAR_OFFSET{ 0.0f, 3.0f, 0.0f };// HPバーのオフセット
+
+const Vector3 EnemyParameters::ENEMY_HPBAR_OFFSET{ 0.0f, 1.0f, 0.0f };// HPバーのオフセット
 
 const EnemyParameters::KnockBackTime EnemyParameters::KNOCKBACK_TIME = { 0.3f, 1.0f };// ノックバック開始から経過した時間
 

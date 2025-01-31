@@ -111,7 +111,7 @@ void VerticalAttacker::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleM
 		* Matrix::CreateFromQuaternion(m_enemyAI->GetRotation())
 		* Matrix::CreateTranslation(m_position);
 	// HPBarの座標を設定
-	Vector3 hpBarPos = Vector3(m_position.x, m_position.y - 1, m_position.z);
+	Vector3 hpBarPos = m_position + EnemyParameters::ENEMY_HPBAR_OFFSET;
 	// HPBar描画
 	m_pHPBar->Render(view, proj, hpBarPos, m_rotate);
 	// 敵描画	
@@ -155,7 +155,7 @@ void VerticalAttacker::ShootBullet()
 		m_enemyBullets->SetEnemyPosition(m_position);
 
 		// 弾を発射
-		m_enemyBullets->CreateBullet(0.15f, EnemyBullet::BulletType::VERTICAL);
+		m_enemyBullets->CreateBullet(EnemyParameters::ENEMY_BULLET_SIZE, EnemyBullet::BulletType::VERTICAL);
 		// クールダウンタイムをリセット
 		m_enemyAI->GetEnemyAttack()->SetCoolTime(EnemyParameters::ATTACK_COOLDOWN);
 	}

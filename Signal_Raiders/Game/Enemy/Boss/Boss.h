@@ -48,7 +48,6 @@ private:
 	std::unique_ptr<BossSheild>		m_pBossSheild;// シールド
 	std::unique_ptr<EnemyHPBar>		m_pHPBar;// HPバー
 	std::unique_ptr<EnemyBullets>	m_pEnemyBullets;// 弾
-	const float BULLET_SIZE = 0.25f; // 弾の大きさ
 
 	// 音量
 	float m_SEVolume;// SEの音量

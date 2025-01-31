@@ -245,7 +245,7 @@ void Boss::CreateCenterBullet(EnemyBullet::BulletType type)
 {
 	m_pEnemyBullets->SetEnemyPosition(m_bulletPosCenter);
 	m_pEnemyBullets->SetDirection(m_bulletDirection);
-	m_pEnemyBullets->CreateBullet(BULLET_SIZE, type);
+	m_pEnemyBullets->CreateBullet(EnemyParameters::BOSS_BULLET_SIZE, type);
 }
 
 // 左の弾を発射
@@ -257,7 +257,7 @@ void Boss::CreateLeftBullet(float angleOffset, EnemyBullet::BulletType type)
 	// 発射位置を設定
 	m_pEnemyBullets->SetEnemyPosition(m_bulletPosLeft);
 	m_pEnemyBullets->SetDirection(leftDirection);
-	m_pEnemyBullets->CreateBullet(BULLET_SIZE, type);
+	m_pEnemyBullets->CreateBullet(EnemyParameters::BOSS_BULLET_SIZE, type);
 }
 
 // 右の弾を発射
@@ -269,7 +269,7 @@ void Boss::CreateRightBullet(float angleOffset, EnemyBullet::BulletType type)
 	// 発射位置を設定
 	m_pEnemyBullets->SetEnemyPosition(m_bulletPosRight);
 	m_pEnemyBullets->SetDirection(rightDirection);
-	m_pEnemyBullets->CreateBullet(BULLET_SIZE, type);
+	m_pEnemyBullets->CreateBullet(EnemyParameters::BOSS_BULLET_SIZE, type);
 }
 
 // 真下に落ちる弾を発射
@@ -277,7 +277,7 @@ void Boss::CreateVerticalBullet()
 {
 	// 真下に落ちる弾を発射
 	m_pEnemyBullets->SetEnemyPosition(m_bulletPosCenter);
-	m_pEnemyBullets->CreateBullet(BULLET_SIZE, EnemyBullet::BulletType::VERTICAL);
+	m_pEnemyBullets->CreateBullet(EnemyParameters::BOSS_BULLET_SIZE, EnemyBullet::BulletType::VERTICAL);
 }
 
 // 敵のHPに関する処理

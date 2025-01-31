@@ -56,6 +56,8 @@ public:// 定数
 	static const float ENEMY_DEADEFFECT_SCALE;	// ザコ敵の死亡エフェクトのスケール
 	static const float ENEMY_SPAWN_START_TIME;	// 敵が出現し始める時間
 	static const float ENEMY_SPAWN_INTERVAL;// 敵が出現する間隔
+	static const float ENEMY_BULLET_SIZE;	// 敵の弾の大きさ
+	static const float BOSS_BULLET_SIZE;	// ボスの弾の大きさ
 	static const DirectX::SimpleMath::Vector3 INITIAL_VELOCITY; // 浮遊の初期速度
 	static const DirectX::SimpleMath::Vector3 INITIAL_BOSS_POSITION; // ボスの初期位置
 	static const DirectX::SimpleMath::Vector3 INITIAL_BOSS_SCALE; // ボスの初期スケール
@@ -64,6 +66,7 @@ public:// 定数
 	static const DirectX::SimpleMath::Vector3 BOSS_LEFT_GUN_OFFSET;	// ボスの左の砲口のオフセット
 	static const DirectX::SimpleMath::Vector3 BOSS_RIGHT_GUN_OFFSET;// ボスの右の砲口のオフセット
 	static const DirectX::SimpleMath::Vector3 BOSS_HPBAR_OFFSET;	// ボスのシールドのオフセット
+	static const DirectX::SimpleMath::Vector3 ENEMY_HPBAR_OFFSET;	// ザコ敵のHPバーのオフセット
 	static const KnockBackTime KNOCKBACK_TIME;// ノックバック開始から経過した時間
 	static const DotClamp DOT_CLAMP;// 内積をclampするときに使う値
 
