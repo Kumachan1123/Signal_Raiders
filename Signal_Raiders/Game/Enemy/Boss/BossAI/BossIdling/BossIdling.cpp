@@ -16,13 +16,14 @@
 using namespace DirectX::SimpleMath;
 // コンストラクタ
 BossIdling::BossIdling(BossAI* pBoss)
-	: m_pBoss(pBoss),
-	m_rotation(Quaternion::Identity),
-	m_velocity(Vector3::Zero),
-	m_scale(Vector3::One),
-	m_initialPosition(Vector3::Zero),
-	m_time(0.0f),
-	m_rotationSpeed(0.0f)
+	: m_pBoss(pBoss)
+	, m_rotation(Quaternion::Identity)
+	, m_velocity(Vector3::Zero)
+	, m_scale(Vector3::One)
+	, m_initialPosition(Vector3::Zero)
+	, m_time(0.0f)
+	, m_rotationSpeed(0.0f)
+	, m_angle(0.0f)
 {
 }
 // デストラクタ
@@ -34,7 +35,7 @@ void BossIdling::Initialize()
 	m_velocity = m_pBoss->GetVelocity();
 	m_scale = m_pBoss->GetScale();
 	m_initialPosition = m_pBoss->GetPosition();
-	m_rotationSpeed = 0.5f; // 回転速度
+	m_rotationSpeed = EnemyParameters::INITIAL_ROTATION_SPEED; // 回転速度
 }
 
 void BossIdling::Update(float elapsedTime)

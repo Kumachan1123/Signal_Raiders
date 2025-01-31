@@ -3,8 +3,8 @@
 	@brief	敵逃避クラス
 */
 #pragma once
-#ifndef ENEMY_ESCAPE_DEFINED
-#define ENEMY_ESCAPE_DEFINED
+#ifndef ENEMY_SPIN_DEFINED
+#define ENEMY_SPIN_DEFINED
 #include "Game/Interface/IState.h"
 
 //前方宣言
@@ -19,9 +19,7 @@ private:
 	DirectX::SimpleMath::Quaternion m_rotation;//回転
 	DirectX::SimpleMath::Vector3 m_velocity;// 移動速度
 	float m_angle;//角度
-	const float RANDOM_MAX = 2.0f;
-	const float RANDOM_MIN = 0.5f;
-	float  m_time = 0.0f;  // 時間の初期化
+	float  m_time;  // 時間の初期化
 
 public:
 	//	getter
@@ -40,4 +38,4 @@ public:
 	void Update(float elapsedTime) override;
 
 };
-#endif //ENEMY_ESCAPE_DEFINED
+#endif //ENEMY_SPIN_DEFINED

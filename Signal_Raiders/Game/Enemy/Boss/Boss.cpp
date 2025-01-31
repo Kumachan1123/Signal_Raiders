@@ -12,7 +12,7 @@
 #include "Game/Enemy/EnemyBullets/EnemyBullets.h"
 #include "Game/Enemy/Boss/BossModel/BossModel.h"
 #include "Game/Enemy/EnemyManager/EnemyManager.h"
-#include "Game/Enemy/Parameters/EnemyParameters.h"
+
 #include "DeviceResources.h"
 #include "Libraries/MyLib/DebugString.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
@@ -34,8 +34,8 @@ Boss::Boss(Player* pPlayer, CommonResources* resources, int hp)
 	, m_commonResources{ resources }
 	, m_currentHP{ hp }
 	, m_maxHP{}
-	, m_attackCooldown{ 3.0f }
-	, m_bulletCooldown{ 1.0f }
+	, m_attackCooldown{ EnemyParameters::ATTACK_COOLDOWN }
+	, m_bulletCooldown{ EnemyParameters::ATTACK_INTERVAL }
 	, m_SEVolume{ 0.0f }
 	, m_SEVolumeCorrection{ 0.0f }
 	, m_pBossModel{}
@@ -88,12 +88,12 @@ void Boss::Initialize()
 	m_pBossSheild = std::make_unique<BossSheild>(m_maxHP, this);
 	m_pBossSheild->Initialize(m_commonResources);
 	// 初期位置を設定
-	m_position = INITIAL_POSITION;
+	m_position = EnemyParameters::INITIAL_BOSS_POSITION;
 	// 敵の座標を設定
 	m_pBossAI->SetPosition(m_position);
 	// 境界球の初期化
 	m_bossBS.Center = m_position;
-	m_bossBS.Radius = SPHERE_RADIUS;
+	m_bossBS.Radius = EnemyParameters::NORMAL_BOSS_RADIUS;
 	// 音量の設定
 	m_SEVolume = m_pPlayer->GetVolume();
 	m_SEVolumeCorrection = m_pPlayer->GetVolumeCorrection();
@@ -117,8 +117,8 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	// 敵の弾描画
 	m_pEnemyBullets->Render(view, proj);
 	// HPBarの座標を設定
-	Vector3 hpBarPos = m_position - HPBAR_OFFSET;
-	m_pHPBar->SetScale(Vector3(HPBAR_SCALE));
+	Vector3 hpBarPos = m_position - EnemyParameters::BOSS_HPBAR_OFFSET;
+	m_pHPBar->SetScale(Vector3(EnemyParameters::BOSS_HPBAR_SCALE));
 	// HPBar描画
 	m_pHPBar->Render(view, proj, hpBarPos, m_rotate);
 }
@@ -151,10 +151,10 @@ void Boss::Update(float elapsedTime)
 	m_pBossAI->Update(elapsedTime);// AIの更新
 	m_position = m_pBossAI->GetPosition();// 敵の座標を更新
 	m_audioManager->Update();// オーディオマネージャーの更新
-	m_attackCooldown = m_pBossAI->GetBossAttack()->GetCoolTime();
+	m_attackCooldown = m_pBossAI->GetBossAttack()->GetCoolTime();// 攻撃のクールダウンタイムを取得
 	this->ShootBullet();// 弾発射
 	m_pEnemyBullets->Update(elapsedTime);// 敵の弾の更新
-	m_bossBS.Center = m_position + SPHERE_OFFSET;// 境界球の中心座標を更新
+	m_bossBS.Center = m_position + EnemyParameters::BOSS_SPHERE_OFFSET;// 境界球の中心座標を更新
 	// 弾の位置設定
 	this->BulletPositioning();
 	// HPBar更新
@@ -201,11 +201,11 @@ void Boss::BulletPositioning()
 	Matrix transform = Matrix::CreateFromQuaternion(m_pBossAI->GetRotation())
 		* Matrix::CreateTranslation(m_position);
 	// 中央の座標に回転を適用
-	m_bulletPosCenter = Vector3::Transform(TOP_OFFSET, transform);
+	m_bulletPosCenter = Vector3::Transform(EnemyParameters::BOSS_HEAD_OFFSET, transform);
 	// 左の座標に回転を適用
-	m_bulletPosLeft = Vector3::Transform(LEFT_OFFSET, transform);
+	m_bulletPosLeft = Vector3::Transform(EnemyParameters::BOSS_LEFT_GUN_OFFSET, transform);
 	// 右の座標に回転を適用
-	m_bulletPosRight = Vector3::Transform(RIGHT_OFFSET, transform);
+	m_bulletPosRight = Vector3::Transform(EnemyParameters::BOSS_RIGHT_GUN_OFFSET, transform);
 }
 
 
@@ -213,7 +213,7 @@ void Boss::BulletPositioning()
 void Boss::CreateBullet()
 {
 	// 角度をずらして左右の弾を発射
-	float angleOffset = XMConvertToRadians(ANGLE_OFFSET); // 30度の角度オフセット
+	float angleOffset = XMConvertToRadians(EnemyParameters::BOSS_BULLET_ANGLE); // 30度の角度オフセット
 	// Enemiesクラスで設定した弾のタイプによって処理を分岐
 	switch (GetBulletType())
 	{

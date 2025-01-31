@@ -8,6 +8,7 @@
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 #include "Game/KumachiLib/DrawCollision/DrawCollision.h"
 #include "Game/Enemy/Boss/BossSheild/BossSheild.h"
+#include "Game/Enemy/Parameters/EnemyParameters.h"
 
 
 //前方宣言
@@ -102,29 +103,6 @@ private:
 	DirectX::SimpleMath::Vector3 m_cameraTarget;
 	DirectX::SimpleMath::Vector3 m_cameraUp;
 
-private:
-	// 定数
-	// 初期位置
-	const DirectX::SimpleMath::Vector3 INITIAL_POSITION = DirectX::SimpleMath::Vector3(0.0f, 10.0f, 0.0f);
-	// プレイヤーに与えるダメージ
-	const float PLAYER_DAMAGE = 5.0f;
-	// 弾の角度オフセット
-	const float ANGLE_OFFSET = 30.0f;
-	// 境界球のオフセット
-	const DirectX::SimpleMath::Vector3 SPHERE_OFFSET = DirectX::SimpleMath::Vector3(0.0f, 0.5f, 0.0f);
-	// 境界球の半径
-	const float SPHERE_RADIUS = 2.5f;
-	// ボスの頭の砲口のオフセット
-	const DirectX::SimpleMath::Vector3 TOP_OFFSET = DirectX::SimpleMath::Vector3(0.0f, 2.5f, 3.0f);
-	// ボスの左の砲口のオフセット
-	const DirectX::SimpleMath::Vector3 LEFT_OFFSET = DirectX::SimpleMath::Vector3(-2.5f, 1.0f, 3.0f);
-	// ボスの右の砲口のオフセット
-	const DirectX::SimpleMath::Vector3 RIGHT_OFFSET = DirectX::SimpleMath::Vector3(2.5f, 1.0f, 3.0f);
-	// HPバーのオフセット
-	const DirectX::SimpleMath::Vector3 HPBAR_OFFSET = DirectX::SimpleMath::Vector3(0.0f, 3.0f, 0.0f);
-	// HPバーのスケール
-	const float HPBAR_SCALE = 3.0f;
-
 public:
 	//	getter
 	DirectX::BoundingSphere& GetBoundingSphere() override { return m_bossBS; }
@@ -143,12 +121,12 @@ public:
 	bool GetPlayerHitByEnemyBullet() const override { return m_isPlayerHitByEnemyBullet; }// 敵の弾がプレイヤーに当たったか
 	bool GetEnemyHitByPlayerBullet()const override { return m_isEnemyHitByPlayerBullet; }
 	bool GetCanAttack() const override { return m_canAttack; }// 攻撃可能か
-	float GetToPlayerDamage() const override { return PLAYER_DAMAGE; }
+	float GetToPlayerDamage() const override { return EnemyParameters::BOSS_DAMAGE; }
 	DirectX::SimpleMath::Vector3 GetCameraEye()const { return m_cameraEye; }
 	DirectX::SimpleMath::Vector3 GetCameraTarget()const { return m_cameraTarget; }
 	DirectX::SimpleMath::Vector3 GetCameraUp()const { return m_cameraUp; }
 	BossSheild* GetBossSheild()const { return m_pBossSheild.get(); }// シールド取得
-	float GetSheildSEVolume() { return m_SEVolume - m_SEVolumeCorrection; }//シールド展開音の音量を取得
+	float GetSheildSEVolume() const { return m_SEVolume - m_SEVolumeCorrection; }//シールド展開音の音量を取得
 	// setter
 	void SetPosition(DirectX::SimpleMath::Vector3& pos) override { m_position = pos; }
 	void SetEnemyHP(int hp) override;
@@ -157,7 +135,7 @@ public:
 	void SetHitToOtherEnemy(bool isHitToOtherEnemy) override { m_isHitToOtherEnemy = isHitToOtherEnemy; }
 	void SetBulletBoundingSphere(DirectX::BoundingSphere& bs) override { m_enemyBulletBS = bs; }
 	void SetPlayerBoundingSphere(DirectX::BoundingSphere playerBS) override { m_playerBS = playerBS; }
-	void SetPlayerHP(float& HP) const override { HP -= Boss::PLAYER_DAMAGE; }
+	void SetPlayerHP(float& HP) const override { HP -= EnemyParameters::BOSS_DAMAGE; }
 	void SetPlayerHitByEnemyBullet(bool hit) override { m_isPlayerHitByEnemyBullet = hit; }// 敵の弾がプレイヤーに当たったか
 	void SetEnemyHitByPlayerBullet(bool hit)override { m_isEnemyHitByPlayerBullet = hit; }
 	void SetBulletCooldown(float cooldown) { m_bulletCooldown = cooldown; }// シールドを展開した後に実行する

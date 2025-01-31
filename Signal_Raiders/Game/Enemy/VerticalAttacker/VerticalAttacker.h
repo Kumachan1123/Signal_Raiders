@@ -4,6 +4,7 @@
 */
 #pragma once
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
+#include "Game/Enemy/Parameters/EnemyParameters.h"
 #include "Game/Interface/IEnemy.h"
 //前方宣言
 class CommonResources;
@@ -98,9 +99,6 @@ public:
 	void SetPlayerHitByEnemyBullet(bool hit)override { m_isPlayerHitByEnemyBullet = hit; }// 敵の弾がプレイヤーに当たったか
 	void SetEnemyHitByPlayerBullet(bool hit) override { m_isEnemyHitByPlayerBullet = hit; }
 	void SetCanAttack(bool canAttack)override { m_canAttack = canAttack; }// 攻撃可能か
-	//void SetCameraEye(DirectX::SimpleMath::Vector3 eye)override { m_cameraEye = eye; }
-	//void SetCameraTarget(DirectX::SimpleMath::Vector3 target)override { m_cameraTarget = target; }
-	//void SetCameraUp(DirectX::SimpleMath::Vector3 up)override { m_cameraUp = up; }
 	void SetCamera(FPS_Camera* camera) { m_pCamera = camera; }
 public:
 	// 初期ステータスを設定

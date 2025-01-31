@@ -7,13 +7,23 @@
 
 using namespace DirectX::SimpleMath;
 
+// 定数
+
+const float EnemyParameters::ENEMY_SPAWN_RADIUS = 50.0f;// ザコ敵が出現する半径
+
 const float EnemyParameters::RANDOM_MAX = 7.0f;// ランダムの最大値
 
 const float EnemyParameters::RANDOM_MIN = 5.5f;// ランダムの最小値
 
+const float EnemyParameters::RANDOM_ROTATION_MAX = 2.0f;// ランダムの最大値
+
+const float EnemyParameters::RANDOM_ROTATION_MIN = 0.5f;// ランダムの最小値
+
 const float EnemyParameters::AMPLITUDE = 2.0f;// 振幅
 
 const float EnemyParameters::FREQUENCY = 0.5f;// 周波数
+
+const float EnemyParameters::MOVE_SPEED = 20.0f;// 移動速度
 
 const float EnemyParameters::FIXED_INITIAL_SPEED = 20.0f;// ノックバックの初速度
 
@@ -45,11 +55,45 @@ const float EnemyParameters::BOSS_SHIELD_ATTACK_COOLDOWN = 0.75f;// シールド展開
 
 const float EnemyParameters::NORMAL_BOSS_RADIUS = 2.5f;// 通常時のボスの境界球の半径
 
+const float EnemyParameters::NORMAL_ENEMY_RADIUS = 1.5f;// ザコ敵の境界球の半径
+
 const float EnemyParameters::ATTACK_COOLDOWN_THRESHOLD = 0.1f;// フレームごとに弾を発射しなくするための攻撃閾値
+
+const float EnemyParameters::NORMAL_ENEMY_DAMAGE = 1.0f;// ザコ敵がプレイヤーに与えるダメージ
+
+const float EnemyParameters::ATTACK_INTERVAL = 1.0f;// ザコ敵の攻撃インターバル
+
+const float EnemyParameters::BOSS_DAMAGE = 5.0f;// ボスがプレイヤーに与えるダメージ
+
+const float EnemyParameters::BOSS_BULLET_ANGLE = 30.0f;// ボスの弾の角度
+
+const float EnemyParameters::BOSS_HPBAR_SCALE = 3.0f;// ボスのHPバーのスケール
+
+const float EnemyParameters::BOSS_CHASE_SPEED = 2.0f;// ボスの追跡速度
+
+const float EnemyParameters::BOSS_DEADEFFECT_SCALE = 10.0f;// ボスの死亡エフェクトのスケール
+
+const float EnemyParameters::ENEMY_DEADEFFECT_SCALE = 3.0f;// ザコ敵の死亡エフェクトのスケール
+
+const float EnemyParameters::ENEMY_SPAWN_START_TIME = 5.0f;// 敵が出現し始める時間
+
+const float EnemyParameters::ENEMY_SPAWN_INTERVAL = 0.5f;// 敵が出現する間隔
 
 const Vector3 EnemyParameters::INITIAL_VELOCITY{ 0.0f,0.5f,0.0f };// 浮遊の初期速度
 
+const Vector3 EnemyParameters::INITIAL_BOSS_POSITION{ 0.0f,10.0f,0.0f };// ボスの初期位置
+
 const Vector3 EnemyParameters::INITIAL_BOSS_SCALE{ 2.0f,2.0f,2.0f };// ボスの初期スケール
+
+const Vector3 EnemyParameters::BOSS_SPHERE_OFFSET{ 0.0f,0.5f,0.0f };// ボスの境界球のオフセット
+
+const Vector3 EnemyParameters::BOSS_HEAD_OFFSET{ 0.0f, 2.5f, 3.0f };// ボスの頭の砲口のオフセット
+
+const Vector3 EnemyParameters::BOSS_LEFT_GUN_OFFSET{ -2.5f, 1.0f, 3.0f };// 上の座標
+
+const Vector3 EnemyParameters::BOSS_RIGHT_GUN_OFFSET{ 2.5f, 1.0f, 3.0f };// 右の座標
+
+const Vector3 EnemyParameters::BOSS_HPBAR_OFFSET{ 0.0f, 3.0f, 0.0f };// HPバーのオフセット
 
 const EnemyParameters::KnockBackTime EnemyParameters::KNOCKBACK_TIME = { 0.3f, 1.0f };// ノックバック開始から経過した時間
 

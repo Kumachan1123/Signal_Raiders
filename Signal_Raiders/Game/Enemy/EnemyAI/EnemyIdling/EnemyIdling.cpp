@@ -16,15 +16,14 @@
 using namespace DirectX::SimpleMath;
 // ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 EnemyIdling::EnemyIdling(EnemyAI* enemy)
-	: m_enemy(enemy),
-	m_rotation(Quaternion::Identity),
-	m_velocity(Vector3::Zero),
-	m_scale(Vector3::One),
-	m_initialPosition(Vector3::Zero),
-	m_time(0.0f),
-	m_rotationSpeed(0.0f)
-{
-}
+	: m_enemy(enemy)
+	, m_rotation(Quaternion::Identity)
+	, m_velocity(Vector3::Zero)
+	, m_scale(Vector3::One)
+	, m_initialPosition(Vector3::Zero)
+	, m_time(0.0f)
+	, m_rotationSpeed(0.0f)
+{}
 // ƒfƒXƒgƒ‰ƒNƒ^
 EnemyIdling::~EnemyIdling() {}
 // ‰Šú‰»‚·‚é
@@ -34,24 +33,21 @@ void EnemyIdling::Initialize()
 	m_velocity = m_enemy->GetVelocity();
 	m_scale = m_enemy->GetScale();
 	m_initialPosition = m_enemy->GetPosition();
-	m_rotationSpeed = 0.5f; // ‰ñ“]‘¬“x
+	m_rotationSpeed = EnemyParameters::INITIAL_ROTATION_SPEED; // ‰ñ“]‘¬“x
 }
-
+// XV
 void EnemyIdling::Update(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
 	// sin”g‚ðŽg‚Á‚½‰ñ“]‚ÌXV
-	float rotationAmplitude = 2.5f;  // ‰ñ“]U•
-	float rotationFrequency = 3.0f;  // ‰ñ“]Žü”g”
-	float randomMultiplier = GenerateRandomMultiplier(RANDOM_MIN, RANDOM_MAX);  // ƒ‰ƒ“ƒ_ƒ€‚È”{—¦‚ð¶¬
-	float sinRotationSpeed = m_rotationSpeed + rotationAmplitude * std::sin(rotationFrequency * m_time);  // ‰ñ“]‘¬“x‚ðsin”g‚Å•Ï‰»‚³‚¹‚é
+	float randomMultiplier = GenerateRandomMultiplier(EnemyParameters::RANDOM_ROTATION_MIN, EnemyParameters::RANDOM_ROTATION_MAX);  // ƒ‰ƒ“ƒ_ƒ€‚È”{—¦‚ð¶¬
+	float sinRotationSpeed = m_rotationSpeed + EnemyParameters::AMPLITUDE * std::sin(EnemyParameters::FREQUENCY * m_time);  // ‰ñ“]‘¬“x‚ðsin”g‚Å•Ï‰»‚³‚¹‚é
 	Quaternion deltaRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, sinRotationSpeed * randomMultiplier * elapsedTime);  // ¶¬‚µ‚½‰ñ“]‘¬“x‚ÉŠî‚Ã‚«Aã•ûŒüiYŽ²j‚ð’†S‚É‰ñ“]‚ð¶¬
 	m_rotation *= deltaRotation;  // Šù‘¶‚Ì‰ñ“]‚ÉV‚µ‚¢‰ñ“]‚ð“K—p
 	m_rotation.Normalize();  // ‰ñ“]‚ð³‹K‰»‚µAˆÀ’è‚µ‚½ƒNƒH[ƒ^ƒjƒIƒ“‚ðˆÛŽ
 	// Œü‚¢‚Ä‚¢‚é•ûŒü‚ÉŠî‚Ã‚¢‚ÄXÀ•W‚ÆZÀ•W‚ðˆÚ“®
-	float moveCorrect = GenerateRandomMultiplier(10.0f, 10.0f);
-	Vector3 forward = Vector3::Transform(Vector3::Backward * moveCorrect, m_rotation);
-	m_enemy->SetPosition(m_enemy->GetPosition() + forward * (m_velocity.Length() * 2.0f) * elapsedTime);
+	Vector3 forward = Vector3::Transform(Vector3::Backward * EnemyParameters::MOVE_SPEED, m_rotation);
+	m_enemy->SetPosition(m_enemy->GetPosition() + forward * (m_velocity.Length()) * elapsedTime);
 	m_enemy->SetRotation(m_rotation);
 	m_enemy->SetVelocity(m_velocity);
 }

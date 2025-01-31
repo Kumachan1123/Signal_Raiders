@@ -4,6 +4,7 @@
 */
 #pragma once
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
+#include "Game/Enemy/Parameters/EnemyParameters.h"
 #include "Game/Interface/IEnemy.h"
 //前方宣言
 class CommonResources;
@@ -55,10 +56,6 @@ private:
 	bool m_isPlayerHitByEnemyBullet;// 敵の弾がプレイヤーに当たったか
 	bool m_canAttack;// 攻撃可能か
 	float m_attackCooldown;  // 攻撃のクールダウンタイム
-	// プレイヤーに与えるダメージ（１ダメージ）
-	const float PLAYER_DAMAGE = 1.0f;
-	// 攻撃の間隔（１秒）
-	const float ATTACK_INTERVAL = 1.0f;
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
 
@@ -81,7 +78,7 @@ public:
 	bool GetHitToOtherEnemy() const override { return m_isHitToOtherEnemy; }
 	bool GetPlayerHitByEnemyBullet() const override { return m_isPlayerHitByEnemyBullet; }// 敵の弾がプレイヤーに当たったか
 	bool GetEnemyHitByPlayerBullet()const override { return m_isEnemyHitByPlayerBullet; }// プレイヤーの弾が敵に当たったか
-	float GetToPlayerDamage() const override { return PLAYER_DAMAGE; }
+	float GetToPlayerDamage() const override { return EnemyParameters::NORMAL_ENEMY_DAMAGE; }
 	bool GetCanAttack() const override { return m_canAttack; }// 攻撃可能か
 	// setter
 	void SetPosition(DirectX::SimpleMath::Vector3& pos)override { m_position = pos; }
@@ -91,13 +88,10 @@ public:
 	void SetHitToOtherEnemy(bool isHitToOtherEnemy) override { m_isHitToOtherEnemy = isHitToOtherEnemy; }
 	void SetBulletBoundingSphere(DirectX::BoundingSphere& bs)override { m_enemyBulletBS = bs; }
 	void SetPlayerBoundingSphere(DirectX::BoundingSphere playerBS)override { m_playerBS = playerBS; }
-	void SetPlayerHP(float& HP) const override { HP -= PLAYER_DAMAGE; }
+	void SetPlayerHP(float& HP) const override { HP -= EnemyParameters::NORMAL_ENEMY_DAMAGE; }
 	void SetPlayerHitByEnemyBullet(bool hit)override { m_isPlayerHitByEnemyBullet = hit; }// 敵の弾がプレイヤーに当たったか
 	void SetEnemyHitByPlayerBullet(bool hit) override { m_isEnemyHitByPlayerBullet = hit; }// 敵がプレイヤーの弾に当たったか
 	void SetCanAttack(bool canAttack)override { m_canAttack = canAttack; }// 攻撃可能か
-	//void SetCameraEye(DirectX::SimpleMath::Vector3 eye)override { m_cameraEye = eye; }
-	//void SetCameraTarget(DirectX::SimpleMath::Vector3 target)override { m_cameraTarget = target; }
-	//void SetCameraUp(DirectX::SimpleMath::Vector3 up)override { m_cameraUp = up; }
 	void SetCamera(FPS_Camera* camera) { m_pCamera = camera; }
 public:
 	// 初期ステータスを設定

@@ -34,9 +34,9 @@ EnemyManager::EnemyManager(CommonResources* commonResources)
 	, m_enemyIndex{ 0 }
 	, m_stageNumber{ 0 }
 	, m_enemyMax{ 0 }
-	, m_enemyBornInterval{ 0.5f }
+	, m_enemyBornInterval{ EnemyParameters::ENEMY_SPAWN_INTERVAL }
 	, m_enemyBornTimer{ 0.0f }
-	, m_bossHP{ 100 }
+	, m_bossHP{ 0 }
 	, m_bossBulletType{ Boss::BossBulletType::NORMAL }
 	, m_startTime{ 0.0f }
 	, m_pWifi{ nullptr }
@@ -182,7 +182,7 @@ void EnemyManager::HandleEnemySpawning(float elapsedTime)
 	int enemyNum = static_cast<int>(m_pWifi->GetWifiLevels().size());// 敵の数を取得
 	if (enemyNum > m_enemyMax) enemyNum = m_enemyMax;// 敵の数が敵の生成上限を超えたら敵の生成上限に設定
 
-	if (m_startTime >= 5.0f) m_isEnemyBorn = true;// ザコ敵生成可能にする
+	if (m_startTime >= EnemyParameters::ENEMY_SPAWN_START_TIME) m_isEnemyBorn = true;// ザコ敵生成可能にする
 
 	if (m_isEnemyBorn && !m_isBorned && m_enemyIndex < enemyNum)// ザコ敵生成可能かつザコ敵生成完了していない場合
 	{
@@ -278,7 +278,7 @@ void EnemyManager::HandleWallCollision()
 {
 	for (auto& enemy : m_enemies)
 	{
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < m_pWall->GetWallNum(); i++)
 		{
 			if (enemy->GetBoundingSphere().Intersects(m_pWall->GetBoundingBox(i)))
 			{
@@ -370,20 +370,21 @@ void EnemyManager::RemoveDeadEnemies()
 void EnemyManager::HandleEnemyDeath(std::unique_ptr<IEnemy>& enemy)
 {
 	// 敵が死んだ場合の処理
-	float effectScale = 1.0f;// 初期値
+	float effectScale;// 初期値
 	if (auto boss = dynamic_cast<Boss*>(enemy.get()))
 	{
-		effectScale = 10.0f;// ボスの場合はエフェクトのスケールを大きくする
+		effectScale = EnemyParameters::BOSS_DEADEFFECT_SCALE;// ボスの場合はエフェクトのスケールを大きくする
 		m_isBossAlive = false; // 生存フラグをfalseにする
 	}
 	else
 	{
-		effectScale = 3.0f;// ザコ敵の場合はエフェクトのスケールを小さくする
+		effectScale = EnemyParameters::ENEMY_DEADEFFECT_SCALE;// ザコ敵の場合はエフェクトのスケールを小さくする
 	}
 	m_effect.push_back(std::make_unique<Effect>(m_commonResources,
 		Effect::ParticleType::ENEMY_DEAD,
 		enemy->GetPosition(),
 		effectScale,
 		enemy->GetMatrix()));
-	m_audioManager->PlaySound("EnemyDead", m_pPlayer->GetVolume() * 10); // 敵のSEを再生(こいつだけなぜか元から音が小さいから音量10倍)
+	// 敵のSEを再生(こいつだけなぜか元から音が小さいから音量補正)
+	m_audioManager->PlaySound("EnemyDead", m_pPlayer->GetVolume() + m_pPlayer->GetVolumeCorrection());
 }

@@ -12,6 +12,7 @@
 #include "Game/Enemy/EnemyBullets/EnemyBullets.h"
 #include "Game/Enemy/EnemyModel/EnemyModel.h"
 #include "Game/Enemy/EnemyManager/EnemyManager.h"
+
 #include "DeviceResources.h"
 #include "Libraries/MyLib/DebugString.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
@@ -34,7 +35,7 @@ Enemy::Enemy(Player* pPlayer, CommonResources* resources, int hp)
 	, m_enemyBS{}
 	, m_commonResources{ resources }
 	, m_currentHP{ hp }
-	, m_attackCooldown{ 3.0f }
+	, m_attackCooldown{ EnemyParameters::ATTACK_COOLDOWN }
 	, m_enemyModel{}
 	, m_enemyAI{}
 	, m_pHPBar{}
@@ -81,14 +82,14 @@ void Enemy::Initialize()
 	m_enemyBullets = std::make_unique<EnemyBullets>(this);
 	m_enemyBullets->Initialize(m_commonResources);
 	// 乱数生成
-	Vector3 position = Vector3(GenerateRandomMultiplier(-50.0f, 50.0f)); // 一様分布
+	Vector3 position = Vector3(GenerateRandomMultiplier(-EnemyParameters::ENEMY_SPAWN_RADIUS, EnemyParameters::ENEMY_SPAWN_RADIUS)); // 一様分布
 	// 敵の初期位置を設定
 	m_position = Vector3{ position.x, 0.0f,position.z };// 敵の初期位置を設定
 	// 敵の座標を設定
 	m_enemyAI->SetPosition(m_position);
 	// 境界球の初期化
 	m_enemyBS.Center = m_position;
-	m_enemyBS.Radius = 1.5f;
+	m_enemyBS.Radius = EnemyParameters::NORMAL_ENEMY_RADIUS;
 
 }
 // 更新
@@ -156,7 +157,7 @@ void Enemy::ShootBullet()
 {
 	m_attackCooldown = m_enemyAI->GetEnemyAttack()->GetCoolTime();
 	// 攻撃のクールダウンタイムを管理
-	if (m_attackCooldown <= ATTACK_INTERVAL)
+	if (m_attackCooldown <= EnemyParameters::ATTACK_INTERVAL)
 	{
 		m_audioManager->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
 		// クォータニオンから方向ベクトルを計算
@@ -168,6 +169,6 @@ void Enemy::ShootBullet()
 		// 弾を発射
 		m_enemyBullets->CreateBullet(0.15f, EnemyBullet::BulletType::STRAIGHT);
 		// クールダウンタイムをリセット
-		m_enemyAI->GetEnemyAttack()->SetCoolTime(3.0f);
+		m_enemyAI->GetEnemyAttack()->SetCoolTime(EnemyParameters::ATTACK_COOLDOWN);
 	}
 }

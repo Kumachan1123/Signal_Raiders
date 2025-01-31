@@ -51,7 +51,7 @@ void BossAttack::RotateTowardsPlayer(DirectX::SimpleMath::Vector3 playerPos)
 // ボスの位置をプレイヤー方向に更新
 void BossAttack::MoveTowardsPlayer(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
 {
-	m_position += Seek(m_pBoss->GetPosition(), playerPos, elapsedTime * 2);
+	m_position += Seek(m_pBoss->GetPosition(), playerPos, elapsedTime * EnemyParameters::BOSS_CHASE_SPEED);
 }
 
 // クールダウンの管理
@@ -60,7 +60,7 @@ void BossAttack::ManageAttackCooldown(float elapsedTime)
 	m_attackCooldown -= elapsedTime;
 	if (m_attackCooldown <= 0.0f)// クールダウンが0を下回ったら
 	{
-		m_attackCooldown = ATTACK_INTERVAL;  // クールダウンリセット
+		m_attackCooldown = EnemyParameters::ATTACK_INTERVAL;  // クールダウンリセット
 		m_pBoss->SetState(IState::EnemyState::ATTACK);  // 攻撃状態に遷移
 	}
 }

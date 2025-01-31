@@ -20,7 +20,7 @@ Player::Player(CommonResources* commonResources)
 	m_damageTime{ 0.0f },
 	m_timer{ 0.0f },
 	m_SEVolume{ 0.0f },
-	m_VolumeCorrection{ 1.0f },
+	m_VolumeCorrection{ 0.0f },
 	m_playerDir{},
 	m_isKillAll{ false },
 	m_isCheat{ false }

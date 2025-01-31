@@ -13,6 +13,7 @@
 #include "Game/Player/Player.h"
 #include "Game/Wifi/Wifi.h"
 #include "Game/Stage/Wall/Wall.h"
+#include "Game/Enemy/Parameters/EnemyParameters.h"
 // 前方宣言
 class CommonResources;
 class IEnemy;
@@ -31,12 +32,13 @@ private:
 		int bossHP;
 		Boss::BossBulletType bulletType;
 	};
-	const std::unordered_map<int, StageSettings> stageData = {
-	{0, {5, 100, Boss::BossBulletType::NORMAL}},
-	{1, {10, 200, Boss::BossBulletType::NORMAL}},
-	{2, {20, 300, Boss::BossBulletType::TWIN}},
-	{3, {30, 500, Boss::BossBulletType::THREE}},
-	{4, {40, 1000, Boss::BossBulletType::SPIRAL}}
+	const std::unordered_map<int, StageSettings> stageData =
+	{
+		{0, {5, 100, Boss::BossBulletType::NORMAL}},
+		{1, {10, 200, Boss::BossBulletType::NORMAL}},
+		{2, {20, 300, Boss::BossBulletType::TWIN}},
+		{3, {30, 500, Boss::BossBulletType::THREE}},
+		{4, {40, 1000, Boss::BossBulletType::SPIRAL}}
 	};
 
 private:
@@ -83,7 +85,7 @@ private:
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
 	// SEの音量
-	float m_SEVolume = 0.0f;
+	float m_SEVolume;
 	// ボスの弾の種類
 	Boss::BossBulletType m_bossBulletType;
 

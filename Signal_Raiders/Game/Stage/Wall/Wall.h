@@ -17,6 +17,8 @@
 class Wall
 {
 public:
+	static const int WALL_NUM = 4;
+public:
 	// データ受け渡し用コンスタントバッファ(送信側)
 	struct ConstBuffer
 	{
@@ -34,9 +36,9 @@ private:
 	// 壁テクスチャ
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_pWallTexture;
 	// 壁の頂点
-	DirectX::VertexPositionTexture m_wall[4][4];
+	DirectX::VertexPositionTexture m_wall[WALL_NUM][WALL_NUM];
 	// 壁の当たり判定
-	DirectX::BoundingBox m_wallBox[4];
+	DirectX::BoundingBox m_wallBox[WALL_NUM];
 	// ワールドビュープロジェクション行列
 	DirectX::SimpleMath::Matrix m_world;
 	DirectX::SimpleMath::Matrix m_view;
@@ -84,6 +86,7 @@ public:
 	void Update(float elapsedTime);
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 	DirectX::BoundingBox& GetBoundingBox(int index) { return m_wallBox[index]; }
+	int GetWallNum() { return WALL_NUM; }
 private:
 
 	void CreateShader();

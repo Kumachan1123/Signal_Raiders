@@ -19,9 +19,7 @@ private:
 	DirectX::SimpleMath::Quaternion m_rotation;//‰ñ“]
 	DirectX::SimpleMath::Vector3 m_velocity;// ˆÚ“®‘¬“x
 	float m_rotationSpeed;//‰ñ“]‘¬“x
-	const float RANDOM_MAX = 2.0f;
-	const float RANDOM_MIN = 0.5f;
-	float  m_time = 0.0f;  // ŠÔ‚Ì‰Šú‰»
+	float  m_time;  // ŠÔ‚Ì‰Šú‰»
 public:
 	//	getter
 	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }

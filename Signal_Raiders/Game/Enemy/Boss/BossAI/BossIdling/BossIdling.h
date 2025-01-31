@@ -6,6 +6,7 @@
 #ifndef BOSS_IDLING_DEFINED
 #define BOSS_IDLING_DEFINED
 #include "Game/Interface/IState.h"
+#include "Game/Enemy/Parameters/EnemyParameters.h"
 class BossAI;
 //前方宣言
 
@@ -19,9 +20,7 @@ private:
 	DirectX::SimpleMath::Quaternion m_rotation;//回転
 	DirectX::SimpleMath::Vector3 m_velocity;// 移動速度
 	float m_rotationSpeed;//回転速度
-	const float RANDOM_MAX = 2.0f;
-	const float RANDOM_MIN = 0.5f;
-	float  m_time = 0.0f;  // 時間の初期化
+	float  m_time;  // 時間の初期化
 	float m_angle;//角度
 
 public:
