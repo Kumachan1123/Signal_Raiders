@@ -39,8 +39,6 @@ void PlayerBullets::Update(float elapsedTime)
 {
 	//	ƒJƒƒ‰‚ðŽæ“¾
 	auto camera = m_pPlayer->GetCamera();
-	DirectX::SimpleMath::Vector3 dir = camera->GetDirection();
-
 	for (auto it = m_bullets.begin(); it != m_bullets.end();)
 	{
 		auto& bullet = *it;// ’e‚ðŽæ“¾
@@ -49,7 +47,7 @@ void PlayerBullets::Update(float elapsedTime)
 		bullet->SetCameraTarget(camera->GetTargetPosition());
 		bullet->SetCameraUp(camera->GetUpVector());
 		// ’e‚ðXV
-		bullet->Update(dir, elapsedTime);
+		bullet->Update(elapsedTime);
 		// ’e‚ªŽõ–½‚ðŒ}‚¦‚é‚©’n–Ê‚É’…‚¢‚½‚çíœ
 		if (CheckCollisionWithEnemies(bullet) || bullet->IsExpired() || bullet->GetBulletPosition().y <= DELETE_BULLET_POSITION)
 		{

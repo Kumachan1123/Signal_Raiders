@@ -78,9 +78,8 @@ void PlayerBullet::Initialize(CommonResources* resources)
 
 }
 // 更新
-void PlayerBullet::Update(DirectX::SimpleMath::Vector3& Direction, float elapsedTime)
+void PlayerBullet::Update(float elapsedTime)
 {
-	UNREFERENCED_PARAMETER(Direction);
 	m_angle += 6.0f;
 	if (m_angle > 360)m_angle = 0;
 	// カメラが向いている方向に速度を与える

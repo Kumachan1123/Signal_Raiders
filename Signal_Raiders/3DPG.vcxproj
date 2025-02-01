@@ -190,6 +190,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Game\DamageEffect\DamageEffects\DamageEffects.h" />
     <ClInclude Include="Game\Enemy\Boss\BossSheild\BossSheild.h" />
+    <ClInclude Include="Game\Enemy\BulletManager\BulletManager.h" />
     <ClInclude Include="Game\Enemy\EnemyAI\EnemySpin\EnemySpin.h" />
     <ClInclude Include="Game\Enemy\EnemyFactory\EnemyFactory.h" />
     <ClInclude Include="Game\Enemy\EnemyType\EnemyType.h" />
@@ -290,6 +291,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Game\DamageEffect\DamageEffects\DamegeEffects.cpp" />
     <ClCompile Include="Game\Enemy\Boss\BossSheild\BossSheild.cpp" />
+    <ClCompile Include="Game\Enemy\BulletManager\BulletManager.cpp" />
     <ClCompile Include="Game\Enemy\EnemyAI\EnemySpin\EnemySpin.cpp" />
     <ClCompile Include="Game\Enemy\EnemyFactory\EnemyFactory.cpp" />
     <ClCompile Include="Game\Enemy\Parameters\EnemyParameters.cpp" />

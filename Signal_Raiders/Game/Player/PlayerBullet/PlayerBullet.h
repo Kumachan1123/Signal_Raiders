@@ -58,7 +58,7 @@ public:
 
 	void MoveStop();// ’e‚ÌˆÚ“®‚ğ~‚ß‚é
 	void Initialize(CommonResources* resources);// ‰Šú‰»
-	void Update(DirectX::SimpleMath::Vector3& Direction, float elapsedTime);// XV
+	void Update(float elapsedTime);// XV
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);// •`‰æ
 	void RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);// ‰e‚Ì•`‰æ
 	void DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);// “–‚½‚è”»’è‚Ì•`‰æ

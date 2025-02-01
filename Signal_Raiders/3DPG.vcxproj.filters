@@ -303,6 +303,7 @@
     <ClInclude Include="Game\Enemy\EnemyType\EnemyType.h" />
     <ClInclude Include="Game\Enemy\EnemyFactory\EnemyFactory.h" />
     <ClInclude Include="Game\Enemy\Parameters\EnemyParameters.h" />
+    <ClInclude Include="Game\Enemy\BulletManager\BulletManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -454,6 +455,7 @@
     <ClCompile Include="Game\Player\PlayerUI\PlayGuide\PlayGuide.cpp" />
     <ClCompile Include="Game\Enemy\EnemyFactory\EnemyFactory.cpp" />
     <ClCompile Include="Game\Enemy\Parameters\EnemyParameters.cpp" />
+    <ClCompile Include="Game\Enemy\BulletManager\BulletManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
