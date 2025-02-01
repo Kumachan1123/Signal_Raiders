@@ -21,7 +21,7 @@ public:
 	// コモンリソース
 	CommonResources* m_commonResources;
 	// プレイヤーの弾
-	std::vector<std::unique_ptr<PlayerBullet>> m_playerBullet;
+	std::vector<std::unique_ptr<PlayerBullet>> m_bullets;
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
 	// プレイヤー
@@ -47,7 +47,7 @@ public:
 public:
 	bool GetIsBullet() const { return m_isBullet; }
 	bool GetIsBulletBorned() const { return m_isBulletBorned; }
-	std::vector<std::unique_ptr<PlayerBullet>>& GetPlayerBullet() { return m_playerBullet; }
+	std::vector<std::unique_ptr<PlayerBullet>>& GetPlayerBullet() { return m_bullets; }
 	// Setter
 public:
 	void SetIsBullet(bool isBullet) { m_isBullet = isBullet; }

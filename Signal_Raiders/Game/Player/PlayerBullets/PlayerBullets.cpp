@@ -4,6 +4,7 @@
 */
 #include "pch.h"
 #include "PlayerBullets.h"
+using namespace DirectX::SimpleMath;
 
 PlayerBullets::PlayerBullets(CommonResources* commonResources)
 	:
@@ -17,8 +18,8 @@ PlayerBullets::PlayerBullets(CommonResources* commonResources)
 PlayerBullets::~PlayerBullets()
 {
 	// プレイヤーの弾を削除
-	for (auto& bullet : m_playerBullet)bullet.reset();
-	m_playerBullet.clear();
+	for (auto& bullet : m_bullets)bullet.reset();
+	m_bullets.clear();
 }
 
 
@@ -26,9 +27,8 @@ void PlayerBullets::Initialize(Player* pPlayer, EnemyManager* pEnemies)
 {
 	m_pPlayer = pPlayer;// プレイヤーのポインターを取得
 	m_pEnemyManager = pEnemies;// 敵全体のポインターを取得
-	// オーディオマネージャーを初期化する
-	m_audioManager->Initialize();
 	// 効果音の初期化
+	m_audioManager->Initialize();
 	m_audioManager->LoadSound("Resources/Sounds/playerBullet.mp3", "Shoot");
 	m_audioManager->LoadSound("Resources/Sounds/Hit.mp3", "Hit");
 }
@@ -37,79 +37,69 @@ void PlayerBullets::Initialize(Player* pPlayer, EnemyManager* pEnemies)
 //---------------------------------------------------------
 void PlayerBullets::Update(float elapsedTime)
 {
-	// プレイヤーからカメラの情報を取得
-	DirectX::SimpleMath::Vector3 dir = m_pPlayer->GetCamera()->GetDirection();
-	DirectX::SimpleMath::Vector3 playerPos = m_pPlayer->GetCamera()->GetEyePosition();
-	DirectX::SimpleMath::Vector3 playerTarget = m_pPlayer->GetCamera()->GetTargetPosition();
-	DirectX::SimpleMath::Vector3 playerUp = m_pPlayer->GetCamera()->GetUpVector();
-	// プレイヤーの弾を更新
-	for (auto it = m_playerBullet.begin(); it != m_playerBullet.end(); )
+	//	カメラを取得
+	auto camera = m_pPlayer->GetCamera();
+	DirectX::SimpleMath::Vector3 dir = camera->GetDirection();
+
+	for (auto it = m_bullets.begin(); it != m_bullets.end();)
 	{
-		(*it)->SetCameraEye(m_pPlayer->GetCamera()->GetEyePosition());// カメラの位置を設定
-		(*it)->SetCameraTarget(m_pPlayer->GetCamera()->GetTargetPosition());// カメラの注視点を設定
-		(*it)->SetCameraUp(m_pPlayer->GetCamera()->GetUpVector());	// カメラの上方向を設定
-		(*it)->Update(dir, elapsedTime);// 弾を更新
-		if ((*it)->IsExpired() || (*it)->GetBulletPosition().y <= DELETE_BULLET_POSITION)
+		auto& bullet = *it;// 弾を取得
+		// カメラ情報を弾に適用
+		bullet->SetCameraEye(camera->GetEyePosition());
+		bullet->SetCameraTarget(camera->GetTargetPosition());
+		bullet->SetCameraUp(camera->GetUpVector());
+		// 弾を更新
+		bullet->Update(dir, elapsedTime);
+		// 弾が寿命を迎えるか地面に着いたら削除
+		if (CheckCollisionWithEnemies(bullet) || bullet->IsExpired() || bullet->GetBulletPosition().y <= DELETE_BULLET_POSITION)
 		{
-			it = m_playerBullet.erase(it);// 弾が寿命を迎えるか地面に着いたら削除
+			it = m_bullets.erase(it);
 		}
 		else
 		{
-			// 敵とプレイヤーの弾の当たり判定
-			if (CheckCollisionWithEnemies(*it))it = m_playerBullet.erase(it);
-			else ++it;
+			++it;
 		}
 	}
+
+
 }
 //---------------------------------------------------------
 // 敵とプレイヤーの弾の当たり判定
 //---------------------------------------------------------
 bool PlayerBullets::CheckCollisionWithEnemies(const std::unique_ptr<PlayerBullet>& bullet)
 {
-	bool isHit = false;// ヒットフラグを初期化
 	for (auto& enemy : m_pEnemyManager->GetEnemies())
 	{
-		// 敵とプレイヤーの弾の当たり判定
 		if (bullet->GetBoundingSphere().Intersects(enemy->GetBoundingSphere()))
 		{
-			isHit = true;// ヒットフラグを立てる
 			if (enemy->GetCanAttack() == true)
 				enemy->SetEnemyHP(bullet->Damage());// 敵のHPを減らす
-			if (auto boss = dynamic_cast<Boss*>(enemy.get()))
-			{
-				m_pEnemyManager->GetEffect().push_back(std::make_unique<Effect>(m_commonResources,
-					Effect::ParticleType::ENEMY_HIT,
-					enemy->GetPosition(),
-					10.0f,
-					enemy->GetMatrix()));
-			}
-			else
-			{
-				// エフェクトを追加
-				m_pEnemyManager->GetEffect().push_back(std::make_unique<Effect>(m_commonResources,
-					Effect::ParticleType::ENEMY_HIT,
-					enemy->GetPosition(),
-					3.0f,
-					enemy->GetMatrix()));
-			}
+			// エフェクトを追加
+			float effectSize = dynamic_cast<Boss*>(enemy.get()) ? 10.0f : 3.0f;
+			m_pEnemyManager->GetEffect().push_back(std::make_unique<Effect>(
+				m_commonResources,
+				Effect::ParticleType::ENEMY_HIT,
+				enemy->GetPosition(),
+				effectSize,
+				enemy->GetMatrix()));
 			// プレイヤーの弾が敵に当たったフラグを立てる
-			enemy->SetEnemyHitByPlayerBullet(true);
-			// ヒットSEを再生
-			m_audioManager->PlaySound("Hit", m_pPlayer->GetVolume() * HIT_VOLUME);
-			return true; // 当たったらtrueを返す
+			enemy->SetEnemyHitByPlayerBullet(true);// ヒットフラグ
+			m_audioManager->PlaySound("Hit", m_pPlayer->GetVolume() * HIT_VOLUME);// SEを再生
+			return true;// 当たったらtrueを返す
 		}
 	}
-	return false; // 当たらなかったらfalseを返す
+	return false;// 当たらなかったらfalseを返す
+
 }
 //---------------------------------------------------------
 // プレイヤーの弾を描画する
 //---------------------------------------------------------
 void PlayerBullets::Render()
 {
-	using namespace DirectX::SimpleMath;
-	Matrix view = m_pPlayer->GetCamera()->GetViewMatrix();// プレイヤーのカメラからビュー行列を取得
-	Matrix proj = m_pPlayer->GetCamera()->GetProjectionMatrix();// プレイヤーのカメラから射影行列を取得
-	for (auto& bullet : m_playerBullet)
+	auto camera = m_pPlayer->GetCamera();
+	Matrix view = camera->GetViewMatrix();// プレイヤーのカメラからビュー行列を取得
+	Matrix proj = camera->GetProjectionMatrix();// プレイヤーのカメラから射影行列を取得
+	for (auto& bullet : m_bullets)
 	{
 		bullet->Render(view, proj);// プレイヤーの弾を描画
 		bullet->RenderShadow(view, proj);// プレイヤーの弾の影を描画

@@ -243,7 +243,7 @@ void Boss::CreateBullet()
 // ’†‰›‚Ì’e‚ð”­ŽË
 void Boss::CreateCenterBullet(EnemyBullet::BulletType type)
 {
-	m_pEnemyBullets->SetEnemyPosition(m_bulletPosCenter);
+	m_pEnemyBullets->SetEnemyBulletSpawnPosition(m_bulletPosCenter);
 	m_pEnemyBullets->SetDirection(m_bulletDirection);
 	m_pEnemyBullets->CreateBullet(EnemyParameters::BOSS_BULLET_SIZE, type);
 }
@@ -255,7 +255,7 @@ void Boss::CreateLeftBullet(float angleOffset, EnemyBullet::BulletType type)
 	Quaternion leftRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, angleOffset);
 	Vector3 leftDirection = Vector3::Transform(m_bulletDirection, leftRotation);
 	// ”­ŽËˆÊ’u‚ðÝ’è
-	m_pEnemyBullets->SetEnemyPosition(m_bulletPosLeft);
+	m_pEnemyBullets->SetEnemyBulletSpawnPosition(m_bulletPosLeft);
 	m_pEnemyBullets->SetDirection(leftDirection);
 	m_pEnemyBullets->CreateBullet(EnemyParameters::BOSS_BULLET_SIZE, type);
 }
@@ -267,7 +267,7 @@ void Boss::CreateRightBullet(float angleOffset, EnemyBullet::BulletType type)
 	Quaternion rightRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, -angleOffset);
 	Vector3 rightDirection = Vector3::Transform(m_bulletDirection, rightRotation);
 	// ”­ŽËˆÊ’u‚ðÝ’è
-	m_pEnemyBullets->SetEnemyPosition(m_bulletPosRight);
+	m_pEnemyBullets->SetEnemyBulletSpawnPosition(m_bulletPosRight);
 	m_pEnemyBullets->SetDirection(rightDirection);
 	m_pEnemyBullets->CreateBullet(EnemyParameters::BOSS_BULLET_SIZE, type);
 }
@@ -276,7 +276,7 @@ void Boss::CreateRightBullet(float angleOffset, EnemyBullet::BulletType type)
 void Boss::CreateVerticalBullet()
 {
 	// ^‰º‚É—Ž‚¿‚é’e‚ð”­ŽË
-	m_pEnemyBullets->SetEnemyPosition(m_bulletPosCenter);
+	m_pEnemyBullets->SetEnemyBulletSpawnPosition(m_bulletPosCenter);
 	m_pEnemyBullets->CreateBullet(EnemyParameters::BOSS_BULLET_SIZE, EnemyBullet::BulletType::VERTICAL);
 }
 

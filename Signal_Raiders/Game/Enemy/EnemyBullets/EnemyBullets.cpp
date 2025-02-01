@@ -13,7 +13,7 @@ using namespace DirectX::SimpleMath;
 
 // コンストラクタ
 EnemyBullets::EnemyBullets(IEnemy* pEnemy)
-	:m_commonResources{}
+	:m_commonResources{ nullptr }
 	, m_pEnemy{ pEnemy }
 {
 }
@@ -37,37 +37,39 @@ void EnemyBullets::Update(float elapsedTime)
 	Vector3 playerPos = m_pEnemy->GetCamera()->GetEyePosition();
 	Vector3 playerTarget = m_pEnemy->GetCamera()->GetTargetPosition();
 	Vector3 playerUp = m_pEnemy->GetCamera()->GetUpVector();
-
-	// 弾の更新と有効な弾を新しいリストに移動する
+	// すべての弾を更新
 	for (auto& bullet : m_bullets)
 	{
-		bullet->SetCameraEye(playerPos);// カメラの位置を設定
-		bullet->SetCameraTarget(playerTarget);// カメラの注視点を設定
-		bullet->SetCameraUp(playerUp);	// カメラの上方向を設定
-		bullet->SetEnemyPosition(enemyPosition);// 敵の位置を設定
-		bullet->Update(elapsedTime); // 弾の更新
+		bullet->SetCameraEye(playerPos);
+		bullet->SetCameraTarget(playerTarget);
+		bullet->SetCameraUp(playerUp);
+		bullet->SetEnemyPosition(enemyPosition);
+		bullet->Update(elapsedTime);
 
-		// 寿命を迎えていない弾だけを新しいリストに追加する
-		if (!bullet->IsExpired() && !m_pEnemy->GetPlayerHitByEnemyBullet())
+		// プレイヤーとの当たり判定
+		m_pEnemy->SetBulletBoundingSphere(bullet->GetBoundingSphere());
+		if (m_pEnemy->GetBulletBoundingSphere().Intersects(m_pEnemy->GetPlayerBoundingSphere()))
 		{
-			m_pEnemy->SetBulletBoundingSphere(bullet->GetBoundingSphere());
-			m_pEnemy->SetPlayerHitByEnemyBullet(m_pEnemy->GetBulletBoundingSphere().Intersects(m_pEnemy->GetPlayerBoundingSphere()));
-			if (m_pEnemy->GetPlayerHitByEnemyBullet())
-			{
-				m_pEnemy->SetPlayerHitByEnemyBullet(m_pEnemy->GetPlayerHitByEnemyBullet());// プレイヤーに当たったフラグを設定
-				m_pEnemy->GetPlayer()->SetEnemyBulletDirection(bullet->GetBulletDirection());// プレイヤーにダメージを与える敵の向きを設定
-				m_pEnemy->GetPlayer()->SetisPlayEffect(true);// エフェクト再生フラグを設定
-				m_pEnemy->GetPlayer()->SetisPlayerDamage(true);// プレイヤーにダメージを与える
-				continue;
-			}
-			// 弾のY座標が-1以下になったら弾を消す
-			if (bullet->GetBulletPosition().y < 0.0f && bullet->GetBulletType() != EnemyBullet::BulletType::VERTICAL)continue;
-			newBullets.push_back(std::move(bullet));
+			m_pEnemy->SetPlayerHitByEnemyBullet(true);
+			m_pEnemy->GetPlayer()->SetEnemyBulletDirection(bullet->GetBulletDirection());
+			m_pEnemy->GetPlayer()->SetisPlayEffect(true);
+			m_pEnemy->GetPlayer()->SetisPlayerDamage(true);
+			continue; // 当たった弾は処理しない
 		}
 	}
 
-	// m_bullets を新しいリストで置き換える
-	m_bullets = std::move(newBullets);
+	// 失効した弾を削除
+	m_bullets.erase(std::remove_if(m_bullets.begin(), m_bullets.end(),
+		[this](const std::unique_ptr<EnemyBullet>& bullet)
+		{	// 条件リスト
+			// ① 弾が寿命を迎えた
+			// ② Y座標が0以下（ただし垂直弾は例外）
+			// ③ プレイヤーに当たった
+			return bullet->IsExpired() ||
+				(bullet->GetBulletPosition().y < 0.0f && bullet->GetBulletType() != EnemyBullet::BulletType::VERTICAL) ||
+				m_pEnemy->GetPlayerHitByEnemyBullet();
+		}),
+		m_bullets.end());
 }
 
 // 描画
@@ -87,11 +89,10 @@ void EnemyBullets::CreateBullet(float size, EnemyBullet::BulletType type)
 {
 	// プレイヤーからカメラの情報を取得
 	Vector3 playerPos = m_pEnemy->GetCamera()->GetEyePosition();
-
 	// 弾を発射する
 	auto bullet = std::make_unique<EnemyBullet>(size);
 	bullet->Initialize(m_commonResources, type);
-	bullet->MakeBall(m_enemyPosition, m_direction, playerPos);
+	bullet->MakeBall(m_bulletSpawnPos, m_direction, playerPos);
 	m_bullets.push_back(std::move(bullet));
 }
 

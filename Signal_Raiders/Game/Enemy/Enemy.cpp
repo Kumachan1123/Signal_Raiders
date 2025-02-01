@@ -165,7 +165,7 @@ void Enemy::ShootBullet()
 		// 弾が飛ぶ方向を設定
 		m_enemyBullets->SetDirection(direction);
 		// 発射位置を設定
-		m_enemyBullets->SetEnemyPosition(m_position);
+		m_enemyBullets->SetEnemyBulletSpawnPosition(m_position);
 		// 弾を発射
 		m_enemyBullets->CreateBullet(EnemyParameters::ENEMY_BULLET_SIZE, EnemyBullet::BulletType::STRAIGHT);
 		// クールダウンタイムをリセット

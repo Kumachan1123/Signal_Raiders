@@ -152,7 +152,7 @@ void VerticalAttacker::ShootBullet()
 		// ’e‚ª”ò‚Ô•ûŒü‚ðÝ’è
 		m_enemyBullets->SetDirection(direction);
 		// ”­ŽËˆÊ’u‚ðÝ’è
-		m_enemyBullets->SetEnemyPosition(m_position);
+		m_enemyBullets->SetEnemyBulletSpawnPosition(m_position);
 
 		// ’e‚ð”­ŽË
 		m_enemyBullets->CreateBullet(EnemyParameters::ENEMY_BULLET_SIZE, EnemyBullet::BulletType::VERTICAL);

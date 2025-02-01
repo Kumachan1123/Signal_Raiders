@@ -27,7 +27,7 @@ public:
 	bool m_isPlayerHitByEnemyBullet = false;// “G‚Ì’e‚ªƒvƒŒƒCƒ„[‚É“–‚½‚Á‚½‚©
 	std::vector<std::unique_ptr<EnemyBullet>> m_bullets; // ’e‚ÌƒŠƒXƒg
 	std::vector<std::unique_ptr<Particle>> m_bulletTrails; // ’e‚Ì‹OÕƒŠƒXƒg
-	DirectX::SimpleMath::Vector3 m_enemyPosition;		// “G‚ÌÀ•W
+	DirectX::SimpleMath::Vector3 m_bulletSpawnPos;		// “G‚Ì’e‚Ì”­ËˆÊ’u
 	DirectX::SimpleMath::Vector3 m_direction;		// ’e‚Ì•ûŒü
 	// ŠÖ”
 	EnemyBullets(IEnemy* pEnemy);
@@ -45,5 +45,5 @@ public:
 	void SetPlayerHitByEnemyBullet(bool hit) { m_isPlayerHitByEnemyBullet = hit; }// “G‚Ì’e‚ªƒvƒŒƒCƒ„[‚É“–‚½‚Á‚½‚©
 	void SetRotateDirection(int direction);
 	void SetDirection(DirectX::SimpleMath::Vector3 dir) { m_direction = dir; }
-	void SetEnemyPosition(DirectX::SimpleMath::Vector3 pos) { m_enemyPosition = pos; }
+	void SetEnemyBulletSpawnPosition(DirectX::SimpleMath::Vector3 pos) { m_bulletSpawnPos = pos; }
 };
