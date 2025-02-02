@@ -9,6 +9,7 @@
 #include "Game/CommonResources.h"
 #include "Game/Particle/Particle.h"
 #include "Game/Interface/IEnemy.h"
+#include "Game/BulletParameters/BulletParameters.h"
 class CommonResources;
 
 class EnemyBullet
@@ -22,7 +23,6 @@ public:
 
 	};
 	BulletType m_bulletType;// ’e‚Ìí—Ş
-	const float BULLET_LIFETIME = 10.0f;			// õ–½
 private:
 	// ‹¤’ÊƒŠƒ\[ƒX
 	CommonResources* m_commonResources;
@@ -83,7 +83,7 @@ public:
 	void SetShooter(IEnemy* enemy) { m_pShooter = enemy; }
 	IEnemy* GetShooter() const { return m_pShooter; }
 	// ’e‚ª¶¬‚³‚ê‚Ä‚©‚ç‚ÌŒo‰ßŠÔ‚ªõ–½‚ğ’´‚¦‚½‚©‚Ç‚¤‚©‚ğ”»’è‚·‚é
-	bool IsExpired() const { return GetTime() >= BULLET_LIFETIME; }
+	bool IsExpired() const { return GetTime() >= BulletParameters::ENEMY_BULLET_LIFETIME; }
 
 	// —†ù’e‚Ì‰ñ“]•ûŒü‚ğŒˆ‚ß‚é
 	void SetRotateDirection(int direction) { m_rotateDirection = direction; }

@@ -5,6 +5,7 @@
 #include "pch.h"
 #include <SimpleMath.h>
 #include "Game/Player/PlayerBullet/PlayerBullet.h"
+#include "Game/KumachiLib/KumachiLib.h"
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
 #include "Libraries/MyLib/DebugString.h"
@@ -45,7 +46,7 @@ void PlayerBullet::Initialize(CommonResources* resources)
 	// 当たり判定可視化用クラスの初期化
 	DrawCollision::Initialize(m_commonResources);
 	// 弾の軌道ポインター
-	m_bulletTrail = std::make_unique<Particle>(ParticleUtility::Type::PLAYERTRAIL, SIZE);
+	m_bulletTrail = std::make_unique<Particle>(ParticleUtility::Type::PLAYERTRAIL, BulletParameters::PLAYER_BULLET_SIZE);
 	m_bulletTrail->Initialize(m_commonResources);
 
 	// 影用のピクセルシェーダー
@@ -74,20 +75,20 @@ void PlayerBullet::Initialize(CommonResources* resources)
 	m_velocity = Vector3::Zero;
 	m_position = Vector3::Zero;
 	m_boundingSphere.Center = m_position;
-	m_boundingSphere.Radius = .25;
+	m_boundingSphere.Radius = BulletParameters::COLLISION_RADIUS;
 
 }
 // 更新
 void PlayerBullet::Update(float elapsedTime)
 {
-	m_angle += 6.0f;
-	if (m_angle > 360)m_angle = 0;
+	m_angle += BulletParameters::BULLET_ROTATION_SPEED;
+	Clamp(m_angle, 0.0f, 360.0f);// 角度を0～360度に制限する
 	// カメラが向いている方向に速度を与える
 	m_velocity += m_direction;
 	// 移動量を正規化する
 	if (m_velocity.LengthSquared() > 0)m_velocity.Normalize();
 	// 移動量を補正する
-	m_velocity *= 0.75f;
+	m_velocity *= BulletParameters::ADJUST_MOVE;
 	// 実際に移動する
 	m_position += m_velocity;
 	// バウンディングスフィアの位置更新
@@ -104,9 +105,9 @@ void PlayerBullet::Update(float elapsedTime)
 void PlayerBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir)
 {
 	using namespace DirectX::SimpleMath;
-	m_position = pos + Vector3(0.0f, -1.0f, 0.0f);// 初期位置を設定
+	m_position = pos + BulletParameters::INITIAL_POSITION;// 初期位置を設定
 	m_direction = dir;// 方向を設定
-	m_direction.y += 0.0375f;// 上方向に補正
+	m_direction.y += BulletParameters::ADJUST_DIRECTION;// 上方向に補正
 }
 void PlayerBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
@@ -115,7 +116,7 @@ void PlayerBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
 	// 弾のサイズを設定
-	m_worldMatrix = Matrix::CreateScale(SIZE);
+	m_worldMatrix = Matrix::CreateScale(BulletParameters::PLAYER_BULLET_SIZE);
 	m_worldMatrix *= Matrix::CreateRotationX(DirectX::XMConvertToRadians(m_angle));
 	// 弾の座標を設定
 	m_worldMatrix *= Matrix::CreateTranslation(m_position);
@@ -136,7 +137,7 @@ void PlayerBullet::RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::Simpl
 	Vector3 lightDir = Vector3::UnitY;
 	lightDir.Normalize();
 	// 影行列の元を作る
-	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, 0.01f));
+	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, BulletParameters::SHADOW_PLANE);
 	shadowMatrix = m_worldMatrix * shadowMatrix;
 	// 影描画
 	m_model->Draw(context, *states, shadowMatrix, view, proj, true, [&]()

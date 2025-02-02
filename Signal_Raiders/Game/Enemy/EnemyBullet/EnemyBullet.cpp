@@ -1,6 +1,8 @@
 #include "pch.h"
+#include "EnemyBullet.h"
+#include "Game/BulletParameters/BulletParameters.h"
+#include "Game/KumachiLib/KumachiLib.h"
 #include <SimpleMath.h>
-#include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
 #include "Libraries/MyLib/DebugString.h"
@@ -76,15 +78,15 @@ void EnemyBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::Sim
 	m_position = pos;
 	m_direction = dir;
 	m_target = target;
-	m_bulletSpeed = 0.5f;
+	m_bulletSpeed = BulletParameters::SPIRAL_BULLET_SPEED;
 }
 
 // 更新
 void EnemyBullet::Update(float elapsedTime)
 {
 	// 角度を増加させる
-	m_angle += 6.0f;
-	if (m_angle > 360) m_angle = 0;
+	m_angle += BulletParameters::BULLET_ROTATION_SPEED;
+	Clamp(m_angle, 0.0f, 360.0f);// 角度を0～360度に制限する
 
 	// 弾の種類によって処理を分岐
 	switch (m_bulletType)
@@ -135,7 +137,7 @@ void EnemyBullet::RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::Simple
 	Vector3 lightDir = Vector3::UnitY;
 	lightDir.Normalize();
 	// 影行列の元を作る
-	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, 0.01f));
+	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, BulletParameters::SHADOW_PLANE);
 	shadowMatrix = BulletWorldMatrix() * shadowMatrix;
 	// 影描画
 	m_model->Draw(context, *states, shadowMatrix * Matrix::Identity, view, proj, true, [&]()
@@ -177,10 +179,9 @@ void EnemyBullet::StraightBullet()
 	}
 	// 弾の方向をプレイヤーの方向に向ける
 	m_direction = toPlayer;
-	m_direction.y -= 0.1f;// 下に若干ずらす
+	m_direction.y -= BulletParameters::STRAIGHT_ADJUST_DIRECTION;// 下に若干ずらす
 	// 弾の速度を遅くする
-	float bulletSpeed = .2f; // 適当な速度を設定する（任意の値、調整可能）
-	m_velocity = m_direction * bulletSpeed;
+	m_velocity = m_direction * BulletParameters::STRAIGHT_BULLET_SPEED;
 	// プレイヤーの方向に向かって弾を飛ばす
 	m_position += m_velocity;
 	m_boundingSphere.Center = m_position;//境界球に座標を渡す
@@ -203,10 +204,10 @@ DirectX::SimpleMath::Matrix EnemyBullet::BulletWorldMatrix()
 void EnemyBullet::VerticalBullet()
 {
 	using namespace DirectX::SimpleMath;
-	if (m_position.y >= 0.50f)
+	if (m_position.y >= BulletParameters::VERTICAL_BULLET_LANDING_POSITION)// 着弾位置に到達していない
 	{
 		// 真下に落とす
-		m_velocity = Vector3(0.0f, -0.15f, 0.0f);
+		m_velocity = BulletParameters::VERTICAL_BULLET_LANDING_VELOCITY;
 	}
 	else//着弾してから
 	{
@@ -219,9 +220,7 @@ void EnemyBullet::VerticalBullet()
 		}
 		// 弾の方向をプレイヤーの方向に向ける
 		m_direction = Vector3(toPlayer.x, 0, toPlayer.z);
-		// 弾の速度を遅くする
-		float bulletSpeed = 1.f; // 適当な速度を設定する（任意の値、調整可能）
-		m_velocity = m_direction * bulletSpeed;
+		m_velocity = m_direction;
 	}
 	m_position += m_velocity;
 	m_boundingSphere.Center = m_position;
@@ -241,15 +240,15 @@ void EnemyBullet::SpiralBullet()
 	}
 
 	// プレイヤー中心に円を描くようにオフセット計算
-	float spiralRadius = 1.0f; // プレイヤー中心からのスパイラルの半径
-	float spiralSpeed = 5.0f;  // スパイラルの回転速度
+	float spiralRadius = BulletParameters::SPIRAL_RADIUS; // プレイヤー中心からのスパイラルの半径
+	float spiralSpeed = BulletParameters::SPIRAL_BULLET_ROTATION_SPEED;  // スパイラルの回転速度
 
 	// 時間によってプレイヤー周りを回転する位置を設定
 	DirectX::SimpleMath::Vector3 spiralOffset = {
 		0.0f,
-		spiralRadius * cosf(spiralSpeed * m_time * 2.5f) * distanceToPlayer * 0.1f,
+		spiralRadius * cosf(spiralSpeed * m_time * BulletParameters::SPIRAL_ROTATION_FREQUENCY) * distanceToPlayer * BulletParameters::SPIRAL_RADIUS_SCALE,
 
-		spiralRadius * sinf(spiralSpeed * m_time * 2.5f) * distanceToPlayer * 0.1f * m_rotateDirection
+		spiralRadius * sinf(spiralSpeed * m_time * BulletParameters::SPIRAL_ROTATION_FREQUENCY) * distanceToPlayer * BulletParameters::SPIRAL_DEPTH_SCALE * m_rotateDirection
 	};
 
 	// プレイヤーに向かう方向とスパイラル効果をミックス
@@ -263,5 +262,5 @@ void EnemyBullet::SpiralBullet()
 	m_position += m_velocity;
 	m_boundingSphere.Center = m_position;
 	// 弾の速度を少し遅くする
-	m_bulletSpeed -= 0.001f;
+	m_bulletSpeed -= BulletParameters::SPIRAL_BULLET_SPEED_DECAY;
 }

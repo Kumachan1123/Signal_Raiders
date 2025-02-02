@@ -8,18 +8,16 @@ class CommonResources;
 #include "Game/CommonResources.h"
 #include "Game/Particle/Particle.h"
 #include "Game/ParticleUtility/ParticleUtility.h"
+#include "Game/BulletParameters/BulletParameters.h"
 class PlayerBullet
 {
 	//変数
 public:
-	const float SIZE = 0.1f;// 弾の大きさ
 
 	DirectX::SimpleMath::Vector3 m_position;		// 弾の座標
 	DirectX::SimpleMath::Vector3 m_velocity;		// 弾の速さ
 	DirectX::SimpleMath::Vector3 m_direction;		// 弾が飛ぶ方向
 	float m_time;									// 生存時間
-	const float BULLET_LIFETIME = 1.5;				// 寿命
-	const int DAMAGE = 10;						// 敵に与えるダメージ
 	// ジオメトリックプリミティブ弾
 	std::unique_ptr<DirectX::Model> m_model;
 private:
@@ -39,12 +37,7 @@ private:
 	// 弾の軌跡ポインター
 	std::unique_ptr<Particle> m_bulletTrail;
 
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
-	// 	//デバッグ用
-	// ベーシックエフェクト
-	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
-	// 入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
+
 	// テクスチャ
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_trailTexture;
 	// カメラ
@@ -74,7 +67,7 @@ public:
 	void SetCameraTarget(DirectX::SimpleMath::Vector3 target) { m_bulletTrail->SetCameraTarget(target); m_cameraTarget = target; }
 	void SetCameraUp(DirectX::SimpleMath::Vector3 up) { m_bulletTrail->SetCameraUp(up); m_cameraUp = up; }
 	// 弾が生成されてからの経過時間が寿命を超えたかどうかを判定する
-	bool IsExpired() const { return m_time >= BULLET_LIFETIME; }
+	bool IsExpired() const { return m_time >= BulletParameters::PLAYER_BULLET_LIFETIME; }
 	// 敵にダメージを与える
-	int Damage()const { return DAMAGE; }
+	int Damage()const { return BulletParameters::DAMAGE; }
 };

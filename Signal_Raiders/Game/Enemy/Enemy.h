@@ -14,7 +14,6 @@ class EnemyAI;
 class EnemyHPBar;
 class EnemyBullet;
 class EnemyModel;
-//class EnemyBullets;
 class EnemyManager;
 class FPS_Camera;
 class Enemy : public IEnemy
@@ -26,8 +25,6 @@ private:
 	std::unique_ptr<EnemyModel>		m_enemyModel;// 敵のモデル
 	std::unique_ptr<EnemyAI>		m_enemyAI;// 敵のAI
 	std::unique_ptr<EnemyHPBar>		m_pHPBar;// 敵のHPバー
-	//std::unique_ptr<EnemyBullets>	m_enemyBullets;// 敵の弾
-	//std::vector<std::unique_ptr<EnemyBullet>> m_bullets; // 弾のリスト
 	// プレイヤーのポインター
 	Player* m_pPlayer;
 	FPS_Camera* m_pCamera;

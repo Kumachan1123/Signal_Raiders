@@ -63,12 +63,14 @@ void BulletManager::Render()
 	for (const auto& bullet : m_playerBullets)
 	{
 		bullet->Render(view, proj);
+		bullet->RenderShadow(view, proj);
 	}
 
 	// 敵弾の描画
 	for (const auto& bullet : m_enemyBullets)
 	{
 		bullet->Render(view, proj);
+		bullet->RenderShadow(view, proj);
 	}
 }
 void BulletManager::CreatePlayerBullet(const DirectX::SimpleMath::Vector3& position, DirectX::SimpleMath::Vector3& direction)
@@ -136,7 +138,7 @@ void BulletManager::UpdateEnemyBullets(float elapsedTime, std::unique_ptr<IEnemy
 		// 発射元の敵を取得
 		IEnemy* shooter = bullet->GetShooter();
 		// 発射元が存在しない場合は削除
-		if (/*shooter == nullptr ||*/ !shooter) { it = m_enemyBullets.erase(it); continue; }
+		if (!shooter) { it = m_enemyBullets.erase(it); continue; }
 		// 発射元が敵でない場合は削除
 		if (shooter != enemy.get()) { ++it; continue; }
 
@@ -147,7 +149,7 @@ void BulletManager::UpdateEnemyBullets(float elapsedTime, std::unique_ptr<IEnemy
 		bullet->SetEnemyPosition(shooter->GetPosition());		// 弾を更新
 		bullet->Update(elapsedTime);
 		// プレイヤーとの当たり判定
-		if (CheckCollisionWithPlayer(bullet, enemy))
+		if (CheckCollisionWithPlayer(bullet, enemy) || bullet->IsExpired() || bullet->GetBulletPosition().y <= DELETE_BULLET_POSITION)
 		{
 			// 衝突処理（ここではエフェクトやSE再生、プレイヤーへのダメージ処理など）
 			it = m_enemyBullets.erase(it);

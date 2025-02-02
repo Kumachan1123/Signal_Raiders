@@ -14,7 +14,6 @@ class EnemyAI;
 class EnemyHPBar;
 class EnemyBullet;
 class VerticalAttackerModel;
-//class EnemyBullets;
 class EnemyManager;
 class FPS_Camera;
 class VerticalAttacker : public IEnemy
