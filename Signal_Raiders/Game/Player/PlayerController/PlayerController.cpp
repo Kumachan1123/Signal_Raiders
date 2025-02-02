@@ -5,6 +5,7 @@
 #include "pch.h"
 #include <SimpleMath.h>
 #include "Game/Player/PlayerController/PlayerController.h"
+#include "Game/KumachiLib/KumachiLib.h"
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
 #include "Libraries/MyLib/DebugString.h"
@@ -102,7 +103,7 @@ void PlayerController::Update(float elapsedTime)
 
 	// ã‰º‚Ì‰ñ“]§ŒÀ
 	constexpr float pitchLimit = XMConvertToRadians(80.0f);
-	m_pitchY = clamp(m_pitchY, -pitchLimit, pitchLimit);
+	m_pitchY = Clamp(m_pitchY, -pitchLimit, pitchLimit);
 
 	// ‘OŒãˆÚ“®
 	if (kbTracker->lastState.W)
@@ -196,10 +197,10 @@ void PlayerController::Shoot()
 	auto& mTracker = m_commonResources->GetInputManager()->GetMouseTracker();
 
 	// ¶ƒNƒŠƒbƒN‚Å’e”­ŽË
-	if (mTracker->GetLastState().leftButton && m_pPlayer->GetPlayerBullets()->GetIsBullet() == false)
+	if (mTracker->GetLastState().leftButton && m_pPlayer->GetBulletManager()->GetIsPlayerShoot() == false)
 	{
 		m_pPlayer->CreateBullet();
 	}
-	if (!mTracker->GetLastState().leftButton)m_pPlayer->GetPlayerBullets()->SetIsBullet(false);
+	if (!mTracker->GetLastState().leftButton)m_pPlayer->GetBulletManager()->SetIsPlayerShoot(false);
 
 }

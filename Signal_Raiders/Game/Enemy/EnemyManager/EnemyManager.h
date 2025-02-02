@@ -11,6 +11,7 @@
 #include "Game/Enemy/EnemyType/EnemyType.h"
 #include "Game/Effect/Effect.h"
 #include "Game/Player/Player.h"
+#include "Game/BulletManager/BulletManager.h"
 #include "Game/Wifi/Wifi.h"
 #include "Game/Stage/Wall/Wall.h"
 #include "Game/Enemy/Parameters/EnemyParameters.h"
@@ -78,6 +79,8 @@ private:
 	std::unique_ptr<Wifi> m_pWifi;
 	// プレイヤー(コントローラー)
 	Player* m_pPlayer;
+	// 弾マネージャー（プレイシーンから受け取る）
+	BulletManager* m_pBulletManager;
 	// 壁
 	Wall* m_pWall;
 	// エフェクト
@@ -102,7 +105,6 @@ public:
 	void InitializeFMOD();
 
 public:
-	// Getter
 	std::vector<std::unique_ptr<IEnemy>>& GetEnemies() { return m_enemies; }  // 敵リスト
 	int GetEnemyIndex() const { return m_enemyIndex; }// 生成された敵の最大数
 	int GetEnemySize() const { return static_cast<int>(m_enemies.size()); }
@@ -110,10 +112,11 @@ public:
 	std::vector<std::unique_ptr<Effect>>& GetEffect() { return m_effect; }// エフェクト
 	bool GetisBorned() const { return m_isBorned; }// 敵生成済み
 	bool GetIsBossAlive() const { return m_isBossAlive; }// ボス生存フラグ
-	// Setter
 	void SetVolume(float volume) { m_SEVolume = volume; }// 音量取得
 	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; }// ステージ番号
 	void SetWall(Wall* pWall) { m_pWall = pWall; };// 壁のポインター
+	BulletManager* GetBulletManager() { return m_pBulletManager; }// 弾マネージャー
+	void SetBulletManager(BulletManager* pBulletManager) { m_pBulletManager = pBulletManager; }// 弾マネージャー
 private:
 	// 敵の生成上限設定
 	void SetEnemyMax();

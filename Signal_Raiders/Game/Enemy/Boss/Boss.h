@@ -21,7 +21,6 @@ class BossModel;
 class BossSheild;
 class EnemyHPBar;
 class EnemyBullet;
-class EnemyBullets;
 class EnemyManager;
 class Boss : public IEnemy
 {
@@ -47,7 +46,6 @@ private:
 	std::unique_ptr<BossModel>		m_pBossModel;//モデル
 	std::unique_ptr<BossSheild>		m_pBossSheild;// シールド
 	std::unique_ptr<EnemyHPBar>		m_pHPBar;// HPバー
-	std::unique_ptr<EnemyBullets>	m_pEnemyBullets;// 弾
 
 	// 音量
 	float m_SEVolume;// SEの音量
@@ -141,6 +139,8 @@ public:
 	void SetCanAttack(bool canAttack)override { m_canAttack = canAttack; }// 攻撃可能か
 	void SetCamera(FPS_Camera* camera) { m_pCamera = camera; }
 	void SetAudioManager(AudioManager* audioManager) override { m_audioManager = audioManager; }
+	BulletManager* GetBulletManager()const override { return m_pBulletManager; }
+	void SetBulletManager(BulletManager* bulletManager) override { m_pBulletManager = bulletManager; }
 public:
 	// 初期ステータスを設定
 	Boss(Player* pPlayer, CommonResources* resources, int hp);

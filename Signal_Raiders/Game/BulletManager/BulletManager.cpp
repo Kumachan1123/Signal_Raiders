@@ -10,9 +10,10 @@ BulletManager::BulletManager(CommonResources* commonResources)
 	:m_commonResources{ commonResources }
 	, m_pPlayer{ nullptr }
 	, m_pEnemyManager{ nullptr }
+	, m_pShooter{ nullptr }
 	, m_audioManager{ AudioManager::GetInstance() }
 	, m_enemyBulletType{ EnemyBullet::BulletType::STRAIGHT }
-	, m_enemyBulletSize{ 1.0f }
+	, m_enemyBulletSize{ 0.0f }
 {
 }
 // デストラクタ
@@ -70,38 +71,32 @@ void BulletManager::Render()
 		bullet->Render(view, proj);
 	}
 }
-// 弾を生成
-void BulletManager::CreateBullet(const Vector3& position, Vector3& direction, BulletType type)
+void BulletManager::CreatePlayerBullet(const DirectX::SimpleMath::Vector3& position, DirectX::SimpleMath::Vector3& direction)
 {
-	switch (type)
-	{
-	case BulletType::PLAYER:
-	{
-		// プレイヤー弾の生成
-		auto bullet = std::make_unique<PlayerBullet>();
-		bullet->Initialize(m_commonResources);
-		bullet->MakeBall(position, direction);
-		m_playerBullets.push_back(std::move(bullet));
-		// SEの再生
-		m_audioManager->PlaySound("Shoot", m_pPlayer->GetVolume());	}
-	break;
-	case BulletType::ENEMY:
-	{
-		//	カメラを取得
-		auto camera = m_pPlayer->GetCamera();
-		// プレイヤーからカメラの情報を取得
-		Vector3 playerPos = camera->GetEyePosition();
-		// 敵弾の生成
-		auto bullet = std::make_unique<EnemyBullet>(m_enemyBulletSize); // サイズ1.0fの例
-		bullet->Initialize(m_commonResources, m_enemyBulletType);
-		bullet->MakeBall(position, direction, playerPos);
-		m_enemyBullets.push_back(std::move(bullet));
-	}
-	break;
-	default:
-		assert(false);
-		break;
-	}
+	// プレイヤー弾の生成
+	auto bullet = std::make_unique<PlayerBullet>();
+	bullet->Initialize(m_commonResources);
+	bullet->MakeBall(position, direction);
+	m_playerBullets.push_back(std::move(bullet));
+	SetIsPlayerShoot(true);// 弾生成フラグを立てる
+	// SEの再生
+	m_audioManager->PlaySound("Shoot", m_pPlayer->GetVolume());
+}
+
+// 弾を生成
+void BulletManager::CreateEnemyBullet(const Vector3& position, Vector3& direction)
+{
+	//	カメラを取得
+	auto camera = m_pPlayer->GetCamera();
+	// プレイヤーからカメラの情報を取得
+	Vector3 playerPos = camera->GetEyePosition();
+
+	// 敵弾の生成
+	auto bullet = std::make_unique<EnemyBullet>(m_enemyBulletSize); // サイズ1.0fの例
+	bullet->Initialize(m_commonResources, m_enemyBulletType);
+	bullet->MakeBall(position, direction, playerPos);
+	bullet->SetShooter(m_pShooter);
+	m_enemyBullets.push_back(std::move(bullet));
 }
 
 void BulletManager::UpdatePlayerBullets(float elapsedTime)
@@ -115,6 +110,7 @@ void BulletManager::UpdatePlayerBullets(float elapsedTime)
 		bullet->SetCameraEye(camera->GetEyePosition());
 		bullet->SetCameraTarget(camera->GetTargetPosition());
 		bullet->SetCameraUp(camera->GetUpVector());
+
 		// 弾を更新
 		bullet->Update(elapsedTime);
 		// 弾が寿命を迎えるか地面に着いたら削除
@@ -133,15 +129,22 @@ void BulletManager::UpdatePlayerBullets(float elapsedTime)
 void BulletManager::UpdateEnemyBullets(float elapsedTime, std::unique_ptr<IEnemy>& enemy)
 {
 	//	カメラを取得
-	auto camera = m_pPlayer->GetCamera();
+	auto camera = enemy->GetCamera();
 	for (auto it = m_enemyBullets.begin(); it != m_enemyBullets.end();)
 	{
 		auto& bullet = *it;// 弾を取得
-		// カメラ情報を弾に適用
+		// 発射元の敵を取得
+		IEnemy* shooter = bullet->GetShooter();
+		// 発射元が存在しない場合は削除
+		if (/*shooter == nullptr ||*/ !shooter) { it = m_enemyBullets.erase(it); continue; }
+		// 発射元が敵でない場合は削除
+		if (shooter != enemy.get()) { ++it; continue; }
+
+		// 弾に適切な情報を適用
 		bullet->SetCameraEye(camera->GetEyePosition());
 		bullet->SetCameraTarget(camera->GetTargetPosition());
 		bullet->SetCameraUp(camera->GetUpVector());
-		// 弾を更新
+		bullet->SetEnemyPosition(shooter->GetPosition());		// 弾を更新
 		bullet->Update(elapsedTime);
 		// プレイヤーとの当たり判定
 		if (CheckCollisionWithPlayer(bullet, enemy))
@@ -196,4 +199,24 @@ bool BulletManager::CheckCollisionWithPlayer(const std::unique_ptr<EnemyBullet>&
 	}
 	return false; // 衝突しなければfalseを返す}
 
+}
+
+void BulletManager::RemoveBulletsByShooter(IEnemy* shooter)
+{
+	// 発射元が nullptr または無効なら何もしない
+	if (!shooter || m_enemyBullets.empty())
+		return;
+
+
+
+	// 発射元が一致する弾をすべて削除
+	m_enemyBullets.erase(
+		std::remove_if(m_enemyBullets.begin(), m_enemyBullets.end(),
+			[shooter](const std::unique_ptr<EnemyBullet>& bullet)
+			{
+				IEnemy* bulletShooter = bullet->GetShooter();
+				return (bulletShooter == shooter || bulletShooter == nullptr);
+			}),
+		m_enemyBullets.end()
+	);
 }

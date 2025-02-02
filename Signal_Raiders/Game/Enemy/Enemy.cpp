@@ -39,7 +39,6 @@ Enemy::Enemy(Player* pPlayer, CommonResources* resources, int hp)
 	, m_enemyModel{}
 	, m_enemyAI{}
 	, m_pHPBar{}
-	, m_bullets{}
 	, m_position{}
 	, m_velocity{}
 	, m_rotate{}
@@ -58,16 +57,14 @@ Enemy::Enemy(Player* pPlayer, CommonResources* resources, int hp)
 
 {}
 // デストラクタ
-Enemy::~Enemy() {}
+Enemy::~Enemy() { m_pBulletManager->RemoveBulletsByShooter(this); }
 //---------------------------------------------------------
 // 初期化する
 //---------------------------------------------------------
 void Enemy::Initialize()
 {
-
 	// デバッグ用の初期化
 	DrawCollision::Initialize(m_commonResources);
-
 	// 敵のモデルを読み込む
 	m_enemyModel = std::make_unique<EnemyModel>();
 	m_enemyModel->Initialize(m_commonResources);
@@ -78,9 +75,6 @@ void Enemy::Initialize()
 	// AI生成
 	m_enemyAI = std::make_unique<EnemyAI>(this);
 	m_enemyAI->Initialize();
-	// 弾全体生成
-	m_enemyBullets = std::make_unique<EnemyBullets>(this);
-	m_enemyBullets->Initialize(m_commonResources);
 	// 乱数生成
 	Vector3 position = Vector3(GenerateRandomMultiplier(-EnemyParameters::ENEMY_SPAWN_RADIUS, EnemyParameters::ENEMY_SPAWN_RADIUS)); // 一様分布
 	// 敵の初期位置を設定
@@ -95,17 +89,15 @@ void Enemy::Initialize()
 // 更新
 void Enemy::Update(float elapsedTime)
 {
-
 	m_enemyModel->SetState(m_enemyAI->GetState());// モデルの更新
-	m_pHPBar->SetCurrentHP(m_currentHP);
-	m_pHPBar->Update(elapsedTime);
+	m_pHPBar->SetCurrentHP(m_currentHP);// HPの更新
+	m_pHPBar->Update(elapsedTime);// HPバーの更新
 	m_enemyAI->Update(elapsedTime);// AIの更新
 	m_audioManager->Update();// オーディオマネージャーの更新
 	if (m_enemyAI->GetNowState() == m_enemyAI->GetEnemyAttack())// 攻撃態勢なら
 	{
 		ShootBullet();// 弾を発射
 	}
-	m_enemyBullets->Update(elapsedTime);// 敵の弾の更新
 	// 敵の当たり判定の座標を更新
 	m_enemyBS.Center = m_position;
 	m_isDead = m_pHPBar->GetIsDead();// 敵のHPが0になったら死亡
@@ -128,8 +120,6 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	// 敵描画	
 	m_enemyModel->Render(context, states, world, view, proj);
 
-	// 敵の弾描画
-	m_enemyBullets->Render(view, proj);
 
 }
 void Enemy::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
@@ -161,13 +151,13 @@ void Enemy::ShootBullet()
 	{
 		m_audioManager->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
 		// クォータニオンから方向ベクトルを計算
-		DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_enemyAI->GetRotation());
-		// 弾が飛ぶ方向を設定
-		m_enemyBullets->SetDirection(direction);
-		// 発射位置を設定
-		m_enemyBullets->SetEnemyBulletSpawnPosition(m_position);
+		DirectX::SimpleMath::Vector3 direction =
+			DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_enemyAI->GetRotation());
 		// 弾を発射
-		m_enemyBullets->CreateBullet(EnemyParameters::ENEMY_BULLET_SIZE, EnemyBullet::BulletType::STRAIGHT);
+		m_pBulletManager->SetEnemyBulletType(EnemyBullet::BulletType::STRAIGHT);// 弾の種類を設定
+		m_pBulletManager->SetEnemyBulletSize(EnemyParameters::ENEMY_BULLET_SIZE);// 弾のサイズを設定
+		m_pBulletManager->SetShooter(this);// 弾の発射者を設定
+		m_pBulletManager->CreateEnemyBullet(m_position, direction);// 弾を生成
 		// クールダウンタイムをリセット
 		m_enemyAI->GetEnemyAttack()->SetCoolTime(EnemyParameters::ATTACK_COOLDOWN);
 	}

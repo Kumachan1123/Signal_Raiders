@@ -12,10 +12,7 @@
 #include "Game/Enemy/Enemy.h"
 #include "Game/Enemy/EnemyManager/EnemyManager.h"
 #include "Game/Enemy/EnemyCounter/EnemyCounter.h"
-#include "Game/Wifi/ReleaseMemory/ReleaseMemory.h"
-#include "Game/Wifi/Output/Output.h"
-#include "Game/Wifi/Interface/IWifiParts.h"
-#include "Game/Wifi/UpdateInfo/UpdateInfo.h"
+#include "Game/BulletManager/BulletManager.h"
 #include "Game/Wifi/Wifi.h"
 #include "Mouse.h"
 #include "Game/Stage/Stage.h"
@@ -48,14 +45,12 @@ private:
 	CommonResources* m_commonResources;
 	// プレイヤー
 	std::unique_ptr<Player> m_pPlayer;
-	// プレイヤーの弾
-	std::vector<std::unique_ptr<PlayerBullet>> m_playerBullet;
 	// スカイボックス用のメンバ変数
 	std::unique_ptr<Sky> m_skybox;
 	// 敵全体
 	std::unique_ptr<EnemyManager> m_pEnemyManager;
-	// 敵
-	std::vector<std::unique_ptr<Enemy>> m_enemy;
+	// 弾マネージャー
+	std::unique_ptr<BulletManager> m_pBulletManager;
 	// レーダー
 	std::unique_ptr<Radar> m_pRadar;
 	// 地面（ステージ)
@@ -106,16 +101,8 @@ private:
 	float m_timer;
 	// 敵が全滅した時のフェード処理までの待ち時間
 	float m_waitTime;
-	//デバッグ用
-	// ベーシックエフェクト
-	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
-	// 入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	IScene::SceneID m_nowSceneID;
 
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>m_depthStencilView;
-	Microsoft::WRL::ComPtr<ID3D11BlendState> m_blendState;
 
 public:
 	PlayScene(IScene::SceneID sceneID);

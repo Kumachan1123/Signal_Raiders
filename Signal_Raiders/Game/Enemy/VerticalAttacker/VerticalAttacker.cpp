@@ -36,7 +36,6 @@ VerticalAttacker::VerticalAttacker(Player* pPlayer, CommonResources* resources, 
 	, m_pVerticalAttackerModel{}
 	, m_enemyAI{}
 	, m_pHPBar{}
-	, m_bullets{}
 	, m_position{}
 	, m_velocity{}
 	, m_rotate{}
@@ -53,7 +52,7 @@ VerticalAttacker::VerticalAttacker(Player* pPlayer, CommonResources* resources, 
 	, m_audioManager{ AudioManager::GetInstance() } {}
 
 // デストラクタ
-VerticalAttacker::~VerticalAttacker() {}
+VerticalAttacker::~VerticalAttacker() { m_pBulletManager->RemoveBulletsByShooter(this); }
 
 // 初期化する
 void VerticalAttacker::Initialize()
@@ -69,9 +68,6 @@ void VerticalAttacker::Initialize()
 	// AI生成
 	m_enemyAI = std::make_unique<EnemyAI>(this);
 	m_enemyAI->Initialize();
-	// 弾全体生成
-	m_enemyBullets = std::make_unique<EnemyBullets>(this);
-	m_enemyBullets->Initialize(m_commonResources);
 	// 乱数生成
 	Vector3 position = Vector3(GenerateRandomMultiplier(-EnemyParameters::ENEMY_SPAWN_RADIUS, EnemyParameters::ENEMY_SPAWN_RADIUS)); // 一様分布
 	// 敵の初期位置を設定
@@ -93,7 +89,6 @@ void VerticalAttacker::Update(float elapsedTime)
 	{
 		ShootBullet();// 弾を発射
 	}
-	m_enemyBullets->Update(elapsedTime);// 敵の弾の更新
 	// 敵の当たり判定の座標を更新
 	m_enemyBS.Center = m_position;
 	m_pHPBar->SetCurrentHP(m_currentHP);
@@ -116,8 +111,6 @@ void VerticalAttacker::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleM
 	m_pHPBar->Render(view, proj, hpBarPos, m_rotate);
 	// 敵描画	
 	m_pVerticalAttackerModel->Render(context, states, world, view, proj);
-	// 敵の弾描画
-	m_enemyBullets->Render(view, proj);
 }
 
 void VerticalAttacker::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
@@ -149,13 +142,11 @@ void VerticalAttacker::ShootBullet()
 		m_audioManager->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
 		// クォータニオンから方向ベクトルを計算
 		DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_enemyAI->GetRotation());
-		// 弾が飛ぶ方向を設定
-		m_enemyBullets->SetDirection(direction);
-		// 発射位置を設定
-		m_enemyBullets->SetEnemyBulletSpawnPosition(m_position);
-
 		// 弾を発射
-		m_enemyBullets->CreateBullet(EnemyParameters::ENEMY_BULLET_SIZE, EnemyBullet::BulletType::VERTICAL);
+		m_pBulletManager->SetEnemyBulletType(EnemyBullet::BulletType::VERTICAL);// 弾の種類を設定
+		m_pBulletManager->SetEnemyBulletSize(EnemyParameters::ENEMY_BULLET_SIZE);// 弾のサイズを設定
+		m_pBulletManager->SetShooter(this);// 弾の発射者を設定
+		m_pBulletManager->CreateEnemyBullet(m_position, direction);// 弾を生成
 		// クールダウンタイムをリセット
 		m_enemyAI->GetEnemyAttack()->SetCoolTime(EnemyParameters::ATTACK_COOLDOWN);
 	}

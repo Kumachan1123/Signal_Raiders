@@ -260,10 +260,8 @@
     <ClInclude Include="Game\Enemy\EnemyManager\EnemyManager.h" />
     <ClInclude Include="Game\Player\Player.h" />
     <ClInclude Include="Game\Player\PlayerBullet\PlayerBullet.h" />
-    <ClInclude Include="Game\Player\PlayerBullets\PlayerBullets.h" />
     <ClInclude Include="Game\Particle\Particle.h" />
     <ClInclude Include="Game\ParticleUtility\ParticleUtility.h" />
-    <ClInclude Include="Game\Enemy\EnemyBullets\EnemyBullets.h" />
     <ClInclude Include="Game\Scene\TitleScene\TitleMenu\TitleMenu.h" />
     <ClInclude Include="Game\Scene\SettingScene\SettingScene.h" />
     <ClInclude Include="Game\Scene\SettingScene\SettingMenu\SettingMenu.h" />
@@ -303,7 +301,7 @@
     <ClInclude Include="Game\Enemy\EnemyType\EnemyType.h" />
     <ClInclude Include="Game\Enemy\EnemyFactory\EnemyFactory.h" />
     <ClInclude Include="Game\Enemy\Parameters\EnemyParameters.h" />
-    <ClInclude Include="Game\Enemy\BulletManager\BulletManager.h" />
+    <ClInclude Include="Game\BulletManager\BulletManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -415,10 +413,8 @@
     <ClCompile Include="Game\Enemy\EnemyManager\EnemyManager.cpp" />
     <ClCompile Include="Game\Player\Player.cpp" />
     <ClCompile Include="Game\Player\PlayerBullet\PlayerBullet.cpp" />
-    <ClCompile Include="Game\Player\PlayerBullets\PlayerBullets.cpp" />
     <ClCompile Include="Game\Particle\Particle.cpp" />
     <ClCompile Include="Game\ParticleUtility\ParticleUtility.cpp" />
-    <ClCompile Include="Game\Enemy\EnemyBullets\EnemyBullets.cpp" />
     <ClCompile Include="Game\Scene\TitleScene\TitleMenu\TitleMenu.cpp" />
     <ClCompile Include="Game\Scene\SettingScene\SettingScene.cpp" />
     <ClCompile Include="Game\Scene\SettingScene\SettingMenu\SettingMenu.cpp" />
@@ -455,7 +451,7 @@
     <ClCompile Include="Game\Player\PlayerUI\PlayGuide\PlayGuide.cpp" />
     <ClCompile Include="Game\Enemy\EnemyFactory\EnemyFactory.cpp" />
     <ClCompile Include="Game\Enemy\Parameters\EnemyParameters.cpp" />
-    <ClCompile Include="Game\Enemy\BulletManager\BulletManager.cpp" />
+    <ClCompile Include="Game\BulletManager\BulletManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

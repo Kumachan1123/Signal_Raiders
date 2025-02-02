@@ -61,8 +61,8 @@ Boss::Boss(Player* pPlayer, CommonResources* resources, int hp)
 
 {
 }
-// デストラクタ
-Boss::~Boss() {}
+// デストラクタ 
+Boss::~Boss() { m_pBulletManager->RemoveBulletsByShooter(this); }
 //---------------------------------------------------------
 // 初期化する
 //---------------------------------------------------------
@@ -81,9 +81,6 @@ void Boss::Initialize()
 	// AI生成
 	m_pBossAI = std::make_unique<BossAI>(this);
 	m_pBossAI->Initialize();
-	// 弾全体生成
-	m_pEnemyBullets = std::make_unique<EnemyBullets>(this);
-	m_pEnemyBullets->Initialize(m_commonResources);
 	// シールド生成
 	m_pBossSheild = std::make_unique<BossSheild>(m_maxHP, this);
 	m_pBossSheild->Initialize(m_commonResources);
@@ -114,8 +111,8 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	m_pBossModel->Render(context, states, enemyWorld, view, proj);
 	// シールド描画
 	m_pBossSheild->Render(context, states, enemyWorld, view, proj);
-	// 敵の弾描画
-	m_pEnemyBullets->Render(view, proj);
+	//// 敵の弾描画
+	//m_pEnemyBullets->Render(view, proj);
 	// HPBarの座標を設定
 	Vector3 hpBarPos = m_position - EnemyParameters::BOSS_HPBAR_OFFSET;
 	m_pHPBar->SetScale(Vector3(EnemyParameters::BOSS_HPBAR_SCALE));
@@ -153,7 +150,7 @@ void Boss::Update(float elapsedTime)
 	m_audioManager->Update();// オーディオマネージャーの更新
 	m_attackCooldown = m_pBossAI->GetBossAttack()->GetCoolTime();// 攻撃のクールダウンタイムを取得
 	this->ShootBullet();// 弾発射
-	m_pEnemyBullets->Update(elapsedTime);// 敵の弾の更新
+	//m_pEnemyBullets->Update(elapsedTime);// 敵の弾の更新
 	m_bossBS.Center = m_position + EnemyParameters::BOSS_SPHERE_OFFSET;// 境界球の中心座標を更新
 	// 弾の位置設定
 	this->BulletPositioning();
@@ -214,6 +211,8 @@ void Boss::CreateBullet()
 {
 	// 角度をずらして左右の弾を発射
 	float angleOffset = XMConvertToRadians(EnemyParameters::BOSS_BULLET_ANGLE); // 30度の角度オフセット
+	m_pBulletManager->SetEnemyBulletSize(EnemyParameters::BOSS_BULLET_SIZE);// 弾のサイズを設定
+	m_pBulletManager->SetShooter(this);// 弾を発射したオブジェクトを設定
 	// Enemiesクラスで設定した弾のタイプによって処理を分岐
 	switch (GetBulletType())
 	{
@@ -243,9 +242,9 @@ void Boss::CreateBullet()
 // 中央の弾を発射
 void Boss::CreateCenterBullet(EnemyBullet::BulletType type)
 {
-	m_pEnemyBullets->SetEnemyBulletSpawnPosition(m_bulletPosCenter);
-	m_pEnemyBullets->SetDirection(m_bulletDirection);
-	m_pEnemyBullets->CreateBullet(EnemyParameters::BOSS_BULLET_SIZE, type);
+	// 弾を発射
+	m_pBulletManager->SetEnemyBulletType(type);// 弾の種類を設定
+	m_pBulletManager->CreateEnemyBullet(m_bulletPosCenter, m_bulletDirection);// 弾を生成
 }
 
 // 左の弾を発射
@@ -254,10 +253,9 @@ void Boss::CreateLeftBullet(float angleOffset, EnemyBullet::BulletType type)
 	// 左方向
 	Quaternion leftRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, angleOffset);
 	Vector3 leftDirection = Vector3::Transform(m_bulletDirection, leftRotation);
-	// 発射位置を設定
-	m_pEnemyBullets->SetEnemyBulletSpawnPosition(m_bulletPosLeft);
-	m_pEnemyBullets->SetDirection(leftDirection);
-	m_pEnemyBullets->CreateBullet(EnemyParameters::BOSS_BULLET_SIZE, type);
+	// 弾を発射
+	m_pBulletManager->SetEnemyBulletType(type);// 弾の種類を設定
+	m_pBulletManager->CreateEnemyBullet(m_bulletPosLeft, leftDirection);// 弾を生成
 }
 
 // 右の弾を発射
@@ -266,18 +264,17 @@ void Boss::CreateRightBullet(float angleOffset, EnemyBullet::BulletType type)
 	// 右方向
 	Quaternion rightRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, -angleOffset);
 	Vector3 rightDirection = Vector3::Transform(m_bulletDirection, rightRotation);
-	// 発射位置を設定
-	m_pEnemyBullets->SetEnemyBulletSpawnPosition(m_bulletPosRight);
-	m_pEnemyBullets->SetDirection(rightDirection);
-	m_pEnemyBullets->CreateBullet(EnemyParameters::BOSS_BULLET_SIZE, type);
+	// 弾を発射
+	m_pBulletManager->SetEnemyBulletType(type);// 弾の種類を設定
+	m_pBulletManager->CreateEnemyBullet(m_bulletPosRight, rightDirection);// 弾を生成
 }
 
 // 真下に落ちる弾を発射
 void Boss::CreateVerticalBullet()
 {
 	// 真下に落ちる弾を発射
-	m_pEnemyBullets->SetEnemyBulletSpawnPosition(m_bulletPosCenter);
-	m_pEnemyBullets->CreateBullet(EnemyParameters::BOSS_BULLET_SIZE, EnemyBullet::BulletType::VERTICAL);
+	m_pBulletManager->SetEnemyBulletType(EnemyBullet::BulletType::VERTICAL);// 弾の種類を設定
+	m_pBulletManager->CreateEnemyBullet(m_bulletPosCenter, m_bulletDirection);// 弾を生成
 }
 
 // 敵のHPに関する処理

@@ -10,6 +10,7 @@
 #include "Libraries/MyLib/GridFloor.h"
 #include "Libraries/MyLib/InputManager.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
+#include "Game/Screen.h"
 #include <vector>
 #include <cassert>
 #include <SimpleMath.h>
@@ -86,6 +87,12 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pEnemyManager->Initialize(m_pPlayer.get());// 敵を初期化する
 	m_pEnemyManager->SetVolume(m_SEvolume);// 敵が出す効果音の音量を設定する
 	m_pEnemyManager->SetWall(m_pWall.get());// 敵に壁の情報を渡す
+	// 弾マネージャーを初期化する
+	m_pBulletManager = std::make_unique<BulletManager>(resources);
+	m_pBulletManager->Initialize(m_pPlayer.get(), m_pEnemyManager.get());
+	// プレイヤーと敵マネージャーに弾マネージャーを渡す
+	m_pPlayer->SetBulletManager(m_pBulletManager.get());
+	m_pEnemyManager->SetBulletManager(m_pBulletManager.get());
 	// 敵カウンター
 	m_pEnemyCounter = std::make_unique<EnemyCounter>();
 	m_pEnemyCounter->Initialize(resources);
@@ -97,10 +104,10 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pCrisis->Create(DR);
 	// HPゲージ作成
 	m_pPlayerHP = std::make_unique<PlayerHP>();
-	m_pPlayerHP->Initialize(DR, 1280, 720);
+	m_pPlayerHP->Initialize(DR, Screen::UI_WIDTH, Screen::UI_HEIGHT);
 	// 照準作成
 	m_pReticle = std::make_unique<Reticle>();
-	m_pReticle->Initialize(DR, 1280, 720);
+	m_pReticle->Initialize(DR, Screen::UI_WIDTH, Screen::UI_HEIGHT);
 	// 操作説明
 	m_pPlayGuide = std::make_unique<PlayGuide>();
 	m_pPlayGuide->Initialize(DR);
@@ -137,7 +144,8 @@ void PlayScene::Update(float elapsedTime)
 	m_audioManager->Update();// オーディオマネージャーの更新
 
 	m_pEnemyManager->Update(elapsedTime);// 敵の更新
-	m_pPlayer->Update(elapsedTime);
+	m_pPlayer->Update(elapsedTime);// プレイヤーの更新
+	m_pBulletManager->Update(elapsedTime);// 弾の更新
 	if (m_timer <= 5.0f)// ゲーム開始から5秒間は指示画像を表示
 	{
 		m_pGoal->Update(elapsedTime);
@@ -205,6 +213,9 @@ void PlayScene::Render()
 	// プレイヤーを描画する
 	m_pPlayer->Render();
 
+	// 弾を描画する
+	m_pBulletManager->Render();
+
 	// ブルームエフェクトをかける
 	m_pBloom->PostProcess();
 
@@ -238,8 +249,6 @@ void PlayScene::Render()
 //---------------------------------------------------------
 void PlayScene::Finalize()
 {
-	m_playerBullet.clear();
-	m_enemy.clear();
 	m_skybox.reset();
 	m_audioManager->Shutdown();
 }

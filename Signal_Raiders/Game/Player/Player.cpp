@@ -12,8 +12,8 @@ Player::Player(CommonResources* commonResources)
 	m_inPlayerArea{},
 	m_playerSphere{},
 	m_pCamera{},
-	m_pPlayerBullets{},
 	m_pEnemyManager{ nullptr },
+	m_pBulletManager{ nullptr },
 	m_mouseSensitive{  },
 	m_isDamage{ false },
 	m_isPlayEffect{ false },
@@ -42,14 +42,10 @@ void Player::Initialize(EnemyManager* pEnemies)
 	m_pEnemyManager = pEnemies;
 	// FPSカメラを作成する
 	m_pCamera = std::make_unique<FPS_Camera>();
-
 	// コントローラー生成
 	m_pPlayerController = std::make_unique<PlayerController>(this);
 	m_pPlayerController->Initialize(m_commonResources);
 	m_pPlayerController->SetPlayetPosition(m_pCamera->GetEyePosition());
-	// 弾
-	m_pPlayerBullets = std::make_unique<PlayerBullets>(m_commonResources);
-	m_pPlayerBullets->Initialize(this, m_pEnemyManager);
 	// ダメージエフェクトを管理するクラス
 	m_pDamageEffects = std::make_unique<DamageEffects>(m_commonResources);
 	m_pDamageEffects->Initialize(this);
@@ -78,8 +74,6 @@ void Player::Update(float elapsedTime)
 #endif
 	// プレイヤーの弾生成
 	m_pPlayerController->Shoot();// 弾発射
-	// 弾更新
-	m_pPlayerBullets->Update(elapsedTime);
 	// ダメージエフェクトを更新する
 	m_pDamageEffects->Update(elapsedTime);
 	// プレイヤーの境界球を更新
@@ -90,9 +84,6 @@ void Player::Update(float elapsedTime)
 
 void Player::Render()
 {
-	m_pPlayerBullets->Render();// 弾描画
-
-
 	// ダメージエフェクトを更新する
 	m_pDamageEffects->Render();
 }
@@ -100,7 +91,8 @@ void Player::Render()
 void Player::CreateBullet()
 {
 	// 弾を生成する
-	m_pPlayerBullets->CreateBullet(GetPlayerController()->GetPlayerPosition(), m_playerDir);
+	m_pBulletManager->CreatePlayerBullet(GetPlayerController()->GetPlayerPosition(), m_playerDir);
+
 }
 
 void Player::PlayerDamage(float elapsedTime)

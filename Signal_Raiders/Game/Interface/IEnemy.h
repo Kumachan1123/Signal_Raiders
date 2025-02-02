@@ -4,12 +4,14 @@
 #include <SimpleMath.h>
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
 class Player;
+class BulletManager;
 class FPS_Camera;
 class CommonResources;
 class IEnemy
 {
 protected:
 	Player* m_pPlayer;
+	BulletManager* m_pBulletManager;
 	CommonResources* m_commonResources;
 	int m_currentHP;
 public:
@@ -44,8 +46,12 @@ public:
 	virtual FPS_Camera* GetCamera()const = 0;
 	virtual void SetCamera(FPS_Camera* camera) = 0;
 	virtual void SetAudioManager(AudioManager* audioManager) = 0;
+	virtual BulletManager* GetBulletManager()const = 0;
+	virtual void SetBulletManager(BulletManager* bulletManager) = 0;
+
 public:
-	IEnemy(Player* pPlayer, CommonResources* resources, int hp) : m_pPlayer(pPlayer), m_commonResources(resources), m_currentHP(hp) {}
+	IEnemy(Player* pPlayer, CommonResources* resources, int hp) : m_pPlayer(pPlayer), m_commonResources(resources), m_currentHP(hp), m_pBulletManager(nullptr)
+	{}
 	virtual ~IEnemy() = default;
 	virtual void Initialize() = 0;
 

@@ -190,7 +190,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Game\DamageEffect\DamageEffects\DamageEffects.h" />
     <ClInclude Include="Game\Enemy\Boss\BossSheild\BossSheild.h" />
-    <ClInclude Include="Game\Enemy\BulletManager\BulletManager.h" />
+    <ClInclude Include="Game\BulletManager\BulletManager.h" />
     <ClInclude Include="Game\Enemy\EnemyAI\EnemySpin\EnemySpin.h" />
     <ClInclude Include="Game\Enemy\EnemyFactory\EnemyFactory.h" />
     <ClInclude Include="Game\Enemy\EnemyType\EnemyType.h" />
@@ -212,7 +212,6 @@
     <ClInclude Include="Game\Enemy\Boss\Boss.h" />
     <ClInclude Include="Game\Enemy\Boss\BossModel\BossModel.h" />
     <ClInclude Include="Game\Enemy\EnemyManager\EnemyManager.h" />
-    <ClInclude Include="Game\Enemy\EnemyBullets\EnemyBullets.h" />
     <ClInclude Include="Game\Enemy\EnemyCounter\EnemyCounter.h" />
     <ClInclude Include="Game\Fade\Fade.h" />
     <ClInclude Include="Game\Interface\IEnemy.h" />
@@ -229,7 +228,6 @@
     <ClInclude Include="Game\Interface\IState.h" />
     <ClInclude Include="Game\KumachiLib\BinaryFile\BinaryFile.h" />
     <ClInclude Include="Game\ParticleUtility\ParticleUtility.h" />
-    <ClInclude Include="Game\Player\PlayerBullets\PlayerBullets.h" />
     <ClInclude Include="Game\Player\PlayerBullet\PlayerBullet.h" />
     <ClInclude Include="Game\Player\PlayerController\PlayerController.h" />
     <ClInclude Include="Game\KumachiLib\Anchor.h" />
@@ -291,7 +289,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Game\DamageEffect\DamageEffects\DamegeEffects.cpp" />
     <ClCompile Include="Game\Enemy\Boss\BossSheild\BossSheild.cpp" />
-    <ClCompile Include="Game\Enemy\BulletManager\BulletManager.cpp" />
+    <ClCompile Include="Game\BulletManager\BulletManager.cpp" />
     <ClCompile Include="Game\Enemy\EnemyAI\EnemySpin\EnemySpin.cpp" />
     <ClCompile Include="Game\Enemy\EnemyFactory\EnemyFactory.cpp" />
     <ClCompile Include="Game\Enemy\Parameters\EnemyParameters.cpp" />
@@ -311,7 +309,6 @@
     <ClCompile Include="Game\Enemy\Boss\Boss.cpp" />
     <ClCompile Include="Game\Enemy\Boss\BossModel\BossModel.cpp" />
     <ClCompile Include="Game\Enemy\EnemyManager\EnemyManager.cpp" />
-    <ClCompile Include="Game\Enemy\EnemyBullets\EnemyBullets.cpp" />
     <ClCompile Include="Game\Enemy\EnemyCounter\EnemyCounter.cpp" />
     <ClCompile Include="Game\Fade\Fade.cpp" />
     <ClCompile Include="Game\KumachiLib\AudioManager\AudioManager.cpp" />
@@ -327,7 +324,6 @@
     <ClCompile Include="Game\KumachiLib\BinaryFile\BinaryFile.cpp" />
     <ClCompile Include="Game\ParticleUtility\ParticleUtility.cpp" />
     <ClCompile Include="Game\Player\Player.cpp" />
-    <ClCompile Include="Game\Player\PlayerBullets\PlayerBullets.cpp" />
     <ClCompile Include="Game\Player\PlayerBullet\PlayerBullet.cpp" />
     <ClCompile Include="Game\Player\PlayerController\PlayerController.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\Crisis\Crisis.cpp" />

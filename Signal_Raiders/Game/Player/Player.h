@@ -4,7 +4,7 @@
 #include "Game/Player/PlayerController/PlayerController.h"
 #include "Game/Player/PlayerBullets/PlayerBullets.h"
 #include "Game/Player/PlayerUI/PlayerHP/PlayerHP.h"
-
+#include "Game/BulletManager/BulletManager.h"
 #include "Game/DamageEffect/DamageEffects/DamageEffects.h"
 #include "Game/Enemy/EnemyManager/EnemyManager.h"
 #include "Game/FPS_Camera/FPS_Camera.h"
@@ -35,15 +35,12 @@ private:
 	std::unique_ptr<FPS_Camera> m_pCamera;
 	// プレイヤーのHP
 	float m_playerHP;
-	// プレイヤーの弾
-	std::unique_ptr<PlayerBullets> m_pPlayerBullets;
-
 	// ダメージエフェクトを管理するクラス
 	std::unique_ptr<DamageEffects> m_pDamageEffects;
 	// プレイヤーコントローラー
 	std::unique_ptr<PlayerController> m_pPlayerController;
-
-
+	// 弾マネージャー（プレイシーンから受け取る）
+	BulletManager* m_pBulletManager;
 	// 境界球
 	DirectX::BoundingSphere m_inPlayerArea;// プレイヤーと敵との一定範囲内での境界球
 	DirectX::BoundingSphere m_playerSphere;// プレイヤーの境界球
@@ -95,7 +92,7 @@ public:
 	void SetPlayerHP(float playerHP) { m_playerHP = playerHP; }	// プレイヤーのHP
 	FPS_Camera* GetCamera() { return m_pCamera.get(); }// カメラ
 	EnemyManager* GetEnemies() { return m_pEnemyManager; }// 敵
-	PlayerBullets* GetPlayerBullets() { return m_pPlayerBullets.get(); }// プレイヤーの弾
+	BulletManager* GetBulletManager() { return m_pBulletManager; }// 弾マネージャー
 	DirectX::SimpleMath::Vector3 GetPlayerPos() const { return m_playerPos; }// プレイヤーの位置
 	DirectX::SimpleMath::Vector3 GetPlayerDir() const { return m_playerDir; }// プレイヤーの向き
 	PlayerController* GetPlayerController() { return m_pPlayerController.get(); }// プレイヤーコントローラー
@@ -116,6 +113,7 @@ public:
 	bool GetisKillAll() const { return m_isKillAll; }// チートコマンド：敵を一掃するフラグ
 	bool GetisCheat() const { return m_isCheat; }// チートコマンドが有効か
 	void SetisCheat(bool isCheat) { m_isCheat = isCheat; }// チートコマンドが有効か
+	void SetBulletManager(BulletManager* pBulletManager) { m_pBulletManager = pBulletManager; }// 弾マネージャーをセット
 public:
 	void CreateBullet();// 弾を生成する
 private:

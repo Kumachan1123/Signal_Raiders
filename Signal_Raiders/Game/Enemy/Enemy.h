@@ -14,7 +14,7 @@ class EnemyAI;
 class EnemyHPBar;
 class EnemyBullet;
 class EnemyModel;
-class EnemyBullets;
+//class EnemyBullets;
 class EnemyManager;
 class FPS_Camera;
 class Enemy : public IEnemy
@@ -22,18 +22,12 @@ class Enemy : public IEnemy
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
-	// プリミティブバッチ
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
-	// 	//デバッグ用
-	// ベーシックエフェクト
-	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
-	// 入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
+
 	std::unique_ptr<EnemyModel>		m_enemyModel;// 敵のモデル
 	std::unique_ptr<EnemyAI>		m_enemyAI;// 敵のAI
 	std::unique_ptr<EnemyHPBar>		m_pHPBar;// 敵のHPバー
-	std::unique_ptr<EnemyBullets>	m_enemyBullets;// 敵の弾
-	std::vector<std::unique_ptr<EnemyBullet>> m_bullets; // 弾のリスト
+	//std::unique_ptr<EnemyBullets>	m_enemyBullets;// 敵の弾
+	//std::vector<std::unique_ptr<EnemyBullet>> m_bullets; // 弾のリスト
 	// プレイヤーのポインター
 	Player* m_pPlayer;
 	FPS_Camera* m_pCamera;
@@ -93,6 +87,10 @@ public:
 	void SetEnemyHitByPlayerBullet(bool hit) override { m_isEnemyHitByPlayerBullet = hit; }// 敵がプレイヤーの弾に当たったか
 	void SetCanAttack(bool canAttack)override { m_canAttack = canAttack; }// 攻撃可能か
 	void SetCamera(FPS_Camera* camera) { m_pCamera = camera; }
+
+	BulletManager* GetBulletManager()const override { return m_pBulletManager; }
+	void SetBulletManager(BulletManager* bulletManager) override { m_pBulletManager = bulletManager; }
+
 public:
 	// 初期ステータスを設定
 	Enemy(Player* pPlayer, CommonResources* resources, int hp);

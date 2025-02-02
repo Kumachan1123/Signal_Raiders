@@ -30,10 +30,14 @@ private:
 	Player* m_pPlayer;
 	// “G‘S‘Ì
 	EnemyManager* m_pEnemyManager;
+	// ’e‚ğËo‚µ‚½“G‚Ìƒ|ƒCƒ“ƒ^[
+	IEnemy* m_pShooter;
 	// “G‚Ì’e‚Ìí—Ş
 	EnemyBullet::BulletType m_enemyBulletType;
 	// “G‚Ì’e‚Ì‘å‚«‚³
 	float m_enemyBulletSize;
+	// ƒvƒŒƒCƒ„[‚Ì’e¶¬ƒtƒ‰ƒO
+	bool m_isPlayerShoot = false;
 	std::vector<std::unique_ptr<PlayerBullet>> m_playerBullets;
 	std::vector<std::unique_ptr<EnemyBullet>> m_enemyBullets;
 
@@ -45,11 +49,16 @@ public:
 	void Initialize(Player* pPlayer, EnemyManager* pEnemies);
 	void Update(float elapsedTime);
 	void Render();
-	void CreateBullet(const DirectX::SimpleMath::Vector3& position, DirectX::SimpleMath::Vector3& direction, BulletType type);
+	void CreatePlayerBullet(const DirectX::SimpleMath::Vector3& position, DirectX::SimpleMath::Vector3& direction);
+	void CreateEnemyBullet(const DirectX::SimpleMath::Vector3& position, DirectX::SimpleMath::Vector3& direction);
 	bool CheckCollisionWithEnemies(const std::unique_ptr<PlayerBullet>& bullet);
 	bool CheckCollisionWithPlayer(const std::unique_ptr<EnemyBullet>& bullet, const std::unique_ptr<IEnemy>& enemy);
+	void RemoveBulletsByShooter(IEnemy* shooter);
 	void SetEnemyBulletType(EnemyBullet::BulletType type) { m_enemyBulletType = type; }
 	void SetEnemyBulletSize(float size) { m_enemyBulletSize = size; }
+	bool GetIsPlayerShoot() const { return m_isPlayerShoot; }
+	void SetIsPlayerShoot(bool isPlayerShoot) { m_isPlayerShoot = isPlayerShoot; }
+	void SetShooter(IEnemy* pShooter) { m_pShooter = pShooter; }
 private:
 	void UpdatePlayerBullets(float elapsedTime);
 	void UpdateEnemyBullets(float elapsedTime, std::unique_ptr<IEnemy>& enemy);

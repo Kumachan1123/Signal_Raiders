@@ -42,6 +42,7 @@ EnemyManager::EnemyManager(CommonResources* commonResources)
 	, m_pWifi{ nullptr }
 	, m_pWall{ nullptr }
 	, m_pPlayer{ nullptr }
+	, m_pBulletManager{ nullptr }
 	, m_audioManager{ AudioManager::GetInstance() }
 	, m_SEVolume{ 0.0f }
 
@@ -214,6 +215,7 @@ void EnemyManager::SpawnEnemy(EnemyType type)
 	auto enemy = EnemyFactory::CreateEnemy(type, m_pPlayer, m_commonResources, m_pWifi->GetWifiLevels()[m_enemyIndex]);
 	enemy->SetAudioManager(m_audioManager);// オーディオマネージャーを設定
 	enemy->Initialize();// 敵を初期化
+	enemy->SetBulletManager(m_pBulletManager);// 弾マネージャーを設定
 	m_enemies.push_back(std::move(enemy));// 敵リストに追加
 
 	m_enemyBornTimer = 0.0f;// 敵生成タイマーを初期化
@@ -241,6 +243,7 @@ void EnemyManager::SpawnBoss()
 	auto boss = std::make_unique<Boss>(m_pPlayer, m_commonResources, m_bossHP);
 	boss->SetAudioManager(m_audioManager);
 	boss->Initialize();
+	boss->SetBulletManager(m_pBulletManager);// 弾マネージャーを設定
 	boss->SetBulletType(m_bossBulletType);
 
 	m_enemies.push_back(std::move(boss)); // ボスも enemies に統一

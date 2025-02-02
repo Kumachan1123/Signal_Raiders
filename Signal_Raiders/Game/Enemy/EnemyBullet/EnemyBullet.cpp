@@ -21,8 +21,9 @@ EnemyBullet::EnemyBullet(float size)
 	, m_angle{ 0.0f }
 	, m_size{ size }
 	, m_spiralAngle{ 0.0f }
-	, m_bulletSpeed{ 0.5f }
+	, m_bulletSpeed{ 0.0f }
 	, m_rotateDirection{ 1 }
+	, m_pShooter{ nullptr }
 	, m_bulletType{ BulletType::STRAIGHT }
 {
 }
@@ -53,9 +54,8 @@ void EnemyBullet::Initialize(CommonResources* resources, BulletType type)
 		{
 			// ベイシックエフェクトを取得する
 			auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);
-			basicEffect->SetAlpha(.5f);// アルファ値を設定する
 			basicEffect->SetDiffuseColor(DirectX::Colors::Pink);// ディフューズカラーを設定する
-			basicEffect->SetAmbientLightColor(DirectX::Colors::Pink);// アンビエントライトカラーを設定する
+			basicEffect->SetAmbientLightColor(DirectX::Colors::Magenta);// アンビエントライトカラーを設定する
 			basicEffect->SetEmissiveColor(DirectX::Colors::Magenta);// エミッシブカラーを設定する
 
 		});

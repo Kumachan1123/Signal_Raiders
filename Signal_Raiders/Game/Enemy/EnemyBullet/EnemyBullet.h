@@ -8,7 +8,7 @@
 #define ENEMY_BULLET_DEFINED
 #include "Game/CommonResources.h"
 #include "Game/Particle/Particle.h"
-
+#include "Game/Interface/IEnemy.h"
 class CommonResources;
 
 class EnemyBullet
@@ -21,11 +21,8 @@ public:
 		VERTICAL// 垂直
 
 	};
-	BulletType m_bulletType;
-
-	const int DAMAGE = 10;						// 敵に与えるダメージ
-
-	const float BULLET_LIFETIME = 10.0f;				// 寿命
+	BulletType m_bulletType;// 弾の種類
+	const float BULLET_LIFETIME = 10.0f;			// 寿命
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
@@ -34,18 +31,20 @@ private:
 	DirectX::SimpleMath::Vector3 m_enemyPosition;	// 敵の座標
 	DirectX::SimpleMath::Vector3 m_position;		// 弾の座標
 	DirectX::SimpleMath::Vector3 m_velocity;		// 弾の速さ
-	float m_size;			// 弾の大きさ
+	float m_size;									// 弾の大きさ
 	DirectX::SimpleMath::Vector3 m_direction;		// 弾が飛ぶ方向
 	std::unique_ptr<DirectX::Model> m_model;
 	float m_time;									// 生存時間
+	// 発射した敵のポインター
+	IEnemy* m_pShooter;
 	// 「弾」境界ボックス
 	DirectX::BoundingSphere m_boundingSphere;
+	// ターゲット
 	DirectX::SimpleMath::Vector3 m_target;
 	// カメラ
 	DirectX::SimpleMath::Vector3 m_cameraEye;
 	DirectX::SimpleMath::Vector3 m_cameraTarget;
 	DirectX::SimpleMath::Vector3 m_cameraUp;
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
 	// 弾の自転
 	float m_angle;
 	float m_spiralAngle;
@@ -55,11 +54,6 @@ private:
 	float m_bulletSpeed;
 	// 弾の軌道
 	std::unique_ptr<Particle> m_bulletTrail;
-	// 	//デバッグ用
-	// ベーシックエフェクト
-	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
-	// 入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	// モデルの影
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 public:
@@ -86,7 +80,8 @@ public:
 	void SetCameraEye(DirectX::SimpleMath::Vector3 eye) { m_bulletTrail->SetCameraPosition(eye); m_cameraEye = eye; }
 	void SetCameraTarget(DirectX::SimpleMath::Vector3 target) { m_bulletTrail->SetCameraTarget(target); m_cameraTarget = target; }
 	void SetCameraUp(DirectX::SimpleMath::Vector3 up) { m_bulletTrail->SetCameraUp(up); m_cameraUp = up; }
-
+	void SetShooter(IEnemy* enemy) { m_pShooter = enemy; }
+	IEnemy* GetShooter() const { return m_pShooter; }
 	// 弾が生成されてからの経過時間が寿命を超えたかどうかを判定する
 	bool IsExpired() const { return GetTime() >= BULLET_LIFETIME; }
 

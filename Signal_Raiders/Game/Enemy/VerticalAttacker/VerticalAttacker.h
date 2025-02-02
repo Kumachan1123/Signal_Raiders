@@ -14,7 +14,7 @@ class EnemyAI;
 class EnemyHPBar;
 class EnemyBullet;
 class VerticalAttackerModel;
-class EnemyBullets;
+//class EnemyBullets;
 class EnemyManager;
 class FPS_Camera;
 class VerticalAttacker : public IEnemy
@@ -22,18 +22,9 @@ class VerticalAttacker : public IEnemy
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
-	// プリミティブバッチ
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
-	// 	//デバッグ用
-	// ベーシックエフェクト
-	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
-	// 入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	std::unique_ptr<VerticalAttackerModel>		m_pVerticalAttackerModel;// 敵のモデル
 	std::unique_ptr<EnemyAI>		m_enemyAI;// 敵のAI
 	std::unique_ptr<EnemyHPBar>		m_pHPBar;// 敵のHPバー
-	std::unique_ptr<EnemyBullets>	m_enemyBullets;// 敵の弾
-	std::vector<std::unique_ptr<EnemyBullet>> m_bullets; // 弾のリスト
 	// プレイヤーのポインター
 	Player* m_pPlayer;
 	FPS_Camera* m_pCamera;
@@ -57,10 +48,6 @@ private:
 	bool m_isPlayerHitByEnemyBullet;// 敵の弾がプレイヤーに当たったか
 	bool m_canAttack;// 攻撃可能か
 	float m_attackCooldown;  // 攻撃のクールダウンタイ
-	// プレイヤーに与えるダメージ
-	const float PLAYER_DAMAGE = 1.0f;
-	// 攻撃の間隔（１秒）
-	const float ATTACK_INTERVAL = 1.0f;
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
 	// カメラ
@@ -85,7 +72,7 @@ public:
 	bool GetHitToOtherEnemy() const override { return m_isHitToOtherEnemy; }
 	bool GetPlayerHitByEnemyBullet() const override { return m_isPlayerHitByEnemyBullet; }// 敵の弾がプレイヤーに当たったか
 	bool GetEnemyHitByPlayerBullet()const override { return m_isEnemyHitByPlayerBullet; }
-	float GetToPlayerDamage() const override { return PLAYER_DAMAGE; }
+	float GetToPlayerDamage() const override { return EnemyParameters::NORMAL_ENEMY_DAMAGE; }
 	bool GetCanAttack() const override { return m_canAttack; }// 攻撃可能か
 	// setter
 	void SetPosition(DirectX::SimpleMath::Vector3& pos)override { m_position = pos; }
@@ -95,11 +82,14 @@ public:
 	void SetHitToOtherEnemy(bool isHitToOtherEnemy) override { m_isHitToOtherEnemy = isHitToOtherEnemy; }
 	void SetBulletBoundingSphere(DirectX::BoundingSphere& bs)override { m_enemyBulletBS = bs; }
 	void SetPlayerBoundingSphere(DirectX::BoundingSphere playerBS)override { m_playerBS = playerBS; }
-	void SetPlayerHP(float& HP) const override { HP -= PLAYER_DAMAGE; }
+	void SetPlayerHP(float& HP) const override { HP -= EnemyParameters::NORMAL_ENEMY_DAMAGE; }
 	void SetPlayerHitByEnemyBullet(bool hit)override { m_isPlayerHitByEnemyBullet = hit; }// 敵の弾がプレイヤーに当たったか
 	void SetEnemyHitByPlayerBullet(bool hit) override { m_isEnemyHitByPlayerBullet = hit; }
 	void SetCanAttack(bool canAttack)override { m_canAttack = canAttack; }// 攻撃可能か
 	void SetCamera(FPS_Camera* camera) { m_pCamera = camera; }
+	BulletManager* GetBulletManager()const override { return m_pBulletManager; }
+	void SetBulletManager(BulletManager* bulletManager) override { m_pBulletManager = bulletManager; }
+
 public:
 	// 初期ステータスを設定
 	VerticalAttacker(Player* pPlayer, CommonResources* resources, int hp);
