@@ -269,6 +269,7 @@
     <ClInclude Include="Game\Wifi\InitHandle\InitHandle.h" />
     <ClInclude Include="Game\Wifi\Interface\IWifiParts.h" />
     <ClInclude Include="Game\Wifi\Output\Output.h" />
+    <ClInclude Include="Game\Wifi\Parameters\WiFiParameters.h" />
     <ClInclude Include="Game\Wifi\Preparation\Preparation.h" />
     <ClInclude Include="Game\Wifi\ProcessingScanResults\ProcessingScanResults.h" />
     <ClInclude Include="Game\Wifi\ReleaseMemory\ReleaseMemory.h" />

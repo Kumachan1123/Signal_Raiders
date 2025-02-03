@@ -16,6 +16,7 @@
 #include "Game/Wifi/ReleaseMemory/ReleaseMemory.h"
 #include "Game/Wifi/Output/Output.h"
 #include "Game/Wifi/Wifi.h"
+#include "Game/Wifi/Parameters/WiFiParameters.h"
 #include "Game/CommonResources.h"
 
 // メンバ関数の定義 ===========================================================
@@ -36,7 +37,6 @@ Wifi::Wifi()
 	, m_networkInfos{}
 	, m_network{}
 	, m_ssid{}
-	//, m_converter{ }
 	, m_updateInfo{ nullptr }
 	, m_output{ nullptr }
 	, m_memory{ nullptr }
@@ -73,19 +73,19 @@ void Wifi::Update(float elapsedTime)
 	// Wi-Fiを取得できない状態の時
 	if (m_dwResult != ERROR_SUCCESS)
 	{
-		if (m_preWifilevels.size() < 30)
+		if (m_preWifilevels.size() < WiFiParameters::MAX_ENEMY)
 		{
-			for (int index = 0; index < 30; index++)
+			for (int index = 0; index < WiFiParameters::MAX_ENEMY; index++)
 			{
 				// 五秒経ったら更新終了
-				if (m_time >= 5.0f)
+				if (m_time >= WiFiParameters::MAX_TIME)
 				{
 
 					break;
 				}
-				m_preWifilevels.push_back(100);// 電波の強さを100に設定
+				m_preWifilevels.push_back(WiFiParameters::DEFAULT_ENEMY_HP);// 電波の強さを100に設定
 
-				m_preEnemyTypes.push_back(0);// 敵の種類を0(通常)に設定
+				m_preEnemyTypes.push_back(WiFiParameters::DEFAULT_ENEMY_TYPE);// 敵の種類を0(通常)に設定
 			}
 		}
 		m_wifilevels = m_preWifilevels;		// 電波の強さを可変長配列に登録
@@ -96,17 +96,17 @@ void Wifi::Update(float elapsedTime)
 		// 取得した数が0の時
 		if (m_networkInfos.size() == 0)
 		{
-			if (m_preWifilevels.size() < 30)
+			if (m_preWifilevels.size() < WiFiParameters::MAX_ENEMY)
 			{
-				for (int index = 0; index < 30; index++)
+				for (int index = 0; index < WiFiParameters::MAX_ENEMY; index++)
 				{
 					// 五秒経ったら更新終了
-					if (m_time >= 5.0f)
+					if (m_time >= WiFiParameters::MAX_TIME)
 					{
 						break;
 					}
-					m_preWifilevels.push_back(100);// 電波の強さを100に設定
-					m_preEnemyTypes.push_back(0);// 敵の種類を0(通常)に設定
+					m_preWifilevels.push_back(WiFiParameters::DEFAULT_ENEMY_HP);// 電波の強さを100に設定
+					m_preEnemyTypes.push_back(WiFiParameters::DEFAULT_ENEMY_TYPE);// 敵の種類を0(通常)に設定
 				}
 			}
 			m_wifilevels = m_preWifilevels;		// 電波の強さを可変長配列に登録
@@ -117,9 +117,9 @@ void Wifi::Update(float elapsedTime)
 		for (const auto& networkInfo : m_networkInfos)
 		{
 			// 五秒経ったら更新終了
-			if (m_time >= 5.0f)
+			if (m_time >= WiFiParameters::MAX_TIME)
 			{
-				m_time = 5.0f;
+				m_time = WiFiParameters::MAX_TIME;
 				break;
 			}
 			//ssidの文字数を可変長配列に登録
