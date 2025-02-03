@@ -34,4 +34,6 @@ public:
 	static const float BULLET_ROTATION_SPEED;// 弾の自転速度(度)
 	static const DirectX::SimpleMath::Plane SHADOW_PLANE;// 影の平面
 	static const float ADJUST_HIT_VOLUME;// ヒットSEボリューム調整
+	static const float ANGLE_MIN;// 角度の最小値
+	static const float ANGLE_MAX;// 角度の最大値
 };

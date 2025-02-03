@@ -59,3 +59,7 @@ const float  BulletParameters::BULLET_ROTATION_SPEED = 6.0f;// 弾の自転速度(度)
 const DirectX::SimpleMath::Plane  BulletParameters::SHADOW_PLANE = DirectX::SimpleMath::Plane(0.0f, 1.0f, 0.0f, 0.01f);// 影の平面
 
 const float  BulletParameters::ADJUST_HIT_VOLUME = 0.8f;// ヒットSEボリューム調整
+
+const float  BulletParameters::ANGLE_MIN = 0.0f;// 角度の最小値
+
+const float  BulletParameters::ANGLE_MAX = 360.0f;// 角度の最大値

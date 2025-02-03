@@ -86,7 +86,7 @@ void EnemyBullet::Update(float elapsedTime)
 {
 	// Šp“x‚ğ‘‰Á‚³‚¹‚é
 	m_angle += BulletParameters::BULLET_ROTATION_SPEED;
-	Clamp(m_angle, 0.0f, 360.0f);// Šp“x‚ğ0`360“x‚É§ŒÀ‚·‚é
+	Clamp(m_angle, BulletParameters::ANGLE_MIN, BulletParameters::ANGLE_MAX);// Šp“x‚ğ0`360“x‚É§ŒÀ‚·‚é
 
 	// ’e‚Ìí—Ş‚É‚æ‚Á‚Äˆ—‚ğ•ªŠò
 	switch (m_bulletType)

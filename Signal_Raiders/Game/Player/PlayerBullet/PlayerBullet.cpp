@@ -82,7 +82,7 @@ void PlayerBullet::Initialize(CommonResources* resources)
 void PlayerBullet::Update(float elapsedTime)
 {
 	m_angle += BulletParameters::BULLET_ROTATION_SPEED;
-	Clamp(m_angle, 0.0f, 360.0f);// 角度を0～360度に制限する
+	Clamp(m_angle, BulletParameters::ANGLE_MIN, BulletParameters::ANGLE_MAX);// 角度を0～360度に制限する
 	// カメラが向いている方向に速度を与える
 	m_velocity += m_direction;
 	// 移動量を正規化する
