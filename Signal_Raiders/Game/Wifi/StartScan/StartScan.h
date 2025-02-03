@@ -17,11 +17,10 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include "Game/Wifi/Wifi.h"
 #pragma comment(lib, "wlanapi.lib")
 // クラスの定義 ===============================================================
-/**
-  * @brief ゲーム
-  */
+class Wifi;
 class StartScan
 {
 	// メンバ関数の宣言
@@ -31,5 +30,6 @@ public:
 	// デストラクタ
 	~StartScan();
 	// スキャンの開始
-	void Set(DWORD&  dwResult,HANDLE& hClient, PWLAN_INTERFACE_INFO_LIST& pInterfaceList);
+	void Set(DWORD& dwResult, HANDLE& hClient, PWLAN_INTERFACE_INFO_LIST& pInterfaceList);
+	void Scan(Wifi* pWifi);
 };

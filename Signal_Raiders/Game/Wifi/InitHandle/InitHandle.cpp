@@ -35,3 +35,11 @@ void InitHandle::Set(DWORD& dwResult, DWORD& dwMaxClient, DWORD& dwCurVersion, H
 	dwCurVersion = 0;
 	dwResult = 0;
 }
+
+void InitHandle::Initialize(Wifi* pWifi)
+{
+	pWifi->SetMaxClient(2);
+	pWifi->SetClient(NULL);
+	pWifi->SetCurVersion(0);
+	pWifi->SetResult(0);
+}

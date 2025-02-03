@@ -10,10 +10,9 @@
  // 多重インクルードの防止 =====================================================
 #pragma once
 #include "Game/Wifi/Interface/IWifiParts.h"
+#include "Game/Wifi/Wifi.h"
 // クラスの定義 ===============================================================
-/**
-  * @brief ゲーム
-  */
+class Wifi;
 class GetScanResults
 {
 	// メンバ関数の宣言
@@ -23,7 +22,9 @@ public:
 	// デストラクタ
 	~GetScanResults();
 	void Set(PWLAN_AVAILABLE_NETWORK_LIST& pNetworkList,
-			 DWORD& dwResult,
-			 HANDLE& hClient,
-			 PWLAN_INTERFACE_INFO_LIST& pInterfaceList);
+		DWORD& dwResult,
+		HANDLE& hClient,
+		PWLAN_INTERFACE_INFO_LIST& pInterfaceList);
+	// スキャン結果の取得
+	void GetResults(Wifi* pWifi);
 };

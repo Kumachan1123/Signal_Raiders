@@ -10,10 +10,9 @@
  // 多重インクルードの防止 =====================================================
 #pragma once
 #include "Game/Wifi/Interface/IWifiParts.h"
+#include "Game/Wifi/Wifi.h"
 // クラスの定義 ===============================================================
-/**
-  * @brief ゲーム
-  */
+class Wifi;
 class InitHandle
 {
 	// メンバ関数の宣言
@@ -23,4 +22,5 @@ public:
 	// デストラクタ
 	~InitHandle();
 	void Set(DWORD& dwResult, DWORD& dwMaxClient, DWORD& dwCurVersion, HANDLE& hClient);
+	void Initialize(Wifi* pWifi);
 };

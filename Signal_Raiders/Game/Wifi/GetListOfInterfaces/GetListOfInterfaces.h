@@ -11,13 +11,12 @@
  // 多重インクルードの防止 =====================================================
 #pragma once
 #include "Game/Wifi/Interface/IWifiParts.h"
+#include "Game/Wifi/Wifi.h"
 // クラスの定義 ===============================================================
-/**
-  * @brief ゲーム
-  */
-class GetListOfInterfaces 
+class Wifi;
+class GetListOfInterfaces
 {
-	
+
 	// メンバ関数の宣言
 public:
 	// コンストラクタ
@@ -25,5 +24,7 @@ public:
 
 	// デストラクタ
 	~GetListOfInterfaces();
-	void Set(PWLAN_INTERFACE_INFO_LIST& pInterfaceList, DWORD&  dwResult, HANDLE& hClient);
+	void Set(PWLAN_INTERFACE_INFO_LIST& pInterfaceList, DWORD& dwResult, HANDLE& hClient);
+	// インターフェースのリスト取得
+	void GetList(Wifi* pWifi);
 };

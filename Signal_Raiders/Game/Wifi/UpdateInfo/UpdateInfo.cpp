@@ -11,14 +11,15 @@
 #include "Game/Screen.h"
 #include <sstream>
 #include "pch.h"
-#include "Game/Wifi/UpdateInfo/UpdateInfo.h"
+#include "UpdateInfo.h"
+#include "Game/Wifi/Wifi.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief デフォルトコンストラクタ
  *
  * @param[in] なし
  */
-UpdateInfo::UpdateInfo()
+UpdateInfo::UpdateInfo(Wifi* pWifi)
 	: m_InterfacesList{ nullptr }
 	, m_Checkversion{ nullptr }
 	, m_StartScan{ nullptr }
@@ -26,6 +27,7 @@ UpdateInfo::UpdateInfo()
 	, m_handle{ nullptr }
 	, m_Preparation{ nullptr }
 	, m_ProcessingScanResults{ nullptr }
+	, m_pWifi{ pWifi }
 {
 }
 /**
@@ -43,35 +45,27 @@ void UpdateInfo::Initialize()
 	m_Preparation = std::make_unique<Preparation>();
 	m_ProcessingScanResults = std::make_unique< ProcessingScanResults>();
 }
-void UpdateInfo::Set(DWORD& dwResult,
-					 DWORD& dwMaxClient,
-					 DWORD& dwCurVersion,
-					 HANDLE& hClient,
-					 PWLAN_INTERFACE_INFO_LIST& pInterfaceList,
-					 PWLAN_AVAILABLE_NETWORK_LIST& pNetworkList,
-					 std::vector<NetworkInfo>& networkInfos,
-					 WLAN_AVAILABLE_NETWORK& network,
-					 std::string& ssid,
-					 std::set<std::string>& displayedSSIDs,
-					 std::wstring_convert<std::codecvt_utf8<wchar_t>>& converter,
-					 int& count)
+
+
+void UpdateInfo::Set()
 {
 	// Wi-Fiハンドルの初期化
-	m_handle->Set(dwResult, dwMaxClient, dwCurVersion, hClient);
+	m_handle->Initialize(m_pWifi);
 	// バージョンの確認
-	m_Checkversion->Set(dwResult, dwMaxClient, dwCurVersion, hClient);
+	m_Checkversion->Check(m_pWifi);
 	// インターフェースのリスト取得
-	m_InterfacesList->Set(pInterfaceList, dwResult, hClient);
+	m_InterfacesList->GetList(m_pWifi);
 	// スキャンの開始
-	m_StartScan->Set(dwResult, hClient, pInterfaceList);
+	m_StartScan->Scan(m_pWifi);
 	// スキャン結果の取得
-	m_GetResults->Set(pNetworkList, dwResult, hClient, pInterfaceList);
-	if (dwResult != ERROR_SUCCESS)
+	m_GetResults->GetResults(m_pWifi);
+	if (m_pWifi->GetResult() != ERROR_SUCCESS)
 	{
 		return;
 	}
 	// 表示準備
-	m_Preparation->Set(displayedSSIDs, count, networkInfos);
+	m_Preparation->SetUp(m_pWifi);
 	// スキャン結果の処理
-	m_ProcessingScanResults->Set(pNetworkList, network, ssid, displayedSSIDs, converter, networkInfos);
+	m_ProcessingScanResults->GetResults(m_pWifi);
 }
+

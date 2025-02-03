@@ -36,7 +36,7 @@ Wifi::Wifi()
 	, m_networkInfos{}
 	, m_network{}
 	, m_ssid{}
-	, m_converter{}
+	//, m_converter{ }
 	, m_updateInfo{ nullptr }
 	, m_output{ nullptr }
 	, m_memory{ nullptr }
@@ -52,7 +52,8 @@ Wifi::~Wifi()
 // 初期化処理
 void Wifi::Initialize()
 {
-	m_updateInfo = std::make_unique<UpdateInfo>();
+	m_updateInfo = std::make_unique<UpdateInfo>(this);
+	m_updateInfo->Initialize();
 	m_output = std::make_unique<Output>();
 	m_memory = std::make_unique<ReleaseMemory>();
 }
@@ -61,7 +62,8 @@ void Wifi::Update(float elapsedTime)
 {
 
 	// 全データを更新
-	m_updateInfo->Set(m_dwResult, m_dwMaxClient, m_dwCurVersion, m_hClient, m_pInterfaceList, m_pNetworkList, m_networkInfos, m_network, m_ssid, m_displayedSSIDs, m_converter, m_count);
+	m_updateInfo->Set();
+	// 電波の強さでソート
 	std::sort(m_networkInfos.begin(), m_networkInfos.end(), CompareBySignalQuality());
 	// ソート後の情報を表示
 	m_output->DisplayInformation(m_networkInfos, m_count);
@@ -111,7 +113,7 @@ void Wifi::Update(float elapsedTime)
 			m_enemyTypes = m_preEnemyTypes;		// 敵の種類を可変長配列に登録
 		}
 		// 取得した数が1以上の時
-		//数値だけ出す
+		// 数値だけ出す
 		for (const auto& networkInfo : m_networkInfos)
 		{
 			// 五秒経ったら更新終了

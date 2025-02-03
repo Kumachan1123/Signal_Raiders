@@ -38,3 +38,19 @@ void StartScan::Set(DWORD& dwResult, HANDLE& hClient, PWLAN_INTERFACE_INFO_LIST&
 		return;
 	}
 }
+
+void StartScan::Scan(Wifi* pWifi)
+{
+	PWLAN_INTERFACE_INFO_LIST pInterfaceList = pWifi->GetInterfaceList();
+	const GUID* pInterfaceGuid = &pInterfaceList->InterfaceInfo[0].InterfaceGuid;
+	// WlanScan ŒÄ‚Ño‚µ
+	pWifi->SetResult(WlanScan(
+		pWifi->GetClient(),
+		pInterfaceGuid,
+		NULL, NULL, NULL));	if (pWifi->GetResult() != ERROR_SUCCESS)
+	{
+		WlanFreeMemory(pWifi->GetInterfaceList());
+		WlanCloseHandle(pWifi->GetClient(), NULL);
+		return;
+	}
+}

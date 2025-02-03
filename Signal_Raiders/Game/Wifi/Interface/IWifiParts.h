@@ -54,3 +54,4 @@ struct Datas
 	int WVlevel;	//“d”g‚Ì‹­‚³
 
 };
+

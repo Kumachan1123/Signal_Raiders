@@ -37,3 +37,13 @@ void Preparation::Set(std::set<std::string>& displayedSSIDs, int& count, std::ve
 	// ネットワーク情報を格納するvector
 	networkInfos.clear();
 }
+
+void Preparation::SetUp(Wifi* pWifi)
+{
+	// すでに表示したSSIDを管理するためのset
+	pWifi->GetDisplayedSSIDs().clear();
+	// 表示した回数
+	pWifi->SetCount(0);
+	// ネットワーク情報を格納するvector
+	pWifi->GetNetworkInfos().clear();
+}

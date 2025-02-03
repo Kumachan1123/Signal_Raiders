@@ -8,26 +8,27 @@
  * @date   2024/04/22
  */
 
-// 多重インクルードの防止 =====================================================
+ // 多重インクルードの防止 =====================================================
 #pragma once
 
 #include "Game/Wifi/Interface/IWifiParts.h"
-
+#include "Game/Wifi/Wifi.h"
 // クラスの定義 ===============================================================
 /**
   * @brief ゲーム
   */
-class CheckVersion 
+class Wifi;
+class CheckVersion
 {
-// クラス定数の宣言
+	// クラス定数の宣言
 public:
-	
 
-// データメンバの宣言
+
+	// データメンバの宣言
 private:
-	
-	
-// メンバ関数の宣言
+
+
+	// メンバ関数の宣言
 public:
 	// コンストラクタ
 	CheckVersion();
@@ -36,7 +37,8 @@ public:
 	~CheckVersion();
 
 
-	
+
 	void Set(DWORD& dwResult, DWORD& dwMaxClient, DWORD& dwCurVersion, HANDLE& hClient);
-	
+	void Check(Wifi* pWifi);
+
 };

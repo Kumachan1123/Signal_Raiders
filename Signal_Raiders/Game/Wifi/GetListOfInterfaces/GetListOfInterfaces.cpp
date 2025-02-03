@@ -31,10 +31,22 @@ void GetListOfInterfaces::Set(PWLAN_INTERFACE_INFO_LIST& pInterfaceList, DWORD& 
 {
 	pInterfaceList = NULL;
 	dwResult = WlanEnumInterfaces(hClient, NULL, &pInterfaceList);
-	
+
 	if (dwResult != ERROR_SUCCESS)
 	{
 		WlanCloseHandle(hClient, NULL);
+		return;
+	}
+}
+
+void GetListOfInterfaces::GetList(Wifi* pWifi)
+{
+	pWifi->SetInterfaceList(NULL);
+	pWifi->SetResult(WlanEnumInterfaces(pWifi->GetClient(), NULL, pWifi->GetPInterfaceList()));
+
+	if (pWifi->GetResult() != ERROR_SUCCESS)
+	{
+		WlanCloseHandle(pWifi->GetClient(), NULL);
 		return;
 	}
 }

@@ -25,15 +25,12 @@
   * @brief ゲーム
   */
 class CommonResources;
-namespace mylib
-{
-	class DebugCamera;
-	class GridFloor;
-	class DebugString;
-}
-
+class Output;
+class ReleaseMemory;
+class UpdateInfo;
 class Wifi
 {
+public:
 
 	// データメンバの宣言
 private:
@@ -60,9 +57,7 @@ private:
 	std::vector<NetworkInfo> m_networkInfos;
 	// スキャン結果の処理に使う変数
 	WLAN_AVAILABLE_NETWORK m_network;
-	std::wstring_convert<std::codecvt_utf8<wchar_t>> m_converter;
 	std::string m_ssid;
-
 
 
 	// 最初の五秒はこの配列にWi-Fiの強さを格納する
@@ -95,4 +90,29 @@ public:
 	// 更新が終わったかどうかを調べるためのゲッター
 	std::vector<int> GetPreWifiLevels()const { return m_preWifilevels; }
 	std::vector<int> GetPreEnemyTypes()const { return m_preEnemyTypes; }
+	DWORD GetResult()const { return m_dwResult; }
+	DWORD* GetResult() { return &m_dwResult; }
+	void SetResult(DWORD result) { m_dwResult = result; }
+	DWORD GetMaxClient()const { return m_dwMaxClient; }
+	void SetMaxClient(DWORD maxClient) { m_dwMaxClient = maxClient; }
+	DWORD* GetCurVersion() { return &m_dwCurVersion; }
+	void SetCurVersion(DWORD curVersion) { m_dwCurVersion = curVersion; }
+	HANDLE* GetClient() { return &m_hClient; }
+	void SetClient(HANDLE client) { m_hClient = client; }
+	const PWLAN_INTERFACE_INFO_LIST& GetInterfaceList() { return m_pInterfaceList; }
+	PWLAN_INTERFACE_INFO_LIST* GetPInterfaceList() { return &m_pInterfaceList; }
+	void SetInterfaceList(PWLAN_INTERFACE_INFO_LIST interfaceList) { m_pInterfaceList = interfaceList; }
+	PWLAN_AVAILABLE_NETWORK_LIST GetNetworkList()const { return m_pNetworkList; }
+	void SetNetworkList(PWLAN_AVAILABLE_NETWORK_LIST networkList) { m_pNetworkList = networkList; }
+	PWLAN_AVAILABLE_NETWORK_LIST* GetPNetworkList() { return &m_pNetworkList; }
+	std::vector<NetworkInfo> GetNetworkInfos()const { return m_networkInfos; }
+	void SetNetworkInfos(std::vector<NetworkInfo> networkInfos) { m_networkInfos = networkInfos; }
+	WLAN_AVAILABLE_NETWORK GetNetwork()const { return m_network; }
+	void SetNetwork(WLAN_AVAILABLE_NETWORK network) { m_network = network; }
+	std::string GetSSID()const { return m_ssid; }
+	void SetSSID(std::string ssid) { m_ssid = ssid; }
+	std::set<std::string> GetDisplayedSSIDs()const { return m_displayedSSIDs; }
+	void SetDisplayedSSIDs(std::set<std::string> displayedSSIDs) { m_displayedSSIDs = displayedSSIDs; }
+	int GetCount()const { return m_count; }
+	void SetCount(int count) { m_count = count; }
 };

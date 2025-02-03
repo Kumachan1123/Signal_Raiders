@@ -35,11 +35,28 @@ void GetScanResults::Set(PWLAN_AVAILABLE_NETWORK_LIST& pNetworkList, DWORD& dwRe
 	pNetworkList = NULL;
 	dwResult =
 		WlanGetAvailableNetworkList(hClient,
-									&pInterfaceList->InterfaceInfo[0].InterfaceGuid,
-									0,
-									NULL,
-									&pNetworkList);
+			&pInterfaceList->InterfaceInfo[0].InterfaceGuid,
+			0,
+			NULL,
+			&pNetworkList);
 	if (dwResult != ERROR_SUCCESS)
+	{
+		return;
+	}
+}
+
+void GetScanResults::GetResults(Wifi* pWifi)
+{
+	pWifi->SetNetworkList(NULL);  // ネットワークリストの初期化
+	pWifi->SetResult(
+		WlanGetAvailableNetworkList(
+			pWifi->GetClient(),
+			&pWifi->GetInterfaceList()->InterfaceInfo[0].InterfaceGuid,
+			0,
+			NULL,
+			pWifi->GetPNetworkList()));
+
+	if (pWifi->GetResult() != ERROR_SUCCESS)
 	{
 		return;
 	}
