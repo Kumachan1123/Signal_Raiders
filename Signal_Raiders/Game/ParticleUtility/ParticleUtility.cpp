@@ -91,7 +91,7 @@ void ParticleUtility::SwitchType(float elapsedTime)
 	case ParticleUtility::Type::PLAYERTRAIL:
 		Trail(elapsedTime);
 		break;
-	case ParticleUtility::Type::BARRIERDESTROYED:
+	case ParticleUtility::Type::BARRIERBREAK:
 		BarrierDestroyed(elapsedTime);
 		break;
 	default:

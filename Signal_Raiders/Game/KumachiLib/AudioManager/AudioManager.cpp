@@ -107,14 +107,16 @@ void AudioManager::Shutdown()
 
 // 音声ファイルを読み込む
 bool AudioManager::LoadSound(const std::string& filePath, const std::string& key) {
-	if (m_sounds.find(key) != m_sounds.end()) {
+	if (m_sounds.find(key) != m_sounds.end())
+	{
 		// 既にロード済み
 		return false;
 	}
 
 	FMOD::Sound* sound = nullptr;
 	FMOD_RESULT result = m_system->createSound(filePath.c_str(), FMOD_DEFAULT, nullptr, &sound);
-	if (result != FMOD_OK || !sound) {
+	if (result != FMOD_OK || !sound)
+	{
 		return false;
 	}
 

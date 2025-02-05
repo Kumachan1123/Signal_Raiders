@@ -14,7 +14,7 @@ const float BulletParameters::PLAYER_BULLET_SIZE = 0.1f;// 弾の大きさ
 
 const float BulletParameters::COLLISION_RADIUS = 0.25f;// 弾の当たり判定の半径
 
-const float BulletParameters::ADJUST_MOVE = 0.75f;// 移動量の補正値
+const float BulletParameters::ADJUST_MOVE = 40.0f;// 移動量の補正値
 
 const float BulletParameters::ADJUST_DIRECTION = 0.0375f;	// Directionを若干上方向にするための補正値
 
@@ -28,7 +28,7 @@ const int  BulletParameters::DAMAGE = 10;						// 敵に与えるダメージ
 // 敵
 const float  BulletParameters::ENEMY_BULLET_LIFETIME = 5.0f;			// 寿命
 
-const float  BulletParameters::STRAIGHT_BULLET_SPEED = 0.2f;			// 直線弾の速度
+const float  BulletParameters::STRAIGHT_BULLET_SPEED = 10.0f;			// 直線弾の速度
 
 const float  BulletParameters::STRAIGHT_ADJUST_DIRECTION = 0.1f;	// Directionを若干下にするための補正値
 

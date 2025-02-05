@@ -149,7 +149,7 @@ void PlayerController::Update(float elapsedTime)
 	if (m_velocity.LengthSquared() > 0) m_velocity.Normalize();
 
 	// ˆÚ“®—Ê‚ğ•â³‚·‚é
-	m_velocity *= m_dash;
+	m_velocity *= m_dash * elapsedTime * 50;
 
 	// ÀÛ‚ÉˆÚ“®‚·‚é
 	m_position += m_velocity;

@@ -20,7 +20,7 @@ public:
 	{
 		ENEMYTRAIL,//	敵の弾の軌跡
 		PLAYERTRAIL,//	プレイヤーの弾の軌跡
-		BARRIERDESTROYED,//	バリア破壊
+		BARRIERBREAK,//	バリア破壊
 	};
 	//	変数
 

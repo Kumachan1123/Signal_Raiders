@@ -77,7 +77,7 @@ void Particle::Initialize(CommonResources* resources)
 		m_frameRows = 1;
 		LoadTexture(L"Resources/Textures/Trail.png");
 		break;
-	case ParticleUtility::Type::BARRIERDESTROYED:
+	case ParticleUtility::Type::BARRIERBREAK:
 		m_animSpeed = 17.0f;
 		m_frameCols = 5;
 		m_frameRows = 4;
@@ -133,7 +133,7 @@ void Particle::Update(float elapsedTime)
 	case ParticleUtility::Type::PLAYERTRAIL:
 		Trail();
 		break;
-	case ParticleUtility::Type::BARRIERDESTROYED:
+	case ParticleUtility::Type::BARRIERBREAK:
 
 		if (m_timer <= 0.50f)BarrierBreak();
 
@@ -205,7 +205,7 @@ void Particle::Render(Matrix view, Matrix proj)
 	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };
 	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
 
-	if (m_type == ParticleUtility::Type::BARRIERDESTROYED)// バリアが壊れたときの破片は深度バッファを使わない
+	if (m_type == ParticleUtility::Type::BARRIERBREAK)// バリアが壊れたときの破片は深度バッファを使わない
 	{
 		// 描画前設定
 		m_pDrawPolygon->DrawSetting(
@@ -253,7 +253,7 @@ void Particle::CreateBillboard(Vector3 target, Vector3 eye, Vector3 up)
 void Particle::Trail()
 {
 	// タイマーが一定時間を超えたら新しいパーティクルを生成
-	if (m_timer >= 0.00025f)
+	if (m_timer >= 0.00005f)
 	{
 		// 乱数の設定
 		std::random_device seed;
@@ -330,7 +330,7 @@ void Particle::Trail()
 
 void Particle::BarrierBreak()
 {
-	if (m_timer >= 0.05f)  // バリアが壊れたときの破片は少し間隔が長めでもよい
+	if (m_timer >= 0.0001f)  // バリアが壊れたときの破片は少し間隔が長めでもよい
 	{
 		std::random_device seed;
 		std::default_random_engine engine(seed());
@@ -339,7 +339,7 @@ void Particle::BarrierBreak()
 		std::uniform_real_distribution<> sizeDist(1.5f, 5.0f);  // 破片のサイズをランダムに設定
 		std::uniform_real_distribution<> heightDist(-1.0f, 1.0f); // 高さ方向（-1～1）のランダム範囲
 
-		for (int i = 0; i < 50; ++i)  // 破片を複数生成
+		for (int i = 0; i < 20; ++i)  // 破片を複数生成
 		{
 			// ランダムな方向で飛ばすための球面座標
 			float theta = static_cast<float>(angleDist(engine)); // 水平方向の角度 (0～2π)
@@ -370,7 +370,7 @@ void Particle::BarrierBreak()
 				Vector3(0.1f, 0.1f, 0.1f), // 最終スケール（小さくなる）
 				Vector4(1.0f, 1.0f, 0.5f, 1.0f),  // 初期カラー（オレンジっぽい）
 				Vector4(1.0f, 1.0f, 1.0f, 0.0f), // 最終カラー（白→透明）
-				ParticleUtility::Type::BARRIERDESTROYED // タイプを追加
+				ParticleUtility::Type::BARRIERBREAK // タイプを追加
 			);
 			m_particleUtility.push_back(pU);
 		}

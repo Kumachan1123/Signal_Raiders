@@ -88,9 +88,9 @@ public:
 	// —†ù’e‚Ì‰ñ“]•ûŒü‚ğŒˆ‚ß‚é
 	void SetRotateDirection(int direction) { m_rotateDirection = direction; }
 private:
-	void SpiralBullet();//—†ù’e
-	void VerticalBullet();//‚’¼’¼i’e
-	void StraightBullet();//’¼ü’e
+	void SpiralBullet(float elapsedTime);//—†ù’e
+	void VerticalBullet(float elapsedTime);//‚’¼’¼i’e
+	void StraightBullet(float elapsedTime);//’¼ü’e
 	DirectX::SimpleMath::Matrix BulletWorldMatrix();//’e‚Ìƒ[ƒ‹ƒhs—ñ‚ğì¬
 };
 #endif //ENEMY_BULLET_DEFINED

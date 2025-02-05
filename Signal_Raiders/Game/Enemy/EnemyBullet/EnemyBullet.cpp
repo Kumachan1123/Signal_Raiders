@@ -92,13 +92,13 @@ void EnemyBullet::Update(float elapsedTime)
 	switch (m_bulletType)
 	{
 	case BulletType::SPIRAL:
-		SpiralBullet();
+		SpiralBullet(elapsedTime);
 		break;
 	case BulletType::STRAIGHT:
-		StraightBullet();
+		StraightBullet(elapsedTime);
 		break;
 	case BulletType::VERTICAL:
-		VerticalBullet();
+		VerticalBullet(elapsedTime);
 		break;
 	default:
 		break;
@@ -169,7 +169,7 @@ void EnemyBullet::RenderBoundingSphere(DirectX::SimpleMath::Matrix view, DirectX
 }
 
 // 直線弾
-void EnemyBullet::StraightBullet()
+void EnemyBullet::StraightBullet(float elapsedTime)
 {	// プレイヤーの方向ベクトルを計算
 	DirectX::SimpleMath::Vector3 toPlayer = m_target - m_enemyPosition;
 	// ベクトルを正規化
@@ -181,7 +181,7 @@ void EnemyBullet::StraightBullet()
 	m_direction = toPlayer;
 	m_direction.y -= BulletParameters::STRAIGHT_ADJUST_DIRECTION;// 下に若干ずらす
 	// 弾の速度を遅くする
-	m_velocity = m_direction * BulletParameters::STRAIGHT_BULLET_SPEED;
+	m_velocity = m_direction * BulletParameters::STRAIGHT_BULLET_SPEED * elapsedTime;
 	// プレイヤーの方向に向かって弾を飛ばす
 	m_position += m_velocity;
 	m_boundingSphere.Center = m_position;//境界球に座標を渡す
@@ -201,13 +201,13 @@ DirectX::SimpleMath::Matrix EnemyBullet::BulletWorldMatrix()
 }
 
 // 垂直直進弾
-void EnemyBullet::VerticalBullet()
+void EnemyBullet::VerticalBullet(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
 	if (m_position.y >= BulletParameters::VERTICAL_BULLET_LANDING_POSITION)// 着弾位置に到達していない
 	{
 		// 真下に落とす
-		m_velocity = BulletParameters::VERTICAL_BULLET_LANDING_VELOCITY;
+		m_velocity = BulletParameters::VERTICAL_BULLET_LANDING_VELOCITY * elapsedTime;
 	}
 	else//着弾してから
 	{
@@ -219,7 +219,7 @@ void EnemyBullet::VerticalBullet()
 			toPlayer.Normalize();
 		}
 		// 弾の方向をプレイヤーの方向に向ける
-		m_direction = Vector3(toPlayer.x, 0, toPlayer.z);
+		m_direction = Vector3(toPlayer.x, 0, toPlayer.z) * elapsedTime;
 		m_velocity = m_direction;
 	}
 	m_position += m_velocity;
@@ -227,7 +227,7 @@ void EnemyBullet::VerticalBullet()
 }
 
 // 螺旋弾
-void EnemyBullet::SpiralBullet()
+void EnemyBullet::SpiralBullet(float elapsedTime)
 {
 	// プレイヤー方向ベクトルを計算
 	DirectX::SimpleMath::Vector3 toPlayer = m_target - m_enemyPosition;
@@ -256,7 +256,7 @@ void EnemyBullet::SpiralBullet()
 	m_direction.Normalize();
 
 	// 弾の速度を設定
-	m_velocity = m_direction * m_bulletSpeed;
+	m_velocity = m_direction * m_bulletSpeed * elapsedTime;
 
 	// プレイヤーに向かいつつスパイラルを描いて移動
 	m_position += m_velocity;

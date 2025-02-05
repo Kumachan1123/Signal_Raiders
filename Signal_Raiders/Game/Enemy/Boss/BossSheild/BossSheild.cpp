@@ -34,7 +34,7 @@ void BossSheild::Initialize(CommonResources* resources)
 	m_commonResources = resources;
 	auto device = resources->GetDeviceResources()->GetD3DDevice();
 	// パーティクル生成
-	m_pParticle = std::make_unique<Particle>(ParticleUtility::Type::BARRIERDESTROYED, 0.0f);// 0.0fなのはすでに内部で設定されているから
+	m_pParticle = std::make_unique<Particle>(ParticleUtility::Type::BARRIERBREAK, 0.0f);// 0.0fなのはすでに内部で設定されているから
 	m_pParticle->Initialize(m_commonResources);
 
 	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);

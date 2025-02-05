@@ -133,10 +133,9 @@ void EnemyManager::Render()
 //---------------------------------------------------------
 void EnemyManager::InitializeFMOD()
 {
+	m_audioManager->Initialize();
 	// オーディオマネージャー
 	m_audioManager->LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet");// 弾発射音
-	m_audioManager->LoadSound("Resources/Sounds/Barrier.mp3", "Barrier");// シールド音
-	m_audioManager->LoadSound("Resources/Sounds/BarrierBreak.mp3", "BarrierBreak");// シールド破壊音
 	m_audioManager->LoadSound("Resources/Sounds/Explosion.mp3", "EnemyDead");
 	m_audioManager->LoadSound("Resources/Sounds/damage.mp3", "Damage");
 }

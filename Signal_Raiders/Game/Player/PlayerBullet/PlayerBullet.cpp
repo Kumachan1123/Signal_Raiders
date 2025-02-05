@@ -88,7 +88,7 @@ void PlayerBullet::Update(float elapsedTime)
 	// 移動量を正規化する
 	if (m_velocity.LengthSquared() > 0)m_velocity.Normalize();
 	// 移動量を補正する
-	m_velocity *= BulletParameters::ADJUST_MOVE;
+	m_velocity *= BulletParameters::ADJUST_MOVE * elapsedTime;
 	// 実際に移動する
 	m_position += m_velocity;
 	// バウンディングスフィアの位置更新
