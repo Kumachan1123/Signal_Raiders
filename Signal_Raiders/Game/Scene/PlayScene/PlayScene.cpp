@@ -105,6 +105,9 @@ void PlayScene::Initialize(CommonResources* resources)
 	// HPゲージ作成
 	m_pPlayerHP = std::make_unique<PlayerHP>();
 	m_pPlayerHP->Initialize(DR, Screen::UI_WIDTH, Screen::UI_HEIGHT);
+	// ダッシュゲージ作成
+	m_pDashGauge = std::make_unique<DashGauge>();
+	m_pDashGauge->Initialize(DR, Screen::UI_WIDTH, Screen::UI_HEIGHT);
 	// 照準作成
 	m_pReticle = std::make_unique<Reticle>();
 	m_pReticle->Initialize(DR, Screen::UI_WIDTH, Screen::UI_HEIGHT);
@@ -156,6 +159,8 @@ void PlayScene::Update(float elapsedTime)
 		m_pPlayerHP->Update(m_pPlayer->GetPlayerHP());
 		// 体力が10以下になったら危機状態更新
 		if (m_pPlayer->GetPlayerHP() <= 10.0f)m_pCrisis->Update(elapsedTime);
+		// ダッシュゲージ更新
+		m_pDashGauge->Update(m_pPlayer->GetDashTime());
 		// 照準更新
 		m_pReticle->Update();
 		// 操作説明更新
@@ -181,7 +186,7 @@ void PlayScene::Update(float elapsedTime)
 		m_pRadar->Update(elapsedTime);
 	}
 
-
+	;
 	// 画面遷移フェード処理
 	m_fade->Update(elapsedTime);
 	// フェードアウトが終了したら
@@ -232,13 +237,13 @@ void PlayScene::Render()
 		// レーダーを描画する
 		m_pRadar->Render();
 		m_pPlayerHP->Render();// HP描画
+		m_pDashGauge->Render();// ダッシュゲージ描画
 		m_pReticle->Render();// 照準描画
 	}
 	else // ゲーム開始から5秒間は指示画像を表示
 	{
 		m_pGoal->Render();
 	}
-
 
 	// フェードの描画
 	m_fade->Render();

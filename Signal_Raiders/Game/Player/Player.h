@@ -34,6 +34,8 @@ private:
 	std::unique_ptr<FPS_Camera> m_pCamera;
 	// プレイヤーのHP
 	float m_playerHP;
+	// プレイヤーが走れる時間
+	float m_dashTime;
 	// ダメージエフェクトを管理するクラス
 	std::unique_ptr<DamageEffects> m_pDamageEffects;
 	// プレイヤーコントローラー
@@ -89,6 +91,8 @@ public:
 public:
 	float GetPlayerHP() const { return m_playerHP; }	// プレイヤーのHP
 	void SetPlayerHP(float playerHP) { m_playerHP = playerHP; }	// プレイヤーのHP
+	float GetDashTime() const { return m_dashTime; }	// プレイヤーが走れる時間
+	void SetDashTime(float dashTime) { m_dashTime = dashTime; }	// プレイヤーが走れる時間
 	FPS_Camera* GetCamera() { return m_pCamera.get(); }// カメラ
 	EnemyManager* GetEnemies() { return m_pEnemyManager; }// 敵
 	BulletManager* GetBulletManager() { return m_pBulletManager; }// 弾マネージャー

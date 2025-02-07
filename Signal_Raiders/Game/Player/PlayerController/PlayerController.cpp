@@ -32,6 +32,7 @@ PlayerController::PlayerController(Player* pPlayer)
 	, m_hWnd{ nullptr }
 	, m_sensitive{ pPlayer->GetMouseSensitive() + 1.0f }// マウス感度:Player->GetMouseSensitive()のままだと最小値が0.0fになるので + 1.0fする
 	, m_rotate{}
+	, m_dashTime{ 10.0f }
 {
 	// スクリーンの解像度を取得
 	RECT desktopRect;
@@ -139,9 +140,16 @@ void PlayerController::Update(float elapsedTime)
 	}
 
 	// ダッシュ
-	if (kbTracker->lastState.LeftShift)
+	if (kbTracker->lastState.LeftShift && m_dashTime > 0.0f)
 	{
 		m_dash = 0.2f;
+		m_dashTime -= elapsedTime;
+	}
+	else
+	{
+		m_dash = 0.1f;
+		m_dashTime += elapsedTime / 2;
+		if (m_dashTime >= 10.0f)m_dashTime = 10.0f;
 	}
 
 

@@ -27,9 +27,13 @@ public:
 	// ダッシュ
 	float m_dash;
 
+	// 走れる時間
+	float m_dashTime;
+
 private:
 	// 共通リソース
-	CommonResources* m_commonResources; float DmouseX = 0;
+	CommonResources* m_commonResources;
+	float DmouseX = 0;
 public:
 	PlayerController(Player* pPlayer);
 	~PlayerController();
@@ -43,6 +47,7 @@ public:
 	float GetPitch()const { return m_pitchY; }
 	DirectX::SimpleMath::Vector3 GetPlayerPosition()const { return m_position; }
 	float GetRotate()const { return m_rotate; }
+	float GetDashTime()const { return m_dashTime; }
 	//Setter
 	void SetPlayetPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }
 	void SetMouseSensitive(float sensitive) { m_sensitive = sensitive; }

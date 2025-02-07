@@ -18,6 +18,7 @@
 #include "Game/Stage/Stage.h"
 #include "Game/Stage/Wall/Wall.h"
 #include "Game/Player/PlayerUI/PlayerHP/PlayerHP.h"
+#include "Game/Player/PlayerUI/DashGauge/DashGauge.h"
 #include "Game/Player/PlayerUI/Reticle/Reticle.h"
 #include "Game/Player/PlayerUI/Crisis/Crisis.h"
 #include "Game/Player/PlayerUI/PlayGuide/PlayGuide.h"
@@ -69,6 +70,8 @@ private:
 	std::unique_ptr<Goal> m_pGoal;
 	// プレイヤーのHPのUI
 	std::unique_ptr <PlayerHP> m_pPlayerHP;
+	// ダッシュゲージ
+	std::unique_ptr<DashGauge> m_pDashGauge;
 	// 危機状態
 	std::unique_ptr<Crisis> m_pCrisis;
 	// 照準

@@ -67,7 +67,8 @@ void Player::Update(float elapsedTime)
 	PlayerDamage(elapsedTime);
 	// プレイヤーの位置を取得
 	m_playerPos = m_pPlayerController->GetPlayerPosition();
-
+	// 走れる時間を更新
+	m_dashTime = m_pPlayerController->GetDashTime();
 
 #ifdef _DEBUG// デバッグ チートコマンド
 	m_pPlayerController->DebugCommand();
