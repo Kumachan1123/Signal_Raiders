@@ -14,7 +14,7 @@
 #include "Game/Wifi/Interface/IWifiParts.h"
 #include "Game/Wifi/Output/Output.h"
 #include "Game/Wifi/ReleaseMemory/ReleaseMemory.h"
-#include "Game/Wifi/UpdateInfo/UpdateInfo.h"
+
 #include "Game/Wifi/Wifi.h"
 #include "Libraries/MyLib/DebugString.h"
 
@@ -27,7 +27,7 @@
 class CommonResources;
 class Output;
 class ReleaseMemory;
-class UpdateInfo;
+
 class Wifi
 {
 public:
@@ -36,8 +36,6 @@ public:
 private:
 
 	// wi-fi関連の変数
-		// クラスいろいろ
-	std::unique_ptr<UpdateInfo>				 m_updateInfo;
 	std::unique_ptr<Output>					 m_output;
 	std::unique_ptr<ReleaseMemory>			 m_memory;
 	// Wi-Fi関連の宣言
@@ -58,7 +56,7 @@ private:
 	// スキャン結果の処理に使う変数
 	WLAN_AVAILABLE_NETWORK m_network;
 	std::string m_ssid;
-
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> m_converter;
 
 	// 最初の五秒はこの配列にWi-Fiの強さを格納する
 	std::vector<int> m_preWifilevels;// Wi-Fiの強さ
@@ -83,6 +81,14 @@ public:
 	void Update(float elapsedTime);
 	// クリア
 	void Clear();
+private:
+	void InitHandle();// ハンドルの初期化
+	void Checkversion();// バージョンの確認
+	void GetInterfacesList();// インターフェースのリスト取得
+	void StartScan();// スキャンの開始
+	void GetScanResults();// スキャン結果の取得
+	void SetUp();// 表示準備
+	void ProcessingScanResults();// スキャン結果の処理
 public:
 	// 取得した情報を送る
 	std::vector<int> GetWifiLevels()const { return m_wifilevels; }//電波の強さを渡す

@@ -180,38 +180,14 @@
     <ClInclude Include="Game\Player\PlayerController\PlayerController.h">
       <Filter>Game\Player\PlayerController</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Wifi\CheckVersion\CheckVersion.h">
-      <Filter>Game\Wi-Fi\CheckVersion</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Wifi\GetListOfInterfaces\GetListOfInterfaces.h">
-      <Filter>Game\Wi-Fi\GetListOfInterfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Wifi\GetScanResults\GetScanResults.h">
-      <Filter>Game\Wi-Fi\GetScanResults</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Wifi\InitHandle\InitHandle.h">
-      <Filter>Game\Wi-Fi\InitHandle</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Wifi\Interface\IWifiParts.h">
       <Filter>Game\Wi-Fi\IWifiParts</Filter>
     </ClInclude>
     <ClInclude Include="Game\Wifi\Output\Output.h">
       <Filter>Game\Wi-Fi\Output</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Wifi\Preparation\Preparation.h">
-      <Filter>Game\Wi-Fi\Preparation</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Wifi\ProcessingScanResults\ProcessingScanResults.h">
-      <Filter>Game\Wi-Fi\ProcessingScanResults</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Wifi\ReleaseMemory\ReleaseMemory.h">
       <Filter>Game\Wi-Fi\ReleaseMemory</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Wifi\StartScan\StartScan.h">
-      <Filter>Game\Wi-Fi\StartScan</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Wifi\UpdateInfo\UpdateInfo.h">
-      <Filter>Game\Wi-Fi\UpdateInfo</Filter>
     </ClInclude>
     <ClInclude Include="Game\Wifi\Wifi.h">
       <Filter>Game\Wi-Fi</Filter>
@@ -348,35 +324,11 @@
     <ClCompile Include="Game\Player\PlayerController\PlayerController.cpp">
       <Filter>Game\Player\PlayerController</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Wifi\CheckVersion\CheckVersion.cpp">
-      <Filter>Game\Wi-Fi\CheckVersion</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Wifi\GetListOfInterfaces\GetListOfInterfaces.cpp">
-      <Filter>Game\Wi-Fi\GetListOfInterfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Wifi\GetScanResults\GetScanResults.cpp">
-      <Filter>Game\Wi-Fi\GetScanResults</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Wifi\InitHandle\InitHandle.cpp">
-      <Filter>Game\Wi-Fi\InitHandle</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Wifi\Output\Output.cpp">
       <Filter>Game\Wi-Fi\Output</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Wifi\Preparation\Preparation.cpp">
-      <Filter>Game\Wi-Fi\Preparation</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Wifi\ProcessingScanResults\ProcessingScanResults.cpp">
-      <Filter>Game\Wi-Fi\ProcessingScanResults</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Wifi\ReleaseMemory\ReleaseMemory.cpp">
       <Filter>Game\Wi-Fi\ReleaseMemory</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Wifi\StartScan\StartScan.cpp">
-      <Filter>Game\Wi-Fi\StartScan</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Wifi\UpdateInfo\UpdateInfo.cpp">
-      <Filter>Game\Wi-Fi\UpdateInfo</Filter>
     </ClCompile>
     <ClCompile Include="Game\Wifi\Wifi.cpp">
       <Filter>Game\Wi-Fi</Filter>
