@@ -108,6 +108,9 @@ void PlayScene::Initialize(CommonResources* resources)
 	// ダッシュゲージ作成
 	m_pDashGauge = std::make_unique<DashGauge>();
 	m_pDashGauge->Initialize(DR, Screen::UI_WIDTH, Screen::UI_HEIGHT);
+	// 弾ゲージ作成
+	m_pBulletGauge = std::make_unique<BulletGauge>();
+	m_pBulletGauge->Initialize(DR, Screen::UI_WIDTH, Screen::UI_HEIGHT);
 	// 照準作成
 	m_pReticle = std::make_unique<Reticle>();
 	m_pReticle->Initialize(DR, Screen::UI_WIDTH, Screen::UI_HEIGHT);
@@ -158,9 +161,11 @@ void PlayScene::Update(float elapsedTime)
 		// HP更新
 		m_pPlayerHP->Update(m_pPlayer->GetPlayerHP());
 		// 体力が10以下になったら危機状態更新
-		if (m_pPlayer->GetPlayerHP() <= 10.0f)m_pCrisis->Update(elapsedTime);
+		if (m_pPlayer->GetPlayerHP() <= 20.0f)m_pCrisis->Update(elapsedTime);
 		// ダッシュゲージ更新
 		m_pDashGauge->Update(m_pPlayer->GetDashTime());
+		// 弾ゲージ更新
+		m_pBulletGauge->Update(float(m_pPlayer->GetBulletManager()->GetPlayerBulletCount()));
 		// 照準更新
 		m_pReticle->Update();
 		// 操作説明更新
@@ -238,6 +243,7 @@ void PlayScene::Render()
 		m_pRadar->Render();
 		m_pPlayerHP->Render();// HP描画
 		m_pDashGauge->Render();// ダッシュゲージ描画
+		m_pBulletGauge->Render();// 弾ゲージ描画
 		m_pReticle->Render();// 照準描画
 	}
 	else // ゲーム開始から5秒間は指示画像を表示

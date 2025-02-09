@@ -42,6 +42,7 @@ public:
 	void Update(float elapsedTime);// 更新
 	void DebugCommand();// デバッグコマンド
 	void Shoot();// プレイヤーが弾を撃つ
+	void Reload();// 弾をリロード（補充）する
 	//Getter
 	float GetYawX()const { return m_yawX; }
 	float GetPitch()const { return m_pitchY; }

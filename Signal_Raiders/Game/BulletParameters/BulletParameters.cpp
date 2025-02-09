@@ -32,7 +32,7 @@ const float  BulletParameters::STRAIGHT_BULLET_SPEED = 10.0f;			// 直線弾の速度
 
 const float  BulletParameters::STRAIGHT_ADJUST_DIRECTION = 0.1f;	// Directionを若干下にするための補正値
 
-const float  BulletParameters::VERTICAL_BULLET_SPEED = 0.5f;			// 垂直弾の速度
+const float  BulletParameters::VERTICAL_BULLET_SPEED = 50.0f;			// 垂直弾の速度
 
 const DirectX::SimpleMath::Vector3  BulletParameters::VERTICAL_BULLET_LANDING_VELOCITY = { 0.0f, -0.15f, 0.0f };	// 着弾前の速度
 

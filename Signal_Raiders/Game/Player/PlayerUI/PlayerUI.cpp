@@ -39,6 +39,7 @@ PlayerUI::~PlayerUI() {  }
 // テクスチャを読み込む
 void PlayerUI::LoadTexture(const wchar_t* path)
 {
+
 	DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, m_res.ReleaseAndGetAddressOf(), m_texture.ReleaseAndGetAddressOf());
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> tex;
 	DX::ThrowIfFailed(m_res.As(&tex));
@@ -90,17 +91,24 @@ void PlayerUI::CreateShader()
 
 	// HP用シェーダーの作成
 	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/PlayerUI/PS_PlayerHP.cso", m_hpPixelShader);
+	// 円形ゲージ用シェーダーの作成
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/PlayerUI/PS_CircleGauge.cso", m_circlePixelShader);
 
 	// HP用シェーダーにデータを渡すためのコンスタントバッファ生成
 	m_pCreateShader->CreateConstantBuffer(m_CBuffer, sizeof(ConstBuffer));
 	// シェーダーの構造体にシェーダーを渡す
+	// HP以外のシェーダー
 	m_shaders.vs = m_vertexShader.Get();
 	m_shaders.ps = m_pixelShader.Get();
 	m_shaders.gs = m_geometryShader.Get();
-
+	// HP用シェーダー
 	m_hpShaders.vs = m_vertexShader.Get();
 	m_hpShaders.ps = m_hpPixelShader.Get();
 	m_hpShaders.gs = m_geometryShader.Get();
+	// 円形ゲージ用シェーダー
+	m_circleShaders.vs = m_vertexShader.Get();
+	m_circleShaders.ps = m_circlePixelShader.Get();
+	m_circleShaders.gs = m_geometryShader.Get();
 }
 
 
@@ -136,12 +144,15 @@ void PlayerUI::Render()
 	if (m_shaderType == ShaderType::HP)
 	{
 		// 描画準備
-		//m_pDrawPolygon->DrawStart(m_pHPInputLayout.Get(), m_textures);
 		m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_textures);
-
 		m_pDrawPolygon->SetShader(m_hpShaders, nullptr, 0);
 	}
-
+	else if (m_shaderType == ShaderType::CIRCLE)
+	{
+		// 描画準備
+		m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_textures);
+		m_pDrawPolygon->SetShader(m_circleShaders, nullptr, 0);
+	}
 	else
 	{
 		m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_textures);

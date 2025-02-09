@@ -207,7 +207,7 @@ void EnemyBullet::VerticalBullet(float elapsedTime)
 	if (m_position.y >= BulletParameters::VERTICAL_BULLET_LANDING_POSITION)// 着弾位置に到達していない
 	{
 		// 真下に落とす
-		m_velocity = BulletParameters::VERTICAL_BULLET_LANDING_VELOCITY * elapsedTime * 50;
+		m_velocity = BulletParameters::VERTICAL_BULLET_LANDING_VELOCITY * elapsedTime * BulletParameters::VERTICAL_BULLET_SPEED;
 	}
 	else//着弾してから
 	{
@@ -219,7 +219,7 @@ void EnemyBullet::VerticalBullet(float elapsedTime)
 			toPlayer.Normalize();
 		}
 		// 弾の方向をプレイヤーの方向に向ける
-		m_direction = Vector3(toPlayer.x, 0, toPlayer.z) * elapsedTime * 50;
+		m_direction = Vector3(toPlayer.x, 0, toPlayer.z) * elapsedTime * BulletParameters::VERTICAL_BULLET_SPEED;
 		m_velocity = m_direction;
 	}
 	m_position += m_velocity;

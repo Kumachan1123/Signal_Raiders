@@ -232,6 +232,7 @@
     <ClInclude Include="Game\Player\PlayerBullet\PlayerBullet.h" />
     <ClInclude Include="Game\Player\PlayerController\PlayerController.h" />
     <ClInclude Include="Game\KumachiLib\Anchor.h" />
+    <ClInclude Include="Game\Player\PlayerUI\BulletGauge\BulletGauge.h" />
     <ClInclude Include="Game\Player\PlayerUI\Crisis\Crisis.h" />
     <ClInclude Include="Game\Player\PlayerUI\DashGauge\DashGauge.h" />
     <ClInclude Include="Game\Player\PlayerUI\PlayerHP\PlayerHP.h" />
@@ -322,6 +323,7 @@
     <ClCompile Include="Game\Player\Player.cpp" />
     <ClCompile Include="Game\Player\PlayerBullet\PlayerBullet.cpp" />
     <ClCompile Include="Game\Player\PlayerController\PlayerController.cpp" />
+    <ClCompile Include="Game\Player\PlayerUI\BulletGauge\BulletGauge.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\Crisis\Crisis.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\DashGauge\DashGauge.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\PlayerHP\PlayerHP.cpp" />
@@ -551,6 +553,18 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\PlayerUI\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\PlayerUI\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="HLSL\PlayerUI\PS_CircleGauge.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\PlayerUI\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\PlayerUI\%(Filename).cso</ObjectFileOutput>

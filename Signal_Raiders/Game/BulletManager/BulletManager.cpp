@@ -14,6 +14,9 @@ BulletManager::BulletManager(CommonResources* commonResources)
 	, m_audioManager{ AudioManager::GetInstance() }
 	, m_enemyBulletType{ EnemyBullet::BulletType::STRAIGHT }
 	, m_enemyBulletSize{ 0.0f }
+	, m_playerBulletCount{ 0 }
+	, m_reloadTimer{ 0.0f }
+	, m_elapsedTime{ 0.0f }
 {
 }
 // デストラクタ
@@ -31,27 +34,24 @@ void BulletManager::Initialize(Player* pPlayer, EnemyManager* pEnemies)
 {
 	m_pPlayer = pPlayer;// プレイヤーのポインターを取得
 	m_pEnemyManager = pEnemies;// 敵全体のポインターを取得
+
 	// 効果音の初期化
-	m_audioManager->Initialize();
-	m_audioManager->LoadSound("Resources/Sounds/playerBullet.mp3", "Shoot");
-	m_audioManager->LoadSound("Resources/Sounds/Hit.mp3", "Hit");
+	SetSound();
+
+	// プレイヤーの弾の初期化
+	m_playerBulletCount = MAX_PLAYER_BULLET_COUNT;
 }
 
 // 更新
 void BulletManager::Update(float elapsedTime)
 {
-
-
+	// 経過時間を更新
+	m_elapsedTime = elapsedTime;
 	// プレイヤーの弾を更新
 	UpdatePlayerBullets(elapsedTime);
 	// 敵の弾を更新
-	for (auto& enemy : m_pEnemyManager->GetEnemies())
-	{
+	for (auto& enemy : m_pEnemyManager->GetEnemies())UpdateEnemyBullets(elapsedTime, enemy);
 
-		// 敵の弾を更新
-		UpdateEnemyBullets(elapsedTime, enemy);
-
-	}
 }
 // 描画
 void BulletManager::Render()
@@ -99,6 +99,29 @@ void BulletManager::CreateEnemyBullet(const Vector3& position, Vector3& directio
 	bullet->MakeBall(position, direction, playerPos);
 	bullet->SetShooter(m_pShooter);
 	m_enemyBullets.push_back(std::move(bullet));
+}
+
+void BulletManager::ReLoadPlayerBullet()
+{
+	m_reloadTimer += m_elapsedTime;
+
+	if (m_playerBulletCount < MAX_PLAYER_BULLET_COUNT && m_reloadTimer >= 0.1f)
+	{
+		m_playerBulletCount++;
+	}
+	if (m_reloadTimer > 0.1f)
+	{
+		m_reloadTimer = 0.0f;
+	}
+}
+
+void BulletManager::ConsumePlayerBullet()
+{
+	// プレイヤーの弾を消費
+	if (m_playerBulletCount > 0)
+	{
+		m_playerBulletCount--;
+	}
 }
 
 void BulletManager::UpdatePlayerBullets(float elapsedTime)
@@ -159,6 +182,15 @@ void BulletManager::UpdateEnemyBullets(float elapsedTime, std::unique_ptr<IEnemy
 			++it;
 		}
 	}
+}
+
+void BulletManager::SetSound()
+{
+	// オーディオマネージャーの初期化
+	m_audioManager->Initialize();
+	m_audioManager->LoadSound("Resources/Sounds/playerBullet.mp3", "Shoot");
+	m_audioManager->LoadSound("Resources/Sounds/Hit.mp3", "Hit");
+
 }
 
 bool BulletManager::CheckCollisionWithEnemies(const std::unique_ptr<PlayerBullet>& bullet)

@@ -25,8 +25,9 @@ class PlayerUI
 public:
 	enum class ShaderType
 	{
-		HP = 0,
-		OTHER,
+		HP = 0,// HPゲージのような動きをする
+		CIRCLE,// 円形ゲージのような動きをする
+		OTHER,// その他
 	};
 
 	//データ受け渡し用コンスタントバッファ(送信側)
@@ -46,10 +47,7 @@ private:
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 
-	// プリミティブバッチ
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_batch;
-	//コモンステート
-	std::unique_ptr<DirectX::CommonStates> m_states;
+
 	// テクスチャハンドル
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_textures;
@@ -61,14 +59,19 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 	// ジオメトリシェーダ
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_geometryShader;
-	// シェーダーの構造体
-	DrawPolygon::Shaders m_shaders;
+
 	// HPで使うシェーダー
 	// ピクセルシェーダ
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_hpPixelShader;
+	// 円形ゲージのシェーダー
+	// ピクセルシェーダ
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_circlePixelShader;
+	// シェーダーの構造体
+	DrawPolygon::Shaders m_shaders;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_hpShaders;
-
+	// シェーダーの構造体
+	DrawPolygon::Shaders m_circleShaders;
 
 	// 描画クラス
 	DrawPolygon* m_pDrawPolygon;

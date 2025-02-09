@@ -205,10 +205,23 @@ void PlayerController::Shoot()
 	auto& mTracker = m_commonResources->GetInputManager()->GetMouseTracker();
 
 	// 左クリックで弾発射
-	if (mTracker->GetLastState().leftButton && m_pPlayer->GetBulletManager()->GetIsPlayerShoot() == false)
+	if (mTracker->GetLastState().leftButton &&
+		m_pPlayer->GetBulletManager()->GetIsPlayerShoot() == false &&
+		m_pPlayer->GetBulletManager()->GetPlayerBulletCount() > 0)
 	{
-		m_pPlayer->CreateBullet();
+		m_pPlayer->CreateBullet();// 弾を生成する
+		m_pPlayer->GetBulletManager()->ConsumePlayerBullet();
 	}
 	if (!mTracker->GetLastState().leftButton)m_pPlayer->GetBulletManager()->SetIsPlayerShoot(false);
 
+}
+
+void PlayerController::Reload()
+{
+	// キーボードステートトラッカーを取得する
+	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
+	const auto& kbState = m_commonResources->GetInputManager()->GetKeyboardState();
+	// Rキーで弾をリロード
+	if (kbState.R)m_pPlayer->GetBulletManager()->ReLoadPlayerBullet();
+	//if (kbTracker->pressed.R)m_pPlayer->GetBulletManager()->ReLoadPlayerBullet();
 }

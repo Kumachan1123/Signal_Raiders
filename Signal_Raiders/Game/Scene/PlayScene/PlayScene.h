@@ -23,6 +23,7 @@
 #include "Game/Player/PlayerUI/Crisis/Crisis.h"
 #include "Game/Player/PlayerUI/PlayGuide/PlayGuide.h"
 #include "Game/Player/PlayerUI/Goal/Goal.h"
+#include "Game/Player/PlayerUI/BulletGauge/BulletGauge.h"
 #include "Game/Effect/Effect.h"
 #include "Game/Fade/Fade.h"
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
@@ -72,6 +73,8 @@ private:
 	std::unique_ptr <PlayerHP> m_pPlayerHP;
 	// ダッシュゲージ
 	std::unique_ptr<DashGauge> m_pDashGauge;
+	// 弾ゲージ
+	std::unique_ptr<BulletGauge> m_pBulletGauge;
 	// 危機状態
 	std::unique_ptr<Crisis> m_pCrisis;
 	// 照準

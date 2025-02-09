@@ -38,10 +38,16 @@ private:
 	float m_enemyBulletSize;
 	// プレイヤーの弾生成フラグ
 	bool m_isPlayerShoot = false;
+	// 経過時間
+	float m_elapsedTime;
+	// リロードタイマー
+	float m_reloadTimer;
 	std::vector<std::unique_ptr<PlayerBullet>> m_playerBullets;
 	std::vector<std::unique_ptr<EnemyBullet>> m_enemyBullets;
-
+	// プレイヤーの弾の最大数
+	int m_playerBulletCount;
 	static constexpr float DELETE_BULLET_POSITION = -0.25f;
+	static constexpr int MAX_PLAYER_BULLET_COUNT = 50;
 	static constexpr float HIT_VOLUME = 0.8f;
 public:
 	BulletManager(CommonResources* commonResources);
@@ -59,7 +65,11 @@ public:
 	bool GetIsPlayerShoot() const { return m_isPlayerShoot; }
 	void SetIsPlayerShoot(bool isPlayerShoot) { m_isPlayerShoot = isPlayerShoot; }
 	void SetShooter(IEnemy* pShooter) { m_pShooter = pShooter; }
+	void ReLoadPlayerBullet();// 弾の補充
+	void ConsumePlayerBullet();// 弾の消費
+	int GetPlayerBulletCount() const { return m_playerBulletCount; }
 private:
 	void UpdatePlayerBullets(float elapsedTime);
 	void UpdateEnemyBullets(float elapsedTime, std::unique_ptr<IEnemy>& enemy);
+	void SetSound();
 };

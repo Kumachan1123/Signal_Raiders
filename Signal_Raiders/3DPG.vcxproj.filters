@@ -281,6 +281,7 @@
     <ClInclude Include="Game\BulletParameters\BulletParameters.h" />
     <ClInclude Include="Game\Wifi\Parameters\WiFiParameters.h" />
     <ClInclude Include="Game\Player\PlayerUI\DashGauge\DashGauge.h" />
+    <ClInclude Include="Game\Player\PlayerUI\BulletGauge\BulletGauge.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -409,6 +410,7 @@
     <ClCompile Include="Game\BulletManager\BulletManager.cpp" />
     <ClCompile Include="Game\BulletParameters\BulletParameters.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\DashGauge\DashGauge.cpp" />
+    <ClCompile Include="Game\Player\PlayerUI\BulletGauge\BulletGauge.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -475,5 +477,6 @@
     <FxCompile Include="HLSL\Stage\PS_Stage.hlsl" />
     <FxCompile Include="HLSL\Stage\VS_Stage.hlsl" />
     <FxCompile Include="HLSL\Menu\PS_StageMenu.hlsl" />
+    <FxCompile Include="HLSL\PlayerUI\PS_CircleGauge.hlsl" />
   </ItemGroup>
 </Project>

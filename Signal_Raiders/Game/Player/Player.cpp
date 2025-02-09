@@ -22,6 +22,7 @@ Player::Player(CommonResources* commonResources)
 	m_SEVolume{ 0.0f },
 	m_VolumeCorrection{ 0.0f },
 	m_playerDir{},
+	m_dashTime{ 0.0f },
 	m_isKillAll{ false },
 	m_isCheat{ false }
 {
@@ -73,8 +74,10 @@ void Player::Update(float elapsedTime)
 #ifdef _DEBUG// デバッグ チートコマンド
 	m_pPlayerController->DebugCommand();
 #endif
-	// プレイヤーの弾生成
-	m_pPlayerController->Shoot();// 弾発射
+	// 弾発射
+	m_pPlayerController->Shoot();
+	// 弾のリロード
+	m_pPlayerController->Reload();
 	// ダメージエフェクトを更新する
 	m_pDamageEffects->Update(elapsedTime);
 	// プレイヤーの境界球を更新
