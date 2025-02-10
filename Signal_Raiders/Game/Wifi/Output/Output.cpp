@@ -31,12 +31,10 @@ Output::Output()
 Output::~Output()
 {
 }
-void Output::DisplayInformation(std::vector<NetworkInfo>& networkInfos,
-	int& count)
+void Output::DisplayInformation(std::vector<NetworkInfo>& networkInfos)
 {
 
 	UNREFERENCED_PARAMETER(networkInfos);
-	SetCount(count);
 	//êîílÇæÇØèoÇ∑
 	for (const auto& networkInfo : m_networkInfos)
 	{

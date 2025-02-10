@@ -34,6 +34,8 @@ private:
 	std::unique_ptr<FPS_Camera> m_pCamera;
 	// プレイヤーのHP
 	float m_playerHP;
+	// プレイヤーの最大HP
+	float m_maxPlayerHP;
 	// プレイヤーが走れる時間
 	float m_dashTime;
 	// ダメージエフェクトを管理するクラス
@@ -72,7 +74,7 @@ private:// 定数
 	// プレイヤーと敵との一定範囲の境界球の半径
 	const float IN_PLAYER_AREA_RADIUS = 20.0f;
 	// プレイヤーの境界球の半径
-	const float PLAYER_SPHERE_RADIUS = 2.0f;
+	const float PLAYER_SPHERE_RADIUS = 3.0f;
 	// ダメージ時のカメラ揺れに関する定数
 	const float DAMAGE_SHAKE_FREQUENCY = 70.0f;   // カメラ揺れの周波数
 	const float DAMAGE_SHAKE_AMPLITUDE = 0.15f;  // カメラ揺れの振幅
@@ -91,6 +93,8 @@ public:
 public:
 	float GetPlayerHP() const { return m_playerHP; }	// プレイヤーのHP
 	void SetPlayerHP(float playerHP) { m_playerHP = playerHP; }	// プレイヤーのHP
+	float GetMaxPlayerHP() const { return m_maxPlayerHP; }	// プレイヤーの最大HP
+	void SetMaxPlayerHP(float maxPlayerHP) { m_maxPlayerHP = maxPlayerHP; }	// プレイヤーの最大HP
 	float GetDashTime() const { return m_dashTime; }	// プレイヤーが走れる時間
 	void SetDashTime(float dashTime) { m_dashTime = dashTime; }	// プレイヤーが走れる時間
 	FPS_Camera* GetCamera() { return m_pCamera.get(); }// カメラ

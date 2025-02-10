@@ -42,7 +42,8 @@ private:
 	int m_windowWidth, m_windowHeight;
 
 	DirectX::Keyboard::KeyboardStateTracker m_tracker;
-
+	float m_maxHP;// ç≈ëÂHP(ìríÜÇ≈ïœìÆÇ∑ÇÈÅj
+	float m_currentHP;// åªç›ÇÃHP
 
 	//ä÷êî
 public:
@@ -52,7 +53,7 @@ public:
 	void Initialize(DX::DeviceResources* pDR, int width, int height);
 	void Update(float playerHP);
 	void Render();
-
+	void SetMaxHP(float maxHP) { m_maxHP = maxHP; }
 	void Add(const wchar_t* path
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale

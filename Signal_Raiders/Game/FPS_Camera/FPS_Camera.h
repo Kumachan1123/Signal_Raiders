@@ -36,7 +36,7 @@ private:
 public:
 	// コンストラクタ
 	FPS_Camera(
-		const DirectX::SimpleMath::Vector3& eye = DirectX::SimpleMath::Vector3{ 0.0f,2.0f,10.0f },
+		const DirectX::SimpleMath::Vector3& eye = DirectX::SimpleMath::Vector3{ 0.0f,4.0f,10.0f },
 		const DirectX::SimpleMath::Vector3& target = DirectX::SimpleMath::Vector3{ 0.0f,0.0f,0.0f },
 		const DirectX::SimpleMath::Vector3& up = DirectX::SimpleMath::Vector3::UnitY
 

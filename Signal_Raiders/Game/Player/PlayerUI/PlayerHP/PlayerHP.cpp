@@ -16,6 +16,7 @@
 #include <WICTextureLoader.h>
 #include <CommonStates.h>
 #include <vector>
+#include "Game/KumachiLib/KumachiLib.h"
 using namespace DirectX;
 
 
@@ -53,11 +54,11 @@ void PlayerHP::Initialize(DX::DeviceResources* pDR, int width, int height)
 void PlayerHP::Update(float PlayerHP)
 {
 
-	auto keystate = Keyboard::Get().GetState();
-	m_tracker.Update(keystate);
+	if (m_maxHP <= 0.0f) return; // 最大HPが0以下にならないようチェック
 
-	float hp = PlayerHP * 0.01f;
-	hp = std::max(0.f, hp);
+	float hp = PlayerHP / m_maxHP; // 最大HPを考慮して正規化
+	hp = Clamp(hp, 0.0f, 1.0f); // 0.0～1.0の範囲に収める
+
 	m_gauge->SetRenderRatio(hp);
 
 }

@@ -30,7 +30,7 @@ const float  BulletParameters::ENEMY_BULLET_LIFETIME = 5.0f;			// 寿命
 
 const float  BulletParameters::STRAIGHT_BULLET_SPEED = 10.0f;			// 直線弾の速度
 
-const float  BulletParameters::STRAIGHT_ADJUST_DIRECTION = 0.1f;	// Directionを若干下にするための補正値
+const float  BulletParameters::STRAIGHT_ADJUST_DIRECTION = 0.05f;	// Directionを若干下にするための補正値
 
 const float  BulletParameters::VERTICAL_BULLET_SPEED = 50.0f;			// 垂直弾の速度
 

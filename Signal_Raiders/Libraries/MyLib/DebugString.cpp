@@ -25,7 +25,7 @@ mylib::DebugString::DebugString(
 	m_spriteFont = std::make_unique<DirectX::SpriteFont>(device, fontFilePath);
 
 	m_fontHeight = m_spriteFont->GetLineSpacing();
-	m_color = DirectX::Colors::Black;
+	m_color = DirectX::Colors::Yellow;
 }
 
 //---------------------------------------------------------

@@ -39,15 +39,13 @@ public:
 	// デストラクタ
 	~Output();
 	// 情報を表示
-	void DisplayInformation(std::vector<NetworkInfo>& networkInfos,
-		int& count);
+	void DisplayInformation(std::vector<NetworkInfo>& networkInfos);
 	// 情報を出力
 	std::vector<NetworkInfo> GetInformation() { return m_networkInfos; };
 	// 情報を入力
 	void SetInformation(std::vector<NetworkInfo>& networkInfos) { m_networkInfos = networkInfos; };
 
-	// 表示回数を入力
-	void SetCount(int count) { m_count = count; };
+
 
 	// データを渡す
 	std::vector<Datas> GetDatas()const { return m_datas; }

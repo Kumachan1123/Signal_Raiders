@@ -91,11 +91,11 @@ const Vector3 EnemyParameters::INITIAL_BOSS_SCALE{ 2.0f,2.0f,2.0f };// ƒ{ƒX‚Ì‰Š
 
 const Vector3 EnemyParameters::BOSS_SPHERE_OFFSET{ 0.0f,0.5f,0.0f };// ƒ{ƒX‚Ì‹«ŠE‹…‚ÌƒIƒtƒZƒbƒg
 
-const Vector3 EnemyParameters::BOSS_HEAD_OFFSET{ 0.0f, 2.5f, 3.0f };// ƒ{ƒX‚Ì“ª‚Ì–CŒû‚ÌƒIƒtƒZƒbƒg
+const Vector3 EnemyParameters::BOSS_HEAD_OFFSET{ 0.0f, 2.3f, 3.0f };// ƒ{ƒX‚Ì“ª‚Ì–CŒû‚ÌƒIƒtƒZƒbƒg
 
-const Vector3 EnemyParameters::BOSS_LEFT_GUN_OFFSET{ -2.5f, 1.0f, 3.0f };// ã‚ÌÀ•W
+const Vector3 EnemyParameters::BOSS_LEFT_GUN_OFFSET{ -2.5f,0.80f, 3.0f };// ã‚ÌÀ•W
 
-const Vector3 EnemyParameters::BOSS_RIGHT_GUN_OFFSET{ 2.5f, 1.0f, 3.0f };// ‰E‚ÌÀ•W
+const Vector3 EnemyParameters::BOSS_RIGHT_GUN_OFFSET{ 2.5f, 0.80f, 3.0f };// ‰E‚ÌÀ•W
 
 const Vector3 EnemyParameters::BOSS_HPBAR_OFFSET{ 0.0f, 3.0f, 0.0f };// HPƒo[‚ÌƒIƒtƒZƒbƒg
 

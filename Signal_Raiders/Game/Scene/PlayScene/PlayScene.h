@@ -108,7 +108,8 @@ private:
 	// 敵が全滅した時のフェード処理までの待ち時間
 	float m_waitTime;
 	IScene::SceneID m_nowSceneID;
-
+	// HP再設定フラグ
+	bool m_isResetHP;
 
 public:
 	PlayScene(IScene::SceneID sceneID);

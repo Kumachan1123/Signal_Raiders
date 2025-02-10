@@ -140,17 +140,24 @@ void PlayerController::Update(float elapsedTime)
 	}
 
 	// ダッシュ
-	if (kbTracker->lastState.LeftShift && m_dashTime > 0.0f)
+
+	if (kbTracker->lastState.LeftShift)
 	{
-		m_dash = 0.2f;
-		m_dashTime -= elapsedTime;
+		if (m_dashTime > 0.0f)
+		{
+			m_dash = 0.3f;// ダッシュ速度
+			m_dashTime -= elapsedTime;// ダッシュ時間を減らす
+		}
+
 	}
 	else
 	{
-		m_dash = 0.1f;
-		m_dashTime += elapsedTime / 2;
-		if (m_dashTime >= 10.0f)m_dashTime = 10.0f;
+		m_dash = 0.1f;// 通常速度
+		m_dashTime += elapsedTime / 2;// ダッシュ時間を増やす
+		if (m_dashTime >= 10.0f)m_dashTime = 10.0f;// ダッシュ時間の上限
+
 	}
+
 
 
 	// 移動量を正規化する
@@ -166,7 +173,7 @@ void PlayerController::Update(float elapsedTime)
 	m_rotate = x;
 
 	// 地面の高さに制限
-	if (m_position.y <= 2.0f) m_position.y = 2.0f;
+	if (m_position.y <= 3.0f) m_position.y = 3.0f;
 
 	// 地面の面積に制限
 	if (m_position.x <= -98.5f) m_position.x = -98.5f;

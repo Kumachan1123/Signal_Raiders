@@ -30,6 +30,7 @@ PlayScene::PlayScene(IScene::SceneID sceneID)
 	m_commonResources{},
 	m_projection{},
 	m_isChangeScene{ false },
+	m_isResetHP{ false },
 	m_pStage{ nullptr },
 	m_pEffect{},
 	m_fade{},
@@ -159,6 +160,15 @@ void PlayScene::Update(float elapsedTime)
 	else// 5秒以上経過したら
 	{
 		// HP更新
+		m_pPlayer->SetMaxPlayerHP((float)(m_pEnemyManager->GetWifi()->GetCurrentWifiSignalQuality()));
+		// HP上限が設定されたので改めて一度だけHPを設定しなおす
+		if (m_isResetHP == false)
+		{
+			m_pPlayerHP->SetMaxHP(m_pPlayer->GetPlayerHP() + m_pPlayer->GetMaxPlayerHP());
+			m_pPlayer->SetPlayerHP(m_pPlayer->GetPlayerHP() + m_pPlayer->GetMaxPlayerHP());
+			m_isResetHP = true;
+		}
+		// HPゲージ更新
 		m_pPlayerHP->Update(m_pPlayer->GetPlayerHP());
 		// 体力が10以下になったら危機状態更新
 		if (m_pPlayer->GetPlayerHP() <= 20.0f)m_pCrisis->Update(elapsedTime);
@@ -253,7 +263,14 @@ void PlayScene::Render()
 
 	// フェードの描画
 	m_fade->Render();
-
+#ifdef _DEBUG
+	// デバッグ情報を表示する
+	auto debugString = m_commonResources->GetDebugString();
+	debugString->AddString("Power:%i", m_pEnemyManager->GetWifi()->GetCurrentWifiSignalQuality());
+	debugString->AddString("SSID:%i", m_pEnemyManager->GetWifi()->GetCurrentWifiSSIDValue());
+	debugString->AddString("HP:%f", m_pPlayer->GetPlayerHP());
+	debugString->AddString("MAXHP:%f", m_pPlayer->GetMaxPlayerHP());
+#endif
 }
 //---------------------------------------------------------
 // 後始末する

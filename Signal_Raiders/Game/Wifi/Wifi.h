@@ -31,7 +31,11 @@ class ReleaseMemory;
 class Wifi
 {
 public:
-
+	struct CurrentWifiInfo// 現在接続しているWi-Fi情報の構造体
+	{
+		int ssidValue;// 数値化したSSID
+		int signalQuality;// 電波の強さ
+	};
 	// データメンバの宣言
 private:
 
@@ -66,6 +70,10 @@ private:
 	std::vector<int> m_wifilevels;// Wi-Fiの強さ
 	std::vector<int> m_enemyTypes;// 敵の種類(ssidの文字のASCIIコードの合計をssidの文字数で割ったもののあまり)
 
+	// 今接続しているWi-Fi情報
+	CurrentWifiInfo m_currentWifiInfo;
+	// 今接続しているWi-Fi情報を取得済みか
+	bool m_isGotCurrentWifiInfo;
 	float m_time;				  // Wi-Fi取得時間（５秒過ぎたら５秒で固定）
 	const int ENEMY_TYPE_MAX = 2;// ザコ敵の種類の最大値
 public:
@@ -88,6 +96,7 @@ private:
 	void StartScan();// スキャンの開始
 	void GetScanResults();// スキャン結果の取得
 	void SetUp();// 表示準備
+	void GetCurrentWifiInfo();// 現在接続しているWi-Fi情報を取得
 	void ProcessingScanResults();// スキャン結果の処理
 public:
 	// 取得した情報を送る
@@ -96,6 +105,9 @@ public:
 	// 更新が終わったかどうかを調べるためのゲッター
 	std::vector<int> GetPreWifiLevels()const { return m_preWifilevels; }
 	std::vector<int> GetPreEnemyTypes()const { return m_preEnemyTypes; }
+	// 今接続しているWi-Fi情報を取得する
+	int GetCurrentWifiSSIDValue()const { return m_currentWifiInfo.ssidValue; }
+	int GetCurrentWifiSignalQuality()const { return m_currentWifiInfo.signalQuality; }
 	DWORD GetResult()const { return m_dwResult; }
 	DWORD* GetResult() { return &m_dwResult; }
 	void SetResult(DWORD result) { m_dwResult = result; }

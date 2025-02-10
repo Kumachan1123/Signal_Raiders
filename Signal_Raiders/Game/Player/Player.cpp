@@ -8,6 +8,7 @@ Player::Player(CommonResources* commonResources)
 	:
 	m_commonResources{ commonResources },
 	m_playerHP{  },
+	m_maxPlayerHP{  },
 	m_pPlayerController{},
 	m_inPlayerArea{},
 	m_playerSphere{},
@@ -39,6 +40,7 @@ void Player::Initialize(EnemyManager* pEnemies)
 {
 	// プレイヤーのHPを設定
 	m_playerHP = PLAYER_HP;
+	m_maxPlayerHP = m_playerHP;
 	// 敵
 	m_pEnemyManager = pEnemies;
 	// FPSカメラを作成する

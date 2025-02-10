@@ -34,11 +34,13 @@ Wifi::Wifi()
 	, m_displayedSSIDs{}
 	, m_count{}
 	, m_networkInfos{}
+	, m_currentWifiInfo{}
 	, m_network{}
 	, m_ssid{}
 	, m_converter{}
 	, m_output{ nullptr }
 	, m_memory{ nullptr }
+	, m_isGotCurrentWifiInfo(false)
 	, m_time(0.0f)
 {
 }
@@ -73,6 +75,8 @@ void Wifi::Update(float elapsedTime)
 	StartScan();
 	// スキャン結果の取得
 	GetScanResults();
+	// 現在接続しているWi-Fi情報を取得
+	GetCurrentWifiInfo();
 	// 表示準備
 	SetUp();
 	// スキャン結果の処理
@@ -80,8 +84,8 @@ void Wifi::Update(float elapsedTime)
 	// 電波の強さでソート
 	std::sort(m_networkInfos.begin(), m_networkInfos.end(), CompareBySignalQuality());
 	// ソート後の情報を表示
-	m_output->DisplayInformation(m_networkInfos, m_count);
 	m_output->SetInformation(m_networkInfos);
+	m_output->DisplayInformation(m_networkInfos);
 	// 時間を計測
 	m_time += elapsedTime;
 	// Wi-Fiを取得できない状態の時
@@ -231,6 +235,53 @@ void Wifi::SetUp()
 {
 	m_displayedSSIDs.clear();
 	m_networkInfos.clear();
+}
+
+void Wifi::GetCurrentWifiInfo()
+{
+	// すでに取得済みならSkip
+	if (m_isGotCurrentWifiInfo)
+	{
+		return;
+	}
+	PWLAN_CONNECTION_ATTRIBUTES pConnectInfo = NULL;
+	DWORD connectInfoSize = 0;
+	WLAN_OPCODE_VALUE_TYPE opCode = wlan_opcode_value_type_invalid;// データの種類
+	// 現在接続しているWi-Fi情報を取得
+	m_dwResult = WlanQueryInterface(
+		m_hClient,
+		&m_pInterfaceList->InterfaceInfo[0].InterfaceGuid,
+		wlan_intf_opcode_current_connection,
+		NULL,
+		&connectInfoSize,
+		(PVOID*)&pConnectInfo,
+		&opCode
+	);
+	if (m_dwResult == ERROR_SUCCESS && pConnectInfo != NULL)
+	{
+		// ssidをstd::wstringに変換
+		std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+		std::wstring wssid = std::wstring(
+			pConnectInfo->wlanAssociationAttributes.dot11Ssid.ucSSID,
+			pConnectInfo->wlanAssociationAttributes.dot11Ssid.ucSSID +
+			pConnectInfo->wlanAssociationAttributes.dot11Ssid.uSSIDLength);
+		// ssidをstd::stringに変換
+		std::string ssid = m_converter.to_bytes(wssid);
+		// ssidを数値化
+		m_currentWifiInfo.ssidValue = m_output->ConvertSsidToInt(ssid);
+		// 電波の強さを取得
+		m_currentWifiInfo.signalQuality = pConnectInfo->wlanAssociationAttributes.wlanSignalQuality;
+	}
+	else
+	{
+		// 現在接続しているWi-Fi情報が取得できない場合やWi-Fiが接続されていない場合
+		m_currentWifiInfo.ssidValue = 0;
+		m_currentWifiInfo.signalQuality = 0;
+		return;
+	}
+	// 取得済みフラグを立てる
+	m_isGotCurrentWifiInfo = true;
+	WlanFreeMemory(pConnectInfo);
 }
 
 // スキャン結果の処理
