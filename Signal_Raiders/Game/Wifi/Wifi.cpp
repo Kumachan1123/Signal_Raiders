@@ -268,14 +268,14 @@ void Wifi::GetCurrentWifiInfo()
 		// ssid‚ğstd::string‚É•ÏŠ·
 		std::string ssid = m_converter.to_bytes(wssid);
 		// ssid‚ğ”’l‰»
-		m_currentWifiInfo.ssidValue = m_output->ConvertSsidToInt(ssid);
+		m_currentWifiInfo.ssidLenght = (int)(ssid.length());
 		// “d”g‚Ì‹­‚³‚ğæ“¾
 		m_currentWifiInfo.signalQuality = pConnectInfo->wlanAssociationAttributes.wlanSignalQuality;
 	}
 	else
 	{
 		// Œ»İÚ‘±‚µ‚Ä‚¢‚éWi-Fiî•ñ‚ªæ“¾‚Å‚«‚È‚¢ê‡‚âWi-Fi‚ªÚ‘±‚³‚ê‚Ä‚¢‚È‚¢ê‡
-		m_currentWifiInfo.ssidValue = 0;
+		m_currentWifiInfo.ssidLenght = 0;
 		m_currentWifiInfo.signalQuality = 0;
 		return;
 	}

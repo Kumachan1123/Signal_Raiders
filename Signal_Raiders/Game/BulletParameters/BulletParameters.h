@@ -14,6 +14,7 @@ public:
 	static const DirectX::SimpleMath::Vector3 INITIAL_POSITION;	// 発射位置
 	static const float PLAYER_BULLET_LIFETIME;				// 寿命
 	static const int DAMAGE;						// 敵に与えるダメージ
+	static const float RELOAD_INTERVAL;				// リロード間隔
 
 	// 敵
 	static const float ENEMY_BULLET_LIFETIME;			// 寿命

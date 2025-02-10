@@ -33,7 +33,7 @@ class Wifi
 public:
 	struct CurrentWifiInfo// 現在接続しているWi-Fi情報の構造体
 	{
-		int ssidValue;// 数値化したSSID
+		int ssidLenght;// 数値化したSSID
 		int signalQuality;// 電波の強さ
 	};
 	// データメンバの宣言
@@ -106,7 +106,7 @@ public:
 	std::vector<int> GetPreWifiLevels()const { return m_preWifilevels; }
 	std::vector<int> GetPreEnemyTypes()const { return m_preEnemyTypes; }
 	// 今接続しているWi-Fi情報を取得する
-	int GetCurrentWifiSSIDValue()const { return m_currentWifiInfo.ssidValue; }
+	int GetCurrentWifiSSIDLength()const { return m_currentWifiInfo.ssidLenght; }
 	int GetCurrentWifiSignalQuality()const { return m_currentWifiInfo.signalQuality; }
 	DWORD GetResult()const { return m_dwResult; }
 	DWORD* GetResult() { return &m_dwResult; }

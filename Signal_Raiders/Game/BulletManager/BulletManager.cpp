@@ -101,6 +101,7 @@ void BulletManager::CreateEnemyBullet(const Vector3& position, Vector3& directio
 	m_enemyBullets.push_back(std::move(bullet));
 }
 
+// ’e‚Ì•â[
 void BulletManager::ReLoadPlayerBullet()
 {
 	m_reloadTimer += m_elapsedTime;
@@ -109,18 +110,28 @@ void BulletManager::ReLoadPlayerBullet()
 	{
 		m_playerBulletCount++;
 	}
-	if (m_reloadTimer > 0.1f)
+	if (m_reloadTimer > BulletParameters::RELOAD_INTERVAL)
 	{
 		m_reloadTimer = 0.0f;
 	}
 }
 
+// ’e‚ðÁ”ï
 void BulletManager::ConsumePlayerBullet()
 {
 	// ƒvƒŒƒCƒ„[‚Ì’e‚ðÁ”ï
 	if (m_playerBulletCount > 0)
 	{
 		m_playerBulletCount--;
+	}
+}
+
+// ’Ç‰Áƒ_ƒ[ƒW‚ðÝ’è
+void BulletManager::SetAdditionalDamage(int additionalDamage)
+{
+	for (auto& bullet : m_playerBullets)
+	{
+		bullet->SetAdditionalDamage(additionalDamage);
 	}
 }
 

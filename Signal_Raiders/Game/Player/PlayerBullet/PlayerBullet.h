@@ -36,7 +36,8 @@ private:
 	float m_angle;
 	// 弾の軌跡ポインター
 	std::unique_ptr<Particle> m_bulletTrail;
-
+	// 追加ダメージ
+	int m_additionalDamage;
 
 	// テクスチャ
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_trailTexture;
@@ -69,5 +70,7 @@ public:
 	// 弾が生成されてからの経過時間が寿命を超えたかどうかを判定する
 	bool IsExpired() const { return m_time >= BulletParameters::PLAYER_BULLET_LIFETIME; }
 	// 敵にダメージを与える
-	int Damage()const { return BulletParameters::DAMAGE; }
+	int Damage()const { return BulletParameters::DAMAGE + m_additionalDamage; }
+	void SetAdditionalDamage(int damage) { m_additionalDamage = damage; }
+	int GetAdditionalDamage()const { return m_additionalDamage; }
 };

@@ -23,7 +23,8 @@ PlayerBullet::PlayerBullet()
 	, m_velocity{ DirectX::SimpleMath::Vector3::Zero }
 	, m_direction{ DirectX::SimpleMath::Vector3::Zero }
 	, m_commonResources{}
-	, m_time(0.0f)
+	, m_time{ 0.0f }
+	, m_additionalDamage{ 0 }
 	, m_angle{ 0.0f }
 {
 }

@@ -24,6 +24,8 @@ const float  BulletParameters::PLAYER_BULLET_LIFETIME = 1.5;				// 寿命
 
 const int  BulletParameters::DAMAGE = 10;						// 敵に与えるダメージ
 
+const float  BulletParameters::RELOAD_INTERVAL = 0.1f;				// リロード間隔
+
 
 // 敵
 const float  BulletParameters::ENEMY_BULLET_LIFETIME = 5.0f;			// 寿命

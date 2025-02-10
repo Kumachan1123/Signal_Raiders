@@ -67,6 +67,7 @@ public:
 	void SetShooter(IEnemy* pShooter) { m_pShooter = pShooter; }
 	void ReLoadPlayerBullet();// íeÇÃï‚è[
 	void ConsumePlayerBullet();// íeÇÃè¡îÔ
+	void SetAdditionalDamage(int additionalDamage);
 	int GetPlayerBulletCount() const { return m_playerBulletCount; }
 private:
 	void UpdatePlayerBullets(float elapsedTime);

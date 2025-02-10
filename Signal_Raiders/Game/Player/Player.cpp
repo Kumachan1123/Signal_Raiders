@@ -76,6 +76,8 @@ void Player::Update(float elapsedTime)
 #ifdef _DEBUG// デバッグ チートコマンド
 	m_pPlayerController->DebugCommand();
 #endif
+	// Wi-Fiから得た追加ダメージをプレイヤーの弾に反映
+	m_pBulletManager->SetAdditionalDamage(m_pEnemyManager->GetWifi()->GetCurrentWifiSSIDLength());
 	// 弾発射
 	m_pPlayerController->Shoot();
 	// 弾のリロード

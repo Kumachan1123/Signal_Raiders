@@ -267,7 +267,7 @@ void PlayScene::Render()
 	// デバッグ情報を表示する
 	auto debugString = m_commonResources->GetDebugString();
 	debugString->AddString("Power:%i", m_pEnemyManager->GetWifi()->GetCurrentWifiSignalQuality());
-	debugString->AddString("SSID:%i", m_pEnemyManager->GetWifi()->GetCurrentWifiSSIDValue());
+	debugString->AddString("SSID:%i", m_pEnemyManager->GetWifi()->GetCurrentWifiSSIDLength());
 	debugString->AddString("HP:%f", m_pPlayer->GetPlayerHP());
 	debugString->AddString("MAXHP:%f", m_pPlayer->GetMaxPlayerHP());
 #endif
