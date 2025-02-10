@@ -65,3 +65,5 @@ const float  BulletParameters::ADJUST_HIT_VOLUME = 0.8f;// ƒqƒbƒgSEƒ{ƒŠƒ…[ƒ€’²
 const float  BulletParameters::ANGLE_MIN = 0.0f;// Šp“x‚ÌÅ¬’l
 
 const float  BulletParameters::ANGLE_MAX = 360.0f;// Šp“x‚ÌÅ‘å’l
+
+const float  BulletParameters::GRID_CELL_SIZE = 50.0f;// ƒOƒŠƒbƒh‚ÌƒZƒ‹ƒTƒCƒY
