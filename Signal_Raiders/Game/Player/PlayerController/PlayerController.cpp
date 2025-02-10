@@ -219,9 +219,7 @@ void PlayerController::Shoot()
 void PlayerController::Reload()
 {
 	// キーボードステートトラッカーを取得する
-	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
 	const auto& kbState = m_commonResources->GetInputManager()->GetKeyboardState();
 	// Rキーで弾をリロード
 	if (kbState.R)m_pPlayer->GetBulletManager()->ReLoadPlayerBullet();
-	//if (kbTracker->pressed.R)m_pPlayer->GetBulletManager()->ReLoadPlayerBullet();
 }
