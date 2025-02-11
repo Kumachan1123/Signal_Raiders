@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <random>
 #include <type_traits> 
-
+#include "Game/Screen.h"
 // üŒ`•âŠÔ
 template <typename T>
 inline T Lerp(const T& start, const T& end, float t)
@@ -126,3 +126,4 @@ inline DirectX::SimpleMath::Vector3 CheckHitWall(DirectX::BoundingSphere A, Dire
 	}
 	return A.Center;
 }
+

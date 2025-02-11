@@ -75,7 +75,7 @@ void BulletManager::Render()
 		bullet->RenderShadow(view, proj);
 	}
 }
-void BulletManager::CreatePlayerBullet(const DirectX::SimpleMath::Vector3& position, DirectX::SimpleMath::Vector3& direction)
+void BulletManager::CreatePlayerBullet(const Vector3& position, Vector3& direction)
 {
 	// プレイヤー弾の生成
 	auto bullet = std::make_unique<PlayerBullet>();
@@ -206,14 +206,7 @@ void BulletManager::SetSound()
 
 }
 
-BulletManager::GridKey BulletManager::GetGridKey(const DirectX::SimpleMath::Vector3& position)
-{
-	return
-	{
-		static_cast<int>(position.x / BulletParameters::GRID_CELL_SIZE),
-		static_cast<int>(position.y / BulletParameters::GRID_CELL_SIZE)
-	};
-}
+
 
 bool BulletManager::CheckCollisionWithEnemies(const std::unique_ptr<PlayerBullet>& bullet)
 {
@@ -257,76 +250,50 @@ bool BulletManager::CheckCollisionWithPlayer(const std::unique_ptr<EnemyBullet>&
 
 }
 
+
+
+
+// 弾同士の当たり判定
 void BulletManager::CheckCollisionWithBullets()
 {
-	// グリッドをクリア
-	m_playerBulletGrid.clear();
-	m_enemyBulletGrid.clear();
-	// プレイヤーの弾をグリッドに登録
-	for (auto& bullet : m_playerBullets)
-	{
-		GridKey key = GetGridKey(bullet->GetBulletPosition());
-		m_playerBulletGrid[key].push_back(bullet.get());
-	}
-	// 敵の弾をグリッドに登録
-	for (auto& bullet : m_enemyBullets)
-	{
-		GridKey key = GetGridKey(bullet->GetBulletPosition());
-		m_enemyBulletGrid[key].push_back(bullet.get());
-	}
-	// 衝突判定
-	for (auto& pair : m_enemyBulletGrid)
-	{
-		const GridKey& enemyKey = pair.first;
-		std::vector<EnemyBullet*>& enemyBullets = pair.second;
-		// 9セル(自セルと周囲8セル)を調べ、事前にリスト化
-		std::vector<GridKey> neighborKeys;
-		for (int y = -1; y <= 1; ++y)
-		{
-			for (int x = -1; x <= 1; ++x)
-			{
-				neighborKeys.push_back({ enemyKey.x + x, enemyKey.y + y });
-			}
-		}
-		// 事前に作ったリストを使って衝突判定
-		for (const auto& neighborKey : neighborKeys)
-		{
-			auto it = m_playerBulletGrid.find(neighborKey);
-			if (it != m_playerBulletGrid.end())
-			{
-				std::vector<PlayerBullet*>& playerBullets = it->second;
-				for (auto& playerBullet : playerBullets)
-				{
-					for (auto& enemyBullet : enemyBullets)
-					{
-						if (playerBullet->GetBoundingSphere().Intersects(enemyBullet->GetBoundingSphere()))
-						{
-							// 敵の弾を削除
-							m_enemyBullets.erase(
-								std::remove_if(m_enemyBullets.begin(), m_enemyBullets.end(),
-									[&enemyBullet](const std::unique_ptr<EnemyBullet>& bullet)
-									{
-										return bullet.get() == enemyBullet; // ポインタが一致するものを削除
-									}),
-								m_enemyBullets.end()
-							);
-							// プレイヤーの弾を削除
-							m_playerBullets.erase(
-								std::remove_if(m_playerBullets.begin(), m_playerBullets.end(),
-									[&playerBullet](const std::unique_ptr<PlayerBullet>& bullet)
-									{
-										return bullet.get() == playerBullet; // ポインタが一致するものを削除
-									}),
-								m_playerBullets.end()
-							);
+	// 削除対象の弾を記録する「セット」(ポインターだけあればよく、値は不要なためunordered_setを使用)
+	std::unordered_set<PlayerBullet*> playerBulletsToRemove;
+	std::unordered_set<EnemyBullet*> enemyBulletsToRemove;
 
-							return;
-						}
-					}
-				}
+	// プレイヤーの弾と敵の弾の衝突判定
+	for (auto& playerBullet : m_playerBullets)
+	{
+		for (auto& enemyBullet : m_enemyBullets)
+		{
+			if (playerBullet->GetBoundingSphere().Intersects(enemyBullet->GetBoundingSphere()))
+			{
+				// 衝突があった場合、削除対象に追加
+				enemyBulletsToRemove.insert(enemyBullet.get());
+				playerBulletsToRemove.insert(playerBullet.get());
 			}
 		}
 	}
+
+	// まとめて消す(敵の弾)
+	m_enemyBullets.erase(
+		std::remove_if(m_enemyBullets.begin(), m_enemyBullets.end(),
+			[&enemyBulletsToRemove](const std::unique_ptr<EnemyBullet>& bullet)
+			{
+				return enemyBulletsToRemove.count(bullet.get()) > 0;
+			}),
+		m_enemyBullets.end()
+	);
+
+	// まとめて消す(プレイヤーの弾)
+	m_playerBullets.erase(
+		std::remove_if(m_playerBullets.begin(), m_playerBullets.end(),
+			[&playerBulletsToRemove](const std::unique_ptr<PlayerBullet>& bullet)
+			{
+				return playerBulletsToRemove.count(bullet.get()) > 0;
+			}),
+		m_playerBullets.end()
+	);
+
 }
 
 void BulletManager::RemoveBulletsByShooter(IEnemy* shooter)

@@ -66,4 +66,3 @@ const float  BulletParameters::ANGLE_MIN = 0.0f;// 角度の最小値
 
 const float  BulletParameters::ANGLE_MAX = 360.0f;// 角度の最大値
 
-const float  BulletParameters::GRID_CELL_SIZE = 50.0f;// グリッドのセルサイズ

@@ -4,11 +4,14 @@
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
+#include "Game/KumachiLib/KumachiLib.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 #include <cassert>
 #include "Game/BulletParameters/BulletParameters.h"
+#include "Game/Screen.h"
 class CommonResources;
 class Player;
 class IEnemy;
@@ -24,16 +27,16 @@ public:
 		ENEMY
 	};
 private:
+	// グリッドマップのキー
 	struct GridKey
 	{
 		int x, y;
-
 		bool operator==(const GridKey& other) const
 		{
 			return x == other.x && y == other.y;
 		}
 	};
-
+	// グリッドマップのハッシュ関数
 	struct GridKeyHash
 	{
 		std::size_t operator()(const GridKey& key) const
@@ -100,5 +103,4 @@ private:
 	void UpdatePlayerBullets(float elapsedTime);
 	void UpdateEnemyBullets(float elapsedTime, std::unique_ptr<IEnemy>& enemy);
 	void SetSound();
-	GridKey GetGridKey(const DirectX::SimpleMath::Vector3& position);
 };
