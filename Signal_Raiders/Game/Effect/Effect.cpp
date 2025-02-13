@@ -6,20 +6,21 @@
 #include <VertexTypes.h> 
 #include <WICTextureLoader.h> 
 #include "Effect.h"
-
-
-
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
-
+// ---------------------------------------------------------
+// インプットレイアウト
+// ---------------------------------------------------------
 const std::vector<D3D11_INPUT_ELEMENT_DESC>  Effect::INPUT_LAYOUT =
 {
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
 
-
-Effect::Effect(CommonResources* resources, ParticleType type, DirectX::SimpleMath::Vector3 playPos, float scale, DirectX::SimpleMath::Matrix world)
+// ---------------------------------------------------------
+// コンストラクタ
+// ---------------------------------------------------------
+Effect::Effect(CommonResources* resources, EffectType type, DirectX::SimpleMath::Vector3 playPos, float scale, DirectX::SimpleMath::Matrix world)
 	: m_position{ playPos }
 	, m_type{ type }
 	, m_scale{ scale }
@@ -39,7 +40,7 @@ Effect::Effect(CommonResources* resources, ParticleType type, DirectX::SimpleMat
 {
 	switch (m_type)// エフェクトの種類によって画像を読み込む
 	{
-	case ParticleType::ENEMY_DEAD:// 敵死亡エフェクト
+	case EffectType::ENEMY_DEAD:// 敵死亡エフェクト
 		LoadTexture(L"Resources/Textures/effect.png");
 		m_frameRows = 4; // 画像の行数
 		m_frameCols = 5; // 画像の列数
@@ -48,7 +49,7 @@ Effect::Effect(CommonResources* resources, ParticleType type, DirectX::SimpleMat
 		m_vertexMinY = -1.0f;
 		m_vertexMaxY = 1.0f;
 		break;
-	case ParticleType::ENEMY_HIT:// 敵ヒットエフェクト
+	case EffectType::ENEMY_HIT:// 敵ヒットエフェクト
 		LoadTexture(L"Resources/Textures/hit.png");
 		m_frameRows = 2; // 画像の行数
 		m_frameCols = 4; // 画像の列数
@@ -57,15 +58,14 @@ Effect::Effect(CommonResources* resources, ParticleType type, DirectX::SimpleMat
 		m_vertexMinY = -1.0f;
 		m_vertexMaxY = 1.0f;
 		break;
-
 	}
 	// 板ポリゴン描画用クラスの初期化
 	m_pDrawPolygon->InitializePositionTexture(m_commonResources->GetDeviceResources());
 	// シェーダー作成クラスの初期化
 	m_pCreateShader->Initialize(m_commonResources->GetDeviceResources()->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
 	// シェーダーの作成
-	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Counter/VS_Counter.cso", m_vertexShader);
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Counter/PS_Counter.cso", m_pixelShader);
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Counter/VS_Counter.cso", m_vertexShader);// 頂点シェーダー
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Counter/PS_Counter.cso", m_pixelShader);	// ピクセルシェーダー
 	// インプットレイアウトを受け取る
 	m_pInputLayout = m_pCreateShader->GetInputLayout();
 	// シェーダーにデータを渡すためのコンスタントバッファ生成
@@ -74,10 +74,13 @@ Effect::Effect(CommonResources* resources, ParticleType type, DirectX::SimpleMat
 	m_shaders.vs = m_vertexShader.Get();
 	m_shaders.ps = m_pixelShader.Get();
 	m_shaders.gs = nullptr;
-	// アニメーション再生中
+	// アニメーションを再生中にする
 	m_isPlaying = true;
 }
-
+//---------------------------------------------------------
+// デストラクタ
+//---------------------------------------------------------
+Effect::~Effect() {}
 //---------------------------------------------------------
 // 画像を読み込む
 //---------------------------------------------------------
@@ -88,11 +91,13 @@ void Effect::LoadTexture(const wchar_t* path)
 	DirectX::CreateWICTextureFromFile(device, path, nullptr, texture.ReleaseAndGetAddressOf());
 	m_textures.push_back(texture);
 }
-Effect::~Effect() {}
 
+// ---------------------------------------------------------
+// 更新処理
+// ---------------------------------------------------------
 void Effect::Update(float elapsedTime)
 {
-	m_elapsedTime += elapsedTime * m_animSpeed;
+	m_elapsedTime += elapsedTime * m_animSpeed;// 経過時間を加算
 	if (m_elapsedTime >= 1.0f)// 1秒経過
 	{
 		m_anim++;// アニメのコマを薦める
@@ -104,16 +109,20 @@ void Effect::Update(float elapsedTime)
 	}
 }
 
+// ---------------------------------------------------------
+// 描画処理
+// ---------------------------------------------------------
 void Effect::Render(SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
 	// 頂点情報
-	m_vertices[0] = { VertexPositionTexture(SimpleMath::Vector3(m_vertexMinX, m_vertexMaxY, 0), SimpleMath::Vector2(0, 1)) };
-	m_vertices[1] = { VertexPositionTexture(SimpleMath::Vector3(m_vertexMaxX, m_vertexMaxY, 0), SimpleMath::Vector2(1, 1)) };
-	m_vertices[2] = { VertexPositionTexture(SimpleMath::Vector3(m_vertexMaxX,m_vertexMinY, 0), SimpleMath::Vector2(1, 0)) };
-	m_vertices[3] = { VertexPositionTexture(SimpleMath::Vector3(m_vertexMinX,m_vertexMinY, 0), SimpleMath::Vector2(0, 0)) };
-	VertexPositionTexture billboardVertex[4]{};
+	m_vertices[0] = { VertexPositionTexture(SimpleMath::Vector3(m_vertexMinX, m_vertexMaxY, 0), SimpleMath::Vector2(0, 1)) };// 左上
+	m_vertices[1] = { VertexPositionTexture(SimpleMath::Vector3(m_vertexMaxX, m_vertexMaxY, 0), SimpleMath::Vector2(1, 1)) };// 右上
+	m_vertices[2] = { VertexPositionTexture(SimpleMath::Vector3(m_vertexMaxX,m_vertexMinY, 0), SimpleMath::Vector2(1, 0)) };// 右下
+	m_vertices[3] = { VertexPositionTexture(SimpleMath::Vector3(m_vertexMinX,m_vertexMinY, 0), SimpleMath::Vector2(0, 0)) }; // 左下
+	VertexPositionTexture billboardVertex[4]{};// ビルボード用の頂点情報
 	for (int i = 0; i < 4; i++)
 	{
+		// 頂点情報をコピー
 		billboardVertex[i] = m_vertices[i];
 		// 大きさを変える場合は最初にかける
 		billboardVertex[i].position.x *= m_scale;
@@ -128,14 +137,15 @@ void Effect::Render(SimpleMath::Matrix view, SimpleMath::Matrix proj)
 	billboardMatrix._42 = 0.0f;
 	billboardMatrix._43 = 0.0f;
 	// ビルボードをアフィン変換
-	Matrix worldBillboard = m_world * billboardMatrix;
-	worldBillboard *= Matrix::CreateTranslation(m_position);
-	m_constBuffer.matWorld = worldBillboard.Transpose();
-	m_constBuffer.matView = view.Transpose();
-	m_constBuffer.matProj = proj.Transpose();
-	m_constBuffer.count = Vector4((float)(m_anim));
-	m_constBuffer.height = Vector4((float)(m_frameRows));
-	m_constBuffer.width = Vector4((float)(m_frameCols));
+	Matrix worldBillboard = m_world * billboardMatrix;// ワールド行列
+	worldBillboard *= Matrix::CreateTranslation(m_position);// 位置
+	// 定数バッファの内容を更新
+	m_constBuffer.matWorld = worldBillboard.Transpose();// ワールド行列
+	m_constBuffer.matView = view.Transpose();// ビュー行列
+	m_constBuffer.matProj = proj.Transpose();// プロジェクション行列
+	m_constBuffer.count = Vector4((float)(m_anim));// アニメーションカウント
+	m_constBuffer.height = Vector4((float)(m_frameRows));// 高さ
+	m_constBuffer.width = Vector4((float)(m_frameCols));// 幅
 	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	m_pDrawPolygon->UpdateSubResources(m_cBuffer.Get(), &m_constBuffer);
 	// シェーダーにバッファを渡す
@@ -158,7 +168,18 @@ void Effect::Render(SimpleMath::Matrix view, SimpleMath::Matrix proj)
 	m_pDrawPolygon->ReleaseShader();
 }
 
+// ---------------------------------------------------------
+// 終了処理
+// ---------------------------------------------------------
 void Effect::Finalize()
 {
-
+	// シェーダーの解放
+	m_vertexShader.Reset();
+	m_pixelShader.Reset();
+	// インプットレイアウトの解放
+	m_pInputLayout.Reset();
+	// コンスタントバッファの解放
+	m_cBuffer.Reset();
+	// テクスチャの解放
+	m_textures.clear();
 }

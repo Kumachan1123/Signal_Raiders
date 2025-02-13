@@ -64,10 +64,9 @@ EnemyManager::~EnemyManager()
 //---------------------------------------------------------
 void EnemyManager::Initialize(Player* pPlayer)
 {
-	m_pPlayer = pPlayer;
-	InitializeFMOD();
-	// 敵の生成上限設定
-	SetEnemyMax();
+	m_pPlayer = pPlayer;// プレイヤーのポインタを取得
+	InitializeFMOD();// FMODシステムの初期化
+	SetEnemyMax();// 敵の生成上限設定
 }
 
 //---------------------------------------------------------
@@ -75,7 +74,10 @@ void EnemyManager::Initialize(Player* pPlayer)
 //---------------------------------------------------------
 void EnemyManager::Update(float elapsedTime)
 {
+	// ゲーム開始時間を更新
 	UpdateStartTime(elapsedTime);
+
+	// Wi-Fiの更新
 	m_pWifi->Update(elapsedTime);
 
 	// エフェクトの更新
@@ -104,21 +106,22 @@ void EnemyManager::Update(float elapsedTime)
 //---------------------------------------------------------
 void EnemyManager::Render()
 {
-	Matrix view = m_pPlayer->GetCamera()->GetViewMatrix();
-	Matrix projection = m_pPlayer->GetCamera()->GetProjectionMatrix();
-	if (m_enemies.size() > 0)for (const auto& enemy : m_enemies)
+	Matrix view = m_pPlayer->GetCamera()->GetViewMatrix();//	ビュー行列
+	Matrix projection = m_pPlayer->GetCamera()->GetProjectionMatrix();//	プロジェクション行列
+	if (m_enemies.size() > 0)for (const auto& enemy : m_enemies)//	全ての敵を描画する
 	{
 		enemy->Render(view, projection);//	敵を描画する
 #ifdef _DEBUG
 
 		enemy->DrawCollision(view, projection);//	当たり判定を描画する
 #endif
-
 	}
 
 	// エフェクトを描画する
 	GetEffect().erase
-	(std::remove_if(GetEffect().begin(), GetEffect().end(), [&](const std::unique_ptr<Effect>& effect)//	再生終了したパーティクルを削除する
+	(std::remove_if(GetEffect().begin(),
+		GetEffect().end(),
+		[&](const std::unique_ptr<Effect>& effect)//	再生終了したパーティクルを削除する
 		{
 			if (!effect->IsPlaying()) return true;// 再生終了したパーティクルは削除する
 			effect->Render(view, projection);// パーティクルを描画する
@@ -133,25 +136,23 @@ void EnemyManager::Render()
 //---------------------------------------------------------
 void EnemyManager::InitializeFMOD()
 {
-	m_audioManager->Initialize();
-	// オーディオマネージャー
+	m_audioManager->Initialize();// オーディオマネージャの初期化
 	m_audioManager->LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet");// 弾発射音
-	m_audioManager->LoadSound("Resources/Sounds/Explosion.mp3", "EnemyDead");
-	m_audioManager->LoadSound("Resources/Sounds/damage.mp3", "Damage");
+	m_audioManager->LoadSound("Resources/Sounds/Explosion.mp3", "EnemyDead");// 敵死亡音
+	m_audioManager->LoadSound("Resources/Sounds/damage.mp3", "Damage");// プレイヤーがダメージを食らう音
 }
 //---------------------------------------------------------
 // 敵の生成上限設定
 //---------------------------------------------------------
 void EnemyManager::SetEnemyMax()
 {
-	auto it = stageData.find(m_stageNumber);
-	if (it != stageData.end())
+	auto it = stageData.find(m_stageNumber);// ステージデータを取得
+	if (it != stageData.end())// ステージデータが存在したら
 	{
-		m_enemyMax = it->second.enemyMax;
-		m_bossHP = it->second.bossHP;
-		m_bossBulletType = it->second.bulletType;
+		m_enemyMax = it->second.enemyMax;// 敵の生成上限を設定
+		m_bossHP = it->second.bossHP;// ボスのHPを設定
+		m_bossBulletType = it->second.bulletType;// ボスの弾の種類を設定
 	}
-
 }
 //---------------------------------------------------------
 // ゲーム開始時間を更新
@@ -166,7 +167,7 @@ void EnemyManager::UpdateStartTime(float elapsedTime)
 //---------------------------------------------------------
 void EnemyManager::UpdateEffects(float elapsedTime)
 {
-	for (auto& effect : GetEffect())
+	for (auto& effect : GetEffect())// 全てのエフェクトを更新
 	{
 		effect->Update(elapsedTime);
 	}
@@ -177,14 +178,16 @@ void EnemyManager::UpdateEffects(float elapsedTime)
 //---------------------------------------------------------
 void EnemyManager::HandleEnemySpawning(float elapsedTime)
 {
+	// 敵生成タイマーを更新
 	m_enemyBornTimer += elapsedTime;
-
-	int enemyNum = static_cast<int>(m_pWifi->GetWifiLevels().size());// 敵の数を取得
-	if (enemyNum > m_enemyMax) enemyNum = m_enemyMax;// 敵の数が敵の生成上限を超えたら敵の生成上限に設定
-
+	// 敵の数を取得
+	int enemyNum = static_cast<int>(m_pWifi->GetWifiLevels().size());
+	// 敵の数が敵の生成上限を超えたら敵の生成上限に設定
+	if (enemyNum > m_enemyMax) enemyNum = m_enemyMax;
+	// ゲーム開始時間が敵生成開始時間を超えたら
 	if (m_startTime >= EnemyParameters::ENEMY_SPAWN_START_TIME) m_isEnemyBorn = true;// ザコ敵生成可能にする
-
-	if (m_isEnemyBorn && !m_isBorned && m_enemyIndex < enemyNum)// ザコ敵生成可能かつザコ敵生成完了していない場合
+	// ザコ敵生成可能かつザコ敵生成完了していない場合
+	if (m_isEnemyBorn && !m_isBorned && m_enemyIndex < enemyNum)
 	{
 		if (m_enemyBornTimer >= m_enemyBornInterval)// 敵生成間隔を超えたら
 		{
@@ -192,13 +195,13 @@ void EnemyManager::HandleEnemySpawning(float elapsedTime)
 			SpawnEnemy(enemyType);// 敵を生成(指定した敵の種類)
 		}
 	}
-
-	if (m_enemyIndex >= enemyNum)// 敵生成上限に達したら
+	// 敵生成上限に達したら
+	if (m_enemyIndex >= enemyNum)
 	{
 		FinalizeEnemySpawn();// 敵生成完了処理
 	}
-
-	if (m_enemies.empty() && m_isBorned && !m_isBossBorned)// 敵がいなくなったらボスを生成
+	// 敵がいなくなったらボスを生成
+	if (m_enemies.empty() && m_isBorned && !m_isBossBorned)
 	{
 		SpawnBoss();// ボスを生成
 	}
@@ -216,7 +219,6 @@ void EnemyManager::SpawnEnemy(EnemyType type)
 	enemy->Initialize();// 敵を初期化
 	enemy->SetBulletManager(m_pBulletManager);// 弾マネージャーを設定
 	m_enemies.push_back(std::move(enemy));// 敵リストに追加
-
 	m_enemyBornTimer = 0.0f;// 敵生成タイマーを初期化
 	m_enemyIndex++; // 敵インデックスを増加
 
@@ -383,7 +385,7 @@ void EnemyManager::HandleEnemyDeath(std::unique_ptr<IEnemy>& enemy)
 		effectScale = EnemyParameters::ENEMY_DEADEFFECT_SCALE;// ザコ敵の場合はエフェクトのスケールを小さくする
 	}
 	m_effect.push_back(std::make_unique<Effect>(m_commonResources,
-		Effect::ParticleType::ENEMY_DEAD,
+		Effect::EffectType::ENEMY_DEAD,
 		enemy->GetPosition(),
 		effectScale,
 		enemy->GetMatrix()));

@@ -54,7 +54,6 @@ const float  BulletParameters::SPIRAL_DEPTH_SCALE = 0.1f;	// —†ù’e‚Ì[‚³‚ÌƒXƒP
 
 const float  BulletParameters::SPIRAL_BULLET_SPEED_DECAY = 0.001f;	// —†ù’e‚Ì‘¬“x‚ğ™X‚É’x‚­‚·‚é‚½‚ß‚Ì’l
 // ‹¤’Ê‚â‚»‚Ì‘¼
-const float  BulletParameters::DELETE_BULLET_POSITION = -0.25f;// ’e‚ÌíœˆÊ’u
 
 const float  BulletParameters::BULLET_ROTATION_SPEED = 6.0f;// ’e‚Ì©“]‘¬“x(“x)
 
@@ -65,4 +64,10 @@ const float  BulletParameters::ADJUST_HIT_VOLUME = 0.8f;// ƒqƒbƒgSEƒ{ƒŠƒ…[ƒ€’²
 const float  BulletParameters::ANGLE_MIN = 0.0f;// Šp“x‚ÌÅ¬’l
 
 const float  BulletParameters::ANGLE_MAX = 360.0f;// Šp“x‚ÌÅ‘å’l
+
+const float  BulletParameters::DELETE_BULLET_POSITION = -0.25f;// ’e‚ÌíœˆÊ’u
+
+const int  BulletParameters::MAX_PLAYER_BULLET_COUNT = 50;// ƒvƒŒƒCƒ„[‚Ì’e‚ÌÅ‘å”
+
+const float  BulletParameters::HIT_VOLUME = 0.8f;// ƒqƒbƒg‰¹‚Ìƒ{ƒŠƒ…[ƒ€
 

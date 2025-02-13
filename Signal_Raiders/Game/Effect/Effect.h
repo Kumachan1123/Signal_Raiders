@@ -11,7 +11,7 @@ class CommonResources;
 class Effect
 {
 public:
-	enum class ParticleType
+	enum class EffectType
 	{
 		ENEMY_DEAD = 0,
 		ENEMY_HIT,
@@ -62,6 +62,7 @@ private:
 
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
+	// 定数バッファ
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_cBuffer;
 	//	プリミティブバッチ 
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_Batch;
@@ -70,7 +71,7 @@ private:
 	DirectX::DX11::VertexPositionTexture m_vertices[4];
 
 	// ParticleType
-	ParticleType m_type;
+	EffectType m_type;
 	// 今、エフェクトを再生してるか
 	bool m_isPlaying;
 	// フレーム数
@@ -88,32 +89,31 @@ private:
 	float m_offSetY;
 
 	// 板ポリゴンの頂点座標
-	float m_vertexMinX;
-	float m_vertexMaxX;
-	float m_vertexMinY;
-	float m_vertexMaxY;
+	float m_vertexMinX;//左
+	float m_vertexMaxX;//右
+	float m_vertexMinY;//下
+	float m_vertexMaxY;//上
 
 public:
-	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
-
-	static const DirectX::VertexPositionTexture Vertices[4];
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;// 入力レイアウト
 public:
-
+	// コンストラクタ
 	Effect(CommonResources* resources,
-		ParticleType type,
+		EffectType type,
 		DirectX::SimpleMath::Vector3 playPos,
 		float scale,
-		DirectX::SimpleMath::Matrix world);// 再生位置を受け取る
+		DirectX::SimpleMath::Matrix world);
+	// デストラクタ
 	~Effect();
-	void Update(float elapsedTime);
-	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
-	void Finalize();
+	void Update(float elapsedTime);// 更新
+	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);// 描画
+	void Finalize();// 終了処理
 
 
 public:
-	bool IsPlaying() const { return m_isPlaying; };
-	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; };
+	bool IsPlaying() const { return m_isPlaying; }// 再生中か
+	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }// 座標取得
 private:
-	void LoadTexture(const wchar_t* path);
+	void LoadTexture(const wchar_t* path);// 画像を読み込む
 
 };

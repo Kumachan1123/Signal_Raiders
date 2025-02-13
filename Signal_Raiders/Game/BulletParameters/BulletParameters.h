@@ -37,4 +37,7 @@ public:
 	static const float ADJUST_HIT_VOLUME;// ヒットSEボリューム調整
 	static const float ANGLE_MIN;// 角度の最小値
 	static const float ANGLE_MAX;// 角度の最大値
+	static const float DELETE_BULLET_POSITION;// 弾の削除位置
+	static const int MAX_PLAYER_BULLET_COUNT;// プレイヤーの弾の最大数
+	static const float HIT_VOLUME;// ヒット音のボリューム
 };

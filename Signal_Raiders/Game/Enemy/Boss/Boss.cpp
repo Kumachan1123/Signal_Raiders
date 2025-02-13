@@ -24,7 +24,9 @@
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
+// ---------------------------------------------------
 // コンストラクタ
+// ---------------------------------------------------
 Boss::Boss(Player* pPlayer, CommonResources* resources, int hp)
 	: IEnemy(pPlayer, resources, hp)
 	, m_pPlayer{ pPlayer }
@@ -60,11 +62,14 @@ Boss::Boss(Player* pPlayer, CommonResources* resources, int hp)
 
 {
 }
+// ---------------------------------------------------
 // デストラクタ 
-Boss::~Boss() { m_pBulletManager->RemoveBulletsByShooter(this); }
-//---------------------------------------------------------
+// ---------------------------------------------------
+Boss::~Boss() { m_pBulletManager->RemoveBulletsByShooter(this); }// 弾を削除
+
+// ---------------------------------------------------
 // 初期化する
-//---------------------------------------------------------
+// ---------------------------------------------------
 void Boss::Initialize()
 {
 	// 当たり判定描画用クラスの初期化
@@ -94,7 +99,9 @@ void Boss::Initialize()
 	m_SEVolume = m_pPlayer->GetVolume();
 	m_SEVolumeCorrection = m_pPlayer->GetVolumeCorrection();
 }
-// 描画
+// ---------------------------------------------------
+// 描画処理
+// ---------------------------------------------------
 void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
@@ -110,14 +117,15 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	m_pBossModel->Render(context, states, enemyWorld, view, proj);
 	// シールド描画
 	m_pBossSheild->Render(context, states, enemyWorld, view, proj);
-	//// 敵の弾描画
-	//m_pEnemyBullets->Render(view, proj);
 	// HPBarの座標を設定
 	Vector3 hpBarPos = m_position - EnemyParameters::BOSS_HPBAR_OFFSET;
 	m_pHPBar->SetScale(Vector3(EnemyParameters::BOSS_HPBAR_SCALE));
 	// HPBar描画
 	m_pHPBar->Render(view, proj, hpBarPos, m_rotate);
 }
+// ---------------------------------------------------
+// 当たり判定描画（デバッグ用）
+// ---------------------------------------------------
 void Boss::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
 	UNREFERENCED_PARAMETER(view);
@@ -135,13 +143,15 @@ void Boss::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	DrawCollision::DrawEnd();
 #endif
 }
-// 更新
+// ---------------------------------------------------
+// 更新処理
+// ---------------------------------------------------
 void Boss::Update(float elapsedTime)
 {
 	// カメラの情報を取得
-	m_cameraEye = m_pCamera->GetEyePosition();
-	m_cameraTarget = m_pCamera->GetTargetPosition();
-	m_cameraUp = m_pCamera->GetUpVector();
+	m_cameraEye = m_pCamera->GetEyePosition();// カメラの位置を取得
+	m_cameraTarget = m_pCamera->GetTargetPosition();// カメラの注視点を取得
+	m_cameraUp = m_pCamera->GetUpVector();// カメラの上方向を取得
 	// ボスのモデルの状態を更新
 	m_pBossModel->SetState(m_pBossAI->GetState());// モデルのアニメーション更新
 	m_pBossAI->Update(elapsedTime);// AIの更新
@@ -156,7 +166,7 @@ void Boss::Update(float elapsedTime)
 	// HPBar更新
 	m_pHPBar->SetCurrentHP(m_currentHP);
 	m_pHPBar->Update(elapsedTime);
-	// 最大HPの半分になったらシールドを展開
+	// 最大HPの半分以下になったらシールドを展開
 	if (m_currentHP <= m_maxHP / 2)m_pBossSheild->SetSheild(true);
 	// シールド更新
 	m_pBossSheild->Update(elapsedTime);
@@ -188,8 +198,9 @@ void Boss::ShootBullet()
 	}
 
 }
-
+// ---------------------------------------------------
 // 弾の位置設定
+// ---------------------------------------------------
 void Boss::BulletPositioning()
 {
 
@@ -204,8 +215,9 @@ void Boss::BulletPositioning()
 	m_bulletPosRight = Vector3::Transform(EnemyParameters::BOSS_RIGHT_GUN_OFFSET, transform);
 }
 
-
+// ---------------------------------------------------
 // 弾を生成
+// ---------------------------------------------------
 void Boss::CreateBullet()
 {
 	// 角度をずらして左右の弾を発射
@@ -237,8 +249,9 @@ void Boss::CreateBullet()
 	}
 
 }
-
+// ---------------------------------------------------
 // 中央の弾を発射
+// ---------------------------------------------------
 void Boss::CreateCenterBullet(EnemyBullet::BulletType type)
 {
 	// 弾を発射
@@ -246,7 +259,9 @@ void Boss::CreateCenterBullet(EnemyBullet::BulletType type)
 	m_pBulletManager->CreateEnemyBullet(m_bulletPosCenter, m_bulletDirection);// 弾を生成
 }
 
+// ---------------------------------------------------
 // 左の弾を発射
+// ---------------------------------------------------
 void Boss::CreateLeftBullet(float angleOffset, EnemyBullet::BulletType type)
 {
 	// 左方向
@@ -257,7 +272,9 @@ void Boss::CreateLeftBullet(float angleOffset, EnemyBullet::BulletType type)
 	m_pBulletManager->CreateEnemyBullet(m_bulletPosLeft, leftDirection);// 弾を生成
 }
 
+// ---------------------------------------------------
 // 右の弾を発射
+// ---------------------------------------------------
 void Boss::CreateRightBullet(float angleOffset, EnemyBullet::BulletType type)
 {
 	// 右方向
@@ -268,22 +285,25 @@ void Boss::CreateRightBullet(float angleOffset, EnemyBullet::BulletType type)
 	m_pBulletManager->CreateEnemyBullet(m_bulletPosRight, rightDirection);// 弾を生成
 }
 
+// ---------------------------------------------------
 // 真下に落ちる弾を発射
+// ---------------------------------------------------
 void Boss::CreateVerticalBullet()
 {
-	// 真下に落ちる弾を発射
 	m_pBulletManager->SetEnemyBulletType(EnemyBullet::BulletType::VERTICAL);// 弾の種類を設定
 	m_pBulletManager->CreateEnemyBullet(m_bulletPosCenter, m_bulletDirection);// 弾を生成
 }
 
+// ---------------------------------------------------
 // 敵のHPに関する処理
+// ---------------------------------------------------
 void Boss::SetEnemyHP(int hp)
 {
 	// シールドがある場合はシールドのHPを減らす
 	if (m_pBossSheild->GetSheildHP() > 0 && m_pBossSheild->GetSheild() == true)
 	{
-		m_pBossSheild->SetSheildHP(m_pBossSheild->GetSheildHP() - hp);
-		if (m_pBossSheild->GetSheildHP() <= 0)
+		m_pBossSheild->SetSheildHP(m_pBossSheild->GetSheildHP() - hp);// シールドのHPを減らす
+		if (m_pBossSheild->GetSheildHP() <= 0)// シールドが壊れたら
 		{
 			m_audioManager->PlaySound("BarrierBreak", m_pPlayer->GetVolume());// サウンド再生 
 		}
