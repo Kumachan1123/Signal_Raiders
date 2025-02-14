@@ -16,7 +16,6 @@ DamageEffects::~DamageEffects()
 void DamageEffects::Initialize(Player* pPlayer)
 {
 	m_pPlayer = pPlayer;
-
 }
 
 
@@ -25,8 +24,6 @@ void DamageEffects::Create(DX::DeviceResources* pDR)
 {
 	std::unique_ptr<DamageEffect> damageEffect = std::make_unique<DamageEffect>(m_commonResources);
 	damageEffect->Initialize(m_pPlayer);
-	damageEffect->Create(pDR);
-	damageEffect->SetEnemyDirection(m_pPlayer->GetEnemyBulletDirection());// ƒ_ƒ[ƒW‚ğó‚¯‚½“G‚ÌŒü‚«‚ğİ’è
 	m_pDamageEffect.push_back(std::move(damageEffect));
 
 }

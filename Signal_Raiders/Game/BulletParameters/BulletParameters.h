@@ -6,7 +6,9 @@
 class BulletParameters
 {
 public:
-	// プレイヤー
+	//======================================
+	// プレイヤー用の弾の定数
+	//======================================
 	static const float PLAYER_BULLET_SIZE;// 弾の大きさ
 	static const float COLLISION_RADIUS;// 弾の当たり判定の半径
 	static const float ADJUST_MOVE;// 移動量の補正値
@@ -16,7 +18,9 @@ public:
 	static const int DAMAGE;						// 敵に与えるダメージ
 	static const float RELOAD_INTERVAL;				// リロード間隔
 
-	// 敵
+	//======================================
+	// 敵用の弾の定数
+	//======================================
 	static const float ENEMY_BULLET_LIFETIME;			// 寿命
 	static const float STRAIGHT_BULLET_SPEED;			// 直線弾の速度
 	static const float STRAIGHT_ADJUST_DIRECTION;	// Directionを若干下にするための補正値
@@ -30,7 +34,9 @@ public:
 	static const float SPIRAL_RADIUS_SCALE;	// 螺旋弾の半径のスケール
 	static const float SPIRAL_DEPTH_SCALE;	// 螺旋弾の深さのスケール
 	static const float SPIRAL_BULLET_SPEED_DECAY;	// 螺旋弾の速度を徐々に遅くするための値
-	// 共通やその他
+	//======================================
+	// 共通の定数（プレイヤー・敵共通で使うもの）
+	//======================================
 	static const float DELETE_BULLET_POSITION;// 弾の削除位置
 	static const float BULLET_ROTATION_SPEED;// 弾の自転速度(度)
 	static const DirectX::SimpleMath::Plane SHADOW_PLANE;// 影の平面

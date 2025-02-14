@@ -7,9 +7,9 @@
 
 using namespace DirectX::SimpleMath;
 
-// 定数
-
-// プレイヤー
+//======================================
+// プレイヤー用の弾の定数
+//======================================
 const float BulletParameters::PLAYER_BULLET_SIZE = 0.1f;// 弾の大きさ
 
 const float BulletParameters::COLLISION_RADIUS = 0.25f;// 弾の当たり判定の半径
@@ -18,16 +18,16 @@ const float BulletParameters::ADJUST_MOVE = 40.0f;// 移動量の補正値
 
 const float BulletParameters::ADJUST_DIRECTION = 0.0375f;	// Directionを若干上方向にするための補正値
 
-const DirectX::SimpleMath::Vector3  BulletParameters::INITIAL_POSITION = { 0.0f, -1.0f, 0.0f };	// 発射位置
+const Vector3  BulletParameters::INITIAL_POSITION = { 0.0f, -1.0f, 0.0f };	// 発射位置
 
 const float  BulletParameters::PLAYER_BULLET_LIFETIME = 1.5;				// 寿命
 
 const int  BulletParameters::DAMAGE = 10;						// 敵に与えるダメージ
 
 const float  BulletParameters::RELOAD_INTERVAL = 0.1f;				// リロード間隔
-
-
-// 敵
+//======================================
+// 敵用の弾の定数
+//======================================
 const float  BulletParameters::ENEMY_BULLET_LIFETIME = 5.0f;			// 寿命
 
 const float  BulletParameters::STRAIGHT_BULLET_SPEED = 10.0f;			// 直線弾の速度
@@ -36,7 +36,7 @@ const float  BulletParameters::STRAIGHT_ADJUST_DIRECTION = 0.05f;	// Directionを
 
 const float  BulletParameters::VERTICAL_BULLET_SPEED = 50.0f;			// 垂直弾の速度
 
-const DirectX::SimpleMath::Vector3  BulletParameters::VERTICAL_BULLET_LANDING_VELOCITY = { 0.0f, -0.15f, 0.0f };	// 着弾前の速度
+const Vector3  BulletParameters::VERTICAL_BULLET_LANDING_VELOCITY = { 0.0f, -0.15f, 0.0f };	// 着弾前の速度
 
 const float  BulletParameters::VERTICAL_BULLET_LANDING_POSITION = 0.5f;	// 垂直弾の着弾位置
 
@@ -53,11 +53,12 @@ const float  BulletParameters::SPIRAL_RADIUS_SCALE = 0.1f;	// 螺旋弾の半径のスケ
 const float  BulletParameters::SPIRAL_DEPTH_SCALE = 0.1f;	// 螺旋弾の深さのスケール
 
 const float  BulletParameters::SPIRAL_BULLET_SPEED_DECAY = 0.001f;	// 螺旋弾の速度を徐々に遅くするための値
-// 共通やその他
-
+//======================================
+// 共通の定数（プレイヤー・敵共通で使うもの）
+//======================================
 const float  BulletParameters::BULLET_ROTATION_SPEED = 6.0f;// 弾の自転速度(度)
 
-const DirectX::SimpleMath::Plane  BulletParameters::SHADOW_PLANE = DirectX::SimpleMath::Plane(0.0f, 1.0f, 0.0f, 0.01f);// 影の平面
+const Plane  BulletParameters::SHADOW_PLANE = DirectX::SimpleMath::Plane(0.0f, 1.0f, 0.0f, 0.01f);// 影の平面
 
 const float  BulletParameters::ADJUST_HIT_VOLUME = 0.8f;// ヒットSEボリューム調整
 

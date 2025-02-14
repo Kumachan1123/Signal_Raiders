@@ -17,6 +17,8 @@
 #include <vector>
 #include "Game/Player/Player.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
+#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
+#include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 class Player;
 class CommonResources;
 class DamageEffect
@@ -104,7 +106,6 @@ public:
 
 	void LoadTexture(const wchar_t* path);
 
-	void Create(DX::DeviceResources* pDR);
 
 	void Initialize(Player* pPlayer);
 	void Update(float elapsedTime);
@@ -116,18 +117,11 @@ public:
 	DirectX::SimpleMath::Vector3 GetEnemyDirection()const { return m_enemyDirection; }
 	bool Destroy()const
 	{
-		if (m_time >= DESTROY_TIME)
-		{
-
-			return true;
-
-		}
-
-		return false;
+		if (m_time >= DESTROY_TIME)return true;
+		else return false;
 	}
-	// setter
-	void SetEnemyDirection(DirectX::SimpleMath::Vector3 direction) { m_enemyDirection = direction; }
 private:
-
-	void CreateShader();
+	void CreateShader();// シェーダー作成
+	float CalculateAngle()const;// 角度計算
+	DirectX::SimpleMath::Vector4 GetUVFromAngle(float angle)const;// 角度からUV座標を求める
 };
