@@ -12,6 +12,8 @@
 #include <cassert>
 #include <Libraries/Microsoft/DebugDraw.h>
 #include "Game/KumachiLib/DrawCollision/DrawCollision.h"
+
+using namespace DirectX::SimpleMath;
 //-------------------------------------------------------------------
 // コンストラクタ
 //-------------------------------------------------------------------
@@ -20,11 +22,17 @@ EnemyBullet::EnemyBullet(float size)
 	, m_velocity{}
 	, m_commonResources{}
 	, m_time{ 0.0f }
+	, m_elapsedTime{ 0.0f }
 	, m_angle{ 0.0f }
 	, m_size{ size }
 	, m_spiralAngle{ 0.0f }
 	, m_bulletSpeed{ 0.0f }
+	, m_distance{ 5.0f }
 	, m_rotateDirection{ 1 }
+	, m_rotationSpeed{ 0.0f }
+	, m_height{ 0.0f }
+	, m_isExpand{ false }
+	, m_isShot{ false }
 	, m_pShooter{ nullptr }
 	, m_bulletType{ BulletType::STRAIGHT }
 {
@@ -78,7 +86,15 @@ void EnemyBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::Sim
 	m_position = pos;
 	m_direction = dir;
 	m_target = target;
-	m_bulletSpeed = BulletParameters::SPIRAL_BULLET_SPEED;
+}
+
+// 弾が生成されてからの経過時間が寿命を超えたかどうかを判定する
+bool EnemyBullet::IsExpired() const
+{
+	if (m_bulletType == BulletType::SPIRAL)
+		return GetTime() >= BulletParameters::SPIRAL_BULLET_LIFETIME;
+
+	return GetTime() >= BulletParameters::ENEMY_BULLET_LIFETIME;
 }
 
 // 更新
@@ -226,41 +242,65 @@ void EnemyBullet::VerticalBullet(float elapsedTime)
 	m_boundingSphere.Center = m_position;
 }
 
+
 // 螺旋弾
 void EnemyBullet::SpiralBullet(float elapsedTime)
 {
-	// プレイヤー方向ベクトルを計算
-	DirectX::SimpleMath::Vector3 toPlayer = m_target - m_enemyPosition;
-
-	// プレイヤーとの距離を取得してスパイラルの半径に使う
-	float distanceToPlayer = toPlayer.Length();
-	if (distanceToPlayer > 0)
+	m_elapsedTime = elapsedTime;
+	// 時計回りに回転するための角度
+	m_spiralAngle += m_rotationSpeed * elapsedTime;
+	// XY平面上で円運動 (時計回り)
+	float xOffset = cosf(m_spiralAngle) * m_distance;
+	float zOffset = sinf(m_spiralAngle) * m_distance;
+	// もともとのY座標の動きは変更しない
+	m_positionOffSet = Vector3(xOffset, m_basePos.y - 3.5f, zOffset);
+	Expand();// 子オブジェクトを展開
+	Shot();// 子オブジェクトを発射
+	StopExpand();// 子オブジェクトを収納
+	ComeBack();// 子オブジェクトを戻す
+	// プレイヤーに向かいつつスパイラルを描いて移動
+	m_position = m_basePos + m_positionOffSet;
+	m_boundingSphere.Center = m_position;
+	// 弾の寿命に応じてフラグを切り替える
+	if (m_time >= BulletParameters::SPECIAL_ATTACK_WAIT_TIME)
 	{
-		toPlayer.Normalize();
+		SetIsShot(true);
 	}
 
-	// プレイヤー中心に円を描くようにオフセット計算
-	float spiralRadius = BulletParameters::SPIRAL_RADIUS; // プレイヤー中心からのスパイラルの半径
-	float spiralSpeed = BulletParameters::SPIRAL_BULLET_ROTATION_SPEED;  // スパイラルの回転速度
+}
+void EnemyBullet::Expand()
+{
+	if (!m_isExpand)return;
+	m_rotationSpeed = 1.0f; // 速度調整用（値を大きくすると速く回転する）
+	m_distance = Lerp(m_distance, 15.0f, m_elapsedTime);
+	m_height = 2.0f;
+}
 
-	// 時間によってプレイヤー周りを回転する位置を設定
-	DirectX::SimpleMath::Vector3 spiralOffset = {
-		0.0f,
-		spiralRadius * cosf(spiralSpeed * m_time * BulletParameters::SPIRAL_ROTATION_FREQUENCY) * distanceToPlayer * BulletParameters::SPIRAL_RADIUS_SCALE,
+void EnemyBullet::Shot()
+{
 
-		spiralRadius * sinf(spiralSpeed * m_time * BulletParameters::SPIRAL_ROTATION_FREQUENCY) * distanceToPlayer * BulletParameters::SPIRAL_DEPTH_SCALE * m_rotateDirection
-	};
+	if (!m_isShot) return;
+	m_rotationSpeed = 3.0f;
+	m_distance = Lerp(m_distance, 5.0f, m_elapsedTime);
+	m_basePos = Lerp(m_basePos, m_currentTarget, m_elapsedTime * 2);
 
-	// プレイヤーに向かう方向とスパイラル効果をミックス
-	m_direction = toPlayer + spiralOffset;
-	m_direction.Normalize();
+}
 
-	// 弾の速度を設定
-	m_velocity = m_direction * m_bulletSpeed * elapsedTime;
+void EnemyBullet::StopExpand()
+{
+	if (m_isExpand)return;
+	m_rotationSpeed = 0.0f;
+	m_distance = Lerp(m_distance, 0.0f, m_elapsedTime * 20);
+	m_height = 1.50f;
+}
 
-	// プレイヤーに向かいつつスパイラルを描いて移動
-	m_position += m_velocity;
-	m_boundingSphere.Center = m_position;
-	// 弾の速度を少し遅くする
-	m_bulletSpeed -= BulletParameters::SPIRAL_BULLET_SPEED_DECAY;
+void EnemyBullet::ComeBack()
+{
+	if (m_isShot) return;
+	//m_look.Normalize();// プレイヤーが向いている方向を正規化
+	//// 基準点を親が向いている方向に動かす
+	m_distance = Lerp(m_distance, 3.0f, m_elapsedTime);
+	// 基準点を目的地に向かって線形補完
+	m_basePos = Lerp(m_basePos, m_enemyPosition, m_elapsedTime * 50);
+
 }

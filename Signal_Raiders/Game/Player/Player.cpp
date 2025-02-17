@@ -112,7 +112,7 @@ void Player::PlayerDamage(float elapsedTime)
 		if (m_isPlayEffect == true)
 		{
 			// ダメージエフェクト生成
-			m_pDamageEffects->Create(m_commonResources->GetDeviceResources());
+			m_pDamageEffects->Create();
 			// ダメージエフェクトを生成したらfalse
 			m_isPlayEffect = false;
 		}

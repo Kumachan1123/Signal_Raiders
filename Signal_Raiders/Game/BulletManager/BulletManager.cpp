@@ -5,6 +5,7 @@
 #include "pch.h"
 #include "BulletManager.h"
 
+using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 /// <summary>
@@ -123,13 +124,31 @@ void BulletManager::CreateEnemyBullet(const Vector3& position, Vector3& directio
 	auto camera = m_pPlayer->GetCamera();
 	// プレイヤーからカメラの情報を取得
 	Vector3 playerPos = camera->GetEyePosition();
+	// 特殊攻撃の数だけ回転弾を生成
+	if (m_enemyBulletType == EnemyBullet::BulletType::SPIRAL)
+	{
+		for (int i = 0; i < GetSpecialAttackCount(); i++)
+		{
+			auto bullet = std::make_unique<EnemyBullet>(m_enemyBulletSize);// 敵弾の生成
+			bullet->Initialize(m_commonResources, m_enemyBulletType);// 初期化
+			bullet->MakeBall(position, direction, playerPos);// 弾を生成
+			bullet->SetShooter(m_pShooter);// 発射元を設定
+			bullet->SetAngle(XM_2PI / GetSpecialAttackCount() * i);// 角度を設定
+			bullet->SetDistance(0.0f);// 距離を設定
+			bullet->SetIsExpand(true);// 展開フラグを立てる
+			m_enemyBullets.push_back(std::move(bullet));// 敵弾を追加
+		}
+	}
+	else // 回転弾以外の弾の場合
+	{
 
-	// 敵弾の生成
-	auto bullet = std::make_unique<EnemyBullet>(m_enemyBulletSize); // サイズ1.0fの例
-	bullet->Initialize(m_commonResources, m_enemyBulletType);
-	bullet->MakeBall(position, direction, playerPos);
-	bullet->SetShooter(m_pShooter);
-	m_enemyBullets.push_back(std::move(bullet));
+		auto bullet = std::make_unique<EnemyBullet>(m_enemyBulletSize);// 敵弾の生成
+		bullet->Initialize(m_commonResources, m_enemyBulletType);
+		bullet->MakeBall(position, direction, playerPos);
+		bullet->SetShooter(m_pShooter);
+		m_enemyBullets.push_back(std::move(bullet));
+	}
+
 }
 
 /// <summary>
@@ -233,6 +252,7 @@ void BulletManager::UpdateEnemyBullets(float elapsedTime, std::unique_ptr<IEnemy
 		bullet->SetCameraTarget(camera->GetTargetPosition());// カメラの注視点
 		bullet->SetCameraUp(camera->GetUpVector());// カメラの上方向
 		bullet->SetEnemyPosition(shooter->GetPosition());// 敵の位置
+		bullet->SetCurrentTarget(m_pPlayer->GetPlayerPos());// プレイヤーの位置
 		bullet->Update(elapsedTime);// 弾を更新
 		// プレイヤーとの当たり判定
 		if (CheckCollisionWithPlayer(bullet, enemy) ||

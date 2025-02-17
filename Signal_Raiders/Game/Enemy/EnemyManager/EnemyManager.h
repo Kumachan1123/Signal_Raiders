@@ -29,17 +29,19 @@ private:
 	// ステージごとの設定
 	struct StageSettings
 	{
-		int enemyMax;
-		int bossHP;
-		Boss::BossBulletType bulletType;
+		int enemyMax;// 敵の生成上限
+		int bossHP;// ボスの体力
+		int specialAttackCount;// 一度に出る特殊攻撃の数
+		Boss::BossBulletType bulletType;// ボスの弾の種類
 	};
 	const std::unordered_map<int, StageSettings> stageData =
 	{
-		{0, {5, 100, Boss::BossBulletType::NORMAL}},
-		{1, {10, 200, Boss::BossBulletType::NORMAL}},
-		{2, {20, 300, Boss::BossBulletType::TWIN}},
-		{3, {30, 500, Boss::BossBulletType::THREE}},
-		{4, {40, 1000, Boss::BossBulletType::SPIRAL}}
+		//{ステージ番号, {敵の生成上限, ボスの体力, 一度に出る特殊攻撃の数, ボスの弾の種類}}
+		{0, {5, 100, 3,Boss::BossBulletType::NORMAL}},
+		{1, {10, 200,4, Boss::BossBulletType::NORMAL}},
+		{2, {20, 300,5, Boss::BossBulletType::TWIN}},
+		{3, {30, 500, 7,Boss::BossBulletType::THREE}},
+		{4, {40, 1000,10, Boss::BossBulletType::THREE}}
 	};
 
 private:
@@ -75,6 +77,8 @@ private:
 	bool m_isBossAlive;
 	// ボスの体力
 	int m_bossHP;
+	// ボスが一度に出す特殊攻撃の数
+	int m_specialAttackCount;
 	// wi-fi
 	std::unique_ptr<Wifi> m_pWifi;
 	// プレイヤー(コントローラー)
@@ -117,6 +121,8 @@ public:
 	void SetWall(Wall* pWall) { m_pWall = pWall; };// 壁のポインター
 	BulletManager* GetBulletManager() { return m_pBulletManager; }// 弾マネージャー
 	void SetBulletManager(BulletManager* pBulletManager) { m_pBulletManager = pBulletManager; }// 弾マネージャー
+	int GetSpecialAttackCount() const { return m_specialAttackCount; }// 特殊攻撃の数取得
+	void SetSpecialAttackCount(int count) { m_specialAttackCount = count; }// 特殊攻撃の数設定
 private:
 	// 敵の生成上限設定
 	void SetEnemyMax();

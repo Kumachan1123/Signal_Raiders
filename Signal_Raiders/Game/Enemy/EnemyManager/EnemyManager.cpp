@@ -151,6 +151,7 @@ void EnemyManager::SetEnemyMax()
 	{
 		m_enemyMax = it->second.enemyMax;// 敵の生成上限を設定
 		m_bossHP = it->second.bossHP;// ボスのHPを設定
+		m_specialAttackCount = it->second.specialAttackCount;// ボスの特殊攻撃の数を設定
 		m_bossBulletType = it->second.bulletType;// ボスの弾の種類を設定
 	}
 }
@@ -241,14 +242,14 @@ void EnemyManager::FinalizeEnemySpawn()
 //---------------------------------------------------------
 void EnemyManager::SpawnBoss()
 {
-	auto boss = std::make_unique<Boss>(m_pPlayer, m_commonResources, m_bossHP);
-	boss->SetAudioManager(m_audioManager);
-	boss->Initialize();
+	auto boss = std::make_unique<Boss>(m_pPlayer, m_commonResources, m_bossHP);// ボスを生成
+	boss->SetAudioManager(m_audioManager);// オーディオマネージャーを設定
+	boss->Initialize();// ボスを初期化
 	boss->SetBulletManager(m_pBulletManager);// 弾マネージャーを設定
-	boss->SetBulletType(m_bossBulletType);
-
+	boss->SetBulletType(m_bossBulletType);// ボスの弾の種類を設定
+	boss->GetBulletManager()->SetSpecialAttackCount(m_specialAttackCount);// ボスの特殊攻撃の数を設定
 	m_enemies.push_back(std::move(boss)); // ボスも enemies に統一
-	m_isBossBorned = true;
+	m_isBossBorned = true; // ボス生成完了
 }
 
 //---------------------------------------------------------

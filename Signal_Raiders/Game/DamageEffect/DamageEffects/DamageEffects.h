@@ -18,7 +18,7 @@ public:
 	~DamageEffects();
 
 	// ダメージを受けた時の演出を生成
-	void Create(DX::DeviceResources* pDR);
+	void Create();
 
 	void Initialize(Player* pPlayer);
 	void Update(float elapsedTime);

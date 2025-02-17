@@ -59,6 +59,8 @@ const float EnemyParameters::NORMAL_ENEMY_RADIUS = 1.5f;// ƒUƒR“G‚Ì‹«ŠE‹…‚Ì”¼Œa
 
 const float EnemyParameters::ATTACK_COOLDOWN_THRESHOLD = 0.1f;// ƒtƒŒ[ƒ€‚²‚Æ‚É’e‚ğ”­Ë‚µ‚È‚­‚·‚é‚½‚ß‚ÌUŒ‚è‡’l
 
+const float EnemyParameters::SPECIAL_ATTACK_COOLDOWN = 30.0f;// “ÁêUŒ‚‚ÌƒN[ƒ‹ƒ_ƒEƒ“ƒ^ƒCƒ€
+
 const float EnemyParameters::NORMAL_ENEMY_DAMAGE = 1.0f;// ƒUƒR“G‚ªƒvƒŒƒCƒ„[‚É—^‚¦‚éƒ_ƒ[ƒW
 
 const float EnemyParameters::ATTACK_INTERVAL = 1.0f;// ƒUƒR“G‚ÌUŒ‚ƒCƒ“ƒ^[ƒoƒ‹
@@ -91,11 +93,11 @@ const Vector3 EnemyParameters::INITIAL_BOSS_SCALE{ 2.0f,2.0f,2.0f };// ƒ{ƒX‚Ì‰Š
 
 const Vector3 EnemyParameters::BOSS_SPHERE_OFFSET{ 0.0f,0.5f,0.0f };// ƒ{ƒX‚Ì‹«ŠE‹…‚ÌƒIƒtƒZƒbƒg
 
-const Vector3 EnemyParameters::BOSS_HEAD_OFFSET{ 0.0f, 2.3f, 3.0f };// ƒ{ƒX‚Ì“ª‚Ì–CŒû‚ÌƒIƒtƒZƒbƒg
+const Vector3 EnemyParameters::BOSS_HEAD_OFFSET{ 0.0f, 2.0f, 3.0f };// ƒ{ƒX‚Ì“ª‚Ì–CŒû‚ÌƒIƒtƒZƒbƒg
 
-const Vector3 EnemyParameters::BOSS_LEFT_GUN_OFFSET{ -2.5f,0.80f, 3.0f };// ã‚ÌÀ•W
+const Vector3 EnemyParameters::BOSS_LEFT_GUN_OFFSET{ -2.5f,-0.50f, 3.0f };// ã‚ÌÀ•W
 
-const Vector3 EnemyParameters::BOSS_RIGHT_GUN_OFFSET{ 2.5f, 0.80f, 3.0f };// ‰E‚ÌÀ•W
+const Vector3 EnemyParameters::BOSS_RIGHT_GUN_OFFSET{ 2.5f, -0.50f, 3.0f };// ‰E‚ÌÀ•W
 
 const Vector3 EnemyParameters::BOSS_HPBAR_OFFSET{ 0.0f, 3.0f, 0.0f };// HPƒo[‚ÌƒIƒtƒZƒbƒg
 

@@ -54,6 +54,8 @@ void BossSheild::Update(float elapsedTime)
 		m_pBoss->GetBoundingSphere().Radius = EnemyParameters::BOSS_SHIELD_RADIUS;
 		// 攻撃の間隔を速くする
 		m_pBoss->SetBulletCooldown(EnemyParameters::BOSS_SHIELD_ATTACK_COOLDOWN);
+		// 特殊攻撃の間隔を速くする
+		m_pBoss->SetInitSpecialAttacCooldown(EnemyParameters::SPECIAL_ATTACK_COOLDOWN / 2);
 	}
 	// シールドが破壊されたらパーティクルを再生
 	if (m_sheildHP <= 0)

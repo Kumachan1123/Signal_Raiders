@@ -44,6 +44,7 @@ public:// 定数
 	static const float BOSS_SHIELD_RADIUS;	// シールド展開時のボスの境界球の半径
 	static const float BOSS_SHIELD_ATTACK_COOLDOWN;	// シールド展開時のボスの攻撃間隔
 	static const float ATTACK_COOLDOWN_THRESHOLD;	// フレームごとに弾を発射しなくするための攻撃閾値
+	static const float SPECIAL_ATTACK_COOLDOWN;	// 特殊攻撃のクールダウンタイム
 	static const float NORMAL_ENEMY_RADIUS;	// ザコ敵の境界球の半径
 	static const float NORMAL_BOSS_RADIUS;	// 通常時のボスの境界球の半径
 	static const float NORMAL_ENEMY_DAMAGE;	// ザコ敵がプレイヤーに与えるダメージ

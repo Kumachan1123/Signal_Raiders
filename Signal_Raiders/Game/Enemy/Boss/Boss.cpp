@@ -36,6 +36,8 @@ Boss::Boss(Player* pPlayer, CommonResources* resources, int hp)
 	, m_currentHP{ hp }
 	, m_maxHP{}
 	, m_attackCooldown{ EnemyParameters::ATTACK_COOLDOWN }
+	, m_specialAttackCooldown{ EnemyParameters::SPECIAL_ATTACK_COOLDOWN }
+	, m_initSpecialAttackCooldown{ EnemyParameters::SPECIAL_ATTACK_COOLDOWN }
 	, m_bulletCooldown{ EnemyParameters::ATTACK_INTERVAL }
 	, m_SEVolume{ 0.0f }
 	, m_SEVolumeCorrection{ 0.0f }
@@ -158,8 +160,8 @@ void Boss::Update(float elapsedTime)
 	m_position = m_pBossAI->GetPosition();// 敵の座標を更新
 	m_audioManager->Update();// オーディオマネージャーの更新
 	m_attackCooldown = m_pBossAI->GetBossAttack()->GetCoolTime();// 攻撃のクールダウンタイムを取得
+	m_specialAttackCooldown -= elapsedTime;// 特殊攻撃のクールダウンタイムを減らす
 	this->ShootBullet();// 弾発射
-	//m_pEnemyBullets->Update(elapsedTime);// 敵の弾の更新
 	m_bossBS.Center = m_position + EnemyParameters::BOSS_SPHERE_OFFSET;// 境界球の中心座標を更新
 	// 弾の位置設定
 	this->BulletPositioning();
@@ -195,6 +197,17 @@ void Boss::ShootBullet()
 		this->CreateBullet();
 		// クールダウンタイムをリセット
 		m_pBossAI->GetBossAttack()->SetCoolTime(m_bulletCooldown);
+	}
+	// 特殊攻撃のクールダウンタイムを管理
+	if (m_specialAttackCooldown <= 0.0f)
+	{
+		m_audioManager->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
+		m_pBulletManager->SetEnemyBulletSize(EnemyParameters::BOSS_BULLET_SIZE * 2);// 弾のサイズを設定
+		m_pBulletManager->SetShooter(this);// 弾を発射したオブジェクトを設定
+		// 特殊攻撃
+		this->CreateSpiralBullet();
+		// クールダウンタイムをリセット
+		m_specialAttackCooldown = m_initSpecialAttackCooldown;
 	}
 
 }
@@ -240,12 +253,7 @@ void Boss::CreateBullet()
 		CreateLeftBullet(-angleOffset, EnemyBullet::BulletType::STRAIGHT);// 左の弾を発射
 		CreateRightBullet(angleOffset, EnemyBullet::BulletType::STRAIGHT);// 右の弾を発射
 		break;
-	case BossBulletType::SPIRAL:
-		CreateCenterBullet(EnemyBullet::BulletType::STRAIGHT);// 中央の弾を発射
-		CreateLeftBullet(-angleOffset, EnemyBullet::BulletType::SPIRAL);// 左の弾を発射
-		CreateRightBullet(angleOffset, EnemyBullet::BulletType::SPIRAL);// 右の弾を発射
-		CreateVerticalBullet();// 真下に落ちて着弾したら加速する弾を発射
-		break;
+
 	}
 
 }
@@ -292,6 +300,18 @@ void Boss::CreateVerticalBullet()
 {
 	m_pBulletManager->SetEnemyBulletType(EnemyBullet::BulletType::VERTICAL);// 弾の種類を設定
 	m_pBulletManager->CreateEnemyBullet(m_bulletPosCenter, m_bulletDirection);// 弾を生成
+}
+
+// ---------------------------------------------------
+// 回転弾を発射
+// ---------------------------------------------------
+void Boss::CreateSpiralBullet()
+{
+
+	// 弾を発射
+	m_pBulletManager->SetEnemyBulletType(EnemyBullet::BulletType::SPIRAL);// 弾の種類を設定
+	m_pBulletManager->CreateEnemyBullet(m_bulletPosCenter, m_bulletDirection);// 弾を生成
+
 }
 
 // ---------------------------------------------------

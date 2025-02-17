@@ -20,7 +20,7 @@ void DamageEffects::Initialize(Player* pPlayer)
 
 
 // ダメージを受けた時の演出を生成
-void DamageEffects::Create(DX::DeviceResources* pDR)
+void DamageEffects::Create()
 {
 	std::unique_ptr<DamageEffect> damageEffect = std::make_unique<DamageEffect>(m_commonResources);
 	damageEffect->Initialize(m_pPlayer);

@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <cassert>
-
+#include <SimpleMath.h>
 // 外部ライブラリ
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
@@ -57,6 +57,9 @@ public:
 	void SetShooter(IEnemy* pShooter) { m_pShooter = pShooter; }// 弾を射出した敵のポインター設定
 	void SetAdditionalDamage(int additionalDamage);// 追加ダメージ設定
 	int GetPlayerBulletCount() const { return m_playerBulletCount; }// プレイヤーの弾の数取得
+	void SetPlayerBulletCount(int count) { m_playerBulletCount = count; }// プレイヤーの弾の数設定
+	int GetSpecialAttackCount() const { return m_specialAttackCount; }// 特殊攻撃の数取得
+	void SetSpecialAttackCount(int count) { m_specialAttackCount = count; }// 特殊攻撃の数設定
 private:
 	// コモンリソース
 	CommonResources* m_commonResources;
@@ -84,6 +87,8 @@ private:
 	std::vector<std::unique_ptr<EnemyBullet>> m_enemyBullets;
 	// プレイヤーの弾の最大数
 	int m_playerBulletCount;
+	// ボスが出す特殊攻撃の数
+	int m_specialAttackCount;
 
 	// privateメンバ関数
 	void UpdatePlayerBullets(float elapsedTime);// プレイヤーの弾更新

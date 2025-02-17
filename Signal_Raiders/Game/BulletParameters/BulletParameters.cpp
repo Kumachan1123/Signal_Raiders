@@ -30,6 +30,8 @@ const float  BulletParameters::RELOAD_INTERVAL = 0.1f;				// リロード間隔
 //======================================
 const float  BulletParameters::ENEMY_BULLET_LIFETIME = 5.0f;			// 寿命
 
+const float  BulletParameters::SPIRAL_BULLET_LIFETIME = 15.0f;			// 寿命
+
 const float  BulletParameters::STRAIGHT_BULLET_SPEED = 10.0f;			// 直線弾の速度
 
 const float  BulletParameters::STRAIGHT_ADJUST_DIRECTION = 0.05f;	// Directionを若干下にするための補正値
@@ -40,19 +42,19 @@ const Vector3  BulletParameters::VERTICAL_BULLET_LANDING_VELOCITY = { 0.0f, -0.1
 
 const float  BulletParameters::VERTICAL_BULLET_LANDING_POSITION = 0.5f;	// 垂直弾の着弾位置
 
-const float  BulletParameters::SPIRAL_BULLET_SPEED = 0.5f;						// 螺旋弾の速度
-
 const float  BulletParameters::SPIRAL_BULLET_ROTATION_SPEED = 5.0f;						// 螺旋弾の回転速度
 
-const float  BulletParameters::SPIRAL_RADIUS = 1.0f;						// 螺旋弾の半径
-
-const float  BulletParameters::SPIRAL_ROTATION_FREQUENCY = 2.5f;	// 螺旋弾の周波数
-
-const float  BulletParameters::SPIRAL_RADIUS_SCALE = 0.1f;	// 螺旋弾の半径のスケール
-
-const float  BulletParameters::SPIRAL_DEPTH_SCALE = 0.1f;	// 螺旋弾の深さのスケール
-
-const float  BulletParameters::SPIRAL_BULLET_SPEED_DECAY = 0.001f;	// 螺旋弾の速度を徐々に遅くするための値
+const float  BulletParameters::SPECIAL_ATTACK_WAIT_TIME = 5.0f;	// 特殊攻撃の待機時間
+//
+//const float  BulletParameters::SPIRAL_RADIUS = 1.0f;						// 螺旋弾の半径
+//
+//const float  BulletParameters::SPIRAL_ROTATION_FREQUENCY = 2.5f;	// 螺旋弾の周波数
+//
+//const float  BulletParameters::SPIRAL_RADIUS_SCALE = 0.1f;	// 螺旋弾の半径のスケール
+//
+//const float  BulletParameters::SPIRAL_DEPTH_SCALE = 0.1f;	// 螺旋弾の深さのスケール
+//
+//const float  BulletParameters::SPIRAL_BULLET_SPEED_DECAY = 0.001f;	// 螺旋弾の速度を徐々に遅くするための値
 //======================================
 // 共通の定数（プレイヤー・敵共通で使うもの）
 //======================================
