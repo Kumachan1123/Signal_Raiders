@@ -54,7 +54,7 @@ public:
 	void Update(float playerHP);
 	void Render();
 	void SetMaxHP(float maxHP) { m_maxHP = maxHP; }
-	void Add(const wchar_t* path
+	void Add(std::unique_ptr<PlayerUI>& pPlayerUI, const wchar_t* path
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
 		, KumachiLib::ANCHOR anchor);

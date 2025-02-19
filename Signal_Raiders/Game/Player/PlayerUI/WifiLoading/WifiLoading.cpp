@@ -49,13 +49,13 @@ void WifiLoading::Initialize(DX::DeviceResources* pDR, int width, int height)
 void WifiLoading::Update(float elapsedTime)
 {
 	m_animTime += elapsedTime * m_animSpeed;// 経過時間を加算
-	if (m_animTime >= 1.25f)// 1秒経過
+	if (m_animTime > 1.25f)// 1秒経過
 	{
 		m_animTime = 0.0f;// タイマーをリセット
 	}
 
 	// 0.25 刻みに調整
-	float stepRatio = floor(m_animTime * 4.0f) / 4.0f;
+	float stepRatio = floor(m_animTime * m_frameCols) / m_frameCols;
 	m_loading->SetRenderRatio(stepRatio);
 }
 
