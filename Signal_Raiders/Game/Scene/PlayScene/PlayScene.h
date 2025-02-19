@@ -23,6 +23,7 @@
 #include "Game/Player/PlayerUI/Crisis/Crisis.h"
 #include "Game/Player/PlayerUI/PlayGuide/PlayGuide.h"
 #include "Game/Player/PlayerUI/Goal/Goal.h"
+#include "Game/Player/PlayerUI/WifiLoading/WifiLoading.h"
 #include "Game/Player/PlayerUI/BulletGauge/BulletGauge.h"
 #include "Game/Effect/Effect.h"
 #include "Game/Fade/Fade.h"
@@ -69,6 +70,8 @@ private:
 	std::unique_ptr<EnemyCounter> m_pEnemyCounter;
 	// 準備
 	std::unique_ptr<Goal> m_pGoal;
+	// Wi-Fiローディング
+	std::unique_ptr<WifiLoading> m_pWifiLoading;
 	// プレイヤーのHPのUI
 	std::unique_ptr <PlayerHP> m_pPlayerHP;
 	// ダッシュゲージ
@@ -82,7 +85,7 @@ private:
 	// 操作説明
 	std::unique_ptr<PlayGuide> m_pPlayGuide;
 	// フェード
-	std::unique_ptr<Fade> m_fade;
+	std::unique_ptr<Fade> m_pFade;
 	// 設定データ
 	std::unique_ptr<SettingData> m_pSettingData;
 	// ブルーム

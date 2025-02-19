@@ -1,12 +1,10 @@
 //--------------------------------------------------------------------------------------
-// File: PlayerHP.h
+// File: WifiLoading.h
 //
-// HPゲージクラス
+// Wi-FiローディングUIクラス
 //
 //-------------------------------------------------------------------------------------
-
 #pragma once
-
 #include "StepTimer.h"
 #include "Game/Player/PlayerUI/PlayerUI.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
@@ -18,12 +16,13 @@
 #include <WICTextureLoader.h>
 #include <CommonStates.h>
 #include <vector>
+#include <memory>
 #include "Keyboard.h"
 #include "Game/Screen.h"
 
-class Reticle
-{
 
+class WifiLoading
+{
 
 	//変数
 private:
@@ -31,29 +30,39 @@ private:
 	DX::DeviceResources* m_pDR;
 
 
-	std::unique_ptr<PlayerUI> m_reticle;
+	std::unique_ptr<PlayerUI> m_loading;// Wi-FiローディングUI
+
+	std::unique_ptr<PlayerUI> m_loadgingText;// ローディングテキスト
 
 
 	const wchar_t* m_baseTexturePath;
 
-	std::unique_ptr<PlayerUI> m_baseWindow;
 
 	int m_windowWidth, m_windowHeight;
-
+	// フレームの行数と列数
+	int m_frameRows;
+	int m_frameCols;
+	// フレーム数
+	int m_anim;
+	// アニメーションスピード
+	float m_animSpeed;
+	// アニメーション時間
+	float m_animTime;
 	DirectX::Keyboard::KeyboardStateTracker m_tracker;
 
 
 	//関数
 public:
-	Reticle();
-	~Reticle();
+	WifiLoading();
+	~WifiLoading();
 
 	void Initialize(DX::DeviceResources* pDR, int width, int height);
-	void Update();
+	void Update(float elapsedTime);
 	void Render();
 
-	void Add(const wchar_t* path
+	void Add(std::unique_ptr<PlayerUI>& pPlayerUI, const wchar_t* path
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
 		, KumachiLib::ANCHOR anchor);
+
 };

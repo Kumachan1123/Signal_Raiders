@@ -1,7 +1,8 @@
 cbuffer ConstBuffer : register(b0)
 {
     float4 windowSize;
-    float3 null;
+    float2 frame;
+    float animCount;
     float renderRatio;
     
 };

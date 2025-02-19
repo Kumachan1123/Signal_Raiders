@@ -33,7 +33,7 @@ PlayScene::PlayScene(IScene::SceneID sceneID)
 	m_isResetHP{ false },
 	m_pStage{ nullptr },
 	m_pEffect{},
-	m_fade{},
+	m_pFade{},
 	m_fadeState{ },
 	m_fadeTexNum{ 2 },
 	m_audioManager{ AudioManager::GetInstance() },
@@ -100,6 +100,9 @@ void PlayScene::Initialize(CommonResources* resources)
 	// 準備
 	m_pGoal = std::make_unique<Goal>(m_commonResources);
 	m_pGoal->Create(DR);
+	// Wi-Fiローディング
+	m_pWifiLoading = std::make_unique<WifiLoading>();
+	m_pWifiLoading->Initialize(DR, Screen::UI_WIDTH, Screen::UI_HEIGHT);
 	// 危険状態
 	m_pCrisis = std::make_unique<Crisis>(m_commonResources);
 	m_pCrisis->Create(DR);
@@ -119,10 +122,10 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pPlayGuide = std::make_unique<PlayGuide>();
 	m_pPlayGuide->Initialize(DR);
 	// フェードの初期化
-	m_fade = std::make_unique<Fade>(m_commonResources);
-	m_fade->Create(DR);
-	m_fade->SetState(Fade::FadeState::FadeIn);
-	m_fade->SetTextureNum((int)(Fade::TextureNum::BLACK));
+	m_pFade = std::make_unique<Fade>(m_commonResources);
+	m_pFade->Create(DR);
+	m_pFade->SetState(Fade::FadeState::FadeIn);
+	m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));
 	// レーダーを初期化する
 	m_pRadar = std::make_unique<Radar>(resources);
 	m_pRadar->Initialize(m_pPlayer.get(), m_pEnemyManager.get());
@@ -153,9 +156,10 @@ void PlayScene::Update(float elapsedTime)
 	m_pEnemyManager->Update(elapsedTime);// 敵の更新
 	m_pPlayer->Update(elapsedTime);// プレイヤーの更新
 	m_pBulletManager->Update(elapsedTime);// 弾の更新
-	if (m_timer <= 5.0f)// ゲーム開始から5秒間は指示画像を表示
+	if (m_timer <= 5.0f)// ゲーム開始から5秒間は
 	{
-		m_pGoal->Update(elapsedTime);
+		m_pGoal->Update(elapsedTime);// 指示画像を更新
+		m_pWifiLoading->Update(elapsedTime);// Wi-Fiローディングを更新
 	}
 	else// 5秒以上経過したら
 	{
@@ -192,10 +196,10 @@ void PlayScene::Update(float elapsedTime)
 		{
 			m_waitTime += elapsedTime;// 待ち時間を加算する
 		}
-		if (m_waitTime >= 1.0f)// 待ち時間が5秒以上なら
+		if (m_waitTime >= 1.0f)// 待ち時間が1秒以上なら
 		{
-			m_fade->SetTextureNum((int)(Fade::TextureNum::BLACK));
-			m_fade->SetState(Fade::FadeState::FadeOut);
+			m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));
+			m_pFade->SetState(Fade::FadeState::FadeOut);
 		}
 		// レーダーを更新する
 		m_pRadar->Update(elapsedTime);
@@ -203,9 +207,9 @@ void PlayScene::Update(float elapsedTime)
 
 	;
 	// 画面遷移フェード処理
-	m_fade->Update(elapsedTime);
+	m_pFade->Update(elapsedTime);
 	// フェードアウトが終了したら
-	if (m_fade->GetState() == Fade::FadeState::FadeOutEnd)m_isChangeScene = true;
+	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)m_isChangeScene = true;
 }
 
 //---------------------------------------------------------
@@ -256,13 +260,15 @@ void PlayScene::Render()
 		m_pBulletGauge->Render();// 弾ゲージ描画
 		m_pReticle->Render();// 照準描画
 	}
-	else // ゲーム開始から5秒間は指示画像を表示
+	else // ゲーム開始から5秒間
 	{
-		m_pGoal->Render();
+		m_pGoal->Render();// 指示画像を表示
+		m_pWifiLoading->Render();// Wi-Fiローディングを表示
 	}
 
 	// フェードの描画
-	m_fade->Render();
+	m_pFade->Render();
+
 #ifdef _DEBUG
 	// デバッグ情報を表示する
 	auto debugString = m_commonResources->GetDebugString();

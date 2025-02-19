@@ -282,6 +282,7 @@
     <ClInclude Include="Game\Wifi\Parameters\WiFiParameters.h" />
     <ClInclude Include="Game\Player\PlayerUI\DashGauge\DashGauge.h" />
     <ClInclude Include="Game\Player\PlayerUI\BulletGauge\BulletGauge.h" />
+    <ClInclude Include="Game\Player\PlayerUI\WifiLoading\WifiLoading.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -411,6 +412,7 @@
     <ClCompile Include="Game\BulletParameters\BulletParameters.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\DashGauge\DashGauge.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\BulletGauge\BulletGauge.cpp" />
+    <ClCompile Include="Game\Player\PlayerUI\WifiLoading\WifiLoading.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -472,12 +474,12 @@
     <FxCompile Include="HLSL\EnemyHP\VS_EnemyHP.hlsl" />
     <FxCompile Include="HLSL\PlayerUI\VS_PlayerUI.hlsl" />
     <FxCompile Include="HLSL\PlayerUI\PS_PlayerUI.hlsl" />
-    <FxCompile Include="HLSL\PlayerUI\VS_PlayerHP.hlsl" />
     <FxCompile Include="HLSL\PlayerUI\PS_PlayerHP.hlsl" />
     <FxCompile Include="HLSL\PlayerUI\GS_PlayerUI.hlsl" />
     <FxCompile Include="HLSL\Stage\PS_Stage.hlsl" />
     <FxCompile Include="HLSL\Stage\VS_Stage.hlsl" />
     <FxCompile Include="HLSL\Menu\PS_StageMenu.hlsl" />
     <FxCompile Include="HLSL\PlayerUI\PS_CircleGauge.hlsl" />
+    <FxCompile Include="HLSL\PlayerUI\PS_Loading.hlsl" />
   </ItemGroup>
 </Project>

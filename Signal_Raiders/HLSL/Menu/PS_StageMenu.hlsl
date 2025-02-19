@@ -25,8 +25,7 @@ float4 oldTV(float2 inUV)
     warp = 0.00001f;
     texUV.x += (random(floor(texUV.y * 1500) + time.x * 0.001f) - 0.5f) * warp;
     texUV.y += (random(floor(texUV.x * 1500) + time.x * 0.001f) - 0.5f) * warp;
-    //texUV.x += floor(uv.y * 5) * 0.1f;
-    //texUV.y += floor(uv.x * 5) * 0.1f;
+
     
     float4 base = tex.Sample(samLinear, texUV);;
        // --- UV座標の調整（色収差用） ---
@@ -55,16 +54,9 @@ float4 oldTV(float2 inUV)
 // --- ノイズの追加 ---
     float noise = (random(texUV * time.x * 50.0f) - 0.05f) * 0.0000000006f;
     col += noise;
-    //// ビネット効果（画面端を暗くする)
-    //float2 uvOffset = texUV - 0.75f;
-    //float vignette2 = length(uvOffset) * 0.5f;
-    //col *= 1.0 - vignette2 * 0.5;
-    
-    
+
     base = float4(col, base.a);
-    // baseの色を明るめにする
-    //base.rgb *= 1.5f;
-    // 色反転からのグリーンスケール
+  
     base = lerp(base, float4(0, 0, 0, 1), step(0, max(abs(uv.y) - 0.5f, abs(uv.x) - 0.5f)));
     return base;
 }

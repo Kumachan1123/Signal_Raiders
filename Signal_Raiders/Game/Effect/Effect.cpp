@@ -29,9 +29,9 @@ Effect::Effect(CommonResources* resources, EffectType type, DirectX::SimpleMath:
 	, m_isPlaying{ true }
 	, m_anim{ 0 }
 	, m_animSpeed{ 30.0f }
-	, m_elapsedTime{ 0.0f }
-	, m_frameRows{}
-	, m_frameCols{}
+	, m_animTime{ 0.0f }
+	, m_frameRows{}// 画像の行数
+	, m_frameCols{}// 画像の列数
 	, m_vertices{}
 	, m_offSetY{ 0.0f }
 	, m_pDrawPolygon{ DrawPolygon::GetInstance() }
@@ -97,11 +97,11 @@ void Effect::LoadTexture(const wchar_t* path)
 // ---------------------------------------------------------
 void Effect::Update(float elapsedTime)
 {
-	m_elapsedTime += elapsedTime * m_animSpeed;// 経過時間を加算
-	if (m_elapsedTime >= 1.0f)// 1秒経過
+	m_animTime += elapsedTime * m_animSpeed;// 経過時間を加算
+	if (m_animTime >= 1.0f)// 1秒経過
 	{
 		m_anim++;// アニメのコマを薦める
-		m_elapsedTime = 0.0f;// タイマーをリセット
+		m_animTime = 0.0f;// タイマーをリセット
 	}
 	if (m_anim == m_frameRows * m_frameCols)// アニメーション終了
 	{

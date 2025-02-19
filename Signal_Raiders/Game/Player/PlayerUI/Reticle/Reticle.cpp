@@ -6,23 +6,12 @@
 //-------------------------------------------------------------------------------------
 #include "pch.h"
 #include "Reticle.h"
-#include "Game/Player/PlayerUI/PlayerUI.h"
-#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
-#include "DeviceResources.h"
-#include <SimpleMath.h>
-#include <Effects.h>
-#include <PrimitiveBatch.h>
-#include <VertexTypes.h>
-#include <WICTextureLoader.h>
-#include <CommonStates.h>
-#include <vector>
-#include "Game/Screen.h"
+
 using namespace DirectX;
 
 
 Reticle::Reticle()
-	: m_menuIndex(0)
-	, m_windowHeight(0)
+	: m_windowHeight(0)
 	, m_windowWidth(0)
 	, m_pDR(nullptr)
 	, m_baseTexturePath(nullptr)

@@ -22,6 +22,9 @@ PlayerUI::PlayerUI()
 	, m_windowWidth(0)
 	, m_textureHeight(0)
 	, m_textureWidth(0)
+	, m_frameRows(0)
+	, m_frameCols(0)
+	, m_anim(0)
 	, m_texture(nullptr)
 	, m_res(nullptr)
 	, m_scale(SimpleMath::Vector2::One)
@@ -93,6 +96,8 @@ void PlayerUI::CreateShader()
 	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/PlayerUI/PS_PlayerHP.cso", m_hpPixelShader);
 	// 円形ゲージ用シェーダーの作成
 	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/PlayerUI/PS_CircleGauge.cso", m_circlePixelShader);
+	// UVアニメーション用シェーダーの作成
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/PlayerUI/PS_Loading.cso", m_animPixelShader);
 
 	// HP用シェーダーにデータを渡すためのコンスタントバッファ生成
 	m_pCreateShader->CreateConstantBuffer(m_CBuffer, sizeof(ConstBuffer));
@@ -109,6 +114,11 @@ void PlayerUI::CreateShader()
 	m_circleShaders.vs = m_vertexShader.Get();
 	m_circleShaders.ps = m_circlePixelShader.Get();
 	m_circleShaders.gs = m_geometryShader.Get();
+	// UVアニメーション用シェーダー
+	m_animShaders.vs = m_vertexShader.Get();
+	m_animShaders.ps = m_animPixelShader.Get();
+	m_animShaders.gs = m_geometryShader.Get();
+
 }
 
 
@@ -127,6 +137,7 @@ void PlayerUI::Render()
 
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	m_constBuffer.windowSize = SimpleMath::Vector4(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 1, 1);
+
 	m_constBuffer.renderRatio = m_renderRatio - m_renderRatioOffset;
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	m_pDrawPolygon->UpdateSubResources(m_CBuffer.Get(), &m_constBuffer);
@@ -152,6 +163,12 @@ void PlayerUI::Render()
 		// 描画準備
 		m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_textures);
 		m_pDrawPolygon->SetShader(m_circleShaders, nullptr, 0);
+	}
+	else if (m_shaderType == ShaderType::ANIM)
+	{
+		// 描画準備
+		m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_textures);
+		m_pDrawPolygon->SetShader(m_animShaders, nullptr, 0);
 	}
 	else
 	{

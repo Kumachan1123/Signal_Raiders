@@ -79,7 +79,7 @@ private:
 	// アニメーションスピード
 	float m_animSpeed;
 	// アニメーションの経過時間
-	float m_elapsedTime;
+	float m_animTime;
 
 	// フレームの行数と列数
 	int m_frameRows;

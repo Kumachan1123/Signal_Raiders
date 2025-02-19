@@ -27,6 +27,7 @@ public:
 	{
 		HP = 0,// HPゲージのような動きをする
 		CIRCLE,// 円形ゲージのような動きをする
+		ANIM,// UVアニメーションさせる
 		OTHER,// その他
 	};
 
@@ -34,7 +35,8 @@ public:
 	struct ConstBuffer
 	{
 		DirectX::SimpleMath::Vector4	windowSize;
-		DirectX::SimpleMath::Vector3	nul;
+		DirectX::SimpleMath::Vector2	frame;
+		float							animCount;
 		float							renderRatio;
 	};
 	ConstBuffer m_constBuffer{};
@@ -66,12 +68,18 @@ private:
 	// 円形ゲージのシェーダー
 	// ピクセルシェーダ
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_circlePixelShader;
+	// UVアニメーション用シェーダー
+	// ピクセルシェーダ
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_animPixelShader;
+
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_hpShaders;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_circleShaders;
+	// シェーダーの構造体
+	DrawPolygon::Shaders m_animShaders;
 
 	// 描画クラス
 	DrawPolygon* m_pDrawPolygon;
@@ -80,6 +88,11 @@ private:
 	int m_windowWidth, m_windowHeight;
 	int m_textureWidth, m_textureHeight;
 
+	// フレームの行数と列数
+	int m_frameRows;
+	int m_frameCols;
+	// フレーム数
+	int m_anim;
 	DirectX::SimpleMath::Vector2 m_scale;
 	DirectX::SimpleMath::Vector2 m_baseScale;
 	DirectX::SimpleMath::Vector2 m_position;
@@ -122,6 +135,9 @@ public:
 	void SetRenderRatioOffset(float offset) { m_renderRatioOffset = offset; };
 	float GetRenderRatioOffset() const { return m_renderRatioOffset; }
 	void SetShaderType(ShaderType type) { m_shaderType = type; }
+	void SetAnim(int anim) { m_anim = anim; }
+	void SetFrameRows(int rows) { m_frameRows = rows; }
+	void SetFrameCols(int cols) { m_frameCols = cols; }
 private:
 
 	void CreateShader();
