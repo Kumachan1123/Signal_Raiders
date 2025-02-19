@@ -27,6 +27,7 @@ BulletManager::BulletManager(CommonResources* commonResources)
 	, m_playerBulletCount{ 0 } // プレイヤーの弾の数
 	, m_reloadTimer{ 0.0f } // リロードタイマー
 	, m_elapsedTime{ 0.0f } // 経過時間
+	, m_specialAttackCount{ 0 } // 特殊攻撃の数
 {
 }
 /// <summary>

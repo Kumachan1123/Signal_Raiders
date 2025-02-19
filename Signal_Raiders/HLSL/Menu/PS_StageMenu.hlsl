@@ -43,18 +43,17 @@ float4 oldTV(float2 inUV)
                 random(uv + float2(123 + time.x, 0)),
                 random(uv + float2(123 + time.x, 1)),
                 random(uv + float2(123 + time.x, 2))),
-                step(random(floor(texUV.y * 500) + time.x * 0.005f), 0.005f));
+                step(random(floor(texUV.y * 500) + time.x * 0.00025f), 0.00025f));
     
- //   col *= 1 - vignette * 0.5f;
-    
+
         
 // --- スキャンラインの効果計算（不規則） ---
-    float scanlineRandom = random(float2(floor(texUV.y * 50000.0), time.x * 10000.0));
-    float scanline = sin(texUV.y * 500.0 + scanlineRandom * 500.0) * 0.025f;
+    float scanlineRandom = random(float2(floor(texUV.y * 5.0), time.x * 10.0));
+    float scanline = sin(texUV.y * 100.0 + scanlineRandom * 100.0) * 0.0025f;
     col *= 1.0 - scanline;
 
 // --- ノイズの追加 ---
-    float noise = (random(texUV * time.x * 5000.0f) - 0.05f) * 0.00000006f;
+    float noise = (random(texUV * time.x * 50.0f) - 0.05f) * 0.0000000006f;
     col += noise;
     //// ビネット効果（画面端を暗くする)
     //float2 uvOffset = texUV - 0.75f;
