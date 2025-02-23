@@ -124,7 +124,7 @@ DirectX::SimpleMath::Vector4 DamageEffect::GetUVFromAngle(float angle) const
 	// 半径は左右または上下の中心からの距離
 	float radius = UV_W - UV_C;
 
-	// sin, cos の符号に注意して座標を計算します。
+	// 座標を計算
 	float u = UV_C - radius * -sin(rad);
 	float v = UV_C + radius * cos(rad);
 

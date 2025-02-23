@@ -60,6 +60,8 @@ public:
 	void SetPlayerBulletCount(int count) { m_playerBulletCount = count; }// プレイヤーの弾の数設定
 	int GetSpecialAttackCount() const { return m_specialAttackCount; }// 特殊攻撃の数取得
 	void SetSpecialAttackCount(int count) { m_specialAttackCount = count; }// 特殊攻撃の数設定
+	bool GetIsReloading() const { return m_isReloading; }// リロード中フラグ取得
+	void SetIsReloading(bool isReloading) { m_isReloading = isReloading; }// リロード中フラグ設定
 private:
 	// コモンリソース
 	CommonResources* m_commonResources;
@@ -81,6 +83,8 @@ private:
 	float m_elapsedTime;
 	// リロードタイマー
 	float m_reloadTimer;
+	// リロード中フラグ
+	bool m_isReloading;
 	// プレイヤーの弾
 	std::vector<std::unique_ptr<PlayerBullet>> m_playerBullets;
 	// 敵の弾

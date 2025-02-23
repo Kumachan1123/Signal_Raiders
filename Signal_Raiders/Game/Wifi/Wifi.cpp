@@ -183,6 +183,7 @@ void Wifi::InitHandle()
 // バージョンの確認
 void Wifi::Checkversion()
 {
+	// ハンドルの取得
 	m_dwResult = WlanOpenHandle(m_dwMaxClient, NULL, &m_dwCurVersion, &m_hClient);
 	if (m_dwResult != ERROR_SUCCESS) return;
 }
@@ -191,11 +192,12 @@ void Wifi::Checkversion()
 void Wifi::GetInterfacesList()
 {
 	m_pInterfaceList = NULL;
+	// インターフェースのリスト取得
 	m_dwResult = WlanEnumInterfaces(m_hClient, NULL, &m_pInterfaceList);
-
+	// エラー処理
 	if (m_dwResult != ERROR_SUCCESS)
 	{
-		WlanCloseHandle(m_hClient, NULL);
+		WlanCloseHandle(m_hClient, NULL);// ハンドルのクローズ
 		return;
 	}
 }
@@ -204,10 +206,11 @@ void Wifi::GetInterfacesList()
 void Wifi::StartScan()
 {
 	m_dwResult = WlanScan(m_hClient, &m_pInterfaceList->InterfaceInfo[0].InterfaceGuid, NULL, NULL, NULL);
+	// エラー処理
 	if (m_dwResult != ERROR_SUCCESS)
 	{
-		WlanFreeMemory(m_pInterfaceList);
-		WlanCloseHandle(m_hClient, NULL);
+		WlanFreeMemory(m_pInterfaceList);// メモリの解放
+		WlanCloseHandle(m_hClient, NULL);// ハンドルのクローズ
 		return;
 	}
 }
@@ -216,6 +219,7 @@ void Wifi::StartScan()
 void Wifi::GetScanResults()
 {
 	m_pNetworkList = NULL;
+	// 使用可能なネットワークの一覧を取得
 	m_dwResult = WlanGetAvailableNetworkList(
 		m_hClient,
 		&m_pInterfaceList->InterfaceInfo[0].InterfaceGuid,
@@ -233,8 +237,8 @@ void Wifi::GetScanResults()
 // 表示準備
 void Wifi::SetUp()
 {
-	m_displayedSSIDs.clear();
-	m_networkInfos.clear();
+	m_displayedSSIDs.clear();// 表示するSSIDをクリア
+	m_networkInfos.clear();// ネットワーク情報をクリア
 }
 
 void Wifi::GetCurrentWifiInfo()

@@ -107,13 +107,13 @@ void PlayerController::Update(float elapsedTime)
 	m_pitchY = Clamp(m_pitchY, -pitchLimit, pitchLimit);
 
 	// 前後移動
-	if (kbTracker->lastState.W)
+	if (kbTracker->lastState.W)// Wキーが押されているとき
 	{
 		// カメラが向いている方向に移動する
 		m_velocity.x += m_pPlayer->GetPlayerDir().x;
 		m_velocity.z += m_pPlayer->GetPlayerDir().z;
 	}
-	if (kbTracker->lastState.S)
+	if (kbTracker->lastState.S)// Sキーが押されているとき
 	{
 		// カメラが逆向きの方向に移動する
 		m_velocity.x -= m_pPlayer->GetPlayerDir().x;
@@ -140,7 +140,6 @@ void PlayerController::Update(float elapsedTime)
 	}
 
 	// ダッシュ
-
 	if (kbTracker->lastState.LeftShift)
 	{
 		if (m_dashTime > 0.0f)
@@ -212,9 +211,10 @@ void PlayerController::Shoot()
 	auto& mTracker = m_commonResources->GetInputManager()->GetMouseTracker();
 
 	// 左クリックで弾発射
-	if (mTracker->GetLastState().leftButton &&
-		m_pPlayer->GetBulletManager()->GetIsPlayerShoot() == false &&
-		m_pPlayer->GetBulletManager()->GetPlayerBulletCount() > 0)
+	if (mTracker->GetLastState().leftButton &&// 左クリックされたとき
+		m_pPlayer->GetBulletManager()->GetIsPlayerShoot() == false &&// 弾が発射されていないとき
+		m_pPlayer->GetBulletManager()->GetPlayerBulletCount() > 0 && // 弾が残っているとき
+		m_pPlayer->GetBulletManager()->GetIsReloading() == false)// リロード中でないとき
 	{
 		m_pPlayer->CreateBullet();// 弾を生成する
 		m_pPlayer->GetBulletManager()->ConsumePlayerBullet();
@@ -227,6 +227,11 @@ void PlayerController::Reload()
 {
 	// キーボードステートトラッカーを取得する
 	const auto& kbState = m_commonResources->GetInputManager()->GetKeyboardState();
-	// Rキーで弾をリロード
-	if (kbState.R)m_pPlayer->GetBulletManager()->ReLoadPlayerBullet();
+	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
+
+	// Rキーでリロードフラグを立てる
+	if (kbState.R)m_pPlayer->GetBulletManager()->SetIsReloading(true);
+	// リロード中のときは弾を補充する
+	if (m_pPlayer->GetBulletManager()->GetIsReloading())
+		m_pPlayer->GetBulletManager()->ReLoadPlayerBullet();
 }

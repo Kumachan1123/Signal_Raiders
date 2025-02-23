@@ -17,10 +17,10 @@ public:
 	float m_yawX, m_pitchY;						// カメラ回転
 	float m_rotate;								// プレイヤー回転(ミニマップに渡す用)
 	float m_sensitive;							// マウス感度
-	float m_lastMouseX;
-	float m_lastMouseY;
-	HWND m_hWnd;
-	POINT m_point;
+	float m_lastMouseX;// マウスのX座標
+	float m_lastMouseY;// マウスのY座標
+	HWND m_hWnd;// ウィンドウハンドル
+	POINT m_point;// マウス座標
 	// プレイヤー
 	Player* m_pPlayer;
 
@@ -29,7 +29,6 @@ public:
 
 	// 走れる時間
 	float m_dashTime;
-
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;

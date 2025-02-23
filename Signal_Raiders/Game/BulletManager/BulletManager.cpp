@@ -21,6 +21,7 @@ BulletManager::BulletManager(CommonResources* commonResources)
 	, m_pEnemyManager{ nullptr } // 敵管理
 	, m_pShooter{ nullptr } // 発射元
 	, m_isPlayerShoot{ false } // プレイヤーが撃ったかどうか
+	, m_isReloading{ false } // リロード中かどうか
 	, m_audioManager{ AudioManager::GetInstance() } // オーディオマネージャー
 	, m_enemyBulletType{ EnemyBullet::BulletType::STRAIGHT } // 敵の弾の種類
 	, m_enemyBulletSize{ 0.0f } // 敵の弾のサイズ
@@ -85,15 +86,15 @@ void BulletManager::Render()
 	// プレイヤー弾の描画
 	for (const auto& bullet : m_playerBullets)
 	{
-		bullet->Render(view, proj);// 弾の描画
 		bullet->RenderShadow(view, proj);// 影の描画
+		bullet->Render(view, proj);// 弾の描画
 	}
 
 	// 敵弾の描画
 	for (const auto& bullet : m_enemyBullets)
 	{
-		bullet->Render(view, proj);// 弾の描画
 		bullet->RenderShadow(view, proj);// 影の描画
+		bullet->Render(view, proj);// 弾の描画
 	}
 }
 
@@ -169,6 +170,11 @@ void BulletManager::ReLoadPlayerBullet()
 	if (m_reloadTimer > BulletParameters::RELOAD_INTERVAL)
 	{
 		m_reloadTimer = 0.0f;
+	}
+	// リロードが完了したらリロード中フラグを下げる
+	if (m_playerBulletCount == BulletParameters::MAX_PLAYER_BULLET_COUNT)
+	{
+		m_isReloading = false;
 	}
 }
 
