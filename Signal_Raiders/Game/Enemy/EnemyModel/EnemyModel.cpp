@@ -47,6 +47,14 @@ void EnemyModel::Initialize(CommonResources* resources)
 	m_damageFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_DamageFace.cmo", *fx);
 	// 影用のモデルを読み込む
 	m_shadowModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy.cmo", *fx);
+	m_bodyModel->UpdateEffects([&](DirectX::IEffect* effect)
+		{
+			// ベイシックエフェクトを取得する
+			auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);
+			//basicEffect->SetAmbientLightColor(DirectX::XMVECTOR{ 0.0f,1.0f,0.0f,0.0f });// アンビエントライトカラーを設定する
+			basicEffect->SetColorAndAlpha(DirectX::XMVECTOR{ 1.0f,0.90f,0.0f,1.0f });// ディフューズカラーを設定する
+		});
+
 }
 void EnemyModel::Render(ID3D11DeviceContext1* context,
 	DirectX::DX11::CommonStates* states,

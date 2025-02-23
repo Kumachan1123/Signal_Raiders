@@ -227,7 +227,6 @@ void PlayerController::Reload()
 {
 	// キーボードステートトラッカーを取得する
 	const auto& kbState = m_commonResources->GetInputManager()->GetKeyboardState();
-	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
 
 	// Rキーでリロードフラグを立てる
 	if (kbState.R)m_pPlayer->GetBulletManager()->SetIsReloading(true);
