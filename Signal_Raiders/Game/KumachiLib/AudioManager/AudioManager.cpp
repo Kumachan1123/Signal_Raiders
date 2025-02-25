@@ -99,7 +99,7 @@ void AudioManager::Shutdown()
 
 	if (m_system)
 	{
-		m_system->close();
+		/*m_system->close();*/
 		m_system->release();
 		m_system = nullptr;
 	}

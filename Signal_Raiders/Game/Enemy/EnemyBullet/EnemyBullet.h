@@ -141,20 +141,9 @@ public:
 	void SetIsShot(bool isShot) { m_isShot = isShot; }
 	// —†ù’e‚Ì‰ñ“]•ûŒü‚ğŒˆ‚ß‚é
 	void SetRotateDirection(int direction) { m_rotateDirection = direction; }
-	// ‰ñ“]’e‚ğ“WŠJ‚·‚é
-	void Expand();
-	// ‰ñ“]’e‚ğ”­Ë‚·‚é
-	void Shot();
-	// ‰ñ“]’e‚Ì“WŠJ‚ğ‚â‚ß‚é
-	void StopExpand();
-	// ‰ñ“]’e‚ğ©•ª‚Ìü‚è‚É–ß‚·
-	void ComeBack();
-
 
 private:
-	void SpiralBullet(float elapsedTime);//—†ù’e
-	void VerticalBullet(float elapsedTime);//‚’¼’¼i’e
-	void StraightBullet(float elapsedTime);//’¼ü’e
+
 	DirectX::SimpleMath::Matrix BulletWorldMatrix();//’e‚Ìƒ[ƒ‹ƒhs—ñ‚ğì¬
 };
 #endif //ENEMY_BULLET_DEFINED

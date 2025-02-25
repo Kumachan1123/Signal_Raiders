@@ -128,22 +128,6 @@ void EnemyBullet::Update(float elapsedTime)
 	m_angle += BulletParameters::BULLET_ROTATION_SPEED;
 	Clamp(m_angle, BulletParameters::ANGLE_MIN, BulletParameters::ANGLE_MAX);// 角度を0～360度に制限する
 
-	//// 弾の種類によって処理を分岐
-	//switch (m_bulletType)
-	//{
-	//case BulletType::SPECIAL:// 特殊攻撃の弾
-	//	SpiralBullet(elapsedTime);
-	//	break;
-	//case BulletType::NORMAL:// 直線弾
-	//	StraightBullet(elapsedTime);
-	//	break;
-	//case BulletType::SPEED:// 垂直直進弾
-	//	VerticalBullet(elapsedTime);
-	//	break;
-	//default:
-	//	break;
-	//}
-
 	// 弾の更新
 	m_pEnemyBullet->Update(elapsedTime);
 
@@ -211,25 +195,6 @@ void EnemyBullet::RenderBoundingSphere(DirectX::SimpleMath::Matrix view, DirectX
 
 }
 
-// 直線弾
-void EnemyBullet::StraightBullet(float elapsedTime)
-{
-	// プレイヤーの方向ベクトルを計算
-	DirectX::SimpleMath::Vector3 toPlayer = m_target - m_enemyPosition;
-	// ベクトルを正規化
-	if (toPlayer.LengthSquared() > 0)
-	{
-		toPlayer.Normalize();
-	}
-	// 弾の方向をプレイヤーの方向に向ける
-	m_direction = toPlayer;
-	m_direction.y -= BulletParameters::STRAIGHT_ADJUST_DIRECTION;// 下に若干ずらす
-	// 弾の速度を遅くする
-	m_velocity = m_direction * BulletParameters::STRAIGHT_BULLET_SPEED * elapsedTime;
-	// プレイヤーの方向に向かって弾を飛ばす
-	m_position += m_velocity;
-	m_boundingSphere.Center = m_position;//境界球に座標を渡す
-}
 
 // 弾のワールド行列を取得
 DirectX::SimpleMath::Matrix EnemyBullet::BulletWorldMatrix()
@@ -244,97 +209,3 @@ DirectX::SimpleMath::Matrix EnemyBullet::BulletWorldMatrix()
 	return bulletWorld;
 }
 
-// 垂直直進弾
-void EnemyBullet::VerticalBullet(float elapsedTime)
-{
-	using namespace DirectX::SimpleMath;
-	if (m_position.y >= BulletParameters::VERTICAL_BULLET_LANDING_POSITION)// 着弾位置に到達していない
-	{
-		// 真下に落とす
-		m_velocity = BulletParameters::VERTICAL_BULLET_LANDING_VELOCITY * elapsedTime * BulletParameters::VERTICAL_BULLET_SPEED;
-	}
-	else//着弾してから
-	{
-		// プレイヤーの方向ベクトルを計算
-		Vector3 toPlayer = m_target - m_enemyPosition;
-		// ベクトルを正規化
-		if (toPlayer.LengthSquared() > 0)
-		{
-			toPlayer.Normalize();
-		}
-		// 弾の方向をプレイヤーの方向に向ける
-		m_direction = Vector3(toPlayer.x, 0, toPlayer.z) * elapsedTime * BulletParameters::VERTICAL_BULLET_SPEED;
-		m_velocity = m_direction;
-	}
-	m_position += m_velocity;
-	m_boundingSphere.Center = m_position;
-}
-
-
-// 特殊攻撃の弾
-void EnemyBullet::SpiralBullet(float elapsedTime)
-{
-	// 経過時間を更新
-	m_elapsedTime = elapsedTime;
-	// 時計回りに回転するための角度
-	m_spiralAngle += m_rotationSpeed * elapsedTime;
-	// XY平面上で円運動 (時計回り)
-	float xOffset = cosf(m_spiralAngle) * m_distance;
-	float zOffset = sinf(m_spiralAngle) * m_distance;
-	// もともとのY座標の動きは変更しない
-	m_positionOffSet = Vector3(xOffset, m_basePos.y - 3.5f, zOffset);
-	Expand();// 子オブジェクトを展開
-	Shot();// 子オブジェクトを発射
-	StopExpand();// 子オブジェクトを収納
-	ComeBack();// 子オブジェクトを戻す
-	// プレイヤーに向かいつつスパイラルを描いて移動
-	m_position = m_basePos + m_positionOffSet;
-	m_boundingSphere.Center = m_position;
-	// 弾の寿命に応じてフラグを切り替える
-	if (m_time >= BulletParameters::SPECIAL_ATTACK_WAIT_TIME)
-	{
-		SetIsShot(true);
-	}
-
-}
-
-// 子オブジェクトを展開
-void EnemyBullet::Expand()
-{
-	if (!GetIsExpand())return;
-	m_rotationSpeed = 1.0f; // 速度調整用（値を大きくすると速く回転する）
-	m_distance = Lerp(m_distance, 15.0f, m_elapsedTime);
-	m_height = 2.0f;
-}
-
-// 子オブジェクトを発射
-void EnemyBullet::Shot()
-{
-
-	if (!GetIsShot()) return;
-	m_rotationSpeed = 3.0f;
-	m_distance = Lerp(m_distance, 5.0f, m_elapsedTime);
-	m_basePos = Lerp(m_basePos, m_currentTarget, m_elapsedTime * 2);
-
-}
-
-// 子オブジェクトを収納
-void EnemyBullet::StopExpand()
-{
-	if (GetIsExpand())return;
-	m_rotationSpeed = 0.0f;
-	m_distance = Lerp(m_distance, 0.0f, m_elapsedTime * 20);
-	m_height = 1.50f;
-}
-
-// 子オブジェクトを戻す
-void EnemyBullet::ComeBack()
-{
-	if (GetIsShot()) return;
-	//m_look.Normalize();// プレイヤーが向いている方向を正規化
-	//// 基準点を親が向いている方向に動かす
-	m_distance = Lerp(m_distance, 3.0f, m_elapsedTime);
-	// 基準点を目的地に向かって線形補完
-	m_basePos = Lerp(m_basePos, m_enemyPosition, m_elapsedTime * 50);
-
-}
