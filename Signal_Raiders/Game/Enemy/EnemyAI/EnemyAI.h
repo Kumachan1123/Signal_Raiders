@@ -5,8 +5,7 @@
 #pragma once
 #ifndef ENEMY_AI_DEFINED
 #define ENEMY_AI_DEFINED
-//‘O•ûéŒ¾
-class CommonResources;
+
 
 #include "Game/CommonResources.h"
 #include "Game/Enemy/EnemyAI/EnemyAttack/EnemyAttack.h"
@@ -15,6 +14,8 @@ class CommonResources;
 #include "Game/Interface/IState.h"
 #include "Game/Interface/IEnemy.h"
 #include "Game/Player/Player.h"
+//‘O•ûéŒ¾
+class CommonResources;
 class EnemyAttack;
 class EnemySpin;
 class EnemyIdling;

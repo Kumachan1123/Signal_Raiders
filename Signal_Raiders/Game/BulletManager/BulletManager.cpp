@@ -23,7 +23,7 @@ BulletManager::BulletManager(CommonResources* commonResources)
 	, m_isPlayerShoot{ false } // プレイヤーが撃ったかどうか
 	, m_isReloading{ false } // リロード中かどうか
 	, m_audioManager{ AudioManager::GetInstance() } // オーディオマネージャー
-	, m_enemyBulletType{ EnemyBullet::BulletType::STRAIGHT } // 敵の弾の種類
+	, m_enemyBulletType{ EnemyBullet::BulletType::NORMAL } // 敵の弾の種類
 	, m_enemyBulletSize{ 0.0f } // 敵の弾のサイズ
 	, m_playerBulletCount{ 0 } // プレイヤーの弾の数
 	, m_reloadTimer{ 0.0f } // リロードタイマー
@@ -127,17 +127,17 @@ void BulletManager::CreateEnemyBullet(const Vector3& position, Vector3& directio
 	// プレイヤーからカメラの情報を取得
 	Vector3 playerPos = camera->GetEyePosition();
 	// 特殊攻撃の数だけ回転弾を生成
-	if (m_enemyBulletType == EnemyBullet::BulletType::SPIRAL)
+	if (m_enemyBulletType == EnemyBullet::BulletType::SPECIAL)
 	{
 		for (int i = 0; i < GetSpecialAttackCount(); i++)
 		{
 			auto bullet = std::make_unique<EnemyBullet>(m_enemyBulletSize);// 敵弾の生成
 			bullet->Initialize(m_commonResources, m_enemyBulletType);// 初期化
-			bullet->MakeBall(position, direction, playerPos);// 弾を生成
 			bullet->SetShooter(m_pShooter);// 発射元を設定
 			bullet->SetAngle(XM_2PI / GetSpecialAttackCount() * i);// 角度を設定
 			bullet->SetDistance(0.0f);// 距離を設定
 			bullet->SetIsExpand(true);// 展開フラグを立てる
+			bullet->MakeBall(position, direction, playerPos);// 弾を生成
 			m_enemyBullets.push_back(std::move(bullet));// 敵弾を追加
 		}
 	}
@@ -331,7 +331,7 @@ bool BulletManager::CheckCollisionWithPlayer(const std::unique_ptr<EnemyBullet>&
 	if (enemy->GetBulletBoundingSphere().Intersects(enemy->GetPlayerBoundingSphere()))
 	{
 		enemy->SetPlayerHitByEnemyBullet(true);// プレイヤーが敵の弾に当たったフラグを立てる
-		enemy->GetPlayer()->SetEnemyBulletDirection(bullet->GetBulletDirection());// プレイヤーの弾の方向を取得
+		enemy->GetPlayer()->SetEnemyBulletDirection(bullet->GetDirection());// プレイヤーの弾の方向を取得
 		enemy->GetPlayer()->SetisPlayEffect(true);// プレイヤーがエフェクトを再生するフラグを立てる
 		enemy->GetPlayer()->SetisPlayerDamage(true);// プレイヤーがダメージを受けたフラグを立てる
 		return true; // 衝突したらtrueを返す

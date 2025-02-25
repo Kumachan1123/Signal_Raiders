@@ -31,7 +31,7 @@ public:
 
 public:
 	EnemyIdling(EnemyAI* enemy);
-	virtual ~EnemyIdling();
+	~EnemyIdling();
 
 	void Initialize() override;
 	void Update(float elapsedTime) override;

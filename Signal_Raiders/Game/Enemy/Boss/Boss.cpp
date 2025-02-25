@@ -59,7 +59,7 @@ Boss::Boss(Player* pPlayer, CommonResources* resources, int hp)
 	, m_isPlayerHitByEnemyBullet{ false }
 	, m_canAttack{ true }
 	, m_bossBulletType{ BossBulletType::NORMAL }
-	, m_bulletType{ EnemyBullet::BulletType::STRAIGHT }
+	, m_bulletType{ EnemyBullet::BulletType::NORMAL }
 	, m_audioManager{ }
 
 {
@@ -241,17 +241,17 @@ void Boss::CreateBullet()
 	switch (GetBulletType())
 	{
 	case BossBulletType::NORMAL:
-		CreateCenterBullet(EnemyBullet::BulletType::STRAIGHT);// ’†‰›‚Ì’e‚ğ”­Ë
+		CreateCenterBullet(EnemyBullet::BulletType::NORMAL);// ’†‰›‚Ì’e‚ğ”­Ë
 		break;
 	case BossBulletType::TWIN:
 
-		CreateLeftBullet(-angleOffset, EnemyBullet::BulletType::STRAIGHT);// ¶‚Ì’e‚ğ”­Ë
-		CreateRightBullet(angleOffset, EnemyBullet::BulletType::STRAIGHT);// ‰E‚Ì’e‚ğ”­Ë
+		CreateLeftBullet(-angleOffset, EnemyBullet::BulletType::NORMAL);// ¶‚Ì’e‚ğ”­Ë
+		CreateRightBullet(angleOffset, EnemyBullet::BulletType::NORMAL);// ‰E‚Ì’e‚ğ”­Ë
 		break;
 	case BossBulletType::THREE:
-		CreateCenterBullet(EnemyBullet::BulletType::STRAIGHT);// ’†‰›‚Ì’e‚ğ”­Ë
-		CreateLeftBullet(-angleOffset, EnemyBullet::BulletType::STRAIGHT);// ¶‚Ì’e‚ğ”­Ë
-		CreateRightBullet(angleOffset, EnemyBullet::BulletType::STRAIGHT);// ‰E‚Ì’e‚ğ”­Ë
+		CreateCenterBullet(EnemyBullet::BulletType::NORMAL);// ’†‰›‚Ì’e‚ğ”­Ë
+		CreateLeftBullet(-angleOffset, EnemyBullet::BulletType::NORMAL);// ¶‚Ì’e‚ğ”­Ë
+		CreateRightBullet(angleOffset, EnemyBullet::BulletType::NORMAL);// ‰E‚Ì’e‚ğ”­Ë
 		break;
 
 	}
@@ -298,7 +298,7 @@ void Boss::CreateRightBullet(float angleOffset, EnemyBullet::BulletType type)
 // ---------------------------------------------------
 void Boss::CreateVerticalBullet()
 {
-	m_pBulletManager->SetEnemyBulletType(EnemyBullet::BulletType::VERTICAL);// ’e‚Ìí—Ş‚ğİ’è
+	m_pBulletManager->SetEnemyBulletType(EnemyBullet::BulletType::SPEED);// ’e‚Ìí—Ş‚ğİ’è
 	m_pBulletManager->CreateEnemyBullet(m_bulletPosCenter, m_bulletDirection);// ’e‚ğ¶¬
 }
 
@@ -309,7 +309,7 @@ void Boss::CreateSpiralBullet()
 {
 
 	// ’e‚ğ”­Ë
-	m_pBulletManager->SetEnemyBulletType(EnemyBullet::BulletType::SPIRAL);// ’e‚Ìí—Ş‚ğİ’è
+	m_pBulletManager->SetEnemyBulletType(EnemyBullet::BulletType::SPECIAL);// ’e‚Ìí—Ş‚ğİ’è
 	m_pBulletManager->CreateEnemyBullet(m_bulletPosCenter, m_bulletDirection);// ’e‚ğ¶¬
 
 }

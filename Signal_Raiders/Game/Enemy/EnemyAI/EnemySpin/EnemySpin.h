@@ -32,7 +32,7 @@ public:
 
 public:
 	EnemySpin(EnemyAI* enemy);
-	virtual ~EnemySpin();
+	~EnemySpin();
 
 	void Initialize() override;
 	void Update(float elapsedTime) override;

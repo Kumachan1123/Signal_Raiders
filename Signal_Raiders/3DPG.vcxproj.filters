@@ -283,6 +283,10 @@
     <ClInclude Include="Game\Player\PlayerUI\DashGauge\DashGauge.h" />
     <ClInclude Include="Game\Player\PlayerUI\BulletGauge\BulletGauge.h" />
     <ClInclude Include="Game\Player\PlayerUI\WifiLoading\WifiLoading.h" />
+    <ClInclude Include="Game\Interface\IEnemyBullet.h" />
+    <ClInclude Include="Game\Enemy\EnemyBullet\SpecialBullet\SpecialBullet.h" />
+    <ClInclude Include="Game\Enemy\EnemyBullet\NormalBullet\NormalBullet.h" />
+    <ClInclude Include="Game\Enemy\EnemyBullet\SpeedBullet\SpeedBullet.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -413,6 +417,9 @@
     <ClCompile Include="Game\Player\PlayerUI\DashGauge\DashGauge.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\BulletGauge\BulletGauge.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\WifiLoading\WifiLoading.cpp" />
+    <ClCompile Include="Game\Enemy\EnemyBullet\SpecialBullet\SpecialBullet.cpp" />
+    <ClCompile Include="Game\Enemy\EnemyBullet\NormalBullet\NormalBullet.cpp" />
+    <ClCompile Include="Game\Enemy\EnemyBullet\SpeedBullet\SpeedBullet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

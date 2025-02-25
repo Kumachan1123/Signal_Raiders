@@ -12,7 +12,6 @@
 #include <cassert>
 #include <Libraries/Microsoft/DebugDraw.h>
 #include "Game/KumachiLib/DrawCollision/DrawCollision.h"
-
 using namespace DirectX::SimpleMath;
 //-------------------------------------------------------------------
 // コンストラクタ
@@ -34,7 +33,11 @@ EnemyBullet::EnemyBullet(float size)
 	, m_isExpand{ false }
 	, m_isShot{ false }
 	, m_pShooter{ nullptr }
-	, m_bulletType{ BulletType::STRAIGHT }
+	, m_pSpecialBullet{ nullptr }
+	, m_pNormalBullet{ nullptr }
+	, m_pSpeedBullet{ nullptr }
+	, m_pEnemyBullet{ nullptr }
+	, m_bulletType{ BulletType::NORMAL }
 {
 }
 //-------------------------------------------------------------------
@@ -50,6 +53,24 @@ void EnemyBullet::Initialize(CommonResources* resources, BulletType type)
 	m_commonResources = resources;
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	m_bulletType = type;// 弾の種類を設定する
+
+	switch (m_bulletType)
+	{
+	case EnemyBullet::BulletType::NORMAL:// 直線弾
+		m_pNormalBullet = std::make_unique<NormalBullet>();
+		m_pEnemyBullet = m_pNormalBullet.get();
+		break;
+	case EnemyBullet::BulletType::SPECIAL:// 特殊攻撃の弾
+		m_pSpecialBullet = std::make_unique<SpecialBullet>();
+		m_pEnemyBullet = m_pSpecialBullet.get();
+		break;
+	case EnemyBullet::BulletType::SPEED:// 垂直直進弾
+		m_pSpeedBullet = std::make_unique<SpeedBullet>();
+		m_pEnemyBullet = m_pSpeedBullet.get();
+		break;
+	}
+	m_pEnemyBullet->SetEnemyBullet(this);// 敵弾ポインターを設定する
+	// 境界球の初期化
 	DrawCollision::Initialize(m_commonResources);
 	// 影用のピクセルシェーダー
 	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_Shadow.cso");
@@ -60,6 +81,7 @@ void EnemyBullet::Initialize(CommonResources* resources, BulletType type)
 	fx->SetDirectory(L"Resources/Models");
 	// モデルを読み込む
 	m_model = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Bullet.cmo", *fx);
+	// モデルのエフェクトを設定する
 	m_model->UpdateEffects([&](DirectX::IEffect* effect)
 		{
 			// ベイシックエフェクトを取得する
@@ -75,9 +97,10 @@ void EnemyBullet::Initialize(CommonResources* resources, BulletType type)
 	m_direction = Vector3::Zero;// 方向を初期化
 	m_velocity = Vector3::Zero;// 速度を初期化
 	m_position = Vector3::Zero;// 位置を初期化
-
+	// 境界球の初期化
 	m_boundingSphere.Center = m_position;
 	m_boundingSphere.Radius = m_size * 2;
+
 }
 // 弾の初期位置を設定
 void EnemyBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir, DirectX::SimpleMath::Vector3& target)
@@ -86,12 +109,13 @@ void EnemyBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::Sim
 	m_position = pos;
 	m_direction = dir;
 	m_target = target;
+	m_pEnemyBullet->Initialize();
 }
 
 // 弾が生成されてからの経過時間が寿命を超えたかどうかを判定する
 bool EnemyBullet::IsExpired() const
 {
-	if (m_bulletType == BulletType::SPIRAL)
+	if (m_bulletType == BulletType::SPECIAL)
 		return GetTime() >= BulletParameters::SPIRAL_BULLET_LIFETIME;
 
 	return GetTime() >= BulletParameters::ENEMY_BULLET_LIFETIME;
@@ -104,21 +128,24 @@ void EnemyBullet::Update(float elapsedTime)
 	m_angle += BulletParameters::BULLET_ROTATION_SPEED;
 	Clamp(m_angle, BulletParameters::ANGLE_MIN, BulletParameters::ANGLE_MAX);// 角度を0～360度に制限する
 
-	// 弾の種類によって処理を分岐
-	switch (m_bulletType)
-	{
-	case BulletType::SPIRAL:
-		SpiralBullet(elapsedTime);
-		break;
-	case BulletType::STRAIGHT:
-		StraightBullet(elapsedTime);
-		break;
-	case BulletType::VERTICAL:
-		VerticalBullet(elapsedTime);
-		break;
-	default:
-		break;
-	}
+	//// 弾の種類によって処理を分岐
+	//switch (m_bulletType)
+	//{
+	//case BulletType::SPECIAL:// 特殊攻撃の弾
+	//	SpiralBullet(elapsedTime);
+	//	break;
+	//case BulletType::NORMAL:// 直線弾
+	//	StraightBullet(elapsedTime);
+	//	break;
+	//case BulletType::SPEED:// 垂直直進弾
+	//	VerticalBullet(elapsedTime);
+	//	break;
+	//default:
+	//	break;
+	//}
+
+	// 弾の更新
+	m_pEnemyBullet->Update(elapsedTime);
 
 	// 現在の弾の位置を軌跡リストに追加
 	m_bulletTrail->SetBulletPosition(m_position);
@@ -186,7 +213,8 @@ void EnemyBullet::RenderBoundingSphere(DirectX::SimpleMath::Matrix view, DirectX
 
 // 直線弾
 void EnemyBullet::StraightBullet(float elapsedTime)
-{	// プレイヤーの方向ベクトルを計算
+{
+	// プレイヤーの方向ベクトルを計算
 	DirectX::SimpleMath::Vector3 toPlayer = m_target - m_enemyPosition;
 	// ベクトルを正規化
 	if (toPlayer.LengthSquared() > 0)
@@ -243,9 +271,10 @@ void EnemyBullet::VerticalBullet(float elapsedTime)
 }
 
 
-// 螺旋弾
+// 特殊攻撃の弾
 void EnemyBullet::SpiralBullet(float elapsedTime)
 {
+	// 経過時間を更新
 	m_elapsedTime = elapsedTime;
 	// 時計回りに回転するための角度
 	m_spiralAngle += m_rotationSpeed * elapsedTime;
@@ -268,35 +297,40 @@ void EnemyBullet::SpiralBullet(float elapsedTime)
 	}
 
 }
+
+// 子オブジェクトを展開
 void EnemyBullet::Expand()
 {
-	if (!m_isExpand)return;
+	if (!GetIsExpand())return;
 	m_rotationSpeed = 1.0f; // 速度調整用（値を大きくすると速く回転する）
 	m_distance = Lerp(m_distance, 15.0f, m_elapsedTime);
 	m_height = 2.0f;
 }
 
+// 子オブジェクトを発射
 void EnemyBullet::Shot()
 {
 
-	if (!m_isShot) return;
+	if (!GetIsShot()) return;
 	m_rotationSpeed = 3.0f;
 	m_distance = Lerp(m_distance, 5.0f, m_elapsedTime);
 	m_basePos = Lerp(m_basePos, m_currentTarget, m_elapsedTime * 2);
 
 }
 
+// 子オブジェクトを収納
 void EnemyBullet::StopExpand()
 {
-	if (m_isExpand)return;
+	if (GetIsExpand())return;
 	m_rotationSpeed = 0.0f;
 	m_distance = Lerp(m_distance, 0.0f, m_elapsedTime * 20);
 	m_height = 1.50f;
 }
 
+// 子オブジェクトを戻す
 void EnemyBullet::ComeBack()
 {
-	if (m_isShot) return;
+	if (GetIsShot()) return;
 	//m_look.Normalize();// プレイヤーが向いている方向を正規化
 	//// 基準点を親が向いている方向に動かす
 	m_distance = Lerp(m_distance, 3.0f, m_elapsedTime);

@@ -9,16 +9,24 @@
 #include "Game/CommonResources.h"
 #include "Game/Particle/Particle.h"
 #include "Game/Interface/IEnemy.h"
+#include "Game/Enemy/EnemyBullet/NormalBullet/NormalBullet.h"
+#include "Game/Enemy/EnemyBullet/SpeedBullet/SpeedBullet.h"
+#include "Game/Enemy/EnemyBullet/SpecialBullet/SpecialBullet.h"
 #include "Game/BulletParameters/BulletParameters.h"
+#include <memory>
 class CommonResources;
+class IEnemyBullet;
+class NormalBullet;
+class SpeedBullet;
+class SpecialBullet;
 class EnemyBullet
 {	//変数
 public:
 	enum class BulletType
 	{
-		STRAIGHT,//直線
-		SPIRAL,//回転
-		VERTICAL// 垂直
+		NORMAL,//直線
+		SPECIAL,//特殊
+		SPEED// 垂直
 
 	};
 	BulletType m_bulletType;// 弾の種類
@@ -26,7 +34,7 @@ private:
 	// 共通リソース
 	CommonResources* m_commonResources;
 	// ワールド行列
-	DirectX::SimpleMath::Matrix m_worldMatrix;
+	DirectX::SimpleMath::Matrix m_worldMatrix;		// 弾のワールド行列
 	DirectX::SimpleMath::Vector3 m_enemyPosition;	// 敵の座標
 	DirectX::SimpleMath::Vector3 m_position;		// 弾の座標
 	DirectX::SimpleMath::Vector3 m_velocity;		// 弾の速さ
@@ -63,14 +71,17 @@ private:
 	bool m_isShot;
 	// 回転基準地点
 	DirectX::SimpleMath::Vector3 m_basePos;
-	// 移動する基準点の目的地
-	const DirectX::SimpleMath::Vector3 m_targetPos = DirectX::SimpleMath::Vector3(0.0f, 0.0f, -30.0f);
 	// 回転速度
 	float m_rotationSpeed;
 	// 弾の速度
 	float m_bulletSpeed;
 	// 弾の軌道
 	std::unique_ptr<Particle> m_bulletTrail;
+	std::unique_ptr<NormalBullet> m_pNormalBullet;
+	std::unique_ptr<SpeedBullet> m_pSpeedBullet;
+	std::unique_ptr<SpecialBullet> m_pSpecialBullet;
+	// 弾の種類ごとに処理を変えるためのポインター
+	IEnemyBullet* m_pEnemyBullet;
 	// モデルの影
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 public:
@@ -84,11 +95,22 @@ public:
 	void MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir, DirectX::SimpleMath::Vector3& target);
 	//Getter
 
-	DirectX::SimpleMath::Vector3 GetBulletDirection()const { return m_direction; }
-	DirectX::BoundingSphere& GetBoundingSphere() { return m_boundingSphere; }
+	DirectX::BoundingSphere& GetBoundingSphere() { return m_boundingSphere; }// 「弾」境界球を取得
+	void SetBoundingSphere(DirectX::BoundingSphere sphere) { m_boundingSphere = sphere; }// 「弾」境界球を設定
 	float GetTime()const { return m_time; }
 	BulletType GetBulletType()const { return m_bulletType; }// 弾の種類を取得
+	void SetBulletType(BulletType type) { m_bulletType = type; }// 弾の種類を設定
+	DirectX::SimpleMath::Vector3 GetPosition()const { return m_position; }// 弾の座標を取得
+	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }// 弾の座標を設定
+	DirectX::SimpleMath::Vector3 GetVelocity()const { return m_velocity; }// 弾の速度を取得
+	void SetVelocity(DirectX::SimpleMath::Vector3 vel) { m_velocity = vel; }// 弾の速度を設定
+	DirectX::SimpleMath::Vector3 GetDirection()const { return m_direction; }// 弾の方向を取得
+	void SetDirection(DirectX::SimpleMath::Vector3 dir) { m_direction = dir; }// 弾の方向を設定
+	float GetSize()const { return m_size; }// 弾の大きさを取得	
+	void SetSize(float size) { m_size = size; }// 弾の大きさを設定
+	DirectX::SimpleMath::Vector3 GetEnemyPosition()const { return m_enemyPosition; }// 敵の座標を取得
 	void SetEnemyPosition(DirectX::SimpleMath::Vector3 pos) { m_enemyPosition = pos; }// 敵の座標を設定
+	DirectX::SimpleMath::Vector3 GetCurrentTarget()const { return m_currentTarget; }// 現在のターゲットの位置を取得
 	void SetCurrentTarget(DirectX::SimpleMath::Vector3 target) { m_currentTarget = target; }// 現在のターゲットの位置を設定
 	DirectX::SimpleMath::Vector3 GetBulletPosition()const { return m_position; }// 弾の座標を取得
 	void SetBulletPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }// 弾の座標を設定
@@ -97,6 +119,8 @@ public:
 	void SetCameraUp(DirectX::SimpleMath::Vector3 up) { m_bulletTrail->SetCameraUp(up); m_cameraUp = up; }
 	IEnemy* GetShooter() const { return m_pShooter; }
 	void SetShooter(IEnemy* enemy) { m_pShooter = enemy; }
+	DirectX::SimpleMath::Vector3 GetTarget() const { return m_target; }
+	void SetTarget(DirectX::SimpleMath::Vector3 target) { m_target = target; }
 	// 弾が生成されてからの経過時間が寿命を超えたかどうかを判定する
 	bool IsExpired() const;// { return GetTime() >= BulletParameters::ENEMY_BULLET_LIFETIME; }
 	// プレイヤーからの距離を取得

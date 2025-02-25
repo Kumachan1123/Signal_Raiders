@@ -28,7 +28,6 @@ public:
 	static const float VERTICAL_BULLET_SPEED;			// 垂直弾の速度
 	static const DirectX::SimpleMath::Vector3 VERTICAL_BULLET_LANDING_VELOCITY;	// 着弾前の速度
 	static const float VERTICAL_BULLET_LANDING_POSITION;	// 垂直弾の着弾位置
-	static const float SPIRAL_BULLET_ROTATION_SPEED;						// 螺旋弾の回転速度
 	static const float SPECIAL_ATTACK_WAIT_TIME;	// 特殊攻撃の待機時間
 	//======================================
 	// 共通の定数（プレイヤー・敵共通で使うもの）
