@@ -7,6 +7,7 @@
 #include "Game/DamageEffect/DamageEffects/DamageEffects.h"
 #include "Game/Enemy/EnemyManager/EnemyManager.h"
 #include "Game/FPS_Camera/FPS_Camera.h"
+
 // 前方宣言
 class CommonResources;
 class PlayerController;
@@ -19,6 +20,8 @@ class Crisis;
 class DamageEffects;
 class FPS_Camera;
 class Enemies;
+
+// プレイヤークラス
 class Player
 {
 private:

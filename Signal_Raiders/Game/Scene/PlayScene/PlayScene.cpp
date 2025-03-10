@@ -31,7 +31,7 @@ PlayScene::PlayScene(IScene::SceneID sceneID)
 	m_projection{},
 	m_isChangeScene{ false },
 	m_isResetHP{ false },
-	m_pStage{ nullptr },
+	m_pStage{  },
 	m_pEffect{},
 	m_pFade{},
 	m_fadeState{ },
@@ -205,7 +205,7 @@ void PlayScene::Update(float elapsedTime)
 		m_pRadar->Update(elapsedTime);
 	}
 
-	;
+
 	// 画面遷移フェード処理
 	m_pFade->Update(elapsedTime);
 	// フェードアウトが終了したら
@@ -224,7 +224,6 @@ void PlayScene::Render()
 	Matrix world = Matrix::Identity;
 	// オフスクリーンにオブジェクトを描画する
 	m_pBloom->ChangeOffScreenRT();
-
 	// 天球描画
 	m_skybox->Render(view, projection, skyWorld, m_pPlayer->GetPlayerController()->GetPlayerPosition());
 	// 地面描画
@@ -233,19 +232,14 @@ void PlayScene::Render()
 	m_pWall->Render(view, projection);
 	// 敵を描画する
 	m_pEnemyManager->Render();
-
 	// プレイヤーを描画する
 	m_pPlayer->Render();
-
 	// 弾を描画する
 	m_pBulletManager->Render();
-
 	// ブルームエフェクトをかける
 	m_pBloom->PostProcess();
-
 	// レンダーターゲットを元に戻す
 	m_pBloom->ChangeDefaultRT();
-
 	// ゲーム開始から5秒以上経過したら
 	if (m_timer >= 5.0f)
 	{
@@ -265,7 +259,6 @@ void PlayScene::Render()
 		m_pGoal->Render();// 指示画像を表示
 		m_pWifiLoading->Render();// Wi-Fiローディングを表示
 	}
-
 	// フェードの描画
 	m_pFade->Render();
 

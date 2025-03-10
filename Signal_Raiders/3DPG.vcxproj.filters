@@ -440,8 +440,6 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="HLSL\Menu\Menu.hlsli" />
-    <None Include="ClassDiagram.cd" />
-    <None Include="ClassDiagram1.cd" />
     <None Include="HLSL\Particle\Particle.hlsli" />
     <None Include="fmodL.dll" />
     <None Include="fmod.dll" />
@@ -450,7 +448,7 @@
     <None Include="HLSL\EnemyHP\EnemyHP.hlsli" />
     <None Include="HLSL\PlayerUI\PlayerUI.hlsli" />
     <None Include="HLSL\Stage\Stage.hlsli" />
-    <None Include="ClassDiagram2.cd" />
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Shadow\PS_Shadow.hlsl">

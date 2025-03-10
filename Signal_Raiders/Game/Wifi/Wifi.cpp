@@ -232,6 +232,7 @@ void Wifi::GetScanResults()
 
 		return;
 	}
+
 }
 
 // 表示準備
@@ -241,6 +242,7 @@ void Wifi::SetUp()
 	m_networkInfos.clear();// ネットワーク情報をクリア
 }
 
+// 現在接続しているWi-Fi情報を取得
 void Wifi::GetCurrentWifiInfo()
 {
 	// すでに取得済みならSkip
@@ -291,6 +293,7 @@ void Wifi::GetCurrentWifiInfo()
 // スキャン結果の処理
 void Wifi::ProcessingScanResults()
 {
+	if (m_dwResult == ERROR_INVALID_PARAMETER)return;
 	for (DWORD i = 0; i < m_pNetworkList->dwNumberOfItems; i++)
 	{
 		m_network = m_pNetworkList->Network[i];
