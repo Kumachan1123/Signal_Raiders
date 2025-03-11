@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <RootNamespace>_3DPG</RootNamespace>
+    <RootNamespace>_SignalRaiders</RootNamespace>
     <ProjectGuid>{9606f935-c8db-41f0-88df-fe4670116909}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
