@@ -449,6 +449,7 @@
     <None Include="HLSL\PlayerUI\PlayerUI.hlsli" />
     <None Include="HLSL\Stage\Stage.hlsli" />
     <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Shadow\PS_Shadow.hlsl">

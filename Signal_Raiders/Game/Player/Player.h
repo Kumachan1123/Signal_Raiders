@@ -12,14 +12,12 @@
 class CommonResources;
 class PlayerController;
 class PlayerUI;
-class PlayerBullets;
 class Goal;
 class Reticle;
 class PlayerHP;
 class Crisis;
 class DamageEffects;
 class FPS_Camera;
-class Enemies;
 
 // プレイヤークラス
 class Player
