@@ -5,38 +5,60 @@
 #pragma once
 #ifndef BOSS_IDLING_DEFINED
 #define BOSS_IDLING_DEFINED
+// 標準ライブラリ
+#include <SimpleMath.h>
+#include <cassert>
+#include <random>
+#include <cmath>
+// 外部ライブラリ
+#include "Libraries/MyLib/DebugString.h"
+#include "Libraries/MyLib/InputManager.h"
+#include "Libraries/MyLib/MemoryLeakDetector.h"
+#include "Game/CommonResources.h"
+#include "DeviceResources.h"
+// 自作ヘッダーファイル
+#include "Game/Enemy/Boss/BossAI/BossAI.h"
+#include "Game/KumachiLib/KumachiLib.h"
+#include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 #include "Game/Interface/IState.h"
-#include "Game/Enemy/Parameters/EnemyParameters.h"
-class BossAI;
+
 //前方宣言
+class BossAI;
 
 class BossIdling : public IState
 {
 private:
-	BossAI* m_pBoss;//敵AI
-	DirectX::SimpleMath::Vector3 m_position;//移動
-	DirectX::SimpleMath::Vector3 m_initialPosition;// 座標初期値
-	DirectX::SimpleMath::Vector3 m_scale;//サイズ
-	DirectX::SimpleMath::Quaternion m_rotation;//回転
-	DirectX::SimpleMath::Vector3 m_velocity;// 移動速度
-	float m_rotationSpeed;//回転速度
-	float  m_time;  // 時間の初期化
-	float m_angle;//角度
+	// 敵AI
+	BossAI* m_pBoss;
+	// 移動
+	DirectX::SimpleMath::Vector3 m_position;
+	// 座標初期値
+	DirectX::SimpleMath::Vector3 m_initialPosition;
+	// サイズ
+	DirectX::SimpleMath::Vector3 m_scale;
+	// 回転
+	DirectX::SimpleMath::Quaternion m_rotation;
+	// 移動速度
+	DirectX::SimpleMath::Vector3 m_velocity;
+	// 回転速度
+	float m_rotationSpeed;
+	// 時間の初期化
+	float  m_time;
+	// 角度
+	float m_angle;
 
 public:
-	//	getter
-	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
-	DirectX::SimpleMath::Quaternion GetRotation() const { return m_rotation; }
-	//  setter
-	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }
-	void SetRotation(DirectX::SimpleMath::Quaternion rot) { m_rotation = rot; }
-	void SetScale(DirectX::SimpleMath::Vector3 sca) { m_scale = sca; }
-
+	// アクセサ
+	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }// 座標取得
+	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }// 座標設定
+	DirectX::SimpleMath::Quaternion GetRotation() const { return m_rotation; }// 回転取得
+	void SetRotation(DirectX::SimpleMath::Quaternion rot) { m_rotation = rot; }// 回転設定
+	void SetScale(DirectX::SimpleMath::Vector3 sca) { m_scale = sca; }// スケール設定
 public:
-	BossIdling(BossAI* pBoss);
-	virtual ~BossIdling();
-
-	void Initialize() override;
-	void Update(float elapsedTime) override;
+	// publicメンバ関数
+	BossIdling(BossAI* pBoss);// コンストラクタ
+	virtual ~BossIdling();// デストラクタ
+	void Initialize() override;// 初期化
+	void Update(float elapsedTime) override;// 更新
 };
 #endif //BOSS_IDLING_DEFINED
