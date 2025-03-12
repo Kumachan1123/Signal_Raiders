@@ -35,21 +35,7 @@ class BulletManager
 {
 
 public:
-	// コンストラクタ・デストラクタ
-	BulletManager(CommonResources* commonResources);// コンストラクタ
-	~BulletManager();// デストラクタ
-
-	// publicメンバ関数
-	void Initialize(Player* pPlayer, EnemyManager* pEnemies);// 初期化
-	void Update(float elapsedTime);// 更新
-	void Render();// 描画
-	void CreatePlayerBullet(const DirectX::SimpleMath::Vector3& position, DirectX::SimpleMath::Vector3& direction);// プレイヤーの弾生成
-	void CreateEnemyBullet(const DirectX::SimpleMath::Vector3& position, DirectX::SimpleMath::Vector3& direction);// 敵の弾生成
-	void RemoveBulletsByShooter(IEnemy* shooter);// 弾の削除（敵が死んだときに呼ばれる）
-	void ReLoadPlayerBullet();// 弾の補充
-	void ConsumePlayerBullet();// 弾の消費
-
-	// ゲッター・セッター
+	// アクセサ
 	void SetEnemyBulletType(EnemyBullet::BulletType type) { m_enemyBulletType = type; }// 敵の弾の種類設定
 	void SetEnemyBulletSize(float size) { m_enemyBulletSize = size; }// 敵の弾の大きさ設定
 	bool GetIsPlayerShoot() const { return m_isPlayerShoot; }// プレイヤーの弾生成フラグ取得
@@ -62,6 +48,27 @@ public:
 	void SetSpecialAttackCount(int count) { m_specialAttackCount = count; }// 特殊攻撃の数設定
 	bool GetIsReloading() const { return m_isReloading; }// リロード中フラグ取得
 	void SetIsReloading(bool isReloading) { m_isReloading = isReloading; }// リロード中フラグ設定
+
+	BulletManager(CommonResources* commonResources);// コンストラクタ
+	~BulletManager();// デストラクタ
+
+	// publicメンバ関数
+	void Initialize(Player* pPlayer, EnemyManager* pEnemies);// 初期化
+	void Update(float elapsedTime);// 更新
+	void Render();// 描画
+	void CreatePlayerBullet(const DirectX::SimpleMath::Vector3& position, DirectX::SimpleMath::Vector3& direction);// プレイヤーの弾生成
+	void CreateEnemyBullet(const DirectX::SimpleMath::Vector3& position, DirectX::SimpleMath::Vector3& direction);// 敵の弾生成
+	void RemoveBulletsByShooter(IEnemy* shooter);// 弾の削除（敵が死んだときに呼ばれる）
+	void ReLoadPlayerBullet();// 弾の補充
+	void ConsumePlayerBullet();// 弾の消費
+private:
+	// privateメンバ関数
+	void UpdatePlayerBullets(float elapsedTime);// プレイヤーの弾更新
+	void UpdateEnemyBullets(float elapsedTime, std::unique_ptr<IEnemy>& enemy);// 敵の弾更新
+	bool CheckCollisionWithEnemies(const std::unique_ptr<PlayerBullet>& bullet);// 敵とプレイヤーの弾の当たり判定
+	bool CheckCollisionWithPlayer(const std::unique_ptr<EnemyBullet>& bullet, const std::unique_ptr<IEnemy>& enemy);// プレイヤーと敵の弾の当たり判定
+	void CheckCollisionWithBullets();	// 敵の弾とプレイヤーの弾の当たり判定
+	void SetSound();// 効果音設定
 private:
 	// コモンリソース
 	CommonResources* m_commonResources;
@@ -94,11 +101,5 @@ private:
 	// ボスが出す特殊攻撃の数
 	int m_specialAttackCount;
 
-	// privateメンバ関数
-	void UpdatePlayerBullets(float elapsedTime);// プレイヤーの弾更新
-	void UpdateEnemyBullets(float elapsedTime, std::unique_ptr<IEnemy>& enemy);// 敵の弾更新
-	bool CheckCollisionWithEnemies(const std::unique_ptr<PlayerBullet>& bullet);// 敵とプレイヤーの弾の当たり判定
-	bool CheckCollisionWithPlayer(const std::unique_ptr<EnemyBullet>& bullet, const std::unique_ptr<IEnemy>& enemy);// プレイヤーと敵の弾の当たり判定
-	void CheckCollisionWithBullets();	// 敵の弾とプレイヤーの弾の当たり判定
-	void SetSound();// 効果音設定
+
 };

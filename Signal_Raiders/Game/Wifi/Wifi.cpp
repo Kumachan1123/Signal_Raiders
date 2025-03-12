@@ -293,7 +293,8 @@ void Wifi::GetCurrentWifiInfo()
 // ƒXƒLƒƒƒ“Œ‹‰Ê‚Ìˆ—
 void Wifi::ProcessingScanResults()
 {
-	if (m_dwResult == ERROR_INVALID_PARAMETER)return;
+	if (m_dwResult == ERROR_INVALID_PARAMETER ||
+		m_dwResult == ERROR_INVALID_HANDLE)return;
 	for (DWORD i = 0; i < m_pNetworkList->dwNumberOfItems; i++)
 	{
 		m_network = m_pNetworkList->Network[i];

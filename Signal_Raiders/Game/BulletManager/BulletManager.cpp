@@ -30,6 +30,7 @@ BulletManager::BulletManager(CommonResources* commonResources)
 }
 /*
 	@brief	デストラクタ
+	@return なし
 */
 BulletManager::~BulletManager()
 {
@@ -44,6 +45,7 @@ BulletManager::~BulletManager()
 	@brief	初期化
 	@param	pPlayer		プレイヤー
 	@param	pEnemies	敵管理
+	@return	なし
 */
 void BulletManager::Initialize(Player* pPlayer, EnemyManager* pEnemies)
 {
@@ -58,6 +60,7 @@ void BulletManager::Initialize(Player* pPlayer, EnemyManager* pEnemies)
 /*
 	@brief	更新
 	@param	elapsedTime	経過時間
+	@return	なし
 */
 void BulletManager::Update(float elapsedTime)
 {
@@ -74,6 +77,7 @@ void BulletManager::Update(float elapsedTime)
 
 /*
 	@brief	描画
+	@return	なし
 */
 void BulletManager::Render()
 {
@@ -99,6 +103,7 @@ void BulletManager::Render()
 	@brief	プレイヤーの弾を生成
 	@param	position	生成位置
 	@param	direction	進行方向
+	@return	なし
 */
 void BulletManager::CreatePlayerBullet(const Vector3& position, Vector3& direction)
 {
@@ -116,6 +121,7 @@ void BulletManager::CreatePlayerBullet(const Vector3& position, Vector3& directi
 	@brief	敵の弾を生成
 	@param	position	生成位置
 	@param	direction	進行方向
+	@return	なし
 */
 void BulletManager::CreateEnemyBullet(const Vector3& position, Vector3& direction)
 {
@@ -152,6 +158,7 @@ void BulletManager::CreateEnemyBullet(const Vector3& position, Vector3& directio
 
 /*
 	@brief	プレイヤーの弾を補充
+	@return	なし
 */
 void BulletManager::ReLoadPlayerBullet()
 {
@@ -177,6 +184,7 @@ void BulletManager::ReLoadPlayerBullet()
 
 /*
 	@brief	プレイヤーの弾を消費
+	@return	なし
 */
 void BulletManager::ConsumePlayerBullet()
 {
@@ -190,6 +198,7 @@ void BulletManager::ConsumePlayerBullet()
 /*
 	@brief	追加ダメージを設定
 	@param	additionalDamage	追加ダメージ
+	@return	なし
 */
 void BulletManager::SetAdditionalDamage(int additionalDamage)
 {
@@ -202,6 +211,7 @@ void BulletManager::SetAdditionalDamage(int additionalDamage)
 /*
 	@brief	プレイヤーの弾を更新
 	@param	elapsedTime	経過時間
+	@return	なし
 */
 void BulletManager::UpdatePlayerBullets(float elapsedTime)
 {
@@ -236,6 +246,7 @@ void BulletManager::UpdatePlayerBullets(float elapsedTime)
 	@brief	敵の弾を更新
 	@param	elapsedTime	経過時間
 	@param	enemy		敵
+	@return	なし
 */
 void BulletManager::UpdateEnemyBullets(float elapsedTime, std::unique_ptr<IEnemy>& enemy)
 {
@@ -274,6 +285,7 @@ void BulletManager::UpdateEnemyBullets(float elapsedTime, std::unique_ptr<IEnemy
 
 /*
 	@brief	効果音の設定
+	@return	なし
 */
 void BulletManager::SetSound()
 {
@@ -340,6 +352,7 @@ bool BulletManager::CheckCollisionWithPlayer(const std::unique_ptr<EnemyBullet>&
 
 /*
 	@brief	弾同士の当たり判定
+	@return	なし
 */
 void BulletManager::CheckCollisionWithBullets()
 {
@@ -386,6 +399,8 @@ void BulletManager::CheckCollisionWithBullets()
 
 /*
 	@brief	指定した敵の弾をすべて削除（敵が死亡したときなど）
+	@param	shooter	削除対象の敵
+	@return	なし
 */
 void BulletManager::RemoveBulletsByShooter(IEnemy* shooter)
 {
