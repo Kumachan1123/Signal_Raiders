@@ -13,19 +13,19 @@ using namespace DirectX::SimpleMath;
 	@param	commonResources	共通リソース
 */
 BulletManager::BulletManager(CommonResources* commonResources)
-	:m_commonResources{ commonResources } // 共通リソース
-	, m_pPlayer{ nullptr } // プレイヤー
-	, m_pEnemyManager{ nullptr } // 敵管理
-	, m_pShooter{ nullptr } // 発射元
-	, m_isPlayerShoot{ false } // プレイヤーが撃ったかどうか
-	, m_isReloading{ false } // リロード中かどうか
-	, m_audioManager{ AudioManager::GetInstance() } // オーディオマネージャー
-	, m_enemyBulletType{ EnemyBullet::BulletType::NORMAL } // 敵の弾の種類
-	, m_enemyBulletSize{ 0.0f } // 敵の弾のサイズ
-	, m_playerBulletCount{ 0 } // プレイヤーの弾の数
-	, m_reloadTimer{ 0.0f } // リロードタイマー
-	, m_elapsedTime{ 0.0f } // 経過時間
-	, m_specialAttackCount{ 0 } // 特殊攻撃の数
+	:m_commonResources(commonResources)// 共通リソース
+	, m_pPlayer(nullptr) // プレイヤー
+	, m_pEnemyManager(nullptr) // 敵管理
+	, m_pShooter(nullptr) // 発射元
+	, m_isPlayerShoot(false) // プレイヤーが撃ったかどうか
+	, m_isReloading(false) // リロード中かどうか
+	, m_audioManager(AudioManager::GetInstance()) // オーディオマネージャー
+	, m_enemyBulletType(EnemyBullet::BulletType::NORMAL) // 敵の弾の種類
+	, m_enemyBulletSize(0.0f) // 敵の弾のサイズ
+	, m_playerBulletCount(0) // プレイヤーの弾の数
+	, m_reloadTimer(0.0f) // リロードタイマー
+	, m_elapsedTime(0.0f) // 経過時間
+	, m_specialAttackCount(0) // 特殊攻撃の数
 {
 }
 /*
@@ -34,11 +34,9 @@ BulletManager::BulletManager(CommonResources* commonResources)
 */
 BulletManager::~BulletManager()
 {
-	// プレイヤーの弾を削除
-	for (auto& bullet : m_playerBullets)bullet.reset();
+	for (auto& bullet : m_playerBullets)bullet.reset();	// プレイヤーの弾を削除
 	m_playerBullets.clear();
-	// 敵の弾を削除
-	for (auto& bullet : m_enemyBullets)bullet.reset();
+	for (auto& bullet : m_enemyBullets)bullet.reset();	// 敵の弾を削除
 	m_enemyBullets.clear();
 }
 /*
@@ -51,10 +49,8 @@ void BulletManager::Initialize(Player* pPlayer, EnemyManager* pEnemies)
 {
 	m_pPlayer = pPlayer;// プレイヤーのポインターを取得
 	m_pEnemyManager = pEnemies;// 敵全体のポインターを取得
-	// 効果音の初期化
-	SetSound();
-	// プレイヤーの弾の初期化
-	m_playerBulletCount = BulletParameters::MAX_PLAYER_BULLET_COUNT;
+	SetSound();// 効果音の設定
+	m_playerBulletCount = BulletParameters::MAX_PLAYER_BULLET_COUNT;// プレイヤーの弾の数を設定
 }
 
 /*
@@ -64,14 +60,10 @@ void BulletManager::Initialize(Player* pPlayer, EnemyManager* pEnemies)
 */
 void BulletManager::Update(float elapsedTime)
 {
-	// 経過時間を更新
-	m_elapsedTime = elapsedTime;
-	// プレイヤーの弾を更新
-	UpdatePlayerBullets(elapsedTime);
-	// 敵の弾を更新
-	for (auto& enemy : m_pEnemyManager->GetEnemies())UpdateEnemyBullets(elapsedTime, enemy);
-	// 弾同士の当たり判定
-	CheckCollisionWithBullets();
+	m_elapsedTime = elapsedTime;// 経過時間を更新
+	UpdatePlayerBullets(elapsedTime);// プレイヤーの弾を更新
+	for (auto& enemy : m_pEnemyManager->GetEnemies())UpdateEnemyBullets(elapsedTime, enemy);	// 敵の弾を更新
+	CheckCollisionWithBullets();	// 弾同士の当たり判定
 
 }
 
@@ -107,14 +99,12 @@ void BulletManager::Render()
 */
 void BulletManager::CreatePlayerBullet(const Vector3& position, Vector3& direction)
 {
-	// プレイヤー弾の生成
-	auto bullet = std::make_unique<PlayerBullet>();
+	auto bullet = std::make_unique<PlayerBullet>();// プレイヤー弾の生成
 	bullet->Initialize(m_commonResources);// 初期化
 	bullet->MakeBall(position, direction);// 弾を生成
 	m_playerBullets.push_back(std::move(bullet));// プレイヤー弾を追加
 	SetIsPlayerShoot(true);// 弾生成フラグを立てる
-	// SEの再生
-	m_audioManager->PlaySound("Shoot", m_pPlayer->GetVolume());
+	m_audioManager->PlaySound("Shoot", m_pPlayer->GetVolume());	// SEの再生
 }
 
 /*
@@ -125,12 +115,9 @@ void BulletManager::CreatePlayerBullet(const Vector3& position, Vector3& directi
 */
 void BulletManager::CreateEnemyBullet(const Vector3& position, Vector3& direction)
 {
-	//	カメラを取得
-	auto camera = m_pPlayer->GetCamera();
-	// プレイヤーからカメラの情報を取得
-	Vector3 playerPos = camera->GetEyePosition();
-	// 特殊攻撃の数だけ回転弾を生成
-	if (m_enemyBulletType == EnemyBullet::BulletType::SPECIAL)
+	auto camera = m_pPlayer->GetCamera();	//	カメラを取得
+	Vector3 playerPos = camera->GetEyePosition();	// プレイヤーからカメラの情報を取得
+	if (m_enemyBulletType == EnemyBullet::BulletType::SPECIAL)	// 特殊攻撃の数だけ回転弾を生成
 	{
 		for (int i = 0; i < GetSpecialAttackCount(); i++)
 		{
@@ -148,10 +135,10 @@ void BulletManager::CreateEnemyBullet(const Vector3& position, Vector3& directio
 	{
 
 		auto bullet = std::make_unique<EnemyBullet>(m_enemyBulletSize);// 敵弾の生成
-		bullet->Initialize(m_commonResources, m_enemyBulletType);
-		bullet->MakeBall(position, direction, playerPos);
-		bullet->SetShooter(m_pShooter);
-		m_enemyBullets.push_back(std::move(bullet));
+		bullet->Initialize(m_commonResources, m_enemyBulletType);// 初期化
+		bullet->MakeBall(position, direction, playerPos);// 弾を生成
+		bullet->SetShooter(m_pShooter);// 発射元を設定
+		m_enemyBullets.push_back(std::move(bullet));// 敵弾を追加
 	}
 
 }
@@ -163,23 +150,10 @@ void BulletManager::CreateEnemyBullet(const Vector3& position, Vector3& directio
 void BulletManager::ReLoadPlayerBullet()
 {
 	m_reloadTimer += m_elapsedTime;// リロードタイマーを更新
-
-	// プレイヤーの弾を補充
 	if (m_playerBulletCount < BulletParameters::MAX_PLAYER_BULLET_COUNT &&
-		m_reloadTimer >= BulletParameters::RELOAD_INTERVAL)
-	{
-		m_playerBulletCount++;// 弾を補充
-	}
-	// リロードタイマーがリロード間隔を超えたらリセット
-	if (m_reloadTimer > BulletParameters::RELOAD_INTERVAL)
-	{
-		m_reloadTimer = 0.0f;
-	}
-	// リロードが完了したらリロード中フラグを下げる
-	if (m_playerBulletCount == BulletParameters::MAX_PLAYER_BULLET_COUNT)
-	{
-		m_isReloading = false;
-	}
+		m_reloadTimer >= BulletParameters::RELOAD_INTERVAL)m_playerBulletCount++;// プレイヤーの弾を補充
+	if (m_reloadTimer > BulletParameters::RELOAD_INTERVAL)m_reloadTimer = 0.0f;// リロードタイマーがリロード間隔を超えたらリセット
+	if (m_playerBulletCount == BulletParameters::MAX_PLAYER_BULLET_COUNT)m_isReloading = false;// リロードが完了したらリロード中フラグを下げる
 }
 
 /*
@@ -188,11 +162,7 @@ void BulletManager::ReLoadPlayerBullet()
 */
 void BulletManager::ConsumePlayerBullet()
 {
-	// プレイヤーの弾を消費
-	if (m_playerBulletCount > 0)
-	{
-		m_playerBulletCount--;
-	}
+	if (m_playerBulletCount > 0)m_playerBulletCount--;	// プレイヤーの弾を消費
 }
 
 /*
@@ -202,10 +172,7 @@ void BulletManager::ConsumePlayerBullet()
 */
 void BulletManager::SetAdditionalDamage(int additionalDamage)
 {
-	for (auto& bullet : m_playerBullets)
-	{
-		bullet->SetAdditionalDamage(additionalDamage);// 追加ダメージを設定
-	}
+	for (auto& bullet : m_playerBullets)bullet->SetAdditionalDamage(additionalDamage);// 追加ダメージを設定
 }
 
 /*
@@ -220,17 +187,13 @@ void BulletManager::UpdatePlayerBullets(float elapsedTime)
 	for (auto it = m_playerBullets.begin(); it != m_playerBullets.end();)
 	{
 		auto& bullet = *it;// 弾を取得
-		// カメラ情報を弾に適用
 		bullet->SetCameraEye(camera->GetEyePosition());// カメラの位置
 		bullet->SetCameraTarget(camera->GetTargetPosition());// カメラの注視点
 		bullet->SetCameraUp(camera->GetUpVector());// カメラの上方向
-
-		// 弾を更新
-		bullet->Update(elapsedTime);
-		// 弾が寿命を迎えるか地面に着いたら削除
-		if (CheckCollisionWithEnemies(bullet) ||
-			bullet->IsExpired() ||
-			bullet->GetBulletPosition().y <= BulletParameters::DELETE_BULLET_POSITION)
+		bullet->Update(elapsedTime);// 弾を更新
+		if (CheckCollisionWithEnemies(bullet) ||// 敵との当たり判定
+			bullet->IsExpired() ||// 寿命を迎えたら
+			bullet->GetBulletPosition().y <= BulletParameters::DELETE_BULLET_POSITION)// 地面に着いたら
 		{
 			it = m_playerBullets.erase(it);// 削除
 		}
@@ -255,24 +218,18 @@ void BulletManager::UpdateEnemyBullets(float elapsedTime, std::unique_ptr<IEnemy
 	for (auto it = m_enemyBullets.begin(); it != m_enemyBullets.end();)
 	{
 		auto& bullet = *it;// 弾を取得
-		// 発射元の敵を取得
-		IEnemy* shooter = bullet->GetShooter();
-		// 発射元が存在しない場合は削除
-		if (!shooter) { it = m_enemyBullets.erase(it); continue; }
-		// 発射元が敵でない場合は削除
-		if (shooter != enemy.get()) { ++it; continue; }
-
-		// 弾に適切な情報を適用
+		IEnemy* shooter = bullet->GetShooter();// 発射元を取得
+		if (!shooter) { it = m_enemyBullets.erase(it); continue; }	// 発射元が存在しない場合は削除
+		if (shooter != enemy.get()) { ++it; continue; }	// 発射元が自分でない場合は次の要素へ
 		bullet->SetCameraEye(camera->GetEyePosition());// カメラの位置
 		bullet->SetCameraTarget(camera->GetTargetPosition());// カメラの注視点
 		bullet->SetCameraUp(camera->GetUpVector());// カメラの上方向
 		bullet->SetEnemyPosition(shooter->GetPosition());// 敵の位置
 		bullet->SetCurrentTarget(m_pPlayer->GetPlayerPos());// プレイヤーの位置
 		bullet->Update(elapsedTime);// 弾を更新
-		// プレイヤーとの当たり判定
-		if (CheckCollisionWithPlayer(bullet, enemy) ||
-			bullet->IsExpired() ||
-			bullet->GetBulletPosition().y <= BulletParameters::DELETE_BULLET_POSITION)
+		if (CheckCollisionWithPlayer(bullet, enemy) ||// プレイヤーとの当たり判定
+			bullet->IsExpired() ||// 寿命を迎えたら
+			bullet->GetBulletPosition().y <= BulletParameters::DELETE_BULLET_POSITION)// 地面に着いたら
 		{
 			it = m_enemyBullets.erase(it);// 削除
 		}
@@ -301,24 +258,21 @@ void BulletManager::SetSound()
 */
 bool BulletManager::CheckCollisionWithEnemies(const std::unique_ptr<PlayerBullet>& bullet)
 {
-	// 敵との当たり判定
-	for (auto& enemy : m_pEnemyManager->GetEnemies())
+	for (auto& enemy : m_pEnemyManager->GetEnemies())	// 敵との当たり判定
 	{
 		// 敵とプレイヤーの弾の当たり判定
 		if (bullet->GetBoundingSphere().Intersects(enemy->GetBoundingSphere()))
 		{
 			if (enemy->GetCanAttack() == true)// 攻撃可能な敵の場合
 				enemy->SetEnemyHP(bullet->Damage());// 敵のHPを減らす
-			// エフェクトを追加
-			float effectSize = dynamic_cast<Boss*>(enemy.get()) ? 10.0f : 3.0f;// ボスの場合は大きめに
-			m_pEnemyManager->GetEffect().push_back(std::make_unique<Effect>(
-				m_commonResources,
-				Effect::EffectType::ENEMY_HIT,
-				enemy->GetPosition(),
-				effectSize,
-				enemy->GetMatrix()));
-			// プレイヤーの弾が敵に当たったフラグを立てる
-			enemy->SetEnemyHitByPlayerBullet(true);// ヒットフラグ
+			float effectSize = dynamic_cast<Boss*>(enemy.get()) ? 10.0f : 3.0f;// エフェクトを追加　ボスの場合は大きめにする
+			m_pEnemyManager->GetEffect().push_back(std::make_unique<Effect>(// エフェクトを追加
+				m_commonResources,// 共通リソース
+				Effect::EffectType::ENEMY_HIT,// エフェクトの種類
+				enemy->GetPosition(),// 位置
+				effectSize,// サイズ
+				enemy->GetMatrix()));// 行列
+			enemy->SetEnemyHitByPlayerBullet(true);// プレイヤーの弾が敵に当たったらヒットフラグを立てる
 			m_audioManager->PlaySound("Hit", m_pPlayer->GetVolume() * BulletParameters::HIT_VOLUME);// SEを再生
 			return true;// 当たったらtrueを返す
 		}
@@ -360,23 +314,19 @@ void BulletManager::CheckCollisionWithBullets()
 	std::unordered_set<PlayerBullet*> playerBulletsToRemove;// プレイヤーの弾
 	std::unordered_set<EnemyBullet*> enemyBulletsToRemove;// 敵の弾
 
-	// プレイヤーの弾と敵の弾の衝突判定(総当たり)
-	for (auto& playerBullet : m_playerBullets)
+	for (auto& playerBullet : m_playerBullets)	// プレイヤーの弾と敵の弾の衝突判定(総当たり)
 	{
 		for (auto& enemyBullet : m_enemyBullets)
 		{
-			// 弾同士の当たり判定
-			if (playerBullet->GetBoundingSphere().Intersects(enemyBullet->GetBoundingSphere()))
+			if (playerBullet->GetBoundingSphere().Intersects(enemyBullet->GetBoundingSphere()))	// 衝突があった場合、削除対象に追加
 			{
-				// 衝突があった場合、削除対象に追加
-				enemyBulletsToRemove.insert(enemyBullet.get());
-				playerBulletsToRemove.insert(playerBullet.get());
+				enemyBulletsToRemove.insert(enemyBullet.get());	// 敵の弾を消す
+				playerBulletsToRemove.insert(playerBullet.get());// プレイヤーの弾を消す
 			}
 		}
 	}
 
-	// まとめて消す(敵の弾)
-	m_enemyBullets.erase(
+	m_enemyBullets.erase(	// まとめて消す(敵の弾)
 		std::remove_if(m_enemyBullets.begin(), m_enemyBullets.end(),
 			[&enemyBulletsToRemove](const std::unique_ptr<EnemyBullet>& bullet)
 			{
@@ -385,8 +335,7 @@ void BulletManager::CheckCollisionWithBullets()
 		m_enemyBullets.end()
 	);
 
-	// まとめて消す(プレイヤーの弾)
-	m_playerBullets.erase(
+	m_playerBullets.erase(	// まとめて消す(プレイヤーの弾)
 		std::remove_if(m_playerBullets.begin(), m_playerBullets.end(),
 			[&playerBulletsToRemove](const std::unique_ptr<PlayerBullet>& bullet)
 			{
@@ -404,16 +353,13 @@ void BulletManager::CheckCollisionWithBullets()
 */
 void BulletManager::RemoveBulletsByShooter(IEnemy* shooter)
 {
-	// 発射元が nullptr または無効なら何もしない
-	if (!shooter || m_enemyBullets.empty())
-		return;
-	// 発射元が一致する弾をすべて削除
-	m_enemyBullets.erase(
-		std::remove_if(m_enemyBullets.begin(), m_enemyBullets.end(),
+	if (!shooter || m_enemyBullets.empty())	return;// 発射元が nullptr または無効なら何もしない
+	m_enemyBullets.erase(	// 発射元が一致する弾をすべて削除
+		std::remove_if(m_enemyBullets.begin(), m_enemyBullets.end(),// 削除対象を探す
 			[shooter](const std::unique_ptr<EnemyBullet>& bullet)
 			{
-				IEnemy* bulletShooter = bullet->GetShooter();
-				return (bulletShooter == shooter || bulletShooter == nullptr);
+				IEnemy* bulletShooter = bullet->GetShooter();// 弾を撃った敵を取得
+				return (bulletShooter == shooter || bulletShooter == nullptr);// 発射元が一致するか、無効なら削除対象
 			}),
 		m_enemyBullets.end()
 	);
