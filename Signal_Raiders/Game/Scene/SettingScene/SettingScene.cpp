@@ -117,14 +117,23 @@ void SettingScene::Update(float elapsedTime)
 	}
 
 	// メニューでの選択処理が行われたら
-	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd && (kbTracker->pressed.Space || mtracker->GetLastState().leftButton))
+	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
 	{
-		m_audioManager->PlaySound("SE", m_SEvolume);// SEの再生
-		if (m_pSettingMenu->GetStateIDNum() == SettingMenu::StateID::END ||
-			m_pSettingMenu->GetStateIDNum() == SettingMenu::StateID::APPLY)
+		if (kbTracker->pressed.Space || mtracker->GetLastState().leftButton)
 		{
-			m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
-			m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
+			m_audioManager->PlaySound("SE", m_SEvolume);// SEの再生
+			if (m_pSettingMenu->GetStateIDNum() == SettingMenu::StateID::END ||
+				m_pSettingMenu->GetStateIDNum() == SettingMenu::StateID::APPLY)
+			{
+				m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
+				m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
+			}
+
+		}
+		else
+		{
+			// マウスポインターの更新
+			m_pMousePointer->Update(elapsedTime);
 		}
 
 
@@ -154,6 +163,7 @@ void SettingScene::Render()
 	{
 		m_pSettingMenu->Render();
 		m_pSettingBar->Render();
+		m_pMousePointer->Render();
 	}
 	// フェードの描画
 	m_pFade->Render();
