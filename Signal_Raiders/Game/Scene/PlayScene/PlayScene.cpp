@@ -102,7 +102,7 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pGoal->Create(DR);
 	// Wi-Fiローディング
 	m_pWifiLoading = std::make_unique<WifiLoading>();
-	m_pWifiLoading->Initialize(DR, Screen::UI_WIDTH, Screen::UI_HEIGHT);
+	m_pWifiLoading->Initialize(DR, Screen::WIDTH, Screen::HEIGHT);
 	// 危険状態
 	m_pCrisis = std::make_unique<Crisis>(m_commonResources);
 	m_pCrisis->Create(DR);

@@ -87,7 +87,7 @@ void Game::Initialize(HWND window, int width, int height)
 	m_sceneManager->Initialize(m_commonResources.get());
 
 	// ★追記ココまで↑↑↑★
-	ShowCursor(FALSE);//カーソルを見えないようにする
+	ShowCursor(TRUE);//カーソルを見えないようにする
 }
 
 #pragma region Frame Update
@@ -252,8 +252,11 @@ void Game::OnWindowSizeChanged(int width, int height)
 void Game::GetDefaultSize(int& width, int& height) const noexcept
 {
 	// TODO: Change to desired default window size (note minimum size is 320x200).
-	width = 1280;    // ★変更::800->Screen::WIDTH
-	height = 720;   // ★変更::600->Screen::HEIGHT
+	width = 1920;    // ★変更::800->Screen::WIDTH
+	height = 1080;   // ★変更::600->Screen::HEIGHT
+
+	/*width = 1280;
+	height = 720;*/
 }
 #pragma endregion
 

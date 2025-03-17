@@ -31,6 +31,7 @@ TitleMenu::TitleMenu()
 	, m_windowWidth{ 0 }
 	, m_windowHeight{ 0 }
 	, m_tracker{}
+	, m_time{ 0 }
 	, m_num{ SceneID::STAGESELECT }
 {
 }
@@ -79,15 +80,31 @@ void TitleMenu::Update(float elapsedTime)
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
 	// マウスのトラッカーを取得する
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
+	// マウスの状態を取得
+	auto& mouseState = m_commonResources->GetInputManager()->GetMouseState();
+
+	// マウスの座標を取得
+	Vector2 mousePos = Vector2(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
+	//  メニューアイテムの数だけ繰り返す
+	for (int i = 0; i < m_pUI.size(); i++)
+	{
+		//  マウスの座標がアイテムの範囲内にあるかどうかを判定
+		if (m_pUI[i]->IsHit(mousePos))
+		{
+			//  範囲内にある場合は、選択中のアイテムを更新
+			m_menuIndex = i;
+		}
+	}
+
 	m_time += elapsedTime;
 	//  キーボードの入力を取得
-	if (kbTracker->pressed.S)
-	{
-		//  →キーを押したら、選択先を1つ進める
-		m_menuIndex += 1;
-		//  メニューアイテム数の最大値を超えないように制御
-		m_menuIndex %= m_pUI.size();
-	}
+	//if (kbTracker->pressed.S)
+	//{
+	//	//  →キーを押したら、選択先を1つ進める
+	//	m_menuIndex += 1;
+	//	//  メニューアイテム数の最大値を超えないように制御
+	//	m_menuIndex %= m_pUI.size();
+	//}
 	if (kbTracker->pressed.W)
 	{
 		//  ←キーを押したら、選択先を1つ戻す
@@ -142,6 +159,14 @@ void TitleMenu::Render()
 	{
 		m_pGuide[i]->Render();
 	}
+#ifdef _DEBUG
+	// デバッグ情報を表示する
+	auto debugString = m_commonResources->GetDebugString();
+	for (int i = 0; i < m_transforms.size(); i++)
+	{
+		debugString->AddString("Transform.Pos:%f,%f  Scale:%f,%f", m_transforms[i].position.x, m_transforms[i].position.y, m_transforms[i].scale.x, m_transforms[i].scale.y);
+	}
+#endif
 }
 
 void TitleMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor, UIType type)
@@ -174,5 +199,8 @@ void TitleMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, 
 
 	//  背景用のアイテムも新しく追加する
 	m_pSelect.push_back(std::move(base));
+
+	// UIの情報を配列に登録
+	m_transforms.push_back({ position, scale });
 
 }

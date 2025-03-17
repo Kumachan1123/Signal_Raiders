@@ -33,12 +33,12 @@ void WifiLoading::Initialize(DX::DeviceResources* pDR, int width, int height)
 	m_windowHeight = height;
 	// ローディング画像
 	Add(m_loading, L"Resources/Textures/Loading.png",
-		DirectX::SimpleMath::Vector2(Screen::UI_RIGHT, Screen::UI_HEIGHT),
+		DirectX::SimpleMath::Vector2(Screen::RIGHT, Screen::HEIGHT),
 		DirectX::SimpleMath::Vector2(.5f, .5f),
 		KumachiLib::ANCHOR::BOTTOM_RIGHT);
 	// ローディングテキスト
 	Add(m_loadgingText, L"Resources/Textures/Loading_Text.png",
-		DirectX::SimpleMath::Vector2(Screen::UI_RIGHT - 70, Screen::UI_HEIGHT),
+		DirectX::SimpleMath::Vector2(Screen::RIGHT - 70, Screen::HEIGHT),
 		DirectX::SimpleMath::Vector2(.5f, .5f),
 		KumachiLib::ANCHOR::BOTTOM_RIGHT);
 	// ローディング画像のアニメーション設定

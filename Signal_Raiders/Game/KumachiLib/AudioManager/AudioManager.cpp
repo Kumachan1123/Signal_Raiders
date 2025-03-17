@@ -93,6 +93,7 @@ void AudioManager::Shutdown()
 		if (pair.second)
 		{
 			pair.second->release();
+			pair.second = nullptr;
 		}
 	}
 	m_sounds.clear();
@@ -101,7 +102,9 @@ void AudioManager::Shutdown()
 	{
 		/*m_system->close();*/
 		m_system->release();
+		m_system->close();
 		m_system = nullptr;
+
 	}
 }
 

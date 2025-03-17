@@ -54,11 +54,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		return 1;
 
 	g_game = std::make_unique<Game>();
-	static bool s_fullscreen = true;;
+	static bool s_fullscreen = true;
 #ifdef _DEBUG
-
-
-#endif
 
 	// 画面モード選択
 	if (MessageBox(NULL, L"フルスクリーンにしますか？", L"画面モード設定", MB_YESNO) == IDYES)
@@ -69,6 +66,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	{
 		s_fullscreen = false;
 	}
+#endif
+
+
 	// Register class and create window
 	{
 		// Register class
@@ -241,7 +241,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			auto info = reinterpret_cast<MINMAXINFO*>(lParam);
 			info->ptMinTrackSize.x = 320;
-			info->ptMinTrackSize.y = 200;
+			info->ptMinTrackSize.y = 180;
 		}
 		break;
 
@@ -320,14 +320,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	//		{
 	//			SetWindowLongPtr(hWnd, GWL_STYLE, WS_MY_WINDOW);    // ★変更::WS_OVERLAPPEDWINDOW->WS_MY_WINDOW
 	//			SetWindowLongPtr(hWnd, GWL_EXSTYLE, 0);
-
 	//			int width = 800;
 	//			int height = 600;
 	//			if (game)
 	//				game->GetDefaultSize(width, height);
-
 	//			ShowWindow(hWnd, SW_SHOWNORMAL);
-
 	//			// ウィンドウを元のサイズに戻すときにサイズを補正する
 	//			RECT rc{};
 	//			AdjustWindowRect(&rc, WS_MY_WINDOW, FALSE);
@@ -342,12 +339,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	//		{
 	//			SetWindowLongPtr(hWnd, GWL_STYLE, WS_POPUP);
 	//			SetWindowLongPtr(hWnd, GWL_EXSTYLE, WS_EX_TOPMOST);
-
 	//			SetWindowPos(hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
-
 	//			ShowWindow(hWnd, SW_SHOWMAXIMIZED);
 	//		}
-
 	//		s_fullscreen = !s_fullscreen;
 	//	}
 	//	break;

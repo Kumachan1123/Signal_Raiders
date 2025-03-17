@@ -14,7 +14,6 @@
 #include "Game/KumachiLib//BinaryFile/BinaryFile.h"
 #include <Libraries/Microsoft/DebugDraw.h>
 #include "Libraries/MyLib/DebugString.h"
-#include <Mouse.h>
 #include "Game/FPS_Camera/FPS_Camera.h"
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -24,21 +23,21 @@ void EndGame()noexcept;
 // コンストラクタ
 //---------------------------------------------------------
 TitleScene::TitleScene(IScene::SceneID sceneID)
-	:
-	m_commonResources{},
-	m_isChangeScene{ false },
-	m_isFade{ false },
-	m_BGMvolume{ VOLUME },
-	m_SEvolume{ VOLUME },
-	m_counter{ 0 },
-	m_camera{},
-	m_pDR{},
-	m_pFade{},
-	m_fadeState{ },
-	m_fadeTexNum{ 0 },
-	m_pBackGround{ nullptr },
-	m_audioManager{ AudioManager::GetInstance() },
-	m_nowSceneID{ sceneID }
+	: m_commonResources{}
+	, m_isChangeScene{ false }
+	, m_isFade{ false }
+	, m_BGMvolume{ VOLUME }
+	, m_SEvolume{ VOLUME }
+	, m_counter{ 0 }
+	, m_camera{}
+	, m_pDR{}
+	, m_pFade{}
+	, m_fadeState{}
+	, m_fadeTexNum{ 0 }
+	, m_pBackGround{ nullptr }
+	, m_audioManager{ AudioManager::GetInstance() }
+	, m_nowSceneID{ sceneID }
+
 {}
 
 
@@ -142,6 +141,25 @@ void TitleScene::Render()
 	}
 	// フェードの描画
 	m_pFade->Render();
+
+#ifdef _DEBUG
+	// デバッグ情報を表示する
+	auto debugString = m_commonResources->GetDebugString();
+	auto& mousestate = m_commonResources->GetInputManager()->GetMouseState();
+	// ウィンドウ上のマウス座標を取得する
+	Vector2 pos = Vector2(static_cast<float>(mousestate.x), static_cast<float>(mousestate.y));
+	// ウィンドウ状態だと1280x720の座標になるので、1920x1080の座標に変換する
+
+	//{
+	//	pos.x = pos.x * Screen::WIDTH / Screen::UI_WIDTH;
+	//	pos.y = pos.y * Screen::HEIGHT / Screen::UI_HEIGHT;
+
+
+	//}
+
+	debugString->AddString("MouseX:%f  MouseY:%f", pos.x, pos.y);
+#endif
+
 }
 
 //---------------------------------------------------------

@@ -98,7 +98,7 @@ public:
 	KumachiLib::ANCHOR GetAnchor() const { return m_anchor; }
 	void SetTime(float time) { m_time = time; };
 	float GetTime() const { return m_time; }
-
+	bool IsHit(const DirectX::SimpleMath::Vector2& pos) const;
 private:
 
 	void CreateShader();

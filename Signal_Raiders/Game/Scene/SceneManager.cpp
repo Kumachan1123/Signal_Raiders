@@ -170,6 +170,6 @@ void SceneManager::DeleteScene()
 			m_stageNumber = resultScene->GetStageNumber();
 		}
 		m_currentScene.reset();
-		//ShowCursor(TRUE);//カーソルを見えるようにする
+		ShowCursor(TRUE);//カーソルを見えるようにする
 	}
 }
