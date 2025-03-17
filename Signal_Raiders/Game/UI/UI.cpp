@@ -81,9 +81,9 @@ void UI::Create(DX::DeviceResources* pDR, const wchar_t* path
 bool UI::IsHit(const DirectX::SimpleMath::Vector2& pos) const
 {
 	//	画像の左上の座標を取得
-	DirectX::SimpleMath::Vector2 leftTop = m_position - DirectX::SimpleMath::Vector2(m_textureWidth / 2, m_textureHeight / 2);
+	DirectX::SimpleMath::Vector2 leftTop = m_position - DirectX::SimpleMath::Vector2(float(m_textureWidth) / 2.0f, float(m_textureHeight) / 2.0f);
 	//	画像の右下の座標を取得
-	DirectX::SimpleMath::Vector2 rightBottom = m_position + DirectX::SimpleMath::Vector2(m_textureWidth / 2, m_textureHeight / 2);
+	DirectX::SimpleMath::Vector2 rightBottom = m_position + DirectX::SimpleMath::Vector2(float(m_textureWidth) / 2.0f, float(m_textureHeight) / 2.0f);
 	//	画像の左上の座標と右下の座標を比較して、マウスの座標が範囲内にあるかを判定する
 	if (leftTop.x <= pos.x && pos.x <= rightBottom.x
 		&& leftTop.y <= pos.y && pos.y <= rightBottom.y)

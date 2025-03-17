@@ -10,6 +10,7 @@
 #include "Game/Scene/StageSelectScene/Menu/StageSelectMenu.h"
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/Scene/StageSelectScene/Stage/StageSelect.h"
+#include "Game/MousePointer/MousePointer.h"
 // 前方宣言
 class CommonResources;
 class Fade;
@@ -40,6 +41,8 @@ private:
 	const wchar_t* m_pTexturePath;
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
+	// マウスポインター
+	std::unique_ptr<MousePointer> m_pMousePointer;
 
 	// 空の行列
 	DirectX::SimpleMath::Matrix m_world;

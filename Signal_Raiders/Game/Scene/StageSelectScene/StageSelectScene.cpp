@@ -72,6 +72,9 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	m_pSettingData->Load();
 	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume());
 	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume());
+	// マウスポインターを作成
+	m_pMousePointer = std::make_unique<MousePointer>();
+	m_pMousePointer->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
 
 	// ステージ選択クラス作成
 	m_pStageSelect = std::make_unique<StageSelect>(m_commonResources);
@@ -93,8 +96,7 @@ void StageSelectScene::Initialize(CommonResources* resources)
 //---------------------------------------------------------
 void StageSelectScene::Update(float elapsedTime)
 {
-	//ステージ選択メニューの更新
-	m_pStageSelectMenu->Update(elapsedTime);
+
 	// オーディオマネージャーの更新
 	m_audioManager->Update();
 	// キーボードステートトラッカーを取得する
@@ -103,13 +105,24 @@ void StageSelectScene::Update(float elapsedTime)
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
 	if (kbTracker->pressed.A || kbTracker->pressed.D)
 		m_audioManager->PlaySound("Select", m_SEvolume);// SEの再生
-	// スペースキーが押されたら
-	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd && (kbTracker->pressed.Space || mtracker->GetLastState().leftButton))
+
+	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
 	{
-		// SEの再生
-		m_audioManager->PlaySound("SE", m_SEvolume);
-		m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
-		m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
+		// スペースキーが押されたら
+		if (kbTracker->pressed.Space || mtracker->GetLastState().leftButton)
+		{
+			m_audioManager->PlaySound("SE", m_SEvolume);// SEの再生
+			m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
+			m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
+		}
+		else
+		{
+			// マウスポインターの更新
+			m_pMousePointer->Update(elapsedTime);
+			//ステージ選択メニューの更新
+			m_pStageSelectMenu->Update(elapsedTime);
+		}
+
 
 
 	}
@@ -146,6 +159,7 @@ void StageSelectScene::Render()
 	{
 		m_pStageSelect->Render();
 		m_pStageSelectMenu->Render();
+		m_pMousePointer->Render();// マウスポインターの描画
 	}
 
 	// フェードの描画

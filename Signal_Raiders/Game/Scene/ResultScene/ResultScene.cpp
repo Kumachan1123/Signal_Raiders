@@ -73,6 +73,10 @@ void ResultScene::Initialize(CommonResources* resources)
 	m_pSettingData->Load();
 	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume());
 	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume());
+	// マウスポインターを作成
+	m_pMousePointer = std::make_unique<MousePointer>();
+	m_pMousePointer->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
+
 	// 今のシーンIDによってテクスチャを変更
 	switch (m_nowSceneID)
 	{
@@ -103,6 +107,7 @@ void ResultScene::Initialize(CommonResources* resources)
 //---------------------------------------------------------
 void ResultScene::Update(float elapsedTime)
 {
+
 	// リザルトメニューの更新
 	m_pResultMenu->Update(elapsedTime);
 	// オーディオマネージャーの更新
@@ -141,7 +146,8 @@ void ResultScene::Update(float elapsedTime)
 	m_pressKeySize = (cos(m_time) + 1.0f) * 0.3f + 0.75f; // sin波で0.5〜1.5の間を変動させる
 	// 背景の更新
 	m_pBackGround->Update(elapsedTime);
-
+	// マウスポインターの更新
+	m_pMousePointer->Update(elapsedTime);
 	// フェードの更新
 	m_pFade->Update(elapsedTime);
 
@@ -162,7 +168,10 @@ void ResultScene::Render()
 	{
 		m_pResult->Render();
 		m_pResultMenu->Render();
+		m_pMousePointer->Render();// マウスポインター更新
 	}
+
+
 
 	// フェードの描画
 	m_pFade->Render();

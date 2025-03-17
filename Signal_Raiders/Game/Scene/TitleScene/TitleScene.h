@@ -14,6 +14,7 @@
 #include "Game/Scene/SettingScene/SettingMenu/SettingMenu.h"
 #include "Game/Scene/SettingScene/SettingBar/SettingBar.h"
 #include "Game/Scene/SettingScene/SettingData/SettingData.h"
+#include "Game/MousePointer/MousePointer.h"
 // 前方宣言
 class CommonResources;
 class Fade;
@@ -37,7 +38,8 @@ private:
 	std::unique_ptr<BackGround> m_pBackGround;
 	// タイトルロゴ
 	std::unique_ptr<TitleLogo> m_pTitleLogo;
-
+	// マウスポインター
+	std::unique_ptr<MousePointer> m_pMousePointer;
 	// メニュー
 	std::unique_ptr<TitleMenu> m_pMenu;
 	// 設定データ

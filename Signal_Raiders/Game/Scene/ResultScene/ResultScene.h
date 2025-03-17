@@ -10,6 +10,7 @@
 #include "Game/Scene/ResultScene/ResultMenu/ResultMenu.h"
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/Scene/ResultScene/Result/Result.h"
+#include "Game/MousePointer/MousePointer.h"
 // 前方宣言
 class CommonResources;
 class Fade;
@@ -27,7 +28,8 @@ class ResultScene final :
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
-
+	// マウスポインター
+	std::unique_ptr<MousePointer> m_pMousePointer;
 	// 設定データ
 	std::unique_ptr<SettingData> m_pSettingData;
 	// リザルトメニュー

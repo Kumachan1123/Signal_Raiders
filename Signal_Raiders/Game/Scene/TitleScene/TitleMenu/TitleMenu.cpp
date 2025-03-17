@@ -95,7 +95,6 @@ void TitleMenu::Update(float elapsedTime)
 			m_menuIndex = i;
 		}
 	}
-
 	m_time += elapsedTime;
 	//  キーボードの入力を取得
 	//if (kbTracker->pressed.S)

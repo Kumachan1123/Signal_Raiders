@@ -71,26 +71,41 @@ void ResultMenu::Initialize(CommonResources* resources, int width, int height)
 
 void ResultMenu::Update(float elapsedTime)
 {
+
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
 	// マウスのトラッカーを取得する
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
+	// マウスの状態を取得
+	auto& mouseState = m_commonResources->GetInputManager()->GetMouseState();
 
+	// マウスの座標を取得
+	Vector2 mousePos = Vector2(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
+	//  メニューアイテムの数だけ繰り返す
+	for (int i = 0; i < m_pUI.size(); i++)
+	{
+		//  マウスの座標がアイテムの範囲内にあるかどうかを判定
+		if (m_pUI[i]->IsHit(mousePos))
+		{
+			//  範囲内にある場合は、選択中のアイテムを更新
+			m_menuIndex = i;
+		}
+	}
 	m_time += elapsedTime;
-	//  キーボードの入力を取得
-	if (kbTracker->pressed.S)
-	{
-		//  →キーを押したら、選択先を1つ進める
-		m_menuIndex += 1;
-		//  メニューアイテム数の最大値を超えないように制御
-		m_menuIndex %= m_pUI.size();
-	}
-	if (kbTracker->pressed.W)
-	{
-		//  ←キーを押したら、選択先を1つ戻す
-		m_menuIndex += static_cast<unsigned int>(m_pUI.size()) - 1;
-		//  メニューアイテム数の最大値を超えないように制御
-		m_menuIndex %= m_pUI.size();
-	}
+	////  キーボードの入力を取得
+	//if (kbTracker->pressed.S)
+	//{
+	//	//  →キーを押したら、選択先を1つ進める
+	//	m_menuIndex += 1;
+	//	//  メニューアイテム数の最大値を超えないように制御
+	//	m_menuIndex %= m_pUI.size();
+	//}
+	//if (kbTracker->pressed.W)
+	//{
+	//	//  ←キーを押したら、選択先を1つ戻す
+	//	m_menuIndex += static_cast<unsigned int>(m_pUI.size()) - 1;
+	//	//  メニューアイテム数の最大値を超えないように制御
+	//	m_menuIndex %= m_pUI.size();
+	//}
 	if (kbTracker->pressed.Space || mtracker->GetLastState().leftButton)
 	{
 		m_num = static_cast<SceneID>(m_menuIndex);

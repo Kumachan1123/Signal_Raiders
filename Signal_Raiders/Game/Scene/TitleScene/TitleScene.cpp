@@ -77,6 +77,9 @@ void TitleScene::Initialize(CommonResources* resources)
 	// 設定ファイルの読み込み
 	m_pSettingData = std::make_unique<SettingData>();
 	m_pSettingData->Load();
+	// マウスポインターを作成
+	m_pMousePointer = std::make_unique<MousePointer>();
+	m_pMousePointer->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
 
 	// 音量の設定
 	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume());
@@ -91,8 +94,6 @@ void TitleScene::Initialize(CommonResources* resources)
 //---------------------------------------------------------
 void TitleScene::Update(float elapsedTime)
 {
-	// メニューの更新
-	m_pMenu->Update(elapsedTime);
 	// オーディオマネージャーの更新処理
 	m_audioManager->Update();
 	// キーボードステートトラッカーを取得する
@@ -113,7 +114,10 @@ void TitleScene::Update(float elapsedTime)
 		if (kbTracker->pressed.W || kbTracker->pressed.S)
 			m_audioManager->PlaySound("Select", m_SEvolume);// SEの再生
 	}
-
+	// メニューの更新
+	m_pMenu->Update(elapsedTime);
+	// マウスポインターの更新
+	m_pMousePointer->Update(elapsedTime);
 	// フェードアウトが終了したら
 	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;
 	// BGMの再生
@@ -138,6 +142,7 @@ void TitleScene::Render()
 	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
 	{
 		m_pMenu->Render();
+		m_pMousePointer->Render();
 	}
 	// フェードの描画
 	m_pFade->Render();

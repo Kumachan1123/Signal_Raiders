@@ -11,6 +11,8 @@
 #include "Game/Scene/SettingScene/SettingMenu/SettingMenu.h"
 #include "Game/Scene/SettingScene/SettingBar/SettingBar.h"
 #include "Game/Scene/SettingScene/SettingData/SettingData.h"
+#include "Game/MousePointer/MousePointer.h"
+
 // 前方宣言
 class CommonResources;
 class Fade;
@@ -38,6 +40,8 @@ private:
 	std::unique_ptr<SettingBar> m_pSettingBar;
 	// 設定データ
 	std::unique_ptr<SettingData> m_pSettingData;
+	// マウスポインター
+	std::unique_ptr<MousePointer> m_pMousePointer;
 	// フェード画像番号
 	int m_fadeTexNum;
 	// 音量の基準

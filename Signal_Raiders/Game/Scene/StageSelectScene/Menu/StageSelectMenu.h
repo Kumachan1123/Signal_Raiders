@@ -16,6 +16,7 @@
 #include <CommonStates.h>
 #include <vector>
 #include "Keyboard.h"
+
 class CommonResources;
 class StageSelectMenu
 {
@@ -42,7 +43,7 @@ private:
 	CommonResources* m_commonResources;
 	std::vector<std::unique_ptr<UI>> m_pUI;// 選択可能UI
 	std::vector<std::unique_ptr<UI>> m_pGuide;// 選択不可能UI
-	std::vector<std::unique_ptr<UI>> m_pSelect;
+	std::vector<std::unique_ptr<UI>> m_pSelect;// 選択中UI
 
 	const wchar_t* m_pSelectTexturePath;
 

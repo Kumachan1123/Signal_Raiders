@@ -287,6 +287,7 @@
     <ClInclude Include="Game\Enemy\EnemyBullet\SpecialBullet\SpecialBullet.h" />
     <ClInclude Include="Game\Enemy\EnemyBullet\NormalBullet\NormalBullet.h" />
     <ClInclude Include="Game\Enemy\EnemyBullet\SpeedBullet\SpeedBullet.h" />
+    <ClInclude Include="Game\MousePointer\MousePointer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -420,6 +421,7 @@
     <ClCompile Include="Game\Enemy\EnemyBullet\SpecialBullet\SpecialBullet.cpp" />
     <ClCompile Include="Game\Enemy\EnemyBullet\NormalBullet\NormalBullet.cpp" />
     <ClCompile Include="Game\Enemy\EnemyBullet\SpeedBullet\SpeedBullet.cpp" />
+    <ClCompile Include="Game\MousePointer\MousePointer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

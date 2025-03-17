@@ -74,6 +74,9 @@ void SettingScene::Initialize(CommonResources* resources)
 	// セッティングメニューを作成
 	m_pSettingMenu = std::make_unique<SettingMenu>();
 	m_pSettingMenu->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
+	// マウスポインターを作成
+	m_pMousePointer = std::make_unique<MousePointer>();
+	m_pMousePointer->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
 	// 設定バーを作成
 	m_pSettingBar = std::make_unique<SettingBar>(m_pSettingMenu.get());
 	m_pSettingBar->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);

@@ -142,7 +142,7 @@ void PlayScene::Initialize(CommonResources* resources)
 //---------------------------------------------------------
 void PlayScene::Update(float elapsedTime)
 {
-	ShowCursor(FALSE);//カーソルを見えないようにする
+
 	// 経過時間
 	m_timer += elapsedTime;
 	// 二重再生しない
@@ -276,6 +276,7 @@ void PlayScene::Render()
 //---------------------------------------------------------
 void PlayScene::Finalize()
 {
+
 	m_skybox.reset();
 	m_audioManager->Shutdown();
 }

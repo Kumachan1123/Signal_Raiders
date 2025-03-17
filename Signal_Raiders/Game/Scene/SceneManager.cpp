@@ -101,21 +101,26 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 	{
 	case IScene::SceneID::TITLE:
 		m_currentScene = std::make_unique<TitleScene>(sceneID);
+
 		break;
 	case IScene::SceneID::SETTING:
 		m_currentScene = std::make_unique<SettingScene>(sceneID);
+
 		break;
 	case IScene::SceneID::STAGESELECT:
 		m_currentScene = std::make_unique<StageSelectScene>(sceneID);
+
 		break;
 	case IScene::SceneID::PLAY:
 		m_currentScene = std::make_unique<PlayScene>(sceneID);
+
 
 		break;
 	case IScene::SceneID::CLEAR:
 	case IScene::SceneID::GAMEOVER:
 
 		m_currentScene = std::make_unique<ResultScene>(sceneID);
+
 		break;
 	default:
 		assert(!"SceneManager::CreateScene::シーン名が存在しません！");
@@ -129,7 +134,6 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 		auto playScene = dynamic_cast<PlayScene*>(m_currentScene.get());
 		assert(playScene);
 		playScene->SetStageNumber(m_stageNumber);
-
 
 	}
 	if (GetSceneID() == IScene::SceneID::PLAY)
@@ -170,6 +174,6 @@ void SceneManager::DeleteScene()
 			m_stageNumber = resultScene->GetStageNumber();
 		}
 		m_currentScene.reset();
-		ShowCursor(TRUE);//カーソルを見えるようにする
+
 	}
 }
