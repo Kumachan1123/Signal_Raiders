@@ -15,6 +15,7 @@
 #include <vector>
 #include "Keyboard.h"
 #include "Game/Scene/SettingScene/SettingData/SettingData.h"
+#include "Libraries/MyLib/DebugString.h"
 
 class CommonResources;
 class SettingBar
@@ -33,7 +34,7 @@ private:
 	int m_windowWidth, m_windowHeight;// ウィンドウの幅と高さ
 	DirectX::Keyboard::KeyboardStateTracker m_tracker;// トラッカー
 	std::unique_ptr<SettingData> m_pSettingData;// 設定データ
-
+	SettingMenu::SelectID m_selectNum;// 選択番号
 	SettingMenu::StateID m_num;// 状態ID
 	unsigned int m_setting[3] = { 0, 0, 0 };// 設定
 	float m_time = 0;// 時間

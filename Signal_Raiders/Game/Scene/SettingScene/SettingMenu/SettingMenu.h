@@ -24,9 +24,14 @@ public:
 	{
 		BGM = 0,
 		SE = 1,
-		MOUSE = 2,
-		APPLY = 3,
-		END = 4
+		MOUSE = 2
+
+	};
+	enum SelectID
+	{
+		NONE = -1,
+		APPLY = 0,
+		END = 1
 	};
 	enum class UIType
 	{
@@ -38,7 +43,7 @@ public:
 	//	変数
 private:
 
-	unsigned int m_menuIndex;// メニューのインデックス
+	int m_menuIndex;// メニューのインデックス
 	DX::DeviceResources* m_pDR;// デバイスリソース
 	CommonResources* m_commonResources;// 共通リソース
 	std::vector<std::unique_ptr<UI>> m_pUI;// UI
@@ -55,6 +60,7 @@ private:
 
 
 	StateID m_num;// 状態ID
+	SelectID m_selectNum;// 選択ID
 	float m_time = 0;// 時間
 	//	関数
 public:
@@ -74,5 +80,7 @@ public:
 public:
 	StateID GetStateIDNum() const { return m_num; }
 	void SetStateIDNum(StateID num) { m_num = num; }
+	SelectID GetSelectIDNum() const { return m_selectNum; }
+	void SetSelectIDNum(SelectID num) { m_selectNum = num; }
 	unsigned int GetMenuIndex() const { return m_menuIndex; }
 };

@@ -119,14 +119,19 @@ void SettingScene::Update(float elapsedTime)
 	// メニューでの選択処理が行われたら
 	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
 	{
-		if (kbTracker->pressed.Space || mtracker->GetLastState().leftButton)
+		if (mtracker->GetLastState().leftButton)
 		{
 			m_audioManager->PlaySound("SE", m_SEvolume);// SEの再生
-			if (m_pSettingMenu->GetStateIDNum() == SettingMenu::StateID::END ||
-				m_pSettingMenu->GetStateIDNum() == SettingMenu::StateID::APPLY)
+			if (m_pSettingMenu->GetSelectIDNum() == SettingMenu::SelectID::END ||
+				m_pSettingMenu->GetSelectIDNum() == SettingMenu::SelectID::APPLY)
 			{
 				m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
 				m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
+			}
+			else
+			{
+				// マウスポインターの更新
+				m_pMousePointer->Update(elapsedTime);
 			}
 
 		}

@@ -29,6 +29,7 @@ SettingBar::SettingBar(SettingMenu* pSettingMenu)
 	, m_windowHeight{ 0 }
 	, m_tracker{}
 	, m_num{ SettingMenu::StateID::BGM }
+	, m_selectNum{ SettingMenu::SelectID::NONE }
 	, m_setting{ 4,4,5 }
 {
 }
@@ -81,45 +82,64 @@ void SettingBar::Update(float elapsedTime)
 {
 	//  キーボードの入力を取得
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
-
+	// マウスの状態を取得
+	auto& mouseState = m_commonResources->GetInputManager()->GetMouseState();
+	// マウスの座標を取得
+	Vector2 mousePos = Vector2(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
+	// マウスボタン状態を取得
+	auto& mouseTracker = m_commonResources->GetInputManager()->GetMouseTracker();
+	bool isDragging = false;// ドラッグ状態を保持
+	int dragIndex = -1;// ドラッグ中のアイテムのインデックス
 	m_time += elapsedTime;
-	if (0 <= m_num && m_num <= 2)//  セッティングシーンで「へんこう」と「おわり」以外が選ばれている場合
+	for (unsigned int i = 0; i < m_pBarPointer.size(); i++)
 	{
+		// ポインターの当たり判定チェック（円形）
 
-
-		//  キーボードの入力を取得
-		if (kbTracker->pressed.A)
+		if (m_pBarPointer[i]->IsHit(mousePos))
 		{
-			// ポインターの座標を左に移動
-			// 左に移動できるのは中心にいるときから５回まで
-			if (m_pBarPointer[m_num]->GetPosition().x > Screen::CENTER_X + 300 - 300)
-			{
-				m_pBarPointer[m_num]->SetPosition(Vector2(m_pBarPointer[m_num]->GetPosition().x - 60, m_pBarPointer[m_num]->GetPosition().y));
-				m_setting[m_num] -= 1;
-
-			}
-
-		}
-		if (kbTracker->pressed.D)
-		{
-			// ポインターの座標を右に移動
-			// 右に移動できるのは中心にいるときから５回まで
-			if (m_pBarPointer[m_num]->GetPosition().x < Screen::CENTER_X + 300 + 300)
-			{
-				m_pBarPointer[m_num]->SetPosition(Vector2(m_pBarPointer[m_num]->GetPosition().x + 60, m_pBarPointer[m_num]->GetPosition().y));
-				m_setting[m_num] += 1;
-
-
-			}
-
+			if (mouseTracker->GetLastState().leftButton) isDragging = true;
+			dragIndex = i;
+			break;
 		}
 
 	}
-	else if (m_num == 3)
+	// ドラッグ中ならマウス座標に追従
+	if (isDragging && dragIndex != -1)
 	{
-		//  「へんこう」が選ばれている場合,設定を保存する
-		if (kbTracker->pressed.Space)m_pSettingData->Save(m_setting[0], m_setting[1], m_setting[2]);
+		float newX = mousePos.x;
+
+		// 範囲制限（左端～右端）
+		float minX = Screen::CENTER_X + 300 - 300;
+		float maxX = Screen::CENTER_X + 300 + 300;
+		newX = std::max(minX, std::min(maxX, newX));
+
+		// ポインターの位置更新
+		m_pBarPointer[dragIndex]->SetPosition(Vector2(newX, m_pBarPointer[dragIndex]->GetPosition().y));
+
+		// 設定値の更新（0～5に変換）
+		m_setting[dragIndex] = static_cast<int>((newX - minX) / 60);
 	}
+
+	//  「へんこう」が選ばれている場合,設定を保存する
+	if (m_pSettingMenu->GetSelectIDNum() == SettingMenu::APPLY)
+	{
+		if (mouseTracker->GetLastState().leftButton)m_pSettingData->Save(m_setting[0], m_setting[1], m_setting[2]);
+	}
+#ifdef _DEBUG
+	// デバッグ情報を表示する
+	auto debugString = m_commonResources->GetDebugString();
+	auto& mousestate = m_commonResources->GetInputManager()->GetMouseState();
+	// ウィンドウ上のマウス座標を取得する
+	Vector2 pos = Vector2(static_cast<float>(mousestate.x), static_cast<float>(mousestate.y));
+
+	for (unsigned int i = 0; i < m_pBarPointer.size(); i++)
+		debugString->AddString("SelectNum:%i Setting:%i", m_pBarPointer[i]->IsHit(mousePos), m_setting[i]);
+
+	debugString->AddString("DragIndex:%i ", dragIndex);
+	debugString->AddString("MousePos:%f %f", pos.x, pos.y);
+	debugString->AddString("ClickLeft:%i", mouseTracker->GetLastState().leftButton);
+
+#endif
 
 }
 
@@ -133,6 +153,9 @@ void SettingBar::Render()
 		//  設定バーの玉を表示
 		m_pBarPointer[i]->Render();
 	}
+
+
+
 }
 
 void SettingBar::Add(const wchar_t* path

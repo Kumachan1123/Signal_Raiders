@@ -31,7 +31,7 @@ SettingMenu::SettingMenu()
 	, m_windowWidth{ 0 }
 	, m_windowHeight{ 0 }
 	, m_tracker{}
-	, m_num{ StateID::BGM }
+	, m_selectNum{ SelectID::NONE }
 {
 }
 
@@ -51,31 +51,31 @@ void SettingMenu::Initialize(CommonResources* resources, int width, int height)
 	//  「BGM」を読み込む
 	Add(L"Resources/Textures/BGM.png"
 		, SimpleMath::Vector2(Screen::LEFT + 400, Screen::CENTER_Y - 300)
-		, SimpleMath::Vector2(.5, .5)
+		, SimpleMath::Vector2(.75, .75)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
-		, UIType::SELECT);
+		, UIType::NON_SELECT);
 	//  「SE」を読み込む
 	Add(L"Resources/Textures/SE.png"
 		, SimpleMath::Vector2(Screen::LEFT + 400, Screen::CENTER_Y - 150)
-		, SimpleMath::Vector2(.5, .5)
+		, SimpleMath::Vector2(.75, .75)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
-		, UIType::SELECT);
+		, UIType::NON_SELECT);
 	//  「マウスかんど」を読み込む
 	Add(L"Resources/Textures/Mouse.png"
 		, SimpleMath::Vector2(Screen::LEFT + 400, Screen::CENTER_Y)
-		, SimpleMath::Vector2(.5, .5)
+		, SimpleMath::Vector2(.75, .75)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
-		, UIType::SELECT);
+		, UIType::NON_SELECT);
 	//  「へんこう」を読み込む
 	Add(L"Resources/Textures/Apply.png"
 		, SimpleMath::Vector2(Screen::LEFT + 400, Screen::CENTER_Y + 150)
-		, SimpleMath::Vector2(.5, .5)
+		, SimpleMath::Vector2(.75, .75)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//  「おわる」を読み込む
 	Add(L"Resources/Textures/end.png"
 		, SimpleMath::Vector2(Screen::LEFT + 400, Screen::CENTER_Y + 300)
-		, SimpleMath::Vector2(.5, .5)
+		, SimpleMath::Vector2(.75, .75)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	// 「操作説明」を読み込む
@@ -93,31 +93,32 @@ void SettingMenu::Update(float elapsedTime)
 	// マウスのトラッカーを取得する
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
 	m_time += elapsedTime;
-	//  キーボードの入力を取得
-	if (kbTracker->pressed.S)
+	// マウスの状態を取得
+	auto& mouseState = m_commonResources->GetInputManager()->GetMouseState();
+
+	// マウスの座標を取得
+	Vector2 mousePos = Vector2(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
+	//  メニューアイテムの数だけ繰り返す
+	m_menuIndex = -1;
+	for (int i = 0; i < m_pUI.size(); i++)
 	{
-		//  →キーを押したら、選択先を1つ進める
-		m_menuIndex += 1;
-		//  メニューアイテム数の最大値を超えないように制御
-		m_menuIndex %= m_pUI.size();
+		//  マウスの座標がアイテムの範囲内にあるかどうかを判定
+		if (m_pUI[i]->IsHit(mousePos))
+		{
+			//  範囲内にある場合は、選択中のアイテムを更新
+			m_menuIndex = i;
+		}
 	}
-	if (kbTracker->pressed.W)
+	if (mtracker->GetLastState().leftButton)
 	{
-		//  ←キーを押したら、選択先を1つ戻す
-		m_menuIndex += static_cast<unsigned int>(m_pUI.size()) - 1;
-		//  メニューアイテム数の最大値を超えないように制御
-		m_menuIndex %= m_pUI.size();
-	}
-	if (kbTracker->pressed.Space || mtracker->GetLastState().leftButton)
-	{
-		m_num = static_cast<StateID>(m_menuIndex);
+		m_selectNum = static_cast<SelectID>(m_menuIndex);
 	}
 	//  メニューアイテムの選択先を更新
 	for (int i = 0; i < m_pUI.size(); i++)
 	{
-		//  アイテムの選択状態を更新
-		m_pSelect[i]->SetScale(m_pSelect[i]->GetSelectScale());
-		m_pSelect[i]->SetTime(m_pSelect[i]->GetTime() + elapsedTime);
+		////  アイテムの選択状態を更新
+		//m_pSelect[i]->SetScale(m_pSelect[i]->GetSelectScale());
+		//m_pSelect[i]->SetTime(m_pSelect[i]->GetTime() + elapsedTime);
 		m_pUI[i]->SetScale(m_pUI[i]->GetSelectScale());
 		m_pUI[i]->SetTime(m_pUI[i]->GetTime() + elapsedTime);
 	}
@@ -127,16 +128,18 @@ void SettingMenu::Update(float elapsedTime)
 		m_pGuide[i]->SetScale(m_pGuide[i]->GetSelectScale());
 		m_pGuide[i]->SetTime(m_pGuide[i]->GetTime() + elapsedTime);
 	}
-	// 選択中の初期サイズを取得する
-	Vector2 select = m_pUI[m_menuIndex]->GetSelectScale();
-	//  選択状態とするための変化用サイズを算出する
-	SimpleMath::Vector2 selectScale = SimpleMath::Vector2::Lerp(m_pUI[m_menuIndex]->GetSelectScale(), SimpleMath::Vector2::One, 1);
-	//  選択状態は初期状態＋50％の大きさとする
-	select = SimpleMath::Vector2((sin(m_time) * 0.1f) + 1.0f);
-	//  算出後のサイズを現在のサイズとして設定する
-	m_pUI[m_menuIndex]->SetScale(select);
-	//  背景用のウィンドウ画像にも同じ割合の値を設定する
-	m_pSelect[m_menuIndex]->SetScale(Vector2::One);
+	if (m_menuIndex != SelectID::NONE)
+	{
+		// 選択中の初期サイズを取得する
+		Vector2 select = m_pUI[m_menuIndex]->GetSelectScale();
+		//  選択状態とするための変化用サイズを算出する
+		SimpleMath::Vector2 selectScale = SimpleMath::Vector2::Lerp(m_pUI[m_menuIndex]->GetSelectScale(), SimpleMath::Vector2::One, 1);
+		//  選択状態は初期状態＋50％の大きさとする
+		select = SimpleMath::Vector2((sin(m_time) * 0.1f) + 1.0f);
+		//  算出後のサイズを現在のサイズとして設定する
+		m_pUI[m_menuIndex]->SetScale(select);
+
+	}
 
 }
 
@@ -145,7 +148,7 @@ void SettingMenu::Render()
 	for (unsigned int i = 0; i < m_pUI.size(); i++)
 	{
 		//  アイテム用ウィンドウ背景を表示
-		if (i == m_menuIndex) m_pSelect[i]->Render();
+		//if (i == m_menuIndex) m_pSelect[i]->Render();
 		//  実際に表示したいアイテム画像を表示
 		m_pUI[i]->Render();
 	}
@@ -186,6 +189,6 @@ void SettingMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position
 	base->SetWindowSize(m_windowWidth, m_windowHeight);
 
 	//  背景用のアイテムも新しく追加する
-	m_pSelect.push_back(std::move(base));
+	//m_pSelect.push_back(std::move(base));
 
 }
