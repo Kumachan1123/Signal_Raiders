@@ -24,11 +24,13 @@ DamageEffects::~DamageEffects() {}
 /*
 *	@brief 初期化
 *	@param[in] pPlayer プレイヤーのポインタ
+*	@param[in] pEnemyManager 敵のポインタ
 *	@return なし
 */
-void DamageEffects::Initialize(Player* pPlayer)
+void DamageEffects::Initialize(Player* pPlayer, EnemyManager* pEnemyManager)
 {
 	m_pPlayer = pPlayer;// プレイヤーのポインターを受け取る
+	m_pEnemyManager = pEnemyManager;// 敵のポインターを受け取る
 }
 
 /*

@@ -59,7 +59,6 @@ private:
 	DirectX::Keyboard::KeyboardStateTracker m_tracker;// トラッカー
 
 
-	StateID m_num;// 状態ID
 	SelectID m_selectNum;// 選択ID
 	float m_time = 0;// 時間
 	//	関数
@@ -78,8 +77,6 @@ public:
 		, UIType type);
 
 public:
-	StateID GetStateIDNum() const { return m_num; }
-	void SetStateIDNum(StateID num) { m_num = num; }
 	SelectID GetSelectIDNum() const { return m_selectNum; }
 	void SetSelectIDNum(SelectID num) { m_selectNum = num; }
 	unsigned int GetMenuIndex() const { return m_menuIndex; }

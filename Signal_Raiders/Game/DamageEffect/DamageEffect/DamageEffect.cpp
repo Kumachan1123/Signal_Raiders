@@ -53,7 +53,7 @@ void DamageEffect::Initialize(Player* pPlayer)
 	m_pPlayer = pPlayer;// プレイヤーのポインタを受け取る
 	m_playEffect = true;// エフェクト再生フラグをtrueにする
 	MakeShader();	// シェーダーの作成
-	LoadTexture(L"Resources/Textures/crisis.png");// テクスチャ読み込み
+	LoadTexture(L"Resources/Textures/WARNING.png");// テクスチャ読み込み
 	m_pDrawPolygon->InitializePositionTexture(m_pDR);// 頂点情報の初期化
 	m_enemyDirection = m_pPlayer->GetEnemyBulletDirection();// 攻撃してきた敵の向きを取得
 }
@@ -67,7 +67,7 @@ void  DamageEffect::LoadTexture(const wchar_t* path)
 {
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;// テクスチャリソースビュー
 	DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, nullptr, texture.ReleaseAndGetAddressOf());// テクスチャの読み込み
-	m_texture.push_back(texture);// テクスチャリソースビューを格納
+	m_textures.push_back(texture);// テクスチャリソースビューを格納
 }
 
 
@@ -159,7 +159,7 @@ void  DamageEffect::Render()
 		DrawPolygon::BlendStates::NONPREMULTIPLIED,// ブレンドステート
 		DrawPolygon::RasterizerStates::CULL_NONE,// ラスタライザーステート
 		DrawPolygon::DepthStencilStates::DEPTH_NONE);// 深度ステンシルステート
-	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_texture);// 描画開始
+	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_textures);// 描画開始
 	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);// シェーダーの登録
 	m_pDrawPolygon->DrawTexture(vertex);// 板ポリゴンを描画
 	m_pDrawPolygon->ReleaseShader();// シェーダー解放

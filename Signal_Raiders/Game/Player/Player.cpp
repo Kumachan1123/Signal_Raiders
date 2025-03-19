@@ -51,7 +51,7 @@ void Player::Initialize(EnemyManager* pEnemies)
 	m_pPlayerController->SetPlayetPosition(m_pCamera->GetEyePosition());
 	// ダメージエフェクトを管理するクラス
 	m_pDamageEffects = std::make_unique<DamageEffects>(m_commonResources);
-	m_pDamageEffects->Initialize(this);
+	m_pDamageEffects->Initialize(this, m_pEnemyManager);
 
 }
 

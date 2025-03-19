@@ -86,7 +86,7 @@ private:
 	// コモンステート
 	std::unique_ptr<DirectX::CommonStates> m_states;
 	// テクスチャハンドル
-	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_texture;
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_textures;
 	// 頂点シェーダ
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
 	// ピクセルシェーダ

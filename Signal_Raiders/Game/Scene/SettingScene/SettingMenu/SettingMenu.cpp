@@ -22,6 +22,7 @@ using namespace DirectX::SimpleMath;
 
 SettingMenu::SettingMenu()
 	: m_menuIndex{ 0 }
+	, m_time{ 0 }
 	, m_pDR{ nullptr }
 	, m_commonResources{ nullptr }
 	, m_pUI{}
@@ -88,8 +89,6 @@ void SettingMenu::Initialize(CommonResources* resources, int width, int height)
 
 void SettingMenu::Update(float elapsedTime)
 {
-	//  キーボードの入力を取得
-	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
 	// マウスのトラッカーを取得する
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
 	m_time += elapsedTime;

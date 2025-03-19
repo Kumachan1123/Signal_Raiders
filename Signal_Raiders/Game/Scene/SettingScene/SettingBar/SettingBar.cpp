@@ -80,8 +80,6 @@ void SettingBar::Initialize(CommonResources* resources, int width, int height)
 
 void SettingBar::Update(float elapsedTime)
 {
-	//  キーボードの入力を取得
-	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
 	// マウスの状態を取得
 	auto& mouseState = m_commonResources->GetInputManager()->GetMouseState();
 	// マウスの座標を取得
