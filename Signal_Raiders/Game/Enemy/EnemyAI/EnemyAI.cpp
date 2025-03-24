@@ -16,7 +16,7 @@
 // ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 EnemyAI::EnemyAI(IEnemy* pEnemy)
 	: m_currentState(nullptr), m_attackCooldown(0.0f), m_pEnemyAttack(nullptr), m_time(0.0f), m_isHitPlayerBullet(false), m_knockTime(0.0f)
-	, m_pEnemySpin(nullptr), m_pEnemyIdling(nullptr), m_canAttack(true), m_enemyState(IState::EnemyState::IDLING), m_pEnemy(pEnemy)
+	, m_pEnemySpin(nullptr), m_pEnemyIdling(nullptr), m_canAttack(true), m_enemyState(IState::EnemyState::IDLING), m_pEnemy(pEnemy), m_isAttack(false)
 {
 	m_pEnemy = pEnemy;
 	m_pEnemyAttack = std::make_unique<EnemyAttack>(this);
@@ -56,11 +56,13 @@ void EnemyAI::Update(float elapsedTime)
 	{
 		ChangeState(m_pEnemyAttack.get());//UŒ‚‘Ô¨‚É‚·‚é
 		m_enemyState = IState::EnemyState::ATTACK;// œpœj‘Ô¨
+		m_isAttack = true;
 	}
 	else
 	{
 		ChangeState(m_pEnemyIdling.get());//œpœj‘Ô¨‚É‚·‚é
 		m_enemyState = IState::EnemyState::IDLING;// œpœj‘Ô¨
+		m_isAttack = false;
 	}
 	// ƒvƒŒƒCƒ„[‚Ì’e‚É“–‚½‚Á‚½ê‡
 	if (m_pEnemy->GetEnemyHitByPlayerBullet())
@@ -68,6 +70,7 @@ void EnemyAI::Update(float elapsedTime)
 		KnockBack(elapsedTime);
 		ChangeState(m_pEnemySpin.get());//ƒXƒsƒ“‚·‚é
 		m_enemyState = IState::EnemyState::HIT;// UŒ‚‚ðH‚ç‚Á‚½ó‘Ô‚É‚·‚é
+		m_isAttack = false;
 	}
 	m_currentState->Update(elapsedTime);
 	m_pEnemy->SetPosition(m_position);

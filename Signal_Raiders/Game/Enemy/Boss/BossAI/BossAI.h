@@ -49,6 +49,8 @@ public:
 	IState::EnemyState GetState()const { return m_enemyState; }// 状態を取得
 	void SetState(IState::EnemyState state) { m_enemyState = state; }// 状態を設定
 	void SetHitPlayerBullet(bool hit) { m_isHitPlayerBullet = hit; }// プレイヤーの弾に当たったか設定
+	bool GetIsAttack()const { return m_isAttack; }// 攻撃中か取得
+	void SetIsAttack(bool attack) { m_isAttack = attack; }// 攻撃中か設定
 
 public:
 	// publicメンバ関数
@@ -99,6 +101,8 @@ private:
 	bool m_isHitPlayerBullet;
 	// 一度でもノックバックが完了したらノックバック処理をしないためのフラグ
 	bool m_isKnockBack;
+	// 攻撃中か
+	bool m_isAttack;
 
 };
 #endif //BOSS_AI_DEFINED

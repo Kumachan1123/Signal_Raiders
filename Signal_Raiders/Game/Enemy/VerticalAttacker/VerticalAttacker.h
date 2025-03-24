@@ -46,6 +46,7 @@ private:
 	bool m_isEnemyHitByPlayerBullet;// 敵がプレイヤーの弾に当たったか
 	bool m_isPlayerHitByEnemyBullet;// 敵の弾がプレイヤーに当たったか
 	bool m_canAttack;// 攻撃可能か
+	bool m_isAttack;// 攻撃中か
 	float m_attackCooldown;  // 攻撃のクールダウンタイ
 	// オーディオマネージャー
 	AudioManager* m_audioManager;
@@ -88,7 +89,8 @@ public:
 	void SetCamera(FPS_Camera* camera) { m_pCamera = camera; }
 	BulletManager* GetBulletManager()const override { return m_pBulletManager; }
 	void SetBulletManager(BulletManager* bulletManager) override { m_pBulletManager = bulletManager; }
-
+	bool GetIsAttack() const override { return m_isAttack; }
+	void SetIsAttack(bool isAttack) override { m_isAttack = isAttack; }
 public:
 	// 初期ステータスを設定
 	VerticalAttacker(Player* pPlayer, CommonResources* resources, int hp);

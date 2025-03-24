@@ -249,7 +249,7 @@
     <ClInclude Include="Game\Radar\Radar.h" />
     <ClInclude Include="Game\Enemy\EnemyCounter\EnemyCounter.h" />
     <ClInclude Include="Game\Player\PlayerUI\Crisis\Crisis.h" />
-    <ClInclude Include="Game\DamageEffect\DamageEffect\DamageEffect.h" />
+    <ClInclude Include="Game\WarningEffect\DamageEffect\DamageEffect.h" />
     <ClInclude Include="Game\Enemy\Boss\Boss.h" />
     <ClInclude Include="Game\Interface\IEnemy.h" />
     <ClInclude Include="Game\Enemy\Boss\BossAI\BossAI.h" />
@@ -271,7 +271,7 @@
     <ClInclude Include="Game\KumachiLib\json.hpp" />
     <ClInclude Include="Game\KumachiLib\RenderTexture\RenderTexture.h" />
     <ClInclude Include="Game\KumachiLib\Bloom\Bloom.h" />
-    <ClInclude Include="Game\DamageEffect\DamageEffects\DamageEffects.h" />
+    <ClInclude Include="Game\WarningEffect\WarningEffects\WarningEffects.h" />
     <ClInclude Include="Game\Stage\Stage.h" />
     <ClInclude Include="Game\Player\PlayerUI\PlayGuide\PlayGuide.h" />
     <ClInclude Include="Game\Enemy\EnemyType\EnemyType.h" />
@@ -388,7 +388,7 @@
     <ClCompile Include="Game\Radar\Radar.cpp" />
     <ClCompile Include="Game\Enemy\EnemyCounter\EnemyCounter.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\Crisis\Crisis.cpp" />
-    <ClCompile Include="Game\DamageEffect\DamageEffect\DamageEffect.cpp" />
+    <ClCompile Include="Game\WarningEffect\DamageEffect\DamageEffect.cpp" />
     <ClCompile Include="Game\Enemy\Boss\Boss.cpp" />
     <ClCompile Include="Game\Enemy\Boss\BossAI\BossAttack\BossAttack.cpp" />
     <ClCompile Include="Game\Enemy\Boss\BossAI\BossIdling\BossIdling.cpp" />
@@ -408,7 +408,7 @@
     <ClCompile Include="Game\KumachiLib\CreateShader\CreateShader.cpp" />
     <ClCompile Include="Game\KumachiLib\RenderTexture\RenderTexture.cpp" />
     <ClCompile Include="Game\KumachiLib\Bloom\Bloom.cpp" />
-    <ClCompile Include="Game\DamageEffect\DamageEffects\DamegeEffects.cpp" />
+    <ClCompile Include="Game\WarningEffect\WarningEffects\WarningEffects.cpp" />
     <ClCompile Include="Game\Stage\Stage.cpp" />
     <ClCompile Include="Game\Player\PlayerUI\PlayGuide\PlayGuide.cpp" />
     <ClCompile Include="Game\Enemy\EnemyFactory\EnemyFactory.cpp" />

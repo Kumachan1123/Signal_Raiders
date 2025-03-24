@@ -1,25 +1,26 @@
 /*
-*	@file DamageEffects.cpp
+*	@file WarningEffects.cpp
 *	@brief ダメージエフェクトの管理クラスのソースファイル
 */
 #include <pch.h>
-#include "DamageEffects.h"
+#include "WarningEffects.h"
 
 /*
 *	@brief コンストラクタ
 *	@param[in] resources 共通リソース
 *	@return なし
 */
-DamageEffects::DamageEffects(CommonResources* resources)
+WarningEffects::WarningEffects(CommonResources* resources)
 	: m_commonResources(resources)
 	, m_pPlayer{}
+	, m_pEnemyManager{}
 {}
 
 /*
 *	@brief デストラクタ
 *	@return なし
 */
-DamageEffects::~DamageEffects() {}
+WarningEffects::~WarningEffects() {}
 
 /*
 *	@brief 初期化
@@ -27,7 +28,7 @@ DamageEffects::~DamageEffects() {}
 *	@param[in] pEnemyManager 敵のポインタ
 *	@return なし
 */
-void DamageEffects::Initialize(Player* pPlayer, EnemyManager* pEnemyManager)
+void WarningEffects::Initialize(Player* pPlayer, EnemyManager* pEnemyManager)
 {
 	m_pPlayer = pPlayer;// プレイヤーのポインターを受け取る
 	m_pEnemyManager = pEnemyManager;// 敵のポインターを受け取る
@@ -37,11 +38,18 @@ void DamageEffects::Initialize(Player* pPlayer, EnemyManager* pEnemyManager)
 *	@brief ダメージを受けた時の演出を生成
 *	@return なし
 */
-void DamageEffects::Create()
+void WarningEffects::CreateDamageEffects()
 {
 	std::unique_ptr<DamageEffect> damageEffect = std::make_unique<DamageEffect>(m_commonResources);// ダメージエフェクトの生成
-	damageEffect->Initialize(m_pPlayer);// 初期化
+	damageEffect->SetPlayer(m_pPlayer);// プレイヤーのポインタを設定
+	damageEffect->SetEnemyManager(m_pEnemyManager);// 敵のポインタを設定
+	damageEffect->SetEffectType(DamageEffect::EffectType::DAMAGE);// エフェクトタイプを設定
+	damageEffect->Initialize();// 初期化
 	m_pDamageEffect.push_back(std::move(damageEffect));// ダメージエフェクトをリストに追加
+}
+
+void WarningEffects::CreateInComingEnemy()
+{
 }
 
 /*
@@ -49,7 +57,7 @@ void DamageEffects::Create()
 *	@param[in] elapsedTime 経過時間
 *	@return なし
 */
-void DamageEffects::Update(float elapsedTime)
+void WarningEffects::Update(float elapsedTime)
 {
 	std::vector<std::unique_ptr<DamageEffect>> newDamageEffect;// 新しいダメージエフェクト
 	for (auto& damageEffect : m_pDamageEffect)
@@ -69,7 +77,7 @@ void DamageEffects::Update(float elapsedTime)
 *	@brief 描画
 *	@return なし
 */
-void DamageEffects::Render()
+void WarningEffects::Render()
 {
 	for (auto& damageEffect : m_pDamageEffect)if (damageEffect->GetPlayEffect())damageEffect->Render();	// ダメージエフェクトを更新する
 }

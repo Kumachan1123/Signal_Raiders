@@ -28,8 +28,10 @@ DamageEffect::DamageEffect(CommonResources* resources)
 	, m_constBuffer{}
 	, m_pDR(resources->GetDeviceResources())
 	, m_pPlayer(nullptr)
+	, m_pEnemyManager(nullptr)
 	, m_enemyDirection{}
 	, m_playEffect(false)
+	, m_effectType(EffectType::DAMAGE)
 	, m_pDrawPolygon(DrawPolygon::GetInstance())
 	, m_pCreateShader(CreateShader::GetInstance())
 {
@@ -48,14 +50,17 @@ DamageEffect::~DamageEffect() {}
 *	@param[in] pPlayer プレイヤーのポインタ
 *	@return なし
 */
-void DamageEffect::Initialize(Player* pPlayer)
+void DamageEffect::Initialize()
 {
-	m_pPlayer = pPlayer;// プレイヤーのポインタを受け取る
 	m_playEffect = true;// エフェクト再生フラグをtrueにする
 	MakeShader();	// シェーダーの作成
 	LoadTexture(L"Resources/Textures/WARNING.png");// テクスチャ読み込み
 	m_pDrawPolygon->InitializePositionTexture(m_pDR);// 頂点情報の初期化
 	m_enemyDirection = m_pPlayer->GetEnemyBulletDirection();// 攻撃してきた敵の向きを取得
+	if (m_effectType == EffectType::DAMAGE)
+		m_constBuffer.colors = DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f);// エフェクトタイプがダメージなら赤色
+	else if (m_effectType == EffectType::INCOMINGENEMY)
+		m_constBuffer.colors = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 0.0f, 1.0f);// エフェクトタイプが警告なら黄色
 }
 
 /*

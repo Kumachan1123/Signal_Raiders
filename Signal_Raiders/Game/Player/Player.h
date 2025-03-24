@@ -4,7 +4,7 @@
 #include "Game/Player/PlayerController/PlayerController.h"
 #include "Game/Player/PlayerUI/PlayerHP/PlayerHP.h"
 #include "Game/BulletManager/BulletManager.h"
-#include "Game/DamageEffect/DamageEffects/DamageEffects.h"
+#include "Game/WarningEffect/WarningEffects/WarningEffects.h"
 #include "Game/Enemy/EnemyManager/EnemyManager.h"
 #include "Game/FPS_Camera/FPS_Camera.h"
 
@@ -16,7 +16,7 @@ class Goal;
 class Reticle;
 class PlayerHP;
 class Crisis;
-class DamageEffects;
+class WarningEffects;
 class FPS_Camera;
 
 // プレイヤークラス
@@ -40,7 +40,7 @@ private:
 	// プレイヤーが走れる時間
 	float m_dashTime;
 	// ダメージエフェクトを管理するクラス
-	std::unique_ptr<DamageEffects> m_pDamageEffects;
+	std::unique_ptr<WarningEffects> m_pWarningEffects;
 	// プレイヤーコントローラー
 	std::unique_ptr<PlayerController> m_pPlayerController;
 	// 弾マネージャー（プレイシーンから受け取る）
@@ -126,5 +126,5 @@ public:
 	void CreateBullet();// 弾を生成する
 private:
 	void PlayerDamage(float elapsedTime);// プレイヤーがダメージを受けた時の処理
-
+	void InComingEnemy();// 攻撃しようとしている敵に関する処理
 };

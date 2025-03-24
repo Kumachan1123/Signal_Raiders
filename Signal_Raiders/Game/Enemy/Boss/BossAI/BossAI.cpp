@@ -23,6 +23,7 @@ BossAI::BossAI(IEnemy* pBoss)
 	, m_pBoss(pBoss)// ボス
 	, m_isHitPlayerBullet(false)// プレイヤーの弾に当たったか
 	, m_isKnockBack(false)// ノックバック中か
+	, m_isAttack(false)// 攻撃中か
 {
 	m_pBossAttack = std::make_unique<BossAttack>(this);// 攻撃時
 	m_pBossIdling = std::make_unique<BossIdling>(this);// 待機時
@@ -68,10 +69,12 @@ void BossAI::Update(float elapsedTime)
 	{
 		ChangeState(m_pBossIdling.get());//徘徊態勢にす
 		KnockBack(elapsedTime);// ノックバック処理
+		m_isAttack = false;// 攻撃中ではない
 	}
 	else // シールドが壊されていない場合
 	{
 		ChangeState(m_pBossAttack.get());//攻撃態勢にする
+		m_isAttack = true;// 攻撃中
 	}
 	m_pBoss->SetPosition(m_position);// 位置をセット
 }

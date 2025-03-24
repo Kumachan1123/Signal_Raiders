@@ -135,7 +135,7 @@ private:
 	void FinalizeEnemySpawn();// 敵生成終了
 	void SpawnBoss();// ボス生成
 	void HandleEnemyCollisions();// 敵の当たり判定
-	void HandlePlayerCollisions(float elapsedTime);// プレイヤーと敵の当たり判定
+	void UpdateEnemies(float elapsedTime);// プレイヤーと敵の当たり判定
 	void HandleEnemyBulletCollision(std::unique_ptr<IEnemy>& enemy);// 敵の弾とプレイヤーの当たり判定
 	void HandleEnemyPlayerCollision(std::unique_ptr<IEnemy>& enemy);// 敵とプレイヤーの当たり判定
 	void HandleWallCollision();// 壁との当たり判定

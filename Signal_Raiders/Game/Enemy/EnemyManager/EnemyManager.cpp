@@ -38,6 +38,7 @@ EnemyManager::EnemyManager(CommonResources* commonResources)
 	, m_enemyBornTimer{ 0.0f }
 	, m_bossHP{ 0 }
 	, m_bossBulletType{ Boss::BossBulletType::NORMAL }
+	, m_specialAttackCount{ 0 }
 	, m_startTime{ 0.0f }
 	, m_pWifi{ nullptr }
 	, m_pWall{ nullptr }
@@ -90,7 +91,7 @@ void EnemyManager::Update(float elapsedTime)
 	HandleEnemyCollisions();
 
 	// 敵とプレイヤーの当たり判定
-	HandlePlayerCollisions(elapsedTime);
+	UpdateEnemies(elapsedTime);
 
 	// 敵と壁の当たり判定
 	HandleWallCollision();
@@ -295,19 +296,19 @@ void EnemyManager::HandleWallCollision()
 }
 
 //---------------------------------------------------------
-// 敵とプレイヤーの当たり判定処理
+// 敵全体の更新処理
 //---------------------------------------------------------
-void EnemyManager::HandlePlayerCollisions(float elapsedTime)
+void EnemyManager::UpdateEnemies(float elapsedTime)
 {
 	for (auto& enemy : m_enemies)
 	{
 		enemy->Update(elapsedTime);// 敵の更新
 
-		// 敵の弾がプレイヤーに当たったら
-		HandleEnemyBulletCollision(enemy);
+		HandleEnemyBulletCollision(enemy);// 敵の弾がプレイヤーに当たったら
 
-		// 敵がプレイヤーに当たったら
-		HandleEnemyPlayerCollision(enemy);
+		HandleEnemyPlayerCollision(enemy);// 敵がプレイヤーに当たったら
+
+
 	}
 }
 

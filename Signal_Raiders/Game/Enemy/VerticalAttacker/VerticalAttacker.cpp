@@ -48,6 +48,7 @@ VerticalAttacker::VerticalAttacker(Player* pPlayer, CommonResources* resources, 
 	, m_isEnemyHitByPlayerBullet{ false }
 	, m_isPlayerHitByEnemyBullet{ false }
 	, m_canAttack{ true }
+	, m_isAttack{ false }
 	, m_audioManager{ AudioManager::GetInstance() } {}
 
 // デストラクタ
@@ -82,6 +83,8 @@ void VerticalAttacker::Initialize()
 void VerticalAttacker::Update(float elapsedTime)
 {
 	m_pVerticalAttackerModel->SetState(m_enemyAI->GetState());// モデルの更新
+	m_pHPBar->SetCurrentHP(m_currentHP);
+	m_pHPBar->Update(elapsedTime);
 	m_enemyAI->Update(elapsedTime);// AIの更新
 	m_audioManager->Update();// オーディオマネージャーの更新
 	if (m_enemyAI->GetNowState() == m_enemyAI->GetEnemyAttack())// 攻撃態勢なら
@@ -90,8 +93,7 @@ void VerticalAttacker::Update(float elapsedTime)
 	}
 	// 敵の当たり判定の座標を更新
 	m_enemyBS.Center = m_position;
-	m_pHPBar->SetCurrentHP(m_currentHP);
-	m_pHPBar->Update(elapsedTime);
+
 	m_isDead = m_pHPBar->GetIsDead();// 敵のHPが0になったら死亡
 }
 

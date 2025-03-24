@@ -37,14 +37,14 @@ float4 main(PS_INPUT input) : SV_TARGET
     float distance = length(uvOffset); // 距離
 
     // 光の弧の描画範囲を調整する
-    float innerRadius = 0.0001; // 白の面積の半径
-    float outerRadius = 0.125; // 赤の面積の半径
+    float innerRadius = 0.0001; // 色の面積の半径
+    float outerRadius = 0.1125; // 黒の面積の半径
 
     // 光の弧の範囲内でのグラデーションを計算する
     float corona = smoothstep(innerRadius, outerRadius, distance);
 
     // 補間する
-    float3 rgb = lerp(float3(1.0, 0.25, 0.0), float3(3.0, 0.0, 0.0), corona);
+    float3 rgb = lerp(color.rgb, float3(0.0, 0.0, 0.0), corona);
 
     // アルファ値を光の弧に基づいて調整する
     float a = (color.a - corona);

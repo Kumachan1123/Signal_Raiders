@@ -50,8 +50,8 @@ void Player::Initialize(EnemyManager* pEnemies)
 	m_pPlayerController->Initialize(m_commonResources);
 	m_pPlayerController->SetPlayetPosition(m_pCamera->GetEyePosition());
 	// ダメージエフェクトを管理するクラス
-	m_pDamageEffects = std::make_unique<DamageEffects>(m_commonResources);
-	m_pDamageEffects->Initialize(this, m_pEnemyManager);
+	m_pWarningEffects = std::make_unique<WarningEffects>(m_commonResources);
+	m_pWarningEffects->Initialize(this, m_pEnemyManager);
 
 }
 
@@ -83,7 +83,7 @@ void Player::Update(float elapsedTime)
 	// 弾のリロード
 	m_pPlayerController->Reload();
 	// ダメージエフェクトを更新する
-	m_pDamageEffects->Update(elapsedTime);
+	m_pWarningEffects->Update(elapsedTime);
 	// プレイヤーの境界球を更新
 	m_inPlayerArea.Center = GetPlayerController()->GetPlayerPosition();// プレイヤーの位置を取得
 	m_playerSphere.Center = m_inPlayerArea.Center;// プレイヤーの位置を取得
@@ -93,7 +93,7 @@ void Player::Update(float elapsedTime)
 void Player::Render()
 {
 	// ダメージエフェクトを更新する
-	m_pDamageEffects->Render();
+	m_pWarningEffects->Render();
 }
 
 void Player::CreateBullet()
@@ -112,7 +112,7 @@ void Player::PlayerDamage(float elapsedTime)
 		if (m_isPlayEffect == true)
 		{
 			// ダメージエフェクト生成
-			m_pDamageEffects->Create();
+			m_pWarningEffects->CreateDamageEffects();
 			// ダメージエフェクトを生成したらfalse
 			m_isPlayEffect = false;
 		}
@@ -128,4 +128,12 @@ void Player::PlayerDamage(float elapsedTime)
 		}
 	}
 	else m_pCamera->SetTargetPositionY(m_pPlayerController->GetPitch());// カメラの注視点を設定
+}
+
+void Player::InComingEnemy()
+{
+
+	// ダメージエフェクト生成
+	m_pWarningEffects->CreateDamageEffects();
+
 }
