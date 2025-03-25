@@ -42,14 +42,29 @@ void WarningEffects::CreateDamageEffects()
 {
 	std::unique_ptr<DamageEffect> damageEffect = std::make_unique<DamageEffect>(m_commonResources);// ダメージエフェクトの生成
 	damageEffect->SetPlayer(m_pPlayer);// プレイヤーのポインタを設定
-	damageEffect->SetEnemyManager(m_pEnemyManager);// 敵のポインタを設定
 	damageEffect->SetEffectType(DamageEffect::EffectType::DAMAGE);// エフェクトタイプを設定
 	damageEffect->Initialize();// 初期化
 	m_pDamageEffect.push_back(std::move(damageEffect));// ダメージエフェクトをリストに追加
 }
 
+/*
+*	@brief 敵が攻撃してきた時の演出を生成
+*	@return なし
+*/
 void WarningEffects::CreateInComingEnemy()
 {
+	for (auto& attackingEnemy : m_pEnemyManager->GetEnemies())
+	{
+		if (!attackingEnemy->GetIsAttack())continue;// 攻撃フラグが立っていなかったら次のループへ
+		std::unique_ptr<DamageEffect> warningEffect = std::make_unique<DamageEffect>(m_commonResources);// ダメージエフェクトの生成
+		warningEffect->SetPlayer(m_pPlayer);// プレイヤーのポインタを設定
+		warningEffect->SetEffectType(DamageEffect::EffectType::INCOMINGENEMY);// エフェクトタイプを設定
+		warningEffect->SetEnemy(attackingEnemy.get());// 攻撃してきた敵のポインタを設定
+		warningEffect->Initialize();// 初期化
+		m_pDamageEffect.push_back(std::move(warningEffect));// ダメージエフェクトをリストに追加
+
+	}
+
 }
 
 /*

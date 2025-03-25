@@ -300,6 +300,9 @@ void EnemyManager::HandleWallCollision()
 //---------------------------------------------------------
 void EnemyManager::UpdateEnemies(float elapsedTime)
 {
+	// 攻撃中の敵配列をクリア
+	m_attackingEnemies.clear();
+
 	for (auto& enemy : m_enemies)
 	{
 		enemy->Update(elapsedTime);// 敵の更新

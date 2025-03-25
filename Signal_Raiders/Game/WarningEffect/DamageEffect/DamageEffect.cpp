@@ -28,7 +28,7 @@ DamageEffect::DamageEffect(CommonResources* resources)
 	, m_constBuffer{}
 	, m_pDR(resources->GetDeviceResources())
 	, m_pPlayer(nullptr)
-	, m_pEnemyManager(nullptr)
+	, m_pEnemy(nullptr)
 	, m_enemyDirection{}
 	, m_playEffect(false)
 	, m_effectType(EffectType::DAMAGE)
@@ -56,11 +56,18 @@ void DamageEffect::Initialize()
 	MakeShader();	// シェーダーの作成
 	LoadTexture(L"Resources/Textures/WARNING.png");// テクスチャ読み込み
 	m_pDrawPolygon->InitializePositionTexture(m_pDR);// 頂点情報の初期化
-	m_enemyDirection = m_pPlayer->GetEnemyBulletDirection();// 攻撃してきた敵の向きを取得
 	if (m_effectType == EffectType::DAMAGE)
+	{
 		m_constBuffer.colors = DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f);// エフェクトタイプがダメージなら赤色
+		m_enemyDirection = m_pPlayer->GetEnemyBulletDirection();// 攻撃してきた敵の向きを取得
+	}
+
 	else if (m_effectType == EffectType::INCOMINGENEMY)
+	{
 		m_constBuffer.colors = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 0.0f, 1.0f);// エフェクトタイプが警告なら黄色
+		m_enemyPosition = m_pEnemy->GetPosition();// 敵の位置を取得
+		m_enemyDirection = m_pPlayer->GetPlayerPos() - m_enemyPosition;// プレイヤーと敵の位置の差を取得
+	}
 }
 
 /*

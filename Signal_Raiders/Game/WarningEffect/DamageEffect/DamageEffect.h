@@ -22,7 +22,7 @@
 
 // クラスの前方宣言
 class Player;
-class EnemyManager;
+class IEnemy;
 class CommonResources;
 
 class DamageEffect
@@ -50,8 +50,8 @@ public:
 	// アクセサ
 	Player* GetPlayer()const { return m_pPlayer; }// プレイヤーのポインタ取得
 	void SetPlayer(Player* pPlayer) { m_pPlayer = pPlayer; }// プレイヤーのポインタ設定
-	EnemyManager* GetEnemyManager()const { return m_pEnemyManager; }// 敵のポインタ取得
-	void SetEnemyManager(EnemyManager* pEnemyManager) { m_pEnemyManager = pEnemyManager; }// 敵のポインタ設定
+	IEnemy* GetEnemy()const { return m_pEnemy; }// 敵のポインタ取得
+	void SetEnemy(IEnemy* pEnemy) { m_pEnemy = pEnemy; }// 敵のポインタ設定
 	bool GetPlayEffect()const { return m_playEffect; }// エフェクト再生フラグ取得
 	DirectX::SimpleMath::Vector3 GetEnemyDirection()const { return m_enemyDirection; }// 攻撃してきた敵の向き取得
 	void SetEffectType(EffectType type) { m_effectType = type; }// エフェクトタイプ設定
@@ -88,7 +88,7 @@ private:
 	// プレイヤーのポインター
 	Player* m_pPlayer;
 	// 敵のポインター
-	EnemyManager* m_pEnemyManager;
+	IEnemy* m_pEnemy;
 	// 描画クラス
 	DrawPolygon* m_pDrawPolygon;
 	// シェーダー作成クラス
@@ -117,6 +117,8 @@ private:
 	float m_time;
 	// 攻撃してきた敵のいる向き
 	DirectX::SimpleMath::Vector3 m_enemyDirection;
+	// 攻撃してくる敵の座標
+	DirectX::SimpleMath::Vector3 m_enemyPosition;
 	// プレイヤーの向き
 	DirectX::SimpleMath::Vector3 m_playerDirection;
 	// 固定値
@@ -135,7 +137,7 @@ private:
 	// 再生時間
 	const float PLAY_TIME = 1.75f;
 	// 破棄時間
-	const float DESTROY_TIME = 4.0f;
+	const float DESTROY_TIME = 2.0f;
 	// エフェクト再生フラグ
 	bool m_playEffect;
 	// エフェクトタイプ

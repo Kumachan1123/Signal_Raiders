@@ -66,6 +66,8 @@ void Player::Update(float elapsedTime)
 	// プレイヤーコントローラー更新
 	m_pPlayerController->Update(elapsedTime);
 
+	// 敵が攻撃してきた時の処理
+	InComingEnemy();
 	// ダメージを食らった時の処理
 	PlayerDamage(elapsedTime);
 	// プレイヤーの位置を取得
@@ -134,6 +136,6 @@ void Player::InComingEnemy()
 {
 
 	// ダメージエフェクト生成
-	m_pWarningEffects->CreateDamageEffects();
+	m_pWarningEffects->CreateInComingEnemy();
 
 }

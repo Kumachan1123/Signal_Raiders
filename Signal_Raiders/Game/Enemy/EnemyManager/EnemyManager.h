@@ -49,6 +49,8 @@ private:
 	CommonResources* m_commonResources;
 	// 敵
 	std::vector<std::unique_ptr<IEnemy>> m_enemies;
+	// 攻撃中の敵配列
+	std::vector<std::unique_ptr<IEnemy>> m_attackingEnemies;
 	// ボス
 	std::unique_ptr<Boss> m_boss;
 	// ステージ番号（0から4をプレイシーンから参照）
@@ -110,6 +112,7 @@ public:
 
 public:
 	std::vector<std::unique_ptr<IEnemy>>& GetEnemies() { return m_enemies; }  // 敵リスト
+	std::vector<std::unique_ptr<IEnemy>>& GetAttackingEnemies() { return m_attackingEnemies; }  // 攻撃中の敵リスト
 	int GetEnemyIndex() const { return m_enemyIndex; }// 生成された敵の最大数
 	int GetEnemySize() const { return static_cast<int>(m_enemies.size()); }
 	std::unique_ptr<Wifi>& GetWifi() { return m_pWifi; }// Wi-Fi
