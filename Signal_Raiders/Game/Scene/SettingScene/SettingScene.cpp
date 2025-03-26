@@ -83,8 +83,8 @@ void SettingScene::Initialize(CommonResources* resources)
 	// 設定データの読み込み
 	m_pSettingData = std::make_unique<SettingData>();
 	m_pSettingData->Load();
-	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume());
-	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume());
+	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume()) * .1f;
+	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume()) * .1f;
 	// 音声を初期化する
 	InitializeFMOD();
 
@@ -104,27 +104,18 @@ void SettingScene::Update(float elapsedTime)
 	// オーディオマネージャーの更新処理
 	m_audioManager->Update();
 
-	// キーボードステートトラッカーを取得する
-	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
 	// マウスのトラッカーを取得する
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
-
-	// AかDのいずれかが押されたら
-	if (kbTracker->pressed.A || kbTracker->pressed.D)
-	{
-		SetVolume();// 音量の設定
-		m_audioManager->PlaySound("Select", m_SEvolume);// SEの再生
-	}
 
 	// メニューでの選択処理が行われたら
 	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
 	{
 		if (mtracker->GetLastState().leftButton)
 		{
-			m_audioManager->PlaySound("SE", m_SEvolume);// SEの再生
 			if (m_pSettingMenu->GetSelectIDNum() == SettingMenu::SelectID::END ||
 				m_pSettingMenu->GetSelectIDNum() == SettingMenu::SelectID::APPLY)
 			{
+
 				m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
 				m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
 			}
@@ -132,6 +123,7 @@ void SettingScene::Update(float elapsedTime)
 			{
 				// マウスポインターの更新
 				m_pMousePointer->Update(elapsedTime);
+
 			}
 
 		}
@@ -179,6 +171,7 @@ void SettingScene::Render()
 //---------------------------------------------------------
 void SettingScene::Finalize()
 {
+	SetVolume();// 音量の設定
 	// オーディオマネージャーの終了処理
 	m_audioManager->Shutdown();
 }
@@ -191,6 +184,8 @@ IScene::SceneID SettingScene::GetNextSceneID() const
 	// シーン変更がある場合
 	if (m_isChangeScene)
 	{
+
+
 		m_audioManager->StopSound("BGM");// BGMの停止
 		m_audioManager->StopSound("SE");// SEの停止
 		m_audioManager->StopSound("Select");// Selectの停止
@@ -216,6 +211,13 @@ void SettingScene::InitializeFMOD()
 // 音量を設定する
 void SettingScene::SetVolume()
 {
-	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingBar->GetSetting(0));
-	m_SEvolume = VOLUME * static_cast<float>(m_pSettingBar->GetSetting(1));
+	// 音量の取得(10分の1で割合を取得)
+	float BGMvolume = static_cast<float>(m_pSettingBar->GetSetting(0)) * 0.1f;
+	float SEvolume = static_cast<float>(m_pSettingBar->GetSetting(1)) * 0.1f;
+	// 設定の変更
+	m_pSettingData->SetBGMVolume(m_pSettingBar->GetSetting(0));
+	m_pSettingData->SetSEVolume(m_pSettingBar->GetSetting(1));
+	// 音量の設定
+	m_BGMvolume = VOLUME * BGMvolume;
+	m_SEvolume = VOLUME * SEvolume;
 }

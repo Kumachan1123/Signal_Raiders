@@ -82,8 +82,8 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_pMousePointer->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
 
 	// 音量の設定
-	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume());
-	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume());
+	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume()) * 0.1f;
+	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume()) * 0.1f;
 	// 音声を初期化する
 	InitializeFMOD();
 

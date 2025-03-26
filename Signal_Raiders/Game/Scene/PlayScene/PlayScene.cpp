@@ -64,8 +64,8 @@ void PlayScene::Initialize(CommonResources* resources)
 	// 設定データを取得する
 	m_pSettingData = std::make_unique<SettingData>();
 	m_pSettingData->Load();
-	m_BGMvolume = BGM_VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume());// BGMの音量を設定する(若干音量を補正)
-	m_SEvolume = SE_VOLUME * static_cast<float>(m_pSettingData->GetSEVolume());// SEの音量を設定する
+	m_BGMvolume = BGM_VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume()) * 0.1f;// BGMの音量を設定する(若干音量を補正)
+	m_SEvolume = SE_VOLUME * static_cast<float>(m_pSettingData->GetSEVolume()) * 0.1f;// SEの音量を設定する
 	m_mouseSensitivity = static_cast<float>(m_pSettingData->GetMouseSensitivity());// マウス感度を設定する
 	// 地面（ステージ生成）
 	m_pStage = std::make_unique<Stage>();

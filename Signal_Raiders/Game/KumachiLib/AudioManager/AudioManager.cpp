@@ -33,14 +33,30 @@ AudioManager::~AudioManager()
 // FMODシステムの初期化
 void AudioManager::Initialize()
 {
-	FMOD::System_Create(&m_system);
-	m_system->init(512, FMOD_INIT_NORMAL, nullptr);
+	FMOD_RESULT result = FMOD::System_Create(&m_system);
+	if (result != FMOD_OK || !m_system)
+	{
+		// エラー処理
+		m_system = nullptr;
+		return;
+	}
+	result = m_system->init(512, FMOD_INIT_NORMAL, nullptr);
+	if (result != FMOD_OK)
+	{
+		// エラー処理
+		//m_system->release();
+		m_system = nullptr;
+		//return;
+	}
+	//FMOD::System_Create(&m_system);
+	//m_system->init(512, FMOD_INIT_NORMAL, nullptr);
 }
 
 
 // 音を再生する(音声の種類key->"BGM","SE") (音量指定:min = 0,max = 1)
 void AudioManager::PlaySound(const std::string& soundKey, float volume)
 {
+	//if (!m_system) return; // m_system が null なら再生しない
 	auto soundIt = m_sounds.find(soundKey);
 	if (soundIt != m_sounds.end())
 	{
@@ -97,7 +113,16 @@ void AudioManager::Shutdown()
 		}
 	}
 	m_sounds.clear();
-
+	// チャンネルも解放
+	for (auto& pair : m_channels)
+	{
+		if (pair.second)
+		{
+			pair.second->stop();
+			pair.second = nullptr;
+		}
+	}
+	m_channels.clear();
 	if (m_system)
 	{
 		//m_system->close();

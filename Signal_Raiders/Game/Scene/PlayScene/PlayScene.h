@@ -101,8 +101,9 @@ private:
 	// ステージ番号
 	int m_stageNumber;
 	// 音量の基準
-	const float SE_VOLUME = 0.5f;// SEの音量
-	const float BGM_VOLUME = 0.5f;// BGMの音量
+	const float VOLUME = 0.5f;
+	const float SE_VOLUME = VOLUME;// SEの音量
+	const float BGM_VOLUME = VOLUME;// BGMの音量
 	float m_BGMvolume;	// ボリューム
 	float m_SEvolume;	// ボリューム
 	float m_mouseSensitivity;	// マウス感度

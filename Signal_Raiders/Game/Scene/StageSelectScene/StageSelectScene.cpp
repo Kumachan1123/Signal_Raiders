@@ -70,8 +70,8 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	// 設定ファイルの読み込み
 	m_pSettingData = std::make_unique<SettingData>();
 	m_pSettingData->Load();
-	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume());
-	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume());
+	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume()) * 0.1f;// BGMの音量を設定(割合変換)
+	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume()) * 0.1f;// SEの音量を設定(割合変換)
 	// マウスポインターを作成
 	m_pMousePointer = std::make_unique<MousePointer>();
 	m_pMousePointer->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
