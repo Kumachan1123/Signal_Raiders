@@ -134,8 +134,24 @@ void Player::PlayerDamage(float elapsedTime)
 
 void Player::InComingEnemy()
 {
-
+	// これがtureなら実行
+	bool isPlayEffect = false;
+	// 攻撃しようとしている敵の数
+	int count = 0;
+	// 攻撃しようとしている敵がいたら実行
+	for (auto& enemy : m_pEnemyManager->GetEnemies())
+	{
+		if (enemy->GetIsAttack() == true)
+		{
+			isPlayEffect = true;
+			count++;
+		}
+	}
 	// ダメージエフェクト生成
-	m_pWarningEffects->CreateInComingEnemy();
+	if (isPlayEffect)
+	{
+		m_pWarningEffects->SetWarningEffectCount(count);
+		m_pWarningEffects->CreateInComingEnemy();
+	}
 
 }

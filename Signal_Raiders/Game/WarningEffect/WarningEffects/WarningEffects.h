@@ -22,6 +22,10 @@ class DamageEffect;
 class WarningEffects
 {
 public:
+	// アクセサ
+	int GetWarningEffectCount()const { return m_warningEffectCount; }// 攻撃しようとしている敵の数取得
+	void SetWarningEffectCount(int count) { m_warningEffectCount = count; }// 攻撃しようとしている敵の数設定
+
 	// publicメンバ関数
 	WarningEffects(CommonResources* resources);// コンストラクタ
 	~WarningEffects();// デストラクタ
@@ -36,4 +40,6 @@ private:
 	Player* m_pPlayer;// プレイヤー
 	EnemyManager* m_pEnemyManager;// 敵
 	std::vector<std::unique_ptr<DamageEffect>> m_pDamageEffect;	// ダメージエフェクト
+	int m_warningEffectCount;// 攻撃しようとしている敵の数
+
 };

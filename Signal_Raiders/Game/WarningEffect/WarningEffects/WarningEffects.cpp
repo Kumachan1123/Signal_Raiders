@@ -12,6 +12,7 @@
 */
 WarningEffects::WarningEffects(CommonResources* resources)
 	: m_commonResources(resources)
+	, m_warningEffectCount{ 0 }
 	, m_pPlayer{}
 	, m_pEnemyManager{}
 {}
@@ -61,8 +62,8 @@ void WarningEffects::CreateInComingEnemy()
 		warningEffect->SetEffectType(DamageEffect::EffectType::INCOMINGENEMY);// エフェクトタイプを設定
 		warningEffect->SetEnemy(attackingEnemy.get());// 攻撃してきた敵のポインタを設定
 		warningEffect->Initialize();// 初期化
+		attackingEnemy->SetIsAttack(false);// 攻撃フラグをfalseにする
 		m_pDamageEffect.push_back(std::move(warningEffect));// ダメージエフェクトをリストに追加
-
 	}
 
 }
