@@ -37,8 +37,8 @@ float4 main(PS_INPUT input) : SV_TARGET
     float distance = length(uvOffset); // ‹——£
 
     // Œõ‚ÌŒÊ‚Ì•`‰æ”ÍˆÍ‚ğ’²®‚·‚é
-    float innerRadius = 0.0001; // F‚Ì–ÊÏ‚Ì”¼Œa
-    float outerRadius = 0.1125; // •‚Ì–ÊÏ‚Ì”¼Œa
+    float innerRadius = 0.04; // F‚Ì–ÊÏ‚Ì”¼Œa
+    float outerRadius = 0.125; // •‚Ì–ÊÏ‚Ì”¼Œa
 
     // Œõ‚ÌŒÊ‚Ì”ÍˆÍ“à‚Å‚ÌƒOƒ‰ƒf[ƒVƒ‡ƒ“‚ğŒvZ‚·‚é
     float corona = smoothstep(innerRadius, outerRadius, distance);
