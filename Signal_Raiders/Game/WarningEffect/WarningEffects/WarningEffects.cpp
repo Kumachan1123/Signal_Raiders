@@ -1,6 +1,6 @@
 /*
 *	@file WarningEffects.cpp
-*	@brief ダメージエフェクトの管理クラスのソースファイル
+*	@brief ダメージエフェクトや警告エフェクトの管理クラスのソースファイル
 */
 #include <pch.h>
 #include "WarningEffects.h"

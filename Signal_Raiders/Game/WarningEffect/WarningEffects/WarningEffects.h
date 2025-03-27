@@ -1,6 +1,6 @@
 /*
-*	@file DamageEffects.h
-*	@brief ダメージエフェクトの管理クラスのヘッダーファイル
+*	@file WarningEffects.h
+*	@brief ダメージエフェクトや警告エフェクトの管理クラスのヘッダーファイル
 */
 #pragma once
 // 標準ライブラリ
