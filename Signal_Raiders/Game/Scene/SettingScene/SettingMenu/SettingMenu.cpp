@@ -80,7 +80,7 @@ void SettingMenu::Initialize(CommonResources* resources, int width, int height)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	// u‘€ìà–¾v‚ğ“Ç‚İ‚Ş
-	Add(L"Resources/Textures/SettingGuide.png"
+	Add(L"Resources/Textures/Guide.png"
 		, SimpleMath::Vector2(Screen::RIGHT, Screen::BOTTOM)
 		, SimpleMath::Vector2(1, 1)
 		, KumachiLib::ANCHOR::BOTTOM_RIGHT

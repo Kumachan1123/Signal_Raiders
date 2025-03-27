@@ -40,7 +40,7 @@ void PlayGuide::Initialize(DX::DeviceResources* pDR)
 
 	Add(L"Resources/Textures/PlayGuide.png"
 		, SimpleMath::Vector2(0, 720)
-		, SimpleMath::Vector2(0.75f, 0.75f)
+		, SimpleMath::Vector2(0.5f, 0.5f)
 		, KumachiLib::ANCHOR::BOTTOM_LEFT);
 
 }
