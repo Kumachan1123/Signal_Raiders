@@ -15,6 +15,9 @@
 #include <Libraries/Microsoft/DebugDraw.h>
 #include "Libraries/Microsoft/ReadData.h"
 #include "Game/KumachiLib//DrawCollision/DrawCollision.h"
+using namespace DirectX;
+using namespace DirectX::SimpleMath;
+
 //-------------------------------------------------------------------
 // ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 //-------------------------------------------------------------------
@@ -100,6 +103,11 @@ void PlayerBullet::Update(float elapsedTime)
 	m_bulletTrail->Update(elapsedTime);
 	// ŽžŠÔŒv‘ª
 	m_time += elapsedTime;
+	// ’e‚ÌƒTƒCƒY‚ðÝ’è
+	m_worldMatrix = Matrix::CreateScale(BulletParameters::PLAYER_BULLET_SIZE);
+	m_worldMatrix *= Matrix::CreateRotationX(DirectX::XMConvertToRadians(m_angle));
+	// ’e‚ÌÀ•W‚ðÝ’è
+	m_worldMatrix *= Matrix::CreateTranslation(m_position);
 
 }
 // ’e‚Ì‰ŠúˆÊ’u‚ðÝ’è
@@ -112,15 +120,9 @@ void PlayerBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::Si
 }
 void PlayerBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
-	// ’e‚ÌƒTƒCƒY‚ðÝ’è
-	m_worldMatrix = Matrix::CreateScale(BulletParameters::PLAYER_BULLET_SIZE);
-	m_worldMatrix *= Matrix::CreateRotationX(DirectX::XMConvertToRadians(m_angle));
-	// ’e‚ÌÀ•W‚ðÝ’è
-	m_worldMatrix *= Matrix::CreateTranslation(m_position);
+
 	// ‹OÕ•`‰æ
 	m_bulletTrail->CreateBillboard(m_cameraTarget, m_cameraEye, m_cameraUp);
 	m_bulletTrail->Render(view, proj);
