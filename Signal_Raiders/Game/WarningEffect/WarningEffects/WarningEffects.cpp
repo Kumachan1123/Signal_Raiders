@@ -57,13 +57,24 @@ void WarningEffects::CreateInComingEnemy()
 	for (auto& attackingEnemy : m_pEnemyManager->GetEnemies())
 	{
 		if (!attackingEnemy->GetIsAttack())continue;// 攻撃フラグが立っていなかったら次のループへ
+		if (m_enemyEffectMap.find(attackingEnemy.get()) != m_enemyEffectMap.end())
+			continue;// すでに生成されていたら次のループへ
+
 		std::unique_ptr<DamageEffect> warningEffect = std::make_unique<DamageEffect>(m_commonResources);// ダメージエフェクトの生成
 		warningEffect->SetPlayer(m_pPlayer);// プレイヤーのポインタを設定
 		warningEffect->SetEffectType(DamageEffect::EffectType::INCOMINGENEMY);// エフェクトタイプを設定
 		warningEffect->SetEnemy(attackingEnemy.get());// 攻撃してきた敵のポインタを設定
 		warningEffect->Initialize();// 初期化
 		attackingEnemy->SetIsAttack(false);// 攻撃フラグをfalseにする
-		m_pDamageEffect.push_back(std::move(warningEffect));// ダメージエフェクトをリストに追加
+
+		IEnemy* enemy = attackingEnemy.get();
+		m_pAttackingEnemy.push_back(enemy); // 攻撃してきた敵をリストに追加
+		// `m_pDamageEffect` に入れた後に `m_enemyEffectMap` に登録
+		m_enemyEffectMap[enemy] = warningEffect.get();
+		// まずエフェクトをリストに追加
+		m_pDamageEffect.push_back(std::move(warningEffect));
+
+
 	}
 
 }
@@ -75,6 +86,7 @@ void WarningEffects::CreateInComingEnemy()
 */
 void WarningEffects::Update(float elapsedTime)
 {
+	// ダメージエフェクトを更新
 	std::vector<std::unique_ptr<DamageEffect>> newDamageEffect;// 新しいダメージエフェクト
 	for (auto& damageEffect : m_pDamageEffect)
 	{
@@ -88,6 +100,17 @@ void WarningEffects::Update(float elapsedTime)
 		newDamageEffect.push_back(std::move(damageEffect));// 新しいリストにダメージエフェクトを追加
 	}
 	m_pDamageEffect = std::move(newDamageEffect);// ダメージエフェクトを新しいリストに置き換える
+	// 再生され終わった警告エフェクトと敵のポインターを削除
+	for (auto& attackingEnemy : m_pAttackingEnemy)
+	{
+		if (m_enemyEffectMap.find(attackingEnemy) == m_enemyEffectMap.end())continue;// 生成されていなかったら次のループへ
+		if (!m_enemyEffectMap[attackingEnemy]->GetPlayEffect())// 再生フラグがfalseだったら
+		{
+			m_enemyEffectMap.erase(attackingEnemy);// マップから削除
+			m_pAttackingEnemy.erase(std::remove(m_pAttackingEnemy.begin(), m_pAttackingEnemy.end(), attackingEnemy), m_pAttackingEnemy.end());// リストから削除
+		}
+	}
+
 }
 /*
 *	@brief 描画

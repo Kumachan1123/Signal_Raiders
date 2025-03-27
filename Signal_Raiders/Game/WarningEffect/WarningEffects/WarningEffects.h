@@ -5,6 +5,7 @@
 #pragma once
 // 標準ライブラリ
 #include <vector>
+#include <unordered_map>
 // 外部ライブラリ
 #include "Game/CommonResources.h"
 // 自作ヘッダーファイル
@@ -17,6 +18,7 @@ class Player;
 class EnemyManager;
 class CommonResources;
 class DamageEffect;
+class IEnemy;
 
 
 class WarningEffects
@@ -40,6 +42,8 @@ private:
 	Player* m_pPlayer;// プレイヤー
 	EnemyManager* m_pEnemyManager;// 敵
 	std::vector<std::unique_ptr<DamageEffect>> m_pDamageEffect;	// ダメージエフェクト
+	std::vector<IEnemy*> m_pAttackingEnemy;// 攻撃してきた敵リスト
 	int m_warningEffectCount;// 攻撃しようとしている敵の数
+	std::unordered_map<IEnemy*, DamageEffect*> m_enemyEffectMap;
 
 };
