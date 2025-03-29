@@ -115,7 +115,7 @@ void SettingScene::Update(float elapsedTime)
 			if (m_pSettingMenu->GetSelectIDNum() == SettingMenu::SelectID::END ||
 				m_pSettingMenu->GetSelectIDNum() == SettingMenu::SelectID::APPLY)
 			{
-				m_audioManager->PlaySound("Select", m_SEvolume);
+				m_audioManager->PlaySound("SE", m_SEvolume);
 				m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
 				m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
 			}
