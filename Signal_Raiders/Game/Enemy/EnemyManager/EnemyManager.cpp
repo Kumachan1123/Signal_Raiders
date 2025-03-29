@@ -141,6 +141,8 @@ void EnemyManager::InitializeFMOD()
 	m_audioManager->LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet");// 弾発射音
 	m_audioManager->LoadSound("Resources/Sounds/Explosion.mp3", "EnemyDead");// 敵死亡音
 	m_audioManager->LoadSound("Resources/Sounds/damage.mp3", "Damage");// プレイヤーがダメージを食らう音
+	m_audioManager->LoadSound("Resources/Sounds/Barrier.mp3", "Barrier");// ボスのバリアが出現する音
+	m_audioManager->LoadSound("Resources/Sounds/BarrierBreak.mp3", "BarrierBreak");// ボスのバリアが破壊される音
 }
 //---------------------------------------------------------
 // 敵の生成上限設定
