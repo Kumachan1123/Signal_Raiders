@@ -33,10 +33,10 @@ EnemyHPBar::EnemyHPBar()
 	m_hpbarVert[2] = { Vector3(1.5f,3.0f,0.0f),Vector2(1.0f,1.0f) };	// 右下
 	m_hpbarVert[3] = { Vector3(-1.5f,3.0f,0.0f),Vector2(0.0f,1.0f) };	// 左下
 	// ビルボードの頂点情報を設定する
-	m_hpbarBackVert[0] = { Vector3(-1.60f,3.27f,0.0f),Vector2(0.0f,0.0f) };	// 左上
-	m_hpbarBackVert[1] = { Vector3(1.60f,3.27f,0.0f),Vector2(1.0f,0.0f) };	// 右上
-	m_hpbarBackVert[2] = { Vector3(1.60f,2.98f,0.0f),Vector2(1.0f,1.0f) };	// 右下
-	m_hpbarBackVert[3] = { Vector3(-1.60f,2.98f,0.0f),Vector2(0.0f,1.0f) };	// 左下
+	m_hpbarBackVert[0] = { Vector3(-1.530f,3.28f,0.0f),Vector2(0.0f,0.0f) };	// 左上
+	m_hpbarBackVert[1] = { Vector3(1.530f,3.28f,0.0f),Vector2(1.0f,0.0f) };	// 右上
+	m_hpbarBackVert[2] = { Vector3(1.530f,2.98f,0.0f),Vector2(1.0f,1.0f) };	// 右下
+	m_hpbarBackVert[3] = { Vector3(-1.530f,2.98f,0.0f),Vector2(0.0f,1.0f) };	// 左下
 
 }
 // デストラクタ
