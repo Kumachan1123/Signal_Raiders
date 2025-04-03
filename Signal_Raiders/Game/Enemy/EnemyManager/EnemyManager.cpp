@@ -31,6 +31,7 @@ EnemyManager::EnemyManager(CommonResources* commonResources)
 	, m_isBossBorn{ false }
 	, m_isBossBorned{ false }
 	, m_isBossAlive{ true }
+	, m_isBossAppear{ false }
 	, m_enemyIndex{ 0 }
 	, m_stageNumber{ 0 }
 	, m_enemyMax{ 0 }
@@ -40,6 +41,7 @@ EnemyManager::EnemyManager(CommonResources* commonResources)
 	, m_bossBulletType{ Boss::BossBulletType::NORMAL }
 	, m_specialAttackCount{ 0 }
 	, m_startTime{ 0.0f }
+	, m_bossBornWaitTime{ 0.0f }
 	, m_pWifi{ nullptr }
 	, m_pWall{ nullptr }
 	, m_pPlayer{ nullptr }
@@ -207,7 +209,13 @@ void EnemyManager::HandleEnemySpawning(float elapsedTime)
 	// 敵がいなくなったらボスを生成
 	if (m_enemies.empty() && m_isBorned && !m_isBossBorned)
 	{
-		SpawnBoss();// ボスを生成
+		m_isBossAppear = true; // ボス生成演出フラグを立てる
+		m_bossBornWaitTime += elapsedTime;// ボス生成待機時間を更新
+		if (m_bossBornWaitTime >= EnemyParameters::BOSS_SPAWN_WAIT_TIME)// ボス生成待機時間を超えたら
+		{
+			SpawnBoss();// ボスを生成
+		}
+
 	}
 }
 
@@ -253,6 +261,7 @@ void EnemyManager::SpawnBoss()
 	boss->GetBulletManager()->SetSpecialAttackCount(m_specialAttackCount);// ボスの特殊攻撃の数を設定
 	m_enemies.push_back(std::move(boss)); // ボスも enemies に統一
 	m_isBossBorned = true; // ボス生成完了
+	m_isBossAppear = false; // ボス生成演出フラグを下ろす
 }
 
 //---------------------------------------------------------

@@ -4,6 +4,7 @@
 #include "Libraries/FMOD/inc/fmod_errors.h"
 #include <string>
 #include <unordered_map>
+#include <thread> 
 #include <memory>
 namespace FMOD
 {

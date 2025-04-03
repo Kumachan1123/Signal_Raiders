@@ -50,6 +50,7 @@ Boss::Boss(Player* pPlayer, CommonResources* resources, int hp)
 	, m_isEnemyHitByPlayerBullet(false)// 敵がプレイヤーの弾に当たったか
 	, m_isPlayerHitByEnemyBullet(false)// プレイヤーが敵の弾に当たったか
 	, m_canAttack(true)// 攻撃可能か
+	, m_isAttack(false)// 攻撃中か
 	, m_bossBulletType(BossBulletType::NORMAL)// ボスの弾の種類
 	, m_bulletType(EnemyBullet::BulletType::NORMAL)// 弾の種類
 	, m_audioManager{ }// オーディオマネージャー

@@ -25,6 +25,7 @@
 #include "Game/Player/PlayerUI/Goal/Goal.h"
 #include "Game/Player/PlayerUI/WifiLoading/WifiLoading.h"
 #include "Game/Player/PlayerUI/BulletGauge/BulletGauge.h"
+#include "Game/BossAppear/BossAppear.h"
 #include "Game/Effect/Effect.h"
 #include "Game/Fade/Fade.h"
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
@@ -84,6 +85,8 @@ private:
 	std::unique_ptr<Reticle> m_pReticle;
 	// 操作説明
 	std::unique_ptr<PlayGuide> m_pPlayGuide;
+	// ボス登場演出
+	std::unique_ptr<BossAppear> m_pBossAppear;
 	// フェード
 	std::unique_ptr<Fade> m_pFade;
 	// 設定データ

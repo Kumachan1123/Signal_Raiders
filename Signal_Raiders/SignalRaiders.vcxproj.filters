@@ -288,6 +288,7 @@
     <ClInclude Include="Game\Enemy\EnemyBullet\NormalBullet\NormalBullet.h" />
     <ClInclude Include="Game\Enemy\EnemyBullet\SpeedBullet\SpeedBullet.h" />
     <ClInclude Include="Game\MousePointer\MousePointer.h" />
+    <ClInclude Include="Game\BossAppear\BossAppear.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -422,6 +423,7 @@
     <ClCompile Include="Game\Enemy\EnemyBullet\NormalBullet\NormalBullet.cpp" />
     <ClCompile Include="Game\Enemy\EnemyBullet\SpeedBullet\SpeedBullet.cpp" />
     <ClCompile Include="Game\MousePointer\MousePointer.cpp" />
+    <ClCompile Include="Game\BossAppear\BossAppear.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -451,6 +453,7 @@
     <None Include="HLSL\PlayerUI\PlayerUI.hlsli" />
     <None Include="HLSL\Stage\Stage.hlsli" />
     <None Include="ClassDiagram.cd" />
+    <None Include="HLSL\BossAppear\Header.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Shadow\PS_Shadow.hlsl">
@@ -488,5 +491,8 @@
     <FxCompile Include="HLSL\Menu\PS_StageMenu.hlsl" />
     <FxCompile Include="HLSL\PlayerUI\PS_CircleGauge.hlsl" />
     <FxCompile Include="HLSL\PlayerUI\PS_Loading.hlsl" />
+    <FxCompile Include="HLSL\BossAppear\PS_BossAppear.hlsl" />
+    <FxCompile Include="HLSL\BossAppear\VS_BossAppear.hlsl" />
+    <FxCompile Include="HLSL\BossAppear\PS_BossAppearBack.hlsl" />
   </ItemGroup>
 </Project>

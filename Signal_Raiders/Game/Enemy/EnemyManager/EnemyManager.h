@@ -71,6 +71,10 @@ private:
 	float m_enemyBornTimer;
 	// 敵の生成開始時間
 	float m_startTime;
+	// ボスの生成待機時間
+	float m_bossBornWaitTime;
+	// ボス生成演出再生フラグ
+	bool m_isBossAppear;
 	// ボス生成フラグ
 	bool m_isBossBorn;
 	// ボス生成済み
@@ -119,6 +123,7 @@ public:
 	std::vector<std::unique_ptr<Effect>>& GetEffect() { return m_effect; }// エフェクト
 	bool GetisBorned() const { return m_isBorned; }// 敵生成済み
 	bool GetIsBossAlive() const { return m_isBossAlive; }// ボス生存フラグ
+	bool GetIsBossAppear() const { return m_isBossAppear; }// ボス生成演出再生フラグ
 	void SetVolume(float volume) { m_SEVolume = volume; }// 音量取得
 	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; }// ステージ番号
 	void SetWall(Wall* pWall) { m_pWall = pWall; };// 壁のポインター

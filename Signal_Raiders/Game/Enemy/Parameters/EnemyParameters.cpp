@@ -79,6 +79,8 @@ const float EnemyParameters::ENEMY_DEADEFFECT_SCALE = 3.0f;// ザコ敵の死亡エフェ
 
 const float EnemyParameters::ENEMY_SPAWN_START_TIME = 5.0f;// 敵が出現し始める時間
 
+const float EnemyParameters::BOSS_SPAWN_WAIT_TIME = 3.0f;// ボスが出現するまでの時間
+
 const float EnemyParameters::ENEMY_SPAWN_INTERVAL = 0.5f;// 敵が出現する間隔
 
 const float EnemyParameters::ENEMY_BULLET_SIZE = 0.15f;// 敵の弾の大きさ

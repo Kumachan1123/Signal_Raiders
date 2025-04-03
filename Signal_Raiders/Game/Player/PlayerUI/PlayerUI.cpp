@@ -17,7 +17,7 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> PlayerUI::INPUT_LAYOUT =
 };
 // コンストラクタ
 PlayerUI::PlayerUI()
-	:m_pDR(nullptr)
+	: m_pDR(nullptr)
 	, m_windowHeight(0)
 	, m_windowWidth(0)
 	, m_textureHeight(0)

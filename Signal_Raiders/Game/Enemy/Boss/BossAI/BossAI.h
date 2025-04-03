@@ -49,8 +49,8 @@ public:
 	IState::EnemyState GetState()const { return m_enemyState; }// ó‘Ô‚ğæ“¾
 	void SetState(IState::EnemyState state) { m_enemyState = state; }// ó‘Ô‚ğİ’è
 	void SetHitPlayerBullet(bool hit) { m_isHitPlayerBullet = hit; }// ƒvƒŒƒCƒ„[‚Ì’e‚É“–‚½‚Á‚½‚©İ’è
-	bool GetIsAttack()const { return m_isAttack; }// UŒ‚’†‚©æ“¾
-	void SetIsAttack(bool attack) { m_isAttack = attack; }// UŒ‚’†‚©İ’è
+	bool GetIsAttack()const { return m_pBoss->GetIsAttack(); }// UŒ‚’†‚©æ“¾
+	void SetIsAttack(bool attack) { m_pBoss->SetIsAttack(attack); }// UŒ‚’†‚©İ’è
 
 public:
 	// publicƒƒ“ƒoŠÖ”

@@ -56,13 +56,13 @@ void EnemyAI::Update(float elapsedTime)
 	{
 		ChangeState(m_pEnemyAttack.get());//UŒ‚‘Ô¨‚É‚·‚é
 		m_enemyState = IState::EnemyState::ATTACK;// œpœj‘Ô¨
-		SetisAttack(true);// UŒ‚’†‚É‚·‚é
+		SetIsAttack(true);// UŒ‚’†‚É‚·‚é
 	}
 	else
 	{
 		ChangeState(m_pEnemyIdling.get());//œpœj‘Ô¨‚É‚·‚é
 		m_enemyState = IState::EnemyState::IDLING;// œpœj‘Ô¨
-		SetisAttack(false);// UŒ‚’†‚Å‚È‚¢
+		SetIsAttack(false);// UŒ‚’†‚Å‚È‚¢
 	}
 	// ƒvƒŒƒCƒ„[‚Ì’e‚É“–‚½‚Á‚½ê‡
 	if (m_pEnemy->GetEnemyHitByPlayerBullet())
@@ -70,7 +70,7 @@ void EnemyAI::Update(float elapsedTime)
 		KnockBack(elapsedTime);
 		ChangeState(m_pEnemySpin.get());//ƒXƒsƒ“‚·‚é
 		m_enemyState = IState::EnemyState::HIT;// UŒ‚‚ðH‚ç‚Á‚½ó‘Ô‚É‚·‚é
-		SetisAttack(false);// UŒ‚’†‚Å‚È‚¢
+		SetIsAttack(false);// UŒ‚’†‚Å‚È‚¢
 	}
 	m_currentState->Update(elapsedTime);
 	m_pEnemy->SetPosition(m_position);

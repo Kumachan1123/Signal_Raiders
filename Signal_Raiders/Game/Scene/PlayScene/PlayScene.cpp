@@ -129,6 +129,9 @@ void PlayScene::Initialize(CommonResources* resources)
 	// レーダーを初期化する
 	m_pRadar = std::make_unique<Radar>(resources);
 	m_pRadar->Initialize(m_pPlayer.get(), m_pEnemyManager.get());
+	// ボス登場演出を初期化する
+	m_pBossAppear = std::make_unique<BossAppear>();
+	m_pBossAppear->Initialize(m_commonResources);
 	// ブルームエフェクトの生成
 	m_pBloom->CreatePostProcess(resources);
 
@@ -203,6 +206,8 @@ void PlayScene::Update(float elapsedTime)
 		}
 		// レーダーを更新する
 		m_pRadar->Update(elapsedTime);
+		// ボス登場演出を更新する
+		if (m_pEnemyManager->GetIsBossAppear() == true)m_pBossAppear->Update(elapsedTime);
 	}
 
 
@@ -253,6 +258,8 @@ void PlayScene::Render()
 		m_pDashGauge->Render();// ダッシュゲージ描画
 		m_pBulletGauge->Render();// 弾ゲージ描画
 		m_pReticle->Render();// 照準描画
+		// ボス登場演出を更新する
+		if (m_pEnemyManager->GetIsBossAppear() == true)m_pBossAppear->Render();
 	}
 	else // ゲーム開始から5秒間
 	{

@@ -104,16 +104,8 @@ void AudioManager::Update()
 // FMODシステムの解放
 void AudioManager::Shutdown()
 {
-	for (auto& pair : m_sounds)
-	{
-		if (pair.second)
-		{
-			pair.second->release();
-			pair.second = nullptr;
-		}
-	}
-	m_sounds.clear();
-	// チャンネルも解放
+	if (!m_system) return; // m_system が null なら解放しない
+	// チャンネル解放
 	for (auto& pair : m_channels)
 	{
 		if (pair.second)
@@ -123,12 +115,25 @@ void AudioManager::Shutdown()
 		}
 	}
 	m_channels.clear();
+	// すべてのサウンドを解放
+	for (auto& pair : m_sounds)
+	{
+		if (pair.second)
+		{
+			pair.second->release();
+			pair.second = nullptr;
+		}
+	}
+	m_sounds.clear();
+
 	if (m_system)
 	{
+		m_system->update(); // 最後に update してから release
 		//m_system->close();
 		m_system->release();
 		m_system = nullptr;
-
+		// release の後に少し待つ
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 }
 

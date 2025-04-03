@@ -56,6 +56,7 @@ public:// 定数
 	static const float BOSS_DEADEFFECT_SCALE;	// ボスの死亡エフェクトのスケール
 	static const float ENEMY_DEADEFFECT_SCALE;	// ザコ敵の死亡エフェクトのスケール
 	static const float ENEMY_SPAWN_START_TIME;	// 敵が出現し始める時間
+	static const float BOSS_SPAWN_WAIT_TIME;	// ボスが出現するまでの時間
 	static const float ENEMY_SPAWN_INTERVAL;// 敵が出現する間隔
 	static const float ENEMY_BULLET_SIZE;	// 敵の弾の大きさ
 	static const float BOSS_BULLET_SIZE;	// ボスの弾の大きさ

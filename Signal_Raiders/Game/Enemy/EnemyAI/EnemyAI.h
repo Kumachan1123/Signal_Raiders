@@ -72,7 +72,7 @@ public:
 	IEnemy* GetEnemy()const { return m_pEnemy; }
 	IState* GetNowState()const { return m_currentState; }
 	bool GetisAttack()const { return m_pEnemy->GetIsAttack(); }
-	void SetisAttack(bool isAttack) { m_pEnemy->SetIsAttack(isAttack); }
+	void SetIsAttack(bool isAttack) { m_pEnemy->SetIsAttack(isAttack); }
 public:
 	EnemyAI(IEnemy* pEnemy);
 	~EnemyAI();
