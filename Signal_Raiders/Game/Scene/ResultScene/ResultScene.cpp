@@ -118,7 +118,8 @@ void ResultScene::Update(float elapsedTime)
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
 
 	// スペースキーが押されたら
-	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd && (kbTracker->pressed.Space || mtracker->GetLastState().leftButton))
+	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd &&
+		mtracker->GetLastState().leftButton)
 	{
 		// SEの再生
 		m_audioManager->PlaySound("SE", m_SEvolume);

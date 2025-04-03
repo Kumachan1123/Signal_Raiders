@@ -104,7 +104,7 @@ void TitleScene::Update(float elapsedTime)
 	// メニューでの選択処理が行われたら
 	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
 	{
-		if (kbTracker->pressed.Space || mtracker->GetLastState().leftButton)
+		if (mtracker->GetLastState().leftButton)
 		{
 			m_audioManager->PlaySound("SE", m_SEvolume);// SEの再生
 			m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行

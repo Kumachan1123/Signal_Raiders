@@ -109,7 +109,7 @@ void StageSelectScene::Update(float elapsedTime)
 	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
 	{
 		// スペースキーが押されたら
-		if (kbTracker->pressed.Space || mtracker->GetLastState().leftButton)
+		if (mtracker->GetLastState().leftButton)
 		{
 			m_audioManager->PlaySound("SE", m_SEvolume);// SEの再生
 			m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
