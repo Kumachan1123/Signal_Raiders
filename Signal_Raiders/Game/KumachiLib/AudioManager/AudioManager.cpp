@@ -48,8 +48,6 @@ void AudioManager::Initialize()
 		m_system = nullptr;
 		//return;
 	}
-	//FMOD::System_Create(&m_system);
-	//m_system->init(512, FMOD_INIT_NORMAL, nullptr);
 }
 
 
