@@ -243,8 +243,6 @@ void PlayScene::Render()
 	m_pBulletManager->Render();
 	// ブルームエフェクトをかける
 	m_pBloom->PostProcess();
-	// レンダーターゲットを元に戻す
-	m_pBloom->ChangeDefaultRT();
 	// ゲーム開始から5秒以上経過したら
 	if (m_timer >= 5.0f)
 	{

@@ -31,8 +31,7 @@ public:
 	void ChangeOffScreenRT();
 	// ポストプロセスに必要な設定を準備する
 	void PostProcess();
-	// レンダーターゲットを元に戻す
-	void ChangeDefaultRT();
+
 private:
 	// コンストラクタ
 	Bloom();

@@ -115,14 +115,10 @@ void Bloom::PostProcess()
 	m_dualPostProcess->Process(m_context);
 	// シェーダーリソースビューを解除
 	m_context->PSSetShaderResources(0, 2, nullsrv);
-}
-// -----------------------------------------------------------
-// レンダーターゲットを元に戻す
-// -----------------------------------------------------------
-void Bloom::ChangeDefaultRT()
-{
+	// レンダーターゲットを元に戻す
 	m_context->OMSetRenderTargets(1, m_defaultRTV.GetAddressOf(), m_defaultDSV.Get());
 }
+
 
 // -----------------------------------------------------------
 // レンダーテクスチャを作成する
