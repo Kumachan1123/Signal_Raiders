@@ -144,7 +144,7 @@ void Wifi::Update(float elapsedTime)
 			int ssidLength = (int)(networkInfo.ssid.length());
 			//ssid‚Ì•¶Žš‚ÌASCIIƒR[ƒh‚Ì‡Œv‚ð‰Â•Ï’·”z—ñ‚É“o˜^
 			int ssidValue = m_output->ConvertSsidToInt(networkInfo.ssid);
-			int enemyType = (ssidValue % ssidLength) % ENEMY_TYPE_MAX;
+			int enemyType = (ssidValue * ssidLength) % ENEMY_TYPE_MAX;
 			//“d”g‚Ì‹­‚³‚ð‰Â•Ï’·”z—ñ‚É“o˜^
 			m_preWifilevels.push_back(networkInfo.signalQuality);
 

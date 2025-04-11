@@ -33,7 +33,7 @@ class Wifi
 public:
 	struct CurrentWifiInfo// 現在接続しているWi-Fi情報の構造体
 	{
-		int ssidLenght;// 数値化したSSID
+		int ssidLenght;// SSIDの長さ
 		int signalQuality;// 電波の強さ
 	};
 	// データメンバの宣言
