@@ -30,6 +30,7 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> Particle::INPUT_LAYOUT =
 Particle::Particle(ParticleUtility::Type type, float size)
 	:m_commonResources{}
 	, m_timer(0.0f)
+	, m_elapsedTime(0.0f)
 	, m_pDR{}
 	, m_CBuffer{}
 	, m_pInputLayout{}
@@ -118,6 +119,7 @@ void Particle::LoadTexture(const wchar_t* path)
 
 void Particle::Update(float elapsedTime)
 {
+	m_elapsedTime = elapsedTime;
 	m_timer += elapsedTime;
 	m_animTime += elapsedTime * m_animSpeed;//	アニメーションの更新
 	//	タイマーが一定時間を超えたらリセット
@@ -253,7 +255,7 @@ void Particle::CreateBillboard(Vector3 target, Vector3 eye, Vector3 up)
 void Particle::Trail()
 {
 	// タイマーが一定時間を超えたら新しいパーティクルを生成
-	if (m_timer >= 0.00005f)
+	if (m_timer >= m_elapsedTime)
 	{
 		// 乱数の設定
 		std::random_device seed;
@@ -330,7 +332,7 @@ void Particle::Trail()
 
 void Particle::BarrierBreak()
 {
-	if (m_timer >= 0.0001f)  // バリアが壊れたときの破片は少し間隔が長めでもよい
+	if (m_timer >= m_elapsedTime)  // バリアが壊れたときの破片は少し間隔が長めでもよい
 	{
 		std::random_device seed;
 		std::default_random_engine engine(seed());

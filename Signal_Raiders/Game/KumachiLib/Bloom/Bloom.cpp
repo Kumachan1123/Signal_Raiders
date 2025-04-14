@@ -1,8 +1,8 @@
 #include <pch.h>
 #include "Bloom.h"
 
-using namespace DirectX;
-using namespace DirectX::SimpleMath;
+//using namespace DirectX;
+//using namespace DirectX::SimpleMath;
 
 std::unique_ptr<Bloom> Bloom::m_instance = nullptr;
 Bloom* const Bloom::GetInstance()
@@ -39,6 +39,7 @@ Bloom::~Bloom()
 // -----------------------------------------------------------
 void Bloom::CreatePostProcess(CommonResources* resources)
 {
+	using namespace DirectX;
 	m_commonResources = resources;
 	m_pDR = m_commonResources->GetDeviceResources();
 	m_device = m_pDR->GetD3DDevice();
@@ -50,7 +51,8 @@ void Bloom::CreatePostProcess(CommonResources* resources)
 
 void Bloom::ChangeOffScreenRT()
 {
-	// オフスクリーン用のRTVを取得
+	using namespace DirectX;	// オフスクリーン用のRTVを取得
+	using namespace DirectX::SimpleMath;
 	m_offScreenRTV = m_offScreenRT->GetRenderTargetView();
 	m_defaultDSV = m_commonResources->GetDeviceResources()->GetDepthStencilView();
 
@@ -67,6 +69,7 @@ void Bloom::ChangeOffScreenRT()
 // -----------------------------------------------------------
 void Bloom::PostProcess()
 {
+	using namespace DirectX;
 	m_blur1.RTV = m_blur1RT->GetRenderTargetView();
 	m_blur1.SRV = m_blur1RT->GetShaderResourceView();
 	m_blur2.RTV = m_blur2RT->GetRenderTargetView();
@@ -125,6 +128,7 @@ void Bloom::PostProcess()
 // -----------------------------------------------------------
 void Bloom::CreateRenderTexture()
 {
+
 	m_screenSize = m_commonResources->GetDeviceResources()->GetOutputSize();
 
 	RECT halfSize{ 0,0, m_screenSize.right / 2, m_screenSize.bottom / 2 };

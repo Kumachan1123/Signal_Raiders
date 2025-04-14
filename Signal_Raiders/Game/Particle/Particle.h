@@ -60,6 +60,8 @@ public:
 	float m_animSpeed;
 	// アニメーション時間
 	float m_animTime;
+	// 経過時間
+	float m_elapsedTime;
 
 	//	頂点シェーダ
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;

@@ -15,9 +15,6 @@
 #include <vector>
 #include <cmath>
 #include <random>
-
-using namespace DirectX;
-
 const static float ENDLESS = -100.0f;
 
 /// <summary>
@@ -59,7 +56,7 @@ ParticleUtility::~ParticleUtility()
 /// </summary>
 bool ParticleUtility::Update(float elapsedTime)
 {
-
+	using namespace DirectX;
 	// スケールと色の変化
 	m_nowScale = SimpleMath::Vector3::Lerp(m_startScale, m_endScale, 1.0f - m_life / m_startLife);
 	m_nowColor = SimpleMath::Color::Lerp(m_startColor, m_endColor, 1.0f - m_life / m_startLife);
@@ -109,6 +106,7 @@ void ParticleUtility::Trail(float elapsedTime)
 // タイプ::バリア破壊の処理
 void ParticleUtility::BarrierDestroyed(float elapsedTime)
 {
+	using namespace DirectX;
 	// ランダムな動きを追加するための設定
 	std::random_device seed;
 	std::default_random_engine engine(seed());
@@ -116,7 +114,8 @@ void ParticleUtility::BarrierDestroyed(float elapsedTime)
 	// ライフが 3/4 未満の時、微細なランダム動きを追加
 	if (m_life < m_startLife * 0.75f)
 	{
-		std::uniform_real_distribution<> dist(-3.0f, 3.0f); // ランダムな力の範囲
+		// ランダムな力の範囲
+		std::uniform_real_distribution<> dist(-3.0f, 3.0f);
 		m_velocity.x += static_cast<float>(dist(engine)) * elapsedTime * 0.5f;
 		m_velocity.y += static_cast<float>(dist(engine)) * elapsedTime * 0.5f;
 		m_velocity.z += static_cast<float>(dist(engine)) * elapsedTime * 0.5f;
@@ -125,10 +124,10 @@ void ParticleUtility::BarrierDestroyed(float elapsedTime)
 		m_velocity *= 0.95f; // 速度を減少
 	}
 
-	// ライフが 1/2 未満の時、破片がより急激に減速しつつ、ランダムな動きを強化
+	// ライフが 1/2 未満の時、破片がより急激に減速しつつ、ランダムな動きを強化(少し強めのランダムな力)
 	if (m_life < m_startLife * 0.5f)
 	{
-		std::uniform_real_distribution<> dist(-5.0f, 5.0f); // 少し強めのランダムな力
+		std::uniform_real_distribution<> dist(-5.0f, 5.0f);
 		m_velocity.x += static_cast<float>(dist(engine)) * elapsedTime;
 		m_velocity.y += static_cast<float>(dist(engine)) * elapsedTime * 2;
 		m_velocity.z += static_cast<float>(dist(engine)) * elapsedTime;
@@ -141,7 +140,7 @@ void ParticleUtility::BarrierDestroyed(float elapsedTime)
 	if (m_life < m_startLife * 0.75f)
 	{
 		// 回転角速度を決定（寿命に応じて徐々に速くなる）
-		float rotationSpeed = 5.0f * (1.0f - m_life / m_startLife); // 回転速度を寿命に比例
+		float rotationSpeed = 5.0f * (1.0f - m_life / m_startLife);
 
 		// 原点からの相対位置を計算
 		SimpleMath::Vector3 relativePos = m_position - m_startPosition;
@@ -164,7 +163,8 @@ void ParticleUtility::BarrierDestroyed(float elapsedTime)
 	// ライフが 1/4 未満の時、破片がほとんど消える直前に動きを加速
 	if (m_life < m_startLife * 0.25f)
 	{
-		std::uniform_real_distribution<> dist(-10.0f, 10.0f); // 最後の激しいランダムな力
+		// 最後の激しいランダムな力
+		std::uniform_real_distribution<> dist(-10.0f, 10.0f);
 		m_velocity.x += static_cast<float>(dist(engine)) * elapsedTime;
 		m_velocity.y += static_cast<float>(dist(engine)) * elapsedTime;
 		m_velocity.z += static_cast<float>(dist(engine)) * elapsedTime;
