@@ -91,7 +91,7 @@ const Vector3 EnemyParameters::INITIAL_VELOCITY{ 0.0f,0.5f,0.0f };// •‚—V‚Ì‰Šú‘
 
 const Vector3 EnemyParameters::INITIAL_BOSS_POSITION{ 0.0f,10.0f,0.0f };// ƒ{ƒX‚Ì‰ŠúˆÊ’u
 
-const Vector3 EnemyParameters::INITIAL_BOSS_SCALE{ 2.0f,2.0f,2.0f };// ƒ{ƒX‚Ì‰ŠúƒXƒP[ƒ‹
+const Vector3 EnemyParameters::INITIAL_BOSS_SCALE{ 1.0f,1.0f,1.0f };// ƒ{ƒX‚Ì‰ŠúƒXƒP[ƒ‹
 
 const Vector3 EnemyParameters::BOSS_SPHERE_OFFSET{ 0.0f,0.5f,0.0f };// ƒ{ƒX‚Ì‹«ŠE‹…‚ÌƒIƒtƒZƒbƒg
 

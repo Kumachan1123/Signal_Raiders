@@ -42,9 +42,9 @@ void BossModel::Initialize(CommonResources* resources)
 	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pixelShader.ReleaseAndGetAddressOf()));// ピクセルシェーダーの作成
 	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);// エフェクトファクトリー
 	fx->SetDirectory(L"Resources/Models/Boss");// モデルのディレクトリ
-	m_bodyModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss.cmo", *fx);// 胴体
-	m_idlingFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss_Face_Idling.cmo", *fx);// 普段の顔
-	m_attackFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss_Face_Attack.cmo", *fx);// 攻撃時の顔
+	m_bodyModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/LastBoss_Body.cmo", *fx);// 胴体
+	m_idlingFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/LastBoss_Face.cmo", *fx);// 普段の顔
+	m_attackFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/LastBoss_Face.cmo", *fx);// 攻撃時の顔
 }
 /*
 *	@brief	描画
@@ -61,6 +61,7 @@ void BossModel::Render(ID3D11DeviceContext1* context,
 	DirectX::SimpleMath::Matrix view,
 	DirectX::SimpleMath::Matrix proj)
 {
+
 	Vector3 lightDir = Vector3::UnitY;// ライトの方向
 	lightDir.Normalize();// 正規化
 	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, 0.01f));	// 影行列の元を作る
