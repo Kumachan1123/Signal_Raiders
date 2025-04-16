@@ -132,7 +132,7 @@ void Boss::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	m_pBossSheild->SetPosition(m_bossBS.Center);// シールドの座標を設定
 	m_pBossSheild->SetRotation(m_pBossAI->GetRotation());// シールドの回転を設定
 	m_pBossModel->Render(context, states, enemyWorld, view, proj);// モデル描画
-	m_pBossSheild->Render(context, states, sheildWorld, view, proj);// シールド描画
+	m_pBossSheild->Render(context, states, enemyWorld, view, proj);// シールド描画
 	Vector3 hpBarPos = m_position - EnemyParameters::BOSS_HPBAR_OFFSET;// HPバーの位置を設定
 	m_pHPBar->SetScale(Vector3(EnemyParameters::BOSS_HPBAR_SCALE));// HPバーのスケールを設定
 	m_pHPBar->Render(view, proj, hpBarPos, m_rotate);// HPバー描画

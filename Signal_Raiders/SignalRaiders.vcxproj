@@ -190,6 +190,9 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Game\BossAppear\BossAppear.h" />
     <ClInclude Include="Game\BulletParameters\BulletParameters.h" />
+    <ClInclude Include="Game\Enemy\LastBoss\LastBoss.h" />
+    <ClInclude Include="Game\Enemy\LastBoss\LastBossModel\LastBossModel.h" />
+    <ClInclude Include="Game\Interface\IModel.h" />
     <ClInclude Include="Game\WarningEffect\WarningEffects\WarningEffects.h" />
     <ClInclude Include="Game\Enemy\Boss\BossSheild\BossSheild.h" />
     <ClInclude Include="Game\BulletManager\BulletManager.h" />
@@ -292,6 +295,8 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Game\BossAppear\BossAppear.cpp" />
     <ClCompile Include="Game\BulletParameters\BulletParameters.cpp" />
+    <ClCompile Include="Game\Enemy\LastBoss\LastBoss.cpp" />
+    <ClCompile Include="Game\Enemy\LastBoss\LastBossModel\LastBossModel.cpp" />
     <ClCompile Include="Game\WarningEffect\WarningEffects\WarningEffects.cpp" />
     <ClCompile Include="Game\Enemy\Boss\BossSheild\BossSheild.cpp" />
     <ClCompile Include="Game\BulletManager\BulletManager.cpp" />

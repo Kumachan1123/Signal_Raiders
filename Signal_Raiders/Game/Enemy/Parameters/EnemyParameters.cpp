@@ -52,7 +52,7 @@ const Vector3 EnemyParameters::ENEMY_HPBAR_OFFSET{ 0.0f, 1.0f, 0.0f };
 
 
 // ==============================
-// ボス専用
+// ボス共通
 // ==============================
 const float EnemyParameters::BOSS_SHIELD_SCALE_SPEED = 0.2f;
 const float EnemyParameters::BOSS_SHIELD_RADIUS = 5.5f;
@@ -65,13 +65,27 @@ const float EnemyParameters::BOSS_CHASE_SPEED = 2.0f;
 const float EnemyParameters::BOSS_DEADEFFECT_SCALE = 10.0f;
 const float EnemyParameters::BOSS_SPAWN_WAIT_TIME = 3.0f;
 
+// ===============================
+// ボス専用
+// ===============================
 const Vector3 EnemyParameters::INITIAL_BOSS_POSITION{ 0.0f, 10.0f, 0.0f };
-const Vector3 EnemyParameters::INITIAL_BOSS_SCALE{ 1.0f, 1.0f, 1.0f };
+const Vector3 EnemyParameters::INITIAL_BOSS_SCALE{ 2.0f, 2.0f, 2.0f };
 const Vector3 EnemyParameters::BOSS_SPHERE_OFFSET{ 0.0f, 0.5f, 0.0f };
-const Vector3 EnemyParameters::BOSS_HEAD_OFFSET{ 0.0f, -1.0f, 3.0f };
+const Vector3 EnemyParameters::BOSS_HEAD_OFFSET{ 0.0f,2.0f, 3.0f };
 const Vector3 EnemyParameters::BOSS_LEFT_GUN_OFFSET{ -2.5f, -0.50f, 3.0f };
 const Vector3 EnemyParameters::BOSS_RIGHT_GUN_OFFSET{ 2.5f, -0.50f, 3.0f };
 const Vector3 EnemyParameters::BOSS_HPBAR_OFFSET{ 0.0f, 3.0f, 0.0f };
+
+// ================================
+// ラスボス専用
+// ================================
+const Vector3 EnemyParameters::INITIAL_LASTBOSS_POSITION{ 0.0f, 10.0f, 0.0f };
+const Vector3 EnemyParameters::INITIAL_LASTBOSS_SCALE{ 1.0f, 1.0f, 1.0f };
+const Vector3 EnemyParameters::LASTBOSS_SPHERE_OFFSET{ 0.0f, 0.5f, 0.0f };
+const Vector3 EnemyParameters::LASTBOSS_HEAD_OFFSET{ 0.0f, -1.0f, 3.0f };
+const Vector3 EnemyParameters::LASTBOSS_LEFT_GUN_OFFSET{ -2.5f, -0.50f, 3.0f };
+const Vector3 EnemyParameters::LASTBOSS_RIGHT_GUN_OFFSET{ 2.5f, -0.50f, 3.0f };
+const Vector3 EnemyParameters::LASTBOSS_HPBAR_OFFSET{ 0.0f, 3.0f, 0.0f };
 
 
 // ==============================

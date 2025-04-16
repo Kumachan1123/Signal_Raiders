@@ -16,8 +16,8 @@
 #include "Game/KumachiLib/DrawCollision/DrawCollision.h"
 #include "Game/Enemy/Boss/BossSheild/BossSheild.h"
 #include "Game/Enemy/Parameters/EnemyParameters.h"
-#include "Game/Enemy/Boss/BossModel/BossModel.h"
 #include "Game/Enemy/EnemyHPBar/EnemyHPBar.h"
+#include "Game/Enemy/Boss/BossModel/BossModel.h"
 
 //‘O•ûéŒ¾
 class CommonResources;

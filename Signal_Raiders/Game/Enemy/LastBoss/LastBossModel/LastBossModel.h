@@ -1,10 +1,10 @@
 /*
-	@file	BossModel.h
-	@brief	敵モデルクラス
+	@file	LastBossModel.h
+	@brief	ラスボスモデルクラス
 */
 #pragma once
-#ifndef BOSS_MODEL_DEFINED
-#define BOSS_MODEL_DEFINED
+#ifndef LASTBOSS_MODEL_DEFINED
+#define LASTBOSS_MODEL_DEFINED
 // 標準ライブラリ
 #include <SimpleMath.h>
 // 外部ライブラリ
@@ -22,12 +22,12 @@ class Boss;
 class CommonResources;
 class IState;
 
-class BossModel : public IModel
+class LastBossModel : public IModel
 {
 public:
 	// publicメンバ関数
-	BossModel();// コンストラクタ
-	~BossModel()override;// デストラクタ
+	LastBossModel();// コンストラクタ
+	~LastBossModel()override;// デストラクタ
 	void Initialize(CommonResources* resources)override;// 初期化
 	void SetState(IState::EnemyState State) { m_nowState = State; }// ステートの設定
 	void Render(ID3D11DeviceContext1* context,// 描画
@@ -50,4 +50,4 @@ private:
 	// 現在のステート
 	IState::EnemyState m_nowState;
 };
-#endif //BOSS_MODEL_DEFINED
+#endif //LASTBOSS_MODEL_DEFINED

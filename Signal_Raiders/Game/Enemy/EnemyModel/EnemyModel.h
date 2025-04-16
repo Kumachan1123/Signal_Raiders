@@ -7,10 +7,11 @@
 #define ENEMY_MODEL_DEFINED
 #include "Game/CommonResources.h"
 #include "Game/Interface/IState.h"
+#include "Game/Interface/IModel.h"
 class Enemy;
 class CommonResources;
 class IState;
-class EnemyModel
+class EnemyModel : public IModel
 {
 private:
 	// 共通リソース
@@ -31,14 +32,14 @@ private:
 public:
 	// 初期ステータスを設定
 	EnemyModel();
-	~EnemyModel();
-	void Initialize(CommonResources* resources);
-	void SetState(IState::EnemyState State) { m_nowState = State; }
+	~EnemyModel()override;
+	void Initialize(CommonResources* resources)override;
+	void SetState(IState::EnemyState State)override { m_nowState = State; }
 	void Render(ID3D11DeviceContext1* context,
 		DirectX::DX11::CommonStates* states,
 		DirectX::SimpleMath::Matrix world,
 		DirectX::SimpleMath::Matrix view,
-		DirectX::SimpleMath::Matrix proj);
+		DirectX::SimpleMath::Matrix proj)override;
 
 };
 #endif //ENEMY_MODEL_DEFINED

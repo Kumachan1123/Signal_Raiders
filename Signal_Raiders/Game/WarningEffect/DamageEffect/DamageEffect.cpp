@@ -61,7 +61,6 @@ void DamageEffect::Initialize()
 		m_constBuffer.colors = DirectX::SimpleMath::Vector4(2.0f, 0.0f, 0.0f, 1.0f);// エフェクトタイプがダメージなら赤色
 		m_enemyDirection = m_pPlayer->GetEnemyBulletDirection();// 攻撃してきた敵の向きを取得
 	}
-
 	else if (m_effectType == EffectType::INCOMINGENEMY)
 	{
 		m_constBuffer.colors = DirectX::SimpleMath::Vector4(1.0f, 0.5f, 0.0f, 1.0f);// エフェクトタイプが警告なら黄色

@@ -55,7 +55,7 @@ public:// 定数
 	static const float ENEMY_SPAWN_START_TIME;// 敵のスポーン開始時間
 	static const float ENEMY_SPAWN_INTERVAL; // 敵のスポーン間隔
 	static const DirectX::SimpleMath::Vector3 ENEMY_HPBAR_OFFSET;// ザコHPバーのオフセット
-	// ===== ボス専用 =====
+	// ===== ボス共通 =====
 	static const float BOSS_SHIELD_SCALE_SPEED;// ボスシールドの拡大速度
 	static const float BOSS_SHIELD_RADIUS; // ボスシールドの半径
 	static const float BOSS_SHIELD_ATTACK_COOLDOWN; // ボスシールドの攻撃クールダウン時間
@@ -67,6 +67,7 @@ public:// 定数
 	static const float BOSS_DEADEFFECT_SCALE; // ボスのデスエフェクトのスケール
 	static const float BOSS_SPAWN_WAIT_TIME; // ボスのスポーン待機時間
 
+	// ===== ボス専用 =====
 	static const DirectX::SimpleMath::Vector3 INITIAL_BOSS_POSITION;// ボスの初期位置
 	static const DirectX::SimpleMath::Vector3 INITIAL_BOSS_SCALE; // ボスの初期スケール
 	static const DirectX::SimpleMath::Vector3 BOSS_SPHERE_OFFSET;// ボスの球体オフセット
@@ -74,6 +75,15 @@ public:// 定数
 	static const DirectX::SimpleMath::Vector3 BOSS_LEFT_GUN_OFFSET;// ボスの左ガンのオフセット
 	static const DirectX::SimpleMath::Vector3 BOSS_RIGHT_GUN_OFFSET;// ボスの右ガンのオフセット
 	static const DirectX::SimpleMath::Vector3 BOSS_HPBAR_OFFSET;// ボスHPバーのオフセット
+
+	// ===== ラスボス専用 =====
+	static const DirectX::SimpleMath::Vector3 INITIAL_LASTBOSS_POSITION;// ボスの初期位置
+	static const DirectX::SimpleMath::Vector3 INITIAL_LASTBOSS_SCALE; // ボスの初期スケール
+	static const DirectX::SimpleMath::Vector3 LASTBOSS_SPHERE_OFFSET;// ボスの球体オフセット
+	static const DirectX::SimpleMath::Vector3 LASTBOSS_HEAD_OFFSET;// ボスの頭のオフセット
+	static const DirectX::SimpleMath::Vector3 LASTBOSS_LEFT_GUN_OFFSET;// ボスの左ガンのオフセット
+	static const DirectX::SimpleMath::Vector3 LASTBOSS_RIGHT_GUN_OFFSET;// ボスの右ガンのオフセット
+	static const DirectX::SimpleMath::Vector3 LASTBOSS_HPBAR_OFFSET;// ボスHPバーのオフセット
 	// ===== 浮遊・特殊な初期状態など =====
 	static const DirectX::SimpleMath::Vector3 INITIAL_VELOCITY; // 浮遊用の初速度
 

@@ -289,6 +289,9 @@
     <ClInclude Include="Game\Enemy\EnemyBullet\SpeedBullet\SpeedBullet.h" />
     <ClInclude Include="Game\MousePointer\MousePointer.h" />
     <ClInclude Include="Game\BossAppear\BossAppear.h" />
+    <ClInclude Include="Game\Interface\IModel.h" />
+    <ClInclude Include="Game\Enemy\LastBoss\LastBoss.h" />
+    <ClInclude Include="Game\Enemy\LastBoss\LastBossModel\LastBossModel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -424,6 +427,8 @@
     <ClCompile Include="Game\Enemy\EnemyBullet\SpeedBullet\SpeedBullet.cpp" />
     <ClCompile Include="Game\MousePointer\MousePointer.cpp" />
     <ClCompile Include="Game\BossAppear\BossAppear.cpp" />
+    <ClCompile Include="Game\Enemy\LastBoss\LastBoss.cpp" />
+    <ClCompile Include="Game\Enemy\LastBoss\LastBossModel\LastBossModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
