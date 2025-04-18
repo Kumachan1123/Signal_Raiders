@@ -192,6 +192,7 @@
     <ClInclude Include="Game\BulletParameters\BulletParameters.h" />
     <ClInclude Include="Game\Enemy\LastBoss\LastBoss.h" />
     <ClInclude Include="Game\Enemy\LastBoss\LastBossModel\LastBossModel.h" />
+    <ClInclude Include="Game\Interface\IBoss.h" />
     <ClInclude Include="Game\Interface\IModel.h" />
     <ClInclude Include="Game\WarningEffect\WarningEffects\WarningEffects.h" />
     <ClInclude Include="Game\Enemy\Boss\BossSheild\BossSheild.h" />

@@ -53,7 +53,7 @@ public:
 
 public:
 	IEnemy(Player* pPlayer, CommonResources* resources, int hp) : m_pPlayer(pPlayer), m_commonResources(resources), m_currentHP(hp), m_pBulletManager(nullptr) {}
-
+	IEnemy() {}
 	virtual ~IEnemy() = default;
 	virtual void Initialize() = 0;
 

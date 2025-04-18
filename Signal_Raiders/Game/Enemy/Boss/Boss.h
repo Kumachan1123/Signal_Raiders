@@ -12,6 +12,7 @@
 // 自作ヘッダーファイル
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/Interface/IEnemy.h"
+#include "Game/Interface/IBoss.h"
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 #include "Game/KumachiLib/DrawCollision/DrawCollision.h"
 #include "Game/Enemy/Boss/BossSheild/BossSheild.h"
@@ -118,7 +119,7 @@ public:
 	const DirectX::SimpleMath::Vector3& GetRotate()  override { return m_rotate; }
 	Player* GetPlayer()const override { return m_pPlayer; }
 	FPS_Camera* GetCamera()const override { return m_pCamera; }
-	void SetCamera(FPS_Camera* camera) { m_pCamera = camera; }
+	void SetCamera(FPS_Camera* camera)override { m_pCamera = camera; }
 	int GetEnemyHP() const override { return m_currentHP; }
 	void SetEnemyHP(int hp) override;
 	bool GetEnemyIsDead() const override { return m_isDead; }
