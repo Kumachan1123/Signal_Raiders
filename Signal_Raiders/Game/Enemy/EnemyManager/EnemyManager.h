@@ -32,16 +32,16 @@ private:
 		int enemyMax;// 敵の生成上限
 		int bossHP;// ボスの体力
 		int specialAttackCount;// 一度に出る特殊攻撃の数
-		Boss::BossBulletType bulletType;// ボスの弾の種類
+		IEnemy::BossBulletType bulletType;// ボスの弾の種類
 	};
 	const std::unordered_map<int, StageSettings> stageData =
 	{
 		//{ステージ番号, {敵の生成上限, ボスの体力, 一度に出る特殊攻撃の数, ボスの弾の種類}}
-		{0, {5, 100, 3,Boss::BossBulletType::NORMAL}},
-		{1, {10, 200,4, Boss::BossBulletType::NORMAL}},
-		{2, {20, 300,5, Boss::BossBulletType::TWIN}},
-		{3, {30, 500, 7,Boss::BossBulletType::THREE}},
-		{4, {40, 1000,10, Boss::BossBulletType::THREE}}
+		{0, {5, 100, 3,IEnemy::BossBulletType::NORMAL}},
+		{1, {10, 200,4, IEnemy::BossBulletType::NORMAL}},
+		{2, {20, 300,5, IEnemy::BossBulletType::TWIN}},
+		{3, {30, 500, 7,IEnemy::BossBulletType::THREE}},
+		{4, {40, 1000,10, IEnemy::BossBulletType::THREE}}
 	};
 
 private:
@@ -142,6 +142,7 @@ private:
 	void SpawnEnemy(EnemyType type);// 敵生成(指定タイプ
 	void FinalizeEnemySpawn();// 敵生成終了
 	void SpawnBoss();// ボス生成
+	void SpawnLastBoss();// ラスボス生成
 	void HandleEnemyCollisions();// 敵の当たり判定
 	void UpdateEnemies(float elapsedTime);// プレイヤーと敵の当たり判定
 	void HandleEnemyBulletCollision(std::unique_ptr<IEnemy>& enemy);// 敵の弾とプレイヤーの当たり判定

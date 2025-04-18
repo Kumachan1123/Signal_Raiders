@@ -213,7 +213,15 @@ void EnemyManager::HandleEnemySpawning(float elapsedTime)
 		m_bossBornWaitTime += elapsedTime;// ボス生成待機時間を更新
 		if (m_bossBornWaitTime >= EnemyParameters::BOSS_SPAWN_WAIT_TIME)// ボス生成待機時間を超えたら
 		{
-			SpawnBoss();// ボスを生成
+			if (m_stageNumber >= 3)
+			{
+				SpawnLastBoss();// ラスボスを生成
+			}
+			else
+			{
+				SpawnBoss();// ボスを生成
+			}
+
 		}
 
 	}
@@ -254,6 +262,21 @@ void EnemyManager::FinalizeEnemySpawn()
 void EnemyManager::SpawnBoss()
 {
 	auto boss = std::make_unique<Boss>(m_pPlayer, m_commonResources, m_bossHP);// ボスを生成
+	boss->SetAudioManager(m_audioManager);// オーディオマネージャーを設定
+	boss->Initialize();// ボスを初期化
+	boss->SetBulletManager(m_pBulletManager);// 弾マネージャーを設定
+	boss->SetBulletType(m_bossBulletType);// ボスの弾の種類を設定
+	boss->GetBulletManager()->SetSpecialAttackCount(m_specialAttackCount);// ボスの特殊攻撃の数を設定
+	m_enemies.push_back(std::move(boss)); // ボスも enemies に統一
+	m_isBossBorned = true; // ボス生成完了
+	m_isBossAppear = false; // ボス生成演出フラグを下ろす
+}
+//---------------------------------------------------------
+// ラスボスクラスを生成する
+//---------------------------------------------------------
+void EnemyManager::SpawnLastBoss()
+{
+	auto boss = std::make_unique<LastBoss>(m_pPlayer, m_commonResources, m_bossHP);// ボスを生成
 	boss->SetAudioManager(m_audioManager);// オーディオマネージャーを設定
 	boss->Initialize();// ボスを初期化
 	boss->SetBulletManager(m_pBulletManager);// 弾マネージャーを設定

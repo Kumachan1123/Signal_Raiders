@@ -14,13 +14,14 @@ using namespace DirectX::SimpleMath;
 *	@param pBoss ボスクラスのポインタ
 *	@return	なし
 */
-BossSheild::BossSheild(int sheildHP, Boss* pBoss)
+BossSheild::BossSheild(BossType type, int sheildHP, IEnemy* pBoss)
 	: m_commonResources{}// 共通リソース
 	, m_isSheild(false)// シールド展開フラグ
 	, m_isParticle(false)// パーティクル再生フラグ
 	, m_sheildSize(Vector3::Zero)// シールドのサイズ
 	, m_sheildPosition(Vector3::Zero)// シールドの座標
 	, m_sheildHP(sheildHP)// シールドのHP
+	, m_bossType(type)// ボスの種類
 	, m_pBoss(pBoss)// ボスクラスのポインタ
 {
 }
@@ -48,19 +49,25 @@ void BossSheild::Initialize(CommonResources* resources)
 
 void BossSheild::Update(float elapsedTime)
 {
+
+	auto* pBoss = static_cast<Boss*>(m_pBoss);
+
+
+
 	if (m_isSheild)// シールドが展開されている間
 	{
-		m_pBoss->PlayBarrierSE();// シールドSE再生
+
+		pBoss->PlayBarrierSE();// シールドSE再生
 		m_sheildSize = Vector3::SmoothStep(m_sheildSize, Vector3::One, EnemyParameters::BOSS_SHIELD_SCALE_SPEED);// シールドのサイズを拡大
-		m_pBoss->GetBoundingSphere().Radius = EnemyParameters::BOSS_SHIELD_RADIUS;// ボスの境界球をシールドの大きさに合わせる
-		m_pBoss->SetBulletCooldown(EnemyParameters::BOSS_SHIELD_ATTACK_COOLDOWN);// 攻撃の間隔を速くする
-		m_pBoss->SetInitSpecialAttacCooldown(EnemyParameters::SPECIAL_ATTACK_COOLDOWN / 2);// 特殊攻撃の間隔を速くする
+		pBoss->GetBoundingSphere().Radius = EnemyParameters::BOSS_SHIELD_RADIUS;// ボスの境界球をシールドの大きさに合わせる
+		pBoss->SetBulletCooldown(EnemyParameters::BOSS_SHIELD_ATTACK_COOLDOWN);// 攻撃の間隔を速くする
+		pBoss->SetInitSpecialAttacCooldown(EnemyParameters::SPECIAL_ATTACK_COOLDOWN / 2);// 特殊攻撃の間隔を速くする
 	}
 	if (m_sheildHP <= 0)// シールドが破壊されたら
 	{
 		m_isParticle = true;// パーティクル再生
 		m_isSheild = false;// シールド破壊
-		m_pBoss->GetBoundingSphere().Radius = EnemyParameters::NORMAL_BOSS_RADIUS;// ボスの境界球を元に戻す
+		pBoss->GetBoundingSphere().Radius = EnemyParameters::NORMAL_BOSS_RADIUS;// ボスの境界球を元に戻す
 		m_pParticle->SetBossPosition(m_pBoss->GetPosition());// ボスの位置を設定
 		m_pParticle->Update(elapsedTime);// パーティクル更新
 	}
@@ -76,6 +83,8 @@ void BossSheild::Update(float elapsedTime)
 */
 void BossSheild::Render(ID3D11DeviceContext1* context, DirectX::DX11::CommonStates* states, Matrix world, Matrix view, Matrix proj)
 {
+	// m_pBossをBossクラスのポインタにキャスト
+	Boss* pBoss = static_cast<Boss*>(m_pBoss);
 	if (m_isSheild)// シールドが展開されている間
 	{
 		Matrix shieldWorld = Matrix::CreateScale(m_sheildSize) * world;// シールドのワールド行列
@@ -88,7 +97,7 @@ void BossSheild::Render(ID3D11DeviceContext1* context, DirectX::DX11::CommonStat
 	}
 	if (m_isParticle)// パーティクル再生フラグが立っている間
 	{
-		m_pParticle->CreateBillboard(m_pBoss->GetCameraTarget(), m_pBoss->GetCameraEye(), m_pBoss->GetCameraUp());// ビルボード作成
+		m_pParticle->CreateBillboard(pBoss->GetCameraTarget(), pBoss->GetCameraEye(), pBoss->GetCameraUp());// ビルボード作成
 		m_pParticle->Render(view, proj);// パーティクル描画
 	}
 }

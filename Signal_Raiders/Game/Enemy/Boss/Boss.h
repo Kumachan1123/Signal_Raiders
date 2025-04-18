@@ -33,13 +33,13 @@ class EnemyManager;
 class Boss : public IEnemy
 {
 public:
-	enum class BossBulletType
-	{
-		NORMAL = 0,	// 一発
-		TWIN,		// 二発
-		THREE,		// 三発
-		SPIRAL,		// 回転弾
-	};
+	//enum class BossBulletType
+	//{
+	//	NORMAL = 0,	// 一発
+	//	TWIN,		// 二発
+	//	THREE,		// 三発
+	//	SPIRAL,		// 回転弾
+	//};
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;

@@ -17,15 +17,23 @@
 #include "Game/Interface/IState.h"
 #include "Game/Particle/Particle.h"
 #include "Game/Enemy/Boss/Boss.h"
+#include "Game/Enemy/LastBoss/LastBoss.h"
 
 // クラスの前方宣言
-class Boss;
+class IEnemy;
 class Player;
 class CommonResources;
 class IState;
 
 class BossSheild
 {
+public:
+	// ボスの種類
+	enum class BossType
+	{
+		BOSS = 0,	// ボス
+		LASTBOSS,	// ラスボス
+	};
 public:
 	// アクセサ
 	bool GetSheild() const { return m_isSheild; }
@@ -36,7 +44,7 @@ public:
 	void SetRotation(DirectX::SimpleMath::Quaternion rot) { m_sheildRotation = rot; }
 public:
 	// public関数
-	BossSheild(int sheildHP, Boss* pBoss);// コンストラクタ
+	BossSheild(BossType type, int sheildHP, IEnemy* pBoss);// コンストラクタ
 	~BossSheild();// デストラクタ
 	void Initialize(CommonResources* resources);// 初期化
 	void Update(float elapsedTime);// 更新
@@ -53,7 +61,9 @@ private:
 	// パーティクル
 	std::unique_ptr<Particle> m_pParticle;
 	// ボス
-	Boss* m_pBoss;
+	IEnemy* m_pBoss;
+	// ボスの種類
+	BossType m_bossType;
 	// シールドのサイズ
 	DirectX::SimpleMath::Vector3 m_sheildSize;
 	// シールドの座標

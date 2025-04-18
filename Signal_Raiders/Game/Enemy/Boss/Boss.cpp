@@ -54,7 +54,6 @@ Boss::Boss(Player* pPlayer, CommonResources* resources, int hp)
 	, m_bossBulletType(BossBulletType::NORMAL)// ボスの弾の種類
 	, m_bulletType(EnemyBullet::BulletType::NORMAL)// 弾の種類
 	, m_audioManager{ }// オーディオマネージャー
-
 {
 }
 /*
@@ -77,7 +76,7 @@ void Boss::Initialize()
 	m_pHPBar->Initialize(m_commonResources);// HPバー初期化
 	m_pBossAI = std::make_unique<BossAI>(this);// ボスAI生成
 	m_pBossAI->Initialize();// ボスAI初期化
-	m_pBossSheild = std::make_unique<BossSheild>(m_maxHP, this);// シールド生成
+	m_pBossSheild = std::make_unique<BossSheild>(BossSheild::BossType::BOSS, m_maxHP, this);// シールド生成
 	m_pBossSheild->Initialize(m_commonResources);// シールド初期化
 	m_position = EnemyParameters::INITIAL_BOSS_POSITION;// 敵の座標を設定
 	m_pBossAI->SetPosition(m_position);// AIに座標を設定
