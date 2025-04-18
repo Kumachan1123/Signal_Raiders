@@ -292,7 +292,6 @@
     <ClInclude Include="Game\Interface\IModel.h" />
     <ClInclude Include="Game\Enemy\LastBoss\LastBoss.h" />
     <ClInclude Include="Game\Enemy\LastBoss\LastBossModel\LastBossModel.h" />
-    <ClInclude Include="Game\Interface\IBoss.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />

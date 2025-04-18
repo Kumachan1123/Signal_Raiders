@@ -19,7 +19,7 @@
 #include "Game/Enemy/Boss/Boss.h"
 
 // ƒNƒ‰ƒX‚Ì‘O•ûéŒ¾
-
+class Boss;
 class Player;
 class CommonResources;
 class IState;
