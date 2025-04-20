@@ -292,6 +292,8 @@
     <ClInclude Include="Game\Interface\IModel.h" />
     <ClInclude Include="Game\Enemy\LastBoss\LastBoss.h" />
     <ClInclude Include="Game\Enemy\LastBoss\LastBossModel\LastBossModel.h" />
+    <ClInclude Include="Game\Enemy\BossBase\BossBase.h" />
+    <ClInclude Include="Game\Interface\IBossLogic.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -429,6 +431,7 @@
     <ClCompile Include="Game\BossAppear\BossAppear.cpp" />
     <ClCompile Include="Game\Enemy\LastBoss\LastBoss.cpp" />
     <ClCompile Include="Game\Enemy\LastBoss\LastBossModel\LastBossModel.cpp" />
+    <ClCompile Include="Game\Enemy\BossBase\BossBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

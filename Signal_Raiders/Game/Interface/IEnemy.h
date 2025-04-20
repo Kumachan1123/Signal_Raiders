@@ -10,13 +10,13 @@ class CommonResources;
 class IEnemy
 {
 public:
-	enum class BossBulletType
-	{
-		NORMAL = 0,	// ˆê”­
-		TWIN,		// “ñ”­
-		THREE,		// ŽO”­
-		SPIRAL,		// ‰ñ“]’e
-	};
+	//enum class BossBulletType
+	//{
+	//	NORMAL = 0,	// ˆê”­
+	//	TWIN,		// “ñ”­
+	//	THREE,		// ŽO”­
+	//	SPIRAL,		// ‰ñ“]’e
+	//};
 protected:
 	Player* m_pPlayer;
 	BulletManager* m_pBulletManager;

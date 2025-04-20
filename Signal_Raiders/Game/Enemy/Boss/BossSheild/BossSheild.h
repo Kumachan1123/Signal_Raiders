@@ -16,20 +16,23 @@
 #include "Game/Enemy/Parameters/EnemyParameters.h"
 #include "Game/Interface/IState.h"
 #include "Game/Particle/Particle.h"
-#include "Game/Enemy/Boss/Boss.h"
-#include "Game/Enemy/LastBoss/LastBoss.h"
+#include "Game/Interface/IEnemy.h"
+#include "Game/Enemy/BossBase/BossBase.h"
+//#include "Game/Enemy/Boss/Boss.h"
+//#include "Game/Enemy/LastBoss/LastBoss.h"
 
 // クラスの前方宣言
 class IEnemy;
 class Player;
 class CommonResources;
 class IState;
+class BossBase;
 
 class BossSheild
 {
 public:
 	// ボスの種類
-	enum class BossType
+	enum class BossShieldType
 	{
 		BOSS = 0,	// ボス
 		LASTBOSS,	// ラスボス
@@ -42,9 +45,10 @@ public:
 	void SetSheildHP(int sheildHP) { m_sheildHP = sheildHP; }
 	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_sheildPosition = pos; }
 	void SetRotation(DirectX::SimpleMath::Quaternion rot) { m_sheildRotation = rot; }
+	void SetUp(int sheildHP, IEnemy* pBoss);
 public:
 	// public関数
-	BossSheild(BossType type, int sheildHP, IEnemy* pBoss);// コンストラクタ
+	BossSheild();// コンストラクタ
 	~BossSheild();// デストラクタ
 	void Initialize(CommonResources* resources);// 初期化
 	void Update(float elapsedTime);// 更新
@@ -63,7 +67,7 @@ private:
 	// ボス
 	IEnemy* m_pBoss;
 	// ボスの種類
-	BossType m_bossType;
+	BossShieldType m_bossType;
 	// シールドのサイズ
 	DirectX::SimpleMath::Vector3 m_sheildSize;
 	// シールドの座標

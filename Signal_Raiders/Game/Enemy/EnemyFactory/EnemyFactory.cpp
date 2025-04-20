@@ -10,7 +10,7 @@ std::unique_ptr<IEnemy> EnemyFactory::CreateEnemy(EnemyType type, Player* player
 	case EnemyType::VerticalAttacker:
 		return std::make_unique<VerticalAttacker>(player, resources, HP);
 	case EnemyType::Boss:
-		return std::make_unique<Boss>(player, resources, HP);
+		return std::make_unique<BossBase>(player, resources, HP);
 	default:
 		return nullptr;
 	}

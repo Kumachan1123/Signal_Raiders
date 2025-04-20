@@ -14,15 +14,15 @@ using namespace DirectX::SimpleMath;
 *	@param pBoss ボスクラスのポインタ
 *	@return	なし
 */
-BossSheild::BossSheild(BossType type, int sheildHP, IEnemy* pBoss)
+BossSheild::BossSheild()
 	: m_commonResources{}// 共通リソース
 	, m_isSheild(false)// シールド展開フラグ
 	, m_isParticle(false)// パーティクル再生フラグ
 	, m_sheildSize(Vector3::Zero)// シールドのサイズ
 	, m_sheildPosition(Vector3::Zero)// シールドの座標
-	, m_sheildHP(sheildHP)// シールドのHP
-	, m_bossType(type)// ボスの種類
-	, m_pBoss(pBoss)// ボスクラスのポインタ
+	, m_sheildHP(0)// シールドのHP
+	, m_bossType(BossShieldType::BOSS)// ボスの種類
+	, m_pBoss(nullptr)// ボスクラスのポインタ
 {
 }
 /*
@@ -30,6 +30,23 @@ BossSheild::BossSheild(BossType type, int sheildHP, IEnemy* pBoss)
 *	@return	なし
 */
 BossSheild::~BossSheild() {}
+
+/*
+*	@brief	シールドの初期化
+*	@param type ボスの種類
+*	@param sheildHP シールドのHP
+*	@param pBoss ボスクラスのポインタ
+*	@return	なし
+*/
+void BossSheild::SetUp(int sheildHP, IEnemy* pBoss)
+{
+
+	m_sheildHP = sheildHP;// シールドのHP
+	m_pBoss = pBoss;// ボスクラスのポインタ
+	m_isSheild = false;// シールド展開フラグを立てる
+	m_sheildSize = Vector3::Zero;// シールドのサイズを初期化
+	m_sheildPosition = pBoss->GetPosition();// ボスの位置をシールドの位置に設定
+}
 
 /*
 *	@brief	初期化
@@ -50,7 +67,8 @@ void BossSheild::Initialize(CommonResources* resources)
 void BossSheild::Update(float elapsedTime)
 {
 
-	auto* pBoss = static_cast<Boss*>(m_pBoss);
+	auto pBoss = dynamic_cast<BossBase*>(m_pBoss);
+
 
 
 
@@ -58,7 +76,7 @@ void BossSheild::Update(float elapsedTime)
 	{
 
 		pBoss->PlayBarrierSE();// シールドSE再生
-		m_sheildSize = Vector3::SmoothStep(m_sheildSize, Vector3::One, EnemyParameters::BOSS_SHIELD_SCALE_SPEED);// シールドのサイズを拡大
+		m_sheildSize = Vector3::SmoothStep(m_sheildSize, Vector3(0.3f), EnemyParameters::BOSS_SHIELD_SCALE_SPEED);// シールドのサイズを拡大
 		pBoss->GetBoundingSphere().Radius = EnemyParameters::BOSS_SHIELD_RADIUS;// ボスの境界球をシールドの大きさに合わせる
 		pBoss->SetBulletCooldown(EnemyParameters::BOSS_SHIELD_ATTACK_COOLDOWN);// 攻撃の間隔を速くする
 		pBoss->SetInitSpecialAttacCooldown(EnemyParameters::SPECIAL_ATTACK_COOLDOWN / 2);// 特殊攻撃の間隔を速くする
@@ -84,7 +102,8 @@ void BossSheild::Update(float elapsedTime)
 void BossSheild::Render(ID3D11DeviceContext1* context, DirectX::DX11::CommonStates* states, Matrix world, Matrix view, Matrix proj)
 {
 	// m_pBossをBossクラスのポインタにキャスト
-	Boss* pBoss = static_cast<Boss*>(m_pBoss);
+// 安全に dynamic_cast を使う前提
+	auto pBoss = dynamic_cast<BossBase*>(m_pBoss);
 	if (m_isSheild)// シールドが展開されている間
 	{
 		Matrix shieldWorld = Matrix::CreateScale(m_sheildSize) * world;// シールドのワールド行列

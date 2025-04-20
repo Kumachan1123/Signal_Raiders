@@ -64,7 +64,7 @@ void BossAI::Update(float elapsedTime)
 	m_currentState->Update(elapsedTime);// 現在のステートを更新
 	m_position.y = m_initialPosition.y + EnemyParameters::AMPLITUDE * std::sin(EnemyParameters::FREQUENCY * m_time);// Y座標を更新
 	m_position.y += m_velocity.y * elapsedTime;// Y座標を更新
-	auto boss = dynamic_cast<Boss*>(m_pBoss);// IEnemyからBossのポインターを抽出
+	auto boss = dynamic_cast<BossBase*>(m_pBoss);// IEnemyからBossのポインターを抽出
 	if (!m_isKnockBack && boss->GetBossSheild()->GetSheildHP() <= 0)	// シールドが壊されたらノックバック
 	{
 		ChangeState(m_pBossIdling.get());//徘徊態勢にする

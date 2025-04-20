@@ -6,7 +6,7 @@
 #include <memory>
 #include "Game/Enemy/Enemy.h"
 #include "Game/Enemy/VerticalAttacker/VerticalAttacker.h"
-#include "Game/Enemy/Boss/Boss.h"
+#include "Game/Enemy/BossBase/BossBase.h"
 #include "Game/Enemy/EnemyType/EnemyType.h"
 #include "Game/Interface/IEnemy.h"
 class EnemyFactory

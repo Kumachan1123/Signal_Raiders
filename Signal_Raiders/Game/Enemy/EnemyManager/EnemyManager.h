@@ -6,7 +6,6 @@
 #include "Game/Interface/IEnemy.h"
 #include "Game/Enemy/Enemy.h"
 #include "Game/Enemy/VerticalAttacker/VerticalAttacker.h"
-#include "Game/Enemy/Boss/Boss.h"
 #include "Game/Enemy/EnemyFactory/EnemyFactory.h"
 #include "Game/Enemy/EnemyType/EnemyType.h"
 #include "Game/Effect/Effect.h"
@@ -18,7 +17,7 @@
 // 前方宣言
 class CommonResources;
 class IEnemy;
-class Boss;
+class BossBase;
 class Player;
 class Effect;
 class Wifi;
@@ -32,16 +31,16 @@ private:
 		int enemyMax;// 敵の生成上限
 		int bossHP;// ボスの体力
 		int specialAttackCount;// 一度に出る特殊攻撃の数
-		IEnemy::BossBulletType bulletType;// ボスの弾の種類
+		BossBase::BossBulletType bulletType;// ボスの弾の種類
 	};
 	const std::unordered_map<int, StageSettings> stageData =
 	{
 		//{ステージ番号, {敵の生成上限, ボスの体力, 一度に出る特殊攻撃の数, ボスの弾の種類}}
-		{0, {5, 100, 3,IEnemy::BossBulletType::NORMAL}},
-		{1, {10, 200,4, IEnemy::BossBulletType::NORMAL}},
-		{2, {20, 300,5, IEnemy::BossBulletType::TWIN}},
-		{3, {30, 500, 7,IEnemy::BossBulletType::THREE}},
-		{4, {40, 1000,10, IEnemy::BossBulletType::THREE}}
+		{0, {5, 100, 3,BossBase::BossBulletType::NORMAL}},
+		{1, {10, 200,4, BossBase::BossBulletType::NORMAL}},
+		{2, {20, 300,5, BossBase::BossBulletType::TWIN}},
+		{3, {30, 500, 7,BossBase::BossBulletType::THREE}},
+		{4, {40, 1000,10, BossBase::BossBulletType::THREE}}
 	};
 
 private:
@@ -51,8 +50,6 @@ private:
 	std::vector<std::unique_ptr<IEnemy>> m_enemies;
 	// 攻撃中の敵配列
 	std::vector<std::unique_ptr<IEnemy>> m_attackingEnemies;
-	// ボス
-	std::unique_ptr<Boss> m_boss;
 	// ステージ番号（0から4をプレイシーンから参照）
 	int m_stageNumber;
 	// 敵生成フラグ
@@ -100,7 +97,7 @@ private:
 	// SEの音量
 	float m_SEVolume;
 	// ボスの弾の種類
-	Boss::BossBulletType m_bossBulletType;
+	BossBase::BossBulletType m_bossBulletType;
 
 public:
 	EnemyManager(CommonResources* commonResources);
@@ -142,7 +139,6 @@ private:
 	void SpawnEnemy(EnemyType type);// 敵生成(指定タイプ
 	void FinalizeEnemySpawn();// 敵生成終了
 	void SpawnBoss();// ボス生成
-	void SpawnLastBoss();// ラスボス生成
 	void HandleEnemyCollisions();// 敵の当たり判定
 	void UpdateEnemies(float elapsedTime);// プレイヤーと敵の当たり判定
 	void HandleEnemyBulletCollision(std::unique_ptr<IEnemy>& enemy);// 敵の弾とプレイヤーの当たり判定

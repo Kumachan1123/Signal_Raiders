@@ -15,6 +15,7 @@
 #include <Effects.h>
 #include <memory>
 #include "Game/KumachiLib/KumachiLib.h"
+#include "Game/Enemy/BossBase/BossBase.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -24,7 +25,6 @@ using namespace DirectX::SimpleMath;
 EnemyManager::EnemyManager(CommonResources* commonResources)
 	: m_commonResources{ commonResources }
 	, m_enemies{}
-	, m_boss{}
 	, m_isEnemyBorn{ false }
 	, m_isBorned{ false }
 	, m_isHitPlayerToEnemy{ false }
@@ -38,7 +38,7 @@ EnemyManager::EnemyManager(CommonResources* commonResources)
 	, m_enemyBornInterval{ EnemyParameters::ENEMY_SPAWN_INTERVAL }
 	, m_enemyBornTimer{ 0.0f }
 	, m_bossHP{ 0 }
-	, m_bossBulletType{ Boss::BossBulletType::NORMAL }
+	, m_bossBulletType{ BossBase::BossBulletType::NORMAL }
 	, m_specialAttackCount{ 0 }
 	, m_startTime{ 0.0f }
 	, m_bossBornWaitTime{ 0.0f }
@@ -213,14 +213,7 @@ void EnemyManager::HandleEnemySpawning(float elapsedTime)
 		m_bossBornWaitTime += elapsedTime;// ボス生成待機時間を更新
 		if (m_bossBornWaitTime >= EnemyParameters::BOSS_SPAWN_WAIT_TIME)// ボス生成待機時間を超えたら
 		{
-			if (m_stageNumber >= 3)
-			{
-				SpawnLastBoss();// ラスボスを生成
-			}
-			else
-			{
-				SpawnBoss();// ボスを生成
-			}
+			SpawnBoss();// ボスを生成
 
 		}
 
@@ -261,31 +254,22 @@ void EnemyManager::FinalizeEnemySpawn()
 //---------------------------------------------------------
 void EnemyManager::SpawnBoss()
 {
-	auto boss = std::make_unique<Boss>(m_pPlayer, m_commonResources, m_bossHP);// ボスを生成
+	auto boss = std::make_unique<BossBase>(m_pPlayer, m_commonResources, m_bossHP);// ボスを生成
+	if (m_stageNumber >= 3) boss->SetBossType(BossBase::BossType::LASTBOSS);// ボスの種類を設定
+	else boss->SetBossType(BossBase::BossType::BOSS);// ボスの種類を設定
+
 	boss->SetAudioManager(m_audioManager);// オーディオマネージャーを設定
 	boss->Initialize();// ボスを初期化
 	boss->SetBulletManager(m_pBulletManager);// 弾マネージャーを設定
 	boss->SetBulletType(m_bossBulletType);// ボスの弾の種類を設定
 	boss->GetBulletManager()->SetSpecialAttackCount(m_specialAttackCount);// ボスの特殊攻撃の数を設定
+
+
 	m_enemies.push_back(std::move(boss)); // ボスも enemies に統一
 	m_isBossBorned = true; // ボス生成完了
 	m_isBossAppear = false; // ボス生成演出フラグを下ろす
 }
-//---------------------------------------------------------
-// ラスボスクラスを生成する
-//---------------------------------------------------------
-void EnemyManager::SpawnLastBoss()
-{
-	auto boss = std::make_unique<LastBoss>(m_pPlayer, m_commonResources, m_bossHP);// ボスを生成
-	boss->SetAudioManager(m_audioManager);// オーディオマネージャーを設定
-	boss->Initialize();// ボスを初期化
-	boss->SetBulletManager(m_pBulletManager);// 弾マネージャーを設定
-	boss->SetBulletType(m_bossBulletType);// ボスの弾の種類を設定
-	boss->GetBulletManager()->SetSpecialAttackCount(m_specialAttackCount);// ボスの特殊攻撃の数を設定
-	m_enemies.push_back(std::move(boss)); // ボスも enemies に統一
-	m_isBossBorned = true; // ボス生成完了
-	m_isBossAppear = false; // ボス生成演出フラグを下ろす
-}
+
 
 //---------------------------------------------------------
 // 敵同士の当たり判定処理
@@ -414,7 +398,9 @@ void EnemyManager::HandleEnemyDeath(std::unique_ptr<IEnemy>& enemy)
 {
 	// 敵が死んだ場合の処理
 	float effectScale;// 初期値
-	if (auto boss = dynamic_cast<Boss*>(enemy.get()))
+	auto boss = dynamic_cast<BossBase*>(enemy.get());// IEnemyからBossのポインターを抽出
+	// もしボスだったら
+	if (boss)
 	{
 		effectScale = EnemyParameters::BOSS_DEADEFFECT_SCALE;// ボスの場合はエフェクトのスケールを大きくする
 		m_isBossAlive = false; // 生存フラグをfalseにする
