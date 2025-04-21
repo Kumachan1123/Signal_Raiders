@@ -255,8 +255,8 @@ void EnemyManager::FinalizeEnemySpawn()
 void EnemyManager::SpawnBoss()
 {
 	auto boss = std::make_unique<BossBase>(m_pPlayer, m_commonResources, m_bossHP);// ボスを生成
-	if (m_stageNumber >= 3) boss->SetBossType(BossBase::BossType::LASTBOSS);// ボスの種類を設定
-	else boss->SetBossType(BossBase::BossType::BOSS);// ボスの種類を設定
+	if (m_stageNumber >= 3) boss->SetBossType(BossType::LAST_BOSS);// ボスの種類を設定
+	else boss->SetBossType(BossType::NORMAL_BOSS);// ボスの種類を設定
 
 	boss->SetAudioManager(m_audioManager);// オーディオマネージャーを設定
 	boss->Initialize();// ボスを初期化

@@ -5,12 +5,26 @@ std::unique_ptr<IEnemy> EnemyFactory::CreateEnemy(EnemyType type, Player* player
 {
 	switch (type)
 	{
-	case EnemyType::Normal:
+	case EnemyType::NORMAL:
 		return std::make_unique<Enemy>(player, resources, HP);
-	case EnemyType::VerticalAttacker:
+	case EnemyType::VERTICAL_ATTACKER:
 		return std::make_unique<VerticalAttacker>(player, resources, HP);
-	case EnemyType::Boss:
+	case EnemyType::BOSS:
 		return std::make_unique<BossBase>(player, resources, HP);
+	default:
+		return nullptr;
+	}
+}
+
+
+std::unique_ptr<IBossLogic> EnemyFactory::CreateBoss(BossType type, BossBase* pBoss, CommonResources* resources)
+{
+	switch (type)
+	{
+	case BossType::NORMAL_BOSS:
+		return std::make_unique<Boss>(pBoss, resources);
+	case BossType::LAST_BOSS:
+		return std::make_unique<LastBoss>(pBoss, resources);
 	default:
 		return nullptr;
 	}

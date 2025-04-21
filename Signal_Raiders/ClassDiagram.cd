@@ -8,7 +8,7 @@
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>ABQECDBUBKABASISQqAAgEAAAAGIiJQARhAAAqABABQ=</HashCode>
+      <HashCode>ABAECBBUACAABgICQIAAAAAAAgEAAJQAAgAAAqABAAA=</HashCode>
       <FileName>Game\Enemy\Boss\Boss.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -80,7 +80,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="BossModel" Collapsed="true">
-    <Position X="7.25" Y="7.75" Width="1.5" />
+    <Position X="7.5" Y="7.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAABAAQAAABAQAEAAAEAAAAAACAAAAAAJAAAAEAAAg=</HashCode>
       <FileName>Game\Enemy\Boss\BossModel\BossModel.h</FileName>
@@ -204,7 +204,7 @@
   <Class Name="EnemyFactory" Collapsed="true">
     <Position X="25.75" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAABAA=</HashCode>
       <FileName>Game\Enemy\EnemyFactory\EnemyFactory.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -230,7 +230,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="EnemyModel" Collapsed="true">
-    <Position X="5" Y="7.75" Width="1.5" />
+    <Position X="5.25" Y="7.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>EAAABAAQAAARAQAAAAAEAAAQAACAEACAAJACAAMAAAA=</HashCode>
       <FileName>Game\Enemy\EnemyModel\EnemyModel.h</FileName>
@@ -595,7 +595,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="IModel" Collapsed="true">
-    <Position X="3.75" Y="6.5" Width="1.5" />
+    <Position X="4" Y="6.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAABAAAAAAAAQAAAAAAAAAAAAAAAAAAABAAAAEAAAA=</HashCode>
       <FileName>Game\Interface\IModel.h</FileName>
@@ -604,14 +604,14 @@
   <Class Name="LastBoss" Collapsed="true">
     <Position X="12.25" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ABQECDBWBKABASISAKAIgEAAAAGIiIQARhAAAqABABQ=</HashCode>
+      <HashCode>ABAECBBWACAABgICAIAIAAAAAgEAAIQAAgAAAqABAAA=</HashCode>
       <FileName>Game\Enemy\LastBoss\LastBoss.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="IBossLogic" Collapsed="true">
     <Position X="13.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAQAAAAAAQAAAQAAAAAAAAAAAAAAAAAAABAAAAAAABA=</HashCode>
+      <HashCode>AAAAAAAAAQAABgAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Game\Interface\IBossLogic.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -623,7 +623,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="LastBossModel" Collapsed="true">
-    <Position X="2.75" Y="7.75" Width="1.5" />
+    <Position X="3" Y="7.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAABBAAQAAABAQAAAAAEAAAAAECAAAAAAJAAAAEAAAA=</HashCode>
       <FileName>Game\Enemy\LastBoss\LastBossModel\LastBossModel.h</FileName>

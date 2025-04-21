@@ -5,7 +5,13 @@
 #pragma once
 enum class EnemyType
 {
-	Normal,
-	VerticalAttacker,
-	Boss,
+	NORMAL,
+	VERTICAL_ATTACKER,
+	BOSS,
+};
+
+enum class BossType
+{
+	NORMAL_BOSS,
+	LAST_BOSS,
 };

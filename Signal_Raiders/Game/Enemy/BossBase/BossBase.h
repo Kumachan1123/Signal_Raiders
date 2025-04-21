@@ -20,6 +20,8 @@
 #include "Game/Enemy/Boss/Boss.h"
 #include "Game/Enemy/LastBoss/LastBoss.h"
 #include "Game/Enemy/Boss/BossSheild/BossSheild.h"
+#include "Game/Enemy/EnemyFactory/EnemyFactory.h"
+#include "Game/Enemy/EnemyType/EnemyType.h"
 
 //前方宣言
 class CommonResources;
@@ -37,12 +39,7 @@ class EnemyManager;
 class BossBase : public IEnemy
 {
 public:
-	// ボスの種類
-	enum class BossType
-	{
-		BOSS = 0,	// ボス
-		LASTBOSS,	// ラスボス
-	};
+
 	// ボスの弾の種類
 	enum class BossBulletType
 	{
@@ -104,13 +101,11 @@ public:
 public:
 	// 初期ステータスを設定
 	BossBase(Player* pPlayer, CommonResources* resources, int hp);
-	~BossBase();
+	virtual ~BossBase();
 	void Initialize() override;// 初期化
 	void Update(float elapsedTime)override;// 更新
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;// 描画
 	void DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;// 衝突判定の描画
-	//BossSheild::BossShieldType GetBossSheildType() const { return m_bossSheildType; }// シールドの種類を取得
-	//void SetBossSheildType(BossSheild::BossShieldType type) { m_bossSheildType = type; }// シールドの種類を設定
 	void SetBulletType(BossBulletType bossBulletType) { m_bossBulletType = bossBulletType; };// 弾のタイプ設定
 	BossBulletType GetBulletType() const { return m_bossBulletType; };// 弾のタイプ取得
 	void PlayBarrierSE();// バリアSE再生
@@ -123,6 +118,7 @@ private:
 	void CreateRightBullet(float angleOffset, EnemyBullet::BulletType type);// 右の弾を生成
 	void CreateVerticalBullet();// 垂直の弾を生成
 	void CreateSpiralBullet();// 螺旋弾を生成
+
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
@@ -166,8 +162,6 @@ private:
 	EnemyBullet::BulletType m_bulletType;// EnemyBulletクラスに送る
 	// ボスの種類
 	BossType m_bossType;
-	//// ボスのシールドの種類
-	//BossSheild::BossShieldType m_bossSheildType;
 	// 生成するBoss
 	std::unique_ptr<IBossLogic> m_pBoss;
 	// 弾の飛ぶ方向

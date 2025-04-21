@@ -45,8 +45,7 @@ BossBase::BossBase(Player* pPlayer, CommonResources* resources, int hp)
 	, m_isPlayerHitByEnemyBullet(false)// プレイヤーが敵の弾に当たったか
 	, m_canAttack(true)// 攻撃可能か
 	, m_isAttack(false)// 攻撃中か
-	, m_bossType(BossType::BOSS)// ボスの種類
-	//, m_bossSheildType(BossSheild::BossShieldType::BOSS)// ボスのシールドの種類
+	, m_bossType(BossType::NORMAL_BOSS)// ボスの種類
 	, m_bossBulletType(BossBulletType::NORMAL)// ボスの弾の種類
 	, m_bulletType(EnemyBullet::BulletType::NORMAL)// 弾の種類
 	, m_audioManager{ }// オーディオマネージャー
@@ -64,9 +63,8 @@ BossBase::~BossBase() { m_pBulletManager->RemoveBulletsByShooter(this); }// 弾を
 void BossBase::Initialize()
 {
 
-	if (m_bossType == BossType::BOSS) m_pBoss = std::make_unique< Boss>(this, m_commonResources);// ボス生成
-	else   m_pBoss = std::make_unique<LastBoss>(this, m_commonResources);// ラスボス生成
 
+	m_pBoss = EnemyFactory::CreateBoss(m_bossType, this, m_commonResources);// ボス生成
 
 
 	DrawCollision::Initialize(m_commonResources);// 当たり判定描画の初期化
@@ -82,7 +80,7 @@ void BossBase::Initialize()
 	m_bossBS.Radius = EnemyParameters::NORMAL_BOSS_RADIUS;// 境界球の半径を設定
 	m_SEVolume = m_pPlayer->GetVolume();// SEの音量を設定
 	m_SEVolumeCorrection = m_pPlayer->GetVolumeCorrection();// SEの音量補正を設定
-	m_pBoss->Initialize();// ボス初期化
+	m_pBoss->CreateModel();// ボス初期化
 	m_pBossSheild = std::make_unique<BossSheild>();// シールド生成 これはタイプによって分岐予定
 	m_pBossSheild->SetUp(m_maxHP, this);// シールドの初期化
 	m_pBossSheild->Initialize(m_commonResources);// シールド初期化 これはタイプによって分岐予定
@@ -97,8 +95,7 @@ void BossBase::Update(float elapsedTime)
 	m_cameraEye = m_pCamera->GetEyePosition();// カメラの位置を取得
 	m_cameraTarget = m_pCamera->GetTargetPosition();// カメラの注視点を取得
 	m_cameraUp = m_pCamera->GetUpVector();// カメラの上方向を取得
-	m_pBoss->Update(elapsedTime);// ボスの更新
-	//m_pBossModel->SetState(m_pBossAI->GetState());// モデルのアニメーション更新
+	m_pBoss->ChangeState();// ボスの更新
 	m_pBossAI->Update(elapsedTime);// AIの更新
 	m_position = m_pBossAI->GetPosition();// 敵の座標を更新
 	m_audioManager->Update();// オーディオマネージャーの更新
@@ -125,25 +122,8 @@ void BossBase::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Mat
 	m_position = m_pBossAI->GetPosition();// 敵の座標を更新
 	m_quaternion = m_pBossAI->GetRotation();// 敵の回転を更新
 	m_scale = m_pBossAI->GetScale();// 敵のスケールを更新
-	m_pBoss->Render(view, proj);// ボス描画
+	m_pBoss->Draw(view, proj);// ボス描画
 
-	//auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキスト
-	//auto states = m_commonResources->GetCommonStates();// ステート
-	//// ワールド行列を設定
-	//Matrix enemyWorld = Matrix::CreateScale(m_pBossAI->GetScale())// スケール
-	//	* Matrix::CreateFromQuaternion(m_pBossAI->GetRotation())// 回転
-	//	* Matrix::CreateTranslation(m_position);// 位置
-	//// シールドのワールド行列を設定
-	//Matrix sheildWorld = Matrix::CreateScale(m_pBossAI->GetScale() * 3)// スケール(シールドの大きさ)
-	//	* Matrix::CreateFromQuaternion(m_pBossAI->GetRotation())// 回転
-	//	* Matrix::CreateTranslation(m_position);// 位置
-	//m_pBossSheild->SetPosition(m_bossBS.Center);// シールドの座標を設定
-	//m_pBossSheild->SetRotation(m_pBossAI->GetRotation());// シールドの回転を設定
-	//m_pBossModel->Render(context, states, enemyWorld, view, proj);// モデル描画
-	//m_pBossSheild->Render(context, states, enemyWorld, view, proj);// シールド描画
-	//Vector3 hpBarPos = m_position - EnemyParameters::BOSS_HPBAR_OFFSET;// HPバーの位置を設定
-	//m_pHPBar->SetScale(Vector3(EnemyParameters::BOSS_HPBAR_SCALE));// HPバーのスケールを設定
-	//m_pHPBar->Render(view, proj, hpBarPos, m_rotate);// HPバー描画
 }
 /*
 *	@brief	当たり判定描画処理
@@ -309,3 +289,4 @@ void BossBase::SetEnemyHP(int hp)
 	else m_currentHP -= hp;// シールドがない場合は敵のHPを減らす
 
 }
+
