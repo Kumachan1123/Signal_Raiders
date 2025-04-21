@@ -38,7 +38,7 @@ EnemyManager::EnemyManager(CommonResources* commonResources)
 	, m_enemyBornInterval{ EnemyParameters::ENEMY_SPAWN_INTERVAL }
 	, m_enemyBornTimer{ 0.0f }
 	, m_bossHP{ 0 }
-	, m_bossBulletType{ BossBase::BossBulletType::NORMAL }
+	, m_bossBulletType{ BossBase::BossBulletType::STAGE_1 }
 	, m_specialAttackCount{ 0 }
 	, m_startTime{ 0.0f }
 	, m_bossBornWaitTime{ 0.0f }

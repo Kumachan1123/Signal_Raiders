@@ -36,11 +36,11 @@ private:
 	const std::unordered_map<int, StageSettings> stageData =
 	{
 		//{ステージ番号, {敵の生成上限, ボスの体力, 一度に出る特殊攻撃の数, ボスの弾の種類}}
-		{0, {5, 100, 3,BossBase::BossBulletType::NORMAL}},
-		{1, {10, 200,4, BossBase::BossBulletType::NORMAL}},
-		{2, {20, 300,5, BossBase::BossBulletType::TWIN}},
-		{3, {30, 500, 7,BossBase::BossBulletType::THREE}},
-		{4, {40, 1000,10, BossBase::BossBulletType::THREE}}
+		{0, {5, 100, 3,BossBase::BossBulletType::STAGE_1}},
+		{1, {10, 200,4, BossBase::BossBulletType::STAGE_1}},
+		{2, {20, 300,5, BossBase::BossBulletType::STAGE_2}},
+		{3, {30, 500, 7,BossBase::BossBulletType::STAGE_4}},
+		{4, {40, 1000,10, BossBase::BossBulletType::STAGE_5}}
 	};
 
 private:

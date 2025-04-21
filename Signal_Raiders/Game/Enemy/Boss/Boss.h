@@ -27,14 +27,19 @@ class BossAI;
 class BossModel;
 class Boss : public IBossLogic
 {
+
 public:
 	// 初期ステータスを設定
 	Boss(BossBase* pBoss, CommonResources* commonResources);
 	~Boss();
-	inline void CreateModel()override;                                             // Boss, LastBossにてモデルを生成
-	inline void ChangeState()override;                                // Boss,LastBossにて状態を変更
-	inline void Draw(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;        // Boss, LastBossにて描画
-
+	void Initialize()override;                                             // Boss, LastBossにてモデルを生成
+	void ChangeState()override;                                // Boss,LastBossにて状態を変更
+	void Draw(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;        // Boss, LastBossにて描画
+	void BulletPositioning()override;	// 弾の発射位置を決定
+	void CreateBullet();// 弾を生成
+	void CreateCenterBullet(EnemyBullet::BulletType type);// 中央の弾を生成
+	void CreateLeftBullet(float angleOffset, EnemyBullet::BulletType type);// 左の弾を生成
+	void CreateRightBullet(float angleOffset, EnemyBullet::BulletType type);// 右の弾を生成
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;

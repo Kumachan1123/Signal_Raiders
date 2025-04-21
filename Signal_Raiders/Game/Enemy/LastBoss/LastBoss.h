@@ -31,9 +31,14 @@ public:
 	// 初期ステータスを設定
 	LastBoss(BossBase* pBoss, CommonResources* commonResources);
 	~LastBoss()override;
-	inline void CreateModel()override;                                             // Boss, LastBossにてモデルを生成
-	inline void ChangeState()override;                                // Boss,LastBossにて状態を変更
-	inline void Draw(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;        // Boss, LastBossにて描画
+	void Initialize()override;                                             // Boss, LastBossにてモデルを生成
+	void ChangeState()override;                                // Boss,LastBossにて状態を変更
+	void Draw(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;        // Boss, LastBossにて描画
+	void BulletPositioning()override;	// 弾の発射位置を決定
+	void CreateBullet()override;// 弾を生成
+
+	void CreateLeftBullet(float angleOffset, EnemyBullet::BulletType type);// 左の弾を生成
+	void CreateRightBullet(float angleOffset, EnemyBullet::BulletType type);// 右の弾を生成
 
 private:
 	// 共通リソース
@@ -47,12 +52,15 @@ private:
 	DirectX::BoundingSphere m_bossBS;	//敵の境界球
 	DirectX::SimpleMath::Matrix m_matrix;// マトリクス
 	// 弾の発射位置
-	// 中央
-	DirectX::SimpleMath::Vector3 m_bulletPosCenter;
-	// 左
-	DirectX::SimpleMath::Vector3 m_bulletPosLeft;
-	// 右
-	DirectX::SimpleMath::Vector3 m_bulletPosRight;
+	// 右上
+	DirectX::SimpleMath::Vector3 m_bulletPosRightUp;
+	// 右下
+	DirectX::SimpleMath::Vector3 m_bulletPosRightDown;
+	// 左上
+	DirectX::SimpleMath::Vector3 m_bulletPosLeftUp;
+	// 左下
+	DirectX::SimpleMath::Vector3 m_bulletPosLeftDown;
+
 	// 発射位置を回転させるためのクォータニオン
 	DirectX::SimpleMath::Quaternion m_bulletQuaternion;
 	// 弾のタイプ

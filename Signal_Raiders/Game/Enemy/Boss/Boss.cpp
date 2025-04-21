@@ -6,7 +6,6 @@
 #include "Boss.h"
 //// 自作ヘッダーファイル
 #include "Game/Enemy/Boss/BossAI/BossAI.h"
-//#include "Game/Enemy/EnemyManager/EnemyManager.h"
 
 
 using namespace DirectX;
@@ -36,15 +35,19 @@ Boss::Boss(BossBase* pBoss, CommonResources* commonResources)
 *	@brief	デストラクタ
 *	@return	なし
 */
-Boss::~Boss() {  }// 弾を削除
+Boss::~Boss() {  }
 /*
 *	@brief	初期化処理
 *	@return	なし
 */
-void Boss::CreateModel()
+void Boss::Initialize()
 {
-	m_pBossModel = std::make_unique<BossModel>();	// ボスモデル生成 これはタイプによって分岐予定
-	m_pBossModel->Initialize(m_commonResources);// ボスモデル初期化 これはタイプによって分岐予定
+	m_pBossModel = std::make_unique<BossModel>();	// ボスモデル生成
+	m_pBossModel->Initialize(m_commonResources);// ボスモデル初期化
+	m_pBossBase->SetDefaultHitRadius(EnemyParameters::NORMAL_BOSS_RADIUS);// 通常時ボスの当たり判定を設定
+	m_pBossBase->SetDefensiveHitRadius(EnemyParameters::BOSS_SHIELD_RADIUS);// シールド展開時のボスの当たり判定を設定
+	m_pBossBase->SetBulletSize(EnemyParameters::BOSS_BULLET_SIZE);// 弾のサイズを設定
+
 }
 /*
 *	@brief	更新処理
@@ -79,4 +82,78 @@ void Boss::Draw(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix pr
 	Vector3 hpBarPos = m_pBossBase->GetPosition() - EnemyParameters::BOSS_HPBAR_OFFSET;// HPバーの位置を設定
 	m_pBossBase->GetHPBar()->SetScale(Vector3(EnemyParameters::BOSS_HPBAR_SCALE));// HPバーのスケールを設定
 	m_pBossBase->GetHPBar()->Render(view, proj, hpBarPos, m_rotate);// HPバー描画
+}
+
+
+/*
+*	@brief	弾の位置設定
+*	@return	なし
+*/
+void Boss::BulletPositioning()
+{
+	Matrix transform = Matrix::CreateFromQuaternion(m_pBossBase->GetBossAI()->GetRotation())// 弾の発射位置を設定
+		* Matrix::CreateTranslation(m_pBossBase->GetPosition());
+	m_bulletPosCenter = Vector3::Transform(EnemyParameters::BOSS_HEAD_OFFSET, transform);// 中央の座標に回転を適用
+	m_bulletPosLeft = Vector3::Transform(EnemyParameters::BOSS_LEFT_GUN_OFFSET, transform);// 左の座標に回転を適用
+	m_bulletPosRight = Vector3::Transform(EnemyParameters::BOSS_RIGHT_GUN_OFFSET, transform);// 右の座標に回転を適用
+}
+/*
+*	@brief	弾の生成
+*	@return	なし
+*/
+void Boss::CreateBullet()
+{
+	float angleOffset = XMConvertToRadians(EnemyParameters::BOSS_BULLET_ANGLE); // 30度の角度オフセット
+	m_pBossBase->GetBulletManager()->SetEnemyBulletSize(EnemyParameters::BOSS_BULLET_SIZE);// 弾のサイズを設定
+	m_pBossBase->GetBulletManager()->SetShooter(m_pBossBase);// 弾を発射したオブジェクトを設定
+	switch (m_pBossBase->GetBulletType())	// Enemiesクラスで設定した弾のタイプによって処理を分岐
+	{
+	case BossBase::BossBulletType::STAGE_1:// 通常弾
+		CreateCenterBullet(EnemyBullet::BulletType::NORMAL);// 中央の弾を発射
+		break;
+	case BossBase::BossBulletType::STAGE_2:// 二発
+
+		CreateLeftBullet(-angleOffset, EnemyBullet::BulletType::NORMAL);// 左の弾を発射
+		CreateRightBullet(angleOffset, EnemyBullet::BulletType::NORMAL);// 右の弾を発射
+		break;
+	case BossBase::BossBulletType::STAGE_3:// 三発
+		CreateCenterBullet(EnemyBullet::BulletType::NORMAL);// 中央の弾を発射
+		CreateLeftBullet(-angleOffset, EnemyBullet::BulletType::NORMAL);// 左の弾を発射
+		CreateRightBullet(angleOffset, EnemyBullet::BulletType::NORMAL);// 右の弾を発射
+		break;
+
+	}
+}
+/*
+*	@brief	中央から弾を発射
+*	@param[in] type 弾の種類
+*/
+void Boss::CreateCenterBullet(EnemyBullet::BulletType type)
+{
+	m_pBossBase->GetBulletManager()->SetEnemyBulletType(type);// 弾の種類を設定
+	m_pBossBase->GetBulletManager()->CreateEnemyBullet(m_bulletPosCenter, m_bulletDirection);// 弾を生成
+}
+/*
+*	@brief	左の弾を発射
+*	@param[in] angleOffset 角度オフセット
+*	@param[in] type 弾の種類
+*/
+void Boss::CreateLeftBullet(float angleOffset, EnemyBullet::BulletType type)
+{
+	Quaternion leftRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, angleOffset);// 左方向
+	Vector3 leftDirection = Vector3::Transform(m_bulletDirection, leftRotation);
+	m_pBossBase->GetBulletManager()->SetEnemyBulletType(type);// 弾の種類を設定
+	m_pBossBase->GetBulletManager()->CreateEnemyBullet(m_bulletPosLeft, leftDirection);// 弾を生成
+}
+/*
+*	@brief 右の弾を発射
+*	@param[in] angleOffset 角度オフセット
+*	@param[in] type 弾の種類
+*/
+void Boss::CreateRightBullet(float angleOffset, EnemyBullet::BulletType type)
+{
+	Quaternion rightRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, -angleOffset);// 右方向
+	Vector3 rightDirection = Vector3::Transform(m_bulletDirection, rightRotation);
+	m_pBossBase->GetBulletManager()->SetEnemyBulletType(type);// 弾の種類を設定
+	m_pBossBase->GetBulletManager()->CreateEnemyBullet(m_bulletPosRight, rightDirection);// 弾を生成
 }

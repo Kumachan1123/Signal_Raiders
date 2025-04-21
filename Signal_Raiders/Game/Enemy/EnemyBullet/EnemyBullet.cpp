@@ -86,9 +86,9 @@ void EnemyBullet::Initialize(CommonResources* resources, BulletType type)
 		{
 			// ベイシックエフェクトを取得する
 			auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);
-			basicEffect->SetDiffuseColor(DirectX::Colors::Pink);// ディフューズカラーを設定する
-			basicEffect->SetAmbientLightColor(DirectX::Colors::Magenta);// アンビエントライトカラーを設定する
-			basicEffect->SetEmissiveColor(DirectX::Colors::Magenta);// エミッシブカラーを設定する
+			basicEffect->SetDiffuseColor(DirectX::SimpleMath::Vector4(1, .2, 0, 1));// ディフューズカラーを設定する
+			basicEffect->SetAmbientLightColor(DirectX::Colors::Red);// アンビエントライトカラーを設定する
+			basicEffect->SetEmissiveColor(DirectX::Colors::Tomato);// エミッシブカラーを設定する
 
 		});
 	// 弾の軌道生成

@@ -25,6 +25,7 @@ BossBase::BossBase(Player* pPlayer, CommonResources* resources, int hp)
 	, m_specialAttackCooldown(EnemyParameters::SPECIAL_ATTACK_COOLDOWN)// 特殊攻撃のクールダウンタイム
 	, m_initSpecialAttackCooldown(EnemyParameters::SPECIAL_ATTACK_COOLDOWN)	// 特殊攻撃のクールダウンタイム(初期化用)
 	, m_bulletCooldown(EnemyParameters::ATTACK_INTERVAL)// 弾のクールダウンタイム
+	, m_bulletSize(EnemyParameters::BOSS_BULLET_SIZE)// 弾のサイズ
 	, m_SEVolume(0.0f)// SEの音量
 	, m_SEVolumeCorrection(0.0f)// SEの音量補正
 	, m_pBossModel{}// ボスモデル
@@ -46,8 +47,10 @@ BossBase::BossBase(Player* pPlayer, CommonResources* resources, int hp)
 	, m_canAttack(true)// 攻撃可能か
 	, m_isAttack(false)// 攻撃中か
 	, m_bossType(BossType::NORMAL_BOSS)// ボスの種類
-	, m_bossBulletType(BossBulletType::NORMAL)// ボスの弾の種類
+	, m_bossBulletType(BossBulletType::STAGE_1)// ボスの弾の種類
 	, m_bulletType(EnemyBullet::BulletType::NORMAL)// 弾の種類
+	, m_defaultHitRadius(EnemyParameters::NORMAL_BOSS_RADIUS)// デフォルトの当たり判定半径
+	, m_defensiveHitRadius(EnemyParameters::BOSS_SHIELD_RADIUS)// 弾の発射位置
 {
 }
 /*
@@ -76,10 +79,9 @@ void BossBase::Initialize()
 	m_position = EnemyParameters::INITIAL_BOSS_POSITION;// 敵の座標を設定
 	m_pBossAI->SetPosition(m_position);// AIに座標を設定
 	m_bossBS.Center = m_position;// 境界球の中心座標を設定
-	m_bossBS.Radius = EnemyParameters::NORMAL_BOSS_RADIUS;// 境界球の半径を設定
 	m_SEVolume = m_pPlayer->GetVolume();// SEの音量を設定
 	m_SEVolumeCorrection = m_pPlayer->GetVolumeCorrection();// SEの音量補正を設定
-	m_pBoss->CreateModel();// ボス初期化
+	m_pBoss->Initialize();// ボス初期化
 	m_pBossSheild = std::make_unique<BossSheild>();// シールド生成 これはタイプによって分岐予定
 	m_pBossSheild->SetUp(m_maxHP, this);// シールドの初期化
 	m_pBossSheild->Initialize(m_commonResources);// シールド初期化 これはタイプによって分岐予定
@@ -100,9 +102,9 @@ void BossBase::Update(float elapsedTime)
 	m_commonResources->GetAudioManager()->Update();// オーディオマネージャーの更新
 	m_attackCooldown = m_pBossAI->GetBossAttack()->GetCoolTime();// 攻撃のクールダウンタイムを取得
 	m_specialAttackCooldown -= elapsedTime;// 特殊攻撃のクールダウンタイムを減らす
+	m_pBoss->BulletPositioning();// 弾の位置設定
 	this->ShootBullet();// 弾発射
 	m_bossBS.Center = m_position + EnemyParameters::BOSS_SPHERE_OFFSET;// 境界球の中心座標を更新
-	this->BulletPositioning();// 弾の位置設定
 	m_pHPBar->SetCurrentHP(m_currentHP);// HPバーのHPを更新
 	m_pHPBar->Update(elapsedTime);// HPバーの更新
 	if (m_currentHP <= m_maxHP / 2)
@@ -151,7 +153,6 @@ void BossBase::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMa
 void BossBase::PlayBarrierSE()
 {
 	m_commonResources->GetAudioManager()->PlaySound("Barrier", this->GetSheildSEVolume());// サウンド再生 
-
 }
 /*
 *	@brief	弾発射
@@ -163,94 +164,19 @@ void BossBase::ShootBullet()
 	{
 		m_commonResources->GetAudioManager()->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
 		m_bulletDirection = Vector3::Transform(Vector3::Backward, m_pBossAI->GetRotation());// クォータニオンから方向ベクトルを計算
-		this->CreateBullet();// 弾を発射
+		m_pBoss->CreateBullet();// 弾を発射
 		m_pBossAI->GetBossAttack()->SetCoolTime(m_bulletCooldown);// クールダウンタイムを設定
 	}
 	if (m_specialAttackCooldown <= 0.0f)// 特殊攻撃のクールダウンタイムを管理
 	{
 		m_commonResources->GetAudioManager()->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
-		m_pBulletManager->SetEnemyBulletSize(EnemyParameters::BOSS_BULLET_SIZE * 2);// 弾のサイズを設定
+		m_pBulletManager->SetEnemyBulletSize(m_bulletSize);// 弾のサイズを設定
 		m_pBulletManager->SetShooter(this);// 弾を発射したオブジェクトを設定
 		this->CreateSpiralBullet();// 		// 特殊攻撃
 		m_specialAttackCooldown = m_initSpecialAttackCooldown;// クールダウンタイムを設定
 	}
 }
-/*
-*	@brief	弾の位置設定
-*	@return	なし
-*/
-void BossBase::BulletPositioning()
-{
-	Matrix transform = Matrix::CreateFromQuaternion(m_pBossAI->GetRotation())// 弾の発射位置を設定
-		* Matrix::CreateTranslation(m_position);
-	m_bulletPosCenter = Vector3::Transform(EnemyParameters::BOSS_HEAD_OFFSET, transform);// 中央の座標に回転を適用
-	m_bulletPosLeft = Vector3::Transform(EnemyParameters::BOSS_LEFT_GUN_OFFSET, transform);// 左の座標に回転を適用
-	m_bulletPosRight = Vector3::Transform(EnemyParameters::BOSS_RIGHT_GUN_OFFSET, transform);// 右の座標に回転を適用
 
-}
-/*
-*	@brief	弾の生成
-*	@return	なし
-*/
-void BossBase::CreateBullet()
-{
-	float angleOffset = XMConvertToRadians(EnemyParameters::BOSS_BULLET_ANGLE); // 30度の角度オフセット
-	m_pBulletManager->SetEnemyBulletSize(EnemyParameters::BOSS_BULLET_SIZE);// 弾のサイズを設定
-	m_pBulletManager->SetShooter(this);// 弾を発射したオブジェクトを設定
-	switch (GetBulletType())	// Enemiesクラスで設定した弾のタイプによって処理を分岐
-	{
-	case BossBulletType::NORMAL:// 通常弾
-		CreateCenterBullet(EnemyBullet::BulletType::NORMAL);// 中央の弾を発射
-		break;
-	case BossBulletType::TWIN:// 二発
-
-		CreateLeftBullet(-angleOffset, EnemyBullet::BulletType::NORMAL);// 左の弾を発射
-		CreateRightBullet(angleOffset, EnemyBullet::BulletType::NORMAL);// 右の弾を発射
-		break;
-	case BossBulletType::THREE:// 三発
-		CreateCenterBullet(EnemyBullet::BulletType::NORMAL);// 中央の弾を発射
-		CreateLeftBullet(-angleOffset, EnemyBullet::BulletType::NORMAL);// 左の弾を発射
-		CreateRightBullet(angleOffset, EnemyBullet::BulletType::NORMAL);// 右の弾を発射
-		break;
-	}
-}
-/*
-*	@brief	中央から弾を発射
-*	@param[in] type 弾の種類
-*/
-void BossBase::CreateCenterBullet(EnemyBullet::BulletType type)
-{
-	m_pBulletManager->SetEnemyBulletType(type);// 弾の種類を設定
-	m_pBulletManager->CreateEnemyBullet(m_bulletPosCenter, m_bulletDirection);// 弾を生成
-
-}
-/*
-*	@brief	左の弾を発射
-*	@param[in] angleOffset 角度オフセット
-*	@param[in] type 弾の種類
-*/
-void BossBase::CreateLeftBullet(float angleOffset, EnemyBullet::BulletType type)
-{
-	Quaternion leftRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, angleOffset);// 左方向
-	Vector3 leftDirection = Vector3::Transform(m_bulletDirection, leftRotation);
-	m_pBulletManager->SetEnemyBulletType(type);// 弾の種類を設定
-	m_pBulletManager->CreateEnemyBullet(m_bulletPosLeft, leftDirection);// 弾を生成
-
-}
-
-/*
-*	@brief 右の弾を発射
-*	@param[in] angleOffset 角度オフセット
-*	@param[in] type 弾の種類
-*/
-void BossBase::CreateRightBullet(float angleOffset, EnemyBullet::BulletType type)
-{
-	Quaternion rightRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, -angleOffset);// 右方向
-	Vector3 rightDirection = Vector3::Transform(m_bulletDirection, rightRotation);
-	m_pBulletManager->SetEnemyBulletType(type);// 弾の種類を設定
-	m_pBulletManager->CreateEnemyBullet(m_bulletPosRight, rightDirection);// 弾を生成
-
-}
 /*
 *	@brief	真下に落ちて加速する弾を発射
 *	@return	なし
@@ -284,7 +210,7 @@ void BossBase::SetEnemyHP(int hp)
 	{
 		m_pBossSheild->SetSheildHP(m_pBossSheild->GetSheildHP() - hp);// シールドのHPを減らす
 		if (m_pBossSheild->GetSheildHP() <= 0)// シールドが壊れたらサウンド再生
-			m_commonResources->GetAudioManager()->PlaySound("BarrierBreak", m_pPlayer->GetVolume()); 
+			m_commonResources->GetAudioManager()->PlaySound("BarrierBreak", m_pPlayer->GetVolume());
 	}
 	else m_currentHP -= hp;// シールドがない場合は敵のHPを減らす
 

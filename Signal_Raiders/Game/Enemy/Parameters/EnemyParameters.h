@@ -45,6 +45,7 @@ public:// 定数
 	static const float ATTACK_INTERVAL;// 攻撃間隔
 	static const float ENEMY_BULLET_SIZE;// 敵弾のサイズ
 	static const float BOSS_BULLET_SIZE;// ボス弾のサイズ
+	static const float LASTBOSS_BULLET_SIZE;// ラスボス弾のサイズ
 	static const KnockBackTime KNOCKBACK_TIME;// ノックバック時間
 	static const DotClamp DOT_CLAMP;// 内積をclampするときに使う値
 	// ===== ザコ敵専用 =====
@@ -57,9 +58,7 @@ public:// 定数
 	static const DirectX::SimpleMath::Vector3 ENEMY_HPBAR_OFFSET;// ザコHPバーのオフセット
 	// ===== ボス共通 =====
 	static const float BOSS_SHIELD_SCALE_SPEED;// ボスシールドの拡大速度
-	static const float BOSS_SHIELD_RADIUS; // ボスシールドの半径
 	static const float BOSS_SHIELD_ATTACK_COOLDOWN; // ボスシールドの攻撃クールダウン時間
-	static const float NORMAL_BOSS_RADIUS;// 通常ボスの半径
 	static const float BOSS_DAMAGE; // ボスのダメージ
 	static const float BOSS_BULLET_ANGLE; // ボス弾の角度
 	static const float BOSS_HPBAR_SCALE;// ボスHPバーのスケール
@@ -75,15 +74,22 @@ public:// 定数
 	static const DirectX::SimpleMath::Vector3 BOSS_LEFT_GUN_OFFSET;// ボスの左ガンのオフセット
 	static const DirectX::SimpleMath::Vector3 BOSS_RIGHT_GUN_OFFSET;// ボスの右ガンのオフセット
 	static const DirectX::SimpleMath::Vector3 BOSS_HPBAR_OFFSET;// ボスHPバーのオフセット
+	static const float NORMAL_BOSS_RADIUS;// 通常ボスの半径
+	static const float BOSS_SHIELD_RADIUS; // ボスシールドの半径
 
 	// ===== ラスボス専用 =====
 	static const DirectX::SimpleMath::Vector3 INITIAL_LASTBOSS_POSITION;// ボスの初期位置
 	static const DirectX::SimpleMath::Vector3 INITIAL_LASTBOSS_SCALE; // ボスの初期スケール
 	static const DirectX::SimpleMath::Vector3 LASTBOSS_SPHERE_OFFSET;// ボスの球体オフセット
 	static const DirectX::SimpleMath::Vector3 LASTBOSS_HEAD_OFFSET;// ボスの頭のオフセット
-	static const DirectX::SimpleMath::Vector3 LASTBOSS_LEFT_GUN_OFFSET;// ボスの左ガンのオフセット
-	static const DirectX::SimpleMath::Vector3 LASTBOSS_RIGHT_GUN_OFFSET;// ボスの右ガンのオフセット
+	static const DirectX::SimpleMath::Vector3 LASTBOSS_LEFTUP_GUN_OFFSET;// ボスの左上ガンのオフセット
+	static const DirectX::SimpleMath::Vector3 LASTBOSS_RIGHTUP_GUN_OFFSET;// ボスの右上ガンのオフセット
+	static const DirectX::SimpleMath::Vector3 LASTBOSS_LEFTDOWN_GUN_OFFSET;// ボスの左下ガンのオフセット
+	static const DirectX::SimpleMath::Vector3 LASTBOSS_RIGHTDOWN_GUN_OFFSET;// ボスの右下ガンのオフセット
 	static const DirectX::SimpleMath::Vector3 LASTBOSS_HPBAR_OFFSET;// ボスHPバーのオフセット
+	static const float NORMAL_LASTBOSS_RADIUS;// 通常ボスの半径
+	static const float LASTBOSS_SHIELD_RADIUS; // ボスシールドの半径
+
 	// ===== 浮遊・特殊な初期状態など =====
 	static const DirectX::SimpleMath::Vector3 INITIAL_VELOCITY; // 浮遊用の初速度
 

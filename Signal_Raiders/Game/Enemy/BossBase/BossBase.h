@@ -43,10 +43,11 @@ public:
 	// ボスの弾の種類
 	enum class BossBulletType
 	{
-		NORMAL = 0,	// 一発
-		TWIN,		// 二発
-		THREE,		// 三発
-		SPIRAL,		// 回転弾
+		STAGE_1 = 0,	// ステージ1
+		STAGE_2,		// ステージ2
+		STAGE_3,		// ステージ3
+		STAGE_4,		// ステージ4
+		STAGE_5,		// ステージ5
 	};
 public:
 	//	getter
@@ -64,6 +65,8 @@ public:
 	void SetScale(DirectX::SimpleMath::Vector3 scale) { m_scale = scale; }// スケール設定
 	DirectX::SimpleMath::Quaternion GetQuaternion() const { return m_quaternion; }// クォータニオン取得
 	void SetQuaternion(DirectX::SimpleMath::Quaternion quaternion) { m_quaternion = quaternion; }// クォータニオン設定
+	DirectX::SimpleMath::Vector3 GetBulletDirection() const { return m_bulletDirection; }// 弾の飛ぶ方向取得
+	void SetBulletDirection(DirectX::SimpleMath::Vector3 direction) { m_bulletDirection = direction; }// 弾の飛ぶ方向設定
 	Player* GetPlayer()const override { return m_pPlayer; }
 	FPS_Camera* GetCamera()const override { return m_pCamera; }
 	void SetCamera(FPS_Camera* camera) { m_pCamera = camera; }
@@ -97,6 +100,12 @@ public:
 	BossSheild* GetBossSheild()const { return m_pBossSheild.get(); }// シールド取得
 	BossAI* GetBossAI() { return m_pBossAI.get(); }// AI取得
 	EnemyHPBar* GetHPBar() { return m_pHPBar.get(); }// HPバー取得
+	float GetDefaultHitRadius()const { return m_defaultHitRadius; }//通常時の当たり判定の半径取得
+	void SetDefaultHitRadius(float radius) { m_defaultHitRadius = radius; }//通常時の当たり判定の半径設定
+	float GetDefensiveHitRadius()const { return m_defensiveHitRadius; }//防御時の当たり判定の半径取得
+	void SetDefensiveHitRadius(float radius) { m_defensiveHitRadius = radius; }//防御時の当たり判定の半径設定
+	float GetBulletSize()const { return m_bulletSize; }// 弾のサイズ取得
+	void SetBulletSize(float size) { m_bulletSize = size; }// 弾のサイズ設定
 public:
 	// 初期ステータスを設定
 	BossBase(Player* pPlayer, CommonResources* resources, int hp);
@@ -110,11 +119,6 @@ public:
 	void PlayBarrierSE();// バリアSE再生
 private:
 	void ShootBullet();// 弾発射
-	void BulletPositioning();// 弾の位置設定
-	void CreateBullet();// 弾を生成
-	void CreateCenterBullet(EnemyBullet::BulletType type);// 中央の弾を生成
-	void CreateLeftBullet(float angleOffset, EnemyBullet::BulletType type);// 左の弾を生成
-	void CreateRightBullet(float angleOffset, EnemyBullet::BulletType type);// 右の弾を生成
 	void CreateVerticalBullet();// 垂直の弾を生成
 	void CreateSpiralBullet();// 螺旋弾を生成
 
@@ -186,7 +190,9 @@ private:
 	DirectX::SimpleMath::Vector3 m_cameraTarget;
 	DirectX::SimpleMath::Vector3 m_cameraUp;
 
+	float m_defaultHitRadius;// 通常時の当たり判定の半径
+	float m_defensiveHitRadius;// 防御時の当たり判定の半径
 
-
+	float m_bulletSize;// 弾のサイズ
 
 };
