@@ -1,19 +1,7 @@
 #include "pch.h"
 #include "AudioManager.h"
 
-// シングルトンインスタンスの初期化
-std::unique_ptr<AudioManager> AudioManager::m_instance = nullptr;
 
-// インスタンスを取得する
-AudioManager* const AudioManager::GetInstance()
-{
-	if (m_instance == nullptr)
-	{
-		m_instance.reset(new AudioManager());
-		m_instance->Initialize();
-	}
-	return m_instance.get();
-}
 
 // コンストラクタ
 AudioManager::AudioManager()
@@ -22,6 +10,8 @@ AudioManager::AudioManager()
 	m_sounds(),
 	m_channels()
 {
+	Initialize();
+
 }
 
 // デストラクタ
@@ -48,6 +38,20 @@ void AudioManager::Initialize()
 		m_system = nullptr;
 		//return;
 	}
+	LoadSound("Resources/Sounds/playerBullet.mp3", "Shoot");// プレイヤーの弾のSE
+	LoadSound("Resources/Sounds/Hit.mp3", "Hit");// ヒットのSE
+	LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet");// 弾発射音
+	LoadSound("Resources/Sounds/Explosion.mp3", "EnemyDead");// 敵死亡音
+	LoadSound("Resources/Sounds/damage.mp3", "Damage");// プレイヤーがダメージを食らう音
+	LoadSound("Resources/Sounds/Barrier.mp3", "Barrier");// ボスのバリアが出現する音
+	LoadSound("Resources/Sounds/BarrierBreak.mp3", "BarrierBreak");// ボスのバリアが破壊される音
+	LoadSound("Resources/Sounds/playbgm.mp3", "PlayBGM");
+	LoadSound("Resources/Sounds/select.mp3", "SE");
+	LoadSound("Resources/Sounds/result.mp3", "ResultBGM");
+	LoadSound("Resources/Sounds/click.mp3", "Select");
+	LoadSound("Resources/Sounds/title.mp3", "TitleBGM");
+
+
 }
 
 
@@ -113,6 +117,7 @@ void AudioManager::Shutdown()
 		}
 	}
 	m_channels.clear();
+	m_channels.rehash(0); // チャンネルのハッシュテーブルをクリア
 	// すべてのサウンドを解放
 	for (auto& pair : m_sounds)
 	{

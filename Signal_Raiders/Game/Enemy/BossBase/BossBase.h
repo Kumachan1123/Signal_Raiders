@@ -89,7 +89,6 @@ public:
 	void SetInitSpecialAttacCooldown(float cooldown) { m_initSpecialAttackCooldown = cooldown; }// 特殊攻撃のクールダウン
 	bool GetCanAttack() const override { return m_canAttack; }// 攻撃可能か
 	void SetCanAttack(bool canAttack)override { m_canAttack = canAttack; }// 攻撃可能か
-	void SetAudioManager(AudioManager* audioManager) override { m_audioManager = audioManager; }// オーディオマネージャー
 	BulletManager* GetBulletManager()const override { return m_pBulletManager; }// 弾の管理クラス取得
 	void SetBulletManager(BulletManager* bulletManager) override { m_pBulletManager = bulletManager; }// 弾の管理クラス設定
 	bool GetIsAttack() const override { return m_isAttack; }// 攻撃中か
@@ -182,8 +181,6 @@ private:
 	float m_bulletCooldown;  // 弾のクールダウン
 	bool m_canAttack;// 攻撃可能か
 	bool m_isAttack;// 攻撃中か
-	// オーディオマネージャー
-	AudioManager* m_audioManager;
 	// プレイヤーのカメラの情報
 	DirectX::SimpleMath::Vector3 m_cameraEye;
 	DirectX::SimpleMath::Vector3 m_cameraTarget;

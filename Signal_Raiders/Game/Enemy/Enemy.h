@@ -48,9 +48,6 @@ private:
 	bool m_canAttack;// 攻撃可能か
 	bool m_isAttack;// 攻撃中か
 	float m_attackCooldown;  // 攻撃のクールダウンタイム
-	// オーディオマネージャー
-	AudioManager* m_audioManager;
-
 
 public:
 	//	getter
@@ -63,7 +60,6 @@ public:
 	const DirectX::SimpleMath::Vector3& GetRotate()  override { return m_rotate; }
 	Player* GetPlayer()const override { return m_pPlayer; }
 	FPS_Camera* GetCamera()const override { return m_pCamera; }
-	void SetAudioManager(AudioManager* audioManager) override { m_audioManager = audioManager; }
 	int GetEnemyHP() const override { return m_currentHP; }
 	bool GetEnemyIsDead() const override { return m_isDead; }
 	bool GetHitToPlayer()const override { return m_isHitToPlayer; }

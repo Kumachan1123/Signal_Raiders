@@ -70,6 +70,9 @@ void Game::Initialize(HWND window, int width, int height)
 		L"Resources/Fonts/SegoeUI_18.spritefont"
 	);
 
+	// オーディオマネージャーを作成する
+	m_audioManager = std::make_unique<AudioManager>();
+
 	// 共通リソースを作成する
 	m_commonResources = std::make_unique<CommonResources>();
 
@@ -79,7 +82,8 @@ void Game::Initialize(HWND window, int width, int height)
 		m_deviceResources.get(),
 		m_commonStates.get(),
 		m_debugString.get(),
-		m_inputManager.get()
+		m_inputManager.get(),
+		m_audioManager.get()
 	);
 
 	// シーンマネージャを初期化する

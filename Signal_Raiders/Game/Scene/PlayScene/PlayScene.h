@@ -97,8 +97,6 @@ private:
 	Fade::FadeState m_fadeState;
 	// フェード画像番号
 	int m_fadeTexNum;
-	// オーディオマネージャー
-	AudioManager* m_audioManager;
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
 	// ステージ番号
@@ -128,8 +126,4 @@ public:
 	void Finalize() override;
 	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; }
 	SceneID GetNextSceneID() const;
-private:
-	// FMODのシステムの初期化と音声データのロード
-	void InitializeFMOD();
-
 };

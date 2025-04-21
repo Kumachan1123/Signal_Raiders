@@ -142,11 +142,6 @@ void EnemyHPBar::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::M
 	m_pDrawPolygon->DrawTexture(m_hpbarVert);
 	// シェーダの登録を解除しておく
 	m_pDrawPolygon->ReleaseShader();
-
-	//// ビルボードを描画
-	//m_primitiveBatch->Begin();
-	//m_primitiveBatch->DrawQuad(m_hpbarVert[0], m_hpbarVert[1], m_hpbarVert[3], m_hpbarVert[2]);
-	//m_primitiveBatch->End();
 }
 // 更新
 void EnemyHPBar::Update(float elapsedTime)

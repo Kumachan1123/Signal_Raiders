@@ -40,8 +40,6 @@ private:
 	std::unique_ptr<Result> m_pResult;
 	// 結果クラスに渡すテクスチャパス
 	const wchar_t* m_pTexturePath;
-	// オーディオマネージャー
-	AudioManager* m_audioManager;
 	// ステージ番号
 	int m_stageNumber;
 	// 空の行列
@@ -75,7 +73,6 @@ public:
 	void Finalize() override;
 	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; }
 	SceneID GetNextSceneID() const;
-	void InitializeFMOD();
 	int GetStageNumber() const { return m_stageNumber; }
 
 };

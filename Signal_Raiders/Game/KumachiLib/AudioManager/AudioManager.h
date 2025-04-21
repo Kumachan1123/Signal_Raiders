@@ -15,9 +15,10 @@ namespace FMOD
 class AudioManager
 {
 public:
-	// シングルトンインスタンスを取得
-	static AudioManager* const GetInstance();
 public:
+	// コンストラクタ
+	AudioManager();
+
 	// デストラクタ
 	~AudioManager();
 	// 初期化
@@ -35,15 +36,9 @@ public:
 	// 解放
 	void Shutdown();
 private:
-	// コンストラクタとデストラクタをプライベートにする
-	AudioManager();
-	// コピーコンストラクタと代入演算子の禁止
-	AudioManager(const AudioManager&) = delete;
-	AudioManager& operator=(const AudioManager&) = delete;
+
 	// FMOD関連のオブジェクト
 	FMOD::System* m_system;
 	std::unordered_map<std::string, FMOD::Channel*> m_channels;
 	std::unordered_map<std::string, FMOD::Sound*> m_sounds;
-	// シングルトンインスタンス
-	static std::unique_ptr<AudioManager> m_instance;
 };

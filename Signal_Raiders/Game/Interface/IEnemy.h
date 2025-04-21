@@ -55,7 +55,6 @@ public:
 	virtual Player* GetPlayer()const = 0;
 	virtual FPS_Camera* GetCamera()const = 0;
 	virtual void SetCamera(FPS_Camera* camera) = 0;
-	virtual void SetAudioManager(AudioManager* audioManager) = 0;
 	virtual BulletManager* GetBulletManager()const = 0;
 	virtual void SetBulletManager(BulletManager* bulletManager) = 0;
 

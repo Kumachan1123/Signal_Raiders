@@ -39,8 +39,6 @@ private:
 	std::unique_ptr<StageSelect> m_pStageSelect;
 	// 結果クラスに渡すテクスチャパス
 	const wchar_t* m_pTexturePath;
-	// オーディオマネージャー
-	AudioManager* m_audioManager;
 	// マウスポインター
 	std::unique_ptr<MousePointer> m_pMousePointer;
 
@@ -75,6 +73,5 @@ public:
 	void Finalize() override;
 
 	SceneID GetNextSceneID() const;
-	void InitializeFMOD();
 	int GetStageNumber() const { return m_pStageSelectMenu->GetMenuIndex(); }
 };

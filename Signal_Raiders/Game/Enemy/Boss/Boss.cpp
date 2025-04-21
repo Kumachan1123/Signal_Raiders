@@ -30,7 +30,6 @@ Boss::Boss(BossBase* pBoss, CommonResources* commonResources)
 	, m_rotate{}// 回転
 	, m_matrix{}// マトリクス
 	, m_bulletType(EnemyBullet::BulletType::NORMAL)// 弾の種類
-	, m_audioManager{ }// オーディオマネージャー
 {
 }
 /*

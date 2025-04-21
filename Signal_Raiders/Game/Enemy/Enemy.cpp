@@ -52,7 +52,7 @@ Enemy::Enemy(Player* pPlayer, CommonResources* resources, int hp)
 	, m_isPlayerHitByEnemyBullet{ false }
 	, m_canAttack{ true }
 	, m_isAttack{ false }
-	, m_audioManager{ AudioManager::GetInstance() }
+	//, m_audioManager{ AudioManager::GetInstance() }
 
 
 {}
@@ -93,7 +93,7 @@ void Enemy::Update(float elapsedTime)
 	m_pHPBar->SetCurrentHP(m_currentHP);// HPの更新
 	m_pHPBar->Update(elapsedTime);// HPバーの更新
 	m_enemyAI->Update(elapsedTime);// AIの更新
-	m_audioManager->Update();// オーディオマネージャーの更新
+	m_commonResources->GetAudioManager()->Update();// オーディオマネージャーの更新
 	if (m_enemyAI->GetNowState() == m_enemyAI->GetEnemyAttack())// 攻撃態勢なら
 	{
 		ShootBullet();// 弾を発射
@@ -149,7 +149,7 @@ void Enemy::ShootBullet()
 	// 攻撃のクールダウンタイムを管理
 	if (m_attackCooldown <= EnemyParameters::ATTACK_INTERVAL)
 	{
-		m_audioManager->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
+		m_commonResources->GetAudioManager()->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
 		// クォータニオンから方向ベクトルを計算
 		DirectX::SimpleMath::Vector3 direction =
 			DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_enemyAI->GetRotation());

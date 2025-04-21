@@ -50,9 +50,6 @@ private:
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
 
-	// オーディオマネージャー
-	AudioManager* m_audioManager;
-
 	// FPSカメラ
 	std::unique_ptr<FPS_Camera> m_camera;
 	// フェードで使用する変数
@@ -68,14 +65,9 @@ private:
 public:
 	TitleScene(IScene::SceneID sceneID);
 	~TitleScene() override;
-
-
 	void Initialize(CommonResources* resources) override;
 	void Update(float elapsedTime)override;
 	void Render() override;
 	void Finalize() override;
-
-
 	SceneID GetNextSceneID() const;
-	void InitializeFMOD();
 };

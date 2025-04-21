@@ -48,7 +48,6 @@ BossBase::BossBase(Player* pPlayer, CommonResources* resources, int hp)
 	, m_bossType(BossType::NORMAL_BOSS)// ボスの種類
 	, m_bossBulletType(BossBulletType::NORMAL)// ボスの弾の種類
 	, m_bulletType(EnemyBullet::BulletType::NORMAL)// 弾の種類
-	, m_audioManager{ }// オーディオマネージャー
 {
 }
 /*
@@ -98,7 +97,7 @@ void BossBase::Update(float elapsedTime)
 	m_pBoss->ChangeState();// ボスの更新
 	m_pBossAI->Update(elapsedTime);// AIの更新
 	m_position = m_pBossAI->GetPosition();// 敵の座標を更新
-	m_audioManager->Update();// オーディオマネージャーの更新
+	m_commonResources->GetAudioManager()->Update();// オーディオマネージャーの更新
 	m_attackCooldown = m_pBossAI->GetBossAttack()->GetCoolTime();// 攻撃のクールダウンタイムを取得
 	m_specialAttackCooldown -= elapsedTime;// 特殊攻撃のクールダウンタイムを減らす
 	this->ShootBullet();// 弾発射
@@ -151,7 +150,7 @@ void BossBase::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMa
 */
 void BossBase::PlayBarrierSE()
 {
-	m_audioManager->PlaySound("Barrier", this->GetSheildSEVolume());// サウンド再生 
+	m_commonResources->GetAudioManager()->PlaySound("Barrier", this->GetSheildSEVolume());// サウンド再生 
 
 }
 /*
@@ -162,14 +161,14 @@ void BossBase::ShootBullet()
 {
 	if (m_attackCooldown <= EnemyParameters::ATTACK_COOLDOWN_THRESHOLD)	// 攻撃のクールダウンタイムを管理
 	{
-		m_audioManager->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
+		m_commonResources->GetAudioManager()->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
 		m_bulletDirection = Vector3::Transform(Vector3::Backward, m_pBossAI->GetRotation());// クォータニオンから方向ベクトルを計算
 		this->CreateBullet();// 弾を発射
 		m_pBossAI->GetBossAttack()->SetCoolTime(m_bulletCooldown);// クールダウンタイムを設定
 	}
 	if (m_specialAttackCooldown <= 0.0f)// 特殊攻撃のクールダウンタイムを管理
 	{
-		m_audioManager->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
+		m_commonResources->GetAudioManager()->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
 		m_pBulletManager->SetEnemyBulletSize(EnemyParameters::BOSS_BULLET_SIZE * 2);// 弾のサイズを設定
 		m_pBulletManager->SetShooter(this);// 弾を発射したオブジェクトを設定
 		this->CreateSpiralBullet();// 		// 特殊攻撃
@@ -284,7 +283,8 @@ void BossBase::SetEnemyHP(int hp)
 		m_pBossSheild->GetSheild() == true)// シールドが展開されている場合
 	{
 		m_pBossSheild->SetSheildHP(m_pBossSheild->GetSheildHP() - hp);// シールドのHPを減らす
-		if (m_pBossSheild->GetSheildHP() <= 0)m_audioManager->PlaySound("BarrierBreak", m_pPlayer->GetVolume());// シールドが壊れたらサウンド再生 
+		if (m_pBossSheild->GetSheildHP() <= 0)// シールドが壊れたらサウンド再生
+			m_commonResources->GetAudioManager()->PlaySound("BarrierBreak", m_pPlayer->GetVolume()); 
 	}
 	else m_currentHP -= hp;// シールドがない場合は敵のHPを減らす
 

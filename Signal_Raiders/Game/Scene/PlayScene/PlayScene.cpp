@@ -36,7 +36,7 @@ PlayScene::PlayScene(IScene::SceneID sceneID)
 	m_pFade{},
 	m_fadeState{ },
 	m_fadeTexNum{ 2 },
-	m_audioManager{ AudioManager::GetInstance() },
+	//m_audioManager{ AudioManager::GetInstance() },
 	m_BGMvolume{ BGM_VOLUME },
 	m_SEvolume{ SE_VOLUME },
 	m_mouseSensitivity{ },
@@ -135,8 +135,7 @@ void PlayScene::Initialize(CommonResources* resources)
 	// ブルームエフェクトの生成
 	m_pBloom->CreatePostProcess(resources);
 
-	// Sound用のオブジェクトを初期化する
-	InitializeFMOD();
+
 
 }
 
@@ -149,12 +148,12 @@ void PlayScene::Update(float elapsedTime)
 	// 経過時間
 	m_timer += elapsedTime;
 	// 二重再生しない
-	m_audioManager->PlaySound("BGM", m_BGMvolume);
+	m_commonResources->GetAudioManager()->PlaySound("PlayBGM", m_BGMvolume);
 	// カメラが向いている方向を取得する
 	DirectX::SimpleMath::Vector3 cameraDirection = m_pPlayer->GetCamera()->GetDirection();
 
 	m_pWall->Update(elapsedTime);
-	m_audioManager->Update();// オーディオマネージャーの更新
+	m_commonResources->GetAudioManager()->Update();// オーディオマネージャーの更新
 
 	m_pEnemyManager->Update(elapsedTime);// 敵の更新
 	m_pPlayer->Update(elapsedTime);// プレイヤーの更新
@@ -283,7 +282,7 @@ void PlayScene::Finalize()
 {
 
 	m_skybox.reset();
-	m_audioManager->Shutdown();
+	//m_audioManager->Shutdown();
 }
 //---------------------------------------------------------
 // 次のシーンIDを取得する
@@ -293,7 +292,7 @@ IScene::SceneID PlayScene::GetNextSceneID() const
 	// シーン変更がある場合
 	if (m_isChangeScene)
 	{
-		m_audioManager->StopSound("BGM");// BGMを停止する
+		m_commonResources->GetAudioManager()->StopSound("PlayBGM");// BGMを停止する
 		// プレイヤーのHPが0以下なら
 		if (m_pPlayer->GetPlayerHP() <= 0.0f)return IScene::SceneID::GAMEOVER;// ゲームオーバーシーンへ
 		// 敵がいないなら
@@ -302,11 +301,4 @@ IScene::SceneID PlayScene::GetNextSceneID() const
 	// シーン変更がない場合
 	return IScene::SceneID::NONE;// 何もしない
 }
-
-void PlayScene::InitializeFMOD()
-{
-	// ここで必要な音声データをAudioManagerにロードさせる
-	m_audioManager->LoadSound("Resources/Sounds/playbgm.mp3", "BGM");
-}
-
 

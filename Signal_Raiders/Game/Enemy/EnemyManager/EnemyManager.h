@@ -92,8 +92,6 @@ private:
 	Wall* m_pWall;
 	// エフェクト
 	std::vector<std::unique_ptr<Effect>> m_effect;
-	// オーディオマネージャー
-	AudioManager* m_audioManager;
 	// SEの音量
 	float m_SEVolume;
 	// ボスの弾の種類
@@ -108,8 +106,6 @@ public:
 	void Update(float elapsedTime);
 	// 描画
 	void Render();
-	// 効果音の初期化
-	void InitializeFMOD();
 
 public:
 	std::vector<std::unique_ptr<IEnemy>>& GetEnemies() { return m_enemies; }  // 敵リスト

@@ -35,7 +35,7 @@ SettingScene::SettingScene(IScene::SceneID sceneID)
 	m_fadeState{ },
 	m_fadeTexNum{ 0 },
 	m_pBackGround{ nullptr },
-	m_audioManager{ AudioManager::GetInstance() },
+	//m_audioManager{ AudioManager::GetInstance() },
 	m_nowSceneID{ sceneID },
 	m_pSettingMenu{},
 	m_pSettingBar{},
@@ -85,9 +85,6 @@ void SettingScene::Initialize(CommonResources* resources)
 	m_pSettingData->Load();
 	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume()) * .1f;
 	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume()) * .1f;
-	// 音声を初期化する
-	InitializeFMOD();
-
 }
 
 //---------------------------------------------------------
@@ -102,7 +99,7 @@ void SettingScene::Update(float elapsedTime)
 	// セッティングバーの更新処理
 	m_pSettingBar->Update(elapsedTime);
 	// オーディオマネージャーの更新処理
-	m_audioManager->Update();
+	m_commonResources->GetAudioManager()->Update();
 
 	// マウスのトラッカーを取得する
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
@@ -115,7 +112,7 @@ void SettingScene::Update(float elapsedTime)
 			if (m_pSettingMenu->GetSelectIDNum() == SettingMenu::SelectID::END ||
 				m_pSettingMenu->GetSelectIDNum() == SettingMenu::SelectID::APPLY)
 			{
-				m_audioManager->PlaySound("SE", m_SEvolume);
+				m_commonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);
 				m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
 				m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
 			}
@@ -138,7 +135,7 @@ void SettingScene::Update(float elapsedTime)
 	// フェードアウトが終了したら
 	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;
 	// BGMの再生
-	m_audioManager->PlaySound("BGM", m_BGMvolume);
+	m_commonResources->GetAudioManager()->PlaySound("TitleBGM", m_BGMvolume);
 
 	// 背景の更新
 	m_pBackGround->Update(elapsedTime);
@@ -172,8 +169,8 @@ void SettingScene::Render()
 void SettingScene::Finalize()
 {
 	SetVolume();// 音量の設定
-	// オーディオマネージャーの終了処理
-	m_audioManager->Shutdown();
+	//// オーディオマネージャーの終了処理
+	//m_audioManager->Shutdown();
 }
 
 //---------------------------------------------------------
@@ -186,27 +183,16 @@ IScene::SceneID SettingScene::GetNextSceneID() const
 	{
 
 
-		m_audioManager->StopSound("BGM");// BGMの停止
-		m_audioManager->StopSound("SE");// SEの停止
-		m_audioManager->StopSound("Select");// Selectの停止
+		m_commonResources->GetAudioManager()->StopSound("TitleBGM");// BGMの停止
+		m_commonResources->GetAudioManager()->StopSound("SE");// SEの停止
+		m_commonResources->GetAudioManager()->StopSound("Select");// Selectの停止
 		return IScene::SceneID::TITLE;
 	}
 	// シーン変更がない場合
 	return IScene::SceneID::NONE;
 }
 
-//---------------------------------------------------------
-// FMODのシステムの初期化と音声データのロード
-//---------------------------------------------------------
-void SettingScene::InitializeFMOD()
-{
-	// FMODシステムの初期化
-	m_audioManager->Initialize();
-	// 音声データのロード
-	m_audioManager->LoadSound("Resources/Sounds/select.mp3", "SE");
-	m_audioManager->LoadSound("Resources/Sounds/title.mp3", "BGM");
-	m_audioManager->LoadSound("Resources/Sounds/click.mp3", "Select");
-}
+
 
 // 音量を設定する
 void SettingScene::SetVolume()

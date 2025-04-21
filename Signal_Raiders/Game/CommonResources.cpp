@@ -15,7 +15,8 @@ CommonResources::CommonResources()
 	m_deviceResources{ nullptr },
 	m_commonStates{ nullptr },
 	m_debugString{ nullptr },
-	m_inputManager{ nullptr }
+	m_inputManager{ nullptr },
+	m_audioManager{ nullptr }
 {
 }
 
@@ -27,7 +28,8 @@ void CommonResources::Initialize(
 	DX::DeviceResources* dr,
 	DirectX::CommonStates* commonStates,
 	mylib::DebugString* debugString,
-	mylib::InputManager* inputManager
+	mylib::InputManager* inputManager,
+	AudioManager* audioManager
 )
 {
 	assert(timer);
@@ -35,10 +37,12 @@ void CommonResources::Initialize(
 	assert(commonStates);
 	assert(debugString);
 	assert(inputManager);
+	assert(audioManager);
 
 	m_stepTimer = timer;
 	m_deviceResources = dr;
 	m_commonStates = commonStates;
 	m_debugString = debugString;
 	m_inputManager = inputManager;
+	m_audioManager = audioManager;
 }

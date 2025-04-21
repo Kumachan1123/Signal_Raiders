@@ -61,8 +61,6 @@ private:
 	DirectX::SimpleMath::Vector3 m_bulletDirection;
 	// 時間
 	float m_time;
-	// オーディオマネージャー
-	AudioManager* m_audioManager;
 	// プレイヤーのカメラの情報
 	DirectX::SimpleMath::Vector3 m_cameraEye;
 	DirectX::SimpleMath::Vector3 m_cameraTarget;

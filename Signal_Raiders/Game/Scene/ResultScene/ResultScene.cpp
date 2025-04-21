@@ -32,7 +32,7 @@ ResultScene::ResultScene(IScene::SceneID sceneID)
 	m_pressKeySize{},
 	m_pFade{},
 	m_pBackGround{ nullptr },
-	m_audioManager{ AudioManager::GetInstance() },
+	//m_audioManager{ AudioManager::GetInstance() },
 	m_pTexturePath{},
 	m_nowSceneID{ sceneID },
 	m_stageNumber{ 0 }
@@ -93,8 +93,6 @@ void ResultScene::Initialize(CommonResources* resources)
 	// シーン変更フラグを初期化する
 	m_isChangeScene = false;
 
-	// Sound用のオブジェクトを初期化する
-	InitializeFMOD();
 
 	// フェードに関する準備
 	m_isFade = false;
@@ -111,7 +109,7 @@ void ResultScene::Update(float elapsedTime)
 	// リザルトメニューの更新
 	m_pResultMenu->Update(elapsedTime);
 	// オーディオマネージャーの更新
-	m_audioManager->Update();
+	m_commonResources->GetAudioManager()->Update();
 	// キーボードステートトラッカーを取得する
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
 	// マウスのトラッカーを取得する
@@ -122,7 +120,7 @@ void ResultScene::Update(float elapsedTime)
 		mtracker->GetLastState().leftButton)
 	{
 		// SEの再生
-		m_audioManager->PlaySound("SE", m_SEvolume);
+		m_commonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);
 		m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
 		m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
 		if (m_pResultMenu->GetSceneNum() != ResultMenu::SceneID::REPLAY)
@@ -131,7 +129,7 @@ void ResultScene::Update(float elapsedTime)
 		}
 		// WかSのいずれかが押されたら
 		if (kbTracker->pressed.W || kbTracker->pressed.S)
-			m_audioManager->PlaySound("Select", m_SEvolume);// SEの再生
+			m_commonResources->GetAudioManager()->PlaySound("Select", m_SEvolume);// SEの再生
 
 	}
 	// フェードアウトが終了したら
@@ -140,7 +138,7 @@ void ResultScene::Update(float elapsedTime)
 		m_isChangeScene = true;
 	}
 	// BGMの再生
-	m_audioManager->PlaySound("BGM", m_BGMvolume);
+	m_commonResources->GetAudioManager()->PlaySound("ResultBGM", m_BGMvolume);
 	// フェードに関する準備
 	m_time += elapsedTime; // 時間をカウント
 	m_size = (sin(m_time) + 1.0f) * 0.3f + 0.75f; // sin波で0.5〜1.5の間を変動させる
@@ -184,8 +182,6 @@ void ResultScene::Render()
 //---------------------------------------------------------
 void ResultScene::Finalize()
 {
-	// オーディオマネージャーのシャットダウン
-	m_audioManager->Shutdown();
 }
 
 //---------------------------------------------------------
@@ -198,8 +194,8 @@ IScene::SceneID ResultScene::GetNextSceneID() const
 	if (m_isChangeScene)
 	{
 		// BGMとSEの停止
-		m_audioManager->StopSound("BGM");
-		m_audioManager->StopSound("SE");
+		m_commonResources->GetAudioManager()->StopSound("ResultBGM");
+		m_commonResources->GetAudioManager()->StopSound("SE");
 		switch (m_pResultMenu->GetSceneNum())
 		{
 		case ResultMenu::SceneID::REPLAY:
@@ -216,19 +212,5 @@ IScene::SceneID ResultScene::GetNextSceneID() const
 	}
 	// シーン変更がない場合
 	return IScene::SceneID::NONE;
-}
-
-//---------------------------------------------------------
-// FMODのシステムの初期化と音声データのロード
-//---------------------------------------------------------
-void ResultScene::InitializeFMOD()
-{
-	// FMODシステムの初期化
-	m_audioManager->Initialize();
-	// 音声データのロード
-	// ここで必要な音声データをAudioManagerにロードさせる
-	m_audioManager->LoadSound("Resources/Sounds/select.mp3", "SE");
-	m_audioManager->LoadSound("Resources/Sounds/result.mp3", "BGM");
-	m_audioManager->LoadSound("Resources/Sounds/click.mp3", "Select");
 }
 

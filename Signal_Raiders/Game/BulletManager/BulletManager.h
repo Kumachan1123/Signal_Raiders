@@ -72,8 +72,6 @@ private:
 private:
 	// コモンリソース
 	CommonResources* m_commonResources;
-	// オーディオマネージャー
-	AudioManager* m_audioManager;
 	// プレイヤー
 	Player* m_pPlayer;
 	// 敵全体

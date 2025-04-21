@@ -19,7 +19,7 @@ BulletManager::BulletManager(CommonResources* commonResources)
 	, m_pShooter(nullptr) // 発射元
 	, m_isPlayerShoot(false) // プレイヤーが撃ったかどうか
 	, m_isReloading(false) // リロード中かどうか
-	, m_audioManager(AudioManager::GetInstance()) // オーディオマネージャー
+	//, m_audioManager(AudioManager::GetInstance()) // オーディオマネージャー
 	, m_enemyBulletType(EnemyBullet::BulletType::NORMAL) // 敵の弾の種類
 	, m_enemyBulletSize(0.0f) // 敵の弾のサイズ
 	, m_playerBulletCount(0) // プレイヤーの弾の数
@@ -104,7 +104,7 @@ void BulletManager::CreatePlayerBullet(const Vector3& position, Vector3& directi
 	bullet->MakeBall(position, direction);// 弾を生成
 	m_playerBullets.push_back(std::move(bullet));// プレイヤー弾を追加
 	SetIsPlayerShoot(true);// 弾生成フラグを立てる
-	m_audioManager->PlaySound("Shoot", m_pPlayer->GetVolume());	// SEの再生
+	m_commonResources->GetAudioManager()->PlaySound("Shoot", m_pPlayer->GetVolume());	// SEの再生
 }
 
 /*
@@ -246,9 +246,9 @@ void BulletManager::UpdateEnemyBullets(float elapsedTime, std::unique_ptr<IEnemy
 */
 void BulletManager::SetSound()
 {
-	m_audioManager->Initialize();
-	m_audioManager->LoadSound("Resources/Sounds/playerBullet.mp3", "Shoot");// プレイヤーの弾のSE
-	m_audioManager->LoadSound("Resources/Sounds/Hit.mp3", "Hit");// ヒットのSE
+	//m_audioManager->Initialize();
+	//m_audioManager->LoadSound("Resources/Sounds/playerBullet.mp3", "Shoot");// プレイヤーの弾のSE
+	//m_audioManager->LoadSound("Resources/Sounds/Hit.mp3", "Hit");// ヒットのSE
 }
 
 /*
@@ -273,7 +273,7 @@ bool BulletManager::CheckCollisionWithEnemies(const std::unique_ptr<PlayerBullet
 				effectSize,// サイズ
 				enemy->GetMatrix()));// 行列
 			enemy->SetEnemyHitByPlayerBullet(true);// プレイヤーの弾が敵に当たったらヒットフラグを立てる
-			m_audioManager->PlaySound("Hit", m_pPlayer->GetVolume() * BulletParameters::HIT_VOLUME);// SEを再生
+			m_commonResources->GetAudioManager()->PlaySound("Hit", m_pPlayer->GetVolume() * BulletParameters::HIT_VOLUME);// SEを再生
 			return true;// 当たったらtrueを返す
 		}
 	}

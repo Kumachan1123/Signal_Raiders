@@ -13,7 +13,7 @@
 #include "Game/Scene/SceneManager.h"
 #include "Libraries/MyLib/DebugString.h"
 #include "Libraries/MyLib/InputManager.h"
-
+#include "Game/KumachiLib/AudioManager/AudioManager.h"
 
 // A basic game implementation that creates a D3D11 device and
 // provides a game loop.
@@ -91,6 +91,9 @@ private:
 
 	// シーンマネージャ
 	std::unique_ptr<SceneManager>           m_sceneManager;
+
+	// オーディオマネージャ
+	std::unique_ptr<AudioManager>           m_audioManager;
 
 	// ★追記ココまで↑↑↑★
 };

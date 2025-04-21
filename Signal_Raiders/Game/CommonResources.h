@@ -3,6 +3,8 @@
 	@brief	シーンへ渡す、ゲーム内で使用する共通リソース
 */
 #pragma once
+// 自作ヘッダー
+#include "Game/KumachiLib/AudioManager/AudioManager.h"
 
 // 前方宣言
 namespace DX
@@ -32,6 +34,8 @@ private:
 
 	mylib::InputManager* m_inputManager;
 
+	AudioManager* m_audioManager;
+
 
 public:
 	CommonResources();
@@ -42,7 +46,8 @@ public:
 		DX::DeviceResources* dr,
 		DirectX::CommonStates* commonStates,
 		mylib::DebugString* debugString,
-		mylib::InputManager* inputManager
+		mylib::InputManager* inputManager,
+		AudioManager* audioManager
 	);
 
 	// getter
@@ -69,5 +74,10 @@ public:
 	mylib::InputManager* GetInputManager() const
 	{
 		return m_inputManager;
+	}
+
+	AudioManager* GetAudioManager() const
+	{
+		return m_audioManager;
 	}
 };

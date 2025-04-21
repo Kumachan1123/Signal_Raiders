@@ -46,7 +46,7 @@ EnemyManager::EnemyManager(CommonResources* commonResources)
 	, m_pWall{ nullptr }
 	, m_pPlayer{ nullptr }
 	, m_pBulletManager{ nullptr }
-	, m_audioManager{ AudioManager::GetInstance() }
+	//, m_audioManager{ AudioManager::GetInstance() }
 	, m_SEVolume{ 0.0f }
 
 {
@@ -68,7 +68,6 @@ EnemyManager::~EnemyManager()
 void EnemyManager::Initialize(Player* pPlayer)
 {
 	m_pPlayer = pPlayer;// プレイヤーのポインタを取得
-	InitializeFMOD();// FMODシステムの初期化
 	SetEnemyMax();// 敵の生成上限設定
 }
 
@@ -133,18 +132,6 @@ void EnemyManager::Render()
 		GetEffect().end()//	削除対象のパーティクルを削除する
 	);
 
-}
-//---------------------------------------------------------
-// FMODシステムの初期化
-//---------------------------------------------------------
-void EnemyManager::InitializeFMOD()
-{
-	m_audioManager->Initialize();// オーディオマネージャの初期化
-	m_audioManager->LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet");// 弾発射音
-	m_audioManager->LoadSound("Resources/Sounds/Explosion.mp3", "EnemyDead");// 敵死亡音
-	m_audioManager->LoadSound("Resources/Sounds/damage.mp3", "Damage");// プレイヤーがダメージを食らう音
-	m_audioManager->LoadSound("Resources/Sounds/Barrier.mp3", "Barrier");// ボスのバリアが出現する音
-	m_audioManager->LoadSound("Resources/Sounds/BarrierBreak.mp3", "BarrierBreak");// ボスのバリアが破壊される音
 }
 //---------------------------------------------------------
 // 敵の生成上限設定
@@ -228,7 +215,6 @@ void EnemyManager::SpawnEnemy(EnemyType type)
 {
 	// ファクトリで生成
 	auto enemy = EnemyFactory::CreateEnemy(type, m_pPlayer, m_commonResources, m_pWifi->GetWifiLevels()[m_enemyIndex]);
-	enemy->SetAudioManager(m_audioManager);// オーディオマネージャーを設定
 	enemy->Initialize();// 敵を初期化
 	enemy->SetBulletManager(m_pBulletManager);// 弾マネージャーを設定
 	m_enemies.push_back(std::move(enemy));// 敵リストに追加
@@ -258,7 +244,6 @@ void EnemyManager::SpawnBoss()
 	if (m_stageNumber >= 3) boss->SetBossType(BossType::LAST_BOSS);// ボスの種類を設定
 	else boss->SetBossType(BossType::NORMAL_BOSS);// ボスの種類を設定
 
-	boss->SetAudioManager(m_audioManager);// オーディオマネージャーを設定
 	boss->Initialize();// ボスを初期化
 	boss->SetBulletManager(m_pBulletManager);// 弾マネージャーを設定
 	boss->SetBulletType(m_bossBulletType);// ボスの弾の種類を設定
@@ -344,7 +329,7 @@ void EnemyManager::HandleEnemyBulletCollision(std::unique_ptr<IEnemy>& enemy)
 		float playerHP = m_pPlayer->GetPlayerHP() - enemy->GetToPlayerDamage();
 		m_pPlayer->SetPlayerHP(playerHP);
 		enemy->SetPlayerHitByEnemyBullet(false);
-		m_audioManager->PlaySound("Damage", m_pPlayer->GetVolume());
+		m_commonResources->GetAudioManager()->PlaySound("Damage", m_pPlayer->GetVolume());
 	}
 }
 
@@ -415,5 +400,5 @@ void EnemyManager::HandleEnemyDeath(std::unique_ptr<IEnemy>& enemy)
 		effectScale,
 		enemy->GetMatrix()));
 	// 敵のSEを再生(こいつだけなぜか元から音が小さいから音量補正)
-	m_audioManager->PlaySound("EnemyDead", m_pPlayer->GetVolume() + m_pPlayer->GetVolumeCorrection());
+	m_commonResources->GetAudioManager()->PlaySound("EnemyDead", m_pPlayer->GetVolume() + m_pPlayer->GetVolumeCorrection());
 }
