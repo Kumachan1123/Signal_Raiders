@@ -134,7 +134,6 @@ void BossBase::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Mat
 */
 void BossBase::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
-	//m_pBoss->DrawCollision(view, proj);// ボスの当たり判定描画
 	UNREFERENCED_PARAMETER(view);// 未使用の警告を出さない
 	UNREFERENCED_PARAMETER(proj);// 未使用の警告を出さない
 #ifdef _DEBUG
@@ -215,4 +214,3 @@ void BossBase::SetEnemyHP(int hp)
 	else m_currentHP -= hp;// シールドがない場合は敵のHPを減らす
 
 }
-

@@ -46,7 +46,6 @@ EnemyManager::EnemyManager(CommonResources* commonResources)
 	, m_pWall{ nullptr }
 	, m_pPlayer{ nullptr }
 	, m_pBulletManager{ nullptr }
-	//, m_audioManager{ AudioManager::GetInstance() }
 	, m_SEVolume{ 0.0f }
 
 {

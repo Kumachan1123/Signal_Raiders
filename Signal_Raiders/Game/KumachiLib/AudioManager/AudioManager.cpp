@@ -45,11 +45,11 @@ void AudioManager::Initialize()
 	LoadSound("Resources/Sounds/damage.mp3", "Damage");// プレイヤーがダメージを食らう音
 	LoadSound("Resources/Sounds/Barrier.mp3", "Barrier");// ボスのバリアが出現する音
 	LoadSound("Resources/Sounds/BarrierBreak.mp3", "BarrierBreak");// ボスのバリアが破壊される音
-	LoadSound("Resources/Sounds/playbgm.mp3", "PlayBGM");
-	LoadSound("Resources/Sounds/select.mp3", "SE");
-	LoadSound("Resources/Sounds/result.mp3", "ResultBGM");
-	LoadSound("Resources/Sounds/click.mp3", "Select");
-	LoadSound("Resources/Sounds/title.mp3", "TitleBGM");
+	LoadSound("Resources/Sounds/playbgm.mp3", "PlayBGM");// プレイ中のBGM
+	LoadSound("Resources/Sounds/select.mp3", "SE");// 選択音
+	LoadSound("Resources/Sounds/result.mp3", "ResultBGM");// 結果画面のBGM
+	LoadSound("Resources/Sounds/click.mp3", "Select"); // タイトル画面の選択音
+	LoadSound("Resources/Sounds/title.mp3", "TitleBGM");// タイトル画面のBGM
 
 
 }

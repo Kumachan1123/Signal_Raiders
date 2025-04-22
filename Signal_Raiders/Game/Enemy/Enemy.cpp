@@ -52,9 +52,6 @@ Enemy::Enemy(Player* pPlayer, CommonResources* resources, int hp)
 	, m_isPlayerHitByEnemyBullet{ false }
 	, m_canAttack{ true }
 	, m_isAttack{ false }
-	//, m_audioManager{ AudioManager::GetInstance() }
-
-
 {}
 // デストラクタ
 Enemy::~Enemy() { m_pBulletManager->RemoveBulletsByShooter(this); }

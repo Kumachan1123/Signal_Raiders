@@ -49,7 +49,6 @@ VerticalAttacker::VerticalAttacker(Player* pPlayer, CommonResources* resources, 
 	, m_isPlayerHitByEnemyBullet{ false }
 	, m_canAttack{ true }
 	, m_isAttack{ false }
-	//, m_audioManager{ AudioManager::GetInstance() } 
 {}
 
 // デストラクタ
