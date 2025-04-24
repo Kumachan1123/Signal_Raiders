@@ -19,7 +19,6 @@ BulletManager::BulletManager(CommonResources* commonResources)
 	, m_pShooter(nullptr) // 発射元
 	, m_isPlayerShoot(false) // プレイヤーが撃ったかどうか
 	, m_isReloading(false) // リロード中かどうか
-	//, m_audioManager(AudioManager::GetInstance()) // オーディオマネージャー
 	, m_enemyBulletType(EnemyBullet::BulletType::NORMAL) // 敵の弾の種類
 	, m_enemyBulletSize(0.0f) // 敵の弾のサイズ
 	, m_playerBulletCount(0) // プレイヤーの弾の数

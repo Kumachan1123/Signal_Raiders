@@ -152,14 +152,6 @@ void TitleScene::Render()
 	auto& mousestate = m_commonResources->GetInputManager()->GetMouseState();
 	// ウィンドウ上のマウス座標を取得する
 	Vector2 pos = Vector2(static_cast<float>(mousestate.x), static_cast<float>(mousestate.y));
-	// ウィンドウ状態だと1280x720の座標になるので、1920x1080の座標に変換する
-
-	//{
-	//	pos.x = pos.x * Screen::WIDTH / Screen::UI_WIDTH;
-	//	pos.y = pos.y * Screen::HEIGHT / Screen::UI_HEIGHT;
-
-
-	//}
 
 	debugString->AddString("MouseX:%f  MouseY:%f", pos.x, pos.y);
 #endif

@@ -115,27 +115,7 @@ void StageSelectMenu::Update(float elapsedTime)
 		}
 	}
 	m_time += elapsedTime;
-	////  キーボードの入力を取得
-	//if (kbTracker->pressed.D)
-	//{
-	//	//  →キーを押したら、選択先を1つ進める
-	//	m_menuIndex += static_cast<unsigned int>(m_pUI.size()) + 1;
-	//	//  メニューアイテム数の最大値を超えないように制御
-	//	m_menuIndex %= m_pUI.size();
-	//}
-	//if (kbTracker->pressed.A)
-	//{
-	//	//  ←キーを押したら、選択先を1つ戻す
-	//	m_menuIndex += static_cast<unsigned int>(m_pUI.size()) - 1;
-	//	m_menuIndex %= m_pUI.size();
-	//}
-	//if (kbTracker->pressed.W)
-	//{
-	//	//  ↑キーを押したら、選択先を3つ戻す
-	//	m_menuIndex += static_cast<unsigned int>(m_pUI.size()) - 3;
-	//	//  メニューアイテム数の最大値を超えないように制御
-	//	m_menuIndex %= m_pUI.size();
-	//}
+
 	if (kbTracker->pressed.S)
 	{
 		// ↓キーを押したら、選択先を3つ進める
