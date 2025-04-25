@@ -8,7 +8,6 @@
 #pragma once
 
 #include "StepTimer.h"
-#include "Game/Player/PlayerUI/PlayerUI.h"
 #include <DeviceResources.h>
 #include <SimpleMath.h>
 #include <Effects.h>
@@ -18,8 +17,10 @@
 #include <CommonStates.h>
 #include <vector>
 #include "Keyboard.h"
+#include "Game/Player/PlayerUI/PlayerUI.h"
+#include "Game/Interface/IUI.h"
 
-class PlayerHP
+class PlayerHP : public IUI
 {
 
 
@@ -50,12 +51,17 @@ public:
 	PlayerHP();
 	~PlayerHP();
 
-	void Initialize(DX::DeviceResources* pDR, int width, int height);
-	void Update(float playerHP);
-	void Render();
+	void Initialize(CommonResources* resources, int width, int height)override;
+	void Update(const UpdateContext& context)override
+	{
+		Update(context.playerHP);
+	};
+	void Render()override;
 	void SetMaxHP(float maxHP) { m_maxHP = maxHP; }
 	void Add(std::unique_ptr<PlayerUI>& pPlayerUI, const wchar_t* path
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
 		, KumachiLib::ANCHOR anchor);
+private:
+	void Update(float playerHP);
 };

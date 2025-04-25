@@ -100,27 +100,20 @@ void PlayScene::Initialize(CommonResources* resources)
 	// 準備
 	m_pGoal = std::make_unique<Goal>(m_commonResources);
 	m_pGoal->Create(DR);
-	// Wi-Fiローディング
-	m_pWifiLoading = std::make_unique<WifiLoading>();
-	m_pWifiLoading->Initialize(DR, Screen::WIDTH, Screen::HEIGHT);
 	// 危険状態
 	m_pCrisis = std::make_unique<Crisis>(m_commonResources);
 	m_pCrisis->Create(DR);
-	// HPゲージ作成
-	m_pPlayerHP = std::make_unique<PlayerHP>();
-	m_pPlayerHP->Initialize(DR, Screen::UI_WIDTH, Screen::UI_HEIGHT);
-	// ダッシュゲージ作成
-	m_pDashGauge = std::make_unique<DashGauge>();
-	m_pDashGauge->Initialize(DR, Screen::UI_WIDTH, Screen::UI_HEIGHT);
-	// 弾ゲージ作成
-	m_pBulletGauge = std::make_unique<BulletGauge>();
-	m_pBulletGauge->Initialize(DR, Screen::UI_WIDTH, Screen::UI_HEIGHT);
-	// 照準作成
-	m_pReticle = std::make_unique<Reticle>();
-	m_pReticle->Initialize(DR, Screen::UI_WIDTH, Screen::UI_HEIGHT);
-	// 操作説明
-	m_pPlayGuide = std::make_unique<PlayGuide>();
-	m_pPlayGuide->Initialize(DR);
+	// Wi-Fiローディング(ゲーム開始から５秒間のみ表示するUI）
+	m_pWifiLoading = std::make_unique<WifiLoading>();
+	m_pWifiLoading->Initialize(m_commonResources, Screen::UI_WIDTH, Screen::UI_HEIGHT);
+	// プレイ中に表示されるUIたちを登録
+	m_pPlayerUI.push_back(std::move(std::make_unique<PlayerHP>()));
+	m_pPlayerUI.push_back(std::move(std::make_unique<DashGauge>()));
+	m_pPlayerUI.push_back(std::move(std::make_unique<BulletGauge>()));
+	m_pPlayerUI.push_back(std::move(std::make_unique<Reticle>()));
+	m_pPlayerUI.push_back(std::move(std::make_unique<PlayGuide>()));
+	// UIを初期化
+	for (int it = 0; it < m_pPlayerUI.size(); ++it)m_pPlayerUI[it]->Initialize(m_commonResources, Screen::UI_WIDTH, Screen::UI_HEIGHT);
 	// フェードの初期化
 	m_pFade = std::make_unique<Fade>(m_commonResources);
 	m_pFade->Create(DR);
@@ -157,11 +150,15 @@ void PlayScene::Update(float elapsedTime)
 
 	m_pEnemyManager->Update(elapsedTime);// 敵の更新
 	m_pPlayer->Update(elapsedTime);// プレイヤーの更新
+	UpdateContext ctx;
+	ctx.elapsedTime = elapsedTime;
+	ctx.dashStamina = m_pPlayer->GetDashTime();
+	ctx.bulletPoint = float(m_pPlayer->GetBulletManager()->GetPlayerBulletCount());
 	m_pBulletManager->Update(elapsedTime);// 弾の更新
 	if (m_timer <= 5.0f)// ゲーム開始から5秒間は
 	{
 		m_pGoal->Update(elapsedTime);// 指示画像を更新
-		m_pWifiLoading->Update(elapsedTime);// Wi-Fiローディングを更新
+		m_pWifiLoading->Update(ctx);// Wi-Fiローディングを更新
 	}
 	else// 5秒以上経過したら
 	{
@@ -170,22 +167,38 @@ void PlayScene::Update(float elapsedTime)
 		// HP上限が設定されたので改めて一度だけHPを設定しなおす
 		if (m_isResetHP == false)
 		{
-			m_pPlayerHP->SetMaxHP(m_pPlayer->GetPlayerHP() + m_pPlayer->GetMaxPlayerHP());
+			for (int it = 0; it < m_pPlayerUI.size(); ++it)
+			{
+				// プレイヤーHPだったら
+				auto pHP = dynamic_cast<PlayerHP*>(m_pPlayerUI[it].get());
+				if (pHP)
+				{
+					pHP->SetMaxHP(m_pPlayer->GetPlayerHP() + m_pPlayer->GetMaxPlayerHP());
+				}
+			}
+			//m_pPlayerHP->SetMaxHP(m_pPlayer->GetPlayerHP() + m_pPlayer->GetMaxPlayerHP());
 			m_pPlayer->SetPlayerHP(m_pPlayer->GetPlayerHP() + m_pPlayer->GetMaxPlayerHP());
 			m_isResetHP = true;
 		}
-		// HPゲージ更新
-		m_pPlayerHP->Update(m_pPlayer->GetPlayerHP());
+		ctx.playerHP = m_pPlayer->GetPlayerHP();
 		// 体力が10以下になったら危機状態更新
 		if (m_pPlayer->GetPlayerHP() <= 20.0f)m_pCrisis->Update(elapsedTime);
-		// ダッシュゲージ更新
-		m_pDashGauge->Update(m_pPlayer->GetDashTime());
-		// 弾ゲージ更新
-		m_pBulletGauge->Update(float(m_pPlayer->GetBulletManager()->GetPlayerBulletCount()));
-		// 照準更新
-		m_pReticle->Update();
-		// 操作説明更新
-		m_pPlayGuide->Update();
+		for (int it = 0; it < m_pPlayerUI.size(); ++it)
+		{
+			m_pPlayerUI[it]->Update(ctx);
+		}
+		//// HPゲージ更新
+		//m_pPlayerHP->Update(ctx);
+		//// ダッシュゲージ更新
+		//m_pDashGauge->Update(ctx);
+		//// 弾ゲージ更新
+		//m_pBulletGauge->Update(ctx);
+		//// 照準更新
+		//m_pReticle->Update(ctx);
+		//// 操作説明更新
+		//m_pPlayGuide->Update(ctx);
+		// レーダーを更新する
+		m_pRadar->Update(elapsedTime);
 		// 敵カウンターの更新
 		m_pEnemyCounter->SetEnemyIndex(m_pEnemyManager->GetEnemyIndex());// 敵の総数を取得
 		m_pEnemyCounter->SetNowEnemy(m_pEnemyManager->GetEnemySize());// 現在の敵の数を取得
@@ -203,8 +216,6 @@ void PlayScene::Update(float elapsedTime)
 			m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));
 			m_pFade->SetState(Fade::FadeState::FadeOut);
 		}
-		// レーダーを更新する
-		m_pRadar->Update(elapsedTime);
 		// ボス登場演出を更新する
 		if (m_pEnemyManager->GetIsBossAppear() == true)m_pBossAppear->Update(elapsedTime);
 	}
@@ -246,15 +257,9 @@ void PlayScene::Render()
 	if (m_timer >= 5.0f)
 	{
 		if (m_pPlayer->GetPlayerHP() <= 10.0f)m_pCrisis->Render();// HPが10以下で危機状態描画
-		// 敵カウンターを描画する
-		m_pEnemyCounter->Render();
-		m_pPlayGuide->Render();// 操作説明描画
-		// レーダーを描画する
-		m_pRadar->Render();
-		m_pPlayerHP->Render();// HP描画
-		m_pDashGauge->Render();// ダッシュゲージ描画
-		m_pBulletGauge->Render();// 弾ゲージ描画
-		m_pReticle->Render();// 照準描画
+		for (int it = 0; it < m_pPlayerUI.size(); ++it)m_pPlayerUI[it]->Render();
+		m_pEnemyCounter->Render();// 敵カウンターを描画する
+		m_pRadar->Render();// レーダーを描画する
 		// ボス登場演出を更新する
 		if (m_pEnemyManager->GetIsBossAppear() == true)m_pBossAppear->Render();
 	}

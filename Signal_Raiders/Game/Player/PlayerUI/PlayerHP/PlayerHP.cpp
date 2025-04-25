@@ -39,9 +39,9 @@ PlayerHP::~PlayerHP()
 {
 }
 
-void PlayerHP::Initialize(DX::DeviceResources* pDR, int width, int height)
+void PlayerHP::Initialize(CommonResources* resources, int width, int height)
 {
-	m_pDR = pDR;
+	m_pDR = resources->GetDeviceResources();
 	m_windowWidth = width;
 	m_windowHeight = height;
 

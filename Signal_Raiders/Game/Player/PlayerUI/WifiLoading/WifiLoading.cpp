@@ -26,25 +26,27 @@ WifiLoading::~WifiLoading()
 {
 }
 
-void WifiLoading::Initialize(DX::DeviceResources* pDR, int width, int height)
+void WifiLoading::Initialize(CommonResources* resources, int width, int height)
 {
-	m_pDR = pDR;
+	m_pDR = resources->GetDeviceResources();
 	m_windowWidth = width;
 	m_windowHeight = height;
 	// ローディング画像
 	Add(m_loading, L"Resources/Textures/Loading.png",
-		DirectX::SimpleMath::Vector2(Screen::RIGHT, Screen::HEIGHT),
-		DirectX::SimpleMath::Vector2(.5f, .5f),
+		DirectX::SimpleMath::Vector2((float)(m_windowWidth), (float)(m_windowHeight)),
+		DirectX::SimpleMath::Vector2(.4f, .4f),
 		KumachiLib::ANCHOR::BOTTOM_RIGHT);
 	// ローディングテキスト
 	Add(m_loadgingText, L"Resources/Textures/Loading_Text.png",
-		DirectX::SimpleMath::Vector2(Screen::RIGHT - 70, Screen::HEIGHT),
-		DirectX::SimpleMath::Vector2(.5f, .5f),
+		DirectX::SimpleMath::Vector2((float)(m_windowWidth - 70), (float)(m_windowHeight)),
+		DirectX::SimpleMath::Vector2(.4f, .4f),
 		KumachiLib::ANCHOR::BOTTOM_RIGHT);
 	// ローディング画像のアニメーション設定
 	m_loading->SetFrameRows(m_frameRows);
 	m_loading->SetFrameCols(m_frameCols);
 }
+
+
 
 void WifiLoading::Update(float elapsedTime)
 {

@@ -20,8 +20,8 @@
 #include <vector>
 #include "Keyboard.h"
 #include "Game/Screen.h"
-
-class Reticle
+#include "Game/Interface/IUI.h"
+class Reticle : public IUI
 {
 
 
@@ -48,12 +48,14 @@ public:
 	Reticle();
 	~Reticle();
 
-	void Initialize(DX::DeviceResources* pDR, int width, int height);
-	void Update();
-	void Render();
+	void Initialize(CommonResources* resources, int width, int height)override;
+	void Update(const UpdateContext& context)override;
+	void Render()override;
 
 	void Add(const wchar_t* path
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
 		, KumachiLib::ANCHOR anchor);
+private:
+	void Update();
 };

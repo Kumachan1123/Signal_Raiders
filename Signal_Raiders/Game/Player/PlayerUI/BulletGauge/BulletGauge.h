@@ -8,7 +8,6 @@
 #pragma once
 
 #include "StepTimer.h"
-#include "Game/Player/PlayerUI/PlayerUI.h"
 #include <DeviceResources.h>
 #include <SimpleMath.h>
 #include <Effects.h>
@@ -18,8 +17,9 @@
 #include <CommonStates.h>
 #include <vector>
 #include "Keyboard.h"
-
-class BulletGauge
+#include "Game/Player/PlayerUI/PlayerUI.h"
+#include "Game/Interface/IUI.h"
+class BulletGauge : public IUI
 {
 
 	//ïœêî
@@ -42,14 +42,19 @@ public:
 	BulletGauge();
 	~BulletGauge();
 
-	void Initialize(DX::DeviceResources* pDR, int width, int height);
-	void Update(float bulletPoint);
-	void Render();
+	void Initialize(CommonResources* resources, int width, int height)override;
+	void Update(const UpdateContext& context)override
+	{
+		Update(context.bulletPoint);
+
+	};
+	void Render()override;
 
 	void Add(const wchar_t* path
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
 		, KumachiLib::ANCHOR anchor);
-
+private:
+	void Update(float bulletPoint);
 
 };

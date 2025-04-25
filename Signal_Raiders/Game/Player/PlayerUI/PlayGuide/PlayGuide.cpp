@@ -34,15 +34,22 @@ PlayGuide::~PlayGuide()
 {
 }
 
-void PlayGuide::Initialize(DX::DeviceResources* pDR)
+void PlayGuide::Initialize(CommonResources* resources, int width, int height)
 {
-	m_pDR = pDR;
-
+	m_pDR = resources->GetDeviceResources();
+	m_windowWidth = width;
+	m_windowHeight = height;
 	Add(L"Resources/Textures/PlayGuide.png"
 		, SimpleMath::Vector2(0, 720)
 		, SimpleMath::Vector2(0.5f, 0.5f)
 		, KumachiLib::ANCHOR::BOTTOM_LEFT);
 
+}
+
+void PlayGuide::Update(const UpdateContext& context)
+{
+	UNREFERENCED_PARAMETER(context);
+	Update();
 }
 
 void PlayGuide::Update()

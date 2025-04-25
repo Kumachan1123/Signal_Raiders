@@ -23,9 +23,9 @@ Reticle::~Reticle()
 {
 }
 
-void Reticle::Initialize(DX::DeviceResources* pDR, int width, int height)
+void Reticle::Initialize(CommonResources* resources, int width, int height)
 {
-	m_pDR = pDR;
+	m_pDR = resources->GetDeviceResources();
 	m_windowWidth = width;
 	m_windowHeight = height;
 
@@ -34,6 +34,14 @@ void Reticle::Initialize(DX::DeviceResources* pDR, int width, int height)
 		, SimpleMath::Vector2(640, 360)
 		, SimpleMath::Vector2(0.25f, 0.25f)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER);
+
+}
+
+void Reticle::Update(const UpdateContext& context)
+{
+	// UpdateContextについて、未使用警告を出さない
+	UNREFERENCED_PARAMETER(context);
+	Update();
 
 }
 

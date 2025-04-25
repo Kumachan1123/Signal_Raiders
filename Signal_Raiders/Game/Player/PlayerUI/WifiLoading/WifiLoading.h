@@ -19,9 +19,10 @@
 #include <memory>
 #include "Keyboard.h"
 #include "Game/Screen.h"
+#include "Game/Interface/IUI.h"
 
 
-class WifiLoading
+class WifiLoading : public IUI
 {
 
 	//ïœêî
@@ -56,13 +57,18 @@ public:
 	WifiLoading();
 	~WifiLoading();
 
-	void Initialize(DX::DeviceResources* pDR, int width, int height);
-	void Update(float elapsedTime);
-	void Render();
+	void Initialize(CommonResources* resources, int width, int height) override;
+	void Update(const UpdateContext& data)override
+	{
+		Update(data.elapsedTime);
+	};
+	void Render()override;
 
 	void Add(std::unique_ptr<PlayerUI>& pPlayerUI, const wchar_t* path
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
 		, KumachiLib::ANCHOR anchor);
+private:
+	void Update(float elapsedTime);
 
 };

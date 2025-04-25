@@ -31,6 +31,7 @@
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/Radar/Radar.h"
 #include "Game/KumachiLib/Bloom/Bloom.h"
+#include "Game/Interface/IUI.h"
 // 前方宣言
 class CommonResources;
 namespace mylib
@@ -85,6 +86,9 @@ private:
 	std::unique_ptr<Reticle> m_pReticle;
 	// 操作説明
 	std::unique_ptr<PlayGuide> m_pPlayGuide;
+	// プレイヤーのUI(ゲーム開始から5秒後のUI）
+	std::vector<std::unique_ptr<IUI>> m_pPlayerUI;
+
 	// ボス登場演出
 	std::unique_ptr<BossAppear> m_pBossAppear;
 	// フェード
