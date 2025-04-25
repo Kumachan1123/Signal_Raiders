@@ -33,7 +33,8 @@ void BulletGauge::Initialize(CommonResources* resources, int width, int height)
 	m_windowWidth = width;
 	m_windowHeight = height;
 
-	Add(L"Resources/Textures/BulletGauge.png"
+	Add(m_gauge,
+		L"Resources/Textures/BulletGauge.png"
 		, SimpleMath::Vector2(640, 360)
 		, SimpleMath::Vector2(0.8f, 0.8f)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER);
@@ -53,16 +54,17 @@ void BulletGauge::Render()
 	m_gauge->SetShaderType(PlayerUI::ShaderType::CIRCLE), m_gauge->Render();
 }
 
-void BulletGauge::Add(const wchar_t* path
+void BulletGauge::Add(std::unique_ptr<PlayerUI>& pPlayerUI
+	, const wchar_t* path
 	, DirectX::SimpleMath::Vector2 position
 	, DirectX::SimpleMath::Vector2 scale
 	, KumachiLib::ANCHOR anchor)
 {
-	m_gauge = std::make_unique<PlayerUI>();
-	m_gauge->Create(m_pDR
+	pPlayerUI = std::make_unique<PlayerUI>();
+	pPlayerUI->Create(m_pDR
 		, path
 		, position
 		, scale
 		, anchor);
-	m_gauge->SetWindowSize(m_windowWidth, m_windowHeight);
+	pPlayerUI->SetWindowSize(m_windowWidth, m_windowHeight);
 }

@@ -34,7 +34,9 @@ StageSelectScene::StageSelectScene(IScene::SceneID sceneID)
 	m_pBackGround{ nullptr },
 	//m_audioManager{ AudioManager::GetInstance() },
 	m_pTexturePath{},
-	m_nowSceneID{ sceneID }
+	m_nowSceneID{ sceneID },
+	m_stageNumber{}
+
 {
 }
 
@@ -64,17 +66,23 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	// 背景を作成する
 	m_pBackGround = std::make_unique<BackGround>(m_commonResources);
 	m_pBackGround->Create(DR);
-	// ステージ選択メニューを作成する
-	m_pStageSelectMenu = std::make_unique<StageSelectMenu>();
-	m_pStageSelectMenu->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
 	// 設定ファイルの読み込み
 	m_pSettingData = std::make_unique<SettingData>();
 	m_pSettingData->Load();
 	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume()) * 0.1f;// BGMの音量を設定(割合変換)
 	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume()) * 0.1f;// SEの音量を設定(割合変換)
-	// マウスポインターを作成
-	m_pMousePointer = std::make_unique<MousePointer>();
-	m_pMousePointer->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
+	m_pUI.push_back(std::move(std::make_unique<StageSelectMenu>()));
+	m_pUI.push_back(std::move(std::make_unique<MousePointer>()));
+	for (int it = 0; it < m_pUI.size(); ++it)
+	{
+		m_pUI[it]->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
+	}
+	//// ステージ選択メニューを作成する
+	//m_pStageSelectMenu = std::make_unique<StageSelectMenu>();
+	//m_pStageSelectMenu->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
+	//// マウスポインターを作成
+	//m_pMousePointer = std::make_unique<MousePointer>();
+	//m_pMousePointer->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
 
 	// ステージ選択クラス作成
 	m_pStageSelect = std::make_unique<StageSelect>(m_commonResources);
@@ -114,10 +122,22 @@ void StageSelectScene::Update(float elapsedTime)
 		}
 		else
 		{
+			UpdateContext ctx;
+			ctx.bulletPoint = 0;//使わない
+			ctx.elapsedTime = elapsedTime;//フレーム時間
+			ctx.dashStamina = 0;//使わない
+			ctx.playerHP = 0;//使わない
+			for (int it = 0; it < m_pUI.size(); ++it)
+			{
+				m_pUI[it]->Update(ctx);// ステージ番号の記録
+				auto pMenu = dynamic_cast<StageSelectMenu*>(m_pUI[it].get());
+				if (!pMenu)continue;
+				else m_stageNumber = pMenu->GetMenuIndex();
+			}
 			// マウスポインターの更新
-			m_pMousePointer->Update(elapsedTime);
+		//	m_pMousePointer->Update(elapsedTime);
 			//ステージ選択メニューの更新
-			m_pStageSelectMenu->Update(elapsedTime);
+			//m_pStageSelectMenu->Update(elapsedTime);
 		}
 
 
@@ -155,8 +175,10 @@ void StageSelectScene::Render()
 	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
 	{
 		m_pStageSelect->Render();
-		m_pStageSelectMenu->Render();
-		m_pMousePointer->Render();// マウスポインターの描画
+		for (int it = 0; it < m_pUI.size(); ++it)
+		{
+			m_pUI[it]->Render();
+		}
 	}
 
 	// フェードの描画
@@ -180,17 +202,27 @@ IScene::SceneID StageSelectScene::GetNextSceneID() const
 	// シーン変更がある場合
 	if (m_isChangeScene)
 	{
-		// BGMとSEの停止
-		m_commonResources->GetAudioManager()->StopSound("TitleBGM");
-		m_commonResources->GetAudioManager()->StopSound("SE");
-		if (m_pStageSelectMenu->GetMenuIndex() < 5)
+		for (int it = 0; it < m_pUI.size(); ++it)// 一斉初期化
 		{
-			return IScene::SceneID::PLAY;
+			auto pMenu = dynamic_cast<StageSelectMenu*>(m_pUI[it].get());
+			if (!pMenu)continue;
+			else
+			{
+
+				// BGMとSEの停止
+				m_commonResources->GetAudioManager()->StopSound("TitleBGM");
+				m_commonResources->GetAudioManager()->StopSound("SE");
+				if (pMenu->GetMenuIndex() < 5)
+				{
+					return IScene::SceneID::PLAY;
+				}
+				else
+				{
+					return IScene::SceneID::TITLE;
+				}
+			}
 		}
-		else
-		{
-			return IScene::SceneID::TITLE;
-		}
+
 
 	}
 	// シーン変更がない場合

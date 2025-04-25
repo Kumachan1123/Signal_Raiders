@@ -18,8 +18,8 @@
 #include <CommonStates.h>
 #include <vector>
 #include "Keyboard.h"
-#include "Game/Interface/IUI.h"
-class PlayGuide : public IUI
+#include "Game/Interface/IPlayUI.h"
+class PlayGuide : public IPlayUI
 {
 public:
 
@@ -50,8 +50,11 @@ public:
 	void Initialize(CommonResources* resources, int width, int height)override;
 	void Update(const UpdateContext& context)override;
 	void Render()override;
-
-	void Add(const wchar_t* path
+	void Add(std::unique_ptr<PlayerUI>& pPlayerUI, const wchar_t* path
+		, DirectX::SimpleMath::Vector2 position
+		, DirectX::SimpleMath::Vector2 scale
+		, KumachiLib::ANCHOR anchor)override;
+	void CreatePlayerUI(const wchar_t* path
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
 		, KumachiLib::ANCHOR anchor);

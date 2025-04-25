@@ -18,9 +18,9 @@
 #include <vector>
 #include "Keyboard.h"
 #include "Game/Player/PlayerUI/PlayerUI.h"
-#include "Game/Interface/IUI.h"
+#include "Game/Interface/IPlayUI.h"
 
-class PlayerHP : public IUI
+class PlayerHP : public IPlayUI
 {
 
 
@@ -61,7 +61,8 @@ public:
 	void Add(std::unique_ptr<PlayerUI>& pPlayerUI, const wchar_t* path
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
-		, KumachiLib::ANCHOR anchor);
+		, KumachiLib::ANCHOR anchor)override;
+
 private:
 	void Update(float playerHP);
 };

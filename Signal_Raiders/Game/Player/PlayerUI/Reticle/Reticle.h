@@ -20,8 +20,8 @@
 #include <vector>
 #include "Keyboard.h"
 #include "Game/Screen.h"
-#include "Game/Interface/IUI.h"
-class Reticle : public IUI
+#include "Game/Interface/IPlayUI.h"
+class Reticle : public IPlayUI
 {
 
 
@@ -51,11 +51,11 @@ public:
 	void Initialize(CommonResources* resources, int width, int height)override;
 	void Update(const UpdateContext& context)override;
 	void Render()override;
-
-	void Add(const wchar_t* path
+	void Add(std::unique_ptr<PlayerUI>& pPlayerUI, const wchar_t* path
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
-		, KumachiLib::ANCHOR anchor);
+		, KumachiLib::ANCHOR anchor)override;
+
 private:
 	void Update();
 };

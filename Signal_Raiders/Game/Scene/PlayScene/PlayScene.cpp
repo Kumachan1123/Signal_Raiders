@@ -36,7 +36,6 @@ PlayScene::PlayScene(IScene::SceneID sceneID)
 	m_pFade{},
 	m_fadeState{ },
 	m_fadeTexNum{ 2 },
-	//m_audioManager{ AudioManager::GetInstance() },
 	m_BGMvolume{ BGM_VOLUME },
 	m_SEvolume{ SE_VOLUME },
 	m_mouseSensitivity{ },
@@ -169,14 +168,9 @@ void PlayScene::Update(float elapsedTime)
 		{
 			for (int it = 0; it < m_pPlayerUI.size(); ++it)
 			{
-				// プレイヤーHPだったら
-				auto pHP = dynamic_cast<PlayerHP*>(m_pPlayerUI[it].get());
-				if (pHP)
-				{
-					pHP->SetMaxHP(m_pPlayer->GetPlayerHP() + m_pPlayer->GetMaxPlayerHP());
-				}
+				auto pHP = dynamic_cast<PlayerHP*>(m_pPlayerUI[it].get());// プレイヤーHPだったら
+				if (pHP)pHP->SetMaxHP(m_pPlayer->GetPlayerHP() + m_pPlayer->GetMaxPlayerHP());// 体力をプレイヤーHPに渡す
 			}
-			//m_pPlayerHP->SetMaxHP(m_pPlayer->GetPlayerHP() + m_pPlayer->GetMaxPlayerHP());
 			m_pPlayer->SetPlayerHP(m_pPlayer->GetPlayerHP() + m_pPlayer->GetMaxPlayerHP());
 			m_isResetHP = true;
 		}
@@ -187,16 +181,7 @@ void PlayScene::Update(float elapsedTime)
 		{
 			m_pPlayerUI[it]->Update(ctx);
 		}
-		//// HPゲージ更新
-		//m_pPlayerHP->Update(ctx);
-		//// ダッシュゲージ更新
-		//m_pDashGauge->Update(ctx);
-		//// 弾ゲージ更新
-		//m_pBulletGauge->Update(ctx);
-		//// 照準更新
-		//m_pReticle->Update(ctx);
-		//// 操作説明更新
-		//m_pPlayGuide->Update(ctx);
+
 		// レーダーを更新する
 		m_pRadar->Update(elapsedTime);
 		// 敵カウンターの更新

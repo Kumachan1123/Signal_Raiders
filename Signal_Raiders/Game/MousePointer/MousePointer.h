@@ -5,7 +5,6 @@
 #pragma once
 
 #include "StepTimer.h"
-#include "Game/UI/UI.h"
 #include <DeviceResources.h>
 #include "Game/CommonResources.h"
 #include <SimpleMath.h>
@@ -21,11 +20,13 @@
 #include "Game/Screen.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "Libraries/MyLib/InputManager.h"
+#include "Game/UI/UI.h"
+#include "Game/Interface/IMenuUI.h"
 
 
 
 class CommonResources;
-class MousePointer
+class MousePointer : public IMenuUI
 {
 public:
 
@@ -35,23 +36,27 @@ public:
 	MousePointer();
 	~MousePointer();
 
-	void Initialize(CommonResources* resources, int width, int height);
-	void Update(float elapsedTime);
-	void Render();
+	void Initialize(CommonResources* resources, int width, int height)override;
+	void Update(const UpdateContext& context)override
+	{
+		Update(context.elapsedTime);
+
+	}
+	void Render()override;
 
 	void Add(const wchar_t* path
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
-		, KumachiLib::ANCHOR anchor);
+		, KumachiLib::ANCHOR anchor
+		, IMenuUI::UIType type)override;
 private:
+	void Update(float elapsedTime);
 	//	変数
-
+private:
 	unsigned int m_menuIndex;
 	DX::DeviceResources* m_pDR;
 	CommonResources* m_commonResources;
 	std::unique_ptr<UI> m_pMousePointer;// マウスポインター
-
-	const wchar_t* m_pTexturePath;
 
 	int m_windowWidth, m_windowHeight;
 

@@ -39,7 +39,7 @@ void PlayGuide::Initialize(CommonResources* resources, int width, int height)
 	m_pDR = resources->GetDeviceResources();
 	m_windowWidth = width;
 	m_windowHeight = height;
-	Add(L"Resources/Textures/PlayGuide.png"
+	CreatePlayerUI(L"Resources/Textures/PlayGuide.png"
 		, SimpleMath::Vector2(0, 720)
 		, SimpleMath::Vector2(0.5f, 0.5f)
 		, KumachiLib::ANCHOR::BOTTOM_LEFT);
@@ -54,11 +54,8 @@ void PlayGuide::Update(const UpdateContext& context)
 
 void PlayGuide::Update()
 {
-
 	auto keystate = Keyboard::Get().GetState();
 	m_tracker.Update(keystate);
-
-
 }
 
 void PlayGuide::Render()
@@ -67,18 +64,20 @@ void PlayGuide::Render()
 	m_pointer->Render();
 }
 
-void PlayGuide::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
+void PlayGuide::Add(std::unique_ptr<PlayerUI>& pPlayerUI, const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
 {
-
-	m_pointer = std::make_unique<PlayerUI>();
-	m_pointer->Create(m_pDR
+	pPlayerUI = std::make_unique<PlayerUI>();
+	pPlayerUI->Create(m_pDR
 		, path
 		, position
 		, scale
 		, anchor);
-	m_pointer->SetWindowSize(m_windowWidth, m_windowHeight);
+	pPlayerUI->SetWindowSize(m_windowWidth, m_windowHeight);
+}
 
-
+void PlayGuide::CreatePlayerUI(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
+{
+	Add(m_pointer, path, position, scale, anchor);
 }
 
 

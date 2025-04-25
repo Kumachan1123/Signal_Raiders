@@ -16,9 +16,10 @@
 #include "Keyboard.h"
 #include "Game/Scene/SettingScene/SettingData/SettingData.h"
 #include "Libraries/MyLib/DebugString.h"
+#include "Game/Interface/IMenuUI.h"
 
 class CommonResources;
-class SettingBar
+class SettingBar : public IMenuUI
 {
 public:
 
@@ -40,15 +41,24 @@ private:
 	float m_time = 0;// éûä‘
 	//	ä÷êî
 public:
-	SettingBar(SettingMenu* pSettingMenu);
+	SettingBar();
 	~SettingBar();
-	void Initialize(CommonResources* resources, int width, int height);
-	void Update(float elapsedTime);
-	void Render();
+	void Initialize(CommonResources* resources, int width, int height)override;
+	void Update(const UpdateContext& context)override
+	{
+		Update(context.elapsedTime);
+	};
+	void Render()override;
 	void Add(const wchar_t* path
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
-		, KumachiLib::ANCHOR anchor);
+		, KumachiLib::ANCHOR anchor
+		, UIType type)override;
+	SettingMenu* GetSettingMenu() { return m_pSettingMenu; }
+	void SetSettingMenu(SettingMenu* menu) { m_pSettingMenu = menu; }
 	void SetStateIDNum(SettingMenu::StateID num) { m_num = num; }
 	int GetSetting(int index) const { return m_setting[index]; }
+private:
+	void Update(float elapsedTime);
+
 };

@@ -15,6 +15,7 @@
 #include "Game/Scene/SettingScene/SettingBar/SettingBar.h"
 #include "Game/Scene/SettingScene/SettingData/SettingData.h"
 #include "Game/MousePointer/MousePointer.h"
+#include "Game/Interface/IMenuUI.h"
 // 前方宣言
 class CommonResources;
 class Fade;
@@ -38,10 +39,12 @@ private:
 	std::unique_ptr<BackGround> m_pBackGround;
 	// タイトルロゴ
 	std::unique_ptr<TitleLogo> m_pTitleLogo;
-	// マウスポインター
-	std::unique_ptr<MousePointer> m_pMousePointer;
-	// メニュー
-	std::unique_ptr<TitleMenu> m_pMenu;
+	//// マウスポインター
+	//std::unique_ptr<MousePointer> m_pMousePointer;
+	//// メニュー
+	//std::unique_ptr<TitleMenu> m_pMenu;
+	// タイトル画面のUI(メニュー、マウスカーソル）
+	std::vector<std::unique_ptr<IMenuUI>> m_pUI;
 	// 設定データ
 	std::unique_ptr<SettingData> m_pSettingData;
 	// フェード画像番号
@@ -69,5 +72,5 @@ public:
 	void Update(float elapsedTime)override;
 	void Render() override;
 	void Finalize() override;
-	SceneID GetNextSceneID() const;
+	SceneID GetNextSceneID() const override;
 };

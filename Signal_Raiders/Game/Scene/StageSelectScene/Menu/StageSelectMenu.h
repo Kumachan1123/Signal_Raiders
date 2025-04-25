@@ -5,7 +5,6 @@
 #pragma once
 
 #include "StepTimer.h"
-#include "Game/UI/UI.h"
 #include <DeviceResources.h>
 #include "Game/CommonResources.h"
 #include <SimpleMath.h>
@@ -16,9 +15,11 @@
 #include <CommonStates.h>
 #include <vector>
 #include "Keyboard.h"
+#include "Game/UI/UI.h"
+#include "Game/Interface/IMenuUI.h"
 
 class CommonResources;
-class StageSelectMenu
+class StageSelectMenu : public IMenuUI
 {
 public:
 	enum SceneID
@@ -26,13 +27,13 @@ public:
 		PLAY = 0,
 		END
 	};
-	enum class UIType
-	{
-		// 選択可能UI
-		SELECT,
-		// 選択不可能UI
-		NON_SELECT
-	};
+	//enum class UIType
+	//{
+	//	// 選択可能UI
+	//	SELECT,
+	//	// 選択不可能UI
+	//	NON_SELECT
+	//};
 	//	変数
 public:
 	unsigned int m_menuIndex;
@@ -60,9 +61,12 @@ public:
 	StageSelectMenu();
 	~StageSelectMenu();
 
-	void Initialize(CommonResources* resources, int width, int height);
-	void Update(float elapsedTime);
-	void Render();
+	void Initialize(CommonResources* resources, int width, int height)override;
+	void Update(const UpdateContext& context)override
+	{
+		Update(context.elapsedTime);
+	}
+	void Render()override;
 
 	void Add(const wchar_t* path
 		, DirectX::SimpleMath::Vector2 position
@@ -75,4 +79,6 @@ public:
 	void SetSceneNum(SceneID num) { m_num = num; }
 	int GetMenuIndex() const { return m_menuIndex; }
 	void SetMenuIndex(int index) { m_menuIndex = index; }
+private:
+	void Update(float elapsedTime);
 };

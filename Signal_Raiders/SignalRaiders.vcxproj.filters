@@ -295,6 +295,8 @@
     <ClInclude Include="Game\Enemy\BossBase\BossBase.h" />
     <ClInclude Include="Game\Interface\IBossLogic.h" />
     <ClInclude Include="Game\Interface\IUI.h" />
+    <ClInclude Include="Game\Interface\IPlayUI.h" />
+    <ClInclude Include="Game\Interface\IMenuUI.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />

@@ -18,10 +18,10 @@
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
-SettingBar::SettingBar(SettingMenu* pSettingMenu)
+SettingBar::SettingBar()
 	: m_commonResources{}
 	, m_pDR{}
-	, m_pSettingMenu{ pSettingMenu }
+	, m_pSettingMenu{   }
 	, m_pBar{}
 	, m_pSettingBarTexturePath{}
 	, m_pSettingBarPointerTexturePath{}
@@ -52,17 +52,20 @@ void SettingBar::Initialize(CommonResources* resources, int width, int height)
 	Add(m_pSettingBarTexturePath
 		, SimpleMath::Vector2(Screen::CENTER_X + 300, Screen::CENTER_Y - 300)
 		, SimpleMath::Vector2(1, 1)
-		, KumachiLib::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER
+		, UIType::NON_SELECT);
 	//  「SE」の場所に配置
 	Add(m_pSettingBarTexturePath
 		, SimpleMath::Vector2(Screen::CENTER_X + 300, Screen::CENTER_Y - 150)
 		, SimpleMath::Vector2(1, 1)
-		, KumachiLib::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER
+		, UIType::NON_SELECT);
 	//  「マウスかんど」の場所に配置
 	Add(m_pSettingBarTexturePath
 		, SimpleMath::Vector2(Screen::CENTER_X + 300, Screen::CENTER_Y)
 		, SimpleMath::Vector2(1, 1)
-		, KumachiLib::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER
+		, UIType::NON_SELECT);
 
 	// Jsonファイルから設定を読み込む
 	m_pSettingData->Load();
@@ -159,8 +162,10 @@ void SettingBar::Render()
 void SettingBar::Add(const wchar_t* path
 	, DirectX::SimpleMath::Vector2 position
 	, DirectX::SimpleMath::Vector2 scale
-	, KumachiLib::ANCHOR anchor)
+	, KumachiLib::ANCHOR anchor
+	, UIType type)
 {
+	UNREFERENCED_PARAMETER(type);// 未使用警告非表示
 	//  メニューとしてアイテムを追加する
 	std::unique_ptr<UI> userInterface = std::make_unique<UI>();
 	//  指定された画像を表示するためのアイテムを作成する

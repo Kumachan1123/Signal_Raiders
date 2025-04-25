@@ -187,7 +187,4 @@ void SettingMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position
 		, anchor);
 	base->SetWindowSize(m_windowWidth, m_windowHeight);
 
-	//  背景用のアイテムも新しく追加する
-	//m_pSelect.push_back(std::move(base));
-
 }

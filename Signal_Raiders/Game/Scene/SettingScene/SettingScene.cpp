@@ -73,13 +73,17 @@ void SettingScene::Initialize(CommonResources* resources)
 	m_camera = std::make_unique<FPS_Camera>();
 	// セッティングメニューを作成
 	m_pSettingMenu = std::make_unique<SettingMenu>();
-	m_pSettingMenu->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
-	// マウスポインターを作成
+	//// マウスポインターを作成
 	m_pMousePointer = std::make_unique<MousePointer>();
-	m_pMousePointer->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
-	// 設定バーを作成
-	m_pSettingBar = std::make_unique<SettingBar>(m_pSettingMenu.get());
-	m_pSettingBar->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
+	m_pSettingBar = std::make_unique<SettingBar>();
+	m_pSettingBar->SetSettingMenu(m_pSettingMenu.get());
+	m_pUI.push_back(std::move(m_pSettingMenu));
+	m_pUI.push_back(std::move(m_pSettingBar));
+	m_pUI.push_back(std::move(m_pMousePointer));
+	for (int it = 0; it < m_pUI.size(); ++it)
+	{
+		m_pUI[it]->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
+	}
 	// 設定データの読み込み
 	m_pSettingData = std::make_unique<SettingData>();
 	m_pSettingData->Load();
@@ -92,12 +96,32 @@ void SettingScene::Initialize(CommonResources* resources)
 //---------------------------------------------------------
 void SettingScene::Update(float elapsedTime)
 {
-	// セッティングメニューの更新処理
-	m_pSettingMenu->Update(elapsedTime);
-	// 今選ばれているメニューのIDをBarに渡す
-	m_pSettingBar->SetStateIDNum(static_cast<SettingMenu::StateID>(m_pSettingMenu->GetMenuIndex()));
-	// セッティングバーの更新処理
-	m_pSettingBar->Update(elapsedTime);
+	UpdateContext ctx;
+	ctx.bulletPoint = 0;// 使わない
+	ctx.dashStamina = 0;//使わない
+	ctx.elapsedTime = elapsedTime;//フレーム時間
+	ctx.playerHP = 0;//使わない
+	for (int it = 0; it < m_pUI.size(); ++it)
+	{
+		if (auto pSettingBar = dynamic_cast<SettingBar*>(m_pUI[it].get()))
+		{
+			for (int it2 = 0; it2 < m_pUI.size(); ++it2)
+			{
+				if (auto pSettingMenu = dynamic_cast<SettingMenu*>(m_pUI[it2].get()))
+				{
+					pSettingBar->SetStateIDNum(static_cast<SettingMenu::StateID>(pSettingMenu->GetMenuIndex()));
+
+				}
+			}
+		}
+		m_pUI[it]->Update(ctx);
+	}
+	//// セッティングメニューの更新処理
+	//m_pSettingMenu->Update(elapsedTime);
+	//// 今選ばれているメニューのIDをBarに渡す
+	//m_pSettingBar->SetStateIDNum(static_cast<SettingMenu::StateID>(m_pSettingMenu->GetMenuIndex()));
+	//// セッティングバーの更新処理
+	//m_pSettingBar->Update(elapsedTime);
 	// オーディオマネージャーの更新処理
 	m_commonResources->GetAudioManager()->Update();
 
@@ -109,25 +133,44 @@ void SettingScene::Update(float elapsedTime)
 	{
 		if (mtracker->GetLastState().leftButton)
 		{
-			if (m_pSettingMenu->GetSelectIDNum() == SettingMenu::SelectID::END ||
-				m_pSettingMenu->GetSelectIDNum() == SettingMenu::SelectID::APPLY)
+			for (int it = 0; it < m_pUI.size(); ++it)
 			{
-				m_commonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);
-				m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
-				m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
-			}
-			else
-			{
-				// マウスポインターの更新
-				m_pMousePointer->Update(elapsedTime);
+				if (auto pSettingMenu = dynamic_cast<SettingMenu*>(m_pUI[it].get()))
+				{
+					if (pSettingMenu->GetSelectIDNum() == SettingMenu::SelectID::END ||
+						pSettingMenu->GetSelectIDNum() == SettingMenu::SelectID::APPLY)
+					{
+						m_commonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);
+						m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
+						m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
+					}
+					else
+					{
+						for (int it2 = 0; it2 < m_pUI.size(); ++it2)
+						{
+							if (auto pMousePointer = dynamic_cast<MousePointer*>(m_pUI[it2].get()))
+							{
+								pMousePointer->Update(ctx);
+							}
+						}
+						// マウスポインターの更新
+						//m_pMousePointer->Update(elapsedTime);
 
+					}
+				}
 			}
+
 
 		}
 		else
 		{
-			// マウスポインターの更新
-			m_pMousePointer->Update(elapsedTime);
+			for (int it = 0; it < m_pUI.size(); ++it)
+			{
+				if (auto pMousePointer = dynamic_cast<MousePointer*>(m_pUI[it].get()))
+				{
+					pMousePointer->Update(ctx);
+				}
+			}
 		}
 
 
@@ -155,9 +198,13 @@ void SettingScene::Render()
 	// スペースキー押してってやつ描画(画面遷移中は描画しない)
 	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
 	{
-		m_pSettingMenu->Render();
-		m_pSettingBar->Render();
-		m_pMousePointer->Render();
+		for (int it = 0; it < m_pUI.size(); ++it)
+		{
+			m_pUI[it]->Render();
+		}
+		//m_pSettingMenu->Render();
+		//m_pSettingBar->Render();
+		//	m_pMousePointer->Render();
 	}
 	// フェードの描画
 	m_pFade->Render();
@@ -197,13 +244,21 @@ IScene::SceneID SettingScene::GetNextSceneID() const
 // 音量を設定する
 void SettingScene::SetVolume()
 {
-	// 音量の取得(10分の1で割合を取得)
-	float BGMvolume = static_cast<float>(m_pSettingBar->GetSetting(0)) * 0.1f;
-	float SEvolume = static_cast<float>(m_pSettingBar->GetSetting(1)) * 0.1f;
-	// 設定の変更
-	m_pSettingData->SetBGMVolume(m_pSettingBar->GetSetting(0));
-	m_pSettingData->SetSEVolume(m_pSettingBar->GetSetting(1));
-	// 音量の設定
-	m_BGMvolume = VOLUME * BGMvolume;
-	m_SEvolume = VOLUME * SEvolume;
+	for (int it = 0; it < m_pUI.size(); ++it)
+	{
+		if (auto pSettingBar = dynamic_cast<SettingBar*>(m_pUI[it].get()))
+		{
+			// 音量の取得(10分の1で割合を取得)
+			float BGMvolume = static_cast<float>(pSettingBar->GetSetting(0)) * 0.1f;
+			float SEvolume = static_cast<float>(pSettingBar->GetSetting(1)) * 0.1f;
+			// 設定の変更
+			m_pSettingData->SetBGMVolume(pSettingBar->GetSetting(0));
+			m_pSettingData->SetSEVolume(pSettingBar->GetSetting(1));
+			// 音量の設定
+			m_BGMvolume = VOLUME * BGMvolume;
+			m_SEvolume = VOLUME * SEvolume;
+			return;
+		}
+	}
+
 }

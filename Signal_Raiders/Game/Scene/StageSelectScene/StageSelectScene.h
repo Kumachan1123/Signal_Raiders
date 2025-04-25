@@ -11,6 +11,7 @@
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/Scene/StageSelectScene/Stage/StageSelect.h"
 #include "Game/MousePointer/MousePointer.h"
+#include "Game/Interface/IMenuUI.h"
 // 前方宣言
 class CommonResources;
 class Fade;
@@ -31,16 +32,18 @@ private:
 
 	// 設定データ
 	std::unique_ptr<SettingData> m_pSettingData;
-	// リザルトメニュー
+	// ステージ選択メニュー
 	std::unique_ptr<StageSelectMenu> m_pStageSelectMenu;
+	// マウスポインター
+	std::unique_ptr<MousePointer> m_pMousePointer;
+	// ステージ選択画面のUI(メニュー、マウスカーソル）
+	std::vector<std::unique_ptr<IMenuUI>> m_pUI;
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
 	// 結果クラス
 	std::unique_ptr<StageSelect> m_pStageSelect;
 	// 結果クラスに渡すテクスチャパス
 	const wchar_t* m_pTexturePath;
-	// マウスポインター
-	std::unique_ptr<MousePointer> m_pMousePointer;
 
 	// 空の行列
 	DirectX::SimpleMath::Matrix m_world;
@@ -63,6 +66,8 @@ private:
 	std::unique_ptr<BackGround> m_pBackGround;
 	// 現在のシーンID
 	IScene::SceneID m_nowSceneID;
+	// ステージ番号
+	int m_stageNumber;
 public:
 	StageSelectScene(IScene::SceneID sceneID);
 	~StageSelectScene() override;
@@ -72,6 +77,7 @@ public:
 	void Render() override;
 	void Finalize() override;
 
-	SceneID GetNextSceneID() const;
-	int GetStageNumber() const { return m_pStageSelectMenu->GetMenuIndex(); }
+	SceneID GetNextSceneID()const override;
+	int GetStageNumber() const { return m_stageNumber; }
+	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; }
 };

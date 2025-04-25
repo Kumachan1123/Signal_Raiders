@@ -66,16 +66,21 @@ void ResultScene::Initialize(CommonResources* resources)
 	m_pBackGround = std::make_unique<BackGround>(m_commonResources);
 	m_pBackGround->Create(DR);
 	// リザルトメニューを作成する
-	m_pResultMenu = std::make_unique<ResultMenu>();
-	m_pResultMenu->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
+
+	// マウスポインターを作成
+
+	m_pUI.push_back(std::move(std::make_unique<ResultMenu>()));
+	m_pUI.push_back(std::move(std::make_unique<MousePointer>()));
+	for (int it = 0; it < m_pUI.size(); ++it)
+	{
+		m_pUI[it]->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
+	}
+
 	// 設定ファイルの読み込み
 	m_pSettingData = std::make_unique<SettingData>();
 	m_pSettingData->Load();
 	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume()) * .1f;
 	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume()) * .1f;
-	// マウスポインターを作成
-	m_pMousePointer = std::make_unique<MousePointer>();
-	m_pMousePointer->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
 
 	// 今のシーンIDによってテクスチャを変更
 	switch (m_nowSceneID)
@@ -106,15 +111,22 @@ void ResultScene::Initialize(CommonResources* resources)
 void ResultScene::Update(float elapsedTime)
 {
 
-	// リザルトメニューの更新
-	m_pResultMenu->Update(elapsedTime);
+
 	// オーディオマネージャーの更新
 	m_commonResources->GetAudioManager()->Update();
 	// キーボードステートトラッカーを取得する
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
 	// マウスのトラッカーを取得する
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
-
+	UpdateContext ctx;
+	ctx.bulletPoint = 0;// 使わない
+	ctx.dashStamina = 0;// 使わない
+	ctx.elapsedTime = elapsedTime;// フレーム時間
+	ctx.playerHP = 0;// 使わない
+	for (int it = 0; it < m_pUI.size(); ++it)
+	{
+		m_pUI[it]->Update(ctx);
+	}
 	// スペースキーが押されたら
 	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd &&
 		mtracker->GetLastState().leftButton)
@@ -123,10 +135,18 @@ void ResultScene::Update(float elapsedTime)
 		m_commonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);
 		m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
 		m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
-		if (m_pResultMenu->GetSceneNum() != ResultMenu::SceneID::REPLAY)
+		for (int it = 0; it < m_pUI.size(); ++it)
 		{
-			m_stageNumber = 5;// タイトルに戻る
+			if (auto pMenu = dynamic_cast<ResultMenu*>(m_pUI[it].get()))
+			{
+				ResultMenu::SceneID id = pMenu->GetSceneNum();
+				if (id == ResultMenu::SceneID::END)
+				{
+					m_stageNumber = 5;// タイトルに戻る
+				}
+			}
 		}
+
 		// WかSのいずれかが押されたら
 		if (kbTracker->pressed.W || kbTracker->pressed.S)
 			m_commonResources->GetAudioManager()->PlaySound("Select", m_SEvolume);// SEの再生
@@ -146,7 +166,10 @@ void ResultScene::Update(float elapsedTime)
 	// 背景の更新
 	m_pBackGround->Update(elapsedTime);
 	// マウスポインターの更新
-	m_pMousePointer->Update(elapsedTime);
+	//m_pMousePointer->Update(elapsedTime);
+	// 	// リザルトメニューの更新
+	//m_pResultMenu->Update(elapsedTime);
+
 	// フェードの更新
 	m_pFade->Update(elapsedTime);
 
@@ -166,8 +189,12 @@ void ResultScene::Render()
 	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
 	{
 		m_pResult->Render();
-		m_pResultMenu->Render();
-		m_pMousePointer->Render();// マウスポインター更新
+		//m_pResultMenu->Render();
+		////m_pMousePointer->Render();// マウスポインター更新
+		for (int it = 0; it < m_pUI.size(); ++it)
+		{
+			m_pUI[it]->Render();
+		}
 	}
 
 
@@ -196,21 +223,29 @@ IScene::SceneID ResultScene::GetNextSceneID() const
 		// BGMとSEの停止
 		m_commonResources->GetAudioManager()->StopSound("ResultBGM");
 		m_commonResources->GetAudioManager()->StopSound("SE");
-		switch (m_pResultMenu->GetSceneNum())
+		for (int it = 0; it < m_pUI.size(); ++it)
 		{
-		case ResultMenu::SceneID::REPLAY:
-			return IScene::SceneID::PLAY;
-			break;
-		case ResultMenu::SceneID::END:
+			if (auto pMenu = dynamic_cast<ResultMenu*>(m_pUI[it].get()))
+			{
+				switch (pMenu->GetSceneNum())
+				{
+				case ResultMenu::SceneID::REPLAY:
+					return IScene::SceneID::PLAY;
+					break;
+				case ResultMenu::SceneID::END:
+					return IScene::SceneID::STAGESELECT;
 
-			return IScene::SceneID::STAGESELECT;
-
-			break;
-		default:
-			break;
+					break;
+				default:
+					break;
+				}
+			}
 		}
+
 	}
 	// シーン変更がない場合
 	return IScene::SceneID::NONE;
 }
+
+
 

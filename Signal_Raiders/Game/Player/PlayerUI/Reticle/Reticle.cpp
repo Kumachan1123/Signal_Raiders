@@ -30,7 +30,8 @@ void Reticle::Initialize(CommonResources* resources, int width, int height)
 	m_windowHeight = height;
 
 
-	Add(L"Resources/Textures/Reticle.png"
+	Add(m_reticle
+		, L"Resources/Textures/Reticle.png"
 		, SimpleMath::Vector2(640, 360)
 		, SimpleMath::Vector2(0.25f, 0.25f)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER);
@@ -50,8 +51,6 @@ void Reticle::Update()
 
 	auto keystate = Keyboard::Get().GetState();
 	m_tracker.Update(keystate);
-
-
 }
 
 void Reticle::Render()
@@ -60,18 +59,17 @@ void Reticle::Render()
 	m_reticle->Render();
 }
 
-void Reticle::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
+void Reticle::Add(std::unique_ptr<PlayerUI>& pPlayerUI, const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
 {
-
-	m_reticle = std::make_unique<PlayerUI>();
-	m_reticle->Create(m_pDR
+	pPlayerUI = std::make_unique<PlayerUI>();
+	pPlayerUI->Create(m_pDR
 		, path
 		, position
 		, scale
 		, anchor);
-	m_reticle->SetWindowSize(m_windowWidth, m_windowHeight);
-
+	pPlayerUI->SetWindowSize(m_windowWidth, m_windowHeight);
 
 }
+
 
 

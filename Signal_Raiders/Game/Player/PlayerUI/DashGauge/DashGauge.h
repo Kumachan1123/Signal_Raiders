@@ -18,8 +18,8 @@
 #include <vector>
 #include "Keyboard.h"
 #include "Game/Player/PlayerUI/PlayerUI.h"
-#include "Game/Interface/IUI.h"
-class DashGauge : public IUI
+#include "Game/Interface/IPlayUI.h"
+class DashGauge : public IPlayUI
 {
 
 	//ïœêî
@@ -28,7 +28,7 @@ private:
 	unsigned int m_menuIndex;
 	DX::DeviceResources* m_pDR;
 
-	std::unique_ptr<PlayerUI> m_heart;
+	std::unique_ptr<PlayerUI> m_dash;
 	std::unique_ptr<PlayerUI> m_gauge;
 	std::unique_ptr<PlayerUI> m_frame;
 	std::unique_ptr<PlayerUI> m_base;
@@ -55,11 +55,11 @@ public:
 
 	}
 	void Render()override;
-
-	void Add(const wchar_t* path
+	void Add(std::unique_ptr<PlayerUI>& pPlayerUI, const wchar_t* path
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
-		, KumachiLib::ANCHOR anchor);
+		, KumachiLib::ANCHOR anchor)override;
+
 private:
 	void Update(float dashStamina);
 };

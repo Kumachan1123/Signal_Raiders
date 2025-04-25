@@ -71,15 +71,15 @@ void TitleScene::Initialize(CommonResources* resources)
 	// タイトルロゴを作成
 	m_pTitleLogo = std::make_unique<TitleLogo>(m_commonResources);
 	m_pTitleLogo->Create(DR);
-	// メニューを作成
-	m_pMenu = std::make_unique<TitleMenu>();
-	m_pMenu->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
 	// 設定ファイルの読み込み
 	m_pSettingData = std::make_unique<SettingData>();
 	m_pSettingData->Load();
-	// マウスポインターを作成
-	m_pMousePointer = std::make_unique<MousePointer>();
-	m_pMousePointer->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
+	m_pUI.push_back(std::move(std::make_unique<TitleMenu>()));	// メニューを作成
+	m_pUI.push_back(std::move(std::make_unique<MousePointer>()));	// マウスポインターを作成
+	for (int it = 0; it < m_pUI.size(); ++it)// 一斉初期化
+		m_pUI[it]->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
+
+
 
 	// 音量の設定
 	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume()) * 0.1f;
@@ -113,10 +113,18 @@ void TitleScene::Update(float elapsedTime)
 		if (kbTracker->pressed.W || kbTracker->pressed.S)
 			m_commonResources->GetAudioManager()->PlaySound("Select", m_SEvolume);// SEの再生
 	}
+	UpdateContext ctx;
+	ctx.elapsedTime = elapsedTime;// フレーム時間を代入
+	ctx.playerHP = 0;// 使わない値
+	ctx.dashStamina = 0;// 使わない値
+	ctx.bulletPoint = 0;// 使わない値
+
 	// メニューの更新
-	m_pMenu->Update(elapsedTime);
-	// マウスポインターの更新
-	m_pMousePointer->Update(elapsedTime);
+	for (int it = 0; it < m_pUI.size(); ++it)// 一斉初期化
+		m_pUI[it]->Update(ctx);
+	//	m_pMenu->Update(elapsedTime);
+	//// マウスポインターの更新
+	//m_pMousePointer->Update(elapsedTime);
 	// フェードアウトが終了したら
 	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;
 	// BGMの再生
@@ -140,8 +148,11 @@ void TitleScene::Render()
 	// スペースキー押してってやつ描画(画面遷移中は描画しない)
 	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
 	{
-		m_pMenu->Render();
-		m_pMousePointer->Render();
+		for (int it = 0; it < m_pUI.size(); ++it)// 一斉初期化
+			m_pUI[it]->Render();
+
+		/*m_pMenu->Render();
+		m_pMousePointer->Render();*/
 	}
 	// フェードの描画
 	m_pFade->Render();
@@ -177,21 +188,32 @@ IScene::SceneID TitleScene::GetNextSceneID() const
 	{
 		m_commonResources->GetAudioManager()->StopSound("TitleBGM");// BGMの停止
 		m_commonResources->GetAudioManager()->StopSound("SE");// SEの停止
-		switch (m_pMenu->GetSceneNum())
+		for (int it = 0; it < m_pUI.size(); ++it)// 一斉初期化
 		{
-		case TitleMenu::SceneID::STAGESELECT:
-			return IScene::SceneID::STAGESELECT;
-			break;
-		case TitleMenu::SceneID::SETTING:
-			return IScene::SceneID::SETTING;
-			break;
-		case TitleMenu::SceneID::END:
-			// ゲーム終了
-			EndGame();
-			break;
-		default:
-			break;
+			auto pMenu = dynamic_cast<TitleMenu*>(m_pUI[it].get());
+			if (!pMenu)continue;
+			else
+			{
+
+				switch (pMenu->GetSceneNum())
+				{
+				case TitleMenu::SceneID::STAGESELECT:
+					return IScene::SceneID::STAGESELECT;
+					break;
+				case TitleMenu::SceneID::SETTING:
+					return IScene::SceneID::SETTING;
+					break;
+				case TitleMenu::SceneID::END:
+					// ゲーム終了
+					EndGame();
+					break;
+				default:
+					break;
+				}
+			}
 		}
+
+
 	}
 	// シーン変更がない場合
 	return IScene::SceneID::NONE;

@@ -30,7 +30,8 @@ void MousePointer::Initialize(CommonResources* resources, int width, int height)
 	Add(L"Resources/Textures/MousePointer.png"
 		, SimpleMath::Vector2(0, 0)
 		, SimpleMath::Vector2(1, 1)
-		, KumachiLib::ANCHOR::MIDDLE_CENTER);
+		, KumachiLib::ANCHOR::MIDDLE_CENTER
+		, UIType::NON_SELECT);
 }
 
 void MousePointer::Update(float elapsedTime)
@@ -49,8 +50,9 @@ void MousePointer::Render()
 	m_pMousePointer->Render();
 }
 
-void MousePointer::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
+void MousePointer::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor, IMenuUI::UIType type)
 {
+	UNREFERENCED_PARAMETER(type);// 未使用警告非表示
 	//  メニューとしてアイテムを追加する
 	//  指定された画像を表示するためのアイテムを作成する
 	m_pMousePointer->Create(m_pDR

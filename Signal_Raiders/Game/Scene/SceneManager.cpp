@@ -128,7 +128,9 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 	}
 
 	assert(m_currentScene && "SceneManager::CreateScene::éüÇÃÉVÅ[ÉìÇ™ê∂ê¨Ç≥ÇÍÇ‹ÇπÇÒÇ≈ÇµÇΩÅI");
-	if ((GetSceneID() == IScene::SceneID::STAGESELECT || GetSceneID() == IScene::SceneID::CLEAR || GetSceneID() == IScene::SceneID::GAMEOVER) &&
+	if ((GetSceneID() == IScene::SceneID::STAGESELECT ||
+		GetSceneID() == IScene::SceneID::CLEAR ||
+		GetSceneID() == IScene::SceneID::GAMEOVER) &&
 		m_stageNumber < 5)
 	{
 		auto playScene = dynamic_cast<PlayScene*>(m_currentScene.get());
