@@ -46,29 +46,13 @@ EnemyBullet::EnemyBullet(float size)
 EnemyBullet::~EnemyBullet()
 {
 }
-void EnemyBullet::Initialize(CommonResources* resources, BulletType type)
+void EnemyBullet::Initialize(CommonResources* resources)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	m_commonResources = resources;
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
-	m_bulletType = type;// íeÇÃéÌóﬁÇê›íËÇ∑ÇÈ
-
-	switch (m_bulletType)
-	{
-	case EnemyBullet::BulletType::NORMAL:// íºê¸íe
-		m_pNormalBullet = std::make_unique<NormalBullet>();
-		m_pEnemyBullet = m_pNormalBullet.get();
-		break;
-	case EnemyBullet::BulletType::SPECIAL:// ì¡éÍçUåÇÇÃíe
-		m_pSpecialBullet = std::make_unique<SpecialBullet>();
-		m_pEnemyBullet = m_pSpecialBullet.get();
-		break;
-	case EnemyBullet::BulletType::SPEED:// êÇíºíºêiíe
-		m_pSpeedBullet = std::make_unique<SpeedBullet>();
-		m_pEnemyBullet = m_pSpeedBullet.get();
-		break;
-	}
+	m_pEnemyBullet = EnemyBulletFactory::CreateBullet(m_bulletType);// ÉtÉ@ÉNÉgÉäÇ≈ê∂ê¨
 	m_pEnemyBullet->SetEnemyBullet(this);// ìGíeÉ|ÉCÉìÉ^Å[Çê›íËÇ∑ÇÈ
 	// ã´äEãÖÇÃèâä˙âª
 	DrawCollision::Initialize(m_commonResources);
@@ -117,8 +101,8 @@ bool EnemyBullet::IsExpired() const
 {
 	if (m_bulletType == BulletType::SPECIAL)
 		return GetTime() >= BulletParameters::SPIRAL_BULLET_LIFETIME;
-
-	return GetTime() >= BulletParameters::ENEMY_BULLET_LIFETIME;
+	else
+		return GetTime() >= BulletParameters::ENEMY_BULLET_LIFETIME;
 }
 
 // çXêV
@@ -152,7 +136,6 @@ void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	m_bulletTrail->Render(view, proj);
 	// íeï`âÊ
 	m_model->Draw(context, *states, BulletWorldMatrix(), view, proj);
-
 }
 
 void EnemyBullet::RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
@@ -192,7 +175,6 @@ void EnemyBullet::RenderBoundingSphere(DirectX::SimpleMath::Matrix view, DirectX
 	DrawCollision::DrawBoundingSphere(m_boundingSphere, Colors::Red);
 	DrawCollision::DrawEnd();
 #endif
-
 }
 
 

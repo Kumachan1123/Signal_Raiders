@@ -6,6 +6,7 @@
 #pragma once
 #ifndef ENEMY_BULLET_DEFINED
 #define ENEMY_BULLET_DEFINED
+#include <memory>
 #include "Game/CommonResources.h"
 #include "Game/Particle/Particle.h"
 #include "Game/Interface/IEnemy.h"
@@ -13,22 +14,24 @@
 #include "Game/Enemy/EnemyBullet/SpeedBullet/SpeedBullet.h"
 #include "Game/Enemy/EnemyBullet/SpecialBullet/SpecialBullet.h"
 #include "Game/BulletParameters/BulletParameters.h"
-#include <memory>
+#include "Game/Interface/IBullet.h"
+#include "Game/Enemy/EnemyBullet/EnemyBulletFactory/EnemyBulletFactory.h"
+#include "Game/Enemy/EnemyBullet/EnemyBulletType/EnemyBulletType.h"
 class CommonResources;
 class IEnemyBullet;
 class NormalBullet;
 class SpeedBullet;
 class SpecialBullet;
-class EnemyBullet
+class EnemyBullet : public IBullet
 {	//変数
 public:
-	enum class BulletType
-	{
-		NORMAL,//直線
-		SPECIAL,//特殊
-		SPEED// 垂直
+	//enum class BulletType
+	//{
+	//	NORMAL,//直線
+	//	SPECIAL,//特殊
+	//	SPEED// 垂直
 
-	};
+	//};
 	BulletType m_bulletType;// 弾の種類
 private:
 	// 共通リソース
@@ -81,16 +84,16 @@ private:
 	std::unique_ptr<SpeedBullet> m_pSpeedBullet;
 	std::unique_ptr<SpecialBullet> m_pSpecialBullet;
 	// 弾の種類ごとに処理を変えるためのポインター
-	IEnemyBullet* m_pEnemyBullet;
+	std::unique_ptr<IEnemyBullet> m_pEnemyBullet;
 	// モデルの影
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 public:
 	EnemyBullet(float size);
-	~EnemyBullet();
-	void Initialize(CommonResources* resources, BulletType type);
-	void Update(float elapsedTime);
-	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
-	void RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+	~EnemyBullet()override;
+	void Initialize(CommonResources* resources)override;
+	void Update(float elapsedTime)override;
+	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;
+	void RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;
 	void RenderBoundingSphere(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 	void MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir, DirectX::SimpleMath::Vector3& target);
 	//Getter

@@ -59,7 +59,6 @@ const float EnemyParameters::BOSS_SHIELD_SCALE_SPEED = 0.2f;
 const float EnemyParameters::BOSS_SHIELD_ATTACK_COOLDOWN = 0.75f;
 const float EnemyParameters::BOSS_HPBAR_SCALE = 3.0f;
 const float EnemyParameters::BOSS_CHASE_SPEED = 2.0f;
-const float EnemyParameters::BOSS_DEADEFFECT_SCALE = 10.0f;
 const float EnemyParameters::BOSS_SPAWN_WAIT_TIME = 3.0f;
 
 // ===============================
@@ -75,6 +74,8 @@ const Vector3 EnemyParameters::BOSS_HPBAR_OFFSET{ 0.0f, 3.0f, 0.0f };
 const float EnemyParameters::NORMAL_BOSS_RADIUS = 2.5f;
 const float EnemyParameters::BOSS_SHIELD_RADIUS = 5.5f;
 const float EnemyParameters::BOSS_DAMAGE = 5.0f;
+const float EnemyParameters::BOSS_BARRIERBREAK_SIZE = 1.0f;
+const float EnemyParameters::BOSS_DEADEFFECT_SCALE = 10.0f;
 
 // ================================
 // ラスボス専用
@@ -83,14 +84,16 @@ const Vector3 EnemyParameters::INITIAL_LASTBOSS_POSITION{ 0.0f, 10.0f, 0.0f };
 const Vector3 EnemyParameters::INITIAL_LASTBOSS_SCALE{ 1.0f, 1.0f, 1.0f };
 const Vector3 EnemyParameters::LASTBOSS_SPHERE_OFFSET{ 0.0f, 0.5f, 0.0f };
 const Vector3 EnemyParameters::LASTBOSS_HEAD_OFFSET{ 0.0f, -1.0f, 3.0f };
-const Vector3 EnemyParameters::LASTBOSS_LEFTUP_GUN_OFFSET{ -9.5f, 4.50f, 7.0f };
-const Vector3 EnemyParameters::LASTBOSS_RIGHTUP_GUN_OFFSET{ 9.5f, 4.50f, 7.0f };
-const Vector3 EnemyParameters::LASTBOSS_LEFTDOWN_GUN_OFFSET{ -9.5f, -3.50f, 7.0f };
-const Vector3 EnemyParameters::LASTBOSS_RIGHTDOWN_GUN_OFFSET{ 9.5f, -3.50f, 7.0f };
+const Vector3 EnemyParameters::LASTBOSS_LEFTUP_GUN_OFFSET{ -9.5f, 4.50f, 9.0f };
+const Vector3 EnemyParameters::LASTBOSS_RIGHTUP_GUN_OFFSET{ 9.5f, 4.50f, 9.0f };
+const Vector3 EnemyParameters::LASTBOSS_LEFTDOWN_GUN_OFFSET{ -9.5f, -3.50f, 9.0f };
+const Vector3 EnemyParameters::LASTBOSS_RIGHTDOWN_GUN_OFFSET{ 9.5f, -3.50f, 9.0f };
 const Vector3 EnemyParameters::LASTBOSS_HPBAR_OFFSET{ 0.0f, 3.0f, 0.0f };
 const float EnemyParameters::NORMAL_LASTBOSS_RADIUS = 10.5f;// 通常ボスの半径
 const float EnemyParameters::LASTBOSS_SHIELD_RADIUS = 20.5f; // ボスシールドの半径
 const float EnemyParameters::LASTBOSS_DAMAGE = 10.0f;
+const float EnemyParameters::LASTBOSS_BARRIERBREAK_SIZE = 2.0f;
+const float EnemyParameters::LASTBOSS_DEADEFFECT_SCALE = 15.0f;
 
 
 

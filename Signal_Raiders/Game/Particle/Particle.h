@@ -90,6 +90,7 @@ public:
 	ParticleUtility::Type m_type;
 	// パーティクルのサイズ
 	float m_size;
+	float m_barrierBreakSize;// シールド破壊のサイズ
 	//	関数
 public:
 	Particle(ParticleUtility::Type type, float size);
@@ -109,6 +110,7 @@ public:
 	void SetCameraPosition(DirectX::SimpleMath::Vector3 cameraPos) { m_cameraPosition = cameraPos; }
 	void SetCameraTarget(DirectX::SimpleMath::Vector3 cameraTarget) { m_cameraTarget = cameraTarget; }
 	void SetCameraUp(DirectX::SimpleMath::Vector3 cameraUp) { m_cameraUp = cameraUp; }
+	void SetBarrierBreakSize(float size) { m_barrierBreakSize = size; }
 private:
 	void CreateShader();
 	void Trail();

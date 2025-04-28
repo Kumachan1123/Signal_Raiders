@@ -49,9 +49,11 @@ BossBase::BossBase(Player* pPlayer, CommonResources* resources, int hp)
 	, m_isAttack(false)// 攻撃中か
 	, m_bossType(BossType::NORMAL_BOSS)// ボスの種類
 	, m_bossBulletType(BossBulletType::STAGE_4)// ボスの弾の種類
-	, m_bulletType(EnemyBullet::BulletType::NORMAL)// 弾の種類
+	, m_bulletType(BulletType::NORMAL)// 弾の種類
 	, m_defaultHitRadius(EnemyParameters::NORMAL_BOSS_RADIUS)// デフォルトの当たり判定半径
 	, m_defensiveHitRadius(EnemyParameters::BOSS_SHIELD_RADIUS)// 弾の発射位置
+	, m_barrierBreakSize(EnemyParameters::BOSS_BARRIERBREAK_SIZE)// バリア破壊パーティクルのサイズ
+	, m_deadEffectSize(EnemyParameters::BOSS_DEADEFFECT_SCALE)// ボスの死亡エフェクトのサイズ
 {
 }
 /*
@@ -183,7 +185,7 @@ void BossBase::ShootBullet()
 */
 void BossBase::CreateVerticalBullet()
 {
-	m_pBulletManager->SetEnemyBulletType(EnemyBullet::BulletType::SPEED);// 弾の種類を設定
+	m_pBulletManager->SetEnemyBulletType(BulletType::SPEED);// 弾の種類を設定
 	m_pBulletManager->CreateEnemyBullet(m_bulletPosCenter, m_bulletDirection);// 弾を生成
 
 }
@@ -194,7 +196,7 @@ void BossBase::CreateVerticalBullet()
 */
 void BossBase::CreateSpiralBullet()
 {
-	m_pBulletManager->SetEnemyBulletType(EnemyBullet::BulletType::SPECIAL);// 弾の種類を設定
+	m_pBulletManager->SetEnemyBulletType(BulletType::SPECIAL);// 弾の種類を設定
 	m_pBulletManager->CreateEnemyBullet(m_bulletPosCenter, m_bulletDirection);// 弾を生成
 
 }

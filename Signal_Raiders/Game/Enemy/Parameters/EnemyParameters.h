@@ -61,7 +61,6 @@ public:// 定数
 	static const float BOSS_SHIELD_ATTACK_COOLDOWN; // ボスシールドの攻撃クールダウン時間
 	static const float BOSS_HPBAR_SCALE;// ボスHPバーのスケール
 	static const float BOSS_CHASE_SPEED; // ボスの追跡速度
-	static const float BOSS_DEADEFFECT_SCALE; // ボスのデスエフェクトのスケール
 	static const float BOSS_SPAWN_WAIT_TIME; // ボスのスポーン待機時間
 
 	// ===== ボス専用 =====
@@ -75,6 +74,8 @@ public:// 定数
 	static const float NORMAL_BOSS_RADIUS;// 通常ボスの半径
 	static const float BOSS_SHIELD_RADIUS; // ボスシールドの半径
 	static const float BOSS_DAMAGE; // ボスがプレイヤーに与えるダメージ
+	static const float BOSS_BARRIERBREAK_SIZE;// バリア破壊パーティクルのサイズ
+	static const float BOSS_DEADEFFECT_SCALE; // ボスのデスエフェクトのスケール
 
 
 	// ===== ラスボス専用 =====
@@ -90,6 +91,8 @@ public:// 定数
 	static const float NORMAL_LASTBOSS_RADIUS;// 通常ボスの半径
 	static const float LASTBOSS_SHIELD_RADIUS; // ボスシールドの半径
 	static const float LASTBOSS_DAMAGE; // ラスボスがプレイヤーに与えるダメージ
+	static const float LASTBOSS_BARRIERBREAK_SIZE;// バリア破壊パーティクルのサイズ
+	static const float LASTBOSS_DEADEFFECT_SCALE; // ラスボスのデスエフェクトのスケール
 
 	// ===== 浮遊・特殊な初期状態など =====
 	static const DirectX::SimpleMath::Vector3 INITIAL_VELOCITY; // 浮遊用の初速度

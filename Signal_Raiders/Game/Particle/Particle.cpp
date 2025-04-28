@@ -46,6 +46,7 @@ Particle::Particle(ParticleUtility::Type type, float size)
 	, m_billboard{}
 	, m_type{ type }
 	, m_size{ size * 10 }
+	, m_barrierBreakSize{ 0 }
 	, m_anim{ 0 }
 	, m_animTime{ 0.0f }
 	, m_animSpeed{ 30.0f }
@@ -358,7 +359,7 @@ void Particle::BarrierBreak()
 			);
 
 			// ランダムなサイズ
-			float randomSize = static_cast<float>(sizeDist(engine));
+			float randomSize = static_cast<float>(sizeDist(engine)) * m_barrierBreakSize;
 
 			// パーティクルの生成
 			ParticleUtility pU(

@@ -28,7 +28,7 @@ Boss::Boss(BossBase* pBoss, CommonResources* commonResources)
 	, m_velocity{}// 速度
 	, m_rotate{}// 回転
 	, m_matrix{}// マトリクス
-	, m_bulletType(EnemyBullet::BulletType::NORMAL)// 弾の種類
+	, m_bulletType(BulletType::NORMAL)// 弾の種類
 {
 }
 /*
@@ -48,6 +48,8 @@ void Boss::Initialize()
 	m_pBossBase->SetDefensiveHitRadius(EnemyParameters::BOSS_SHIELD_RADIUS);// シールド展開時のボスの当たり判定を設定
 	m_pBossBase->SetBulletSize(EnemyParameters::BOSS_BULLET_SIZE);// 弾のサイズを設定
 	m_pBossBase->SetToPlayerDamage(EnemyParameters::BOSS_DAMAGE);// ボスがプレイヤーに与えるダメージを設定
+	m_pBossBase->SetBarrierBreakSize(EnemyParameters::BOSS_BARRIERBREAK_SIZE);// バリア破壊パーティクルのサイズ設定
+	m_pBossBase->SetDeadEffectSize(EnemyParameters::BOSS_DEADEFFECT_SCALE);// 死亡エフェクトのサイズ
 }
 /*
 *	@brief	更新処理
@@ -108,17 +110,17 @@ void Boss::CreateBullet()
 	switch (m_pBossBase->GetBulletType())	// Enemiesクラスで設定した弾のタイプによって処理を分岐
 	{
 	case BossBase::BossBulletType::STAGE_1:// 通常弾
-		CreateCenterBullet(EnemyBullet::BulletType::NORMAL);// 中央の弾を発射
+		CreateCenterBullet(BulletType::NORMAL);// 中央の弾を発射
 		break;
 	case BossBase::BossBulletType::STAGE_2:// 二発
 
-		CreateLeftBullet(EnemyBullet::BulletType::NORMAL);// 左の弾を発射
-		CreateRightBullet(EnemyBullet::BulletType::NORMAL);// 右の弾を発射
+		CreateLeftBullet(BulletType::NORMAL);// 左の弾を発射
+		CreateRightBullet(BulletType::NORMAL);// 右の弾を発射
 		break;
 	case BossBase::BossBulletType::STAGE_3:// 三発
-		CreateCenterBullet(EnemyBullet::BulletType::NORMAL);// 中央の弾を発射
-		CreateLeftBullet(EnemyBullet::BulletType::NORMAL);// 左の弾を発射
-		CreateRightBullet(EnemyBullet::BulletType::NORMAL);// 右の弾を発射
+		CreateCenterBullet(BulletType::NORMAL);// 中央の弾を発射
+		CreateLeftBullet(BulletType::NORMAL);// 左の弾を発射
+		CreateRightBullet(BulletType::NORMAL);// 右の弾を発射
 		break;
 
 	}
@@ -127,7 +129,7 @@ void Boss::CreateBullet()
 *	@brief	中央から弾を発射
 *	@param[in] type 弾の種類
 */
-void Boss::CreateCenterBullet(EnemyBullet::BulletType type)
+void Boss::CreateCenterBullet(BulletType type)
 {
 	m_pBossBase->GetBulletManager()->SetEnemyBulletType(type);// 弾の種類を設定
 	m_pBossBase->GetBulletManager()->CreateEnemyBullet(m_bulletPosCenter, m_bulletDirection);// 弾を生成
@@ -136,7 +138,7 @@ void Boss::CreateCenterBullet(EnemyBullet::BulletType type)
 *	@brief	左の弾を発射
 *	@param[in] type 弾の種類
 */
-void Boss::CreateLeftBullet(EnemyBullet::BulletType type)
+void Boss::CreateLeftBullet(BulletType type)
 {
 	m_pBossBase->GetBulletManager()->SetEnemyBulletType(type);// 弾の種類を設定
 	m_pBossBase->GetBulletManager()->CreateEnemyBullet(m_bulletPosLeft, m_bulletDirection);// 弾を生成
@@ -145,7 +147,7 @@ void Boss::CreateLeftBullet(EnemyBullet::BulletType type)
 *	@brief 右の弾を発射
 *	@param[in] type 弾の種類
 */
-void Boss::CreateRightBullet(EnemyBullet::BulletType type)
+void Boss::CreateRightBullet(BulletType type)
 {
 	m_pBossBase->GetBulletManager()->SetEnemyBulletType(type);// 弾の種類を設定
 	m_pBossBase->GetBulletManager()->CreateEnemyBullet(m_bulletPosRight, m_bulletDirection);// 弾を生成

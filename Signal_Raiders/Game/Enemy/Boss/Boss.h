@@ -37,9 +37,9 @@ public:
 	void Draw(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;        // Boss, LastBossにて描画
 	void BulletPositioning()override;	// 弾の発射位置を決定
 	void CreateBullet();// 弾を生成
-	void CreateCenterBullet(EnemyBullet::BulletType type);// 中央の弾を生成
-	void CreateLeftBullet(EnemyBullet::BulletType type);// 左の弾を生成
-	void CreateRightBullet(EnemyBullet::BulletType type);// 右の弾を生成
+	void CreateCenterBullet(BulletType type);// 中央の弾を生成
+	void CreateLeftBullet(BulletType type);// 左の弾を生成
+	void CreateRightBullet(BulletType type);// 右の弾を生成
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
@@ -61,7 +61,7 @@ private:
 	// 発射位置を回転させるためのクォータニオン
 	DirectX::SimpleMath::Quaternion m_bulletQuaternion;
 	// 弾のタイプ
-	EnemyBullet::BulletType m_bulletType;// EnemyBulletクラスに送る
+	BulletType m_bulletType;// EnemyBulletクラスに送る
 	// 弾の飛ぶ方向
 	DirectX::SimpleMath::Vector3 m_bulletDirection;
 	// 時間

@@ -87,6 +87,7 @@ void BossSheild::Update(float elapsedTime)
 		m_isSheild = false;// シールド破壊
 		pBoss->GetBoundingSphere().Radius = pBoss->GetDefaultHitRadius();// ボスの境界球を元に戻す
 		m_pParticle->SetBossPosition(m_pBoss->GetPosition());// ボスの位置を設定
+		m_pParticle->SetBarrierBreakSize(pBoss->GetBarrierBreakSize());
 		m_pParticle->Update(elapsedTime);// パーティクル更新
 	}
 }

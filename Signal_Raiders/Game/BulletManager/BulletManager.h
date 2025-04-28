@@ -36,7 +36,7 @@ class BulletManager
 
 public:
 	// アクセサ
-	void SetEnemyBulletType(EnemyBullet::BulletType type) { m_enemyBulletType = type; }// 敵の弾の種類設定
+	void SetEnemyBulletType(BulletType type) { m_enemyBulletType = type; }// 敵の弾の種類設定
 	void SetEnemyBulletSize(float size) { m_enemyBulletSize = size; }// 敵の弾の大きさ設定
 	bool GetIsPlayerShoot() const { return m_isPlayerShoot; }// プレイヤーの弾生成フラグ取得
 	void SetIsPlayerShoot(bool isPlayerShoot) { m_isPlayerShoot = isPlayerShoot; }// プレイヤーの弾生成フラグ設定
@@ -79,7 +79,7 @@ private:
 	// 弾を射出した敵のポインター
 	IEnemy* m_pShooter;
 	// 敵の弾の種類
-	EnemyBullet::BulletType m_enemyBulletType;
+	BulletType m_enemyBulletType;
 	// 敵の弾の大きさ
 	float m_enemyBulletSize;
 	// プレイヤーの弾生成フラグ

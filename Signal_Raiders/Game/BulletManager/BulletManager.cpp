@@ -19,7 +19,7 @@ BulletManager::BulletManager(CommonResources* commonResources)
 	, m_pShooter(nullptr) // ”­ËŒ³
 	, m_isPlayerShoot(false) // ƒvƒŒƒCƒ„[‚ªŒ‚‚Á‚½‚©‚Ç‚¤‚©
 	, m_isReloading(false) // ƒŠƒ[ƒh’†‚©‚Ç‚¤‚©
-	, m_enemyBulletType(EnemyBullet::BulletType::NORMAL) // “G‚Ì’e‚Ìí—Ş
+	, m_enemyBulletType(BulletType::NORMAL) // “G‚Ì’e‚Ìí—Ş
 	, m_enemyBulletSize(0.0f) // “G‚Ì’e‚ÌƒTƒCƒY
 	, m_playerBulletCount(0) // ƒvƒŒƒCƒ„[‚Ì’e‚Ì”
 	, m_reloadTimer(0.0f) // ƒŠƒ[ƒhƒ^ƒCƒ}[
@@ -116,12 +116,13 @@ void BulletManager::CreateEnemyBullet(const Vector3& position, Vector3& directio
 {
 	auto camera = m_pPlayer->GetCamera();	//	ƒJƒƒ‰‚ğæ“¾
 	Vector3 playerPos = camera->GetEyePosition();	// ƒvƒŒƒCƒ„[‚©‚çƒJƒƒ‰‚Ìî•ñ‚ğæ“¾
-	if (m_enemyBulletType == EnemyBullet::BulletType::SPECIAL)	// “ÁêUŒ‚‚Ì”‚¾‚¯‰ñ“]’e‚ğ¶¬
+	if (m_enemyBulletType == BulletType::SPECIAL)	// “ÁêUŒ‚‚Ì”‚¾‚¯‰ñ“]’e‚ğ¶¬
 	{
 		for (int i = 0; i < GetSpecialAttackCount(); i++)
 		{
 			auto bullet = std::make_unique<EnemyBullet>(m_enemyBulletSize);// “G’e‚Ì¶¬
-			bullet->Initialize(m_commonResources, m_enemyBulletType);// ‰Šú‰»
+			bullet->SetBulletType(m_enemyBulletType);// ’e‚Ìí—Şİ’è
+			bullet->Initialize(m_commonResources);// ‰Šú‰»
 			bullet->SetShooter(m_pShooter);// ”­ËŒ³‚ğİ’è
 			bullet->SetAngle(XM_2PI / GetSpecialAttackCount() * i);// Šp“x‚ğİ’è
 			bullet->SetDistance(0.0f);// ‹——£‚ğİ’è
@@ -134,7 +135,8 @@ void BulletManager::CreateEnemyBullet(const Vector3& position, Vector3& directio
 	{
 
 		auto bullet = std::make_unique<EnemyBullet>(m_enemyBulletSize);// “G’e‚Ì¶¬
-		bullet->Initialize(m_commonResources, m_enemyBulletType);// ‰Šú‰»
+		bullet->SetBulletType(m_enemyBulletType);// ’e‚Ìí—Şİ’è
+		bullet->Initialize(m_commonResources);// ‰Šú‰»
 		bullet->MakeBall(position, direction, playerPos);// ’e‚ğ¶¬
 		bullet->SetShooter(m_pShooter);// ”­ËŒ³‚ğİ’è
 		m_enemyBullets.push_back(std::move(bullet));// “G’e‚ğ’Ç‰Á

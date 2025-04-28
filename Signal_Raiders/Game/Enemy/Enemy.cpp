@@ -151,7 +151,7 @@ void Enemy::ShootBullet()
 		DirectX::SimpleMath::Vector3 direction =
 			DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_enemyAI->GetRotation());
 		// ’e‚ğ”­Ë
-		m_pBulletManager->SetEnemyBulletType(EnemyBullet::BulletType::NORMAL);// ’e‚Ìí—Ş‚ğİ’è
+		m_pBulletManager->SetEnemyBulletType(BulletType::NORMAL);// ’e‚Ìí—Ş‚ğİ’è
 		m_pBulletManager->SetEnemyBulletSize(EnemyParameters::ENEMY_BULLET_SIZE);// ’e‚ÌƒTƒCƒY‚ğİ’è
 		m_pBulletManager->SetShooter(this);// ’e‚Ì”­ËÒ‚ğİ’è
 		m_pBulletManager->CreateEnemyBullet(m_position, direction);// ’e‚ğ¶¬

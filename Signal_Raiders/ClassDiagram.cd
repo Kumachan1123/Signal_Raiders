@@ -188,7 +188,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="EnemyBullet" Collapsed="true">
-    <Position X="34.25" Y="2.5" Width="1.5" />
+    <Position X="17" Y="9" Width="1.5" />
     <TypeIdentifier>
       <HashCode>41QECjBcCCAoFSKjAQBOE4AkAAOxI1RGInCAAAKEkQI=</HashCode>
       <FileName>Game\Enemy\EnemyBullet\EnemyBullet.h</FileName>
@@ -239,7 +239,7 @@
   <Class Name="EnemyParameters" Collapsed="true">
     <Position X="29" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AATAAIghyAAMKAEJA1aBRAmgsEVAiIASCEBAgDgAHYQ=</HashCode>
+      <HashCode>AATAAIghyAAMKAEJA1aBRAmg8EVBiIAQCEBQgDgAHYQ=</HashCode>
       <FileName>Game\Enemy\Parameters\EnemyParameters.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -288,7 +288,7 @@
   <Class Name="NormalBullet" Collapsed="true">
     <Position X="13" Y="11.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>gAQCAAAAACAAAQAAAAAAAAAAAAIAAQQAAAAAAAAAAAg=</HashCode>
+      <HashCode>gAQCAAAAACAAAQAAAAAAAAAAAAIAAQQAAAAAAAAgAAg=</HashCode>
       <FileName>Game\Enemy\EnemyBullet\NormalBullet\NormalBullet.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -302,7 +302,7 @@
   <Class Name="Particle" Collapsed="true">
     <Position X="41.25" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAwEIwARBAAGKVICoBACAAgEAACAABG0IBBAwBJEAgQ=</HashCode>
+      <HashCode>AAwEIwARBAAGKVICoJACAAgEAACAABG0IBBAwBJEAgQ=</HashCode>
       <FileName>Game\Particle\Particle.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -321,7 +321,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="PlayerBullet" Collapsed="true">
-    <Position X="32.5" Y="4.5" Width="1.5" />
+    <Position X="13" Y="9" Width="1.5" />
     <TypeIdentifier>
       <HashCode>g1UAMgCaACBAEQYCAAAAAgEgAAKAIBRAApAAAABEABA=</HashCode>
       <FileName>Game\Player\PlayerBullet\PlayerBullet.h</FileName>
@@ -365,7 +365,7 @@
   <Class Name="Radar" Collapsed="true">
     <Position X="37.75" Y="4.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EBQEAABQBQwDAxIAAEIAAQAAQACAAgDgIBAMQBBAAgI=</HashCode>
+      <HashCode>EBQEAABQBQwDAxIAAEIAAQAAQACAAgDgIBAMQBBAAgo=</HashCode>
       <FileName>Game\Radar\Radar.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -450,7 +450,7 @@
   <Class Name="SettingScene" Collapsed="true">
     <Position X="7.5" Y="5.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EAQEAFAQAAABAYACABIAAAAAAFAokACAABAAAoAAAII=</HashCode>
+      <HashCode>EAQEIFQQAAABBYACABIAAAAAAlAokACAABAAAoAAAII=</HashCode>
       <FileName>Game\Scene\SettingScene\SettingScene.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -604,7 +604,7 @@
   <Class Name="LastBoss" Collapsed="true">
     <Position X="0.5" Y="14.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ABQECBBWACAABwICgIAJAAAGAAAAAIQBAggAAICAAAA=</HashCode>
+      <HashCode>ABQECBBWACAABwICgIAJAAAGAAAAAIQBAgAAAIAAAAA=</HashCode>
       <FileName>Game\Enemy\LastBoss\LastBoss.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -618,7 +618,7 @@
   <Class Name="BossBase" Collapsed="true">
     <Position X="12.75" Y="5.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AjQmCSDUBrAJASoSo+HKqtI0ASnIi+xgZxJUAqAZqB0=</HashCode>
+      <HashCode>AjQmCSDUBrAJASoyq+HKqtI0ASjIy+1gZxJUAoCZqB0=</HashCode>
       <FileName>Game\Enemy\BossBase\BossBase.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -697,6 +697,13 @@
     <TypeIdentifier>
       <HashCode>AAIAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Game\Interface\IMenuUI.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IBullet" Collapsed="true">
+    <Position X="15" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEQAAACAAAAAAQAAAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>Game\Interface\IBullet.h</FileName>
     </TypeIdentifier>
   </Class>
   <Struct Name="UpdateContext" Collapsed="true">

@@ -26,7 +26,7 @@ LastBoss::LastBoss(BossBase* pBoss, CommonResources* commonResources)
 	, m_velocity{}// 速度
 	, m_rotate{}// 回転
 	, m_matrix{}// マトリクス
-	, m_bulletType(EnemyBullet::BulletType::NORMAL)// 弾の種類
+	, m_bulletType(BulletType::NORMAL)// 弾の種類
 {
 }
 /*
@@ -47,13 +47,16 @@ void LastBoss::Initialize()
 	m_pBossBase->SetBulletSize(EnemyParameters::LASTBOSS_BULLET_SIZE);// 弾のサイズを設定
 	switch (m_pBossBase->GetBulletType())	// BulletType()とあるが、ここではステージごとのラスボスの攻撃力を分岐
 	{
-	case BossBase::BossBulletType::STAGE_4:// ステージ４と５で
+	case BossBase::BossBulletType::STAGE_4:
 		m_pBossBase->SetToPlayerDamage(EnemyParameters::BOSS_DAMAGE);// ボスがプレイヤーに与えるダメージを設定
 		break;
-	case BossBase::BossBulletType::STAGE_5:// 共通のことをする
+	case BossBase::BossBulletType::STAGE_5:
 		m_pBossBase->SetToPlayerDamage(EnemyParameters::LASTBOSS_DAMAGE);// ボスがプレイヤーに与えるダメージを設定
 		break;
 	}
+	m_pBossBase->SetBarrierBreakSize(EnemyParameters::LASTBOSS_BARRIERBREAK_SIZE);// バリア破壊パーティクルのサイズ設定
+	m_pBossBase->SetDeadEffectSize(EnemyParameters::LASTBOSS_DEADEFFECT_SCALE);// 死亡エフェクトのサイズ
+
 
 }
 /*
@@ -112,7 +115,7 @@ void LastBoss::CreateBullet()
 	m_pBossBase->GetBulletManager()->SetEnemyBulletSize(EnemyParameters::LASTBOSS_BULLET_SIZE);// 弾のサイズを設定
 	m_pBossBase->GetBulletManager()->SetShooter(m_pBossBase);// 弾を発射したオブジェクトを設定
 
-	m_pBossBase->GetBulletManager()->SetEnemyBulletType(EnemyBullet::BulletType::NORMAL);// 弾の種類を設定
+	m_pBossBase->GetBulletManager()->SetEnemyBulletType(BulletType::NORMAL);// 弾の種類を設定
 	m_pBossBase->GetBulletManager()->CreateEnemyBullet(m_bulletPosLeftUp, m_bulletDirection);// 弾を生成（左上）
 	m_pBossBase->GetBulletManager()->CreateEnemyBullet(m_bulletPosLeftDown, m_bulletDirection);// 弾を生成（左下）
 	m_pBossBase->GetBulletManager()->CreateEnemyBullet(m_bulletPosRightUp, m_bulletDirection);// 弾を生成（右上）

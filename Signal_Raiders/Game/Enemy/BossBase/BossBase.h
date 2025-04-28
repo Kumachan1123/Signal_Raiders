@@ -107,6 +107,10 @@ public:
 	void SetDefensiveHitRadius(float radius) { m_defensiveHitRadius = radius; }//防御時の当たり判定の半径設定
 	float GetBulletSize()const { return m_bulletSize; }// 弾のサイズ取得
 	void SetBulletSize(float size) { m_bulletSize = size; }// 弾のサイズ設定
+	float GetBarrierBreakSize()const { return m_barrierBreakSize; }// バリア破壊のパーティクルサイズ取得
+	void SetBarrierBreakSize(float size) { m_barrierBreakSize = size; }// バリアの破壊パーティクルサイズ設定
+	float GetDeadEffectSize()const { return m_deadEffectSize; }// 死亡エフェクトのサイズ取得
+	void SetDeadEffectSize(float size) { m_deadEffectSize = size; }// 死亡エフェクトのサイズ設定
 public:
 	// 初期ステータスを設定
 	BossBase(Player* pPlayer, CommonResources* resources, int hp);
@@ -159,7 +163,7 @@ private:
 	DirectX::SimpleMath::Quaternion m_bulletQuaternion;
 	// 弾のタイプ
 	BossBulletType m_bossBulletType;// Enemiesクラスで設定する
-	EnemyBullet::BulletType m_bulletType;// EnemyBulletクラスに送る
+	BulletType m_bulletType;// EnemyBulletクラスに送る
 	// ボスの種類
 	BossType m_bossType;
 	// 生成するBoss
@@ -191,5 +195,7 @@ private:
 	float m_defensiveHitRadius;// 防御時の当たり判定の半径
 
 	float m_bulletSize;// 弾のサイズ
+	float m_barrierBreakSize;// バリアの破壊パーティクルサイズ
+	float m_deadEffectSize;//死亡エフェクトのサイズ
 
 };

@@ -372,11 +372,11 @@ void EnemyManager::HandleEnemyDeath(std::unique_ptr<IEnemy>& enemy)
 {
 	// 敵が死んだ場合の処理
 	float effectScale;// 初期値
-	auto boss = dynamic_cast<BossBase*>(enemy.get());// IEnemyからBossのポインターを抽出
+	auto pBoss = dynamic_cast<BossBase*>(enemy.get());// IEnemyからBossのポインターを抽出
 	// もしボスだったら
-	if (boss)
+	if (pBoss)
 	{
-		effectScale = EnemyParameters::BOSS_DEADEFFECT_SCALE;// ボスの場合はエフェクトのスケールを大きくする
+		effectScale = pBoss->GetDeadEffectSize();// ボスの場合はエフェクトのスケールを大きくする
 		m_isBossAlive = false; // 生存フラグをfalseにする
 	}
 	else

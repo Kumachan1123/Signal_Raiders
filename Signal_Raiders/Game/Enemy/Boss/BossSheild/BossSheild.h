@@ -46,6 +46,7 @@ public:
 	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_sheildPosition = pos; }
 	void SetRotation(DirectX::SimpleMath::Quaternion rot) { m_sheildRotation = rot; }
 	void SetUp(int sheildHP, IEnemy* pBoss);
+
 public:
 	// public関数
 	BossSheild();// コンストラクタ

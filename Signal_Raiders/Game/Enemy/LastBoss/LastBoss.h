@@ -62,7 +62,7 @@ private:
 	// 発射位置を回転させるためのクォータニオン
 	DirectX::SimpleMath::Quaternion m_bulletQuaternion;
 	// 弾のタイプ
-	EnemyBullet::BulletType m_bulletType;// EnemyBulletクラスに送る
+	BulletType m_bulletType;// EnemyBulletクラスに送る
 	// 弾の飛ぶ方向
 	DirectX::SimpleMath::Vector3 m_bulletDirection;
 	// 時間

@@ -144,7 +144,7 @@ void VerticalAttacker::ShootBullet()
 		// クォータニオンから方向ベクトルを計算
 		DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_enemyAI->GetRotation());
 		// 弾を発射
-		m_pBulletManager->SetEnemyBulletType(EnemyBullet::BulletType::SPEED);// 弾の種類を設定
+		m_pBulletManager->SetEnemyBulletType(BulletType::SPEED);// 弾の種類を設定
 		m_pBulletManager->SetEnemyBulletSize(EnemyParameters::ENEMY_BULLET_SIZE);// 弾のサイズを設定
 		m_pBulletManager->SetShooter(this);// 弾の発射者を設定
 		m_pBulletManager->CreateEnemyBullet(m_position, direction);// 弾を生成

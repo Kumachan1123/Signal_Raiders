@@ -3,13 +3,15 @@
 	@brief	ƒvƒŒƒCƒ„[‚Ì’eƒNƒ‰ƒX
 */
 #pragma once
-//‘O•ûéŒ¾
-class CommonResources;
 #include "Game/CommonResources.h"
 #include "Game/Particle/Particle.h"
 #include "Game/ParticleUtility/ParticleUtility.h"
 #include "Game/BulletParameters/BulletParameters.h"
-class PlayerBullet
+#include "Game/Interface/IBullet.h"
+//‘O•ûéŒ¾
+class CommonResources;
+
+class PlayerBullet : public IBullet
 {
 	//•Ï”
 public:
@@ -48,13 +50,13 @@ private:
 	//ŠÖ”
 public:
 	PlayerBullet();
-	~PlayerBullet();
+	~PlayerBullet()override;
 
 	void MoveStop();// ’e‚ÌˆÚ“®‚ğ~‚ß‚é
-	void Initialize(CommonResources* resources);// ‰Šú‰»
-	void Update(float elapsedTime);// XV
-	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);// •`‰æ
-	void RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);// ‰e‚Ì•`‰æ
+	void Initialize(CommonResources* resources)override;// ‰Šú‰»
+	void Update(float elapsedTime)override;// XV
+	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;// •`‰æ
+	void RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;// ‰e‚Ì•`‰æ
 	void DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);// “–‚½‚è”»’è‚Ì•`‰æ
 	void MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir);// ’e‚ğ¶¬
 	//Getter

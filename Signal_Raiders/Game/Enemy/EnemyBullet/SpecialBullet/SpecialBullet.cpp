@@ -49,9 +49,7 @@ void SpecialBullet::Update(float elapsedTime)
 	m_boundingSphere.Center = m_position;
 	// 弾の寿命に応じてフラグを切り替える
 	if (m_time >= BulletParameters::SPECIAL_ATTACK_WAIT_TIME)
-	{
 		m_pEnemyBullet->SetIsShot(true);
-	}
 	// 弾の各種情報を更新
 	m_pEnemyBullet->SetDirection(m_direction);// 弾の方向
 	m_pEnemyBullet->SetVelocity(m_velocity);// 弾の速度
@@ -87,8 +85,7 @@ void SpecialBullet::StopExpand()
 void SpecialBullet::ComeBack()
 {
 	if (m_pEnemyBullet->GetIsShot()) return;
-	//m_look.Normalize();// プレイヤーが向いている方向を正規化
-	//// 基準点を親が向いている方向に動かす
+	// 基準点を親が向いている方向に動かす
 	m_distance = Lerp(m_distance, 3.0f, m_elapsedTime);
 	// 基準点を目的地に向かって線形補完
 	m_basePos = Lerp(m_basePos, m_pEnemyBullet->GetEnemyPosition(), m_elapsedTime * 50);

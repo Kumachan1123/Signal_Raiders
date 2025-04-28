@@ -297,6 +297,9 @@
     <ClInclude Include="Game\Interface\IUI.h" />
     <ClInclude Include="Game\Interface\IPlayUI.h" />
     <ClInclude Include="Game\Interface\IMenuUI.h" />
+    <ClInclude Include="Game\Interface\IBullet.h" />
+    <ClInclude Include="Game\Enemy\EnemyBullet\EnemyBulletFactory\EnemyBulletFactory.h" />
+    <ClInclude Include="Game\Enemy\EnemyBullet\EnemyBulletType\EnemyBulletType.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -435,6 +438,7 @@
     <ClCompile Include="Game\Enemy\LastBoss\LastBoss.cpp" />
     <ClCompile Include="Game\Enemy\LastBoss\LastBossModel\LastBossModel.cpp" />
     <ClCompile Include="Game\Enemy\BossBase\BossBase.cpp" />
+    <ClCompile Include="Game\Enemy\EnemyBullet\EnemyBulletFactory\EnemyBulletFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
