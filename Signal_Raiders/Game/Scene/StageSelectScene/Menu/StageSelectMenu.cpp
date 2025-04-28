@@ -101,7 +101,7 @@ void StageSelectMenu::Update(float elapsedTime)
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
 	// マウスの状態を取得
 	auto& mouseState = m_commonResources->GetInputManager()->GetMouseState();
-
+	m_hit = false;// 何かにヒットしたか
 	// マウスの座標を取得
 	Vector2 mousePos = Vector2(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
 	// メニューアイテムの数だけ繰り返す
@@ -112,19 +112,17 @@ void StageSelectMenu::Update(float elapsedTime)
 		{
 			// 範囲内にある場合は、選択中のアイテムを更新
 			m_menuIndex = i;
+			m_hit = true;// 当たった状態
+			break;
 		}
 	}
 	m_time += elapsedTime;
+	// もし一個もヒットしてなかったら、選択なしにする
+	if (!m_hit) { m_menuIndex = 6; }
 
-	if (kbTracker->pressed.S)
-	{
-		// ↓キーを押したら、選択先を3つ進める
-		m_menuIndex += static_cast<unsigned int>(m_pUI.size()) + 3;
-		// メニューアイテム数の最大値を超えないように制御
-		m_menuIndex %= m_pUI.size();
-	}
 
-	if (kbTracker->pressed.Space || mtracker->GetLastState().leftButton)
+
+	if (m_hit && kbTracker->pressed.Space || mtracker->GetLastState().leftButton)
 	{
 		m_num = static_cast<SceneID>(m_menuIndex);
 	}
@@ -143,6 +141,8 @@ void StageSelectMenu::Update(float elapsedTime)
 		m_pGuide[i]->SetScale(m_pGuide[i]->GetSelectScale());
 		m_pGuide[i]->SetTime(m_pGuide[i]->GetTime() + elapsedTime);
 	}
+	if (m_menuIndex == 6)
+		return;
 	// 選択中の初期サイズを取得する
 	Vector2 select = m_pUI[m_menuIndex]->GetSelectScale();
 	// 選択状態とするための変化用サイズを算出する

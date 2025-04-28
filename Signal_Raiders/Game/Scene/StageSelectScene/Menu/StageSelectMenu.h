@@ -27,13 +27,6 @@ public:
 		PLAY = 0,
 		END
 	};
-	//enum class UIType
-	//{
-	//	// 選択可能UI
-	//	SELECT,
-	//	// 選択不可能UI
-	//	NON_SELECT
-	//};
 	//	変数
 public:
 	unsigned int m_menuIndex;
@@ -56,6 +49,7 @@ private:
 
 	SceneID m_num = SceneID::PLAY;
 	float m_time = 0;
+	bool m_hit;// 選んだかどうか
 	//	関数
 public:
 	StageSelectMenu();
@@ -79,6 +73,8 @@ public:
 	void SetSceneNum(SceneID num) { m_num = num; }
 	int GetMenuIndex() const { return m_menuIndex; }
 	void SetMenuIndex(int index) { m_menuIndex = index; }
+	bool GetIsHit()const { return m_hit; }
+	void SetIsHit(bool hit) { m_hit = hit; }
 private:
 	void Update(float elapsedTime);
 };

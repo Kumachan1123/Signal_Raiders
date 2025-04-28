@@ -100,32 +100,43 @@ void StageSelectScene::Update(float elapsedTime)
 
 	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
 	{
-		// スペースキーが押されたら
-		if (mtracker->GetLastState().leftButton)
+		// マウストラッカー取得
+		auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
+
+		for (int it = 0; it < m_pUI.size(); ++it)
 		{
-			m_commonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);// SEの再生
-			m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
-			m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
-		}
-		else
-		{
-			UpdateContext ctx;
-			ctx.bulletPoint = 0;//使わない
-			ctx.elapsedTime = elapsedTime;//フレーム時間
-			ctx.dashStamina = 0;//使わない
-			ctx.playerHP = 0;//使わない
-			for (int it = 0; it < m_pUI.size(); ++it)
+			auto pMenu = dynamic_cast<StageSelectMenu*>(m_pUI[it].get());
+			if (!pMenu) continue;
+
+			// スペースキー（またはマウス左クリック）が押されたら
+			if (mtracker->GetLastState().leftButton && pMenu->GetIsHit())
 			{
-				m_pUI[it]->Update(ctx);// ステージ番号の記録
-				auto pMenu = dynamic_cast<StageSelectMenu*>(m_pUI[it].get());
-				if (!pMenu)continue;
-				else m_stageNumber = pMenu->GetMenuIndex();
+				// サウンド再生
+				m_commonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);
+
+				// フェードアウト開始
+				m_pFade->SetState(Fade::FadeState::FadeOut);
+				m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));
+
+				// 選択されたステージ番号を記録
+				m_stageNumber = pMenu->GetMenuIndex();
+				break; // もう他のUIは見なくていいのでループ抜ける
 			}
 		}
 
+		// マウスクリックされてない時は、各UIのアニメーション更新だけする
+		UpdateContext ctx;
+		ctx.bulletPoint = 0;
+		ctx.elapsedTime = elapsedTime;
+		ctx.dashStamina = 0;
+		ctx.playerHP = 0;
 
-
+		for (int it = 0; it < m_pUI.size(); ++it)
+		{
+			m_pUI[it]->Update(ctx);
+		}
 	}
+
 	// フェードアウトが終了したら
 	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)m_isChangeScene = true;
 

@@ -94,7 +94,7 @@ void SettingMenu::Update(float elapsedTime)
 	m_time += elapsedTime;
 	// マウスの状態を取得
 	auto& mouseState = m_commonResources->GetInputManager()->GetMouseState();
-
+	bool hit = false; // 何かにヒットしたかどうか
 	// マウスの座標を取得
 	Vector2 mousePos = Vector2(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
 	//  メニューアイテムの数だけ繰り返す
@@ -106,8 +106,13 @@ void SettingMenu::Update(float elapsedTime)
 		{
 			//  範囲内にある場合は、選択中のアイテムを更新
 			m_menuIndex = i;
+			hit = true;      // 当たったよってマーク！
+			break;           // もう一個選ばれたら他は見なくていい
 		}
 	}
+	// もし一個もヒットしてなかったら、選択なしにする
+	if (!hit) { m_menuIndex = 6; }
+
 	if (mtracker->GetLastState().leftButton)
 	{
 		m_selectNum = static_cast<SelectID>(m_menuIndex);
@@ -115,9 +120,7 @@ void SettingMenu::Update(float elapsedTime)
 	//  メニューアイテムの選択先を更新
 	for (int i = 0; i < m_pUI.size(); i++)
 	{
-		////  アイテムの選択状態を更新
-		//m_pSelect[i]->SetScale(m_pSelect[i]->GetSelectScale());
-		//m_pSelect[i]->SetTime(m_pSelect[i]->GetTime() + elapsedTime);
+		//  アイテムの選択状態を更新
 		m_pUI[i]->SetScale(m_pUI[i]->GetSelectScale());
 		m_pUI[i]->SetTime(m_pUI[i]->GetTime() + elapsedTime);
 	}
@@ -127,18 +130,18 @@ void SettingMenu::Update(float elapsedTime)
 		m_pGuide[i]->SetScale(m_pGuide[i]->GetSelectScale());
 		m_pGuide[i]->SetTime(m_pGuide[i]->GetTime() + elapsedTime);
 	}
-	if (m_menuIndex != SelectID::NONE)
-	{
-		// 選択中の初期サイズを取得する
-		Vector2 select = m_pUI[m_menuIndex]->GetSelectScale();
-		//  選択状態とするための変化用サイズを算出する
-		SimpleMath::Vector2 selectScale = SimpleMath::Vector2::Lerp(m_pUI[m_menuIndex]->GetSelectScale(), SimpleMath::Vector2::One, 1);
-		//  選択状態は初期状態＋50％の大きさとする
-		select = SimpleMath::Vector2((sin(m_time) * 0.1f) + 1.0f);
-		//  算出後のサイズを現在のサイズとして設定する
-		m_pUI[m_menuIndex]->SetScale(select);
+	if (!hit)// 当たってなかったら終了
+		return;
+	// 選択中の初期サイズを取得する
+	Vector2 select = m_pUI[m_menuIndex]->GetSelectScale();
+	//  選択状態とするための変化用サイズを算出する
+	SimpleMath::Vector2 selectScale = SimpleMath::Vector2::Lerp(m_pUI[m_menuIndex]->GetSelectScale(), SimpleMath::Vector2::One, 1);
+	//  選択状態は初期状態＋50％の大きさとする
+	select = SimpleMath::Vector2((sin(m_time) * 0.1f) + 1.0f);
+	//  算出後のサイズを現在のサイズとして設定する
+	m_pUI[m_menuIndex]->SetScale(select);
 
-	}
+
 
 }
 

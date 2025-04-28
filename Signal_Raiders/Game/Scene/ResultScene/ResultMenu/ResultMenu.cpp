@@ -77,7 +77,7 @@ void ResultMenu::Update(float elapsedTime)
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
 	// マウスの状態を取得
 	auto& mouseState = m_commonResources->GetInputManager()->GetMouseState();
-
+	m_hit = false; // 何かにヒットしたかどうか
 	// マウスの座標を取得
 	Vector2 mousePos = Vector2(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
 	//  メニューアイテムの数だけ繰り返す
@@ -88,11 +88,13 @@ void ResultMenu::Update(float elapsedTime)
 		{
 			//  範囲内にある場合は、選択中のアイテムを更新
 			m_menuIndex = i;
+			m_hit = true;
+			break;
 		}
 	}
 	m_time += elapsedTime;
-
-	if (kbTracker->pressed.Space || mtracker->GetLastState().leftButton)
+	if (!m_hit)m_menuIndex = 6;
+	if (mtracker->GetLastState().leftButton)
 	{
 		m_num = static_cast<SceneID>(m_menuIndex);
 	}
@@ -112,6 +114,7 @@ void ResultMenu::Update(float elapsedTime)
 		m_pGuide[i]->SetScale(m_pGuide[i]->GetSelectScale());
 		m_pGuide[i]->SetTime(m_pGuide[i]->GetTime() + elapsedTime);
 	}
+	if (!m_hit)return;
 	// 選択中の初期サイズを取得する
 	Vector2 select = m_pUI[m_menuIndex]->GetSelectScale();
 	//  選択状態とするための変化用サイズを算出する

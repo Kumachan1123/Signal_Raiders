@@ -100,15 +100,22 @@ void TitleScene::Update(float elapsedTime)
 	// メニューでの選択処理が行われたら
 	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
 	{
-		if (mtracker->GetLastState().leftButton)
+		for (int it = 0; it < m_pUI.size(); ++it)
 		{
-			m_commonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);// SEの再生
-			m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
-			m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
+			if (auto pMenu = dynamic_cast<TitleMenu*>(m_pUI[it].get()))
+			{
+				if (mtracker->GetLastState().leftButton && pMenu->GetIsHit())
+				{
+					m_commonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);// SEの再生
+					m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
+					m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
+				}
+			}
 		}
-		// WかSのいずれかが押されたら
-		if (kbTracker->pressed.W || kbTracker->pressed.S)
-			m_commonResources->GetAudioManager()->PlaySound("Select", m_SEvolume);// SEの再生
+
+		//// WかSのいずれかが押されたら
+		//if (kbTracker->pressed.W || kbTracker->pressed.S)
+		//	m_commonResources->GetAudioManager()->PlaySound("Select", m_SEvolume);// SEの再生
 	}
 	UpdateContext ctx;
 	ctx.elapsedTime = elapsedTime;// フレーム時間を代入
@@ -117,7 +124,7 @@ void TitleScene::Update(float elapsedTime)
 	ctx.bulletPoint = 0;// 使わない値
 
 	// メニューの更新
-	for (int it = 0; it < m_pUI.size(); ++it)// 一斉初期化
+	for (int it = 0; it < m_pUI.size(); ++it)
 		m_pUI[it]->Update(ctx);
 	// フェードアウトが終了したら
 	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;

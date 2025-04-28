@@ -50,6 +50,8 @@ public:
 public:
 	SceneID GetSceneNum() const { return m_num; }
 	void SetSceneNum(SceneID num) { m_num = num; }
+	bool GetIsHit()const { return m_hit; }
+	void SetIsHit(bool hit) { m_hit = hit; }
 	//	ŠÖ”
 public:
 	TitleMenu();
@@ -91,5 +93,6 @@ private:
 	std::vector<UITransForm> m_transforms;
 	SceneID m_num;// ƒV[ƒ“”Ô†
 	float m_time = 0;// ŠÔ
+	bool m_hit;// “–‚½‚Á‚½‚©‚Ç‚¤‚©
 
 };

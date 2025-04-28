@@ -26,13 +26,7 @@ public:
 		REPLAY = 0,
 		END
 	};
-	//enum class UIType
-	//{
-	//	// 選択可能UI
-	//	SELECT,
-	//	// 選択不可能UI
-	//	NON_SELECT
-	//};
+
 	//	変数
 private:
 
@@ -53,6 +47,7 @@ private:
 
 	SceneID m_num = SceneID::REPLAY;
 	float m_time = 0;
+	bool m_hit;
 	//	関数
 public:
 	ResultMenu();
@@ -74,6 +69,8 @@ public:
 public:
 	SceneID GetSceneNum() const { return m_num; }
 	void SetSceneNum(SceneID num) { m_num = num; }
+	bool GetIsHit()const { return m_hit; }
+	void SetIsHit(bool hit) { m_hit = hit; }
 private:
 	void Update(float elapsedTime);
 

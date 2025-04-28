@@ -126,32 +126,31 @@ void ResultScene::Update(float elapsedTime)
 	for (int it = 0; it < m_pUI.size(); ++it)
 	{
 		m_pUI[it]->Update(ctx);
-	}
-	// スペースキーが押されたら
-	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd &&
-		mtracker->GetLastState().leftButton)
-	{
-		// SEの再生
-		m_commonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);
-		m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
-		m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
-		for (int it = 0; it < m_pUI.size(); ++it)
+
+		auto pMenu = dynamic_cast<ResultMenu*>(m_pUI[it].get());
+		if (!pMenu) continue;
+		// スペースキーが押されたら
+		if (m_pFade->GetState() == Fade::FadeState::FadeInEnd &&
+			mtracker->GetLastState().leftButton &&
+			pMenu->GetIsHit())
 		{
-			if (auto pMenu = dynamic_cast<ResultMenu*>(m_pUI[it].get()))
+			// SEの再生
+			m_commonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);
+			m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
+			m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
+			ResultMenu::SceneID id = pMenu->GetSceneNum();
+			if (id == ResultMenu::SceneID::END)
 			{
-				ResultMenu::SceneID id = pMenu->GetSceneNum();
-				if (id == ResultMenu::SceneID::END)
-				{
-					m_stageNumber = 5;// タイトルに戻る
-				}
+				m_stageNumber = 5;// タイトルに戻る
 			}
+
+			// WかSのいずれかが押されたら
+			if (kbTracker->pressed.W || kbTracker->pressed.S)
+				m_commonResources->GetAudioManager()->PlaySound("Select", m_SEvolume);// SEの再生
+
 		}
-
-		// WかSのいずれかが押されたら
-		if (kbTracker->pressed.W || kbTracker->pressed.S)
-			m_commonResources->GetAudioManager()->PlaySound("Select", m_SEvolume);// SEの再生
-
 	}
+
 	// フェードアウトが終了したら
 	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)
 	{
