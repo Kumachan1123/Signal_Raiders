@@ -71,8 +71,6 @@ void ResultMenu::Initialize(CommonResources* resources, int width, int height)
 
 void ResultMenu::Update(float elapsedTime)
 {
-
-	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
 	// マウスのトラッカーを取得する
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
 	// マウスの状態を取得
