@@ -26,6 +26,7 @@ BossBase::BossBase(Player* pPlayer, CommonResources* resources, int hp)
 	, m_initSpecialAttackCooldown(EnemyParameters::SPECIAL_ATTACK_COOLDOWN)	// 特殊攻撃のクールダウンタイム(初期化用)
 	, m_bulletCooldown(EnemyParameters::ATTACK_INTERVAL)// 弾のクールダウンタイム
 	, m_bulletSize(EnemyParameters::BOSS_BULLET_SIZE)// 弾のサイズ
+	, m_bossDamage(EnemyParameters::BOSS_DAMAGE)// ボスがプレイヤーに与えるダメージ
 	, m_SEVolume(0.0f)// SEの音量
 	, m_SEVolumeCorrection(0.0f)// SEの音量補正
 	, m_pBossModel{}// ボスモデル
@@ -47,7 +48,7 @@ BossBase::BossBase(Player* pPlayer, CommonResources* resources, int hp)
 	, m_canAttack(true)// 攻撃可能か
 	, m_isAttack(false)// 攻撃中か
 	, m_bossType(BossType::NORMAL_BOSS)// ボスの種類
-	, m_bossBulletType(BossBulletType::STAGE_1)// ボスの弾の種類
+	, m_bossBulletType(BossBulletType::STAGE_4)// ボスの弾の種類
 	, m_bulletType(EnemyBullet::BulletType::NORMAL)// 弾の種類
 	, m_defaultHitRadius(EnemyParameters::NORMAL_BOSS_RADIUS)// デフォルトの当たり判定半径
 	, m_defensiveHitRadius(EnemyParameters::BOSS_SHIELD_RADIUS)// 弾の発射位置

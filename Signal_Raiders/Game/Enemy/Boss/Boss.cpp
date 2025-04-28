@@ -47,7 +47,7 @@ void Boss::Initialize()
 	m_pBossBase->SetDefaultHitRadius(EnemyParameters::NORMAL_BOSS_RADIUS);// 通常時ボスの当たり判定を設定
 	m_pBossBase->SetDefensiveHitRadius(EnemyParameters::BOSS_SHIELD_RADIUS);// シールド展開時のボスの当たり判定を設定
 	m_pBossBase->SetBulletSize(EnemyParameters::BOSS_BULLET_SIZE);// 弾のサイズを設定
-
+	m_pBossBase->SetToPlayerDamage(EnemyParameters::BOSS_DAMAGE);// ボスがプレイヤーに与えるダメージを設定
 }
 /*
 *	@brief	更新処理
@@ -103,7 +103,6 @@ void Boss::BulletPositioning()
 */
 void Boss::CreateBullet()
 {
-	float angleOffset = XMConvertToRadians(EnemyParameters::BOSS_BULLET_ANGLE); // 30度の角度オフセット
 	m_pBossBase->GetBulletManager()->SetEnemyBulletSize(EnemyParameters::BOSS_BULLET_SIZE);// 弾のサイズを設定
 	m_pBossBase->GetBulletManager()->SetShooter(m_pBossBase);// 弾を発射したオブジェクトを設定
 	switch (m_pBossBase->GetBulletType())	// Enemiesクラスで設定した弾のタイプによって処理を分岐
@@ -113,13 +112,13 @@ void Boss::CreateBullet()
 		break;
 	case BossBase::BossBulletType::STAGE_2:// 二発
 
-		CreateLeftBullet(-angleOffset, EnemyBullet::BulletType::NORMAL);// 左の弾を発射
-		CreateRightBullet(angleOffset, EnemyBullet::BulletType::NORMAL);// 右の弾を発射
+		CreateLeftBullet(EnemyBullet::BulletType::NORMAL);// 左の弾を発射
+		CreateRightBullet(EnemyBullet::BulletType::NORMAL);// 右の弾を発射
 		break;
 	case BossBase::BossBulletType::STAGE_3:// 三発
 		CreateCenterBullet(EnemyBullet::BulletType::NORMAL);// 中央の弾を発射
-		CreateLeftBullet(-angleOffset, EnemyBullet::BulletType::NORMAL);// 左の弾を発射
-		CreateRightBullet(angleOffset, EnemyBullet::BulletType::NORMAL);// 右の弾を発射
+		CreateLeftBullet(EnemyBullet::BulletType::NORMAL);// 左の弾を発射
+		CreateRightBullet(EnemyBullet::BulletType::NORMAL);// 右の弾を発射
 		break;
 
 	}
@@ -135,25 +134,19 @@ void Boss::CreateCenterBullet(EnemyBullet::BulletType type)
 }
 /*
 *	@brief	左の弾を発射
-*	@param[in] angleOffset 角度オフセット
 *	@param[in] type 弾の種類
 */
-void Boss::CreateLeftBullet(float angleOffset, EnemyBullet::BulletType type)
+void Boss::CreateLeftBullet(EnemyBullet::BulletType type)
 {
-	Quaternion leftRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, angleOffset);// 左方向
-	Vector3 leftDirection = Vector3::Transform(m_bulletDirection, leftRotation);
 	m_pBossBase->GetBulletManager()->SetEnemyBulletType(type);// 弾の種類を設定
-	m_pBossBase->GetBulletManager()->CreateEnemyBullet(m_bulletPosLeft, leftDirection);// 弾を生成
+	m_pBossBase->GetBulletManager()->CreateEnemyBullet(m_bulletPosLeft, m_bulletDirection);// 弾を生成
 }
 /*
 *	@brief 右の弾を発射
-*	@param[in] angleOffset 角度オフセット
 *	@param[in] type 弾の種類
 */
-void Boss::CreateRightBullet(float angleOffset, EnemyBullet::BulletType type)
+void Boss::CreateRightBullet(EnemyBullet::BulletType type)
 {
-	Quaternion rightRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, -angleOffset);// 右方向
-	Vector3 rightDirection = Vector3::Transform(m_bulletDirection, rightRotation);
 	m_pBossBase->GetBulletManager()->SetEnemyBulletType(type);// 弾の種類を設定
-	m_pBossBase->GetBulletManager()->CreateEnemyBullet(m_bulletPosRight, rightDirection);// 弾を生成
+	m_pBossBase->GetBulletManager()->CreateEnemyBullet(m_bulletPosRight, m_bulletDirection);// 弾を生成
 }

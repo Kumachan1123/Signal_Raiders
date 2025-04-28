@@ -37,8 +37,6 @@ public:
 	void BulletPositioning()override;	// 弾の発射位置を決定
 	void CreateBullet()override;// 弾を生成
 
-	void CreateLeftBullet(float angleOffset, EnemyBullet::BulletType type);// 左の弾を生成
-	void CreateRightBullet(float angleOffset, EnemyBullet::BulletType type);// 右の弾を生成
 
 private:
 	// 共通リソース

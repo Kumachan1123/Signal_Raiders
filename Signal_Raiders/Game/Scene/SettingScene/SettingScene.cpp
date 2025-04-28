@@ -35,12 +35,10 @@ SettingScene::SettingScene(IScene::SceneID sceneID)
 	m_fadeState{ },
 	m_fadeTexNum{ 0 },
 	m_pBackGround{ nullptr },
-	//m_audioManager{ AudioManager::GetInstance() },
 	m_nowSceneID{ sceneID },
 	m_pSettingMenu{},
 	m_pSettingBar{},
 	m_pSettingData{}
-
 {}
 
 
@@ -80,10 +78,8 @@ void SettingScene::Initialize(CommonResources* resources)
 	m_pUI.push_back(std::move(m_pSettingMenu));
 	m_pUI.push_back(std::move(m_pSettingBar));
 	m_pUI.push_back(std::move(m_pMousePointer));
-	for (int it = 0; it < m_pUI.size(); ++it)
-	{
-		m_pUI[it]->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
-	}
+	for (int it = 0; it < m_pUI.size(); ++it)m_pUI[it]->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
+
 	// 設定データの読み込み
 	m_pSettingData = std::make_unique<SettingData>();
 	m_pSettingData->Load();
@@ -101,91 +97,9 @@ void SettingScene::Update(float elapsedTime)
 	ctx.dashStamina = 0;//使わない
 	ctx.elapsedTime = elapsedTime;//フレーム時間
 	ctx.playerHP = 0;//使わない
-	for (int it = 0; it < m_pUI.size(); ++it)
-	{
-		if (auto pSettingBar = dynamic_cast<SettingBar*>(m_pUI[it].get()))
-		{
-			for (int it2 = 0; it2 < m_pUI.size(); ++it2)
-			{
-				if (auto pSettingMenu = dynamic_cast<SettingMenu*>(m_pUI[it2].get()))
-				{
-					pSettingBar->SetStateIDNum(static_cast<SettingMenu::StateID>(pSettingMenu->GetMenuIndex()));
-
-				}
-			}
-		}
-		m_pUI[it]->Update(ctx);
-	}
-	//// セッティングメニューの更新処理
-	//m_pSettingMenu->Update(elapsedTime);
-	//// 今選ばれているメニューのIDをBarに渡す
-	//m_pSettingBar->SetStateIDNum(static_cast<SettingMenu::StateID>(m_pSettingMenu->GetMenuIndex()));
-	//// セッティングバーの更新処理
-	//m_pSettingBar->Update(elapsedTime);
-	// オーディオマネージャーの更新処理
-	m_commonResources->GetAudioManager()->Update();
-
-	// マウスのトラッカーを取得する
-	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
-
-	// メニューでの選択処理が行われたら
-	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
-	{
-		if (mtracker->GetLastState().leftButton)
-		{
-			for (int it = 0; it < m_pUI.size(); ++it)
-			{
-				if (auto pSettingMenu = dynamic_cast<SettingMenu*>(m_pUI[it].get()))
-				{
-					if (pSettingMenu->GetSelectIDNum() == SettingMenu::SelectID::END ||
-						pSettingMenu->GetSelectIDNum() == SettingMenu::SelectID::APPLY)
-					{
-						m_commonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);
-						m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
-						m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
-					}
-					else
-					{
-						for (int it2 = 0; it2 < m_pUI.size(); ++it2)
-						{
-							if (auto pMousePointer = dynamic_cast<MousePointer*>(m_pUI[it2].get()))
-							{
-								pMousePointer->Update(ctx);
-							}
-						}
-						// マウスポインターの更新
-						//m_pMousePointer->Update(elapsedTime);
-
-					}
-				}
-			}
-
-
-		}
-		else
-		{
-			for (int it = 0; it < m_pUI.size(); ++it)
-			{
-				if (auto pMousePointer = dynamic_cast<MousePointer*>(m_pUI[it].get()))
-				{
-					pMousePointer->Update(ctx);
-				}
-			}
-		}
-
-
-	}
-	// フェードアウトが終了したら
-	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;
-	// BGMの再生
-	m_commonResources->GetAudioManager()->PlaySound("TitleBGM", m_BGMvolume);
-
-	// 背景の更新
-	m_pBackGround->Update(elapsedTime);
-	// フェードの更新
-	m_pFade->Update(elapsedTime);
-
-
+	UpdateSettingBars(ctx);	// メニューの更新
+	UpdateFadeAndMouse(ctx);// フェード状態とマウスの更新
+	UpdateBackgroundAndFade(elapsedTime);// 背景とフェードの更新
 }
 //---------------------------------------------------------
 // 描画する
@@ -197,15 +111,7 @@ void SettingScene::Render()
 
 	// スペースキー押してってやつ描画(画面遷移中は描画しない)
 	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
-	{
-		for (int it = 0; it < m_pUI.size(); ++it)
-		{
-			m_pUI[it]->Render();
-		}
-		//m_pSettingMenu->Render();
-		//m_pSettingBar->Render();
-		//	m_pMousePointer->Render();
-	}
+		for (int it = 0; it < m_pUI.size(); ++it)m_pUI[it]->Render();
 	// フェードの描画
 	m_pFade->Render();
 }
@@ -216,8 +122,6 @@ void SettingScene::Render()
 void SettingScene::Finalize()
 {
 	SetVolume();// 音量の設定
-	//// オーディオマネージャーの終了処理
-	//m_audioManager->Shutdown();
 }
 
 //---------------------------------------------------------
@@ -228,8 +132,6 @@ IScene::SceneID SettingScene::GetNextSceneID() const
 	// シーン変更がある場合
 	if (m_isChangeScene)
 	{
-
-
 		m_commonResources->GetAudioManager()->StopSound("TitleBGM");// BGMの停止
 		m_commonResources->GetAudioManager()->StopSound("SE");// SEの停止
 		m_commonResources->GetAudioManager()->StopSound("Select");// Selectの停止
@@ -261,4 +163,68 @@ void SettingScene::SetVolume()
 		}
 	}
 
+}
+
+void SettingScene::UpdateSettingBars(const UpdateContext& ctx)
+{
+	// SettingMenuをリストアップ
+	std::vector<SettingMenu*> settingMenus;
+	for (auto& settingMenu : m_pUI)
+		if (auto pSettingMenu = dynamic_cast<SettingMenu*>(settingMenu.get()))
+			settingMenus.push_back(pSettingMenu);
+	// SettingBarをリストアップし、メニュー情報をセット
+	for (auto& settingBar : m_pUI)
+	{
+		if (auto pSettingBar = dynamic_cast<SettingBar*>(settingBar.get()))
+			for (auto& menu : settingMenus)
+				pSettingBar->SetStateIDNum(static_cast<SettingMenu::StateID>(menu->GetMenuIndex()));
+		settingBar->Update(ctx);
+	}
+}
+
+void SettingScene::UpdateFadeAndMouse(const UpdateContext& ctx)
+{
+	// オーディオマネージャーの更新処理
+	m_commonResources->GetAudioManager()->Update();
+	// マウスのトラッカーを取得する
+	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
+	// メニューでの選択処理が行われたら
+	if (m_pFade->GetState() != Fade::FadeState::FadeInEnd)return;
+	if (mtracker->GetLastState().leftButton) HandleMenuSelection(ctx);
+	else UpdateMousePointers(ctx);
+}
+
+void SettingScene::UpdateBackgroundAndFade(float elapsedTime)
+{
+	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)m_isChangeScene = true;// シーン変更フラグを立てる
+	m_commonResources->GetAudioManager()->PlaySound("TitleBGM", m_BGMvolume);
+	m_pBackGround->Update(elapsedTime);
+	m_pFade->Update(elapsedTime);
+}
+
+void SettingScene::UpdateMousePointers(const UpdateContext& ctx)
+{
+	for (int it = 0; it < m_pUI.size(); ++it)
+		if (auto pMousePointer = dynamic_cast<MousePointer*>(m_pUI[it].get()))
+			pMousePointer->Update(ctx);
+}
+
+void SettingScene::HandleMenuSelection(const UpdateContext& ctx)
+{
+	for (int it = 0; it < m_pUI.size(); ++it)
+	{
+		if (auto pSettingMenu = dynamic_cast<SettingMenu*>(m_pUI[it].get()))
+		{
+			auto selectID = pSettingMenu->GetSelectIDNum();// 選択されたメニューのIDを取得
+			if (selectID == SettingMenu::SelectID::END ||
+				selectID == SettingMenu::SelectID::APPLY)
+			{
+				m_commonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);
+				m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
+				m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
+				return;
+			}
+			UpdateMousePointers(ctx);// マウスポインターの更新
+		}
+	}
 }

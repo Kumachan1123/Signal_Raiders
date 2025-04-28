@@ -15,5 +15,6 @@ private:// 変数
 	DirectX::SimpleMath::Vector3 m_velocity;		// 弾の速さ
 	DirectX::SimpleMath::Vector3 m_direction;		// 弾が飛ぶ方向
 	DirectX::SimpleMath::Vector3 m_target;			// 弾発射時のターゲットの位置
+	DirectX::SimpleMath::Vector3 m_toPlayer;		// プレイヤーの方向ベクトル
 	DirectX::BoundingSphere m_boundingSphere;		// 「弾」境界球
 };

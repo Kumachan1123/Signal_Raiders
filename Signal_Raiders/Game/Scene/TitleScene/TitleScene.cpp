@@ -78,9 +78,6 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_pUI.push_back(std::move(std::make_unique<MousePointer>()));	// マウスポインターを作成
 	for (int it = 0; it < m_pUI.size(); ++it)// 一斉初期化
 		m_pUI[it]->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
-
-
-
 	// 音量の設定
 	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume()) * 0.1f;
 	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume()) * 0.1f;
@@ -122,9 +119,6 @@ void TitleScene::Update(float elapsedTime)
 	// メニューの更新
 	for (int it = 0; it < m_pUI.size(); ++it)// 一斉初期化
 		m_pUI[it]->Update(ctx);
-	//	m_pMenu->Update(elapsedTime);
-	//// マウスポインターの更新
-	//m_pMousePointer->Update(elapsedTime);
 	// フェードアウトが終了したら
 	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;
 	// BGMの再生
@@ -150,9 +144,6 @@ void TitleScene::Render()
 	{
 		for (int it = 0; it < m_pUI.size(); ++it)// 一斉初期化
 			m_pUI[it]->Render();
-
-		/*m_pMenu->Render();
-		m_pMousePointer->Render();*/
 	}
 	// フェードの描画
 	m_pFade->Render();
@@ -182,38 +173,30 @@ void TitleScene::Finalize()
 // 次のシーンIDを取得する
 //---------------------------------------------------------
 IScene::SceneID TitleScene::GetNextSceneID() const
-{
+{	// シーン変更がないならすぐ戻る
+	if (!m_isChangeScene)return IScene::SceneID::NONE;
 	// シーン変更がある場合
-	if (m_isChangeScene)
+	m_commonResources->GetAudioManager()->StopSound("TitleBGM");// BGMの停止
+	m_commonResources->GetAudioManager()->StopSound("SE");// SEの停止
+	for (int it = 0; it < m_pUI.size(); ++it)// 一斉初期化
 	{
-		m_commonResources->GetAudioManager()->StopSound("TitleBGM");// BGMの停止
-		m_commonResources->GetAudioManager()->StopSound("SE");// SEの停止
-		for (int it = 0; it < m_pUI.size(); ++it)// 一斉初期化
+		auto pMenu = dynamic_cast<TitleMenu*>(m_pUI[it].get());
+		if (!pMenu)continue;
+		switch (pMenu->GetSceneNum())
 		{
-			auto pMenu = dynamic_cast<TitleMenu*>(m_pUI[it].get());
-			if (!pMenu)continue;
-			else
-			{
-
-				switch (pMenu->GetSceneNum())
-				{
-				case TitleMenu::SceneID::STAGESELECT:
-					return IScene::SceneID::STAGESELECT;
-					break;
-				case TitleMenu::SceneID::SETTING:
-					return IScene::SceneID::SETTING;
-					break;
-				case TitleMenu::SceneID::END:
-					// ゲーム終了
-					EndGame();
-					break;
-				default:
-					break;
-				}
-			}
+		case TitleMenu::SceneID::STAGESELECT:
+			return IScene::SceneID::STAGESELECT;
+			break;
+		case TitleMenu::SceneID::SETTING:
+			return IScene::SceneID::SETTING;
+			break;
+		case TitleMenu::SceneID::END:
+			// ゲーム終了
+			EndGame();
+			break;
+		default:
+			break;
 		}
-
-
 	}
 	// シーン変更がない場合
 	return IScene::SceneID::NONE;

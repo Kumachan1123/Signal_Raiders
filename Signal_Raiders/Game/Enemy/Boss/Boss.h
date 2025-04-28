@@ -38,8 +38,8 @@ public:
 	void BulletPositioning()override;	// ’e‚Ì”­ËˆÊ’u‚ğŒˆ’è
 	void CreateBullet();// ’e‚ğ¶¬
 	void CreateCenterBullet(EnemyBullet::BulletType type);// ’†‰›‚Ì’e‚ğ¶¬
-	void CreateLeftBullet(float angleOffset, EnemyBullet::BulletType type);// ¶‚Ì’e‚ğ¶¬
-	void CreateRightBullet(float angleOffset, EnemyBullet::BulletType type);// ‰E‚Ì’e‚ğ¶¬
+	void CreateLeftBullet(EnemyBullet::BulletType type);// ¶‚Ì’e‚ğ¶¬
+	void CreateRightBullet(EnemyBullet::BulletType type);// ‰E‚Ì’e‚ğ¶¬
 private:
 	// ‹¤’ÊƒŠƒ\[ƒX
 	CommonResources* m_commonResources;

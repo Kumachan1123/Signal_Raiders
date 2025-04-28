@@ -59,8 +59,6 @@ public:// 定数
 	// ===== ボス共通 =====
 	static const float BOSS_SHIELD_SCALE_SPEED;// ボスシールドの拡大速度
 	static const float BOSS_SHIELD_ATTACK_COOLDOWN; // ボスシールドの攻撃クールダウン時間
-	static const float BOSS_DAMAGE; // ボスのダメージ
-	static const float BOSS_BULLET_ANGLE; // ボス弾の角度
 	static const float BOSS_HPBAR_SCALE;// ボスHPバーのスケール
 	static const float BOSS_CHASE_SPEED; // ボスの追跡速度
 	static const float BOSS_DEADEFFECT_SCALE; // ボスのデスエフェクトのスケール
@@ -76,6 +74,8 @@ public:// 定数
 	static const DirectX::SimpleMath::Vector3 BOSS_HPBAR_OFFSET;// ボスHPバーのオフセット
 	static const float NORMAL_BOSS_RADIUS;// 通常ボスの半径
 	static const float BOSS_SHIELD_RADIUS; // ボスシールドの半径
+	static const float BOSS_DAMAGE; // ボスがプレイヤーに与えるダメージ
+
 
 	// ===== ラスボス専用 =====
 	static const DirectX::SimpleMath::Vector3 INITIAL_LASTBOSS_POSITION;// ボスの初期位置
@@ -89,6 +89,7 @@ public:// 定数
 	static const DirectX::SimpleMath::Vector3 LASTBOSS_HPBAR_OFFSET;// ボスHPバーのオフセット
 	static const float NORMAL_LASTBOSS_RADIUS;// 通常ボスの半径
 	static const float LASTBOSS_SHIELD_RADIUS; // ボスシールドの半径
+	static const float LASTBOSS_DAMAGE; // ラスボスがプレイヤーに与えるダメージ
 
 	// ===== 浮遊・特殊な初期状態など =====
 	static const DirectX::SimpleMath::Vector3 INITIAL_VELOCITY; // 浮遊用の初速度

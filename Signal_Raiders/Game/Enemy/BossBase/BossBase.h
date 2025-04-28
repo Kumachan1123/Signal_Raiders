@@ -82,12 +82,13 @@ public:
 	void SetPlayerHitByEnemyBullet(bool hit) override { m_isPlayerHitByEnemyBullet = hit; }// 敵の弾がプレイヤーに当たったか
 	bool GetEnemyHitByPlayerBullet()const override { return m_isEnemyHitByPlayerBullet; }
 	void SetEnemyHitByPlayerBullet(bool hit)override { m_isEnemyHitByPlayerBullet = hit; }
-	float GetToPlayerDamage() const override { return EnemyParameters::BOSS_DAMAGE; }
+	float GetToPlayerDamage() const override { return m_bossDamage; }
+	void SetToPlayerDamage(float damage) { m_bossDamage = damage; }// プレイヤーに与えるダメージを設定
 	DirectX::SimpleMath::Vector3 GetCameraEye()const { return m_cameraEye; }
 	DirectX::SimpleMath::Vector3 GetCameraTarget()const { return m_cameraTarget; }
 	DirectX::SimpleMath::Vector3 GetCameraUp()const { return m_cameraUp; }
 	float GetSheildSEVolume() const { return m_SEVolume - m_SEVolumeCorrection; }//シールド展開音の音量を取得
-	void SetPlayerHP(float& HP) const override { HP -= EnemyParameters::BOSS_DAMAGE; }
+	void SetPlayerHP(float& HP) const override { HP -= m_bossDamage; }
 	void SetBulletCooldown(float cooldown) { m_bulletCooldown = cooldown; }// シールドを展開した後に実行する
 	void SetInitSpecialAttacCooldown(float cooldown) { m_initSpecialAttackCooldown = cooldown; }// 特殊攻撃のクールダウン
 	bool GetCanAttack() const override { return m_canAttack; }// 攻撃可能か
@@ -152,12 +153,8 @@ private:
 	DirectX::BoundingSphere m_playerBS;// プレイヤーの境界球
 	DirectX::SimpleMath::Matrix m_matrix;// マトリクス
 	// 弾の発射位置
-	// 中央
 	DirectX::SimpleMath::Vector3 m_bulletPosCenter;
-	// 左
-	DirectX::SimpleMath::Vector3 m_bulletPosLeft;
-	// 右
-	DirectX::SimpleMath::Vector3 m_bulletPosRight;
+	float m_bossDamage;// ボスがプレイヤーに与えるダメージ
 	// 発射位置を回転させるためのクォータニオン
 	DirectX::SimpleMath::Quaternion m_bulletQuaternion;
 	// 弾のタイプ

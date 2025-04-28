@@ -113,7 +113,6 @@ void EnemyManager::Render()
 	{
 		enemy->Render(view, projection);//	敵を描画する
 #ifdef _DEBUG
-
 		enemy->DrawCollision(view, projection);//	当たり判定を描画する
 #endif
 	}
@@ -159,10 +158,7 @@ void EnemyManager::UpdateStartTime(float elapsedTime)
 //---------------------------------------------------------
 void EnemyManager::UpdateEffects(float elapsedTime)
 {
-	for (auto& effect : GetEffect())// 全てのエフェクトを更新
-	{
-		effect->Update(elapsedTime);
-	}
+	for (auto& effect : GetEffect())effect->Update(elapsedTime);// 全てのエフェクトを更新
 }
 
 //---------------------------------------------------------
@@ -188,20 +184,14 @@ void EnemyManager::HandleEnemySpawning(float elapsedTime)
 		}
 	}
 	// 敵生成上限に達したら
-	if (m_enemyIndex >= enemyNum)
-	{
-		FinalizeEnemySpawn();// 敵生成完了処理
-	}
+	if (m_enemyIndex >= enemyNum)FinalizeEnemySpawn();// 敵生成完了処理
 	// 敵がいなくなったらボスを生成
 	if (m_enemies.empty() && m_isBorned && !m_isBossBorned)
 	{
 		m_isBossAppear = true; // ボス生成演出フラグを立てる
 		m_bossBornWaitTime += elapsedTime;// ボス生成待機時間を更新
 		if (m_bossBornWaitTime >= EnemyParameters::BOSS_SPAWN_WAIT_TIME)// ボス生成待機時間を超えたら
-		{
 			SpawnBoss();// ボスを生成
-
-		}
 
 	}
 }
@@ -243,10 +233,10 @@ void EnemyManager::SpawnBoss()
 	if (m_stageNumber >= 3) boss->SetBossType(BossType::LAST_BOSS);// ボスの種類を設定
 	else boss->SetBossType(BossType::NORMAL_BOSS);// ボスの種類を設定
 
-	boss->Initialize();// ボスを初期化
 	boss->SetBulletManager(m_pBulletManager);// 弾マネージャーを設定
 	boss->SetBulletType(m_bossBulletType);// ボスの弾の種類を設定
 	boss->GetBulletManager()->SetSpecialAttackCount(m_specialAttackCount);// ボスの特殊攻撃の数を設定
+	boss->Initialize();// ボスを初期化
 
 
 	m_enemies.push_back(std::move(boss)); // ボスも enemies に統一

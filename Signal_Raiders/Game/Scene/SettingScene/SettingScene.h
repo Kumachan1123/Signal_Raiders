@@ -75,5 +75,9 @@ public:
 private:
 
 	void SetVolume();
-
+	void UpdateSettingBars(const UpdateContext& ctx);
+	void UpdateFadeAndMouse(const UpdateContext& ctx);
+	void UpdateBackgroundAndFade(float elapsedTime);
+	void UpdateMousePointers(const UpdateContext& ctx);
+	void HandleMenuSelection(const UpdateContext& ctx);
 };
