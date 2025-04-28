@@ -13,8 +13,8 @@ using namespace DirectX::SimpleMath;
 */
 const std::vector<D3D11_INPUT_ELEMENT_DESC> BossAppear::INPUT_LAYOUT =
 {
-	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
 
 /*
@@ -61,7 +61,7 @@ void BossAppear::Initialize(CommonResources* resources)
 	// シェーダーの作成
 	this->SettingShader();
 	// テクスチャの読み込み
-	this->LoadTexture(L"Resources/Textures/BossAppear.png", m_texture);
+	this->LoadTexture(L"Resources/Textures/BossAppear.png");
 
 	// 板ポリゴン描画用
 	m_pDrawPolygon->InitializePositionTexture(m_pDR);
@@ -70,14 +70,13 @@ void BossAppear::Initialize(CommonResources* resources)
 /*
 *  @brief テクスチャの読み込み
 *　@param path テクスチャのパス
-*  @param textures テクスチャのハンドル
 *  @return なし
 */
-void BossAppear::LoadTexture(const wchar_t* path, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& textures)
+void BossAppear::LoadTexture(const wchar_t* path)
 {
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;
 	DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, nullptr, texture.GetAddressOf());
-	textures.push_back(texture);
+	m_texture.push_back(texture);
 }
 
 /*

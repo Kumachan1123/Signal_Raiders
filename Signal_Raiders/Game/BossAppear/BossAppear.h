@@ -41,7 +41,7 @@ public:
 
 private:
 	void SettingShader();
-	void LoadTexture(const wchar_t* path, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& texture);
+	void LoadTexture(const wchar_t* path);
 	void DrawMain();
 	void DrawBack();
 	//	頂点シェーダ(Main)

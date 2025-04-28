@@ -81,6 +81,8 @@ private:
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_backTextures;
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_playerTextures;
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_enemyTextures;
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_textures;
+
 	//	頂点シェーダ
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
 	//	ピクセルシェーダ
@@ -106,7 +108,7 @@ public:
 	void Render();
 
 	// テクスチャの読み込み
-	void LoadTexture(const wchar_t* path, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& textures);
+	void LoadTexture(const wchar_t* path);
 
 	void DrawBackground();// 背景を描画する
 	void DrawPlayer();// プレイヤーを描画する

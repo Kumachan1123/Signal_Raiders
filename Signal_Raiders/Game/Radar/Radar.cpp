@@ -38,13 +38,14 @@ Radar::~Radar()
 {
 	m_pDrawPolygon->ReleasePositionTexture();
 }
-void Radar::LoadTexture(const wchar_t* path, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& textures)
+void Radar::LoadTexture(const wchar_t* path)
 {
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;
 	DirectX::CreateWICTextureFromFile(device, path, nullptr, texture.ReleaseAndGetAddressOf());
-	textures.push_back(texture);
+	m_textures.push_back(texture);
 }
+
 
 //---------------------------------------------------------
 // 初期化
@@ -57,9 +58,9 @@ void Radar::Initialize(Player* pPlayer, EnemyManager* pEnemies)
 	m_pDrawPolygon->InitializePositionTexture(m_commonResources->GetDeviceResources());
 
 	// 画像の読み込み 
-	LoadTexture(L"Resources/Textures/RadarBack.png", m_backTextures);
-	LoadTexture(L"Resources/Textures/PlayerPin.png", m_playerTextures);
-	LoadTexture(L"Resources/Textures/EnemyPin.png", m_enemyTextures);
+	LoadTexture(L"Resources/Textures/RadarBack.png");
+	LoadTexture(L"Resources/Textures/PlayerPin.png");
+	LoadTexture(L"Resources/Textures/EnemyPin.png ");
 	// シェーダーを作成
 	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Radar/VS_Radar.cso", m_vertexShader); // 頂点シェーダ
 	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Radar/PS_Radar.cso", m_pixelShader); // ピクセルシェーダ
@@ -136,8 +137,11 @@ void Radar::DrawBackground()
 		DrawPolygon::BlendStates::NONPREMULTIPLIED,
 		DrawPolygon::RasterizerStates::CULL_NONE,
 		DrawPolygon::DepthStencilStates::DEPTH_NONE);
+	// 画像引き渡し
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures;
+	textures.push_back(m_textures[0].Get());
 	// 描画準備
-	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_backTextures);
+	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), textures);
 	// ポリゴンを描画
 	m_pDrawPolygon->DrawTexture(vertex);
 	// シェーダの登録を解除しておく
@@ -166,9 +170,10 @@ void Radar::DrawPlayer()
 	// 描画前設定
 	m_pDrawPolygon->DrawSetting(DrawPolygon::SamplerStates::LINEAR_WRAP, DrawPolygon::BlendStates::NONPREMULTIPLIED,
 		DrawPolygon::RasterizerStates::CULL_NONE, DrawPolygon::DepthStencilStates::DEPTH_NONE);
-
-	// 描画準備
-	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_playerTextures);
+	// 画像引き渡し
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures;
+	textures.push_back(m_textures[1].Get());	// 描画準備
+	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), textures);
 	// 板ポリゴンを描画
 	m_pDrawPolygon->DrawTexture(playerVertex);
 	// シェーダの登録を解除しておく
@@ -214,9 +219,11 @@ void Radar::DrawEnemy()
 			// 描画前設定
 			m_pDrawPolygon->DrawSetting(DrawPolygon::SamplerStates::LINEAR_WRAP, DrawPolygon::BlendStates::NONPREMULTIPLIED,
 				DrawPolygon::RasterizerStates::CULL_NONE, DrawPolygon::DepthStencilStates::DEPTH_NONE);
-
+			// 画像引き渡し
+			std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures;
+			textures.push_back(m_textures[2].Get());
 			// 描画準備
-			m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_enemyTextures);
+			m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), textures);
 			VertexPositionTexture enemyVertex[4] =
 			{
 				//	頂点情報													UV情報
