@@ -71,7 +71,7 @@ const Vector3 EnemyParameters::BOSS_HEAD_OFFSET{ 0.0f,2.0f, 3.0f };
 const Vector3 EnemyParameters::BOSS_LEFT_GUN_OFFSET{ -2.5f, -0.50f, 3.0f };
 const Vector3 EnemyParameters::BOSS_RIGHT_GUN_OFFSET{ 2.5f, -0.50f, 3.0f };
 const Vector3 EnemyParameters::BOSS_HPBAR_OFFSET{ 0.0f, 3.0f, 0.0f };
-const float EnemyParameters::NORMAL_BOSS_RADIUS = 2.5f;
+const float EnemyParameters::NORMAL_BOSS_RADIUS = 3.0f;
 const float EnemyParameters::BOSS_SHIELD_RADIUS = 5.5f;
 const float EnemyParameters::BOSS_DAMAGE = 5.0f;
 const float EnemyParameters::BOSS_BARRIERBREAK_SIZE = 1.0f;
@@ -89,7 +89,7 @@ const Vector3 EnemyParameters::LASTBOSS_RIGHTUP_GUN_OFFSET{ 9.5f, 4.50f, 9.0f };
 const Vector3 EnemyParameters::LASTBOSS_LEFTDOWN_GUN_OFFSET{ -9.5f, -3.50f, 9.0f };
 const Vector3 EnemyParameters::LASTBOSS_RIGHTDOWN_GUN_OFFSET{ 9.5f, -3.50f, 9.0f };
 const Vector3 EnemyParameters::LASTBOSS_HPBAR_OFFSET{ 0.0f, 3.0f, 0.0f };
-const float EnemyParameters::NORMAL_LASTBOSS_RADIUS = 10.5f;// 通常ボスの半径
+const float EnemyParameters::NORMAL_LASTBOSS_RADIUS = 8.5f;// 通常ボスの半径
 const float EnemyParameters::LASTBOSS_SHIELD_RADIUS = 20.5f; // ボスシールドの半径
 const float EnemyParameters::LASTBOSS_DAMAGE = 10.0f;
 const float EnemyParameters::LASTBOSS_BARRIERBREAK_SIZE = 2.0f;

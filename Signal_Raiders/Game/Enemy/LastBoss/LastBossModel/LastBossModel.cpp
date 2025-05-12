@@ -16,7 +16,7 @@ LastBossModel::LastBossModel()
 	: m_commonResources{}// 共通リソース
 	, m_bodyModel{}// 胴体
 	, m_pixelShader{}// 影用のピクセルシェーダー
-	, m_idlingFaceModel{}// 普段の顔
+	, m_damageFaceModel{}// 普段の顔
 	, m_attackFaceModel{}// 攻撃時の顔
 	, m_nowState(IState::EnemyState::IDLING)// 現在のステート
 {}
@@ -41,8 +41,9 @@ void LastBossModel::Initialize(CommonResources* resources)
 	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);// エフェクトファクトリー
 	fx->SetDirectory(L"Resources/Models/Boss");// モデルのディレクトリ
 	m_bodyModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/LastBoss_Body.cmo", *fx);// 胴体
-	m_idlingFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/LastBoss_Face.cmo", *fx);// 普段の顔
+	m_damageFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/LastBoss_DamageFace.cmo", *fx);// ノックバック中の顔
 	m_attackFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/LastBoss_Face.cmo", *fx);// 攻撃時の顔
+	m_angryFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/LastBoss_AngryFace.cmo", *fx);// 怒り状態の顔
 }
 
 
@@ -66,12 +67,14 @@ void LastBossModel::Render(ID3D11DeviceContext1* context, DirectX::DX11::CommonS
 	switch (m_nowState)// 現在のステートによって描画を変える
 	{
 	case IState::EnemyState::DAMAGE:// ダメージ
-	case IState::EnemyState::IDLING:// 待機
-		m_idlingFaceModel->Draw(context, *states, world, view, proj);// 普段の顔
+		m_damageFaceModel->Draw(context, *states, world, view, proj);// ノックバック中の顔
 		break;
 	case IState::EnemyState::ATTACK:// 攻撃
-	case IState::EnemyState::ANGRY:// 怒り
 		m_attackFaceModel->Draw(context, *states, world, view, proj);// 攻撃時の顔
 		break;
+	case IState::EnemyState::ANGRY:// 怒り
+		m_angryFaceModel->Draw(context, *states, world, view, proj);// 怒り状態の顔
+		break;
+
 	}
 }

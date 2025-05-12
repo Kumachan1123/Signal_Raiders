@@ -43,8 +43,10 @@ private:
 	std::unique_ptr<DirectX::Model> m_bodyModel;
 	// 攻撃時の顔
 	std::unique_ptr<DirectX::Model> m_attackFaceModel;
-	// 普段の顔
-	std::unique_ptr<DirectX::Model> m_idlingFaceModel;
+	// ノックバック中の顔
+	std::unique_ptr<DirectX::Model> m_damageFaceModel;
+	// 怒り状態の顔
+	std::unique_ptr<DirectX::Model> m_angryFaceModel;
 	// モデルの影用のピクセルシェーダー
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 	// 現在のステート

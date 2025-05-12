@@ -49,10 +49,10 @@ void BossIdling::Initialize()
 void BossIdling::Update(float elapsedTime)
 {
 	m_time += elapsedTime;// 時間の更新
-	m_angle = CalculateAngle(m_pBoss->GetPosition(), m_pBoss->GetEnemy()->GetPlayer()->GetPlayerPos());// プレイヤーの方向を取得し、正面を向かせる
-	m_angle = Lerp(m_angle, CalculateAngle(m_pBoss->GetEnemy()->GetPlayer()->GetPlayerPos(), m_pBoss->GetPosition()), m_time);// プレイヤーの方向を取得し、一回転させる
-	m_rotation = Quaternion::CreateFromYawPitchRoll(m_angle, 0.0f, 0.0f);// 回転
-	m_pBoss->SetRotation(m_rotation);// 回転をセット
+	//m_angle = CalculateAngle(m_pBoss->GetPosition(), m_pBoss->GetEnemy()->GetPlayer()->GetPlayerPos());// プレイヤーの方向を取得し、正面を向かせる
+	//m_angle = Lerp(m_angle, CalculateAngle(m_pBoss->GetEnemy()->GetPlayer()->GetPlayerPos(), m_pBoss->GetPosition()), m_time);// プレイヤーの方向を取得し、一回転させる
+	//m_rotation = Quaternion::CreateFromYawPitchRoll(m_angle, 0.0f, 0.0f);// 回転
+	//m_pBoss->SetRotation(m_rotation);// 回転をセット
 	m_pBoss->SetVelocity(m_velocity);// 速度をセット
 }
 

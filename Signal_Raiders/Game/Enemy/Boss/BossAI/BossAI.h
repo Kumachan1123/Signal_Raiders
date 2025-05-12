@@ -71,6 +71,8 @@ private:
 	IState* m_currentState;
 	// ó‘Ô
 	IState::EnemyState m_enemyState;
+	// UŒ‚•\î·•ª
+	IState::EnemyState m_attackState;
 	// ƒ{ƒX
 	IEnemy* m_pBoss;
 	//ˆÚ“®

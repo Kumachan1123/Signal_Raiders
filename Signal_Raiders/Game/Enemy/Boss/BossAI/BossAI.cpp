@@ -19,7 +19,8 @@ BossAI::BossAI(IEnemy* pBoss)
 	, m_knockTime(0.0f)// ノックバック時間
 	, m_time(0.0f)// 時間
 	, m_pBossAttack(nullptr)// 攻撃時
-	, m_enemyState(IState::EnemyState::IDLING)// 状態
+	, m_enemyState(IState::EnemyState::ATTACK)// 状態
+	, m_attackState(IState::EnemyState::ATTACK)// 攻撃時表情差分
 	, m_pBoss(pBoss)// ボス
 	, m_isHitPlayerBullet(false)// プレイヤーの弾に当たったか
 	, m_isKnockBack(false)// ノックバック中か
@@ -43,13 +44,12 @@ BossAI::~BossAI() {}
 void BossAI::Initialize()
 {
 	m_initialPosition = m_pBoss->GetPosition();  // 初期位置を保存
-	//m_initialPosition.y = GenerateRandomMultiplier(EnemyParameters::RANDOM_MIN, EnemyParameters::RANDOM_MAX);// Y座標をランダムに設定
 	m_velocity = EnemyParameters::INITIAL_VELOCITY; // 浮遊の初期速度
 	m_scale = EnemyParameters::INITIAL_BOSS_SCALE; // スケール初期化
 	m_position = m_initialPosition;// 初期位置を設定
 	m_currentState = m_pBossAttack.get();// 現在のステートを攻撃態勢に設定
 	m_currentState->Initialize();// 初期化
-	m_enemyState = IState::EnemyState::ATTACK;// 待機態勢
+	m_enemyState = m_attackState;// 攻撃状態
 }
 /*
 *	@brief 更新
@@ -69,12 +69,14 @@ void BossAI::Update(float elapsedTime)
 	{
 		ChangeState(m_pBossIdling.get());//徘徊態勢にする
 		KnockBack(elapsedTime);// ノックバック処理
+		m_enemyState = IState::EnemyState::DAMAGE;// 徘徊態勢
 		SetIsAttack(false);// 攻撃中ではない
 	}
 	else // シールドが壊されていない場合
 	{
 		ChangeState(m_pBossAttack.get());//攻撃態勢にする
 		SetIsAttack(true);// 攻撃中にする
+		m_enemyState = m_attackState;// 攻撃状態
 	}
 	m_pBoss->SetPosition(m_position);// 位置をセット
 }
@@ -121,5 +123,7 @@ void BossAI::KnockBack(float elapsedTime)
 		m_knockTime = 0.0f; // ノックバック時間のリセット
 		m_pBoss->SetEnemyHitByPlayerBullet(false); // ノックバック終了	
 		m_isKnockBack = true;// これ以降ノックバック処理を行わない
+		m_attackState = IState::EnemyState::ANGRY;// 怒り状態
+
 	}
 }

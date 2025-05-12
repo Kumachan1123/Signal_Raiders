@@ -67,26 +67,19 @@ BossBase::~BossBase() { m_pBulletManager->RemoveBulletsByShooter(this); }// 弾を
 */
 void BossBase::Initialize()
 {
-
-
 	m_pBoss = EnemyFactory::CreateBoss(m_bossType, this, m_commonResources);// ボス生成
-
-
 	DrawCollision::Initialize(m_commonResources);// 当たり判定描画の初期化
 	m_maxHP = m_currentHP;// 最大HPを設定
 	m_pHPBar = std::make_unique<EnemyHPBar>();	// HPバー生成
 	m_pHPBar->SetEnemyHP(m_currentHP);// HPバーのHPを設定
 	m_pHPBar->Initialize(m_commonResources);// HPバー初期化
 	m_pBoss->Initialize();// ボス初期化
-
 	m_pBossAI = std::make_unique<BossAI>(this);// ボスAI生成
 	m_pBossAI->Initialize();// ボスAI初期化
 	m_pBossAI->SetPosition(m_position);// AIに座標を設定
 	m_bossBS.Center = m_position;// 境界球の中心座標を設定
 	m_SEVolume = m_pPlayer->GetVolume();// SEの音量を設定
 	m_SEVolumeCorrection = m_pPlayer->GetVolumeCorrection();// SEの音量補正を設定
-
-
 	m_pBossSheild = std::make_unique<BossSheild>();// シールド生成 これはタイプによって分岐予定
 	m_pBossSheild->SetUp(m_maxHP, this);// シールドの初期化
 	m_pBossSheild->Initialize(m_commonResources);// シールド初期化 これはタイプによって分岐予定
@@ -110,10 +103,10 @@ void BossBase::Update(float elapsedTime)
 	m_pBoss->BulletPositioning();// 弾の位置設定
 	this->ShootBullet();// 弾発射
 	m_bossBS.Center = m_position + EnemyParameters::BOSS_SPHERE_OFFSET;// 境界球の中心座標を更新
+	m_bossBS.Radius = m_defaultHitRadius;// 通常時のボスの当たり判定を設定
 	m_pHPBar->SetCurrentHP(m_currentHP);// HPバーのHPを更新
 	m_pHPBar->Update(elapsedTime);// HPバーの更新
-	if (m_currentHP <= m_maxHP / 2)
-		m_pBossSheild->SetSheild(true);// HPが半分以下になったらシールドを出す
+	if (m_currentHP <= m_maxHP / 2)	m_pBossSheild->SetSheild(true);// HPが半分以下になったらシールドを出す
 	m_pBossSheild->Update(elapsedTime);// シールドの更新
 	m_isDead = m_pHPBar->GetIsDead();// 死んだかどうかを受け取る
 }
