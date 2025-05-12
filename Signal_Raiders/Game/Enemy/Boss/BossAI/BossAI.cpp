@@ -42,8 +42,8 @@ BossAI::~BossAI() {}
 */
 void BossAI::Initialize()
 {
-	m_initialPosition = Vector3::Zero;  // 初期位置を保存
-	m_initialPosition.y = GenerateRandomMultiplier(EnemyParameters::RANDOM_MIN, EnemyParameters::RANDOM_MAX);// Y座標をランダムに設定
+	m_initialPosition = m_pBoss->GetPosition();  // 初期位置を保存
+	//m_initialPosition.y = GenerateRandomMultiplier(EnemyParameters::RANDOM_MIN, EnemyParameters::RANDOM_MAX);// Y座標をランダムに設定
 	m_velocity = EnemyParameters::INITIAL_VELOCITY; // 浮遊の初期速度
 	m_scale = EnemyParameters::INITIAL_BOSS_SCALE; // スケール初期化
 	m_position = m_initialPosition;// 初期位置を設定

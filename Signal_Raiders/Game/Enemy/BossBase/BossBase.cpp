@@ -77,14 +77,16 @@ void BossBase::Initialize()
 	m_pHPBar = std::make_unique<EnemyHPBar>();	// HPバー生成
 	m_pHPBar->SetEnemyHP(m_currentHP);// HPバーのHPを設定
 	m_pHPBar->Initialize(m_commonResources);// HPバー初期化
+	m_pBoss->Initialize();// ボス初期化
+
 	m_pBossAI = std::make_unique<BossAI>(this);// ボスAI生成
 	m_pBossAI->Initialize();// ボスAI初期化
-	m_position = EnemyParameters::INITIAL_BOSS_POSITION;// 敵の座標を設定
 	m_pBossAI->SetPosition(m_position);// AIに座標を設定
 	m_bossBS.Center = m_position;// 境界球の中心座標を設定
 	m_SEVolume = m_pPlayer->GetVolume();// SEの音量を設定
 	m_SEVolumeCorrection = m_pPlayer->GetVolumeCorrection();// SEの音量補正を設定
-	m_pBoss->Initialize();// ボス初期化
+
+
 	m_pBossSheild = std::make_unique<BossSheild>();// シールド生成 これはタイプによって分岐予定
 	m_pBossSheild->SetUp(m_maxHP, this);// シールドの初期化
 	m_pBossSheild->Initialize(m_commonResources);// シールド初期化 これはタイプによって分岐予定

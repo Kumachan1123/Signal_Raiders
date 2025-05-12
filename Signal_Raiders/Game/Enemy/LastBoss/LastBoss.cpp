@@ -42,6 +42,8 @@ void LastBoss::Initialize()
 {
 	m_pBossModel = std::make_unique<LastBossModel>();	// ラスボスモデル生成
 	m_pBossModel->Initialize(m_commonResources);// ラスボスモデル初期化 
+	m_position = EnemyParameters::INITIAL_LASTBOSS_POSITION;// ラスボスの初期位置を設定
+	m_pBossBase->SetPosition(m_position);// ベースクラスに初期位置を設定
 	m_pBossBase->SetDefaultHitRadius(EnemyParameters::NORMAL_LASTBOSS_RADIUS);// 通常時のラスボスの当たり判定を設定
 	m_pBossBase->SetDefensiveHitRadius(EnemyParameters::LASTBOSS_SHIELD_RADIUS);// シールド展開時のラスボスの当たり判定を設定
 	m_pBossBase->SetBulletSize(EnemyParameters::LASTBOSS_BULLET_SIZE);// 弾のサイズを設定
@@ -114,7 +116,6 @@ void LastBoss::CreateBullet()
 {
 	m_pBossBase->GetBulletManager()->SetEnemyBulletSize(EnemyParameters::LASTBOSS_BULLET_SIZE);// 弾のサイズを設定
 	m_pBossBase->GetBulletManager()->SetShooter(m_pBossBase);// 弾を発射したオブジェクトを設定
-
 	m_pBossBase->GetBulletManager()->SetEnemyBulletType(BulletType::NORMAL);// 弾の種類を設定
 	m_pBossBase->GetBulletManager()->CreateEnemyBullet(m_bulletPosLeftUp, m_bulletDirection);// 弾を生成（左上）
 	m_pBossBase->GetBulletManager()->CreateEnemyBullet(m_bulletPosLeftDown, m_bulletDirection);// 弾を生成（左下）

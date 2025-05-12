@@ -44,6 +44,8 @@ void Boss::Initialize()
 {
 	m_pBossModel = std::make_unique<BossModel>();	// ボスモデル生成
 	m_pBossModel->Initialize(m_commonResources);// ボスモデル初期化
+	m_position = EnemyParameters::INITIAL_BOSS_POSITION;// ラスボスの初期位置を設定
+	m_pBossBase->SetPosition(m_position);// ベースクラスに初期位置を設定
 	m_pBossBase->SetDefaultHitRadius(EnemyParameters::NORMAL_BOSS_RADIUS);// 通常時ボスの当たり判定を設定
 	m_pBossBase->SetDefensiveHitRadius(EnemyParameters::BOSS_SHIELD_RADIUS);// シールド展開時のボスの当たり判定を設定
 	m_pBossBase->SetBulletSize(EnemyParameters::BOSS_BULLET_SIZE);// 弾のサイズを設定

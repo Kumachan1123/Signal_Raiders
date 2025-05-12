@@ -53,6 +53,7 @@ BossAppear::~BossAppear()
 */
 void BossAppear::Initialize(CommonResources* resources)
 {
+
 	m_commonResources = resources;
 	m_pDR = m_commonResources->GetDeviceResources();
 	// シェーダー作成クラスの初期化
@@ -98,11 +99,11 @@ void BossAppear::SettingShader()
 	// シェーダーの構造体にシェーダーを渡す
 	m_shaders.vs = m_vertexShader.Get();
 	m_shaders.ps = m_pixelShader.Get();
-	m_shaders.gs = nullptr;// m_geometryShader.Get();
+	m_shaders.gs = nullptr;
 
 	m_shadersBack.vs = m_vertexShader.Get();
 	m_shadersBack.ps = m_pixelShaderBack.Get();
-	m_shadersBack.gs = nullptr;// m_geometryShader.Get();
+	m_shadersBack.gs = nullptr;
 }
 
 /*
@@ -112,7 +113,7 @@ void BossAppear::SettingShader()
 */
 void BossAppear::Update(float elapsedTime)
 {
-	m_timer += elapsedTime;
+	m_timer += elapsedTime;// 時間加算
 }
 
 /*
@@ -123,8 +124,6 @@ void BossAppear::Update(float elapsedTime)
 */
 void BossAppear::Render()
 {
-
-	// 描画
 	DrawBack();// 背景描画
 	DrawMain();// メインテクスチャ描画
 }
@@ -232,6 +231,5 @@ void BossAppear::DrawBack()
 	//	板ポリゴンを描画
 	m_pDrawPolygon->DrawTexture(vertex);
 	// 描画終了
-	// シェーダの登録を解除しておく
 	m_pDrawPolygon->ReleaseShader();
 }

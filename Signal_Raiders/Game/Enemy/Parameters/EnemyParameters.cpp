@@ -64,7 +64,7 @@ const float EnemyParameters::BOSS_SPAWN_WAIT_TIME = 3.0f;
 // ===============================
 // É{ÉXêÍóp
 // ===============================
-const Vector3 EnemyParameters::INITIAL_BOSS_POSITION{ 0.0f, 10.0f, 0.0f };
+const Vector3 EnemyParameters::INITIAL_BOSS_POSITION{ 0.0f, 5.0f, 0.0f };
 const Vector3 EnemyParameters::INITIAL_BOSS_SCALE{ 2.0f, 2.0f, 2.0f };
 const Vector3 EnemyParameters::BOSS_SPHERE_OFFSET{ 0.0f, 0.5f, 0.0f };
 const Vector3 EnemyParameters::BOSS_HEAD_OFFSET{ 0.0f,2.0f, 3.0f };
