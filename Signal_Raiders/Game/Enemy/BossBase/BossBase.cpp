@@ -122,7 +122,6 @@ void BossBase::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Mat
 	m_quaternion = m_pBossAI->GetRotation();// 敵の回転を更新
 	m_scale = m_pBossAI->GetScale();// 敵のスケールを更新
 	m_pBoss->Draw(view, proj);// ボス描画
-
 }
 /*
 *	@brief	当たり判定描画処理
@@ -182,7 +181,6 @@ void BossBase::CreateVerticalBullet()
 {
 	m_pBulletManager->SetEnemyBulletType(BulletType::SPEED);// 弾の種類を設定
 	m_pBulletManager->CreateEnemyBullet(m_bulletPosCenter, m_bulletDirection);// 弾を生成
-
 }
 
 /*
@@ -193,7 +191,6 @@ void BossBase::CreateSpiralBullet()
 {
 	m_pBulletManager->SetEnemyBulletType(BulletType::SPECIAL);// 弾の種類を設定
 	m_pBulletManager->CreateEnemyBullet(m_bulletPosCenter, m_bulletDirection);// 弾を生成
-
 }
 /*
 *	@brief	敵のHPを設定
@@ -210,5 +207,4 @@ void BossBase::SetEnemyHP(int hp)
 			m_commonResources->GetAudioManager()->PlaySound("BarrierBreak", m_pPlayer->GetVolume());
 	}
 	else m_currentHP -= hp;// シールドがない場合は敵のHPを減らす
-
 }

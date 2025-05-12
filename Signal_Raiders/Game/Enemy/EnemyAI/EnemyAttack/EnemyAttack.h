@@ -2,7 +2,6 @@
 	@file	EnemyAttack.h
 	@brief	“GAttackƒNƒ‰ƒX
 */
-
 #pragma once
 #ifndef ENEMY_ATTACK_DEFINED
 #define ENEMY_ATTACK_DEFINED
@@ -22,12 +21,9 @@
 #include "Game/KumachiLib/KumachiLib.h"
 #include "Game/Enemy/EnemyAI/EnemyAI.h"
 #include "Game/Enemy/Parameters/EnemyParameters.h"
-
 //‘O•ûéŒ¾
 class CommonResources;
 class EnemyAI;
-
-
 class EnemyAttack : public IState
 {
 public:

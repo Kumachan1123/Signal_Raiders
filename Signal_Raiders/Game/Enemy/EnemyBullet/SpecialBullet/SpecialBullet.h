@@ -1,25 +1,29 @@
+/*
+*	@file SpecialBullet.h
+*	@brief 敵弾クラス(特殊弾)
+*/
 #pragma once
+// 自作ヘッダーファイル
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 #include "Game/Interface/IEnemyBullet.h"
 #include "Game/KumachiLib/KumachiLib.h"
 class SpecialBullet : public IEnemyBullet
 {
-public:// 関数
-	SpecialBullet();
-	~SpecialBullet();
-	void Initialize() override;
-	void Update(float elapsedTime) override;
-	void SetEnemyBullet(EnemyBullet* pEnemyBullet) override { m_pEnemyBullet = pEnemyBullet; }
+public:
+	// public関数
+	SpecialBullet();// コンストラクタ
+	~SpecialBullet();// デストラクタ
+	void Initialize() override;// 初期化関数
+	void Update(float elapsedTime) override;// 更新関数
+	void SetEnemyBullet(EnemyBullet* pEnemyBullet) override { m_pEnemyBullet = pEnemyBullet; }// 敵弾ポインターをセットする関数
 private:
-	// 回転弾を展開する
-	void Expand();
-	// 回転弾を発射する
-	void Shot();
-	// 回転弾の展開をやめる
-	void StopExpand();
-	// 回転弾を自分の周りに戻す
-	void ComeBack();
-private:// 変数
+	// private関数
+	void Expand();		// 回転弾を展開する
+	void Shot();		// 回転弾を発射する
+	void StopExpand();	// 回転弾の展開をやめる
+	void ComeBack();	// 回転弾を自分の周りに戻す
+private:
+	// privateメンバ変数	
 	EnemyBullet* m_pEnemyBullet;					// 敵弾ポインター
 	DirectX::SimpleMath::Vector3 m_position;		// 弾の座標
 	DirectX::SimpleMath::Vector3 m_velocity;		// 弾の速さ

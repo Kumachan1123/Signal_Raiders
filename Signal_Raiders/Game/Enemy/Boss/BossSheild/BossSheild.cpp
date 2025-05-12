@@ -5,21 +5,16 @@
 #include "pch.h"
 #include "BossSheild.h"
 
-using namespace DirectX;
-using namespace DirectX::SimpleMath;
-
 /*
 *	@brief	コンストラクタ
-*	@param sheildHP シールドの耐久値
-*	@param pBoss ボスクラスのポインタ
 *	@return	なし
 */
 BossSheild::BossSheild()
 	: m_commonResources{}// 共通リソース
 	, m_isSheild(false)// シールド展開フラグ
 	, m_isParticle(false)// パーティクル再生フラグ
-	, m_sheildSize(Vector3::Zero)// シールドのサイズ
-	, m_sheildPosition(Vector3::Zero)// シールドの座標
+	, m_sheildSize(DirectX::SimpleMath::Vector3::Zero)// シールドのサイズ
+	, m_sheildPosition(DirectX::SimpleMath::Vector3::Zero)// シールドの座標
 	, m_sheildHP(0)// シールドのHP
 	, m_bossType(BossShieldType::BOSS)// ボスの種類
 	, m_pBoss(nullptr)// ボスクラスのポインタ
@@ -33,14 +28,13 @@ BossSheild::~BossSheild() {}
 
 /*
 *	@brief	シールドの初期化
-*	@param type ボスの種類
-*	@param sheildHP シールドのHP
-*	@param pBoss ボスクラスのポインタ
+*	@param[in] sheildHP シールドのHP
+*	@param[in] pBoss ボスクラスのポインタ
 *	@return	なし
 */
 void BossSheild::SetUp(int sheildHP, IEnemy* pBoss)
 {
-
+	using namespace DirectX::SimpleMath;
 	m_sheildHP = sheildHP;// シールドのHP
 	m_pBoss = pBoss;// ボスクラスのポインタ
 	m_isSheild = false;// シールド展開フラグを立てる
@@ -50,7 +44,7 @@ void BossSheild::SetUp(int sheildHP, IEnemy* pBoss)
 
 /*
 *	@brief	初期化
-*	@param resources 共通リソース
+*	@param[in] resources 共通リソース
 *	@return	なし
 */
 void BossSheild::Initialize(CommonResources* resources)
@@ -64,17 +58,17 @@ void BossSheild::Initialize(CommonResources* resources)
 	m_sheildModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss_Barrier.cmo", *fx);// モデル作成
 }
 
+/*
+*	@brief	更新
+*	@param[in] elapsedTime 経過時間
+*	@return	なし
+*/
 void BossSheild::Update(float elapsedTime)
 {
-
-	auto pBoss = dynamic_cast<BossBase*>(m_pBoss);
-
-
-
-
+	using namespace DirectX::SimpleMath;
+	auto pBoss = dynamic_cast<BossBase*>(m_pBoss);// ボスクラスのポインタを取得
 	if (m_isSheild)// シールドが展開されている間
 	{
-
 		pBoss->PlayBarrierSE();// シールドSE再生
 		m_sheildSize = Vector3::SmoothStep(m_sheildSize, Vector3(0.4f), EnemyParameters::BOSS_SHIELD_SCALE_SPEED);// シールドのサイズを拡大
 		pBoss->GetBoundingSphere().Radius = pBoss->GetDefensiveHitRadius();// ボスの境界球をシールドの大きさに合わせる
@@ -93,17 +87,23 @@ void BossSheild::Update(float elapsedTime)
 }
 /*
 *	@brief	描画
-*	@param context デバイスコンテキスト
-*	@param states ステート
-*	@param world ワールド行列
-*	@param view ビュー行列
-*	@param proj プロジェクション行列
+*	@param[in] context デバイスコンテキスト
+*	@param[in] states ステート
+*	@param[in] world ワールド行列
+*	@param[in] view ビュー行列
+*	@param[in] proj プロジェクション行列
 *	@return	なし
 */
-void BossSheild::Render(ID3D11DeviceContext1* context, DirectX::DX11::CommonStates* states, Matrix world, Matrix view, Matrix proj)
+void BossSheild::Render(ID3D11DeviceContext1* context,
+	DirectX::DX11::CommonStates* states,
+	DirectX::SimpleMath::Matrix world,
+	DirectX::SimpleMath::Matrix view,
+	DirectX::SimpleMath::Matrix proj)
 {
+
+	using namespace DirectX::SimpleMath;
+
 	// m_pBossをBossクラスのポインタにキャスト
-// 安全に dynamic_cast を使う前提
 	auto pBoss = dynamic_cast<BossBase*>(m_pBoss);
 	if (m_isSheild)// シールドが展開されている間
 	{

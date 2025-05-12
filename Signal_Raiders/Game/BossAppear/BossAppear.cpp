@@ -23,16 +23,15 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> BossAppear::INPUT_LAYOUT =
 *  @return なし
 */
 BossAppear::BossAppear()
-	: m_world(Matrix::Identity)
-	, m_pDrawPolygon{ DrawPolygon::GetInstance() }
-	, m_pCreateShader{ CreateShader::GetInstance() }
-	, m_timer(0.0f)
-	, m_pDR{}
-	, m_constantBuffer{}
-	, m_pInputLayout{}
-	, m_texture{}
-	, m_vertices{}
-	, m_commonResources{}
+	: m_world(Matrix::Identity)// ワールド行列
+	, m_pDrawPolygon{ DrawPolygon::GetInstance() }// 板ポリゴン描画クラス
+	, m_pCreateShader{ CreateShader::GetInstance() }// シェーダー作成クラス
+	, m_timer(0.0f)// タイマー
+	, m_pDR{}// デバイスリソース
+	, m_constantBuffer{}// コンスタントバッファ
+	, m_pInputLayout{}// インプットレイアウト
+	, m_texture{}// テクスチャ
+	, m_commonResources{}// コモンリソース
 {
 }
 
@@ -43,7 +42,7 @@ BossAppear::BossAppear()
 */
 BossAppear::~BossAppear()
 {
-	Finalize();
+	Finalize();// 終了処理
 }
 
 /*
@@ -53,19 +52,13 @@ BossAppear::~BossAppear()
 */
 void BossAppear::Initialize(CommonResources* resources)
 {
+	m_commonResources = resources;	// コモンリソースの取得
+	m_pDR = m_commonResources->GetDeviceResources();	// デバイスリソースの取得
+	m_pCreateShader->Initialize(m_pDR->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);	// シェーダー作成クラスの初期化
+	this->SettingShader();	// シェーダーの作成
+	this->LoadTexture(L"Resources/Textures/BossAppear.png");// テクスチャの読み込み
+	m_pDrawPolygon->InitializePositionTexture(m_pDR);// 板ポリゴン描画用
 
-	m_commonResources = resources;
-	m_pDR = m_commonResources->GetDeviceResources();
-	// シェーダー作成クラスの初期化
-	m_pCreateShader->Initialize(m_pDR->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
-
-	// シェーダーの作成
-	this->SettingShader();
-	// テクスチャの読み込み
-	this->LoadTexture(L"Resources/Textures/BossAppear.png");
-
-	// 板ポリゴン描画用
-	m_pDrawPolygon->InitializePositionTexture(m_pDR);
 }
 
 /*
@@ -75,9 +68,9 @@ void BossAppear::Initialize(CommonResources* resources)
 */
 void BossAppear::LoadTexture(const wchar_t* path)
 {
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;
-	DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, nullptr, texture.GetAddressOf());
-	m_texture.push_back(texture);
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;// テクスチャのポインタ（一時保存用）
+	DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, nullptr, texture.GetAddressOf());// テクスチャの読み込み
+	m_texture.push_back(texture);// テクスチャのポインタを格納
 }
 
 /*
@@ -87,23 +80,19 @@ void BossAppear::LoadTexture(const wchar_t* path)
 */
 void BossAppear::SettingShader()
 {
-	// シェーダーの作成
-	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/BossAppear/VS_BossAppear.cso", m_vertexShader);
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/BossAppear/PS_BossAppear.cso", m_pixelShader);
-	m_pInputLayout = m_pCreateShader->GetInputLayout();
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/BossAppear/PS_BossAppearBack.cso", m_pixelShaderBack);
-
-	// インプットレイアウトを受け取る
-	// 定数バッファ作成
-	m_pCreateShader->CreateConstantBuffer(m_CBuffer, sizeof(ConstBuffer));
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/BossAppear/VS_BossAppear.cso", m_vertexShader);// 頂点シェーダー作成
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/BossAppear/PS_BossAppear.cso", m_pixelShader);// ピクセルシェーダー作成
+	m_pInputLayout = m_pCreateShader->GetInputLayout();// インプットレイアウトを取得
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/BossAppear/PS_BossAppearBack.cso", m_pixelShaderBack);// ピクセルシェーダー作成（背景用）
+	m_pCreateShader->CreateConstantBuffer(m_CBuffer, sizeof(ConstBuffer));	// 定数バッファ作成
 	// シェーダーの構造体にシェーダーを渡す
-	m_shaders.vs = m_vertexShader.Get();
-	m_shaders.ps = m_pixelShader.Get();
-	m_shaders.gs = nullptr;
-
-	m_shadersBack.vs = m_vertexShader.Get();
-	m_shadersBack.ps = m_pixelShaderBack.Get();
-	m_shadersBack.gs = nullptr;
+	m_shaders.vs = m_vertexShader.Get();// 頂点シェーダー
+	m_shaders.ps = m_pixelShader.Get();// ピクセルシェーダー
+	m_shaders.gs = nullptr;// ジオメトリシェーダーは使用しない
+	// 背景用シェーダーの構造体にシェーダーを渡す
+	m_shadersBack.vs = m_vertexShader.Get();// 頂点シェーダー
+	m_shadersBack.ps = m_pixelShaderBack.Get();	// ピクセルシェーダー
+	m_shadersBack.gs = nullptr;// ジオメトリシェーダーは使用しない
 }
 
 /*
@@ -134,6 +123,7 @@ void BossAppear::Render()
 */
 void BossAppear::Finalize()
 {
+	//　do nothing
 }
 
 /*
@@ -154,36 +144,33 @@ void BossAppear::DrawMain()
 	// 2秒経過後に拡大を開始
 	float expandStartTime = 2.0f;  // 拡大開始時間
 	float expandDuration = 0.5f;    // 拡大にかける時間（0.5秒で完了）
-
 	// 拡大率を計算
 	float scaleFactor = 1.0f; // 初期値（拡大なし）
+	// 拡大開始時間を過ぎたら拡大を開始
 	if (m_timer > expandStartTime)
 	{
-		float t = (m_timer - expandStartTime) / expandDuration;
+		float t = (m_timer - expandStartTime) / expandDuration;// 拡大時間を計算
 		t = std::min(t, 1.0f); // 1.0を超えないようにクランプ
 		scaleFactor = Lerp(1.0f, 5.0f, t * 10); // 1.0 から 2.0 へスムーズに拡大
 	}
-
 	// 頂点の拡大
 	vertex[0].position = SimpleMath::Vector3(-1.0f, 0.5f, 0.0f) * scaleFactor;
 	vertex[1].position = SimpleMath::Vector3(1.0f, 0.7f, 0.0f) * scaleFactor;
 	vertex[2].position = SimpleMath::Vector3(1.0f, -0.5f, 0.0f) * scaleFactor;
 	vertex[3].position = SimpleMath::Vector3(-1.0f, -0.7f, 0.0f) * scaleFactor;
-
 	// コンスタントバッファの設定
-	m_constantBuffer.colors = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	m_constantBuffer.time = Vector4(m_timer);
-	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	m_pDrawPolygon->UpdateSubResources(m_CBuffer.Get(), &m_constantBuffer);
+	m_constantBuffer.colors = Vector4(1.0f, 1.0f, 1.0f, 1.0f);// 色
+	m_constantBuffer.time = Vector4(m_timer); // 時間
+	m_pDrawPolygon->UpdateSubResources(m_CBuffer.Get(), &m_constantBuffer);	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	// シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };
 	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
 	// 描画前設定
 	m_pDrawPolygon->DrawSetting(
-		DrawPolygon::SamplerStates::LINEAR_WRAP,
-		DrawPolygon::BlendStates::NONPREMULTIPLIED,
-		DrawPolygon::RasterizerStates::CULL_NONE,
-		DrawPolygon::DepthStencilStates::DEPTH_DEFAULT);
+		DrawPolygon::SamplerStates::LINEAR_WRAP,// サンプラーステート
+		DrawPolygon::BlendStates::NONPREMULTIPLIED,// ブレンドステート
+		DrawPolygon::RasterizerStates::CULL_NONE,// ラスタライザーステート
+		DrawPolygon::DepthStencilStates::DEPTH_DEFAULT);// 深度ステンシルステート
 	// 描画準備
 	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_texture);
 	// シェーダをセットする
@@ -191,7 +178,6 @@ void BossAppear::DrawMain()
 	//	板ポリゴンを描画
 	m_pDrawPolygon->DrawTexture(vertex);
 	// 描画終了
-	// シェーダの登録を解除しておく
 	m_pDrawPolygon->ReleaseShader();
 }
 
@@ -211,19 +197,18 @@ void BossAppear::DrawBack()
 		VertexPositionTexture(SimpleMath::Vector3(-1.0f, 1.0f, 0.0f), SimpleMath::Vector2(0.0f, 1.0f)),
 	};
 	// コンスタントバッファの設定
-	m_constantBuffer.colors = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	m_constantBuffer.time = Vector4(m_timer);
-	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	m_pDrawPolygon->UpdateSubResources(m_CBuffer.Get(), &m_constantBuffer);
+	m_constantBuffer.colors = Vector4(1.0f, 1.0f, 1.0f, 1.0f);// 色
+	m_constantBuffer.time = Vector4(m_timer);// 時間
+	m_pDrawPolygon->UpdateSubResources(m_CBuffer.Get(), &m_constantBuffer);	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	// シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };
 	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
 	// 描画前設定
 	m_pDrawPolygon->DrawSetting(
-		DrawPolygon::SamplerStates::LINEAR_WRAP,
-		DrawPolygon::BlendStates::NONPREMULTIPLIED,
-		DrawPolygon::RasterizerStates::CULL_NONE,
-		DrawPolygon::DepthStencilStates::DEPTH_DEFAULT);
+		DrawPolygon::SamplerStates::LINEAR_WRAP,// サンプラーステート
+		DrawPolygon::BlendStates::NONPREMULTIPLIED,// ブレンドステート
+		DrawPolygon::RasterizerStates::CULL_NONE,// ラスタライザーステート
+		DrawPolygon::DepthStencilStates::DEPTH_DEFAULT);// 深度ステンシルステート
 	// 描画準備
 	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_texture);
 	// シェーダをセットする

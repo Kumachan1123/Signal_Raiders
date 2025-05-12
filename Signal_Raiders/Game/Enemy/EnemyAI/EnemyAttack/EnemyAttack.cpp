@@ -4,9 +4,7 @@
 */
 #include "pch.h"
 #include "EnemyAttack.h"
-
 using namespace DirectX::SimpleMath;
-
 /*
 *	@brief	コンストラクタ
 *	@param	EnemyAI* enemy
@@ -15,15 +13,15 @@ using namespace DirectX::SimpleMath;
 EnemyAttack::EnemyAttack(EnemyAI* enemyAI)
 	: m_enemyAI(enemyAI)// 敵AI
 	, m_attackCooldown(EnemyParameters::ATTACK_COOLDOWN)// 攻撃のクールダウンタイム
-	, m_rotationSpeed{}
-	, m_commonResources{}
+	, m_rotationSpeed{}// 回転速度
+	, m_commonResources{}// 共通リソース
 {
 }
 /*
 *	@brief	デストラクタ
 *	@return	なし
 */
-EnemyAttack::~EnemyAttack() {}
+EnemyAttack::~EnemyAttack() {/*do nothing*/ }
 /*
 *	@brief	初期化
 *	@return	なし
@@ -44,20 +42,14 @@ void EnemyAttack::Update(float elapsedTime)
 {
 	m_rotationSpeed -= (elapsedTime / EnemyParameters::ROTATION_SPEED_DIVISOR);// 回転速度を減少
 	if (m_rotationSpeed <= EnemyParameters::ROTATION_SPEED_MIN)// 回転速度が基準以下になったら
-	{
-		m_rotationSpeed = EnemyParameters::ROTATION_SPEED_MIN;// 回転速度を設定
-	}
+		m_rotationSpeed = EnemyParameters::ROTATION_SPEED_MIN;// 回転速度を基準値に設定
 	Vector3 toPlayerVector = m_enemyAI->GetEnemy()->GetPlayer()->GetPlayerPos() - m_enemyAI->GetPosition();	// プレイヤーへのベクトルを計算
 	if (toPlayerVector.LengthSquared() > 0.0f)// プレイヤーへのベクトルが0より大きい場合
-	{
 		toPlayerVector.Normalize();// プレイヤーへのベクトルを正規化
-	}
 	// 現在の前方ベクトルを取得
 	Vector3 forward = Vector3::Transform(Vector3::Forward, m_rotation);
 	if (forward.LengthSquared() > 0.0f)// 現在の前方ベクトルが0より大きい場合
-	{
 		forward.Normalize();// 現在の前方ベクトルを正規化
-	}
 	float dot = toPlayerVector.Dot(forward);	// 内積を使って角度を計算
 	dot = Clamp(dot, EnemyParameters::DOT_CLAMP.min, EnemyParameters::DOT_CLAMP.max); // acosの引数が範囲外になるのを防ぐため
 	float angle = std::acos(dot);// プレイヤーの方向に向くための回転を計算

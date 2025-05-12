@@ -1,17 +1,6 @@
 #include "pch.h"
 #include "EnemyBullet.h"
-#include "Game/BulletParameters/BulletParameters.h"
-#include "Game/KumachiLib/KumachiLib.h"
-#include <SimpleMath.h>
-#include "Game/CommonResources.h"
-#include "DeviceResources.h"
-#include "Libraries/MyLib/DebugString.h"
-#include "Libraries/MyLib/InputManager.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
-#include "Libraries/Microsoft/ReadData.h"
-#include <cassert>
-#include <Libraries/Microsoft/DebugDraw.h>
-#include "Game/KumachiLib/DrawCollision/DrawCollision.h"
+
 using namespace DirectX::SimpleMath;
 //-------------------------------------------------------------------
 // コンストラクタ

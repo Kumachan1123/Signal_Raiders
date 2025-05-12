@@ -39,7 +39,7 @@ class EnemyManager;
 class BossBase : public IEnemy
 {
 public:
-
+	// 列挙型
 	// ボスの弾の種類
 	enum class BossBulletType
 	{
@@ -50,45 +50,45 @@ public:
 		STAGE_5,		// ステージ5
 	};
 public:
-	//	getter
-	DirectX::BoundingSphere& GetBoundingSphere() override { return m_bossBS; }
-	DirectX::BoundingSphere& GetBulletBoundingSphere()override { return m_enemyBulletBS; }
-	void SetBulletBoundingSphere(DirectX::BoundingSphere& bs) override { m_enemyBulletBS = bs; }
-	DirectX::BoundingSphere& GetPlayerBoundingSphere() override { return m_playerBS; }
-	void SetPlayerBoundingSphere(DirectX::BoundingSphere playerBS) override { m_playerBS = playerBS; }
-	const DirectX::SimpleMath::Matrix& GetMatrix()  override { return m_matrix; }
-	const DirectX::SimpleMath::Vector3& GetPosition()  override { return m_position; }
-	void SetPosition(DirectX::SimpleMath::Vector3& pos) override { m_position = pos; }
-	const DirectX::SimpleMath::Vector3& GetVelocity()  override { return m_velocity; }
-	const DirectX::SimpleMath::Vector3& GetRotate()  override { return m_rotate; }
+	// アクセサ
+	DirectX::BoundingSphere& GetBoundingSphere() override { return m_bossBS; }// ボスの境界球取得
+	DirectX::BoundingSphere& GetBulletBoundingSphere()override { return m_enemyBulletBS; }// 弾の境界球取得
+	void SetBulletBoundingSphere(DirectX::BoundingSphere& bs) override { m_enemyBulletBS = bs; }// 弾の境界球設定
+	DirectX::BoundingSphere& GetPlayerBoundingSphere() override { return m_playerBS; }// プレイヤーの境界球取得
+	void SetPlayerBoundingSphere(DirectX::BoundingSphere playerBS) override { m_playerBS = playerBS; }// プレイヤーの境界球設定
+	const DirectX::SimpleMath::Matrix& GetMatrix()  override { return m_matrix; }// マトリクス取得
+	const DirectX::SimpleMath::Vector3& GetPosition()  override { return m_position; }// 位置取得
+	void SetPosition(DirectX::SimpleMath::Vector3& pos) override { m_position = pos; }// 位置設定
+	const DirectX::SimpleMath::Vector3& GetVelocity()  override { return m_velocity; }// 速度取得
+	const DirectX::SimpleMath::Vector3& GetRotate()  override { return m_rotate; }// 回転取得
 	DirectX::SimpleMath::Vector3 GetScale() const { return m_scale; }// スケール取得
 	void SetScale(DirectX::SimpleMath::Vector3 scale) { m_scale = scale; }// スケール設定
 	DirectX::SimpleMath::Quaternion GetQuaternion() const { return m_quaternion; }// クォータニオン取得
 	void SetQuaternion(DirectX::SimpleMath::Quaternion quaternion) { m_quaternion = quaternion; }// クォータニオン設定
 	DirectX::SimpleMath::Vector3 GetBulletDirection() const { return m_bulletDirection; }// 弾の飛ぶ方向取得
 	void SetBulletDirection(DirectX::SimpleMath::Vector3 direction) { m_bulletDirection = direction; }// 弾の飛ぶ方向設定
-	Player* GetPlayer()const override { return m_pPlayer; }
-	FPS_Camera* GetCamera()const override { return m_pCamera; }
-	void SetCamera(FPS_Camera* camera) { m_pCamera = camera; }
-	int GetEnemyHP() const override { return m_currentHP; }
-	void SetEnemyHP(int hp) override;
-	bool GetEnemyIsDead() const override { return m_isDead; }
-	void SetEnemyIsDead(bool isDead) override { m_isDead = isDead; }
-	bool GetHitToPlayer()const override { return m_isHitToPlayer; }
-	void SetHitToPlayer(bool isHitToPlayer)override { m_isHitToPlayer = isHitToPlayer; }
-	bool GetHitToOtherEnemy() const override { return m_isHitToOtherEnemy; }
-	void SetHitToOtherEnemy(bool isHitToOtherEnemy) override { m_isHitToOtherEnemy = isHitToOtherEnemy; }
+	Player* GetPlayer()const override { return m_pPlayer; }// プレイヤーのポインター取得
+	FPS_Camera* GetCamera()const override { return m_pCamera; }// カメラのポインター取得
+	void SetCamera(FPS_Camera* camera) { m_pCamera = camera; }// カメラのポインター設定
+	int GetEnemyHP() const override { return m_currentHP; }// 敵のHP取得
+	void SetEnemyHP(int hp) override;// 敵のHP設定
+	bool GetEnemyIsDead() const override { return m_isDead; }// 敵の死亡フラグ取得
+	void SetEnemyIsDead(bool isDead) override { m_isDead = isDead; }// 敵の死亡フラグ設定
+	bool GetHitToPlayer()const override { return m_isHitToPlayer; }// プレイヤーとの当たり判定取得
+	void SetHitToPlayer(bool isHitToPlayer)override { m_isHitToPlayer = isHitToPlayer; }// プレイヤーとの当たり判定設定
+	bool GetHitToOtherEnemy() const override { return m_isHitToOtherEnemy; }// 他の敵との当たり判定取得
+	void SetHitToOtherEnemy(bool isHitToOtherEnemy) override { m_isHitToOtherEnemy = isHitToOtherEnemy; }// 他の敵との当たり判定設定
 	bool GetPlayerHitByEnemyBullet() const override { return m_isPlayerHitByEnemyBullet; }// 敵の弾がプレイヤーに当たったか
 	void SetPlayerHitByEnemyBullet(bool hit) override { m_isPlayerHitByEnemyBullet = hit; }// 敵の弾がプレイヤーに当たったか
-	bool GetEnemyHitByPlayerBullet()const override { return m_isEnemyHitByPlayerBullet; }
-	void SetEnemyHitByPlayerBullet(bool hit)override { m_isEnemyHitByPlayerBullet = hit; }
-	float GetToPlayerDamage() const override { return m_bossDamage; }
+	bool GetEnemyHitByPlayerBullet()const override { return m_isEnemyHitByPlayerBullet; }// 敵がプレイヤーの弾に当たったか
+	void SetEnemyHitByPlayerBullet(bool hit)override { m_isEnemyHitByPlayerBullet = hit; }// 敵がプレイヤーの弾に当たったか
+	float GetToPlayerDamage() const override { return m_bossDamage; }// プレイヤーに与えるダメージ取得
 	void SetToPlayerDamage(float damage) { m_bossDamage = damage; }// プレイヤーに与えるダメージを設定
-	DirectX::SimpleMath::Vector3 GetCameraEye()const { return m_cameraEye; }
-	DirectX::SimpleMath::Vector3 GetCameraTarget()const { return m_cameraTarget; }
-	DirectX::SimpleMath::Vector3 GetCameraUp()const { return m_cameraUp; }
+	DirectX::SimpleMath::Vector3 GetCameraEye()const { return m_cameraEye; }// カメラの位置取得
+	DirectX::SimpleMath::Vector3 GetCameraTarget()const { return m_cameraTarget; }// カメラのターゲット取得
+	DirectX::SimpleMath::Vector3 GetCameraUp()const { return m_cameraUp; }// カメラの上ベクトル取得
 	float GetSheildSEVolume() const { return m_SEVolume - m_SEVolumeCorrection; }//シールド展開音の音量を取得
-	void SetPlayerHP(float& HP) const override { HP -= m_bossDamage; }
+	void SetPlayerHP(float& HP) const override { HP -= m_bossDamage; }// プレイヤーのHPを減らす
 	void SetBulletCooldown(float cooldown) { m_bulletCooldown = cooldown; }// シールドを展開した後に実行する
 	void SetInitSpecialAttacCooldown(float cooldown) { m_initSpecialAttackCooldown = cooldown; }// 特殊攻撃のクールダウン
 	bool GetCanAttack() const override { return m_canAttack; }// 攻撃可能か
@@ -112,9 +112,9 @@ public:
 	float GetDeadEffectSize()const { return m_deadEffectSize; }// 死亡エフェクトのサイズ取得
 	void SetDeadEffectSize(float size) { m_deadEffectSize = size; }// 死亡エフェクトのサイズ設定
 public:
-	// 初期ステータスを設定
-	BossBase(Player* pPlayer, CommonResources* resources, int hp);
-	virtual ~BossBase();
+	// public関数
+	BossBase(Player* pPlayer, CommonResources* resources, int hp);// コンストラクタ
+	virtual ~BossBase();// デストラクタ
 	void Initialize() override;// 初期化
 	void Update(float elapsedTime)override;// 更新
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;// 描画
@@ -123,27 +123,26 @@ public:
 	BossBulletType GetBulletType() const { return m_bossBulletType; };// 弾のタイプ取得
 	void PlayBarrierSE();// バリアSE再生
 private:
+	// private関数
 	void ShootBullet();// 弾発射
 	void CreateVerticalBullet();// 垂直の弾を生成
 	void CreateSpiralBullet();// 螺旋弾を生成
 
 private:
+	// privateメンバ変数
 	// 共通リソース
 	CommonResources* m_commonResources;
-
 	std::unique_ptr<BossAI>		m_pBossAI;// AI
 	std::unique_ptr<BossModel>		m_pBossModel;//モデル
 	std::unique_ptr<BossSheild>		m_pBossSheild;// シールド
 	std::unique_ptr<EnemyHPBar>		m_pHPBar;// HPバー
-
 	// 音量
 	float m_SEVolume;// SEの音量
 	float m_SEVolumeCorrection;// SEの音量補正
-
 	// プレイヤーのポインター
 	Player* m_pPlayer;
+	// カメラのポインター
 	FPS_Camera* m_pCamera;
-
 	// 敵の情報
 	DirectX::SimpleMath::Vector3 m_position;		// 座標
 	DirectX::SimpleMath::Vector3 m_velocity;		// 速度
@@ -187,13 +186,11 @@ private:
 	bool m_canAttack;// 攻撃可能か
 	bool m_isAttack;// 攻撃中か
 	// プレイヤーのカメラの情報
-	DirectX::SimpleMath::Vector3 m_cameraEye;
-	DirectX::SimpleMath::Vector3 m_cameraTarget;
-	DirectX::SimpleMath::Vector3 m_cameraUp;
-
+	DirectX::SimpleMath::Vector3 m_cameraEye;// カメラの位置
+	DirectX::SimpleMath::Vector3 m_cameraTarget;// カメラのターゲット
+	DirectX::SimpleMath::Vector3 m_cameraUp;// カメラの上ベクトル
 	float m_defaultHitRadius;// 通常時の当たり判定の半径
 	float m_defensiveHitRadius;// 防御時の当たり判定の半径
-
 	float m_bulletSize;// 弾のサイズ
 	float m_barrierBreakSize;// バリアの破壊パーティクルサイズ
 	float m_deadEffectSize;//死亡エフェクトのサイズ

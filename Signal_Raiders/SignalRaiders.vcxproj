@@ -226,7 +226,7 @@
     <ClInclude Include="Game\Enemy\VerticalAttacker\VerticalAttacker.h" />
     <ClInclude Include="Game\Enemy\Boss\BossAI\BossAI.h" />
     <ClInclude Include="Game\Enemy\Boss\BossAI\BossAttack\BossAttack.h" />
-    <ClInclude Include="Game\Enemy\Boss\BossAI\BossIdling\BossIdling.h" />
+    <ClInclude Include="Game\Enemy\Boss\BossAI\BossKnockBacking\BossKnockBacking.h" />
     <ClInclude Include="Game\Enemy\Boss\Boss.h" />
     <ClInclude Include="Game\Enemy\Boss\BossModel\BossModel.h" />
     <ClInclude Include="Game\Enemy\EnemyManager\EnemyManager.h" />
@@ -329,7 +329,7 @@
     <ClCompile Include="Game\Enemy\VerticalAttacker\VerticalAttacker.cpp" />
     <ClCompile Include="Game\Enemy\Boss\BossAI\BossAI.cpp" />
     <ClCompile Include="Game\Enemy\Boss\BossAI\BossAttack\BossAttack.cpp" />
-    <ClCompile Include="Game\Enemy\Boss\BossAI\BossIdling\BossIdling.cpp" />
+    <ClCompile Include="Game\Enemy\Boss\BossAI\BossKnockBacking\BossKnockBacking.cpp" />
     <ClCompile Include="Game\Enemy\Boss\Boss.cpp" />
     <ClCompile Include="Game\Enemy\Boss\BossModel\BossModel.cpp" />
     <ClCompile Include="Game\Enemy\EnemyManager\EnemyManager.cpp" />

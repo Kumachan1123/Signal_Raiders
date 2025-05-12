@@ -21,6 +21,7 @@ class CommonResources;
 
 class BossAppear
 {
+	// 構造体
 private:
 	//	データ受け渡し用コンスタントバッファ(送信側)
 	struct ConstBuffer
@@ -31,19 +32,20 @@ private:
 		DirectX::SimpleMath::Vector4 colors;    // カラー
 		DirectX::SimpleMath::Vector4 time;    // 時間	
 	};
-public:
-	BossAppear();
-	~BossAppear();
-	void Initialize(CommonResources* resources);
-	void Update(float elapsedTime);
-	void Render();
-	void Finalize();
 
-private:
-	void SettingShader();
-	void LoadTexture(const wchar_t* path);
-	void DrawMain();
-	void DrawBack();
+public:// publicメンバ関数
+	BossAppear();//	コンストラクタ
+	~BossAppear();//	デストラクタ
+	void Initialize(CommonResources* resources);// 初期化
+	void Update(float elapsedTime);// 更新
+	void Render();// 描画
+	void Finalize();// 終了処理
+private:	// privateメンバ関数
+	void SettingShader();// シェーダーの設定
+	void LoadTexture(const wchar_t* path);// テクスチャの読み込み
+	void DrawMain();// メインの演出を描画
+	void DrawBack();// 背景の演出を描画
+private:// privateメンバ変数
 	//	頂点シェーダ(Main)
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
 	//	ピクセルシェーダ(Main)
@@ -52,7 +54,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShaderBack;
 	// ピクセルシェーダ(Back)
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShaderBack;
-
 	// シェーダーの構造体(Main)
 	DrawPolygon::Shaders m_shaders;
 	// シェーダーの構造体(Back)
@@ -78,6 +79,6 @@ private:
 	DX::DeviceResources* m_pDR;
 	//	タイマー
 	float m_timer;
+	// シェーダーに渡すバッファ
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
-	DirectX::VertexPositionTexture m_vertices;
 };

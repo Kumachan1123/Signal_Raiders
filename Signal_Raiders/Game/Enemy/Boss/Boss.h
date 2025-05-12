@@ -13,7 +13,6 @@
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/Interface/IBossLogic.h"
 #include "Game/Enemy/BossBase/BossBase.h"
-//#include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 #include "Game/KumachiLib/DrawCollision/DrawCollision.h"
 #include "Game/Enemy/Parameters/EnemyParameters.h"
 #include "Game/Enemy/EnemyHPBar/EnemyHPBar.h"
@@ -27,22 +26,21 @@ class BossAI;
 class BossModel;
 class Boss : public IBossLogic
 {
-
 public:
-	// 初期ステータスを設定
-	Boss(BossBase* pBoss, CommonResources* commonResources);
-	~Boss();
-	void Initialize()override;                                             // Boss, LastBossにてモデルを生成
-	void ChangeState()override;                                // Boss,LastBossにて状態を変更
-	void Draw(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;        // Boss, LastBossにて描画
+	// public関数
+	Boss(BossBase* pBoss, CommonResources* commonResources);// コンストラクタ
+	~Boss();// デストラクタ
+	void Initialize()override; // 初期化(Boss, LastBossにてモデルを生成)
+	void ChangeState()override;// 状態変更(Boss,LastBossにて状態を変更)
+	void Draw(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;// 描画(Boss, LastBossにて描画)
 	void BulletPositioning()override;	// 弾の発射位置を決定
 	void CreateBullet();// 弾を生成
 	void CreateCenterBullet(BulletType type);// 中央の弾を生成
 	void CreateLeftBullet(BulletType type);// 左の弾を生成
 	void CreateRightBullet(BulletType type);// 右の弾を生成
 private:
-	// 共通リソース
-	CommonResources* m_commonResources;
+	// privateメンバ変数
+	CommonResources* m_commonResources;	// 共通リソース
 	std::unique_ptr<BossModel>		m_pBossModel;//モデル
 	std::unique_ptr<EnemyHPBar>		m_pHPBar;// HPバー
 	// 敵の情報
@@ -52,12 +50,9 @@ private:
 	DirectX::BoundingSphere m_bossBS;	//敵の境界球
 	DirectX::SimpleMath::Matrix m_matrix;// マトリクス
 	// 弾の発射位置
-	// 中央
-	DirectX::SimpleMath::Vector3 m_bulletPosCenter;
-	// 左
-	DirectX::SimpleMath::Vector3 m_bulletPosLeft;
-	// 右
-	DirectX::SimpleMath::Vector3 m_bulletPosRight;
+	DirectX::SimpleMath::Vector3 m_bulletPosCenter;	// 中央
+	DirectX::SimpleMath::Vector3 m_bulletPosLeft;	// 左
+	DirectX::SimpleMath::Vector3 m_bulletPosRight;	// 右
 	// 発射位置を回転させるためのクォータニオン
 	DirectX::SimpleMath::Quaternion m_bulletQuaternion;
 	// 弾のタイプ
@@ -67,8 +62,9 @@ private:
 	// 時間
 	float m_time;
 	// プレイヤーのカメラの情報
-	DirectX::SimpleMath::Vector3 m_cameraEye;
-	DirectX::SimpleMath::Vector3 m_cameraTarget;
-	DirectX::SimpleMath::Vector3 m_cameraUp;
+	DirectX::SimpleMath::Vector3 m_cameraEye;// カメラの位置
+	DirectX::SimpleMath::Vector3 m_cameraTarget;// カメラの注視点
+	DirectX::SimpleMath::Vector3 m_cameraUp;	// カメラの上方向
+	// ボスベースクラスのポインタ
 	BossBase* m_pBossBase;
 };

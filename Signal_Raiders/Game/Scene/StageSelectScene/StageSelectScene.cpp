@@ -100,8 +100,6 @@ void StageSelectScene::Update(float elapsedTime)
 
 	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
 	{
-		// マウストラッカー取得
-		auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
 
 		for (int it = 0; it < m_pUI.size(); ++it)
 		{

@@ -1,10 +1,10 @@
 /*
-	@file	BossIdling.h
-	@brief	ボス徘徊クラス
+	@file	BossKnockBacking.h
+	@brief	ボスのノックバック中の処理クラス
 */
 #pragma once
-#ifndef BOSS_IDLING_DEFINED
-#define BOSS_IDLING_DEFINED
+#ifndef BOSS_KNOCKBACKING_DEFINED
+#define BOSS_KNOCKBACKING_DEFINED
 // 標準ライブラリ
 #include <SimpleMath.h>
 #include <cassert>
@@ -25,8 +25,21 @@
 //前方宣言
 class BossAI;
 
-class BossIdling : public IState
+class BossKnockBacking : public IState
 {
+public:
+	// アクセサ
+	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }// 座標取得
+	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }// 座標設定
+	DirectX::SimpleMath::Quaternion GetRotation() const { return m_rotation; }// 回転取得
+	void SetRotation(DirectX::SimpleMath::Quaternion rot) { m_rotation = rot; }// 回転設定
+	void SetScale(DirectX::SimpleMath::Vector3 sca) { m_scale = sca; }// スケール設定
+public:
+	// publicメンバ関数
+	BossKnockBacking(BossAI* pBoss);// コンストラクタ
+	virtual ~BossKnockBacking();// デストラクタ
+	void Initialize() override;// 初期化
+	void Update(float elapsedTime) override;// 更新
 private:
 	// 敵AI
 	BossAI* m_pBoss;
@@ -46,19 +59,5 @@ private:
 	float  m_time;
 	// 角度
 	float m_angle;
-
-public:
-	// アクセサ
-	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }// 座標取得
-	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }// 座標設定
-	DirectX::SimpleMath::Quaternion GetRotation() const { return m_rotation; }// 回転取得
-	void SetRotation(DirectX::SimpleMath::Quaternion rot) { m_rotation = rot; }// 回転設定
-	void SetScale(DirectX::SimpleMath::Vector3 sca) { m_scale = sca; }// スケール設定
-public:
-	// publicメンバ関数
-	BossIdling(BossAI* pBoss);// コンストラクタ
-	virtual ~BossIdling();// デストラクタ
-	void Initialize() override;// 初期化
-	void Update(float elapsedTime) override;// 更新
 };
-#endif //BOSS_IDLING_DEFINED
+#endif //BOSS_KNOCKBACKING_DEFINED

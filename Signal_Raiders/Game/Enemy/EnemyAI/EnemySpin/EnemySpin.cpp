@@ -3,49 +3,52 @@
 	@brief	敵スピンクラス
 */
 #include "pch.h"
-#include <SimpleMath.h>
-#include "Game/Enemy/EnemyAI/EnemySpin/EnemySpin.h"
-#include "Game/Enemy/EnemyAI/EnemyAI.h"
-#include "Libraries/MyLib/DebugString.h"
-#include "Libraries/MyLib/InputManager.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
-#include <cassert>
-#include <random>  
-#include "Game/KumachiLib/KumachiLib.h"
-
-using namespace DirectX::SimpleMath;
-// コンストラクタ
-EnemySpin::EnemySpin(EnemyAI* enemy)
-	: m_enemy(enemy),
-	m_rotation(Quaternion::Identity),
-	m_velocity(Vector3::Zero),
-	m_scale(Vector3::One),
-	m_initialPosition(Vector3::Zero),
-	m_time(0.0f),
-	m_angle(0.0f)
+#include "EnemySpin.h"
+/*
+*	@brief	コンストラクタ
+*	@param[in]	EnemyAI* enemyAI 敵AI
+*	@return	なし
+*/
+EnemySpin::EnemySpin(EnemyAI* enemyAI)
+	: m_enemyAI(enemyAI)
+	, m_rotation(DirectX::SimpleMath::Quaternion::Identity)
+	, m_velocity(DirectX::SimpleMath::Vector3::Zero)
+	, m_scale(DirectX::SimpleMath::Vector3::One)
+	, m_initialPosition(DirectX::SimpleMath::Vector3::Zero)
+	, m_time(0.0f)
+	, m_angle(0.0f)
 {
 }
-// デストラクタ
-EnemySpin::~EnemySpin() {}
-// 初期化する
+/*
+*	@brief	デストラクタ
+*	@return	なし
+*/
+EnemySpin::~EnemySpin() {/*do nothing*/ }
+/*
+*	@brief	初期化
+*	@return	なし
+*/
 void EnemySpin::Initialize()
 {
-	m_rotation = m_enemy->GetRotation();
-	m_velocity = m_enemy->GetVelocity();
-	m_scale = m_enemy->GetScale();
-	m_initialPosition = m_enemy->GetPosition();
+	m_rotation = m_enemyAI->GetRotation();// 敵の回転を取得
+	m_velocity = m_enemyAI->GetVelocity(); // 敵の移動速度を取得
+	m_scale = m_enemyAI->GetScale(); // 敵のスケールを取得
+	m_initialPosition = m_enemyAI->GetPosition(); // 敵の初期位置を取得
 }
-
+/*
+*	@brief	更新
+*	@param[in]	float elapsedTime　経過時間
+*	@return	なし
+*/
 void EnemySpin::Update(float elapsedTime)
 {
-	m_time += elapsedTime;
-
-	m_angle = CalculateAngle(m_enemy->GetPosition(), m_enemy->GetEnemy()->GetPlayer()->GetPlayerPos());// プレイヤーの方向を取得し、正面を向かせる
-	m_angle = Lerp(m_angle, CalculateAngle(m_enemy->GetEnemy()->GetPlayer()->GetPlayerPos(), m_enemy->GetPosition()), m_time);// プレイヤーの方向を取得し、一回転させる
-	// 敵を回転させる
-	m_rotation = Quaternion::CreateFromYawPitchRoll(m_angle, 0.0f, 0.0f);
-	m_enemy->SetRotation(m_rotation);
-	m_enemy->SetVelocity(m_velocity);
+	using namespace DirectX::SimpleMath;
+	m_time += elapsedTime;// 時間の加算
+	m_angle = CalculateAngle(m_enemyAI->GetPosition(), m_enemyAI->GetEnemy()->GetPlayer()->GetPlayerPos());// プレイヤーの方向を取得し、正面を向かせる
+	m_angle = Lerp(m_angle, CalculateAngle(m_enemyAI->GetEnemy()->GetPlayer()->GetPlayerPos(), m_enemyAI->GetPosition()), m_time);// プレイヤーの方向を取得し、一回転させる
+	m_rotation = Quaternion::CreateFromYawPitchRoll(m_angle, 0.0f, 0.0f);// 敵を回転させる
+	m_enemyAI->SetRotation(m_rotation);// 敵の回転を設定
+	m_enemyAI->SetVelocity(m_velocity);// 敵の移動速度を設定
 }
 
 

@@ -19,14 +19,14 @@
 #include "Game/KumachiLib/KumachiLib.h"
 #include "Game/Enemy/Parameters/EnemyParameters.h"
 #include "Game/Enemy/Boss/BossAI/BossAttack/BossAttack.h"
-#include "Game/Enemy/Boss/BossAI/BossIdling/BossIdling.h"
+#include "Game/Enemy/Boss/BossAI/BossKnockBacking/BossKnockBacking.h"
 #include "Game/Player/Player.h"
 #include "Game/Interface/IState.h"
 
 //前方宣言
 class CommonResources;
 class BossAttack;
-class BossIdling;
+class BossKnockBacking;
 
 class BossAI
 {
@@ -65,8 +65,8 @@ private:
 
 	//攻撃時
 	std::unique_ptr<BossAttack> m_pBossAttack;
-	//待機時
-	std::unique_ptr<BossIdling> m_pBossIdling;
+	//ノックバック時
+	std::unique_ptr<BossKnockBacking> m_pBossKnockBacking;
 	// 現在の状態
 	IState* m_currentState;
 	// 状態

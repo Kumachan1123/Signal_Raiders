@@ -27,7 +27,7 @@ BossAI::BossAI(IEnemy* pBoss)
 	, m_isAttack(false)// 攻撃中か
 {
 	m_pBossAttack = std::make_unique<BossAttack>(this);// 攻撃時
-	m_pBossIdling = std::make_unique<BossIdling>(this);// 待機時
+	m_pBossKnockBacking = std::make_unique<BossKnockBacking>(this);// ノックバック時
 
 }
 
@@ -67,7 +67,7 @@ void BossAI::Update(float elapsedTime)
 	auto boss = dynamic_cast<BossBase*>(m_pBoss);// IEnemyからBossのポインターを抽出
 	if (!m_isKnockBack && boss->GetBossSheild()->GetSheildHP() <= 0)	// シールドが壊されたらノックバック
 	{
-		ChangeState(m_pBossIdling.get());//徘徊態勢にする
+		ChangeState(m_pBossKnockBacking.get());//徘徊態勢にする
 		KnockBack(elapsedTime);// ノックバック処理
 		m_enemyState = IState::EnemyState::DAMAGE;// 徘徊態勢
 		SetIsAttack(false);// 攻撃中ではない

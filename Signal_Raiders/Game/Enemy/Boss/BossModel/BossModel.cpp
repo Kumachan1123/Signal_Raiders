@@ -4,10 +4,6 @@
 */
 #include "pch.h"
 #include "BossModel.h"
-
-using namespace DirectX;
-using namespace DirectX::SimpleMath;
-
 /*
 *	@breif	コンストラクタ
 *	@return	なし
@@ -25,11 +21,11 @@ BossModel::BossModel()
 *	@breif	デストラクタ
 *	@return	なし
 */
-BossModel::~BossModel() {}
+BossModel::~BossModel() {/*do nothing*/ }
 
 /*
 *	@breif	初期化
-*	@param[in]	CommonResources* resources
+*	@param[in]	CommonResources* resources 共通リソース
 *	@return	なし
 */
 void BossModel::Initialize(CommonResources* resources)
@@ -61,7 +57,7 @@ void BossModel::Render(ID3D11DeviceContext1* context,
 	DirectX::SimpleMath::Matrix view,
 	DirectX::SimpleMath::Matrix proj)
 {
-
+	using namespace DirectX::SimpleMath;
 	Vector3 lightDir = Vector3::UnitY;// ライトの方向
 	lightDir.Normalize();// 正規化
 	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, 0.01f));	// 影行列の元を作る
@@ -77,7 +73,6 @@ void BossModel::Render(ID3D11DeviceContext1* context,
 	switch (m_nowState)// 現在のステートによって描画を変える
 	{
 	case IState::EnemyState::DAMAGE:// ダメージ
-		//case IState::EnemyState::IDLING:// 待機
 		m_damageFaceModel->Draw(context, *states, world, view, proj);// 普段の顔
 		break;
 	case IState::EnemyState::ATTACK:// 攻撃

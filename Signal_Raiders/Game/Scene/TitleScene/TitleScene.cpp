@@ -92,8 +92,6 @@ void TitleScene::Update(float elapsedTime)
 {
 	// オーディオマネージャーの更新処理
 	m_commonResources->GetAudioManager()->Update();
-	// キーボードステートトラッカーを取得する
-	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
 	// マウスのトラッカーを取得する
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
 

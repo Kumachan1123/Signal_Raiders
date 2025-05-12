@@ -2,7 +2,6 @@
 	@file	BossAttack.h
 	@brief	ボス攻撃クラス
 */
-
 #pragma once
 #ifndef BOSS_ATTACK_DEFINED
 #define BOSS_ATTACK_DEFINED
@@ -46,11 +45,12 @@ public:
 	void Initialize() override;// 初期化
 	void Update(float elapsedTime) override;// 更新
 private:
+	// privateメンバ関数
 	void RotateTowardsPlayer(DirectX::SimpleMath::Vector3 playerPos);// プレイヤーの方向に回転
 	void MoveTowardsPlayer(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos);// プレイヤーの方向に移動
 	void ManageAttackCooldown(float elapsedTime);// 攻撃クールダウンの管理
 private:
-	// 定数
+	// private定数
 	const float ROTATION_SPEED = 5.5f;// 回転速度
 	const float RANDOM_MAX = 2.0f;// ランダムの最大値
 	const float RANDOM_MIN = 0.5f;// ランダムの最小値

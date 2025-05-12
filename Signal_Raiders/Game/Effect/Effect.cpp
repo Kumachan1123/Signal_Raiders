@@ -16,10 +16,10 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC>  Effect::INPUT_LAYOUT =
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
-const 	float Effect::m_vertexMinX = -1.0f;
-const 	float Effect::m_vertexMaxX = 1.0f;
-const 	float Effect::m_vertexMinY = -1.0f;
-const 	float Effect::m_vertexMaxY = 1.0f;
+const 	float Effect::m_vertexMinX = -1.0f;// 最小X座標
+const 	float Effect::m_vertexMaxX = 1.0f;// 最大X座標
+const 	float Effect::m_vertexMinY = -1.0f;// 最小Y座標
+const 	float Effect::m_vertexMaxY = 1.0f;// 最大Y座標
 
 /*
 *	@brief	コンストラクタ
@@ -31,35 +31,33 @@ const 	float Effect::m_vertexMaxY = 1.0f;
 *	@return	なし
 */
 Effect::Effect(CommonResources* resources, EffectType type, DirectX::SimpleMath::Vector3 playPos, float scale, DirectX::SimpleMath::Matrix world)
-	: m_position(playPos)
-	, m_type(type)
-	, m_scale(scale)
-	, m_commonResources(resources)
-	, m_world(world)
-	, m_isPlaying(false)
-	, m_anim(0)
-	, m_animSpeed(30.0f)
-	, m_animTime(0.0f)
+	: m_position(playPos)// エフェクトを再生する座標
+	, m_type(type)// エフェクトの種類
+	, m_scale(scale)// エフェクトのスケール
+	, m_commonResources(resources)// 共通リソース
+	, m_world(world)// ワールド行列
+	, m_isPlaying(false)// 再生中かのフラグ
+	, m_anim(0)// アニメーションのコマ
+	, m_animSpeed(30.0f)// アニメーションのスピード
+	, m_animTime(0.0f)// アニメーションの時間
 	, m_frameRows{}// 画像の行数
 	, m_frameCols{}// 画像の列数
-	, m_vertices{}
-	, m_offSetY(0.0f)
-	, m_pDrawPolygon(DrawPolygon::GetInstance())
-	, m_pCreateShader(CreateShader::GetInstance())
+	, m_vertices{}// 頂点情報
+	, m_offSetY(0.0f)// 高さ
+	, m_pDrawPolygon(DrawPolygon::GetInstance())// 板ポリゴン描画クラス
+	, m_pCreateShader(CreateShader::GetInstance())// シェーダー作成クラス
 {
 	switch (m_type)// エフェクトの種類によって画像を読み込む
 	{
 	case EffectType::ENEMY_DEAD:// 敵死亡エフェクト
-		LoadTexture(L"Resources/Textures/effect.png");
+		LoadTexture(L"Resources/Textures/effect.png");// テクスチャの読み込み
 		m_frameRows = 4; // 画像の行数
 		m_frameCols = 5; // 画像の列数
-
 		break;
 	case EffectType::ENEMY_HIT:// 敵ヒットエフェクト
-		LoadTexture(L"Resources/Textures/hit.png");
+		LoadTexture(L"Resources/Textures/hit.png");// テクスチャの読み込み
 		m_frameRows = 2; // 画像の行数
 		m_frameCols = 4; // 画像の列数
-
 		break;
 	}
 	m_pDrawPolygon->InitializePositionTexture(m_commonResources->GetDeviceResources());// 頂点情報の初期化

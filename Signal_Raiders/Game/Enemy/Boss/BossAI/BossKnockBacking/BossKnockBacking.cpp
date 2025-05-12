@@ -1,18 +1,16 @@
 /*
-	@file	BossIdling.cpp
-	@brief	ボス徘徊クラス
+	@file	BossKnockBacking.cpp
+	@brief	ボスのノックバック中の処理クラス
 */
 #include "pch.h"
-#include "BossIdling.h"
-
+#include "BossKnockBacking.h"
 using namespace DirectX::SimpleMath;
-
 /*
 *	@brief	コンストラクタ
 *	@param[in]	pBoss	ボスAIクラスのポインタ
 *	@return	なし
 */
-BossIdling::BossIdling(BossAI* pBoss)
+BossKnockBacking::BossKnockBacking(BossAI* pBoss)
 	: m_pBoss(pBoss)// ボスAIクラスのポインタ
 	, m_rotation(Quaternion::Identity)// 回転
 	, m_velocity(Vector3::Zero)// 速度
@@ -27,12 +25,12 @@ BossIdling::BossIdling(BossAI* pBoss)
 *	@brief デストラクタ
 *	@return なし
 */
-BossIdling::~BossIdling() {}
+BossKnockBacking::~BossKnockBacking() {/*do nothing*/ }
 /*
 *	@brief 初期化
 *	@return なし
 */
-void BossIdling::Initialize()
+void BossKnockBacking::Initialize()
 {
 	m_rotation = m_pBoss->GetRotation();// 回転
 	m_velocity = m_pBoss->GetVelocity();// 速度
@@ -46,13 +44,9 @@ void BossIdling::Initialize()
 *	@param[in] elapsedTime 経過時間
 *	@return なし
 */
-void BossIdling::Update(float elapsedTime)
+void BossKnockBacking::Update(float elapsedTime)
 {
 	m_time += elapsedTime;// 時間の更新
-	//m_angle = CalculateAngle(m_pBoss->GetPosition(), m_pBoss->GetEnemy()->GetPlayer()->GetPlayerPos());// プレイヤーの方向を取得し、正面を向かせる
-	//m_angle = Lerp(m_angle, CalculateAngle(m_pBoss->GetEnemy()->GetPlayer()->GetPlayerPos(), m_pBoss->GetPosition()), m_time);// プレイヤーの方向を取得し、一回転させる
-	//m_rotation = Quaternion::CreateFromYawPitchRoll(m_angle, 0.0f, 0.0f);// 回転
-	//m_pBoss->SetRotation(m_rotation);// 回転をセット
 	m_pBoss->SetVelocity(m_velocity);// 速度をセット
 }
 

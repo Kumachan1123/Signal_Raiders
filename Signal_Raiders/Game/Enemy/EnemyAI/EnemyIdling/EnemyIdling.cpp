@@ -3,39 +3,43 @@
 	@brief	敵Idlingクラス
 */
 #include "pch.h"
-#include <SimpleMath.h>
-#include "Game/Enemy/EnemyAI/EnemyIdling/EnemyIdling.h"
-#include "Game/Enemy/EnemyAI/EnemyAI.h"
-#include "Libraries/MyLib/DebugString.h"
-#include "Libraries/MyLib/InputManager.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
-#include <cassert>
-#include <random>  
-#include "Game/KumachiLib/KumachiLib.h"
-
-using namespace DirectX::SimpleMath;
-// コンストラクタ
-EnemyIdling::EnemyIdling(EnemyAI* enemy)
-	: m_enemy(enemy)
-	, m_rotation(Quaternion::Identity)
-	, m_velocity(Vector3::Zero)
-	, m_scale(Vector3::One)
-	, m_initialPosition(Vector3::Zero)
-	, m_time(0.0f)
-	, m_rotationSpeed(0.0f)
+#include "EnemyIdling.h"
+/*
+*	@brief	コンストラクタ
+*	@param[in]	EnemyAI* enemy
+*	@return	なし
+*/
+EnemyIdling::EnemyIdling(EnemyAI* enemyAI)
+	: m_enemyAI(enemyAI)// 敵AI
+	, m_rotation(DirectX::SimpleMath::Quaternion::Identity)// 回転
+	, m_velocity(DirectX::SimpleMath::Vector3::Zero)// 速度
+	, m_scale(DirectX::SimpleMath::Vector3::One)// スケール
+	, m_initialPosition(DirectX::SimpleMath::Vector3::Zero)// 初期位置
+	, m_time(0.0f)// 時間
+	, m_rotationSpeed(0.0f)// 回転速度
 {}
-// デストラクタ
-EnemyIdling::~EnemyIdling() {}
-// 初期化する
+/*
+*	@brief	デストラクタ
+*	@return	なし
+*/
+EnemyIdling::~EnemyIdling() {/*do nothing*/ }
+/*
+*	@brief	初期化
+*	@return	なし
+*/
 void EnemyIdling::Initialize()
 {
-	m_rotation = m_enemy->GetRotation();
-	m_velocity = m_enemy->GetVelocity();
-	m_scale = m_enemy->GetScale();
-	m_initialPosition = m_enemy->GetPosition();
+	m_rotation = m_enemyAI->GetRotation();// 回転取得
+	m_velocity = m_enemyAI->GetVelocity();// 速度取得
+	m_scale = m_enemyAI->GetScale();// スケール取得
+	m_initialPosition = m_enemyAI->GetPosition(); // 初期位置取得
 	m_rotationSpeed = EnemyParameters::INITIAL_ROTATION_SPEED; // 回転速度
 }
-// 更新
+/*
+*	@brief	更新
+*	@param[in]	float elapsedTime
+*	@return	なし
+*/
 void EnemyIdling::Update(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
@@ -45,10 +49,9 @@ void EnemyIdling::Update(float elapsedTime)
 	Quaternion deltaRotation = Quaternion::CreateFromAxisAngle(Vector3::Up, sinRotationSpeed * randomMultiplier * elapsedTime);  // 生成した回転速度に基づき、上方向（Y軸）を中心に回転を生成
 	m_rotation *= deltaRotation;  // 既存の回転に新しい回転を適用
 	m_rotation.Normalize();  // 回転を正規化し、安定したクォータニオンを維持
-	// 向いている方向に基づいてX座標とZ座標を移動
-	Vector3 forward = Vector3::Transform(Vector3::Backward * EnemyParameters::MOVE_SPEED, m_rotation);
-	m_enemy->SetPosition(m_enemy->GetPosition() + forward * (m_velocity.Length()) * elapsedTime);
-	m_enemy->SetRotation(m_rotation);
-	m_enemy->SetVelocity(m_velocity);
+	Vector3 forward = Vector3::Transform(Vector3::Backward * EnemyParameters::MOVE_SPEED, m_rotation);  // 前方ベクトルを取得
+	m_enemyAI->SetPosition(m_enemyAI->GetPosition() + forward * (m_velocity.Length()) * elapsedTime);  // 敵の位置を更新
+	m_enemyAI->SetRotation(m_rotation);  // 敵の回転を更新
+	m_enemyAI->SetVelocity(m_velocity);  // 敵の速度を更新
 }
 

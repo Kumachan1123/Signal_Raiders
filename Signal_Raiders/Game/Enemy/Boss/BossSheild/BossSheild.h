@@ -18,9 +18,6 @@
 #include "Game/Particle/Particle.h"
 #include "Game/Interface/IEnemy.h"
 #include "Game/Enemy/BossBase/BossBase.h"
-//#include "Game/Enemy/Boss/Boss.h"
-//#include "Game/Enemy/LastBoss/LastBoss.h"
-
 // クラスの前方宣言
 class IEnemy;
 class Player;
@@ -39,13 +36,13 @@ public:
 	};
 public:
 	// アクセサ
-	bool GetSheild() const { return m_isSheild; }
-	void SetSheild(bool isSheild) { m_isSheild = isSheild; }
-	int GetSheildHP() const { return m_sheildHP; }
-	void SetSheildHP(int sheildHP) { m_sheildHP = sheildHP; }
-	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_sheildPosition = pos; }
-	void SetRotation(DirectX::SimpleMath::Quaternion rot) { m_sheildRotation = rot; }
-	void SetUp(int sheildHP, IEnemy* pBoss);
+	bool GetSheild() const { return m_isSheild; }// シールド展開フラグ取得
+	void SetSheild(bool isSheild) { m_isSheild = isSheild; }// シールド展開フラグ設定
+	int GetSheildHP() const { return m_sheildHP; }// シールドのHP取得
+	void SetSheildHP(int sheildHP) { m_sheildHP = sheildHP; }// シールドのHP設定
+	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_sheildPosition = pos; }// シールドの座標設定
+	void SetRotation(DirectX::SimpleMath::Quaternion rot) { m_sheildRotation = rot; }// シールドの回転設定
+	void SetUp(int sheildHP, IEnemy* pBoss);// シールドの初期化
 
 public:
 	// public関数
@@ -59,13 +56,14 @@ public:
 		DirectX::SimpleMath::Matrix view,
 		DirectX::SimpleMath::Matrix proj);
 private:
+	// privateメンバ変数
 	// 共通リソース
 	CommonResources* m_commonResources;
 	// シールドモデル
 	std::unique_ptr < DirectX::Model> m_sheildModel;
 	// パーティクル
 	std::unique_ptr<Particle> m_pParticle;
-	// ボス
+	// ボスポインター
 	IEnemy* m_pBoss;
 	// ボスの種類
 	BossShieldType m_bossType;
