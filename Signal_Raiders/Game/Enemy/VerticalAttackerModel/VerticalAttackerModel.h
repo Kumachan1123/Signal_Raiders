@@ -5,38 +5,44 @@
 #pragma once
 #ifndef AREA_ATTACKER_MODEL_DEFINED
 #define AREA_ATTACKER_MODEL_DEFINED
+// 標準ライブラリ
+#include <SimpleMath.h>
+// 外部ライブラリ
 #include "Game/CommonResources.h"
+#include "DeviceResources.h"
+#include "Libraries/Microsoft/ReadData.h"
+// 自作ヘッダーファイル
+#include "Game/Enemy/VerticalAttacker/VerticalAttacker.h"
 #include "Game/Interface/IState.h"
 #include "Game/Interface/IModel.h"
+// 前方宣言
 class VerticalAttacker;
 class CommonResources;
 class IState;
 class VerticalAttackerModel : public IModel
 {
+public:
+	// public関数
+	VerticalAttackerModel();// コンストラクタ
+	~VerticalAttackerModel()override;// デストラクタ
+	void Initialize(CommonResources* resources)override;// 初期化
+	void SetState(IState::EnemyState State)override { m_nowState = State; }// 状態設定
+	void Render(ID3D11DeviceContext1* context,// 描画
+		DirectX::DX11::CommonStates* states,
+		DirectX::SimpleMath::Matrix world,
+		DirectX::SimpleMath::Matrix view,
+		DirectX::SimpleMath::Matrix proj)override;
 private:
-	// 共通リソース
-	CommonResources* m_commonResources;
+	// private変数
+	CommonResources* m_commonResources;	// 共通リソース
 	// モデル
 	std::unique_ptr<DirectX::Model> m_bodyModel;//胴体
 	std::unique_ptr<DirectX::Model> m_attackFaceModel;//攻撃態勢の顔
 	std::unique_ptr<DirectX::Model> m_angryFaceModel;//おこの時の顔
 	std::unique_ptr<DirectX::Model> m_idlingFaceModel;//普段の顔
 	std::unique_ptr<DirectX::Model> m_damageFaceModel;	// 攻撃を受けた時の顔
-	// モデルの影用のピクセルシェーダー
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;	// モデルの影用のピクセルシェーダー
+	IState::EnemyState m_nowState;	// 現在のステータス
 
-	// 現在のステータス
-	IState::EnemyState m_nowState;
-public:
-	// 初期ステータスを設定
-	VerticalAttackerModel();
-	~VerticalAttackerModel()override;
-	void Initialize(CommonResources* resources)override;
-	void SetState(IState::EnemyState State)override { m_nowState = State; }
-	void Render(ID3D11DeviceContext1* context,
-		DirectX::DX11::CommonStates* states,
-		DirectX::SimpleMath::Matrix world,
-		DirectX::SimpleMath::Matrix view,
-		DirectX::SimpleMath::Matrix proj)override;
 };
 #endif //AREA_ATTACKER_MODEL_DEFINED

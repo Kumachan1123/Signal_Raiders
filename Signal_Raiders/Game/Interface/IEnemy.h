@@ -22,7 +22,7 @@ public:
 	virtual const DirectX::SimpleMath::Vector3& GetVelocity() = 0;
 	virtual const DirectX::SimpleMath::Vector3& GetRotate() = 0;
 	virtual int GetEnemyHP() const = 0;
-	virtual void SetEnemyHP(int hp) = 0;
+	virtual void SetEnemyMaxHP(int hp) = 0;
 	virtual bool GetEnemyIsDead() const = 0;
 	virtual void SetEnemyIsDead(bool isDead) = 0;
 	virtual bool GetHitToPlayer()const = 0;

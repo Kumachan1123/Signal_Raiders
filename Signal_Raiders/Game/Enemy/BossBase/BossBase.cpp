@@ -71,7 +71,7 @@ void BossBase::Initialize()
 	DrawCollision::Initialize(m_commonResources);// 当たり判定描画の初期化
 	m_maxHP = m_currentHP;// 最大HPを設定
 	m_pHPBar = std::make_unique<EnemyHPBar>();	// HPバー生成
-	m_pHPBar->SetEnemyHP(m_currentHP);// HPバーのHPを設定
+	m_pHPBar->SetEnemyMaxHP(m_currentHP);// HPバーのHPを設定
 	m_pHPBar->Initialize(m_commonResources);// HPバー初期化
 	m_pBoss->Initialize();// ボス初期化
 	m_pBossAI = std::make_unique<BossAI>(this);// ボスAI生成
@@ -197,7 +197,7 @@ void BossBase::CreateSpiralBullet()
 *	@param[in] hp 敵のHP
 *	@return	なし
 */
-void BossBase::SetEnemyHP(int hp)
+void BossBase::SetEnemyMaxHP(int hp)
 {
 	if (m_pBossSheild->GetSheildHP() > 0 &&// シールドがある場合
 		m_pBossSheild->GetSheild() == true)// シールドが展開されている場合

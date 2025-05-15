@@ -3,19 +3,22 @@
 	@brief	敵HPBarクラス
 */
 #pragma once
+// 標準ライブラリ
 #include <SimpleMath.h>
-#include "Game/Enemy/Enemy.h"
+#include <cassert>
+#include <random>
+#include <memory>
+// 外部ライブラリ
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
 #include "Libraries/MyLib/DebugString.h"
 #include "Libraries/MyLib/GridFloor.h"
 #include "Libraries/MyLib/InputManager.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
-#include "Game/FPS_Camera/FPS_Camera.h"
-#include <cassert>
-#include <random>
-#include <memory>
 #include <Libraries/Microsoft/DebugDraw.h>
+// 自作ヘッダーファイル
+#include "Game/Enemy/Enemy.h"
+#include "Game/FPS_Camera/FPS_Camera.h"
 #include "Game/KumachiLib/KumachiLib.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
@@ -23,21 +26,60 @@
 class CommonResources;
 class PlayScene;
 class Enemy;
-
-
-
 class EnemyHPBar
 {
 private:
-	// データ受け渡し用コンスタントバッファ(送信側)
-	struct ConstBuffer
+	// 構造体
+	struct ConstBuffer	// 定数バッファの構造体
 	{
 		DirectX::SimpleMath::Matrix		matWorld;//	ワールド行列
 		DirectX::SimpleMath::Matrix		matView;	//	ビュー行列
 		DirectX::SimpleMath::Matrix		matProj;	//	プロジェクション行列
-		DirectX::SimpleMath::Vector4	colors;
-		DirectX::SimpleMath::Vector4	hp;
-	}m_constBuffer;
+		DirectX::SimpleMath::Vector4	colors;//		色
+		DirectX::SimpleMath::Vector4	hp;//		HP
+	};
+
+public:
+	// アクセサ
+	DirectX::BoundingSphere& GetBoundingSphere() { return m_enemyBoundingSphere; }// 敵の境界球を取得
+	void SetBoundingSphereCenter(DirectX::SimpleMath::Vector3& cen) { m_enemyBoundingSphere.Center = cen; }// 敵の境界球の中心を設定
+	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }// 位置を取得
+	void SetPosition(DirectX::SimpleMath::Vector3& pos) { m_position = pos; }// 位置を設定
+	DirectX::SimpleMath::Vector3 GetVelocity() const { return m_velocity; }// 速度を取得
+	DirectX::SimpleMath::Vector3 GetAccele() const { return m_accele; }// 加速度を取得
+	DirectX::SimpleMath::Vector3 GetScale() const { return m_scale; }// スケールを取得
+	void SetScale(DirectX::SimpleMath::Vector3 scale) { m_scale = scale; }// スケールを設定
+	DirectX::SimpleMath::Vector3 GetRotate() const { return m_rotate; } // 回転を取得
+	int GetCurrentHP() const { return m_currentHP; } // 現在のHPを取得
+	void SetCurrentHP(int& hp) { m_currentHP = hp; } // 現在のHPを設定
+	void SetEnemyMaxHP(int& hp) { m_maxHP = hp; } // 敵の最大HPを設定
+	bool GetIsDead() const { return m_isDead; } // 敵が死んでいるかどうかを取得
+public:
+	// public関数
+	EnemyHPBar();// コンストラクタ
+	~EnemyHPBar();// デストラクタ
+	void Initialize(CommonResources* resources);// 初期化
+	void Update(float elapsedTime);// 更新
+	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj, DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 rot);// 描画
+private:
+	// private関数
+	void LoadTexture(const wchar_t* path);// テクスチャ読み込み
+	void CreateBuffer();// バッファ作成
+	void CreateShaders();// シェーダー作成
+public:
+	// public定数
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;	// 頂点レイアウト
+	static const int VERTEX_COUNT = 4;	// 頂点数
+	const float HPBAR_X_MIN = -1.5f;	// HPバーのX座標min
+	const float HPBAR_X_MAX = 1.5f;	// HPバーのX座標max
+	const float HPBAR_Y_MAX = 3.25f;	// HPバーのY座標min
+	const float HPBAR_Y_MIN = 3.0f;	// HPバーのY座標max
+	const float HPBARBACK_X_MIN = -1.53f;	// HPバーの背景のX座標min
+	const float HPBARBACK_X_MAX = 1.53f;	// HPバーの背景のX座標max
+	const float HPBARBACK_Y_MAX = 3.28f;	// HPバーの背景のY座標max
+	const float HPBARBACK_Y_MIN = 2.98f;	// HPバーの背景のY座標min
+	const float BAR_LEFT = -1.50f;	// HPバーの幅
+private:
 	// 共通リソース
 	CommonResources* m_commonResources;
 	// 描画クラス
@@ -50,22 +92,15 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
-
-	// ベーシックエフェクト
-	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
-
-	// プリミティブバッチ
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_primitiveBatch;
-
+	// コンスタントバッファ
+	ConstBuffer m_constBuffer;
 	// 入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;	// 四角形で使用する 頂点情報
-
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	// 定数バッファ
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
-
-	DirectX::VertexPositionTexture	m_hpbarVert[4];
-	DirectX::VertexPositionTexture	m_hpbarBackVert[4];
-
+	// 頂点情報
+	DirectX::VertexPositionTexture	m_hpbarVert[VERTEX_COUNT];// HPバーの頂点情報
+	DirectX::VertexPositionTexture	m_hpbarBackVert[VERTEX_COUNT];// HPバーの背景の頂点情報
 	// テクスチャ
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_gaugeTexture;
 	// 敵の情報
@@ -74,49 +109,22 @@ private:
 	DirectX::SimpleMath::Vector3 m_rotate;		// 回転
 	DirectX::SimpleMath::Vector3 m_accele;		// 加速度
 	DirectX::SimpleMath::Vector3 m_scale;		// スケール
-
-	// 砲塔境界球
+	// 敵の境界球
 	DirectX::BoundingSphere m_enemyBoundingSphere;
+	// 敵のワールド境界球
 	DirectX::BoundingSphere m_enemyWBoundingSphere;
-
+	// 経過時間
 	float m_time;
-	int m_maxHP;// 最大HP(生成された瞬間の敵のHP)
-	int m_currentHP;// 現在の敵のHP
-	float m_displayedHP = 100.0f; // 表示されるHPを追跡する新しいメンバー
-	float m_lerpSpeed = 2.0f; // 補間速度
-	bool m_isDead = false;//敵のHPが0になったらTrue
-public:
-	// 頂点レイアウト
-	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
-public:
-	//	getter
-	DirectX::BoundingSphere& GetBoundingSphere() { return m_enemyBoundingSphere; }
-	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
-	DirectX::SimpleMath::Vector3 GetVelocity() const { return m_velocity; }
-	DirectX::SimpleMath::Vector3 GetAccele() const { return m_accele; }
-	DirectX::SimpleMath::Vector3 GetScale() const { return m_scale; }
-	DirectX::SimpleMath::Vector3 GetRotate() const { return m_rotate; }
-
-	int GetHP() const { return m_currentHP; }
-	bool GetIsDead() const { return m_isDead; }
-	// setter
-	void SetBoundingSphereCenter(DirectX::SimpleMath::Vector3& cen) { m_enemyBoundingSphere.Center = cen; }
-	void SetPosition(DirectX::SimpleMath::Vector3& pos) { m_position = pos; }
-	void SetEnemyHP(int& hp) { m_maxHP = hp; }
-	void SetCurrentHP(int& hp) { m_currentHP = hp; }
-	void SetScale(DirectX::SimpleMath::Vector3 scale) { m_scale = scale; }
-public:
-	// 初期ステータスを設定
-	EnemyHPBar();
-	~EnemyHPBar();
-
-	void Initialize(CommonResources* resources);
-	void Update(float elapsedTime);
-	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj, DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 rot);
-private:
-	void LoadTexture(const wchar_t* path);
-	void CreateBuffer();
-	void CreateShader();
+	// 最大HP(生成された瞬間の敵のHP)
+	int m_maxHP;
+	// 現在の敵のHP
+	int m_currentHP;
+	// 表示されるHP
+	float m_displayedHP;
+	// 補間速度
+	float m_lerpSpeed;
+	//敵のHPが0になったらTrue
+	bool m_isDead;
 };
 
 

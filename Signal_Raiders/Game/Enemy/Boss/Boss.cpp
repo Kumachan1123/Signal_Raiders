@@ -4,7 +4,7 @@
 */
 #include "pch.h"
 #include "Boss.h"
-//// 自作ヘッダーファイル
+// 自作ヘッダーファイル
 #include "Game/Enemy/Boss/BossAI/BossAI.h"
 
 

@@ -265,7 +265,7 @@ bool BulletManager::CheckCollisionWithEnemies(const std::unique_ptr<PlayerBullet
 		if (bullet->GetBoundingSphere().Intersects(enemy->GetBoundingSphere()))
 		{
 			if (enemy->GetCanAttack() == true)// 攻撃可能な敵の場合
-				enemy->SetEnemyHP(bullet->Damage());// 敵のHPを減らす
+				enemy->SetEnemyMaxHP(bullet->Damage());// 敵のHPを減らす
 			float effectSize = dynamic_cast<Boss*>(enemy.get()) ? 10.0f : 3.0f;// エフェクトを追加　ボスの場合は大きめにする
 			m_pEnemyManager->GetEffect().push_back(std::make_unique<Effect>(// エフェクトを追加
 				m_commonResources,// 共通リソース

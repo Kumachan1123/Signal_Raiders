@@ -193,7 +193,7 @@ void PlayerController::DebugCommand()
 	if (mTracker->GetLastState().rightButton && m_pPlayer->GetisCheat() == false)
 	{
 		m_pPlayer->SetisCheat(true);
-		for (auto& enemy : m_pPlayer->GetEnemies()->GetEnemies())enemy->SetEnemyHP(1000);
+		for (auto& enemy : m_pPlayer->GetEnemies()->GetEnemies())enemy->SetEnemyMaxHP(1000);
 	}
 	// 右クリックされてないときはチートコマンドを無効にする
 	if (!mTracker->GetLastState().rightButton)

@@ -2,12 +2,8 @@
 *	@file LastBossModel.cpp
 *	@brief ラスボスモデルクラス
 */
-
 #include <pch.h>
 #include "LastBossModel.h"
-
-
-
 /*
 *	@breif	コンストラクタ
 *	@return	なし
