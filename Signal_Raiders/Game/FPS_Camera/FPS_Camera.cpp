@@ -4,82 +4,70 @@
 */
 #include "pch.h"
 #include "FPS_Camera.h"
-#include "Game/Screen.h"
-
-//-------------------------------------------------------------------
-// コンストラクタ
-//-------------------------------------------------------------------
-FPS_Camera::FPS_Camera(
-	const DirectX::SimpleMath::Vector3& eye,
+/*
+*	@brief	コンストラクタ
+*	@param   eye	カメラ座標
+*	@param   target	注視点
+*	@param   up		カメラの頭の方向
+*/
+FPS_Camera::FPS_Camera(const DirectX::SimpleMath::Vector3& eye,
 	const DirectX::SimpleMath::Vector3& target,
-	const DirectX::SimpleMath::Vector3& up
-)
-	:
-	m_view{},
-	m_projection{},
-	m_eye{ eye },
-	m_target{ target },
-	m_up{ up }
+	const DirectX::SimpleMath::Vector3& up)
+	: m_view{}// ビュー行列
+	, m_projection{} // プロジェクション行列
+	, m_eye{ eye }// カメラ座標
+	, m_target{ target }// 注視点
+	, m_up{ up }// カメラの頭の方向
 {
-	CalculateViewMatrix();
-	CalculateProjectionMatrix();
+	CalculateViewMatrix();// ビュー行列計算
+	CalculateProjectionMatrix();// プロジェクション行列計算
 }
-
-//-------------------------------------------------------------------
-// 更新する
-//-------------------------------------------------------------------
-void FPS_Camera::Update(const DirectX::SimpleMath::Vector3& newEye, float yawX)
+/*
+*	@brief 更新処理
+*	@param newEye	新しいeye座標
+*	@param pitch	ピッチ角度
+*/
+void FPS_Camera::Update(const DirectX::SimpleMath::Vector3& newEye, float pitch)
 {
-
-	// 古いeyeを保持する
-	DirectX::SimpleMath::Vector3 oldEye = m_eye;
-	// eyeの位置を更新する
-	m_eye = newEye;
-	// 移動ベクトルを求める
-	DirectX::SimpleMath::Vector3 velocity = m_eye - oldEye;
-	// targetの位置を更新する
-	m_target += velocity;
-
-	// 回転行列を作成する
-	DirectX::SimpleMath::Matrix rotation = DirectX::SimpleMath::Matrix::CreateRotationY(yawX);
-	// カメラの方向ベクトルを計算する
-	DirectX::SimpleMath::Vector3 direction = m_target - m_eye;
-	// 回転行列を使って方向ベクトルを回転させる
-	direction = DirectX::SimpleMath::Vector3::Transform(direction, rotation);
-	// 回転後の方向ベクトルを使ってtargetを更新する
-	m_target = m_eye + direction;
-	// ビュー行列を更新する
-	CalculateViewMatrix();
+	DirectX::SimpleMath::Vector3 oldEye = m_eye;	// 古いeyeを保持する
+	m_eye = newEye;	// eyeの位置を更新する
+	DirectX::SimpleMath::Vector3 velocity = m_eye - oldEye;	// 移動ベクトルを求める
+	m_target += velocity;	// targetの位置を更新する
+	DirectX::SimpleMath::Matrix rotation = DirectX::SimpleMath::Matrix::CreateRotationY(pitch); 	// 回転行列を作成する
+	DirectX::SimpleMath::Vector3 direction = m_target - m_eye;	// カメラの方向ベクトルを計算する
+	direction = DirectX::SimpleMath::Vector3::Transform(direction, rotation);	// 回転行列を使って方向ベクトルを回転させる
+	m_target = m_eye + direction;	// 回転後の方向ベクトルを使ってtargetを更新する
+	CalculateViewMatrix();	// ビュー行列を更新する
 }
-
-//-------------------------------------------------------------------
-// ビュー行列を計算する
-//-------------------------------------------------------------------
+/*
+*	@brief ビュー行列を計算する
+*	@return なし
+*/
 void FPS_Camera::CalculateViewMatrix()
 {
-	m_view = DirectX::SimpleMath::Matrix::CreateLookAt(m_eye, m_target, m_up);
+	m_view = DirectX::SimpleMath::Matrix::CreateLookAt(m_eye, m_target, m_up);// ビュー行列を計算する
 }
-
-//-------------------------------------------------------------------
-// プロジェクション行列を計算する
-//-------------------------------------------------------------------
+/*
+*	@brief プロジェクション行列を計算する
+*	@return なし
+*/
 void FPS_Camera::CalculateProjectionMatrix()
 {
-	// ウィンドウサイズ
-	const float width = static_cast<float>(Screen::WIDTH);
-	const float height = static_cast<float>(Screen::HEIGHT);
-	// 画面縦横比
-	const float aspectRatio = width / height;
-	m_projection = DirectX::SimpleMath::Matrix::CreatePerspectiveFieldOfView(
+	// ウィンドウサイズを取得
+	const float width = static_cast<float>(Screen::WIDTH);// ウィンドウ幅
+	const float height = static_cast<float>(Screen::HEIGHT);// ウィンドウ高さ
+	const float aspectRatio = width / height;// アスペクト比計算
+	m_projection = DirectX::SimpleMath::Matrix::CreatePerspectiveFieldOfView(// プロジェクション行列を計算する
 		FOV, aspectRatio, NEAR_PLANE, FAR_PLANE);
 }
-
-
+/*
+*	@brief カメラの方向ベクトルを取得する
+*	@return カメラの方向ベクトル
+*/
 DirectX::SimpleMath::Vector3 FPS_Camera::GetDirection() const
 {
-	// targetとeyeの差から方向ベクトルを計算し、正規化して返す
-	DirectX::SimpleMath::Vector3 direction = m_target - m_eye;
-	direction.Normalize();
-	return direction;
+	DirectX::SimpleMath::Vector3 direction = m_target - m_eye;// targetとeyeの差から方向ベクトルを計算
+	direction.Normalize();	// 正規化
+	return direction;// 方向ベクトルを返す
 }
 

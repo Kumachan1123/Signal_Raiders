@@ -3,10 +3,10 @@
 #define IBOSSLOGIC_DEFINED
 // 標準ライブラリ
 #include <SimpleMath.h>
+// 前方宣言
 class Player;
 class CommonResources;
 class BulletManager;
-
 class IBossLogic
 {
 public:

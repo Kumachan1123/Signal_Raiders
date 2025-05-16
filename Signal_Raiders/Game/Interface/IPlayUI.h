@@ -1,24 +1,23 @@
 #pragma once
 #ifndef IPLAYUI_DEFINED
 #define IPLAYUI_DEFINED
-#include <SimpleMath.h>
+// 標準ライブラリ
 #include <memory>
+#include <SimpleMath.h>
+// 自作ヘッダーファイル
 #include "Game/Player/PlayerUI/PlayerUI.h"
 #include "Game/Interface/IUI.h"
-
-
+// 前方宣言
 class CommonResources;
-
-
-
 class IPlayUI : public IUI
 {
-
 public:
-	virtual ~IPlayUI() = default;
-	virtual void Add(std::unique_ptr<PlayerUI>& pPlayerUI, const wchar_t* path
-		, DirectX::SimpleMath::Vector2 position
-		, DirectX::SimpleMath::Vector2 scale
-		, KumachiLib::ANCHOR anchor) = 0;
+	virtual ~IPlayUI() = default;// デストラクタ
+	virtual void Add// UI追加
+	(std::unique_ptr<PlayerUI>& pPlayerUI// プレイヤーUI
+		, const wchar_t* path// テクスチャパス
+		, DirectX::SimpleMath::Vector2 position// 位置
+		, DirectX::SimpleMath::Vector2 scale// スケール
+		, KumachiLib::ANCHOR anchor) = 0;// アンカー
 };
 #endif		// IPLAYUI_DEFINED

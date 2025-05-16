@@ -1,15 +1,17 @@
 #pragma once
 #ifndef IENEMYBULLET_DEFINED
 #define IENEMYBULLET_DEFINED
+// 自作ヘッダーファイル
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
-
+// 前方宣言
 class EnemyBullet;
 class IEnemyBullet
 {
-public:// 関数
-	virtual ~IEnemyBullet() = default;
-	virtual void Initialize() = 0;
-	virtual void Update(float elapsedTime) = 0;
-	virtual void SetEnemyBullet(EnemyBullet* pEnemyBullet) = 0;
+public:
+	// public関数
+	virtual ~IEnemyBullet() = default;// デストラクタ
+	virtual void Initialize() = 0;// 初期化
+	virtual void Update(float elapsedTime) = 0;//	更新
+	virtual void SetEnemyBullet(EnemyBullet* pEnemyBullet) = 0;// 敵弾設定
 };
 #endif		// IENEMYBULLET_DEFINED

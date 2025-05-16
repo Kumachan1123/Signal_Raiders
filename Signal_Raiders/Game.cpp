@@ -211,14 +211,14 @@ void Game::OnDeactivated()
 
 void Game::OnSuspending()
 {
-	// TODO: Game is being power-suspended (or minimized).
+	// TODO: Game is being smoothness-suspended (or minimized).
 }
 
 void Game::OnResuming()
 {
 	m_timer.ResetElapsedTime();
 
-	// TODO: Game is being power-resumed (or returning from minimize).
+	// TODO: Game is being smoothness-resumed (or returning from minimize).
 }
 
 void Game::OnWindowMoved()

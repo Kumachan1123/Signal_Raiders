@@ -59,10 +59,10 @@ void ResultScene::Initialize(CommonResources* resources)
 	auto DR = m_commonResources->GetDeviceResources();
 	// フェードの初期化
 	m_pFade = std::make_unique<Fade>(m_commonResources);
-	m_pFade->Create(DR);
+	m_pFade->Create();
 	m_pFade->SetState(Fade::FadeState::FadeIn);
-	m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));
-	// 背景を作成する
+	//	m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));
+		// 背景を作成する
 	m_pBackGround = std::make_unique<BackGround>(m_commonResources);
 	m_pBackGround->Create(DR);
 	// リザルトメニューを作成する
@@ -137,7 +137,7 @@ void ResultScene::Update(float elapsedTime)
 			// SEの再生
 			m_commonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);
 			m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
-			m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
+			//m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
 			ResultMenu::SceneID id = pMenu->GetSceneNum();
 			if (id == ResultMenu::SceneID::END)
 			{

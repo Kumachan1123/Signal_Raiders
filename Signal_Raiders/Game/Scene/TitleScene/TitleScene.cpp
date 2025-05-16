@@ -46,7 +46,6 @@ TitleScene::TitleScene(IScene::SceneID sceneID)
 //---------------------------------------------------------
 TitleScene::~TitleScene()
 {
-	// do nothing.
 	Finalize();
 }
 
@@ -60,9 +59,9 @@ void TitleScene::Initialize(CommonResources* resources)
 	auto DR = m_commonResources->GetDeviceResources();
 	// フェードの初期化
 	m_pFade = std::make_unique<Fade>(m_commonResources);
-	m_pFade->Create(DR);
+	m_pFade->Create();
 	m_pFade->SetState(Fade::FadeState::FadeIn);
-	m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));
+	//m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));
 	// 背景の初期化
 	m_pBackGround = std::make_unique<BackGround>(m_commonResources);
 	m_pBackGround->Create(DR);
@@ -106,7 +105,7 @@ void TitleScene::Update(float elapsedTime)
 				{
 					m_commonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);// SEの再生
 					m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
-					m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
+					//m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
 				}
 			}
 		}

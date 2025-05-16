@@ -67,9 +67,9 @@ void BossAI::Update(float elapsedTime)
 	auto boss = dynamic_cast<BossBase*>(m_pBoss);// IEnemyからBossのポインターを抽出
 	if (!m_isKnockBack && boss->GetBossSheild()->GetSheildHP() <= 0)	// シールドが壊されたらノックバック
 	{
-		ChangeState(m_pBossKnockBacking.get());//徘徊態勢にする
+		ChangeState(m_pBossKnockBacking.get());//ノックバック状態にする
 		KnockBack(elapsedTime);// ノックバック処理
-		m_enemyState = IState::EnemyState::DAMAGE;// 徘徊態勢
+		m_enemyState = IState::EnemyState::HIT;// 攻撃を受けた時の動き
 		SetIsAttack(false);// 攻撃中ではない
 	}
 	else // シールドが壊されていない場合

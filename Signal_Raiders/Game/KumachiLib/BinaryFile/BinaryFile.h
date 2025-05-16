@@ -1,34 +1,30 @@
+/*
+*	@file BinaryFile.h
+*	@brief ファイル読み込みクラス
+*/
+
 #pragma once
-/// <summary>
-/// バイナリファイルを扱うクラス
-/// </summary>
 
-
+// 標準ライブラリ
 #include <memory>
+#include <fstream>
+#include <assert.h>
 namespace KumachiLib
 {
 	class BinaryFile
 	{
 	protected:
-
-		//	データ
-		std::unique_ptr<char[]> m_data;
-
-		//	サイズ
-		unsigned int m_size;
-
+		//protectedメンバ変数
+		std::unique_ptr<char[]> m_data;		// データ
+		unsigned int m_size;		// サイズ
 	public:
-
-		//	ファイル名を指定してロード
-		static KumachiLib::BinaryFile LoadFile(const wchar_t* fileName);
-
-		BinaryFile();
-
-		//	ムーブコンストラクタ
-		BinaryFile(BinaryFile&& in);
-
 		//	アクセサ
 		char* GetData() { return m_data.get(); }
 		unsigned int GetSize() const { return m_size; }
+		// publicメンバ関数
+		static KumachiLib::BinaryFile LoadFile(const wchar_t* fileName);		// ファイル名を指定してロード
+		BinaryFile();// コンストラクタ
+		BinaryFile(BinaryFile&& in);// ムーブコンストラクタ
+
 	};
 }

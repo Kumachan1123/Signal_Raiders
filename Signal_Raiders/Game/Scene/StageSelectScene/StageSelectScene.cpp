@@ -58,9 +58,9 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	auto DR = m_commonResources->GetDeviceResources();
 	// フェードの初期化
 	m_pFade = std::make_unique<Fade>(m_commonResources);
-	m_pFade->Create(DR);
+	m_pFade->Create();
 	m_pFade->SetState(Fade::FadeState::FadeIn);
-	m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));
+	// m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));
 	// 背景を作成する
 	m_pBackGround = std::make_unique<BackGround>(m_commonResources);
 	m_pBackGround->Create(DR);
@@ -114,7 +114,7 @@ void StageSelectScene::Update(float elapsedTime)
 
 				// フェードアウト開始
 				m_pFade->SetState(Fade::FadeState::FadeOut);
-				m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));
+				//m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));
 
 				// 選択されたステージ番号を記録
 				m_stageNumber = pMenu->GetMenuIndex();

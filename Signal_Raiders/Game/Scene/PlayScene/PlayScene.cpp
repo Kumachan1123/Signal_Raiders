@@ -115,9 +115,9 @@ void PlayScene::Initialize(CommonResources* resources)
 	for (int it = 0; it < m_pPlayerUI.size(); ++it)m_pPlayerUI[it]->Initialize(m_commonResources, Screen::UI_WIDTH, Screen::UI_HEIGHT);
 	// フェードの初期化
 	m_pFade = std::make_unique<Fade>(m_commonResources);
-	m_pFade->Create(DR);
+	m_pFade->Create();
 	m_pFade->SetState(Fade::FadeState::FadeIn);
-	m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));
+	//m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));
 	// レーダーを初期化する
 	m_pRadar = std::make_unique<Radar>(resources);
 	m_pRadar->Initialize(m_pPlayer.get(), m_pEnemyManager.get());
@@ -198,7 +198,7 @@ void PlayScene::Update(float elapsedTime)
 		}
 		if (m_waitTime >= 1.0f)// 待ち時間が1秒以上なら
 		{
-			m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));
+			//m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));
 			m_pFade->SetState(Fade::FadeState::FadeOut);
 		}
 		// ボス登場演出を更新する

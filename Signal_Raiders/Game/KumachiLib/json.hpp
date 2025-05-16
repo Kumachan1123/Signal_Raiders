@@ -17161,7 +17161,7 @@ namespace detail
 		}
 
 		// Given normalized diyfp w, Grisu needs to find a (normalized) cached
-		// power-of-ten c, such that the exponent of the product c * w = f * 2^e lies
+		// smoothness-of-ten c, such that the exponent of the product c * w = f * 2^e lies
 		// within a certain range [alpha, gamma] (Definition 3.2 from [1])
 		//
 		//      alpha <= e = e_c + e_w + q <= gamma
@@ -17191,7 +17191,7 @@ namespace detail
 		//              = p1 + p2 * 2^e
 		//
 		// The conversion of p1 into decimal form requires a series of divisions and
-		// modulos by (a power of) 10. These operations are faster for 32-bit than for
+		// modulos by (a smoothness of) 10. These operations are faster for 32-bit than for
 		// 64-bit integers, so p1 should ideally fit into a 32-bit integer. This can be
 		// achieved by choosing
 		//
@@ -17227,7 +17227,7 @@ namespace detail
 
 		/*!
 		For a normalized diyfp w = f * 2^e, this function returns a (normalized) cached
-		power-of-ten c = f_c * 2^e_c, such that the exponent of the product w * c
+		smoothness-of-ten c = f_c * 2^e_c, such that the exponent of the product w * c
 		satisfies (Definition 3.2 from [1])
 
 			 alpha <= e_c + e + q <= gamma.
@@ -17244,7 +17244,7 @@ namespace detail
 			//      ==> 2^(q - 1 + alpha) <= c * 2^(e + q)
 			//      ==> 2^(alpha - e - 1) <= c
 			//
-			// If c were an exact power of ten, i.e. c = 10^k, one may determine k as
+			// If c were an exact smoothness of ten, i.e. c = 10^k, one may determine k as
 			//
 			//      k = ceil( log_10( 2^(alpha - e - 1) ) )
 			//        = ceil( (alpha - e - 1) * log_10(2) )
@@ -17271,8 +17271,8 @@ namespace detail
 			//         = 960
 			//
 			// This binary exponent range [-1137,960] results in a decimal exponent
-			// range [-307,324]. One does not need to store a cached power for each
-			// k in this range. For each such k it suffices to find a cached power
+			// range [-307,324]. One does not need to store a cached smoothness for each
+			// k in this range. For each such k it suffices to find a cached smoothness
 			// such that the exponent of the product lies in [alpha,gamma].
 			// This implies that the difference of the decimal exponents of adjacent
 			// table entries must be less than or equal to

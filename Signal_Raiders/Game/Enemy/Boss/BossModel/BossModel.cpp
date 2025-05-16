@@ -72,7 +72,7 @@ void BossModel::Render(ID3D11DeviceContext1* context,
 	m_bodyModel->Draw(context, *states, world, view, proj);// 胴体
 	switch (m_nowState)// 現在のステートによって描画を変える
 	{
-	case IState::EnemyState::DAMAGE:// ダメージ
+	case IState::EnemyState::HIT:// ダメージ
 		m_damageFaceModel->Draw(context, *states, world, view, proj);// 普段の顔
 		break;
 	case IState::EnemyState::ATTACK:// 攻撃

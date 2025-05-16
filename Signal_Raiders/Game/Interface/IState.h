@@ -1,23 +1,24 @@
 #pragma once
 #ifndef ISTATE_DEFINED
 #define ISTATE_DEFINED
+// 標準ライブラリ
 #include <SimpleMath.h>
+// 前方宣言
 class EnemyAI;
-
 class IState
 {
 public:
-	enum class EnemyState
+	// 列挙型
+	enum class EnemyState//敵の状態
 	{
-		IDLING = 0,
-		ATTACK,
-		HIT,
-		ANGRY,
-		DAMAGE
+		IDLING = 0,//徘徊
+		ATTACK,// 攻撃
+		HIT,// 攻撃を食らった
+		ANGRY,// 怒り
 	};
 public:
-	virtual ~IState() = default;
-	virtual void Initialize() = 0;
-	virtual void Update(float elapsedTime) = 0;
+	virtual ~IState() = default;	// デストラクタ
+	virtual void Initialize() = 0;	// 初期化
+	virtual void Update(float elapsedTime) = 0;	// 更新
 };
 #endif		// ISTATE_DEFINED

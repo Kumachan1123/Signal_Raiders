@@ -62,7 +62,7 @@ void LastBossModel::Render(ID3D11DeviceContext1* context, DirectX::DX11::CommonS
 	m_bodyModel->Draw(context, *states, world, view, proj);// 胴体
 	switch (m_nowState)// 現在のステートによって描画を変える
 	{
-	case IState::EnemyState::DAMAGE:// ダメージ
+	case IState::EnemyState::HIT:// ダメージ
 		m_damageFaceModel->Draw(context, *states, world, view, proj);// ノックバック中の顔
 		break;
 	case IState::EnemyState::ATTACK:// 攻撃

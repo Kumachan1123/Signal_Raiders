@@ -1,44 +1,39 @@
+/*
+*	@file	AudioManager.h
+*	@brief	音声管理クラス
+*/
 #pragma once
-// FMODのインクルード
-#include "Libraries/FMOD/inc/fmod.hpp"
-#include "Libraries/FMOD/inc/fmod_errors.h"
+// 標準ライブラリ
 #include <string>
 #include <unordered_map>
 #include <thread> 
 #include <memory>
+// FMOD(外部ライブラリ)
+#include "Libraries/FMOD/inc/fmod.hpp"
+#include "Libraries/FMOD/inc/fmod_errors.h"
+
 namespace FMOD
 {
-	class System;
-	class Sound;
-	class Channel;
+	class System;  // FMOD のシステムクラスへのフォワード宣言
+	class Sound;   // FMOD のサウンドクラスへのフォワード宣言
+	class Channel; // FMOD のチャネルクラスへのフォワード宣言
 }
 class AudioManager
 {
 public:
-public:
-	// コンストラクタ
-	AudioManager();
-
-	// デストラクタ
-	~AudioManager();
-	// 初期化
-	void Initialize();
-	// 音声データのロード
-	bool LoadSound(const std::string& filePath, const std::string& key);
-	// 音声データの取得
-	FMOD::Sound* GetSound(const std::string& key);
-	// 音を再生する
-	void PlaySound(const std::string& soundKey, float volume);
-	// 音を停止する
-	void StopSound(const std::string& soundKey);
-	// 更新（FMODシステムの更新が必要）
-	void Update();
-	// 解放
-	void Shutdown();
+	// public関数
+	AudioManager();	// コンストラクタ
+	~AudioManager();	// デストラクタ
+	void Initialize();	// 初期化
+	bool LoadSound(const std::string& filePath, const std::string& key);	// 音声データのロード
+	FMOD::Sound* GetSound(const std::string& key);	// 音声データの取得
+	void PlaySound(const std::string& soundKey, float volume);	// 音を再生する
+	void StopSound(const std::string& soundKey);	// 音を停止する
+	void Update();	// 更新（FMODシステムの更新が必要）
+	void Shutdown();	// 解放
 private:
-
-	// FMOD関連のオブジェクト
-	FMOD::System* m_system;
-	std::unordered_map<std::string, FMOD::Channel*> m_channels;
-	std::unordered_map<std::string, FMOD::Sound*> m_sounds;
+	// private変数
+	FMOD::System* m_system;	// FMODシステム
+	std::unordered_map<std::string, FMOD::Channel*> m_channels;	// チャンネル
+	std::unordered_map<std::string, FMOD::Sound*> m_sounds;	// サウンド
 };
