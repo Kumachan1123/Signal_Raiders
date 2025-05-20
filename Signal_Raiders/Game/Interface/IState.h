@@ -9,7 +9,7 @@ class IState
 {
 public:
 	// —ñ‹“Œ^
-	enum class EnemyState//“G‚Ìó‘Ô
+	enum  EnemyState//“G‚Ìó‘Ô
 	{
 		IDLING = 0,//œpœj
 		ATTACK,// UŒ‚

@@ -1,18 +1,22 @@
 /*
 	@file	DrawPolygon.h
-	@brief	当たり判定描画用クラス
+	@brief	板ポリゴン描画用クラス
+	@details 板ポリゴンを描画するためのクラス
 */
 #pragma once
-#include "Game/CommonResources.h"
-#include "DeviceResources.h"
-#include <Libraries/Microsoft/DebugDraw.h>
+// 標準ライブラリ
+#include <vector>
+// DirectXのヘッダファイル
 #include <Effects.h>
 #include <PrimitiveBatch.h>
 #include <VertexTypes.h>
 #include <WICTextureLoader.h>
 #include <CommonStates.h>
-#include <vector>
-//前方宣言
+// 外部ライブラリ
+#include "Game/CommonResources.h"
+#include "DeviceResources.h"
+#include <Libraries/Microsoft/DebugDraw.h>
+// 前方宣言
 class CommonResources;
 
 class DrawPolygon
@@ -21,92 +25,76 @@ public:// 構造体
 	// 三つのシェーダーをひとまとめにして送るための構造体
 	struct Shaders
 	{
-		Microsoft::WRL::ComPtr<ID3D11VertexShader> vs;
-		Microsoft::WRL::ComPtr<ID3D11PixelShader> ps;
-		Microsoft::WRL::ComPtr<ID3D11GeometryShader> gs;
+		Microsoft::WRL::ComPtr<ID3D11VertexShader> vs;// 頂点シェーダー
+		Microsoft::WRL::ComPtr<ID3D11PixelShader> ps;// ピクセルシェーダー
+		Microsoft::WRL::ComPtr<ID3D11GeometryShader> gs;// ジオメトリシェーダー
 	};
 public:// 列挙型
 	// サンプラーステートの種類
 	enum class SamplerStates
 	{
-		ANISOTROPIC_CLAMP,
-		ANISOTROPIC_WRAP,
-		LINEAR_CLAMP,
-		LINEAR_WRAP,
-		POINT_CLAMP,
-		POINT_WRAP
+		ANISOTROPIC_CLAMP,// アニソトロピッククランプ
+		ANISOTROPIC_WRAP,// アニソトロピックラップ
+		LINEAR_CLAMP,// リニアクランプ
+		LINEAR_WRAP,// リニアラップ
+		POINT_CLAMP,// ポイントクランプ
+		POINT_WRAP,// ポイントラップ
 	};
 	// ブレンドステートの種類
 	enum class BlendStates
 	{
-		ALPHA,
-		ADDITIVE,
-		OPAQUE,
-		NONPREMULTIPLIED
+		ALPHA,	// アルファブレンド
+		ADDITIVE,	// 加算ブレンド
+		OPAQUE,	// 不透明
+		NONPREMULTIPLIED,	// 非プリマルチプライド
 	};
 	// ラスタライザーステートの種類
 	enum class RasterizerStates
 	{
-		CULL_CLOCKWISE,
-		CULL_COUNTERCLOCKWISE,
-		CULL_NONE,
-		WIREFRAME
+		CULL_CLOCKWISE,// 時計回り
+		CULL_COUNTERCLOCKWISE,// 反時計回り
+		CULL_NONE,// カリングなし
+		WIREFRAME,// ワイヤーフレーム
 	};
 	// 深度ステンシルステートの種類
 	enum class DepthStencilStates
 	{
-		DEPTH_DEFAULT,
-		DEPTH_NONE,
-		DEPTH_READ,
-		DEPTH_READ_REVERSE_Z,
-		DEPTH_REVERSE_Z
+		DEPTH_DEFAULT,// デフォルト
+		DEPTH_NONE,// 深度なし
+		DEPTH_READ,	// 深度読み取り
+		DEPTH_READ_REVERSE_Z,// 深度読み取り（逆Z）
+		DEPTH_REVERSE_Z,// 逆Z
 	};
 
 public:
-	// シングルトンインスタンスを取得
-	static DrawPolygon* const GetInstance();
-
+	static DrawPolygon* const GetInstance();// シングルトンインスタンスを取得
 public:
-
-	// デストラクタ
-	~DrawPolygon();
-
-	// 初期化（頂点、テクスチャ）
-	void InitializePositionTexture(DX::DeviceResources* pDR);
-	// 初期化（頂点、色、テクスチャ）
-	void InitializePositionColorTexture(DX::DeviceResources* pDR);
-	// 描画開始
-	void DrawStart(ID3D11InputLayout* pInputLayout, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures);
-	// 描画前設定
-	void DrawSetting(SamplerStates ss, BlendStates bs, RasterizerStates rs, DepthStencilStates dss);
-	// サブリソースの更新
-	void UpdateSubResources(ID3D11Resource* resource, const void* pSrcData);
-	// 板ポリゴン描画（頂点、テクスチャ）
-	void DrawTexture(const DirectX::DX11::VertexPositionTexture* vertices);
-	// 板ポリゴン描画（頂点、色、テクスチャ）
-	void DrawColorTexture(D3D_PRIMITIVE_TOPOLOGY topology, const DirectX::DX11::VertexPositionColorTexture* vertices, size_t count);
-	// 解放（頂点、テクスチャ）
-	void ReleasePositionTexture();
-	// 解放（頂点、色、テクスチャ）
-	void ReleasePositionColorTexture();
-	// シェーダーにバッファを送る
-	void SetShaderBuffer(UINT startSlot, UINT numBuffers, ID3D11Buffer* const* ppBuffer);
-	// シェーダーをセットする
-	void SetShader(const Shaders& shaders, ID3D11ClassInstance* const* ppClassInstances, UINT nubClassInstances);
-	// シェーダーを解放する
-	void ReleaseShader();
+	// public関数
+	~DrawPolygon();	// デストラクタ
+	void InitializePositionTexture(DX::DeviceResources* pDR);// 初期化（頂点、テクスチャ）
+	void InitializePositionColorTexture(DX::DeviceResources* pDR);// 初期化（頂点、色、テクスチャ）
+	void DrawStart(ID3D11InputLayout* pInputLayout, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures);// 描画開始
+	void DrawSetting(SamplerStates ss, BlendStates bs, RasterizerStates rs, DepthStencilStates dss);// 描画前設定
+	void UpdateSubResources(ID3D11Resource* resource, const void* pSrcData);// サブリソースの更新
+	void DrawTexture(const DirectX::DX11::VertexPositionTexture* vertices);// 板ポリゴン描画（頂点、テクスチャ）
+	void DrawColorTexture(D3D_PRIMITIVE_TOPOLOGY topology, const DirectX::DX11::VertexPositionColorTexture* vertices, size_t count);// 板ポリゴン描画（頂点、色、テクスチャ）
+	void ReleasePositionTexture();// 解放（頂点、テクスチャ）
+	void ReleasePositionColorTexture();// 解放（頂点、色、テクスチャ）
+	void SetShaderBuffer(UINT startSlot, UINT numBuffers, ID3D11Buffer* const* ppBuffer);// シェーダーにバッファを送る
+	void SetShader(const Shaders& shaders, ID3D11ClassInstance* const* ppClassInstances, UINT nubClassInstances);// シェーダーをセットする
+	void ReleaseShader();// シェーダーを解放する
 private:
-	// コンストラクタ
-	DrawPolygon();
-	// コピーコンストラクタと代入演算子の禁止
-	DrawPolygon(const DrawPolygon&) = delete;
-	DrawPolygon& operator=(const DrawPolygon&) = delete;
-
+	// private関数
+	DrawPolygon();// コンストラクタ
+	DrawPolygon(const DrawPolygon&) = delete;// コピーコンストラクタ
+	DrawPolygon& operator=(const DrawPolygon&) = delete;// コピーコンストラクタと代入演算子の禁止
 private:
+	// private変数
 	// 共通リソース
 	ID3D11DeviceContext1* m_context;
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;
+	// デバイス
 	ID3D11Device1* m_device;
 	// プリミティブバッチ（頂点、テクスチャ）
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_primitiveBatchTexture;

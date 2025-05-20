@@ -13,11 +13,7 @@ EnemyModel::EnemyModel()
 	: m_commonResources{}// 共通リソース
 	, m_bodyModel{}// 胴体モデル
 	, m_antennaModel{}// アンテナモデル
-	, m_attackFaceModel{}	// 攻撃態勢の顔モデル
 	, m_handModel{}// 手モデル
-	, m_idlingFaceModel{}// 普段の顔モデル
-	, m_angryFaceModel{}// おこ顔モデル
-	, m_damageFaceModel{}// 攻撃を受けた時の顔モデル
 	, m_shadowModel{}// 影用のモデル
 	, m_nowState{ IState::EnemyState::IDLING }
 {}
@@ -47,12 +43,12 @@ void EnemyModel::Initialize(CommonResources* resources)
 	// モデルを読み込む（ 頭、アンテナ、手、表情差分）
 	m_bodyModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_Head.cmo", *fx);// 頭
 	m_antennaModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_Antenna.cmo", *fx);// アンテナ
-	m_attackFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_Face.cmo", *fx);// 攻撃態勢の顔
 	m_handModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_Hand.cmo", *fx);// 手
-	m_idlingFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_IdlingHead.cmo", *fx);// 普段の顔	
-	m_angryFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_AttackFace.cmo", *fx);// おこ顔
-	m_damageFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_DamageFace.cmo", *fx);// 攻撃を受けた時の顔
 	m_shadowModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy.cmo", *fx);	// 影用のモデルを読み込む
+	m_faceModelMap[IState::EnemyState::HIT] = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_DamageFace.cmo", *fx);// 攻撃を受けた時の顔
+	m_faceModelMap[IState::EnemyState::ATTACK] = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_Face.cmo", *fx);// 攻撃時の顔
+	m_faceModelMap[IState::EnemyState::ANGRY] = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_AttackFace.cmo", *fx);// おこ顔
+	m_faceModelMap[IState::EnemyState::IDLING] = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_IdlingHead.cmo", *fx);// 普段の顔
 }
 /*
 *	@brief	描画
@@ -85,20 +81,7 @@ void EnemyModel::Render(ID3D11DeviceContext1* context,
 			context->RSSetState(states->CullNone());	// カリングを無効にする
 			context->PSSetShader(m_pixelShader.Get(), nullptr, 0);// ピクセルシェーダーをセット
 		});
-	switch (m_nowState)	// 表情差分
-	{
-	case IState::EnemyState::IDLING:// 徘徊
-		m_idlingFaceModel->Draw(context, *states, world, view, proj);// 描画
-		break;
-	case IState::EnemyState::ATTACK:// 攻撃
-		m_attackFaceModel->Draw(context, *states, world, view, proj);// 描画
-		break;
-	case IState::EnemyState::ANGRY:// 怒り
-		m_angryFaceModel->Draw(context, *states, world, view, proj);// 描画
-		break;
-	case IState::EnemyState::HIT:// 被弾中
-		m_damageFaceModel->Draw(context, *states, world, view, proj);// 描画
-		break;
-
-	}
+	auto it = m_faceModelMap.find(m_nowState);// ステートによって顔のモデルを変更
+	if (it != m_faceModelMap.end() && it->second)// マップに存在する場合
+		it->second->Draw(context, *states, world, view, proj);// 顔のモデルを描画
 }

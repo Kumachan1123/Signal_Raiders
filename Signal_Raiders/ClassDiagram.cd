@@ -19,21 +19,21 @@
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AhQCAyBcBLABASgQgWEDqMAwACCAi2wARxAQAIARABw=</HashCode>
+      <HashCode>AhQCAyBcBDABASgQgWEDqMAwACSAi2wARxAQAIARABw=</HashCode>
       <FileName>Game\Enemy\Enemy.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="VerticalAttacker" Collapsed="true">
     <Position X="17.25" Y="5.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AhQCASBcBLAhASoSgSEjqMAwACCAi2wARxAQAIARABw=</HashCode>
+      <HashCode>AhQCASBcBDAhASgQgSEjqMAwACSAi2wARxAQAIARABw=</HashCode>
       <FileName>Game\Enemy\VerticalAttacker\VerticalAttacker.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="IEnemy" Collapsed="true">
     <Position X="15" Y="4.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AhQCAQAQALABAUgAgQECKIAwACCAA3gABxAQAIARABg=</HashCode>
+      <HashCode>AhQCAQAQADABAUgAgQECKIAwACSAA3gABxAQAIARABg=</HashCode>
       <FileName>Game\Interface\IEnemy.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -61,7 +61,7 @@
   <Class Name="BossAI" Collapsed="true">
     <Position X="36" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>GFQABGCmgDCEDSIAACAQAEAAQIAAA0xIIgAAEgkAAAg=</HashCode>
+      <HashCode>GFQABGCmgDCEDSIAACAQAEAAQIAAA0xAIgAAEgkAAAg=</HashCode>
       <FileName>Game\Enemy\Boss\BossAI\BossAI.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -72,17 +72,10 @@
       <FileName>Game\Enemy\Boss\BossAI\BossAttack\BossAttack.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="BossIdling" Collapsed="true">
-    <Position X="0.75" Y="8.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>EBQAAAAACCCAESAAAAAAAAAAACAAAgxAAAAAAgEAAgA=</HashCode>
-      <FileName>Game\Enemy\Boss\BossAI\BossIdling\BossIdling.h</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="BossModel" Collapsed="true">
     <Position X="7.75" Y="11.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAABAAQAAABAQAEAAAEAAAAAACAAAAAAJAAAAEAAAg=</HashCode>
+      <HashCode>AAAABAAQAAABAQAEAAAEAAAAAACAAACAAJAAAAIAAAg=</HashCode>
       <FileName>Game\Enemy\Boss\BossModel\BossModel.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -197,7 +190,7 @@
   <Class Name="EnemyCounter" Collapsed="true">
     <Position X="34.25" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AASEAwAYDAaCCRABECICA0AGAADhAAigABBAQBNVAgA=</HashCode>
+      <HashCode>AASGAwBYDACASRABECoCA0APAADpAAugQJBARBNVAgE=</HashCode>
       <FileName>Game\Enemy\EnemyCounter\EnemyCounter.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -218,7 +211,7 @@
   <Class Name="EnemyHPBar" Collapsed="true">
     <Position X="37.75" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AB0UAkAUBKQAAXABAAMDAAIgAACIAkToZBAAQgBBAhI=</HashCode>
+      <HashCode>AB0UAkAURCAAAbEBAAsDgAIgAASIAkToJBQAQwhRAhI=</HashCode>
       <FileName>Game\Enemy\EnemyHPBar\EnemyHPBar.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -246,14 +239,14 @@
   <Class Name="EnemySpin" Collapsed="true">
     <Position X="9.75" Y="8.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EBQAAAAAACCAESAAUAAAAAAAAAAAAgwAABAAAgEAAAA=</HashCode>
+      <HashCode>EBQAAAAIACCAESAAEAAAAAAAAAAAAgwAABAAAgEAAAA=</HashCode>
       <FileName>Game\Enemy\EnemyAI\EnemySpin\EnemySpin.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Fade" Collapsed="true">
     <Position X="29" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ABQEBUAQBAACCFACgBEQBAAEAACIAUCkABAAQJBAAgA=</HashCode>
+      <HashCode>ABSEBUAQBACACJACBBEABCAEAACIAUCgABAAQBBAAgA=</HashCode>
       <FileName>Game\Fade\Fade.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -386,7 +379,7 @@
   <Class Name="ResultMenu" Collapsed="true">
     <Position X="1.75" Y="3.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EDYAAIAQACACAQAAgBAAAAAQAAAAAAAAgFAiAAAEAQA=</HashCode>
+      <HashCode>EDYAAIAQACACAQAAgBAAAAAQAACAAAAIgFAiAAAEAQA=</HashCode>
       <FileName>Game\Scene\ResultScene\ResultMenu\ResultMenu.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -457,7 +450,7 @@
   <Class Name="Sky" Collapsed="true">
     <Position X="32.5" Y="5.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AgAAAAAwIAAAAQEAAAAAAAAAAAAAAAAAEBAAAAAAAAA=</HashCode>
+      <HashCode>AgAAAAAwIAAAAQEAAAAAAAAAAAAAAAAAEBAAEAAAAAA=</HashCode>
       <FileName>Game\Sky\Sky.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -492,7 +485,7 @@
   <Class Name="StageSelectMenu" Collapsed="true">
     <Position X="4" Y="3.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EDYAAIAQACACAQAAgBAAAAACAAAQAAAAAFAiAAAEIQA=</HashCode>
+      <HashCode>EDYAAIAQACACAQAAgBAAAAACAACQAAAIAFAiAAAEIQA=</HashCode>
       <FileName>Game\Scene\StageSelectScene\Menu\StageSelectMenu.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -513,7 +506,7 @@
   <Class Name="TitleMenu" Collapsed="true">
     <Position X="13" Y="3.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EDYAAICYACACAQAAgBAAAAAAAAAAAAAAAFAiCAAEAQA=</HashCode>
+      <HashCode>EDYAAICYACACAQAAgBAAAAAAAACAAAAIAFAiCAAEAQA=</HashCode>
       <FileName>Game\Scene\TitleScene\TitleMenu\TitleMenu.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -618,14 +611,14 @@
   <Class Name="BossBase" Collapsed="true">
     <Position X="12.75" Y="5.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AjQmCSDUBrAJASoyq+HKqtI0ASjIy+1gZxJUAoCZqB0=</HashCode>
+      <HashCode>AjQmCSDUBrAJASoyq+HKqtI0ASzIy+1gZxJUAoCZqB0=</HashCode>
       <FileName>Game\Enemy\BossBase\BossBase.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="LastBossModel" Collapsed="true">
     <Position X="3.25" Y="11.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAABBAAQAAABAQAAAAAEAAAAAECAAAAAAJAAAAEAAAA=</HashCode>
+      <HashCode>AAABBAAQAAABAQAAAAAEAAAAAECAAACAAJAAAAIAAAA=</HashCode>
       <FileName>Game\Enemy\LastBoss\LastBossModel\LastBossModel.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -668,7 +661,7 @@
     <Position X="37.75" Y="4.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAABAABBAEAAAAAAEkCCAACAIAAoCAgAAAI=</HashCode>
-      <FileName>Game\KumachiLib\RenderTexture\RenderTexture.h</FileName>
+      <FileName>Libraries\Microsoft\RenderTexture\RenderTexture.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="mylib::InputManager" Collapsed="true">
@@ -704,6 +697,13 @@
     <TypeIdentifier>
       <HashCode>AEQAAACAAAAAAQAAAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
       <FileName>Game\Interface\IBullet.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BossKnockBacking" Collapsed="true">
+    <Position X="0.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EBQAAAAACCCAESAAAAAAAAAAgAAAAgxAAAAAAgEAAAA=</HashCode>
+      <FileName>Game\Enemy\Boss\BossAI\BossKnockBacking\BossKnockBacking.h</FileName>
     </TypeIdentifier>
   </Class>
   <Struct Name="UpdateContext" Collapsed="true">

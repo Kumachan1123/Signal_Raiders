@@ -12,8 +12,6 @@
 VerticalAttackerModel::VerticalAttackerModel()
 	: m_commonResources{}// ‹¤’ÊƒŠƒ\[ƒX
 	, m_bodyModel{}// ƒ‚ƒfƒ‹
-	, m_attackFaceModel{}// UŒ‚Žž‚ÌŠç
-	, m_idlingFaceModel{}// ƒAƒCƒhƒŠƒ“ƒOŽž‚ÌŠç
 	, m_nowState{ IState::EnemyState::IDLING }// Œ»Ý‚ÌƒXƒe[ƒ^ƒX
 {}
 /*
@@ -36,10 +34,10 @@ void VerticalAttackerModel::Initialize(CommonResources* resources)
 	fx->SetDirectory(L"Resources/Models/VerticalAttacker");// ƒ‚ƒfƒ‹‚ÌƒfƒBƒŒƒNƒgƒŠ‚ðŽw’è
 	m_bodyModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/VerticalAttacker/VerticalAttacker.cmo", *fx);//  “·‘Ìƒ‚ƒfƒ‹‚ð“Ç‚Ýž‚Þ
 	fx->SetDirectory(L"Resources/Models/Enemy");// ƒ‚ƒfƒ‹‚ÌƒfƒBƒŒƒNƒgƒŠ‚ðŽw’èi’Êí‚Ì“G‚Ì•\î·•ª‚ð—¬—pj
-	m_attackFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_Face.cmo", *fx);// UŒ‚Žž‚ÌŠç
-	m_idlingFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_IdlingHead.cmo", *fx);// œpœjŽž‚ÌŠç
-	m_angryFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_AttackFace.cmo", *fx);// “{‚èŽž‚ÌŠç
-	m_damageFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_DamageFace.cmo", *fx);// UŒ‚‚ðŽó‚¯‚½Žž‚ÌŠç
+	m_faceModelMap[IState::EnemyState::HIT] = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_DamageFace.cmo", *fx);// UŒ‚‚ðŽó‚¯‚½Žž‚ÌŠç
+	m_faceModelMap[IState::EnemyState::ATTACK] = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_Face.cmo", *fx);// UŒ‚Žž‚ÌŠç
+	m_faceModelMap[IState::EnemyState::ANGRY] = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_AttackFace.cmo", *fx);// “{‚èŽž‚ÌŠç
+	m_faceModelMap[IState::EnemyState::IDLING] = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_IdlingHead.cmo", *fx);// œpœjŽž‚ÌŠç
 }
 /*
 *	@brief	•`‰æ‚·‚é
@@ -70,19 +68,7 @@ void VerticalAttackerModel::Render(ID3D11DeviceContext1* context,
 			context->RSSetState(states->CullNone());	// ƒJƒŠƒ“ƒO
 			context->PSSetShader(m_pixelShader.Get(), nullptr, 0);// ƒsƒNƒZƒ‹ƒVƒF[ƒ_[Ý’è
 		});
-	switch (m_nowState)	// •\î·•ª
-	{
-	case IState::EnemyState::IDLING:// œpœj
-		m_idlingFaceModel->Draw(context, *states, world, view, proj);// œpœjŽž‚ÌŠç
-		break;
-	case IState::EnemyState::ATTACK:// UŒ‚
-		m_attackFaceModel->Draw(context, *states, world, view, proj);// UŒ‚Žž‚ÌŠç
-		break;
-	case IState::EnemyState::ANGRY:// “{‚è
-		m_angryFaceModel->Draw(context, *states, world, view, proj);// “{‚èŽž‚ÌŠç
-		break;
-	case IState::EnemyState::HIT:// ”í’e
-		m_damageFaceModel->Draw(context, *states, world, view, proj);// UŒ‚‚ðŽó‚¯‚½Žž‚ÌŠç
-		break;
-	}
+	auto it = m_faceModelMap.find(m_nowState);// ƒXƒe[ƒg‚É‚æ‚Á‚ÄŠç‚Ìƒ‚ƒfƒ‹‚ð•ÏX
+	if (it != m_faceModelMap.end() && it->second)// ƒ}ƒbƒv‚É‘¶Ý‚·‚éê‡
+		it->second->Draw(context, *states, world, view, proj);// Šç‚Ìƒ‚ƒfƒ‹‚ð•`‰æ
 }

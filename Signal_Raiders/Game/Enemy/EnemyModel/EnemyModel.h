@@ -7,6 +7,7 @@
 #define ENEMY_MODEL_DEFINED
 // 標準ライブラリ
 #include <SimpleMath.h>
+#include <unordered_map>
 // 外部ライブラリ
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
@@ -40,10 +41,7 @@ private:
 	std::unique_ptr<DirectX::Model> m_bodyModel;//胴体
 	std::unique_ptr<DirectX::Model> m_antennaModel;//アンテナ
 	std::unique_ptr<DirectX::Model> m_handModel;//手
-	std::unique_ptr<DirectX::Model> m_attackFaceModel;//攻撃態勢の顔
-	std::unique_ptr<DirectX::Model> m_angryFaceModel;//おこの時の顔
-	std::unique_ptr<DirectX::Model> m_idlingFaceModel;//普段の顔
-	std::unique_ptr<DirectX::Model> m_damageFaceModel;	// 攻撃を受けた時の顔
+	std::unordered_map<IState::EnemyState, std::unique_ptr<DirectX::Model>> m_faceModelMap;// 表情によって変わる顔のモデルのマップ
 	std::unique_ptr<DirectX::Model> m_shadowModel;	// 影用のモデル
 	// モデルの影用のピクセルシェーダー
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;

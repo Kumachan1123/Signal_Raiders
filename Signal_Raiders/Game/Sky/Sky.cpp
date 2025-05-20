@@ -13,6 +13,8 @@
 #include <Model.h>
 #include <Effects.h>
 #include <memory>
+#include <locale> 
+#include <codecvt>
 //---------------------------------------------------------
 // コンストラクタ
 //---------------------------------------------------------
@@ -48,34 +50,13 @@ void Sky::Initialize(CommonResources* resources)
 	std::unique_ptr<EffectFactory> fx = std::make_unique<EffectFactory>(device);
 	fx->SetDirectory(L"Resources/models/sky");
 
-	// ステージIDによってテクスチャパスを結合する
-	switch (m_stageID)
-	{
 
-	case 0:
-		//テクスチャパスを設定する
-		wcscpy_s(m_texturePath, L"Resources/models/sky/sky.cmo");
-		break;
-	case 1:
-		//テクスチャパスを設定する
-		wcscpy_s(m_texturePath, L"Resources/models/sky/CloudySky.cmo");
-		break;
-	case 2:
-		//テクスチャパスを設定する
-		wcscpy_s(m_texturePath, L"Resources/models/sky/EveningSky.cmo");
-		break;
-	case 3:
-		//テクスチャパスを設定する
-		wcscpy_s(m_texturePath, L"Resources/models/sky/NightSky.cmo");
-		break;
-	case 4:
-		//テクスチャパスを設定する
-		wcscpy_s(m_texturePath, L"Resources/models/sky/MidNightSky.cmo");
-		break;
+	auto it = m_texturePathMap.find(m_stageID);
+	if (it != m_texturePathMap.end()) {
+		std::wstring wpath = ConvertToWString(it->second);
+		m_model = Model::CreateFromCMO(device, wpath.c_str(), *fx);
 	}
 
-	// モデルを読み込む
-	m_model = Model::CreateFromCMO(device, m_texturePath, *fx);
 
 }
 //---------------------------------------------------------
@@ -108,4 +89,9 @@ void Sky::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix p
 	);
 	// モデルを描画する
 	m_model->Draw(context, *states, world, view, proj);
+}
+
+std::wstring Sky::ConvertToWString(const std::string& str)
+{
+	return std::wstring(str.begin(), str.end());
 }

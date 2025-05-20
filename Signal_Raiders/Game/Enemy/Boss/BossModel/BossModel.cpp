@@ -12,8 +12,6 @@ BossModel::BossModel()
 	: m_commonResources{}// 共通リソース
 	, m_bodyModel{}// 胴体
 	, m_pixelShader{}// 影用のピクセルシェーダー
-	, m_damageFaceModel{}// 普段の顔
-	, m_attackFaceModel{}// 攻撃時の顔
 	, m_nowState(IState::EnemyState::IDLING)// 現在のステート
 {}
 
@@ -37,10 +35,9 @@ void BossModel::Initialize(CommonResources* resources)
 	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);// エフェクトファクトリー
 	fx->SetDirectory(L"Resources/Models/Boss");// モデルのディレクトリ
 	m_bodyModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss.cmo", *fx);// 胴体
-	m_damageFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss_Face_Damage.cmo", *fx);// 普段の顔
-	m_attackFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss_Face_Attack.cmo", *fx);// 攻撃時の顔　
-	m_angryFaceModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss_Face_Angry.cmo", *fx);// 怒り状態の顔
-
+	m_faceModelMap[IState::EnemyState::HIT] = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss_Face_Damage.cmo", *fx);//ダメージを受けた時の顔
+	m_faceModelMap[IState::EnemyState::ATTACK] = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss_Face_Attack.cmo", *fx);// 攻撃時の顔
+	m_faceModelMap[IState::EnemyState::ANGRY] = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss_Face_Angry.cmo", *fx);// 怒り状態の顔
 }
 /*
 *	@brief	描画
@@ -70,16 +67,7 @@ void BossModel::Render(ID3D11DeviceContext1* context,
 			context->PSSetShader(m_pixelShader.Get(), nullptr, 0);// ピクセルシェーダー
 		});
 	m_bodyModel->Draw(context, *states, world, view, proj);// 胴体
-	switch (m_nowState)// 現在のステートによって描画を変える
-	{
-	case IState::EnemyState::HIT:// ダメージ
-		m_damageFaceModel->Draw(context, *states, world, view, proj);// 普段の顔
-		break;
-	case IState::EnemyState::ATTACK:// 攻撃
-		m_attackFaceModel->Draw(context, *states, world, view, proj);// 攻撃時の顔
-		break;
-	case IState::EnemyState::ANGRY:// 怒り
-		m_angryFaceModel->Draw(context, *states, world, view, proj);// 怒り状態の顔
-		break;
-	}
+	auto it = m_faceModelMap.find(m_nowState);// ステートによって顔のモデルを変更
+	if (it != m_faceModelMap.end() && it->second)// マップに存在する場合
+		it->second->Draw(context, *states, world, view, proj);// 顔のモデルを描画
 }

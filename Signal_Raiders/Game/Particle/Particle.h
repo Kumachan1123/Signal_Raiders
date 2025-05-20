@@ -1,55 +1,84 @@
 /*
-	@file	Particle.h
-	@brief	パーティクルクラス
+*	@file	Particle.h
+*	@brief	パーティクルクラス
 */
 #pragma once
-//前方宣言
-class CommonResources;
-#include "Game/CommonResources.h"
+// 標準ライブラリ
 #include <vector>
+#include <algorithm>
+#include <random>
 #include <list>
+// DirectXのライブラリ
+#include <Effects.h>
+#include <PrimitiveBatch.h>
+#include <VertexTypes.h>
+#include <WICTextureLoader.h>
+#include <CommonStates.h>
+// 外部ライブラリ
+#include "DeviceResources.h"
+#include "Game/CommonResources.h"
+// 自作ヘッダーファイル
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include <Game/ParticleUtility/ParticleUtility.h>
+#include  "Game/KumachiLib/BinaryFile/BinaryFile.h"
+//前方宣言
+class CommonResources;
 class Particle
 {
 public:
-	//	データ受け渡し用コンスタントバッファ(送信側)
-	struct ConstBuffer
+	// 構造体
+	struct ConstBuffer//シェーダーに送るコンスタントバッファ
 	{
-		DirectX::SimpleMath::Matrix		matWorld;
-		DirectX::SimpleMath::Matrix		matView;
-		DirectX::SimpleMath::Matrix		matProj;
-		DirectX::SimpleMath::Vector4	colors;
+		DirectX::SimpleMath::Matrix	 matWorld;	// ワールド行列
+		DirectX::SimpleMath::Matrix	 matView;	// ビュー行列
+		DirectX::SimpleMath::Matrix	 matProj;	// プロジェクション行列
+		DirectX::SimpleMath::Vector4 colors;	// 色
 		DirectX::SimpleMath::Vector4 count;     // カウント
 		DirectX::SimpleMath::Vector4 height;    // 高さ
 		DirectX::SimpleMath::Vector4 width;     // 幅
-
 	};
-
-	//変数
 public:
-
-	DirectX::SimpleMath::Vector3 m_bulletPosition;// 弾の座標
-	DirectX::SimpleMath::Vector3 m_bossPosition;// ボスの座標
+	// アクセサ
+	void SetBulletPosition(DirectX::SimpleMath::Vector3 bulletPos) { m_bulletPosition = bulletPos; }// 弾の座標を設定
+	void SetBossPosition(DirectX::SimpleMath::Vector3 bossPos) { m_bossPosition = bossPos; }// ボスの座標を設定
+	void SetCameraPosition(DirectX::SimpleMath::Vector3 cameraPos) { m_cameraPosition = cameraPos; }// カメラの位置を設定
+	void SetCameraTarget(DirectX::SimpleMath::Vector3 cameraTarget) { m_cameraTarget = cameraTarget; }// カメラの注視点を設定
+	void SetCameraUp(DirectX::SimpleMath::Vector3 cameraUp) { m_cameraUp = cameraUp; }// カメラの上方向を設定
+	void SetBarrierBreakSize(float size) { m_barrierBreakSize = size; }// シールド破壊のサイズを設定
+public:
+	// public関数
+	Particle(ParticleUtility::Type type, float size);// コンストラクタ
+	~Particle();// デストラクタ
+	void Initialize(CommonResources* resources);// 初期化
+	void LoadTexture(const wchar_t* path);// テクスチャの読み込み
+	void Update(float elapsedTime);// 更新
+	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);// 描画
+	void CreateBillboard(// ビルボード行列の作成
+		DirectX::SimpleMath::Vector3 target,
+		DirectX::SimpleMath::Vector3 eye,
+		DirectX::SimpleMath::Vector3 up);
+private:
+	void CreateShaders();// シェーダー作成
+	void Trail();// 軌跡
+	void BarrierBreak();// バリア破壊
+public:
+	// public変数
 	// 共通リソース
 	CommonResources* m_commonResources;
+	// デバイスリソース
+	DX::DeviceResources* m_pDR;
 	//	関数
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
-	//	変数
-	DX::DeviceResources* m_pDR;
+	// 経過時間
 	float m_timer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
-
-	//	入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
-	//	プリミティブバッチ
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_batch;
-	//	コモンステート
-	std::unique_ptr<DirectX::CommonStates> m_states;
-	//	テクスチャハンドル
-	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_texture;
 	// コンスタントバッファ
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
+	// 入力レイアウト
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
+	// テクスチャハンドルの配列
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_texture;
+	// コンスタントバッファ（構造体）
 	ConstBuffer m_constantBuffer;
 	// フレームの行数と列数
 	int m_frameRows;
@@ -60,9 +89,8 @@ public:
 	float m_animSpeed;
 	// アニメーション時間
 	float m_animTime;
-	// 経過時間
+	// フレーム時間
 	float m_elapsedTime;
-
 	//	頂点シェーダ
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
 	//	ピクセルシェーダ
@@ -75,44 +103,32 @@ public:
 	DrawPolygon* m_pDrawPolygon;
 	// シェーダー作成クラス
 	CreateShader* m_pCreateShader;
-	DirectX::SimpleMath::Matrix m_world;// ワールド行列
-	DirectX::SimpleMath::Matrix m_view;// ビュー行列
-	DirectX::SimpleMath::Matrix m_proj;	// プロジェクション行列
-
-	DirectX::SimpleMath::Vector3 m_cameraPosition;// カメラの位置
-	DirectX::SimpleMath::Vector3 m_cameraTarget;// カメラの注視点
-	DirectX::SimpleMath::Vector3 m_cameraUp;// カメラの上方向
-	DirectX::SimpleMath::Matrix m_billboard;// ビルボード行列
-
+	// ワールド行列
+	DirectX::SimpleMath::Matrix m_world;
+	// ビュー行列
+	DirectX::SimpleMath::Matrix m_view;
+	// プロジェクション行列
+	DirectX::SimpleMath::Matrix m_proj;
+	// 弾の座標
+	DirectX::SimpleMath::Vector3 m_bulletPosition;
+	// ボスの座標
+	DirectX::SimpleMath::Vector3 m_bossPosition;
+	// カメラの位置
+	DirectX::SimpleMath::Vector3 m_cameraPosition;
+	// カメラの注視点
+	DirectX::SimpleMath::Vector3 m_cameraTarget;
+	// カメラの上方向
+	DirectX::SimpleMath::Vector3 m_cameraUp;
+	// ビルボード行列
+	DirectX::SimpleMath::Matrix m_billboard;
+	// 頂点
 	std::vector<DirectX::VertexPositionColorTexture> m_vertices;
+	// パーティクルのユーティリティ
 	std::list<ParticleUtility> m_particleUtility;
 	// パーティクルタイプ
 	ParticleUtility::Type m_type;
 	// パーティクルのサイズ
 	float m_size;
-	float m_barrierBreakSize;// シールド破壊のサイズ
-	//	関数
-public:
-	Particle(ParticleUtility::Type type, float size);
-	~Particle();
-	void Initialize(CommonResources* resources);
-	void LoadTexture(const wchar_t* path);
-	void Update(float elapsedTime);
-	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
-	void CreateBillboard(
-		DirectX::SimpleMath::Vector3 target,
-		DirectX::SimpleMath::Vector3 eye,
-		DirectX::SimpleMath::Vector3 up);
-	//	Setter
-	void SetBulletPosition(DirectX::SimpleMath::Vector3 bulletPos) { m_bulletPosition = bulletPos; }
-	void SetBossPosition(DirectX::SimpleMath::Vector3 bossPos) { m_bossPosition = bossPos; }
-
-	void SetCameraPosition(DirectX::SimpleMath::Vector3 cameraPos) { m_cameraPosition = cameraPos; }
-	void SetCameraTarget(DirectX::SimpleMath::Vector3 cameraTarget) { m_cameraTarget = cameraTarget; }
-	void SetCameraUp(DirectX::SimpleMath::Vector3 cameraUp) { m_cameraUp = cameraUp; }
-	void SetBarrierBreakSize(float size) { m_barrierBreakSize = size; }
-private:
-	void CreateShader();
-	void Trail();
-	void BarrierBreak();
+	// シールド破壊のサイズ
+	float m_barrierBreakSize;
 };

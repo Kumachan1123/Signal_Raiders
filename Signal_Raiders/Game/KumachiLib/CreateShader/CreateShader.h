@@ -1,39 +1,37 @@
+/*
+*	@file CreateShaders.h
+*	@brief シェーダーを作成するシングルトンクラス
+*	@details 板ポリゴンを描画する際に使用するシェーダーを作成する
+*/
 #pragma once
-// / <summary>
-// / シェーダーを作成するクラス
-// / </summary>
-#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
+// 標準ライブラリ
 #include <memory>
+#include <utility>
+// 自作ヘッダーファイル
+#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 
 class CreateShader
 {
 public:
-	// シングルトンインスタンス
-	static CreateShader* const GetInstance();
-
-
-public:// 関数
-
-	// デストラクタ
-	~CreateShader();
-	// 初期化
-	void Initialize(ID3D11Device1* device, const D3D11_INPUT_ELEMENT_DESC* pIDE, UINT NumElements, Microsoft::WRL::ComPtr<ID3D11InputLayout> InputLayout);
-	// 頂点シェーダを作成
-	void CreateVertexShader(const wchar_t* fileName, Microsoft::WRL::ComPtr<ID3D11VertexShader>& vs);
-	// ピクセルシェーダーを作成
-	void CreatePixelShader(const wchar_t* fileName, Microsoft::WRL::ComPtr<ID3D11PixelShader>& ps);
-	// ジオメトリシェーダーを作成
-	void CreateGeometryShader(const wchar_t* fileName, Microsoft::WRL::ComPtr<ID3D11GeometryShader>& gs);
-	// 作ったインプットレイアウトを返す
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> GetInputLayout() { return m_pInputLayout; }
-	// コンスタントバッファを作成
-	void CreateConstantBuffer(Microsoft::WRL::ComPtr<ID3D11Buffer>& cBuffer, UINT bufferSize);
+	static CreateShader* const GetInstance();	// シングルトンインスタンス
+public:
+	// public関数
+	~CreateShader();	// デストラクタ
+	void Initialize(ID3D11Device1* device, // 初期化
+		const D3D11_INPUT_ELEMENT_DESC* pIDE,
+		UINT NumElements,
+		Microsoft::WRL::ComPtr<ID3D11InputLayout> InputLayout);
+	void CreateVertexShader(const wchar_t* fileName, Microsoft::WRL::ComPtr<ID3D11VertexShader>& vs);// 頂点シェーダを作成
+	void CreatePixelShader(const wchar_t* fileName, Microsoft::WRL::ComPtr<ID3D11PixelShader>& ps);// ピクセルシェーダーを作成
+	void CreateGeometryShader(const wchar_t* fileName, Microsoft::WRL::ComPtr<ID3D11GeometryShader>& gs);// ジオメトリシェーダーを作成
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> GetInputLayout() { return m_pInputLayout; }// 作ったインプットレイアウトを返す
+	void CreateConstantBuffer(Microsoft::WRL::ComPtr<ID3D11Buffer>& cBuffer, UINT bufferSize);// コンスタントバッファを作成
 private:
-	// コンストラクタ
-	CreateShader();
-	// コピーコンストラクタと代入演算子の禁止
-	CreateShader(const CreateShader&) = delete;
-	CreateShader& operator=(const CreateShader&) = delete;
+	// private関数
+	CreateShader();// コンストラクタ
+	CreateShader(const CreateShader&) = delete;// コピーコンストラクタ
+	CreateShader& operator=(const CreateShader&) = delete;// 代入演算子の禁止
+private:
 	// シングルトンインスタンス
 	static std::unique_ptr<CreateShader> m_instance;
 	// デバイス

@@ -7,6 +7,7 @@
 #define AREA_ATTACKER_MODEL_DEFINED
 // 標準ライブラリ
 #include <SimpleMath.h>
+#include <unordered_map>
 // 外部ライブラリ
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
@@ -37,12 +38,8 @@ private:
 	CommonResources* m_commonResources;	// 共通リソース
 	// モデル
 	std::unique_ptr<DirectX::Model> m_bodyModel;//胴体
-	std::unique_ptr<DirectX::Model> m_attackFaceModel;//攻撃態勢の顔
-	std::unique_ptr<DirectX::Model> m_angryFaceModel;//おこの時の顔
-	std::unique_ptr<DirectX::Model> m_idlingFaceModel;//普段の顔
-	std::unique_ptr<DirectX::Model> m_damageFaceModel;	// 攻撃を受けた時の顔
+	std::unordered_map<IState::EnemyState, std::unique_ptr<DirectX::Model>> m_faceModelMap;// 表情によって変わる顔のモデルのマップ
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;	// モデルの影用のピクセルシェーダー
 	IState::EnemyState m_nowState;	// 現在のステータス
-
 };
 #endif //AREA_ATTACKER_MODEL_DEFINED

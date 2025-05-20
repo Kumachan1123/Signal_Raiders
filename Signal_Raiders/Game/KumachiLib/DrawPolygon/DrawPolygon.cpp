@@ -1,84 +1,103 @@
+/*
+	@file	DrawPolygon.cpp
+	@brief	板ポリゴン描画用クラス
+	@details 板ポリゴンを描画するためのクラス
+*/
 #include "pch.h"
 #include "DrawPolygon.h"
-//シングルトンにする
 
+// シングルトンインスタンスの初期化
 std::unique_ptr<DrawPolygon> DrawPolygon::m_instance = nullptr;
-
+/*
+*	@brief シングルトンインスタンスを取得
+*	@details シングルトンインスタンスを取得する
+*	@param なし
+*	@return シングルトンインスタンス
+*/
 DrawPolygon* const DrawPolygon::GetInstance()
 {
-	if (m_instance == nullptr)
+	if (m_instance == nullptr)// インスタンスがない場合
 	{
-		m_instance.reset(new DrawPolygon());
+		m_instance.reset(new DrawPolygon());// インスタンスを生成
 	}
-	return m_instance.get();
+	return m_instance.get();// インスタンスを返す
 }
 
-// コンストラクタ
+/*
+*	@brief コンストラクタ
+*	@details コンストラクタ
+*	@param なし
+*/
 DrawPolygon::DrawPolygon()
-	:
-	m_primitiveBatchTexture(nullptr),
-	m_primitiveBatchColorTexture(nullptr),
-	m_states(nullptr),
-	m_context(nullptr),
-	m_pDR(nullptr),
-	m_device(nullptr)
+	: m_primitiveBatchTexture(nullptr)// プリミティブバッチ(頂点、テクスチャ)
+	, m_primitiveBatchColorTexture(nullptr)// プリミティブバッチ(頂点、色、テクスチャ)
+	, m_states(nullptr)// コモンステート
+	, m_context(nullptr)	// デバイスコンテキスト
+	, m_pDR(nullptr)// デバイスリソース
+	, m_device(nullptr)// デバイス
 {
 }
-
-// デストラクタ
+/*
+*	@brief デストラクタ
+*	@details デストラクタ
+*	@param なし
+*	@return なし
+*/
 DrawPolygon::~DrawPolygon()
 {
-	// プリミティブバッチの解放
-	ReleasePositionTexture();
-	ReleasePositionColorTexture();
-}
+	ReleasePositionTexture();	// プリミティブバッチの解放（頂点、テクスチャ）
+	ReleasePositionColorTexture();	// プリミティブバッチの解放（頂点、色、テクスチャ）
 
-// 初期化（頂点、テクスチャ）
+}
+/*
+*	@brief 初期化
+*	@details 初期化（頂点、テクスチャ）を行う
+*	@param pDR デバイスリソース
+*	@return なし
+*/
 void DrawPolygon::InitializePositionTexture(DX::DeviceResources* pDR)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	m_device = pDR->GetD3DDevice();
-	m_context = pDR->GetD3DDeviceContext();
-	// プリミティブバッチを作成する
-	m_primitiveBatchTexture = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(pDR->GetD3DDeviceContext());
-	m_states = std::make_unique<CommonStates>(m_device);
+	m_device = pDR->GetD3DDevice();// デバイスを取得
+	m_context = pDR->GetD3DDeviceContext();// デバイスコンテキストを取得
+	m_primitiveBatchTexture = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(pDR->GetD3DDeviceContext());// プリミティブバッチを作成する
+	m_states = std::make_unique<CommonStates>(m_device);//	コモンステートを作成する
 }
 
-// 初期化（頂点、色、テクスチャ）
+/*
+*	@brief 初期化
+*	@details 初期化（頂点、色、テクスチャ）を行う
+*	@param pDR デバイスリソース
+*	@return なし
+*/
 void DrawPolygon::InitializePositionColorTexture(DX::DeviceResources* pDR)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	m_device = pDR->GetD3DDevice();
-	m_context = pDR->GetD3DDeviceContext();
-	// プリミティブバッチの作成
-	m_primitiveBatchColorTexture = std::make_unique<PrimitiveBatch<VertexPositionColorTexture>>(pDR->GetD3DDeviceContext());
-	m_states = std::make_unique<CommonStates>(m_device);
+	m_device = pDR->GetD3DDevice();// デバイスを取得
+	m_context = pDR->GetD3DDeviceContext();// デバイスコンテキストを取得
+	m_primitiveBatchColorTexture = std::make_unique<PrimitiveBatch<VertexPositionColorTexture>>(pDR->GetD3DDeviceContext());// プリミティブバッチの作成
+	m_states = std::make_unique<CommonStates>(m_device);//	コモンステートを作成する
 }
-
-
-
-// 描画開始
+/*
+*	@brief 描画開始
+*	@details 描画開始時に呼び出す関数
+*	@param pInputLayout 入力レイアウト
+*	@param textures テクスチャ配列
+*	@return なし
+*/
 void DrawPolygon::DrawStart(ID3D11InputLayout* pInputLayout, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures)
 {
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
-	//	ピクセルシェーダにテクスチャを登録する。
-	for (int i = 0; i < textures.size(); i++)
-	{
-		//	for文で一気に設定する
-		m_context->PSSetShaderResources(i, 1, textures[i].GetAddressOf());
-	}
-	//	インプットレイアウトの登録
-	m_context->IASetInputLayout(pInputLayout);
+	for (int i = 0; i < textures.size(); i++)// ピクセルシェーダにテクスチャを登録する。
+		m_context->PSSetShaderResources(i, 1, textures[i].GetAddressOf());// for文で一気に設定する
+	m_context->IASetInputLayout(pInputLayout);// インプットレイアウトの登録
 }
 
 // 描画前設定
 void DrawPolygon::DrawSetting(SamplerStates ss, BlendStates bs, RasterizerStates rs, DepthStencilStates dss)
 {
-	//	画像用サンプラーの登録
-	ID3D11SamplerState* sampler[1];
+	ID3D11SamplerState* sampler[1];//	画像用サンプラーの登録
 	switch (ss)
 	{
 	case DrawPolygon::SamplerStates::ANISOTROPIC_CLAMP:

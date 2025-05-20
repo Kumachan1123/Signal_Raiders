@@ -214,6 +214,7 @@ void EnemyManager::HandleEnemyCollisions()
 	{
 		for (size_t j = i + 1; j < m_enemies.size(); ++j)// “G‚Ì”‚¾‚¯ƒ‹[ƒv
 		{
+			if (i == j) { continue; } // “¯‚¶“G“¯m‚Í“–‚½‚è”»’è‚µ‚È‚¢
 			bool hit = m_enemies[i]->GetBoundingSphere().Intersects(m_enemies[j]->GetBoundingSphere());// “–‚½‚è”»’è‚ğæ“¾
 			m_enemies[i]->SetHitToOtherEnemy(hit);// “–‚½‚è”»’èŒ‹‰Ê‚ğİ’è
 			m_enemies[j]->SetHitToOtherEnemy(hit);// “–‚½‚è”»’èŒ‹‰Ê‚ğİ’è

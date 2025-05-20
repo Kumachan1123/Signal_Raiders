@@ -7,6 +7,7 @@
 #define LASTBOSS_MODEL_DEFINED
 // 標準ライブラリ
 #include <SimpleMath.h>
+#include <unordered_map>
 // 外部ライブラリ
 #include "Game/CommonResources.h"
 #include "DeviceResources.h"
@@ -24,6 +25,8 @@ class IState;
 
 class LastBossModel : public IModel
 {
+
+
 public:
 	// publicメンバ関数
 	LastBossModel();// コンストラクタ
@@ -41,13 +44,8 @@ private:
 	CommonResources* m_commonResources;
 	// 胴体
 	std::unique_ptr<DirectX::Model> m_bodyModel;
-	// 攻撃時の顔
-	std::unique_ptr<DirectX::Model> m_attackFaceModel;
-	// ノックバック中の顔
-	std::unique_ptr<DirectX::Model> m_damageFaceModel;
-	// 怒り状態の顔
-	std::unique_ptr<DirectX::Model> m_angryFaceModel;
-
+	// 表情によって変わる顔のモデルのマップ
+	std::unordered_map<IState::EnemyState, std::unique_ptr<DirectX::Model>> m_faceModelMap;
 	// モデルの影用のピクセルシェーダー
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 	// 現在のステート
