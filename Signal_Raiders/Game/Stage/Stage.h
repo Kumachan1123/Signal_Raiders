@@ -1,6 +1,6 @@
 /*
-	@file	Sky.h
-	@brief	スカイクラス
+*	@file Stage.h
+*	@brief ステージクラス
 */
 #pragma once
 
@@ -8,6 +8,9 @@
 class CommonResources;
 class Stage
 {
+public:// 定数
+	static const float STAGE_SIZE;	// ステージの広さ
+	static const float STAGE_HEIGHT;	// ステージの高さ
 private:
 
 	// 共通リソース
@@ -18,9 +21,6 @@ private:
 
 	// テクスチャパス
 	wchar_t m_texturePath[256];
-
-	// ステージID
-	int m_stageID;
 public:
 	Stage();
 	~Stage();

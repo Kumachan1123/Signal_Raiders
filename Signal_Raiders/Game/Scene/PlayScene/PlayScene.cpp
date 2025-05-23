@@ -1,84 +1,74 @@
 /*
-	@file	PlayScene.cpp
-	@brief	プレイシーンクラス
+*	@file	PlayScene.cpp
+*	@brief	プレイシーンクラス
 */
 #include "pch.h"
-#include "Game/Scene/PlayScene/PlayScene.h"
-#include "Game/CommonResources.h"
-#include "DeviceResources.h"
-#include "Libraries/MyLib/DebugString.h"
-#include "Libraries/MyLib/GridFloor.h"
-#include "Libraries/MyLib/InputManager.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
-#include "Game/Screen.h"
-#include <vector>
-#include <cassert>
-#include <SimpleMath.h>
-#include <Model.h>
-#include <Effects.h>
-#include <memory>
-#include <Libraries/Microsoft/DebugDraw.h>
+#include "PlayScene.h"
+// 音量の基準
+const float PlayScene::VOLUME = 0.05f;
+// ゲームスタート時間
+const float PlayScene::GAME_START_TIME = 5.0f;
+// 待ち時間	
+const float PlayScene::WAIT_TIME = 1.0f;
+// 危険信号を表示するプレイヤーの体力
+const float PlayScene::CRISIS_HP = 20.0f;
 
-
-using namespace DirectX;
-using namespace DirectX::SimpleMath;
-//---------------------------------------------------------
-// コンストラクタ
-//---------------------------------------------------------
+/*
+*	@brief コンストラクタ
+*	@details プレイシーンクラスのコンストラクタ
+*	@param sceneID シーンID
+*	@return なし
+*/
 PlayScene::PlayScene(IScene::SceneID sceneID)
-	:
-	m_commonResources{},
-	m_projection{},
-	m_isChangeScene{ false },
-	m_isResetHP{ false },
-	m_pStage{  },
-	m_pEffect{},
-	m_pFade{},
-	m_fadeState{ },
-	m_fadeTexNum{ 2 },
-	m_BGMvolume{ BGM_VOLUME },
-	m_SEvolume{ SE_VOLUME },
-	m_mouseSensitivity{ },
-	m_nowSceneID{ sceneID },
-	m_timer{ 0.0f },
-	m_waitTime{ 0.0f },
-	m_stageNumber{ 0 },
-	m_pBloom{ Bloom::GetInstance() }
-
+	: m_commonResources{}// 共通リソース
+	, m_projection{}// プロジェクション行列
+	, m_isChangeScene{ false }// シーン変更フラグ
+	, m_isResetHP{ false }// HPリセットフラグ
+	, m_pStage{  }// 地面
+	, m_pEffect{}// エフェクト
+	, m_pFade{}// フェード
+	, m_fadeState{ }// フェード状態
+	, m_BGMvolume{ PlayScene::VOLUME }// BGMの音量
+	, m_SEvolume{ PlayScene::VOLUME }// SEの音量
+	, m_mouseSensitivity{ }// マウス感度
+	, m_nowSceneID{ sceneID }// 現在のシーンID
+	, m_time{ 0.0f }// 経過時間
+	, m_waitTime{ 0.0f }// 待ち時間
+	, m_stageNumber{ 0 }// ステージ番号
+	, m_pBloom{ Bloom::GetInstance() }// ブルームエフェクト
 {
-
 }
-//---------------------------------------------------------
-// デストラクタ
-//---------------------------------------------------------
+/*
+*	@brief デストラクタ
+*	@details プレイシーンクラスのデストラクタ
+*	@param なし
+*	@return なし
+*/
 PlayScene::~PlayScene() { Finalize(); }
-//---------------------------------------------------------
-// 初期化する
-//---------------------------------------------------------
+/*
+*	@brief 初期化
+*	@details プレイシーンクラスの初期化
+*	@param resources 共通リソース
+*	@return なし
+*/
 void PlayScene::Initialize(CommonResources* resources)
 {
-	assert(resources);
-	m_commonResources = resources;
-	auto DR = m_commonResources->GetDeviceResources();
-	// 設定データを取得する
-	m_pSettingData = std::make_unique<SettingData>();
-	m_pSettingData->Load();
-	m_BGMvolume = BGM_VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume()) * 0.1f;// BGMの音量を設定する(若干音量を補正)
-	m_SEvolume = SE_VOLUME * static_cast<float>(m_pSettingData->GetSEVolume()) * 0.1f;// SEの音量を設定する
+	assert(resources);// リソースがnullptrでないことを確認
+	m_commonResources = resources;// 共通リソースを取得
+	auto DR = m_commonResources->GetDeviceResources();// デバイスリソースを取得
+	m_pSettingData = std::make_unique<SettingData>();// 設定データクラスを生成する
+	m_pSettingData->Load();// 設定データを取得する
+	m_BGMvolume = PlayScene::VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume());// BGMの音量を設定する
+	m_SEvolume = PlayScene::VOLUME * static_cast<float>(m_pSettingData->GetSEVolume());// SEの音量を設定する
 	m_mouseSensitivity = static_cast<float>(m_pSettingData->GetMouseSensitivity());// マウス感度を設定する
-	// 地面（ステージ生成）
-	m_pStage = std::make_unique<Stage>();
-	m_pStage->Initialize(resources);
-	// 壁
-	m_pWall = std::make_unique<Wall>(resources);
-	m_pWall->Create(DR);
-	// スカイボックス生成
-	m_skybox = std::make_unique<Sky>(m_stageNumber);
-	m_skybox->Initialize(resources);
-	// プレイヤーを初期化する
-	m_pPlayer = std::make_unique<Player>(resources);
-	// 敵全体を初期化する
-	m_pEnemyManager = std::make_unique<EnemyManager>(resources);
+	m_pStage = std::make_unique<Stage>();// 地面（ステージ生成）
+	m_pStage->Initialize(resources);// 地面を初期化する
+	m_pWall = std::make_unique<Wall>(resources);// 壁生成
+	m_pWall->Create(DR);// 壁を生成する
+	m_sky = std::make_unique<Sky>(m_stageNumber);// 空生成
+	m_sky->Initialize(resources);// 空を初期化する
+	m_pPlayer = std::make_unique<Player>(resources);// プレイヤーを初期化する
+	m_pEnemyManager = std::make_unique<EnemyManager>(resources);// 敵全体を初期化する
 	m_pEnemyManager->SetStageNumber(m_stageNumber);// ステージ番号を設定する
 	m_pPlayer->SetVolume(m_SEvolume);// プレイヤーが出す効果音の音量を設定する
 	if (m_SEvolume > m_BGMvolume)m_pPlayer->SetVolumeCorrection(m_SEvolume - m_BGMvolume);// プレイヤーが出す効果音の音量を補正する
@@ -87,108 +77,81 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pEnemyManager->Initialize(m_pPlayer.get());// 敵を初期化する
 	m_pEnemyManager->SetVolume(m_SEvolume);// 敵が出す効果音の音量を設定する
 	m_pEnemyManager->SetWall(m_pWall.get());// 敵に壁の情報を渡す
-	// 弾マネージャーを初期化する
-	m_pBulletManager = std::make_unique<BulletManager>(resources);
-	m_pBulletManager->Initialize(m_pPlayer.get(), m_pEnemyManager.get());
-	// プレイヤーと敵マネージャーに弾マネージャーを渡す
-	m_pPlayer->SetBulletManager(m_pBulletManager.get());
-	m_pEnemyManager->SetBulletManager(m_pBulletManager.get());
-	// 敵カウンター
-	m_pEnemyCounter = std::make_unique<EnemyCounter>();
-	m_pEnemyCounter->Initialize(resources);
-	// 準備
-	m_pGoal = std::make_unique<Goal>(m_commonResources);
-	m_pGoal->Create(DR);
-	// 危険状態
-	m_pCrisis = std::make_unique<Crisis>(m_commonResources);
-	m_pCrisis->Create(DR);
-	// Wi-Fiローディング(ゲーム開始から５秒間のみ表示するUI）
-	m_pWifiLoading = std::make_unique<WifiLoading>();
-	m_pWifiLoading->Initialize(m_commonResources, Screen::UI_WIDTH, Screen::UI_HEIGHT);
+	m_pBulletManager = std::make_unique<BulletManager>(resources);// 弾マネージャーを初期化する
+	m_pBulletManager->Initialize(m_pPlayer.get(), m_pEnemyManager.get());// 弾マネージャーを初期化する
+	m_pPlayer->SetBulletManager(m_pBulletManager.get());// プレイヤーと敵マネージャーに弾マネージャーを渡す
+	m_pEnemyManager->SetBulletManager(m_pBulletManager.get());// 敵マネージャーに弾マネージャーを渡す
+	m_pEnemyCounter = std::make_unique<EnemyCounter>();// 敵カウンターを生成する
+	m_pEnemyCounter->Initialize(resources);// 敵カウンターを初期化する
+	m_pGoal = std::make_unique<Goal>(m_commonResources);// 指示画像を生成する
+	m_pGoal->Create(DR);// 指示画像を生成する
+	m_pCrisis = std::make_unique<Crisis>(m_commonResources);// 危険状態表示を生成する
+	m_pCrisis->Create(DR);// 危険状態表示を生成する
+	m_pWifiLoading = std::make_unique<WifiLoading>();// Wi-Fiローディング(ゲーム開始から５秒間のみ表示するUI）を生成する
+	m_pWifiLoading->Initialize(m_commonResources, Screen::UI_WIDTH, Screen::UI_HEIGHT);// Wi-Fiローディングを初期化する
 	// プレイ中に表示されるUIたちを登録
-	m_pPlayerUI.push_back(std::move(std::make_unique<PlayerHP>()));
-	m_pPlayerUI.push_back(std::move(std::make_unique<DashGauge>()));
-	m_pPlayerUI.push_back(std::move(std::make_unique<BulletGauge>()));
-	m_pPlayerUI.push_back(std::move(std::make_unique<Reticle>()));
-	m_pPlayerUI.push_back(std::move(std::make_unique<PlayGuide>()));
-	// UIを初期化
-	for (int it = 0; it < m_pPlayerUI.size(); ++it)m_pPlayerUI[it]->Initialize(m_commonResources, Screen::UI_WIDTH, Screen::UI_HEIGHT);
-	// フェードの初期化
-	m_pFade = std::make_unique<Fade>(m_commonResources);
-	m_pFade->Create();
-	m_pFade->SetState(Fade::FadeState::FadeIn);
-	//m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));
-	// レーダーを初期化する
-	m_pRadar = std::make_unique<Radar>(resources);
-	m_pRadar->Initialize(m_pPlayer.get(), m_pEnemyManager.get());
-	// ボス登場演出を初期化する
-	m_pBossAppear = std::make_unique<BossAppear>();
-	m_pBossAppear->Initialize(m_commonResources);
-	// ブルームエフェクトの生成
-	m_pBloom->CreatePostProcess(resources);
-
-
-
+	m_pPlayerUI.push_back(std::move(std::make_unique<PlayerHP>()));		// プレイヤーHP
+	m_pPlayerUI.push_back(std::move(std::make_unique<DashGauge>()));	// ダッシュゲージ
+	m_pPlayerUI.push_back(std::move(std::make_unique<BulletGauge>()));	// 弾ゲージ
+	m_pPlayerUI.push_back(std::move(std::make_unique<Reticle>()));		// 照準
+	m_pPlayerUI.push_back(std::move(std::make_unique<PlayGuide>()));	// 操作説明
+	for (int it = 0; it < m_pPlayerUI.size(); ++it)// 登録した分だけ初期化する
+		m_pPlayerUI[it]->Initialize(m_commonResources, Screen::UI_WIDTH, Screen::UI_HEIGHT);// UIを初期化
+	m_pFade = std::make_unique<Fade>(m_commonResources);// フェードを生成する
+	m_pFade->Initialize();// フェードの初期化
+	m_pFade->SetState(Fade::FadeState::FadeIn);// フェードイン状態にする
+	m_pRadar = std::make_unique<Radar>(resources);// レーダーを初期化する
+	m_pRadar->Initialize(m_pPlayer.get(), m_pEnemyManager.get());// レーダーを初期化する
+	m_pBossAppear = std::make_unique<BossAppear>();// ボス登場演出を生成する
+	m_pBossAppear->Initialize(m_commonResources);// ボス登場演出を初期化する
+	m_pBloom->CreatePostProcess(resources);// ブルームエフェクトの生成する
 }
-
-//---------------------------------------------------------
-// 更新する
-//---------------------------------------------------------
+/*
+*	@brief 更新する
+*	@details プレイシーンクラスの更新
+*	@param elapsedTime 経過時間
+*	@return なし
+*/
 void PlayScene::Update(float elapsedTime)
 {
-
-	// 経過時間
-	m_timer += elapsedTime;
-	// 二重再生しない
-	m_commonResources->GetAudioManager()->PlaySound("PlayBGM", m_BGMvolume);
-	// カメラが向いている方向を取得する
-	DirectX::SimpleMath::Vector3 cameraDirection = m_pPlayer->GetCamera()->GetDirection();
-
-	m_pWall->Update(elapsedTime);
+	m_time += elapsedTime;// 経過時間
+	m_commonResources->GetAudioManager()->PlaySound("PlayBGM", m_BGMvolume);// 二重再生しない
+	DirectX::SimpleMath::Vector3 cameraDirection = m_pPlayer->GetCamera()->GetDirection();// カメラが向いている方向を取得する
+	m_pWall->Update(elapsedTime);// 壁の更新
 	m_commonResources->GetAudioManager()->Update();// オーディオマネージャーの更新
-
 	m_pEnemyManager->Update(elapsedTime);// 敵の更新
 	m_pPlayer->Update(elapsedTime);// プレイヤーの更新
-	UpdateContext ctx;
-	ctx.elapsedTime = elapsedTime;
-	ctx.dashStamina = m_pPlayer->GetDashTime();
-	ctx.bulletPoint = float(m_pPlayer->GetBulletManager()->GetPlayerBulletCount());
+	UpdateContext ctx;// 各種UIに渡す情報をまとめた構造体
+	ctx.elapsedTime = elapsedTime;// 経過時間
+	ctx.dashStamina = m_pPlayer->GetDashTime();// ダッシュ時間
+	ctx.bulletPoint = float(m_pPlayer->GetBulletManager()->GetPlayerBulletCount());// 弾の数
 	m_pBulletManager->Update(elapsedTime);// 弾の更新
-	if (m_timer <= 5.0f)// ゲーム開始から5秒間は
+	if (m_time <= PlayScene::GAME_START_TIME)// ゲーム開始から5秒間は
 	{
 		m_pGoal->Update(elapsedTime);// 指示画像を更新
 		m_pWifiLoading->Update(ctx);// Wi-Fiローディングを更新
 	}
 	else// 5秒以上経過したら
 	{
-		// HP更新
-		m_pPlayer->SetMaxPlayerHP((float)(m_pEnemyManager->GetWifi()->GetCurrentWifiSignalQuality()));
-		// HP上限が設定されたので改めて一度だけHPを設定しなおす
-		if (m_isResetHP == false)
+		m_pPlayer->SetMaxPlayerHP((float)(m_pEnemyManager->GetWifi()->GetCurrentWifiSignalQuality()));// HP更新
+		if (m_isResetHP == false)// HP上限が設定されたので改めて一度だけHPを設定しなおす
 		{
-			for (int it = 0; it < m_pPlayerUI.size(); ++it)
+			for (int it = 0; it < m_pPlayerUI.size(); ++it)// UIを更新する
 			{
 				auto pHP = dynamic_cast<PlayerHP*>(m_pPlayerUI[it].get());// プレイヤーHPだったら
-				if (pHP)pHP->SetMaxHP(m_pPlayer->GetPlayerHP() + m_pPlayer->GetMaxPlayerHP());// 体力をプレイヤーHPに渡す
+				if (pHP)pHP->SetMaxHP(m_pPlayer->GetPlayerHP() + m_pPlayer->GetMaxPlayerHP());// 体力をプレイヤーHPのUIに渡す
 			}
-			m_pPlayer->SetPlayerHP(m_pPlayer->GetPlayerHP() + m_pPlayer->GetMaxPlayerHP());
-			m_isResetHP = true;
+			m_pPlayer->SetPlayerHP(m_pPlayer->GetPlayerHP() + m_pPlayer->GetMaxPlayerHP());// 体力をプレイヤークラスに渡す
+			m_isResetHP = true;// HPを設定したのでフラグを立てる
 		}
-		ctx.playerHP = m_pPlayer->GetPlayerHP();
-		// 体力が10以下になったら危機状態更新
-		if (m_pPlayer->GetPlayerHP() <= 20.0f)m_pCrisis->Update(elapsedTime);
-		for (int it = 0; it < m_pPlayerUI.size(); ++it)
-		{
-			m_pPlayerUI[it]->Update(ctx);
-		}
-
-		// レーダーを更新する
-		m_pRadar->Update(elapsedTime);
-		// 敵カウンターの更新
+		ctx.playerHP = m_pPlayer->GetPlayerHP();// プレイヤーHPを取得
+		if (m_pPlayer->GetPlayerHP() <= PlayScene::CRISIS_HP)m_pCrisis->Update(elapsedTime);// 体力が10以下になったら危機状態更新
+		for (int it = 0; it < m_pPlayerUI.size(); ++it)// 登録した分だけ更新する
+			m_pPlayerUI[it]->Update(ctx);// UIを更新する
+		m_pRadar->Update(elapsedTime);// レーダーを更新する
 		m_pEnemyCounter->SetEnemyIndex(m_pEnemyManager->GetEnemyIndex());// 敵の総数を取得
 		m_pEnemyCounter->SetNowEnemy(m_pEnemyManager->GetEnemySize());// 現在の敵の数を取得
 		m_pEnemyCounter->Update(elapsedTime);// 敵カウンターの更新
-
 		if (m_pPlayer->GetPlayerHP() <= 0.0f ||// プレイヤーのHPが0以下か、
 			(m_pEnemyManager->GetEnemySize() <= 0 &&// 敵がいなくて
 				m_pEnemyManager->GetisBorned() &&// 生成が完了していて
@@ -196,99 +159,81 @@ void PlayScene::Update(float elapsedTime)
 		{
 			m_waitTime += elapsedTime;// 待ち時間を加算する
 		}
-		if (m_waitTime >= 1.0f)// 待ち時間が1秒以上なら
-		{
-			//m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));
-			m_pFade->SetState(Fade::FadeState::FadeOut);
-		}
-		// ボス登場演出を更新する
-		if (m_pEnemyManager->GetIsBossAppear() == true)m_pBossAppear->Update(elapsedTime);
+		if (m_waitTime >= PlayScene::WAIT_TIME)// 待ち時間が1秒以上なら
+			m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウト状態にする
+		if (m_pEnemyManager->GetIsBossAppear() == true)m_pBossAppear->Update(elapsedTime);// ボス登場演出を更新する
 	}
-
-
-	// 画面遷移フェード処理
-	m_pFade->Update(elapsedTime);
-	// フェードアウトが終了したら
-	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)m_isChangeScene = true;
+	m_pFade->Update(elapsedTime);// 画面遷移フェード処理
+	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)m_isChangeScene = true;// フェードアウトが終了したらシーン変更を可能にする
 }
-
-//---------------------------------------------------------
-// 描画する
-//---------------------------------------------------------
+/*
+*	@brief 描画する
+*	@details プレイシーンクラスの描画
+*	@param なし
+*	@return なし
+*/
 void PlayScene::Render()
 {
-	// カメラからビュー行列と射影行列を取得する
-	Matrix view = m_pPlayer->GetCamera()->GetViewMatrix();
-	Matrix projection = m_pPlayer->GetCamera()->GetProjectionMatrix();
-	Matrix skyWorld = Matrix::Identity * Matrix::CreateScale(10);
-	Matrix world = Matrix::Identity;
-	// オフスクリーンにオブジェクトを描画する
-	m_pBloom->ChangeOffScreenRT();
-	// 天球描画
-	m_skybox->Render(view, projection, skyWorld, m_pPlayer->GetPlayerController()->GetPlayerPosition());
-	// 地面描画
-	m_pStage->Render(view, projection, world, Vector3(0, 0, 0));
-	// 壁描画
-	m_pWall->Render(view, projection);
-	// 敵を描画する
-	m_pEnemyManager->Render();
-	// プレイヤーを描画する
-	m_pPlayer->Render();
-	// 弾を描画する
-	m_pBulletManager->Render();
-	// ブルームエフェクトをかける
-	m_pBloom->PostProcess();
-	// ゲーム開始から5秒以上経過したら
-	if (m_timer >= 5.0f)
+	using namespace DirectX::SimpleMath;
+
+	Matrix view = m_pPlayer->GetCamera()->GetViewMatrix();// カメラからビュー行列を取得する
+	Matrix projection = m_pPlayer->GetCamera()->GetProjectionMatrix();// カメラからプロジェクション行列を取得する
+	Matrix skyWorld = Matrix::Identity * Matrix::CreateScale(10);;// スカイボックスのワールド行列(サイズ10倍)
+	Matrix world = Matrix::Identity;// ワールド行列
+	m_pBloom->ChangeOffScreenRT();// オフスクリーンにオブジェクトを描画する
+	m_sky->Render(view, projection, skyWorld, m_pPlayer->GetPlayerController()->GetPlayerPosition());// 天球描画
+	m_pStage->Render(view, projection, world, Vector3(0, 0, 0));// 地面描画
+	m_pWall->Render(view, projection);// 壁描画
+	m_pEnemyManager->Render();// 敵を描画する
+	m_pPlayer->Render();// プレイヤーを描画する
+	m_pBulletManager->Render();// 弾を描画する
+	m_pBloom->PostProcess();// ブルームエフェクトをかける
+	if (m_time >= PlayScene::GAME_START_TIME)// ゲーム開始から5秒以上経過したら
 	{
 		if (m_pPlayer->GetPlayerHP() <= 10.0f)m_pCrisis->Render();// HPが10以下で危機状態描画
-		for (int it = 0; it < m_pPlayerUI.size(); ++it)m_pPlayerUI[it]->Render();
+		for (int it = 0; it < m_pPlayerUI.size(); ++it)m_pPlayerUI[it]->Render();// UIを描画する
 		m_pEnemyCounter->Render();// 敵カウンターを描画する
 		m_pRadar->Render();// レーダーを描画する
-		// ボス登場演出を更新する
-		if (m_pEnemyManager->GetIsBossAppear() == true)m_pBossAppear->Render();
+		if (m_pEnemyManager->GetIsBossAppear() == true)m_pBossAppear->Render();// ボス登場演出が有効な場合、更新する
 	}
 	else // ゲーム開始から5秒間
 	{
 		m_pGoal->Render();// 指示画像を表示
 		m_pWifiLoading->Render();// Wi-Fiローディングを表示
 	}
-	// フェードの描画
-	m_pFade->Render();
-
+	m_pFade->Render();// フェードの描画
 #ifdef _DEBUG
-	// デバッグ情報を表示する
-	auto debugString = m_commonResources->GetDebugString();
-	debugString->AddString("Power:%i", m_pEnemyManager->GetWifi()->GetCurrentWifiSignalQuality());
-	debugString->AddString("SSID:%i", m_pEnemyManager->GetWifi()->GetCurrentWifiSSIDLength());
-	debugString->AddString("HP:%f", m_pPlayer->GetPlayerHP());
-	debugString->AddString("MAXHP:%f", m_pPlayer->GetMaxPlayerHP());
+	auto debugString = m_commonResources->GetDebugString();// デバッグ情報を表示する
+	debugString->AddString("Power:%i", m_pEnemyManager->GetWifi()->GetCurrentWifiSignalQuality());// 接続しているWi-Fiの電波強度
+	debugString->AddString("SSID:%i", m_pEnemyManager->GetWifi()->GetCurrentWifiSSIDLength());// 接続しているWi-FiのSSIDの長さ
+	debugString->AddString("HP:%f", m_pPlayer->GetPlayerHP());// プレイヤーHP
+	debugString->AddString("MAXHP:%f", m_pPlayer->GetMaxPlayerHP());// プレイヤーHPの最大値
 #endif
 }
-//---------------------------------------------------------
-// 後始末する
-//---------------------------------------------------------
+/*
+*	@brief 終了する
+*	@details プレイシーンクラスの終了
+*	@param なし
+*	@return なし
+*/
 void PlayScene::Finalize()
 {
-
-	m_skybox.reset();
-	//m_audioManager->Shutdown();
+	m_sky.reset();// 空を解放する
 }
-//---------------------------------------------------------
-// 次のシーンIDを取得する
-//---------------------------------------------------------
+/*
+*	@brief シーン変更
+*	@details シーン変更の有無を取得する
+*	@param なし
+*	@return シーン変更の有無(NONE::何もしない、GAMEOVER:ゲームオーバー、CLEAR:クリア)
+*/
 IScene::SceneID PlayScene::GetNextSceneID() const
 {
-	// シーン変更がある場合
-	if (m_isChangeScene)
+	if (m_isChangeScene)// シーン変更がある場合
 	{
 		m_commonResources->GetAudioManager()->StopSound("PlayBGM");// BGMを停止する
-		// プレイヤーのHPが0以下なら
-		if (m_pPlayer->GetPlayerHP() <= 0.0f)return IScene::SceneID::GAMEOVER;// ゲームオーバーシーンへ
-		// 敵がいないなら
-		else return IScene::SceneID::CLEAR;// クリアシーンへ
+		if (m_pPlayer->GetPlayerHP() <= 0.0f)return IScene::SceneID::GAMEOVER;// プレイヤーのHPが0以下ならゲームオーバーシーンへ
+		else return IScene::SceneID::CLEAR;// 敵がいないならクリアシーンへ
 	}
-	// シーン変更がない場合
-	return IScene::SceneID::NONE;// 何もしない
+	return IScene::SceneID::NONE;// シーン変更がない場合は何もしない
 }
 

@@ -1,89 +1,82 @@
 /*
-	@file	SettingMenu.h
-	@brief	セッティングメニュークラス
+*	@file	SettingMenu.h
+*	@brief	セッティングメニュークラス
 */
 #pragma once
-
-#include "StepTimer.h"
+// 標準ライブラリ
+#include <vector>
+// DirectX
+#include <Mouse.h>
 #include <DeviceResources.h>
-#include "Game/CommonResources.h"
 #include <SimpleMath.h>
-#include <Effects.h>
-#include <PrimitiveBatch.h>
-#include <VertexTypes.h>
 #include <WICTextureLoader.h>
 #include <CommonStates.h>
-#include <vector>
-#include "Keyboard.h"
+// 外部ライブラリ
+#include "Libraries/MyLib/InputManager.h"
+// 自作ヘッダーファイル
+#include "Game/Screen.h"
 #include "Game/UI/UI.h"
+#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
+#include "Game/CommonResources.h"
 #include "Game/Interface/IMenuUI.h"
+// 前方宣言
 class CommonResources;
 class SettingMenu : public IMenuUI
 {
-public:
-	enum StateID
+public:// 列挙型
+	enum SettingID// 設定項目 
 	{
 		BGM = 0,
 		SE = 1,
 		MOUSE = 2
 
 	};
-	enum SelectID
+	enum SelectID// 選択項目
 	{
 		NONE = -1,
 		APPLY = 0,
 		END = 1
 	};
-	//enum class UIType
-	//{
-	//	// 選択可能UI
-	//	SELECT,
-	//	// 選択不可能UI
-	//	NON_SELECT
-	//};
-	//	変数
-private:
-
-	int m_menuIndex;// メニューのインデックス
-	DX::DeviceResources* m_pDR;// デバイスリソース
-	CommonResources* m_commonResources;// 共通リソース
-	std::vector<std::unique_ptr<UI>> m_pUI;// UI
-	std::vector<std::unique_ptr<UI>> m_pGuide;// 選択不可能UI
-	std::vector<std::unique_ptr<UI>> m_pSelect;// 選択
-
-	const wchar_t* m_pSelectTexturePath;// 選択テクスチャパス
-
-	std::unique_ptr<UI> m_pSelectWindow;// 選択ウィンドウ
-
-	int m_windowWidth, m_windowHeight;// ウィンドウの幅と高さ
-
-	DirectX::Keyboard::KeyboardStateTracker m_tracker;// トラッカー
-
-
-	SelectID m_selectNum;// 選択ID
-	float m_time = 0;// 時間
-	//	関数
-public:
-	SettingMenu();
-	~SettingMenu();
-
-	void Initialize(CommonResources* resources, int width, int height)override;
-	void Update(const UpdateContext& context)override
-	{
-		Update(context.elapsedTime);
-	};
-	void Render()override;
-
-	void Add(const wchar_t* path
+public:// アクセサ
+	SelectID GetSelectIDNum() const { return m_selectNum; }// 選択ID取得
+	void SetSelectIDNum(SelectID num) { m_selectNum = num; }// 選択ID設定
+	unsigned int GetMenuIndex() const { return m_menuIndex; }// メニューインデックス取得
+public:// public関数
+	SettingMenu();// コンストラクタ
+	~SettingMenu();// デストラクタ
+	void Initialize(CommonResources* resources, int width, int height)override;// 初期化
+	void Update(const UpdateContext& context)override { Update(context.elapsedTime); }// 更新(contextから時間を取得して更新)
+	void Render()override;// 描画
+	void Add(const wchar_t* path// メニューアイテムを追加
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
 		, KumachiLib::ANCHOR anchor
 		, UIType type);
-
-public:
-	SelectID GetSelectIDNum() const { return m_selectNum; }
-	void SetSelectIDNum(SelectID num) { m_selectNum = num; }
-	unsigned int GetMenuIndex() const { return m_menuIndex; }
-private:
-	void Update(float elapsedTime);
+private:// private関数
+	void Update(float elapsedTime);// 更新
+private:// private定数
+	static const int INVALID_MENU_INDEX;// 無効なメニューインデックス
+private://	変数
+	// メニューのインデックス
+	int m_menuIndex;
+	// デバイスリソース
+	DX::DeviceResources* m_pDR;
+	// 共通リソース
+	CommonResources* m_commonResources;
+	// 選択可能UI
+	std::vector<std::unique_ptr<UI>> m_pUI;
+	// 選択不可能UI
+	std::vector<std::unique_ptr<UI>> m_pGuide;
+	// 選択可能UIにつくUI
+	std::vector<std::unique_ptr<UI>> m_pSelect;
+	// 選択テクスチャパス
+	const wchar_t* m_pSelectTexturePath;
+	// 選択ウィンドウ
+	std::unique_ptr<UI> m_pSelectWindow;
+	// ウィンドウの幅と高さ
+	int m_windowWidth, m_windowHeight;
+	// 選択ID
+	SelectID m_selectNum;
+	// 時間
+	float m_time;
 };

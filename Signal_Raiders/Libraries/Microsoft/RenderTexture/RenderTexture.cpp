@@ -76,7 +76,7 @@ void RenderTexture::SizeResources(size_t width, size_t height)
 
 	m_width = m_height = 0;
 
-	// Create a render target
+	// Initialize a render target
 	CD3D11_TEXTURE2D_DESC renderTargetDesc(
 		m_format,
 		static_cast<UINT>(width),
@@ -97,7 +97,7 @@ void RenderTexture::SizeResources(size_t width, size_t height)
 
 	SetDebugObjectName(m_renderTarget.Get(), "RenderTexture RT");
 
-	// Create RTV.
+	// Initialize RTV.
 	CD3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc(D3D11_RTV_DIMENSION_TEXTURE2D, m_format);
 
 	ThrowIfFailed(m_device->CreateRenderTargetView(
@@ -108,7 +108,7 @@ void RenderTexture::SizeResources(size_t width, size_t height)
 
 	SetDebugObjectName(m_renderTargetView.Get(), "RenderTexture RTV");
 
-	// Create SRV.
+	// Initialize SRV.
 	CD3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc(D3D11_SRV_DIMENSION_TEXTURE2D, m_format);
 
 	ThrowIfFailed(m_device->CreateShaderResourceView(

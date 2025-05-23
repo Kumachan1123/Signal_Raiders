@@ -80,7 +80,7 @@ void Fade::LoadTexture(const wchar_t* path)
 *	@param なし
 *	@return なし
 */
-void Fade::Create()
+void Fade::Initialize()
 {
 	m_pDR = m_commonResources->GetDeviceResources();	// デバイスリソースの取得
 	CreateShaders();// シェーダーの作成

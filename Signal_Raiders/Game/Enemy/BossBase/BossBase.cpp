@@ -197,7 +197,7 @@ void BossBase::CreateSpiralBullet()
 *	@param[in] hp 敵のHP
 *	@return	なし
 */
-void BossBase::SetEnemyMaxHP(int hp)
+void BossBase::ApplyDamageToEnemy(int hp)
 {
 	if (m_pBossSheild->GetSheildHP() > 0 &&// シールドがある場合
 		m_pBossSheild->GetSheild() == true)// シールドが展開されている場合

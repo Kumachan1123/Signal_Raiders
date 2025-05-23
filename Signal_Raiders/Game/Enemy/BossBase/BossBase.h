@@ -71,7 +71,7 @@ public:
 	FPS_Camera* GetCamera()const override { return m_pCamera; }// カメラのポインター取得
 	void SetCamera(FPS_Camera* camera) { m_pCamera = camera; }// カメラのポインター設定
 	int GetEnemyHP() const override { return m_currentHP; }// 敵のHP取得
-	void SetEnemyMaxHP(int hp) override;// 敵のHP設定
+	void ApplyDamageToEnemy(int hp) override;// 敵のHP設定(ダメージ適用)
 	bool GetEnemyIsDead() const override { return m_isDead; }// 敵の死亡フラグ取得
 	void SetEnemyIsDead(bool isDead) override { m_isDead = isDead; }// 敵の死亡フラグ設定
 	bool GetHitToPlayer()const override { return m_isHitToPlayer; }// プレイヤーとの当たり判定取得

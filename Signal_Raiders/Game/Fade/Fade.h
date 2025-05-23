@@ -28,8 +28,8 @@ public:
 	// 構造体
 	struct ConstBuffer
 	{
-		float smoothness;                             // フェードの滑らかさ
-		float fadeAmount;                       // フェードの進行度（0.0～1.0）
+		float smoothness = 0;                             // フェードの滑らかさ
+		float fadeAmount = 0;                       // フェードの進行度（0.0～1.0）
 		DirectX::SimpleMath::Vector2 padding;							// パディング
 	};
 	// 列挙型
@@ -54,7 +54,7 @@ public:
 	Fade(CommonResources* commonResources);	//	コンストラクタ
 	~Fade();	//	デストラクタ
 	void LoadTexture(const wchar_t* path);// テクスチャの読み込み
-	void Create();// 生成
+	void Initialize();// 初期化
 	void Update(float elapsedTime);// 更新
 	void Render();// 描画
 private:

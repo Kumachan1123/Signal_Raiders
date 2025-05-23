@@ -1,8 +1,19 @@
 /*
-	@file	StageSelectScene.h
-	@brief	ステージセレクトシーンクラス
+*	@file	StageSelectScene.h
+*	@brief	ステージセレクトシーンクラス
 */
 #pragma once
+// 標準ライブラリ
+#include <cassert>
+// DirectX
+#include "DeviceResources.h"
+#include <Mouse.h>
+ // 外部ライブラリ
+#include "Libraries/MyLib/InputManager.h"
+#include <Libraries/Microsoft/DebugDraw.h>
+// 自作ヘッダーファイル
+#include "Game/Screen.h"
+#include "Game/CommonResources.h"
 #include "Game/Scene/IScene.h"
 #include "Game/Fade/Fade.h"
 #include "Game/Scene/SettingScene/SettingData/SettingData.h"
@@ -16,20 +27,27 @@
 class CommonResources;
 class Fade;
 class BackGround;
-namespace mylib
+class StageSelectScene final : public IScene
 {
-	class DebugCamera;
-	class GridFloor;
-}
-
-
-class StageSelectScene final :
-	public IScene
-{
+public:// アクセサ
+	SceneID GetNextSceneID()const override;// 次のシーンIDを取得
+	int GetStageNumber() const { return m_stageNumber; }// ステージ番号を取得
+	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; } // ステージ番号を設定
+public:
+	StageSelectScene(IScene::SceneID sceneID);// コンストラクタ
+	~StageSelectScene() override;// デストラクタ
+	void Initialize(CommonResources* resources) override;// 初期化
+	void Update(float elapsedTime)override;// 更新
+	void Render() override;// 描画
+	void Finalize() override;// 終了
+private:
+	// 音量の基準
+	static const float VOLUME;
+	// タイトルに戻る値
+	static const int TITLE;
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
-
 	// 設定データ
 	std::unique_ptr<SettingData> m_pSettingData;
 	// ステージ選択メニュー
@@ -44,22 +62,16 @@ private:
 	std::unique_ptr<StageSelect> m_pStageSelect;
 	// 結果クラスに渡すテクスチャパス
 	const wchar_t* m_pTexturePath;
-
-	// 空の行列
+	// ワールド行列
 	DirectX::SimpleMath::Matrix m_world;
+	// ビュー行列
 	DirectX::SimpleMath::Matrix m_view;
+	// プロジェクション行列
 	DirectX::SimpleMath::Matrix m_proj;
-	// フェードで使用する変数
-	bool m_isFade;		// フェードフラグ
-	float m_volume;		// ボリューム
-	int m_counter;		// フェードカウンタ
-	// 音量の基準
-	const float VOLUME = 0.5f;
-	float m_BGMvolume;	// ボリューム
-	float m_SEvolume;	// ボリューム
-	float m_time = 0.0f;// 拡縮に使う時間
-	float m_size = 0.0f;// 画像サイズ
-	float m_pressKeySize = 0.0f;
+	// BGM音量
+	float m_BGMvolume;
+	// SE音量
+	float m_SEvolume;
 	// 画面遷移フェード
 	std::unique_ptr<Fade> m_pFade;
 	// 背景
@@ -68,16 +80,5 @@ private:
 	IScene::SceneID m_nowSceneID;
 	// ステージ番号
 	int m_stageNumber;
-public:
-	StageSelectScene(IScene::SceneID sceneID);
-	~StageSelectScene() override;
 
-	void Initialize(CommonResources* resources) override;
-	void Update(float elapsedTime)override;
-	void Render() override;
-	void Finalize() override;
-
-	SceneID GetNextSceneID()const override;
-	int GetStageNumber() const { return m_stageNumber; }
-	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; }
 };

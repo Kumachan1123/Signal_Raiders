@@ -26,7 +26,7 @@ public:
 	virtual const DirectX::SimpleMath::Vector3& GetVelocity() = 0;// 速度取得
 	virtual const DirectX::SimpleMath::Vector3& GetRotate() = 0;// 回転取得
 	virtual int GetEnemyHP() const = 0;// HP取得
-	virtual void SetEnemyMaxHP(int hp) = 0;// HP設定
+	virtual void ApplyDamageToEnemy(int hp) = 0;// HP設定（ダメージ適用）
 	virtual bool GetEnemyIsDead() const = 0;// 死亡フラグ取得
 	virtual void SetEnemyIsDead(bool isDead) = 0;// 死亡フラグ設定
 	virtual bool GetHitToPlayer()const = 0;// プレイヤーに当たったか取得

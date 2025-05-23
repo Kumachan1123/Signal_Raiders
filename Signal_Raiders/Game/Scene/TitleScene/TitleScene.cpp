@@ -1,215 +1,179 @@
 ﻿/*
-	@file	TitleScene.cpp
-	@brief	タイトルシーンクラス
+*	@file	TitleScene.cpp
+*	@brief	タイトルシーンクラス
 */
 #include "pch.h"
 #include "TitleScene.h"
-#include "Game/Fade/Fade.h"
-#include "Game/Screen.h"
-#include "Game/CommonResources.h"
-#include "DeviceResources.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
-#include "Libraries/MyLib/InputManager.h"
-#include <cassert>
-#include "Game/KumachiLib//BinaryFile/BinaryFile.h"
-#include <Libraries/Microsoft/DebugDraw.h>
-#include "Libraries/MyLib/DebugString.h"
-#include "Game/FPS_Camera/FPS_Camera.h"
-using namespace DirectX;
-using namespace DirectX::SimpleMath;
+// 音量の基準
+const float TitleScene::VOLUME = 0.05f;
+
+/*
+*	@brief ゲームを終了する
+*	@details ゲームを終了する
+*	@param なし
+*	@return なし
+*/
 void EndGame()noexcept;
-
-//---------------------------------------------------------
-// コンストラクタ
-//---------------------------------------------------------
+/*
+*	@brief コンストラクタ
+*	@details タイトルシーンクラスのコンストラクタ
+*	@param sceneID シーンID
+*	@return なし
+*/
 TitleScene::TitleScene(IScene::SceneID sceneID)
-	: m_commonResources{}
-	, m_isChangeScene{ false }
-	, m_isFade{ false }
-	, m_BGMvolume{ VOLUME }
-	, m_SEvolume{ VOLUME }
-	, m_counter{ 0 }
-	, m_camera{}
-	, m_pDR{}
-	, m_pFade{}
-	, m_fadeState{}
-	, m_fadeTexNum{ 0 }
-	, m_pBackGround{ nullptr }
-	//, m_audioManager{ AudioManager::GetInstance() }
-	, m_nowSceneID{ sceneID }
-
+	: m_commonResources{}// 共通リソース
+	, m_isChangeScene{ false }// シーン変更フラグ
+	, m_pDR{}// デバイスリソース
+	, m_pFade{}// フェード
+	, m_fadeState{}// フェード状態
+	, m_pBackGround{ nullptr }// 背景
+	, m_nowSceneID{ sceneID }// シーンID
+	, m_BGMvolume{ VOLUME }// BGM音量
+	, m_SEvolume{ VOLUME }// SE音量
 {}
-
-
-//---------------------------------------------------------
-// デストラクタ
-//---------------------------------------------------------
-TitleScene::~TitleScene()
-{
-	Finalize();
-}
-
-//---------------------------------------------------------
-// 初期化する
-//---------------------------------------------------------
+/*
+*	@brief デストラクタ
+*	@details Finalize()を呼ぶが、何もしない
+*	@param なし
+*	@return なし
+*/
+TitleScene::~TitleScene() { Finalize(); }
+/*
+*	@brief 初期化する
+*	@details タイトルシーンの初期化を行う
+*	@param resources 共通リソース
+*	@return なし
+*/
 void TitleScene::Initialize(CommonResources* resources)
 {
-	assert(resources);
-	m_commonResources = resources;
-	auto DR = m_commonResources->GetDeviceResources();
-	// フェードの初期化
-	m_pFade = std::make_unique<Fade>(m_commonResources);
-	m_pFade->Create();
-	m_pFade->SetState(Fade::FadeState::FadeIn);
-	//m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));
-	// 背景の初期化
-	m_pBackGround = std::make_unique<BackGround>(m_commonResources);
-	m_pBackGround->Create(DR);
-	// FPSカメラを作成する
-	m_camera = std::make_unique<FPS_Camera>();
-	// タイトルロゴを作成
-	m_pTitleLogo = std::make_unique<TitleLogo>(m_commonResources);
-	m_pTitleLogo->Create(DR);
-	// 設定ファイルの読み込み
-	m_pSettingData = std::make_unique<SettingData>();
-	m_pSettingData->Load();
+	assert(resources);// リソースがnullptrでないことを確認
+	m_commonResources = resources;// 共通リソースを取得
+	auto DR = m_commonResources->GetDeviceResources();// デバイスリソースを取得
+	m_pFade = std::make_unique<Fade>(m_commonResources);// フェードの作成
+	m_pFade->Initialize();// フェードの初期化
+	m_pFade->SetState(Fade::FadeState::FadeIn);// フェードインに移行
+	m_pBackGround = std::make_unique<BackGround>(m_commonResources);// 背景の作成
+	m_pBackGround->Create(DR);// 背景の初期化
+	m_pTitleLogo = std::make_unique<TitleLogo>(m_commonResources);// タイトルロゴを作成
+	m_pTitleLogo->Create(DR);// タイトルロゴの初期化
+	m_pSettingData = std::make_unique<SettingData>();// 設定データの作成
+	m_pSettingData->Load();// 設定ファイルの読み込み
 	m_pUI.push_back(std::move(std::make_unique<TitleMenu>()));	// メニューを作成
 	m_pUI.push_back(std::move(std::make_unique<MousePointer>()));	// マウスポインターを作成
 	for (int it = 0; it < m_pUI.size(); ++it)// 一斉初期化
-		m_pUI[it]->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);
+		m_pUI[it]->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);// UIの初期化
 	// 音量の設定
-	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume()) * 0.1f;
-	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume()) * 0.1f;
-
-
+	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume());// BGM音量
+	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume());// SE音量
 }
-
-//---------------------------------------------------------
-// 更新する
-//---------------------------------------------------------
+/*
+*	@brief 更新する
+*	@details タイトルシーンの更新を行う
+*	@param elapsedTime フレーム時間
+*	@return なし
+*/
 void TitleScene::Update(float elapsedTime)
 {
-	// オーディオマネージャーの更新処理
-	m_commonResources->GetAudioManager()->Update();
-	// マウスのトラッカーを取得する
-	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
-
-	// メニューでの選択処理が行われたら
-	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
+	m_commonResources->GetAudioManager()->Update();// オーディオマネージャーの更新処理
+	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();// マウスのトラッカーを取得する
+	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)// メニューでの選択処理が行われたら
 	{
 		for (int it = 0; it < m_pUI.size(); ++it)
 		{
-			if (auto pMenu = dynamic_cast<TitleMenu*>(m_pUI[it].get()))
+			if (auto pMenu = dynamic_cast<TitleMenu*>(m_pUI[it].get()))// UIがメニューの場合
 			{
-				if (mtracker->GetLastState().leftButton && pMenu->GetIsHit())
+				if (mtracker->GetLastState().leftButton && pMenu->GetIsHit())// 左クリックされていて、UIにカーソルが当たっている場合
 				{
 					m_commonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);// SEの再生
 					m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
-					//m_pFade->SetTextureNum((int)(Fade::TextureNum::BLACK));// フェードのテクスチャを変更
 				}
 			}
 		}
-
-		//// WかSのいずれかが押されたら
-		//if (kbTracker->pressed.W || kbTracker->pressed.S)
-		//	m_commonResources->GetAudioManager()->PlaySound("Select", m_SEvolume);// SEの再生
 	}
-	UpdateContext ctx;
+	UpdateContext ctx;// UIの更新に必要な情報をまとめた構造体
 	ctx.elapsedTime = elapsedTime;// フレーム時間を代入
 	ctx.playerHP = 0;// 使わない値
 	ctx.dashStamina = 0;// 使わない値
 	ctx.bulletPoint = 0;// 使わない値
-
-	// メニューの更新
-	for (int it = 0; it < m_pUI.size(); ++it)
-		m_pUI[it]->Update(ctx);
-	// フェードアウトが終了したら
-	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;
-	// BGMの再生
-	m_commonResources->GetAudioManager()->PlaySound("TitleBGM", m_BGMvolume);
-	m_pBackGround->Update(elapsedTime);
-	// フェードの更新
-	m_pFade->Update(elapsedTime);
-	// タイトルロゴの更新
-	m_pTitleLogo->Update(elapsedTime);
-
+	for (int it = 0; it < m_pUI.size(); ++it)m_pUI[it]->Update(ctx);// UIの更新
+	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;// フェードアウトが終了したらシーン変更を可能にする
+	m_commonResources->GetAudioManager()->PlaySound("TitleBGM", m_BGMvolume);// BGMの再生
+	m_pBackGround->Update(elapsedTime);// 背景の更新
+	m_pFade->Update(elapsedTime);// フェードの更新
+	m_pTitleLogo->Update(elapsedTime);// タイトルロゴの更新
 }
-//---------------------------------------------------------
-// 描画する
-//---------------------------------------------------------
+/*
+*	@brief 描画する
+*	@details タイトルシーンの描画を行う(背景、ロゴ、UI)
+*	@param なし
+*	@return なし
+*/
 void TitleScene::Render()
 {
-	// 背景の描画
-	m_pBackGround->Render();
-	// タイトルロゴの描画
-	m_pTitleLogo->Render();
-	// スペースキー押してってやつ描画(画面遷移中は描画しない)
-	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
-	{
-		for (int it = 0; it < m_pUI.size(); ++it)// 一斉初期化
-			m_pUI[it]->Render();
-	}
-	// フェードの描画
-	m_pFade->Render();
-
-#ifdef _DEBUG
-	// デバッグ情報を表示する
-	auto debugString = m_commonResources->GetDebugString();
-	auto& mousestate = m_commonResources->GetInputManager()->GetMouseState();
-	// ウィンドウ上のマウス座標を取得する
-	Vector2 pos = Vector2(static_cast<float>(mousestate.x), static_cast<float>(mousestate.y));
-
-	debugString->AddString("MouseX:%f  MouseY:%f", pos.x, pos.y);
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
+	m_pBackGround->Render();// 背景の描画
+	m_pTitleLogo->Render();// タイトルロゴの描画
+	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)// 画面遷移中は描画しない
+		for (int it = 0; it < m_pUI.size(); ++it)m_pUI[it]->Render();// UIの描画
+	m_pFade->Render();// フェードの描画
+#ifdef _DEBUG// デバッグビルド時のみ実行
+	auto debugString = m_commonResources->GetDebugString();// デバッグ情報を表示する
+	auto& mousestate = m_commonResources->GetInputManager()->GetMouseState();// マウスの状態を取得する
+	Vector2 pos = Vector2(static_cast<float>(mousestate.x), static_cast<float>(mousestate.y));// ウィンドウ上のマウス座標を取得する
+	debugString->AddString("MouseX:%f  MouseY:%f", pos.x, pos.y);// マウス座標を表示する
 #endif
-
 }
-
-//---------------------------------------------------------
-// 後始末する
-//---------------------------------------------------------
-void TitleScene::Finalize()
-{
-	//// オーディオマネージャーの終了処理
-	//m_commonResources->GetAudioManager()->Shutdown();
-}
-
-//---------------------------------------------------------
-// 次のシーンIDを取得する
-//---------------------------------------------------------
+/*
+*	@brief 終了する
+*	@details 何もしない
+*	@param なし
+*	@return なし
+*/
+void TitleScene::Finalize() {/*do nothing*/ }
+/*
+* 	@brief 次のシーンIDを取得する
+*	@details タイトルシーンの次のシーンIDを取得する
+*	@param なし
+*	@return 次のシーンID
+*/
 IScene::SceneID TitleScene::GetNextSceneID() const
-{	// シーン変更がないならすぐ戻る
-	if (!m_isChangeScene)return IScene::SceneID::NONE;
-	// シーン変更がある場合
+{
+	if (!m_isChangeScene)return IScene::SceneID::NONE;// シーン変更がないならすぐ戻る
+	// 以下、シーン変更がある場合
 	m_commonResources->GetAudioManager()->StopSound("TitleBGM");// BGMの停止
 	m_commonResources->GetAudioManager()->StopSound("SE");// SEの停止
-	for (int it = 0; it < m_pUI.size(); ++it)// 一斉初期化
+	for (int it = 0; it < m_pUI.size(); ++it)// pMenuを探す
 	{
-		auto pMenu = dynamic_cast<TitleMenu*>(m_pUI[it].get());
-		if (!pMenu)continue;
-		switch (pMenu->GetSceneNum())
+		auto pMenu = dynamic_cast<TitleMenu*>(m_pUI[it].get());// UIをメニューにキャスト
+		if (!pMenu)continue;// メニューが見つからなかったら次のUIへ
+		switch (pMenu->GetSceneNum())// シーンIDを取得
 		{
-		case TitleMenu::SceneID::STAGESELECT:
-			return IScene::SceneID::STAGESELECT;
+		case TitleMenu::SceneID::STAGESELECT:// ステージセレクトだったら
+			return IScene::SceneID::STAGESELECT;// ステージセレクトに遷移
 			break;
-		case TitleMenu::SceneID::SETTING:
-			return IScene::SceneID::SETTING;
+		case TitleMenu::SceneID::SETTING:// 設定画面だったら
+			return IScene::SceneID::SETTING;// 設定画面に遷移
 			break;
-		case TitleMenu::SceneID::END:
-			// ゲーム終了
-			EndGame();
+		case TitleMenu::SceneID::END:// ゲーム終了だったら
+			EndGame();// ゲームを終了する
 			break;
-		default:
+		default:// それ以外
 			break;
 		}
 	}
-	// シーン変更がない場合
-	return IScene::SceneID::NONE;
+	return IScene::SceneID::NONE;// 何もなかったらNONEを返す
 }
 
 
-
+/*
+*	@brief ゲームを終了する
+*	@details ゲームを終了する
+*	@param なし
+*	@return なし
+*/
 void EndGame() noexcept
 {
-	PostQuitMessage(0);
+	PostQuitMessage(0);// ウィンドウを閉じる
 }
 

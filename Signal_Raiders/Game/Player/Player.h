@@ -1,13 +1,21 @@
+/*
+*	@file		Player.h
+*	@brief		プレイヤークラス
+*/
 #pragma once
-#include "Game/CommonResources.h"
+// DirectXTK
 #include <DeviceResources.h>
+#include <Mouse.h>
+// 外部ライブラリ
+#include "Libraries/MyLib/InputManager.h"
+#include "Game/CommonResources.h"
+// 自作ヘッダーファイル
 #include "Game/Player/PlayerController/PlayerController.h"
 #include "Game/Player/PlayerUI/PlayerHP/PlayerHP.h"
 #include "Game/BulletManager/BulletManager.h"
 #include "Game/WarningEffect/WarningEffects/WarningEffects.h"
 #include "Game/Enemy/EnemyManager/EnemyManager.h"
 #include "Game/FPS_Camera/FPS_Camera.h"
-
 // 前方宣言
 class CommonResources;
 class PlayerController;
@@ -18,80 +26,9 @@ class PlayerHP;
 class Crisis;
 class WarningEffects;
 class FPS_Camera;
-
-// プレイヤークラス
 class Player
 {
-private:
-	// コモンリソース
-	CommonResources* m_commonResources;
-	// 敵
-	EnemyManager* m_pEnemyManager;
-	// プレイヤーの位置
-	DirectX::SimpleMath::Vector3 m_playerPos;
-	// プレイヤーの向き
-	DirectX::SimpleMath::Vector3 m_playerDir;
-	// カメラ
-	std::unique_ptr<FPS_Camera> m_pCamera;
-	// プレイヤーのHP
-	float m_playerHP;
-	// プレイヤーの最大HP
-	float m_maxPlayerHP;
-	// プレイヤーが走れる時間
-	float m_dashTime;
-	// ダメージエフェクトを管理するクラス
-	std::unique_ptr<WarningEffects> m_pWarningEffects;
-	// プレイヤーコントローラー
-	std::unique_ptr<PlayerController> m_pPlayerController;
-	// 弾マネージャー（プレイシーンから受け取る）
-	BulletManager* m_pBulletManager;
-	// 境界球
-	DirectX::BoundingSphere m_inPlayerArea;// プレイヤーと敵との一定範囲内での境界球
-	DirectX::BoundingSphere m_playerSphere;// プレイヤーの境界球
-	// 攻撃してきた敵の向き
-	DirectX::SimpleMath::Vector3 m_enemyDir;
-	// プレイヤーがダメージを食らった時
-	bool m_isDamage;
-	bool m_isPlayEffect;// エフェクト再生フラグ
-	// プレイヤーがダメージを食らった時の時間
-	float m_damageTime;
-	// SEの音量
-	float m_SEVolume;
-	// 音量補正
-	float m_VolumeCorrection;
-	// マウス感度
-	float m_mouseSensitive;
-	// チートコマンド：敵を一掃するフラグ
-	bool m_isKillAll;
-	// チートコマンドが有効か
-	bool m_isCheat;
-	// 経過時間
-	float m_timer;
-private:// 定数
-	// プレイヤーのHP初期値
-	const float PLAYER_HP = 100.0f;
-	// マウス感度初期値
-	const float MOUSE_SENSITIVE = 0.1f;
-	// プレイヤーと敵との一定範囲の境界球の半径
-	const float IN_PLAYER_AREA_RADIUS = 20.0f;
-	// プレイヤーの境界球の半径
-	const float PLAYER_SPHERE_RADIUS = 3.0f;
-	// ダメージ時のカメラ揺れに関する定数
-	const float DAMAGE_SHAKE_FREQUENCY = 70.0f;   // カメラ揺れの周波数
-	const float DAMAGE_SHAKE_AMPLITUDE = 0.15f;  // カメラ揺れの振幅
-	const float DAMAGE_DURATION = 0.25f;         // ダメージエフェクトの継続時間
-public:
-	Player(CommonResources* commonResources);
-	~Player();
-
-	// 初期化
-	void Initialize(EnemyManager* pEnemies);
-	// 更新
-	void Update(float elapsedTime);
-	// 描画
-	void Render();
-	// Getter
-public:
+public:// アクセサ
 	float GetPlayerHP() const { return m_playerHP; }	// プレイヤーのHP
 	void SetPlayerHP(float playerHP) { m_playerHP = playerHP; }	// プレイヤーのHP
 	float GetMaxPlayerHP() const { return m_maxPlayerHP; }	// プレイヤーの最大HP
@@ -122,9 +59,73 @@ public:
 	bool GetisCheat() const { return m_isCheat; }// チートコマンドが有効か
 	void SetisCheat(bool isCheat) { m_isCheat = isCheat; }// チートコマンドが有効か
 	void SetBulletManager(BulletManager* pBulletManager) { m_pBulletManager = pBulletManager; }// 弾マネージャーをセット
-public:
+public:// public関数
+	Player(CommonResources* commonResources);// コンストラクタ
+	~Player();// デストラクタ
+	void Initialize(EnemyManager* pEnemiyManager);// 初期化
+	void Update(float elapsedTime);// 更新
+	void Render();// 描画
 	void CreateBullet();// 弾を生成する
-private:
+private:// private関数
 	void PlayerDamage(float elapsedTime);// プレイヤーがダメージを受けた時の処理
 	void InComingEnemy();// 攻撃しようとしている敵に関する処理
+private:// 定数
+	// プレイヤーのHP初期値
+	const float PLAYER_HP = 100.0f;
+	// マウス感度初期値
+	const float MOUSE_SENSITIVE = 0.1f;
+	// プレイヤーと敵との一定範囲の境界球の半径
+	const float IN_PLAYER_AREA_RADIUS = 20.0f;
+	// プレイヤーの境界球の半径
+	const float PLAYER_SPHERE_RADIUS = 3.0f;
+	// ダメージ時のカメラ揺れに関する定数
+	const float DAMAGE_SHAKE_FREQUENCY = 70.0f;   // カメラ揺れの周波数
+	const float DAMAGE_SHAKE_AMPLITUDE = 0.15f;  // カメラ揺れの振幅
+	const float DAMAGE_DURATION = 0.25f;         // ダメージエフェクトの継続時間
+private:
+	// コモンリソース
+	CommonResources* m_commonResources;
+	// 敵
+	EnemyManager* m_pEnemyManager;
+	// プレイヤーの位置
+	DirectX::SimpleMath::Vector3 m_playerPos;
+	// プレイヤーの向き
+	DirectX::SimpleMath::Vector3 m_playerDir;
+	// カメラ
+	std::unique_ptr<FPS_Camera> m_pCamera;
+	// プレイヤーのHP
+	float m_playerHP;
+	// プレイヤーの最大HP
+	float m_maxPlayerHP;
+	// プレイヤーが走れる時間
+	float m_dashTime;
+	// ダメージエフェクトを管理するクラス
+	std::unique_ptr<WarningEffects> m_pWarningEffects;
+	// プレイヤーコントローラー
+	std::unique_ptr<PlayerController> m_pPlayerController;
+	// 弾マネージャー（プレイシーンから受け取る）
+	BulletManager* m_pBulletManager;
+	// 境界球
+	DirectX::BoundingSphere m_inPlayerArea;// プレイヤーと敵との一定範囲内での境界球
+	DirectX::BoundingSphere m_playerSphere;// プレイヤーの境界球
+	// 攻撃してきた敵の向き
+	DirectX::SimpleMath::Vector3 m_enemyDir;
+	// プレイヤーがダメージを食らった時
+	bool m_isDamage;
+	// エフェクト再生フラグ
+	bool m_isPlayEffect;
+	// プレイヤーがダメージを食らった時の時間
+	float m_damageTime;
+	// SEの音量
+	float m_SEVolume;
+	// 音量補正
+	float m_VolumeCorrection;
+	// マウス感度
+	float m_mouseSensitive;
+	// チートコマンド：敵を一掃するフラグ
+	bool m_isKillAll;
+	// チートコマンドが有効か
+	bool m_isCheat;
+	// 経過時間
+	float m_timer;
 };

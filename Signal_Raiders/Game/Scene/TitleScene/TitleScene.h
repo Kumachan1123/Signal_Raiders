@@ -3,29 +3,45 @@
 	@brief	タイトルシーンクラス
 */
 #pragma once
-#include "Game/Scene/IScene.h"
+// 標準ライブラリ
+#include <cassert>
+// DirectX
 #include <DeviceResources.h>
-#include "Game/Fade/Fade.h"
+// 外部ライブラリ
+#include "Libraries/MyLib/InputManager.h"
+#include "Libraries/Microsoft/DebugDraw.h"
 #include "Libraries/MyLib/DebugString.h"
+// 自作ヘッダーファイル
+#include "Game/Scene/IScene.h"
+#include "Game/Scene/SettingScene/SettingMenu/SettingMenu.h"
 #include "Game/Scene/BackGround/BackGround.h"
 #include "Game/Scene/TitleLogo/TitleLogo.h"
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/Scene/TitleScene/TitleMenu/TitleMenu.h"
-#include "Game/Scene/SettingScene/SettingMenu/SettingMenu.h"
+#include "Game/Interface/IMenuUI.h"
 #include "Game/Scene/SettingScene/SettingBar/SettingBar.h"
 #include "Game/Scene/SettingScene/SettingData/SettingData.h"
 #include "Game/MousePointer/MousePointer.h"
-#include "Game/Interface/IMenuUI.h"
+#include "Game/Fade/Fade.h"
+#include "Game/Screen.h"
+#include "Game/CommonResources.h"
+#include "Game/KumachiLib//BinaryFile/BinaryFile.h"
 // 前方宣言
 class CommonResources;
 class Fade;
-
-class FPS_Camera;
-
-class TitleScene final :
-	public IScene
+class TitleScene final :public IScene
 {
-
+public:// public関数
+	TitleScene(IScene::SceneID sceneID);// コンストラクタ
+	~TitleScene() override;// デストラクタ
+	void Initialize(CommonResources* resources) override;// 初期化
+	void Update(float elapsedTime)override;// 更新
+	void Render() override;// 描画
+	void Finalize() override;// 終了
+	SceneID GetNextSceneID() const override;// 次のシーンIDを取得
+private:
+	// 音量の基準
+	static	const float VOLUME;
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
@@ -39,38 +55,16 @@ private:
 	std::unique_ptr<BackGround> m_pBackGround;
 	// タイトルロゴ
 	std::unique_ptr<TitleLogo> m_pTitleLogo;
-	//// マウスポインター
-	//std::unique_ptr<MousePointer> m_pMousePointer;
-	//// メニュー
-	//std::unique_ptr<TitleMenu> m_pMenu;
 	// タイトル画面のUI(メニュー、マウスカーソル）
 	std::vector<std::unique_ptr<IMenuUI>> m_pUI;
 	// 設定データ
 	std::unique_ptr<SettingData> m_pSettingData;
-	// フェード画像番号
-	int m_fadeTexNum;
-
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
-
-	// FPSカメラ
-	std::unique_ptr<FPS_Camera> m_camera;
-	// フェードで使用する変数
-	bool m_isFade;		// フェードフラグ
-	// 音量の基準
-	const float VOLUME = 0.5f;
-	float m_BGMvolume;	// ボリューム
-	float m_SEvolume;	// ボリューム
-	int m_counter;		// フェードカウンタ
+	// BGM音量
+	float m_BGMvolume;
+	// SE音量
+	float m_SEvolume;
 	// 現在のシーンID
 	IScene::SceneID m_nowSceneID;
-
-public:
-	TitleScene(IScene::SceneID sceneID);
-	~TitleScene() override;
-	void Initialize(CommonResources* resources) override;
-	void Update(float elapsedTime)override;
-	void Render() override;
-	void Finalize() override;
-	SceneID GetNextSceneID() const override;
 };

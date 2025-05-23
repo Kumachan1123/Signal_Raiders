@@ -1,13 +1,17 @@
 /*
-	@file	StageSelect.h
-	@brief	ステージ選択クラス
+*	@file	StageSelect.h
+*	@brief	ステージ選択クラス
 */
 #pragma once
-#include <DeviceResources.h>
-#include "Game/CommonResources.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
-#include "Libraries/MyLib/InputManager.h"
+// 標準ライブラリ
 #include <cassert>
+// DirectX
+#include <DeviceResources.h>
+// 外部ライブラリ
+#include "Libraries/MyLib/InputManager.h"
+#include "Libraries/MyLib/MemoryLeakDetector.h"
+// 自作ヘッダーファイル
+#include "Game/CommonResources.h"
 #include "Game/KumachiLib//BinaryFile/BinaryFile.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
@@ -23,11 +27,22 @@ public:
 		DirectX::SimpleMath::Matrix		matWorld;//	ワールド行列
 		DirectX::SimpleMath::Matrix		matView;	//	ビュー行列
 		DirectX::SimpleMath::Matrix		matProj;	//	プロジェクション行列
-		DirectX::SimpleMath::Vector4	color;
+		DirectX::SimpleMath::Vector4	color;	// 	色
 		DirectX::SimpleMath::Vector4	time;	//	時間
 	};
-	ConstBuffer m_constBuffer;
-private:
+public:// public関数
+	StageSelect(CommonResources* resources);// コンストラクタ
+	~StageSelect();// デストラクタ
+	void LoadTexture(const wchar_t* path);// テクスチャ読み込み
+	void Create(DX::DeviceResources* pDR);// 初期化
+	void Update(float elapsedTime);// 更新
+	void Render();// 描画
+private:// private関数
+	void CreateShaders();// シェーダーを作成
+public:
+	// public定数
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
+private:// private定数
 	// 共通リソース
 	CommonResources* m_commonResources;
 	// 頂点シェーダ
@@ -48,38 +63,18 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
 	// データ受け渡し用コンスタントバッファ
 	ConstBuffer m_ConstBuffer;
-	// プリミティブバッチ
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_batch;
-	// コモンステート
-	std::unique_ptr<DirectX::CommonStates> m_states;
 	// 画像
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_texture;
 	// テクスチャパス
 	wchar_t* m_texturePath;
 	// 時間
 	float m_time;
-	// 空の行列
+	// ワールド行列
 	DirectX::SimpleMath::Matrix m_world;
+	// ビュー行列
 	DirectX::SimpleMath::Matrix m_view;
+	// プロジェクション行列
 	DirectX::SimpleMath::Matrix m_proj;
 	// 頂点情報
 	DirectX::VertexPositionTexture m_vertex[4];
-public:
-	//	関数
-	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
-public:
-	StageSelect(CommonResources* resources);
-	~StageSelect();
-	void LoadTexture(const wchar_t* path);
-
-	//	初期化
-	void Create(DX::DeviceResources* pDR);
-
-	//	更新
-	void Update(float elapsedTime);
-	//	描画
-	void Render();
-private:
-	//	シェーダーを作成
-	void CreateShader();
 };

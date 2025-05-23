@@ -13,6 +13,9 @@
 #include <Model.h>
 #include <Effects.h>
 #include <memory>
+
+const float Stage::STAGE_SIZE = 98.5f;	// ステージの広さ
+const float Stage::STAGE_HEIGHT = 3.0f;	// ステージの高さ
 //---------------------------------------------------------
 // コンストラクタ
 //---------------------------------------------------------

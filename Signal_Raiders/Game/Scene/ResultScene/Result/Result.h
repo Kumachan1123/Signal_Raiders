@@ -1,29 +1,48 @@
 /*
-	@file	Result.h
-	@brief	結果クラス
+*	@file	Result.h
+*	@brief	結果クラス
 */
 #pragma once
+// 標準ライブラリ
+#include <cassert>
+// DirectX
+#include <DeviceResources.h>
+// 外部ライブラリ
+#include "Libraries/MyLib/InputManager.h"
+#include "Libraries/MyLib/MemoryLeakDetector.h"
+// 自作ヘッダーファイル
+#include "Game/CommonResources.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
-#include <DeviceResources.h>
+#include "Game/KumachiLib//BinaryFile/BinaryFile.h"
 // 前方宣言
 class CommonResources;
 
 class Result final
 {
-public:
-	//	データ受け渡し用コンスタントバッファ(送信側)
-	struct ConstBuffer
+public:	// 構造体
+
+	struct ConstBuffer// シェーダーに渡す情報の構造体
 	{
-		DirectX::SimpleMath::Matrix		matWorld;//	ワールド行列
-		DirectX::SimpleMath::Matrix		matView;	//	ビュー行列
-		DirectX::SimpleMath::Matrix		matProj;	//	プロジェクション行列
-		DirectX::SimpleMath::Vector4	Colors;
-		float time = 0.0f;
-		DirectX::SimpleMath::Vector3 padding;
+		DirectX::SimpleMath::Matrix		matWorld;	// ワールド行列
+		DirectX::SimpleMath::Matrix		matView;	// ビュー行列
+		DirectX::SimpleMath::Matrix		matProj;	// プロジェクション行列
+		DirectX::SimpleMath::Vector4	Colors;		// 色
+		float time;									// 時間
+		DirectX::SimpleMath::Vector3 padding;		// パディング
 	};
-	ConstBuffer m_constBuffer;
-private:
+public:// public関数
+	Result(CommonResources* resources);// コンストラクタ
+	~Result();// デストラクタ
+	void LoadTexture(const wchar_t* path);// テクスチャリソース読み込み
+	void Create(DX::DeviceResources* pDR, const wchar_t* path);// 初期化
+	void Update(float elapsedTime);// 更新
+	void Render();// 描画
+private:// private関数
+	void CreateShaders();//	シェーダーを作成
+public:// 定数
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
+private:// private変数
 	// 共通リソース
 	CommonResources* m_commonResources;
 	// 頂点シェーダ
@@ -44,38 +63,20 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
 	// データ受け渡し用コンスタントバッファ
 	ConstBuffer m_ConstBuffer;
-	// プリミティブバッチ
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_batch;
-	// コモンステート
-	std::unique_ptr<DirectX::CommonStates> m_states;
 	// タイトル画像
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_texture;
 	// テクスチャパス
 	wchar_t* m_texturePath;
 	// 時間
 	float m_time;
-	// 空の行列
+	// ワールド行列
 	DirectX::SimpleMath::Matrix m_world;
+	// ビュー行列
 	DirectX::SimpleMath::Matrix m_view;
+	// プロジェクション行列
 	DirectX::SimpleMath::Matrix m_proj;
 	// 頂点情報
 	DirectX::VertexPositionTexture m_vertex[4];
-public:
-	//	関数
-	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
-public:
-	Result(CommonResources* resources);
-	~Result();
-	void LoadTexture(const wchar_t* path);
 
-	//	初期化
-	void Create(DX::DeviceResources* pDR, const wchar_t* path);
 
-	//	更新
-	void Update(float elapsedTime);
-	//	描画
-	void Render();
-private:
-	//	シェーダーを作成
-	void CreateShader();
 };

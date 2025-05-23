@@ -65,7 +65,7 @@ public:
 	float GetToPlayerDamage() const override { return EnemyParameters::NORMAL_ENEMY_DAMAGE; }// プレイヤーに与えるダメージ取得
 	bool GetCanAttack() const override { return m_canAttack; }// 攻撃可能か取得
 	void SetCanAttack(bool canAttack)override { m_canAttack = canAttack; }// 攻撃可能か設定
-	void SetEnemyMaxHP(int hp)override { m_currentHP -= hp; }// 敵のHP設定
+	void ApplyDamageToEnemy(int hp)override { m_currentHP -= hp; }// 敵のHP設定(ダメージ適用)
 	void SetPlayerHP(float& HP) const override { HP -= EnemyParameters::NORMAL_ENEMY_DAMAGE; }// プレイヤーのHP設定
 	BulletManager* GetBulletManager()const override { return m_pBulletManager; }// 弾管理クラス取得
 	void SetBulletManager(BulletManager* bulletManager) override { m_pBulletManager = bulletManager; }// 弾管理クラス設定

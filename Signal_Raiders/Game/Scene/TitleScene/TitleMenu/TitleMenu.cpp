@@ -1,24 +1,11 @@
 /*
-	@file	TitleMenu.cpp
-	@brief	タイトルメニュークラス
+*	@file	TitleMenu.cpp
+*	@brief	タイトルメニュークラス
 */
 #include "pch.h"
 #include "TitleMenu.h"
-#include "Game/Screen.h"
-#include "Game/UI/UI.h"
-#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
-#include "DeviceResources.h"
-#include <SimpleMath.h>
-#include <Effects.h>
-#include <PrimitiveBatch.h>
-#include <VertexTypes.h>
-#include <WICTextureLoader.h>
-#include <CommonStates.h>
-#include <vector>
-#include "Libraries/MyLib/InputManager.h"
-#include <Mouse.h>
-using namespace DirectX;
-using namespace DirectX::SimpleMath;
+
+
 
 TitleMenu::TitleMenu()
 	: m_menuIndex{ 0 }
@@ -27,11 +14,9 @@ TitleMenu::TitleMenu()
 	, m_pUI{}
 	, m_pSelect{}
 	, m_pSelectTexturePath{ nullptr }
-	, m_pSelectWindow{ nullptr }
 	, m_windowWidth{ 0 }
 	, m_windowHeight{ 0 }
-	, m_tracker{}
-	, m_time{ 0 }
+	, m_time{ 0.0f }
 	, m_hit{ false }
 	, m_num{ SceneID::STAGESELECT }
 {
@@ -44,6 +29,8 @@ TitleMenu::~TitleMenu()
 
 void TitleMenu::Initialize(CommonResources* resources, int width, int height)
 {
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
 	m_commonResources = resources;
 	m_pDR = m_commonResources->GetDeviceResources();
 	m_windowWidth = width;
@@ -51,26 +38,26 @@ void TitleMenu::Initialize(CommonResources* resources, int width, int height)
 	m_pSelectTexturePath = L"Resources/Textures/select.png";
 	//  「プレイ」を読み込む
 	Add(L"Resources/Textures/play.png"
-		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y + 250)
-		, SimpleMath::Vector2(.5, .5)
+		, Vector2(Screen::CENTER_X, Screen::CENTER_Y + 250)
+		, Vector2(.5, .5)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//  「せってい」を読み込む
 	Add(L"Resources/Textures/setting.png"
-		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y + 350)
-		, SimpleMath::Vector2(.5, .5)
+		, Vector2(Screen::CENTER_X, Screen::CENTER_Y + 350)
+		, Vector2(.5, .5)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//  「おわる」を読み込む
 	Add(L"Resources/Textures/end.png"
-		, SimpleMath::Vector2(Screen::CENTER_X, Screen::CENTER_Y + 450)
-		, SimpleMath::Vector2(.5, .5)
+		, Vector2(Screen::CENTER_X, Screen::CENTER_Y + 450)
+		, Vector2(.5, .5)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//  「操作説明」を読み込む
 	Add(L"Resources/Textures/Guide.png"
-		, SimpleMath::Vector2(Screen::RIGHT, Screen::BOTTOM)
-		, SimpleMath::Vector2(1, 1)
+		, Vector2(Screen::RIGHT, Screen::BOTTOM)
+		, Vector2(1, 1)
 		, KumachiLib::ANCHOR::BOTTOM_RIGHT
 		, UIType::NON_SELECT);
 
@@ -78,6 +65,7 @@ void TitleMenu::Initialize(CommonResources* resources, int width, int height)
 
 void TitleMenu::Update(float elapsedTime)
 {
+	using namespace DirectX::SimpleMath;
 	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();
 	// マウスのトラッカーを取得する
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();
@@ -124,76 +112,62 @@ void TitleMenu::Update(float elapsedTime)
 	}
 	if (!m_hit && m_menuIndex == 6)// 当たってなかったら終了
 		return;
-	// 選択中の初期サイズを取得する
-	Vector2 select = m_pUI[m_menuIndex]->GetSelectScale();
-	//  選択状態とするための変化用サイズを算出する
-	SimpleMath::Vector2 selectScale = SimpleMath::Vector2::Lerp(m_pUI[m_menuIndex]->GetSelectScale(), SimpleMath::Vector2::One, 1);
-	//  選択状態は初期状態＋50％の大きさとする
-	select = SimpleMath::Vector2((sin(m_time) * 0.1f) + 1.0f);
-	//  算出後のサイズを現在のサイズとして設定する
-	m_pUI[m_menuIndex]->SetScale(select);
-	//  背景用のウィンドウ画像にも同じ割合の値を設定する
-	m_pSelect[m_menuIndex]->SetScale(Vector2::One);
-
+	Vector2 select = m_pUI[m_menuIndex]->GetSelectScale();// 選択中の初期サイズを取得する
+	Vector2 selectScale = Vector2::Lerp(m_pUI[m_menuIndex]->GetSelectScale(), Vector2::One, 1);// 選択状態とするための変化用サイズを算出する
+	select = Vector2((sin(m_time) * 0.1f) + 1.0f);// 選択状態は初期状態＋50％の大きさとする
+	m_pUI[m_menuIndex]->SetScale(select);// 算出後のサイズを現在のサイズとして設定する
+	m_pSelect[m_menuIndex]->SetScale(Vector2::One);// 背景用のウィンドウ画像にも同じ割合の値を設定する
 }
-
+/*
+*	@brief	描画
+*	@detail	メニューアイテムを描画する
+*	@param なし
+*	@return なし
+*/
 void TitleMenu::Render()
 {
-	for (unsigned int i = 0; i < m_pUI.size(); i++)
+	for (unsigned int i = 0; i < m_pUI.size(); i++)// 登録したUIの数ループ
 	{
-		//  アイテム用ウィンドウ背景を表示
-		if (i == m_menuIndex) m_pSelect[i]->Render();
-		//  実際に表示したいアイテム画像を表示
-		m_pUI[i]->Render();
-
+		if (i == m_menuIndex) m_pSelect[i]->Render();//  アイテム用ウィンドウ背景を表示
+		m_pUI[i]->Render();	//  実際に表示したいアイテム画像を表示
 	}
-	// 選択不可能なアイテムを表示
-	for (unsigned int i = 0; i < m_pGuide.size(); i++)
-	{
-		m_pGuide[i]->Render();
-	}
+	for (unsigned int i = 0; i < m_pGuide.size(); i++)m_pGuide[i]->Render();// 選択不可能なアイテムを表示
 #ifdef _DEBUG
-	// デバッグ情報を表示する
-	auto debugString = m_commonResources->GetDebugString();
-	for (int i = 0; i < m_transforms.size(); i++)
-	{
-		debugString->AddString("Transform.Pos:%f,%f  Scale:%f,%f", m_transforms[i].position.x, m_transforms[i].position.y, m_transforms[i].scale.x, m_transforms[i].scale.y);
-	}
+
+	auto debugString = m_commonResources->GetDebugString(); // デバッグ情報を表示する
+	for (int i = 0; i < m_transforms.size(); i++)// 登録したUIの数ループ
+		debugString->AddString("Transform.Pos:%f,%f  Scale:%f,%f", m_transforms[i].position.x, m_transforms[i].position.y, m_transforms[i].scale.x, m_transforms[i].scale.y);//  UIの座標を表示
+
 #endif
 }
-
+/*
+*	@brief	アイテムを追加する
+*	@detail	アイテムを追加する
+*	@param path		アイテムのパス
+*	@param position	アイテムの位置
+*	@param scale	アイテムのスケール
+*	@param anchor	アイテムのアンカー
+*	@param type		アイテムの種類
+*	@return なし
+*/
 void TitleMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor, UIType type)
 {
-	//  メニューとしてアイテムを追加する
-	std::unique_ptr<UI> userInterface = std::make_unique<UI>();
-	//  指定された画像を表示するためのアイテムを作成する
-	userInterface->Create(m_pDR
-		, path
-		, position
-		, scale
-		, anchor);
-	userInterface->SetWindowSize(m_windowWidth, m_windowHeight);
+	std::unique_ptr<UI> userInterface = std::make_unique<UI>();// メニューとしてアイテムを追加する
+	userInterface->Create(m_pDR, path, position, scale, anchor);// 指定された画像を表示するためのアイテムを作成する
+	userInterface->SetWindowSize(m_windowWidth, m_windowHeight);// ウィンドウのサイズを設定する
+	if (type == UIType::SELECT)
+	{
+		m_pUI.push_back(std::move(userInterface));//  選択可能アイテムを新しく追加
 
-	//  アイテムを新しく追加
-	if (type == UIType::SELECT)m_pUI.push_back(std::move(userInterface));
+		std::unique_ptr<UI> base = std::make_unique<UI>();//  背景用のウィンドウ画像も追加する
+		base->Create(m_pDR, m_pSelectTexturePath, position, scale, anchor);// 指定された画像を表示するためのアイテムを作成する
+		base->SetWindowSize(m_windowWidth, m_windowHeight);// ウィンドウのサイズを設定する
+		m_pSelect.push_back(std::move(base));// 背景用のアイテムも新しく追加する
+		m_transforms.push_back({ position, scale });// UIの情報を配列に登録
+	}
 	else
 	{
-		m_pGuide.push_back(std::move(userInterface));
+		m_pGuide.push_back(std::move(userInterface));// 選択不可能アイテムを新しく追加
 		return;
 	}
-	//  背景用のウィンドウ画像も追加する
-	std::unique_ptr<UI> base = std::make_unique<UI>();
-	base->Create(m_pDR
-		, m_pSelectTexturePath
-		, position
-		, scale
-		, anchor);
-	base->SetWindowSize(m_windowWidth, m_windowHeight);
-
-	//  背景用のアイテムも新しく追加する
-	m_pSelect.push_back(std::move(base));
-
-	// UIの情報を配列に登録
-	m_transforms.push_back({ position, scale });
-
 }
