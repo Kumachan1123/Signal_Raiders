@@ -1,7 +1,11 @@
+/*
+*	@file	WiFiParameters.h
+*	@brief	Wi-Fiに関するパラメータを定義するヘッダーファイル
+*/
 #pragma once
 class WiFiParameters
 {
-public:
+public:// public定数
 	// Wi-Fiを取得できない場合の敵の総数
 	static constexpr int MAX_ENEMY = 30;
 	// Wi-Fiを取得できない場合の敵の体力
