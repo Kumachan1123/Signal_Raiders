@@ -8,12 +8,12 @@
 const float TitleScene::VOLUME = 0.05f;
 
 /*
-*	@brief ゲームを終了する
-*	@details ゲームを終了する
+*	@brief ゲーム終了関数
+*	@details ゲームを終了する関数(main.cppに実装済みのものを呼び出す)
 *	@param なし
 *	@return なし
 */
-void EndGame()noexcept;
+extern void ExitGame() noexcept;
 /*
 *	@brief コンストラクタ
 *	@details タイトルシーンクラスのコンストラクタ
@@ -156,7 +156,7 @@ IScene::SceneID TitleScene::GetNextSceneID() const
 			return IScene::SceneID::SETTING;// 設定画面に遷移
 			break;
 		case TitleMenu::SceneID::END:// ゲーム終了だったら
-			EndGame();// ゲームを終了する
+			ExitGame();// ゲームを終了する
 			break;
 		default:// それ以外
 			break;
@@ -164,16 +164,3 @@ IScene::SceneID TitleScene::GetNextSceneID() const
 	}
 	return IScene::SceneID::NONE;// 何もなかったらNONEを返す
 }
-
-
-/*
-*	@brief ゲームを終了する
-*	@details ゲームを終了する
-*	@param なし
-*	@return なし
-*/
-void EndGame() noexcept
-{
-	PostQuitMessage(0);// ウィンドウを閉じる
-}
-
