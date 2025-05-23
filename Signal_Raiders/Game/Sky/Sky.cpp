@@ -1,97 +1,84 @@
 /*
-	@file	Sky.cpp
-	@brief	スカイクラス
+*	@file	Sky.cpp
+*	@brief	スカイクラス
 */
 #include "pch.h"
-#include "Game/Sky/Sky.h"
-#include "Game/CommonResources.h"
-#include "DeviceResources.h"
-#include "Libraries/MyLib/InputManager.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
-#include <cassert>
-#include <SimpleMath.h>
-#include <Model.h>
-#include <Effects.h>
-#include <memory>
-#include <locale> 
-#include <codecvt>
-//---------------------------------------------------------
-// コンストラクタ
-//---------------------------------------------------------
+#include "Sky.h"
+/*
+*	@brief	コンストラクタ
+*	@details スカイのコンストラクタ
+*	@param StageID ステージID
+*	@return なし
+*/
 Sky::Sky(int StageID)
-	:
-	m_commonResources{},
-	m_model{},
-	m_texturePath{},
-	m_stageID{ StageID }
+	: m_commonResources{}// 共通リソース
+	, m_model{}// モデル
+	, m_texturePath{}// テクスチャパス
+	, m_stageID{ StageID }// ステージID
 {
 }
-//---------------------------------------------------------
-// デストラクタ
-//---------------------------------------------------------
-Sky::~Sky()
-{
-	// do nothing.
-}
-//---------------------------------------------------------
-// 初期化する
-//---------------------------------------------------------
+/*
+*	@brief	デストラクタ
+*	@details スカイのデストラクタ
+*	@param なし
+*	@return なし
+*/
+Sky::~Sky() {/*/do nothing.*/ }
+/*
+*	@brief	初期化
+*	@details 空の初期化
+*	@param resources 共通リソース
+*	@return なし
+*/
 void Sky::Initialize(CommonResources* resources)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	assert(resources);
-	m_commonResources = resources;
-
-	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
-
-
-	// モデルを読み込む準備
-	std::unique_ptr<EffectFactory> fx = std::make_unique<EffectFactory>(device);
-	fx->SetDirectory(L"Resources/models/sky");
-
-
-	auto it = m_texturePathMap.find(m_stageID);
-	if (it != m_texturePathMap.end()) {
-		std::wstring wpath = ConvertToWString(it->second);
-		m_model = Model::CreateFromCMO(device, wpath.c_str(), *fx);
+	assert(resources);// リソースがnullptrでないことを確認
+	m_commonResources = resources;// リソースを保存
+	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
+	std::unique_ptr<EffectFactory> fx = std::make_unique<EffectFactory>(device);// モデルを読み込む準備
+	fx->SetDirectory(L"Resources/models/sky");// モデルのディレクトリを設定
+	auto it = m_texturePathMap.find(m_stageID);// ステージIDに応じた空のモデルのパスを取得
+	if (it != m_texturePathMap.end()) // マップの要素が見つかった場合
+	{
+		std::wstring wpath = ConvertToWString(it->second);// ステージIDに応じた空のモデルのパスを取得
+		m_model = Model::CreateFromCMO(device, wpath.c_str(), *fx);// モデルを読み込む
 	}
-
-
+	m_model->UpdateEffects([](DirectX::IEffect* effect)	// モデルのエフェクト情報を更新する
+		{
+			BasicEffect* basicEffect = dynamic_cast<BasicEffect*>(effect);// ベーシックエフェクトを設定する
+			if (!basicEffect)return;// エフェクトがnullptrの場合は処理を終える
+			basicEffect->SetLightEnabled(0, false);// ライトを無効にする
+			basicEffect->SetLightEnabled(1, false);// ライトを無効にする
+			basicEffect->SetLightEnabled(2, false);// ライトを無効にする
+			basicEffect->SetEmissiveColor(Colors::White);// エミッシブカラーを設定する
+		}
+	);
 }
-//---------------------------------------------------------
-// 描画する
-//---------------------------------------------------------
+/*
+*	@brief	描画
+*	@details スカイの描画
+*	@param view ビュー行列
+*	@param proj プロジェクション行列
+*	@param world ワールド行列
+*	@param pos スカイの位置
+*	@return なし
+*/
 void Sky::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj,
 	DirectX::SimpleMath::Matrix world, DirectX::SimpleMath::Vector3 pos)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-	auto states = m_commonResources->GetCommonStates();
-	world *= Matrix::CreateTranslation(pos);
-	// モデルのエフェクト情報を更新する
-	m_model->UpdateEffects([](DirectX::IEffect* effect)
-		{
-			// ベーシックエフェクトを設定する
-			BasicEffect* basicEffect = dynamic_cast<BasicEffect*>(effect);
-			if (basicEffect)
-			{
-				// 個別のライトをすべて無効化する
-				basicEffect->SetLightEnabled(0, false);
-				basicEffect->SetLightEnabled(1, false);
-				basicEffect->SetLightEnabled(2, false);
-				// モデルを自発光させる
-				basicEffect->SetEmissiveColor(Colors::White);
-			}
-		}
-	);
-	// モデルを描画する
-	m_model->Draw(context, *states, world, view, proj);
+	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストを取得
+	auto states = m_commonResources->GetCommonStates();// 共通ステートを取得
+	world *= Matrix::CreateTranslation(pos);// ワールド行列を更新
+	m_model->Draw(context, *states, world, view, proj);// モデルを描画する
 }
-
-std::wstring Sky::ConvertToWString(const std::string& str)
-{
-	return std::wstring(str.begin(), str.end());
-}
+/*
+*	@brief	文字列変換
+*	@details 文字列をワイド文字列に変換する
+*	@param str 変換する文字列
+*	@return ワイド文字列
+*/
+std::wstring Sky::ConvertToWString(const std::string& str) { return std::wstring(str.begin(), str.end()); }

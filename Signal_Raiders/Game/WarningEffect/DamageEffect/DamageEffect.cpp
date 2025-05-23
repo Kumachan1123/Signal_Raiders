@@ -5,65 +5,64 @@
 #include "pch.h"
 #include "DamageEffect.h"
 
-using namespace DirectX;
-using namespace DirectX::SimpleMath;
-
-/*
-*	@brief 頂点情報
-*/
+// インプットレイアウト
 const std::vector<D3D11_INPUT_ELEMENT_DESC>  DamageEffect::INPUT_LAYOUT =
 {
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(DirectX::SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
 
 /*
 *	@brief コンストラクタ
-*	@param[in] resources CommonResourcesクラスのポインタ
+*	@details ダメージエフェクトのコンストラクタ
+*	@param resources CommonResourcesクラスのポインタ
 *	@return なし
 */
 DamageEffect::DamageEffect(CommonResources* resources)
-	: m_commonResources(resources)
-	, m_time(0.0f)
-	, m_constBuffer{}
-	, m_pDR(resources->GetDeviceResources())
-	, m_pPlayer(nullptr)
-	, m_pEnemy(nullptr)
-	, m_enemyDirection{}
-	, m_playEffect(false)
-	, m_effectType(EffectType::DAMAGE)
-	, m_pDrawPolygon(DrawPolygon::GetInstance())
-	, m_pCreateShader(CreateShader::GetInstance())
+	: m_commonResources(resources)// リソースクラスのポインタ
+	, m_time(0.0f)// 時間
+	, m_constBuffer{}// コンスタントバッファ
+	, m_pDR(resources->GetDeviceResources())// デバイスリソース
+	, m_pPlayer(nullptr)// プレイヤー
+	, m_pEnemy(nullptr)// 敵
+	, m_enemyDirection{}// 攻撃してきた敵の向き
+	, m_playEffect(false)// エフェクト再生フラグ
+	, m_effectType(EffectType::DAMAGE)// エフェクトタイプ
+	, m_pDrawPolygon(DrawPolygon::GetInstance())// 描画ポリゴンクラスのインスタンス
+	, m_pCreateShader(CreateShader::GetInstance())// シェーダー作成クラスのインスタンス
 {
-	m_constBuffer.colors = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 0.0f);	// 色の初期化
-	m_pCreateShader->Initialize(m_pDR->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);	// シェーダー作成クラスの初期化
+	m_constBuffer.colors = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 0.0f);// 色の初期化
+	m_pCreateShader->Initialize(m_pDR->GetD3DDevice(),// シェーダー作成クラスの初期化
+		&INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
 }
-
 /*
 *	@brief デストラクタ
+*	@details ダメージエフェクトのデストラクタ
+*	@param なし
 *	@return なし
 */
-DamageEffect::~DamageEffect() {}
-
+DamageEffect::~DamageEffect() {/* do nothing */ }
 /*
 *	@brief 初期化
-*	@param[in] pPlayer プレイヤーのポインタ
+*	@details ダメージエフェクトの初期化
+*	@param なし
 *	@return なし
 */
 void DamageEffect::Initialize()
 {
+	using namespace DirectX::SimpleMath;
 	m_playEffect = true;// エフェクト再生フラグをtrueにする
 	MakeShader();	// シェーダーの作成
 	LoadTexture(L"Resources/Textures/WARNING.png");// テクスチャ読み込み
 	m_pDrawPolygon->InitializePositionTexture(m_pDR);// 頂点情報の初期化
-	if (m_effectType == EffectType::DAMAGE)
+	if (m_effectType == EffectType::DAMAGE)// ダメージエフェクトなら
 	{
-		m_constBuffer.colors = DirectX::SimpleMath::Vector4(2.0f, 0.0f, 0.0f, 1.0f);// エフェクトタイプがダメージなら赤色
+		m_constBuffer.colors = Vector4(2.0f, 0.0f, 0.0f, 1.0f);// 赤色
 		m_enemyDirection = m_pPlayer->GetEnemyBulletDirection();// 攻撃してきた敵の向きを取得
 	}
-	else if (m_effectType == EffectType::INCOMINGENEMY)
+	else if (m_effectType == EffectType::INCOMINGENEMY)// 警戒エフェクトなら
 	{
-		m_constBuffer.colors = DirectX::SimpleMath::Vector4(1.0f, 0.5f, 0.0f, 1.0f);// エフェクトタイプが警告なら黄色
+		m_constBuffer.colors = Vector4(1.0f, 0.5f, 0.0f, 1.0f);// 黄色
 		m_enemyPosition = m_pEnemy->GetPosition();// 敵の位置を取得
 		m_enemyDirection = m_pPlayer->GetPlayerPos() - m_enemyPosition;// プレイヤーと敵の位置の差を取得
 	}
@@ -71,7 +70,7 @@ void DamageEffect::Initialize()
 
 /*
 *	@brief テクスチャリソース読み込み関数
-*	@param[in] path テクスチャのパス
+*	@param path テクスチャのパス
 *	@return なし
 */
 void  DamageEffect::LoadTexture(const wchar_t* path)
@@ -80,11 +79,10 @@ void  DamageEffect::LoadTexture(const wchar_t* path)
 	DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, nullptr, texture.ReleaseAndGetAddressOf());// テクスチャの読み込み
 	m_textures.push_back(texture);// テクスチャリソースビューを格納
 }
-
-
-
 /*
 *	@brief シェーダー作成
+*	@details シェーダーの作成
+*	@param なし
 *	@return なし
 */
 void  DamageEffect::MakeShader()
@@ -97,14 +95,14 @@ void  DamageEffect::MakeShader()
 	m_shaders.ps = m_pixelShader.Get();// ピクセルシェーダーをセット
 	m_shaders.gs = nullptr;// ジオメトリシェーダーは使わないのでnullptr
 }
-
 /*
 *	@brief 更新
-*	@param[in] elapsedTime 経過時間
+*	@param elapsedTime 経過時間
 *	@return なし
 */
 void  DamageEffect::Update(float elapsedTime)
 {
+	using namespace DirectX::SimpleMath;
 	if (!m_playEffect)return;// エフェクト再生フラグがfalseなら更新しない
 	m_time += elapsedTime;// 時間を加算
 	if (m_time >= PLAY_TIME)// 再生時間を過ぎたら
@@ -122,10 +120,13 @@ void  DamageEffect::Update(float elapsedTime)
 }
 /*
 *	@brief 角度計算
+*	@details 敵の向きとプレイヤーの向きの差を計算
+*	@param なし
 *	@return 角度
 */
 float DamageEffect::CalculateAngle() const
 {
+	using namespace DirectX::SimpleMath;
 	Vector3 playerDir = m_pPlayer->GetPlayerDir();// プレイヤーの向き
 	float angle = atan2(m_enemyDirection.x, m_enemyDirection.z) - atan2(playerDir.x, playerDir.z);// プレイヤーと敵の向きの差
 	angle = DirectX::XMConvertToDegrees(angle);// ラジアンから度に変換
@@ -133,31 +134,36 @@ float DamageEffect::CalculateAngle() const
 }
 /*
 *	@brief 角度からUV座標を求める
-*	@param[in] angle 角度
+*	@details 角度からUV座標を求める
+*	@param angle 角度
 *	@return UV座標
 */
 DirectX::SimpleMath::Vector4 DamageEffect::GetUVFromAngle(float angle) const
 {
+	using namespace DirectX::SimpleMath;
 	float rad = DirectX::XMConvertToRadians(angle);// 度からラジアンに変換
 	float radius = UV_W - UV_C;	// 半径は左右または上下の中心からの距離
 	float u = UV_C - radius * -sin(rad);// 座標を計算U
 	float v = UV_C + radius * cos(rad);// 座標を計算V
-	return DirectX::SimpleMath::Vector4(u, v, 0, 0);// UV座標を返す
+	return  Vector4(u, v, 0, 0);// UV座標を返す
 }
 /*
 *	@brief 描画
+*	@details ダメージエフェクトの描画
+*	@param なし
 *	@return なし
 */
 void  DamageEffect::Render()
 {
-
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
 	VertexPositionTexture vertex[4] =	// 頂点情報(板ポリゴンの４頂点の座標情報）
 	{
 		// 頂点情報													UV情報
-		VertexPositionTexture(SimpleMath::Vector3(-SIZE_X * SCALE,  SIZE_Y * SCALE, 0.0f), SimpleMath::Vector2(0.0f, 0.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(SIZE_X * SCALE,  SIZE_Y * SCALE, 0.0f),  SimpleMath::Vector2(1.0f, 0.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(SIZE_X * SCALE, -SIZE_Y * SCALE, 0.0f),  SimpleMath::Vector2(1.0f, 1.0f)),
-		VertexPositionTexture(SimpleMath::Vector3(-SIZE_X * SCALE, -SIZE_Y * SCALE, 0.0f), SimpleMath::Vector2(0.0f, 1.0f)),
+		VertexPositionTexture(Vector3(-SIZE_X * SCALE,  SIZE_Y * SCALE, 0.0f),  Vector2(0.0f, 0.0f)),// 左上
+		VertexPositionTexture(Vector3(SIZE_X * SCALE,  SIZE_Y * SCALE, 0.0f),   Vector2(1.0f, 0.0f)),// 右上
+		VertexPositionTexture(Vector3(SIZE_X * SCALE, -SIZE_Y * SCALE, 0.0f),   Vector2(1.0f, 1.0f)),// 右下
+		VertexPositionTexture(Vector3(-SIZE_X * SCALE, -SIZE_Y * SCALE, 0.0f),  Vector2(0.0f, 1.0f)),// 左下
 	};
 	m_constBuffer.matView = m_view.Transpose();// ビュー行列を転置
 	m_constBuffer.matProj = m_proj.Transpose();// プロジェクション行列を転置

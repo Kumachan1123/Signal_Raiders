@@ -1,33 +1,56 @@
+/*
+*	@file Wall.h
+*	@brief 壁クラス
+*/
 #pragma once
-#include "Game/CommonResources.h"
+// 標準ライブラリ
+#include <cassert>
+// DirectX
 #include "DeviceResources.h"
-#include <PrimitiveBatch.h> 
-#include <VertexTypes.h> 
 #include <WICTextureLoader.h> 
+#include <SimpleMath.h>
+// 外部ライブラリ
+#include "Libraries/Microsoft/DebugDraw.h"
 #include "Libraries/MyLib/DebugString.h"
 #include "Libraries/MyLib/InputManager.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
-#include <cassert>
-#include <SimpleMath.h>
-#include <Effects.h>
-#include <Libraries/Microsoft/DebugDraw.h>
+// 自作ヘッダーファイル
+#include "Game/CommonResources.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 class Wall
 {
-public:
-	static const int WALL_NUM = 4;
-public:
-	// データ受け渡し用コンスタントバッファ(送信側)
-	struct ConstBuffer
+public:// 構造体
+	struct ConstBuffer// シェーダーに渡す情報
 	{
 		DirectX::SimpleMath::Matrix matWorld;   // ワールド行列
 		DirectX::SimpleMath::Matrix matView;    // ビュー行列
 		DirectX::SimpleMath::Matrix matProj;    // プロジェクション行列
 		DirectX::SimpleMath::Vector4 colors;    // カラー
 		DirectX::SimpleMath::Vector4 time;    // 時間
-	}m_constBuffer;
+	};
+public:// public関数
+	Wall(CommonResources* resources);// コンストラクタ
+	~Wall();// デストラクタ
+	void LoadTexture(const wchar_t* path);// テクスチャの読み込み
+	void Create(DX::DeviceResources* pDR);// 初期化
+	void Update(float elapsedTime);// 更新
+	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);// 描画
+	DirectX::BoundingBox& GetBoundingBox(int index) { return m_wallBox[index]; }// 当たり判定の取得
+	int GetWallNum() { return WALL_NUM; }// 壁の数の取得
+private:
+	void CreateWalls();// 壁の初期化
+	void CreateShaders();// シェーダーの作成
+public:// 定数
+	// 壁の数
+	static const int WALL_NUM = 4;
+	// インプットレイアウト
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
+	// 高さ
+	static const float WALL_HEIGHT;
+	// 幅
+	static const float WALL_WIDTH;
 private:
 	// 共通リソース
 	CommonResources* m_commonResources;
@@ -36,18 +59,20 @@ private:
 	// 壁テクスチャ
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_pWallTexture;
 	// 壁の頂点
-	DirectX::VertexPositionTexture m_wall[WALL_NUM][WALL_NUM];
+	DirectX::VertexPositionTexture m_wall[Wall::WALL_NUM][WALL_NUM];
 	// 壁の当たり判定
 	DirectX::BoundingBox m_wallBox[WALL_NUM];
-	// ワールドビュープロジェクション行列
+	// ワールド行列
 	DirectX::SimpleMath::Matrix m_world;
+	// ビュー行列
 	DirectX::SimpleMath::Matrix m_view;
+	// プロジェクション行列
 	DirectX::SimpleMath::Matrix m_proj;
 	// 時間
 	float m_time;
-	//	頂点シェーダ
+	// 頂点シェーダ
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
-	//	ピクセルシェーダ
+	// ピクセルシェーダ
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
@@ -55,39 +80,11 @@ private:
 	DrawPolygon* m_pDrawPolygon;
 	// シェーダー作成クラス
 	CreateShader* m_pCreateShader;
-
-	//	プリミティブバッチ 
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_pPrimitiveBatch;
-
-
-	//	入力レイアウト 
+	// コンスタントバッファ(シェーダーに渡す情報)
+	ConstBuffer m_constBuffer;
+	// 入力レイアウト 
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
+	// コンスタントバッファ
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_cBuffer;
-	//	共通ステートオブジェクトへのポインタ
-	std::unique_ptr<DirectX::CommonStates> m_pStates;
 
-
-	// 	//デバッグ用
-	// ベーシックエフェクト
-	std::unique_ptr<DirectX::BasicEffect> m_pBasicEffect;
-
-
-public:
-	//	関数
-	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
-
-	// 初期ステータスを設定
-	Wall(CommonResources* resources);
-	~Wall();
-	void LoadTexture(const wchar_t* path);
-
-	void Create(DX::DeviceResources* pDR);
-	void Initialize();
-	void Update(float elapsedTime);
-	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
-	DirectX::BoundingBox& GetBoundingBox(int index) { return m_wallBox[index]; }
-	int GetWallNum() { return WALL_NUM; }
-private:
-
-	void CreateShader();
 };

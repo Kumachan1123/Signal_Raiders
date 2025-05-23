@@ -1,181 +1,151 @@
 /*
-	@file	SceneManager.cpp
-	@brief	シーンマネージャクラス
+*	@file	SceneManager.cpp
+*	@brief	シーンマネージャクラス
 */
 #include "pch.h"
 #include "SceneManager.h"
-#include "Game/Scene/TitleScene/TitleScene.h"
-#include "Game/Scene/SettingScene/SettingScene.h"
-#include "Game/Scene/PlayScene/PlayScene.h"
-#include "Game/Scene/ResultScene/ResultScene.h"
-#include "Game/Scene/StageSelectScene/StageSelectScene.h"
-#include "Game/Screen.h"
-#include "Game/CommonResources.h"
-#include "DeviceResources.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
-#include "Libraries/MyLib/InputManager.h"
-#include <cassert>
-
-
-//---------------------------------------------------------
-// コンストラクタ
-//---------------------------------------------------------
+// ステージ数(条件式で??? < STAGE_MAXのように使い、0～4がステージ、5がタイトルに戻るボタンの番号）
+const int SceneManager::STAGE_MAX = 5;
+/*
+*	@brief コンストラクタ
+*	@details シーンマネージャクラスのコンストラクタ
+*	@param なし
+*	@return なし
+*/
 SceneManager::SceneManager()
-	:
-	m_currentScene{},
-	m_commonResources{},
-	m_stageNumber{ 0 },
-	m_nowSceneID{ IScene::SceneID::NONE }
+	: m_currentScene{}// 現在のシーン
+	, m_commonResources{}// 共通リソース
+	, m_stageNumber{ 0 }// ステージ番号
+	, m_nowSceneID{ IScene::SceneID::NONE }// 現在のシーンID
 {
 }
-
-//---------------------------------------------------------
-// デストラクタ
-//---------------------------------------------------------
-SceneManager::~SceneManager()
-{
-	Finalize();
-}
-
-//---------------------------------------------------------
-// 初期化する
-//---------------------------------------------------------
+/*
+*	@brief デストラクタ
+*	@details シーンマネージャクラスのデストラクタ
+*	@param なし
+*	@return	なし
+*/
+SceneManager::~SceneManager() { Finalize(); }
+/*
+*	@brief 初期化する
+*	@details シーンマネージャクラスの初期化
+*	@param resources 共通リソース
+*	@return なし
+*/
 void SceneManager::Initialize(CommonResources* resources)
 {
-	assert(resources);
-	m_commonResources = resources;
-
-	ChangeScene(IScene::SceneID::TITLE);
+	assert(resources);// リソースがnullptrでないことを確認
+	m_commonResources = resources;// 共通リソースを取得
+	ChangeScene(IScene::SceneID::TITLE);// タイトルシーンに変更
 }
-
-//---------------------------------------------------------
-// 更新する
-//---------------------------------------------------------
+/*
+*	@brief 更新する
+*	@details シーンマネージャクラスの更新
+*	@param elapsedTime 経過時間
+*	@return なし
+*/
 void SceneManager::Update(float elapsedTime)
 {
-	m_currentScene->Update(elapsedTime);
-
-	// 説明用変数：次のシーン
-	const IScene::SceneID nextSceneID = m_currentScene->GetNextSceneID();
-
-	// シーンを変更しないとき
-	if (nextSceneID == IScene::SceneID::NONE) return;
-
-	// シーンを変更するとき
-	ChangeScene(nextSceneID);
+	m_currentScene->Update(elapsedTime); // 現在のシーンを更新
+	if (m_currentScene->GetNextSceneID() == IScene::SceneID::NONE) return;// 次のシーンIDがNONEの場合はここで処理を終わる
+	ChangeScene(m_currentScene->GetNextSceneID());// シーンを変更するとき
 }
-
-//---------------------------------------------------------
-// 描画する
-//---------------------------------------------------------
-void SceneManager::Render()
-{
-	m_currentScene->Render();
-}
-
-//---------------------------------------------------------
-// 後始末する
-//---------------------------------------------------------
-void SceneManager::Finalize()
-{
-	DeleteScene();
-}
-
-//---------------------------------------------------------
-// シーンを変更する
-//---------------------------------------------------------
+/*
+*	@brief 描画する
+*	@details シーンマネージャクラスの描画
+*	@param なし
+*	@return なし
+*/
+void SceneManager::Render() { m_currentScene->Render(); }
+/*
+*	@brief 終了する
+*	@details シーンを削除する
+*	@param なし
+*	@return なし
+*/
+void SceneManager::Finalize() { DeleteScene(); }
+/*
+*	@brief シーンを変更する
+*	@details 今のシーンを消して新しいシーンを作成する
+*	@param sceneID 新しいシーンのID
+*	@return なし
+*/
 void SceneManager::ChangeScene(IScene::SceneID sceneID)
 {
-	DeleteScene();
-	CreateScene(sceneID);
+	DeleteScene();// シーンを削除する
+	CreateScene(sceneID);// 新しいシーンを作成する
 }
-
-//---------------------------------------------------------
-// シーンを作成する
-//---------------------------------------------------------
+/*
+*	@brief シーンを作成する
+*	@details 新しいシーンを作成する
+*	@param sceneID 新しいシーンのID
+*	@return なし
+*/
 void SceneManager::CreateScene(IScene::SceneID sceneID)
 {
-	assert(m_currentScene == nullptr);
-
-	switch (sceneID)
+	assert(m_currentScene == nullptr);// 現在のシーンがnullptrであることを確認
+	switch (sceneID)// シーンIDによって処理を分ける
 	{
-	case IScene::SceneID::TITLE:
-		m_currentScene = std::make_unique<TitleScene>(sceneID);
-
-		break;
-	case IScene::SceneID::SETTING:
-		m_currentScene = std::make_unique<SettingScene>(sceneID);
-
-		break;
-	case IScene::SceneID::STAGESELECT:
-		m_currentScene = std::make_unique<StageSelectScene>(sceneID);
-
-		break;
-	case IScene::SceneID::PLAY:
-		m_currentScene = std::make_unique<PlayScene>(sceneID);
-
-
-		break;
-	case IScene::SceneID::CLEAR:
-	case IScene::SceneID::GAMEOVER:
-
-		m_currentScene = std::make_unique<ResultScene>(sceneID);
-
-		break;
-	default:
-		assert(!"SceneManager::CreateScene::シーン名が存在しません！");
+	case IScene::SceneID::TITLE:// タイトルシーン
+		m_currentScene = std::make_unique<TitleScene>(sceneID);// タイトルシーンを作成
+		break;// 処理を終える
+	case IScene::SceneID::SETTING:// 設定シーン
+		m_currentScene = std::make_unique<SettingScene>(sceneID);// 設定シーンを作成
+		break;// 処理を終える
+	case IScene::SceneID::STAGESELECT:// ステージ選択シーン
+		m_currentScene = std::make_unique<StageSelectScene>(sceneID);// ステージ選択シーンを作成
+		break;// 処理を終える
+	case IScene::SceneID::PLAY:// プレイシーン
+		m_currentScene = std::make_unique<PlayScene>(sceneID);// プレイシーンを作成
+		break;// 処理を終える
+	case IScene::SceneID::CLEAR:	// リザルトシーン
+	case IScene::SceneID::GAMEOVER:	// CLEARとGAMEOVERは同じ処理
+		m_currentScene = std::make_unique<ResultScene>(sceneID);// リザルトシーンを作成
+		break;// 処理を終える
+	default:// それ以外のシーン
+		assert(!"SceneManager::CreateScene::シーン名が存在しません！");// シーン名が存在しない場合はエラー
 		// no break
 	}
-
-	assert(m_currentScene && "SceneManager::CreateScene::次のシーンが生成されませんでした！");
-	if ((GetSceneID() == IScene::SceneID::STAGESELECT ||
-		GetSceneID() == IScene::SceneID::CLEAR ||
-		GetSceneID() == IScene::SceneID::GAMEOVER) &&
-		m_stageNumber < 5)
+	assert(m_currentScene && "SceneManager::CreateScene::次のシーンが生成されませんでした！");// シーンが生成されていることを確認
+	if ((GetSceneID() == IScene::SceneID::STAGESELECT ||// ステージ選択か
+		GetSceneID() == IScene::SceneID::CLEAR ||		// クリアか
+		GetSceneID() == IScene::SceneID::GAMEOVER) &&	// ゲームオーバーのどれか且つ
+		m_stageNumber < SceneManager::STAGE_MAX)		// ステージ番号が5未満の場合
 	{
-		auto playScene = dynamic_cast<PlayScene*>(m_currentScene.get());
-		assert(playScene);
-		playScene->SetStageNumber(m_stageNumber);
-
+		auto playScene = dynamic_cast<PlayScene*>(m_currentScene.get());// プレイシーンを取得
+		assert(playScene);// プレイシーンが取得できていることを確認
+		playScene->SetStageNumber(m_stageNumber);// ステージ番号をセット
 	}
-	if (GetSceneID() == IScene::SceneID::PLAY)
+	if (GetSceneID() == IScene::SceneID::PLAY)// プレイシーンの場合
 	{
-		auto resultScene = dynamic_cast<ResultScene*>(m_currentScene.get());
-		assert(resultScene);
-		resultScene->SetStageNumber(m_stageNumber);
-
+		auto resultScene = dynamic_cast<ResultScene*>(m_currentScene.get());// リザルトシーンを取得
+		assert(resultScene);// リザルトシーンが取得できていることを確認
+		resultScene->SetStageNumber(m_stageNumber);// ステージ番号をセット
 	}
-	m_currentScene->Initialize(m_commonResources);
-	SetSceneID(sceneID);
+	m_currentScene->Initialize(m_commonResources);// シーンの初期化
+	SetSceneID(sceneID);// シーンIDをセット
 }
-
-//---------------------------------------------------------
-// シーンを削除する
-//---------------------------------------------------------
+/*
+*	@brief シーンを削除する
+*	@details 現在のシーンを削除する
+*	@param なし
+*	@return なし
+*/
 void SceneManager::DeleteScene()
 {
-	if (m_currentScene)
+	if (!m_currentScene)return;// シーンがnullptrの場合は何もしない
+	if (GetSceneID() == IScene::SceneID::STAGESELECT)// 現在のシーンが「セレクトシーン」の場合、ステージ番号を取得する
 	{
-		//現在のシーンが「セレクトシーン」の場合、ステージ番号を取得する
-		if (GetSceneID() == IScene::SceneID::STAGESELECT)
-		{
-			//ステージ番号を取得する
-			auto stageSelectScene = dynamic_cast<StageSelectScene*>(m_currentScene.get());
-			assert(stageSelectScene);
-			//ステージ番号を取得する
-			m_stageNumber = stageSelectScene->GetStageNumber();
-
-		}
-		//現在のシーンが「リザルトシーン」の場合、ステージ番号を取得する
-		if (GetSceneID() == IScene::SceneID::CLEAR || GetSceneID() == IScene::SceneID::GAMEOVER)
-		{
-			//ステージ番号を取得する
-			auto resultScene = dynamic_cast<ResultScene*>(m_currentScene.get());
-			assert(resultScene);
-			//ステージ番号を取得する
-			m_stageNumber = resultScene->GetStageNumber();
-		}
-		m_currentScene.reset();
-
+		auto stageSelectScene = dynamic_cast<StageSelectScene*>(m_currentScene.get());//ステージ番号を取得する
+		assert(stageSelectScene);// ステージセレクトシーンが取得できていることを確認
+		m_stageNumber = stageSelectScene->GetStageNumber();// ステージ番号を取得する
 	}
+	if (GetSceneID() == IScene::SceneID::CLEAR ||
+		GetSceneID() == IScene::SceneID::GAMEOVER)// 現在のシーンが「リザルトシーン」の場合、ステージ番号を取得する
+	{
+		auto resultScene = dynamic_cast<ResultScene*>(m_currentScene.get());// ステージ番号を取得する
+		assert(resultScene);// リザルトシーンが取得できていることを確認
+		m_stageNumber = resultScene->GetStageNumber();//ステージ番号を取得する
+	}
+	m_currentScene.reset();// シーンを削除する
 }

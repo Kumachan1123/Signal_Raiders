@@ -28,7 +28,8 @@ class CommonResources;
 class DamageEffect
 {
 public:
-	enum class EffectType
+	// 列挙型
+	enum class EffectType// エフェクトの種類
 	{
 		DAMAGE = 0,	// ダメージを受けた時
 		INCOMINGENEMY,// 敵が攻撃しようとしている時		
@@ -41,11 +42,10 @@ public:
 		DirectX::SimpleMath::Matrix matView;    // ビュー行列
 		DirectX::SimpleMath::Matrix matProj;    // プロジェクション行列
 		DirectX::SimpleMath::Vector4 colors;    // カラー
-		DirectX::SimpleMath::Vector4 time;                             // 時間
-		DirectX::SimpleMath::Vector4 uv;// uv座標
-		DirectX::SimpleMath::Vector4 alpha;// アルファ値
-	}m_constBuffer;
-
+		DirectX::SimpleMath::Vector4 time;      // 時間
+		DirectX::SimpleMath::Vector4 uv;		// uv座標
+		DirectX::SimpleMath::Vector4 alpha;		// アルファ値
+	};
 public:
 	// アクセサ
 	Player* GetPlayer()const { return m_pPlayer; }// プレイヤーのポインタ取得
@@ -69,14 +69,31 @@ public:
 	void Update(float elapsedTime);// 更新
 	void Render();// 描画
 
-
-	// public定数
-	// 頂点情報
-	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 private:
 	void MakeShader();// シェーダー作成
 	float CalculateAngle()const;// 角度計算
 	DirectX::SimpleMath::Vector4 GetUVFromAngle(float angle)const;// 角度からUV座標を求める
+public:// public定数
+	// 頂点情報
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
+
+private:// private定数
+	// 板ポリゴンのXサイズ
+	const float SIZE_X = 0.0625;
+	// 板ポリゴンのYサイズ
+	const float SIZE_Y = 0.11;
+	// 拡大率
+	const float SCALE = 10.0f;
+	// UV座標
+	const float UV_X = 0.1f;// 左
+	const float UV_Y = 0.1f;// 上
+	const float UV_W = 0.9f;// 右
+	const float UV_H = 0.9f;// 下
+	const float UV_C = 0.5f;// 中央
+	// 再生時間
+	const float PLAY_TIME = 1.75f;
+	// 破棄時間
+	const float DESTROY_TIME = 2.0f;
 private:
 	// private変数
 	// デバイスリソース
@@ -93,6 +110,8 @@ private:
 	DrawPolygon* m_pDrawPolygon;
 	// シェーダー作成クラス
 	CreateShader* m_pCreateShader;
+	// シェーダーの構造体
+	ConstBuffer m_constBuffer;
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	// プリミティブバッチ
@@ -121,23 +140,6 @@ private:
 	DirectX::SimpleMath::Vector3 m_enemyPosition;
 	// プレイヤーの向き
 	DirectX::SimpleMath::Vector3 m_playerDirection;
-	// 固定値
-	// 板ポリゴンのXサイズ
-	const float SIZE_X = 0.0625;
-	// 板ポリゴンのYサイズ
-	const float SIZE_Y = 0.11;
-	// 拡大率
-	const float SCALE = 10.0f;
-	// UV座標
-	const float UV_X = 0.1f;// 左
-	const float UV_Y = 0.1f;// 上
-	const float UV_W = 0.9f;// 右
-	const float UV_H = 0.9f;// 下
-	const float UV_C = 0.5f;// 中央
-	// 再生時間
-	const float PLAY_TIME = 1.75f;
-	// 破棄時間
-	const float DESTROY_TIME = 2.0f;
 	// エフェクト再生フラグ
 	bool m_playEffect;
 	// エフェクトタイプ

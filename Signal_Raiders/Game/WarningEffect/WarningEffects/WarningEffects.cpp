@@ -4,29 +4,31 @@
 */
 #include <pch.h>
 #include "WarningEffects.h"
-
 /*
 *	@brief コンストラクタ
-*	@param[in] resources 共通リソース
+*	@param resources 共通リソース
 *	@return なし
 */
 WarningEffects::WarningEffects(CommonResources* resources)
-	: m_commonResources(resources)
-	, m_warningEffectCount{ 0 }
-	, m_pPlayer{}
-	, m_pEnemyManager{}
+	: m_commonResources(resources)// 共通リソース
+	, m_warningEffectCount{ 0 }// 攻撃しようとしている敵の数
+	, m_pPlayer{}// プレイヤー
+	, m_pEnemyManager{}// 敵マネージャー
 {}
 
 /*
 *	@brief デストラクタ
+*	@details ダメージエフェクトや警告エフェクトの管理クラスのデストラクタ
+*	@param なし
 *	@return なし
 */
-WarningEffects::~WarningEffects() {}
+WarningEffects::~WarningEffects() {/*do nothing*/ }
 
 /*
 *	@brief 初期化
-*	@param[in] pPlayer プレイヤーのポインタ
-*	@param[in] pEnemyManager 敵のポインタ
+*	@details ダメージエフェクトや警告エフェクトの管理クラスの初期化
+*	@param pPlayer プレイヤーのポインタ
+*	@param pEnemyManager 敵のポインタ
 *	@return なし
 */
 void WarningEffects::Initialize(Player* pPlayer, EnemyManager* pEnemyManager)
@@ -37,6 +39,8 @@ void WarningEffects::Initialize(Player* pPlayer, EnemyManager* pEnemyManager)
 
 /*
 *	@brief ダメージを受けた時の演出を生成
+*	@details ダメージエフェクトを生成する
+*	@param なし
 *	@return なし
 */
 void WarningEffects::CreateDamageEffects()
@@ -50,45 +54,39 @@ void WarningEffects::CreateDamageEffects()
 
 /*
 *	@brief 敵が攻撃してきた時の演出を生成
+*	@details 敵が攻撃してきた時の演出を生成する
+*	@param なし
 *	@return なし
 */
 void WarningEffects::CreateInComingEnemy()
 {
-	for (auto& attackingEnemy : m_pEnemyManager->GetEnemies())
+	for (auto& attackingEnemy : m_pEnemyManager->GetEnemies())// 攻撃してこようとしている敵の数処理
 	{
 		if (!attackingEnemy->GetIsAttack())continue;// 攻撃フラグが立っていなかったら次のループへ
-		if (m_enemyEffectMap.find(attackingEnemy.get()) != m_enemyEffectMap.end())
-			continue;// すでに生成されていたら次のループへ
-
+		if (m_enemyEffectMap.find(attackingEnemy.get()) != m_enemyEffectMap.end())continue;// すでに生成されていたら次のループへ
 		std::unique_ptr<DamageEffect> warningEffect = std::make_unique<DamageEffect>(m_commonResources);// ダメージエフェクトの生成
 		warningEffect->SetPlayer(m_pPlayer);// プレイヤーのポインタを設定
 		warningEffect->SetEffectType(DamageEffect::EffectType::INCOMINGENEMY);// エフェクトタイプを設定
 		warningEffect->SetEnemy(attackingEnemy.get());// 攻撃してきた敵のポインタを設定
 		warningEffect->Initialize();// 初期化
 		attackingEnemy->SetIsAttack(false);// 攻撃フラグをfalseにする
-
-		IEnemy* enemy = attackingEnemy.get();
+		IEnemy* enemy = attackingEnemy.get();// 敵のポインタを取得
 		m_pAttackingEnemy.push_back(enemy); // 攻撃してきた敵をリストに追加
-		// `m_pDamageEffect` に入れた後に `m_enemyEffectMap` に登録
-		m_enemyEffectMap[enemy] = warningEffect.get();
-		// まずエフェクトをリストに追加
-		m_pDamageEffect.push_back(std::move(warningEffect));
-
-
+		m_enemyEffectMap[enemy] = warningEffect.get();// m_pDamageEffectに入れた後にm_enemyEffectMapに登録
+		m_pDamageEffect.push_back(std::move(warningEffect));// まずエフェクトをリストに追加
 	}
-
 }
 
 /*
 *	@brief 更新
-*	@param[in] elapsedTime 経過時間
+*	@details ダメージエフェクトや警告エフェクトの更新
+*	@param elapsedTime 経過時間
 *	@return なし
 */
 void WarningEffects::Update(float elapsedTime)
 {
-	// ダメージエフェクトを更新
 	std::vector<std::unique_ptr<DamageEffect>> newDamageEffect;// 新しいダメージエフェクト
-	for (auto& damageEffect : m_pDamageEffect)
+	for (auto& damageEffect : m_pDamageEffect)// エフェクトの数更新
 	{
 		damageEffect->Update(elapsedTime);// ダメージエフェクトを更新
 		// 再生が終わったダメージエフェクトだったらそのエフェクトを完全に破棄
@@ -100,8 +98,7 @@ void WarningEffects::Update(float elapsedTime)
 		newDamageEffect.push_back(std::move(damageEffect));// 新しいリストにダメージエフェクトを追加
 	}
 	m_pDamageEffect = std::move(newDamageEffect);// ダメージエフェクトを新しいリストに置き換える
-	// 再生され終わった警告エフェクトと敵のポインターを削除
-	for (auto& attackingEnemy : m_pAttackingEnemy)
+	for (auto& attackingEnemy : m_pAttackingEnemy)	// 再生され終わった警告エフェクトと敵のポインターを削除
 	{
 		if (m_enemyEffectMap.find(attackingEnemy) == m_enemyEffectMap.end())continue;// 生成されていなかったら次のループへ
 		if (!m_enemyEffectMap[attackingEnemy]->GetPlayEffect())// 再生フラグがfalseだったら
@@ -110,10 +107,11 @@ void WarningEffects::Update(float elapsedTime)
 			m_pAttackingEnemy.erase(std::remove(m_pAttackingEnemy.begin(), m_pAttackingEnemy.end(), attackingEnemy), m_pAttackingEnemy.end());// リストから削除
 		}
 	}
-
 }
 /*
 *	@brief 描画
+*	@details ダメージエフェクトや警告エフェクトの描画
+*	@param なし
 *	@return なし
 */
 void WarningEffects::Render()
