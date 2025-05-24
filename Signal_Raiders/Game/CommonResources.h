@@ -5,7 +5,7 @@
 #pragma once
 // 標準ライブラリ
 #include <cassert>
-// 自作ヘッダー
+// 自作ヘッダーファイル
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
 
 // 前方宣言

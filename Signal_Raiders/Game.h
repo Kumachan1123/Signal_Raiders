@@ -1,99 +1,70 @@
-//
-// Game.h
-//
-
+/*
+*	@file Game.h
+*	@brief ゲームのメインクラス
+*/
 #pragma once
-
+// DirectX
 #include "DeviceResources.h"
 #include "StepTimer.h"
-
-// ★includeの追記★
+// 外部ライブラリ
+#include "Libraries/MyLib/DebugString.h"
+#include "Libraries/MyLib/InputManager.h"
+// ゲーム関連
 #include "Game/CommonResources.h"
 #include "Game/Scene/IScene.h"
 #include "Game/Scene/SceneManager.h"
-#include "Libraries/MyLib/DebugString.h"
-#include "Libraries/MyLib/InputManager.h"
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
+#include "Game/Screen.h"
 
-// A basic game implementation that creates a D3D11 device and
-// provides a game loop.
 class Game final : public DX::IDeviceNotify
 {
-public:
+public:// public関数
+	Game() noexcept(false);// コンストラクタ
+	~Game() = default;// デストラクタ
 
-	Game() noexcept(false);
-	~Game() = default;
+	Game(Game&&) = default;// ムーブコンストラクタ
+	Game& operator= (Game&&) = default;// ムーブ代入演算子
 
-	Game(Game&&) = default;
-	Game& operator= (Game&&) = default;
+	Game(Game const&) = delete;// コピーコンストラクタ
+	Game& operator= (Game const&) = delete;// コピー代入演算子
 
-	Game(Game const&) = delete;
-	Game& operator= (Game const&) = delete;
-
-	// Initialization and management
-	void Initialize(HWND window, int width, int height);
-
-	// Basic game loop
-	void Tick();
-
-	// IDeviceNotify
-	void OnDeviceLost() override;
-	void OnDeviceRestored() override;
-
-	// Messages
-	void OnActivated();
-	void OnDeactivated();
-	void OnSuspending();
-	void OnResuming();
-	void OnWindowMoved();
-	void OnDisplayChange();
-	void OnWindowSizeChanged(int width, int height);
-
-	// Properties
-	void GetDefaultSize(int& width, int& height) const noexcept;
-
-	void SetFullscreenState(BOOL value)
-	{
-		m_fullscreen = value;
-		m_deviceResources->GetSwapChain()->SetFullscreenState(m_fullscreen, nullptr);
-		if (value) m_deviceResources->CreateWindowSizeDependentResources();
-	}
-private:
-
-	void Update(DX::StepTimer const& timer);
-	void Render();
-
-	void Clear();
-
-	void CreateDeviceDependentResources();
-	void CreateWindowSizeDependentResources();
-
-	// Device resources.
+	void Initialize(HWND window, int width, int height);// 初期化
+	void Tick();// ゲームループを実行
+	void OnDeviceLost() override;// デバイスが失われたときの処理
+	void OnDeviceRestored() override;// デバイスが復元されたときの処理
+	// メッセージ
+	void OnActivated();// アクティブ化されたときの処理
+	void OnDeactivated();// 非アクティブ化されたときの処理
+	void OnSuspending();// 一時停止されたときの処理
+	void OnResuming();// 再開されたときの処理
+	void OnWindowMoved();// ウィンドウが移動されたときの処理
+	void OnDisplayChange();// ディスプレイの変更があったときの処理
+	void OnWindowSizeChanged(int width, int height);// ウィンドウサイズが変更されたときの処理
+	void GetDefaultSize(int& width, int& height) const noexcept; // デフォルトのウィンドウサイズを取得
+	void SetFullscreenState(BOOL value);// フルスクリーン状態を設定
+private:// private関数
+	void Update(DX::StepTimer const& timer);// 更新処理
+	void Render();// 描画処理
+	void Clear();// 画面をクリア
+	void CreateDeviceDependentResources();// デバイス依存リソースの作成
+	void CreateWindowSizeDependentResources(); // ウィンドウサイズ依存リソースの作成
+private:// private変数
+	// デバイスリソース
 	std::unique_ptr<DX::DeviceResources>    m_deviceResources;
-
-	// Rendering loop timer.
+	// タイマー
 	DX::StepTimer                           m_timer;
-
-
-	// ★追記ココから↓↓↓★
+	// フルスクリーン状態
 	BOOL m_fullscreen;
 	// コモンステート
 	std::unique_ptr<DirectX::CommonStates>  m_commonStates;
-
 	// コモンリソース
 	std::unique_ptr<CommonResources>        m_commonResources;
-
-	// デバッグストリング
+	// デバッグ文字列
 	std::unique_ptr<mylib::DebugString>     m_debugString;
-
 	// 入力マネージャ
 	std::unique_ptr<mylib::InputManager>    m_inputManager;
-
 	// シーンマネージャ
 	std::unique_ptr<SceneManager>           m_sceneManager;
-
 	// オーディオマネージャ
 	std::unique_ptr<AudioManager>           m_audioManager;
-
-	// ★追記ココまで↑↑↑★
 };
