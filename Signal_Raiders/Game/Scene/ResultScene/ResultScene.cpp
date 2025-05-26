@@ -48,13 +48,15 @@ void ResultScene::Initialize(CommonResources* resources)
 	m_pFade->SetState(Fade::FadeState::FadeIn);// フェードインに移行
 	m_pBackGround = std::make_unique<BackGround>(m_commonResources);// 背景を作成する
 	m_pBackGround->Create(DR);// 背景の初期化
-	m_pUI.push_back(std::move(std::make_unique<ResultMenu>()));// メニューを作成し、UIに登録
-	m_pUI.push_back(std::move(std::make_unique<MousePointer>()));// マウスポインターを作成し、UIに登録
-	for (int it = 0; it < m_pUI.size(); ++it)m_pUI[it]->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);// UIの初期化
 	m_pSettingData = std::make_unique<SettingData>();// 設定データの初期化
 	m_pSettingData->Load();// 設定ファイルの読み込み
 	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume());// BGM音量を設定
 	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume());// SE音量を設定
+	m_pResultMenu = std::make_unique<ResultMenu>();// リザルトメニューを作成
+	m_pResultMenu->SetSEVolume(m_SEvolume);// SEの音量を設定
+	m_pUI.push_back(std::move(m_pResultMenu));// メニューを作成し、UIに登録
+	m_pUI.push_back(std::move(std::make_unique<MousePointer>()));// マウスポインターを作成し、UIに登録
+	for (int it = 0; it < m_pUI.size(); ++it)m_pUI[it]->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);// UIの初期化
 	// 結果に応じて変わるテクスチャパスマップ
 	m_pResultTexturePathMap[IScene::SceneID::GAMEOVER] = L"Resources/Textures/GameOver.png";// ゲームオーバー
 	m_pResultTexturePathMap[IScene::SceneID::CLEAR] = L"Resources/Textures/Clear.png";// クリア

@@ -4,7 +4,6 @@
 */
 #include "pch.h"
 #include "StageSelectMenu.h"
-
 // 無効なメニューインデックス
 const int StageSelectMenu::INVALID_MENU_INDEX = 6;// 無効なメニューインデックス
 /*
@@ -32,7 +31,7 @@ StageSelectMenu::StageSelectMenu()
 }
 /*
 *	@brief デストラクタ
-*	@details ステージセレクトメニュークラスのデストラクタ
+*	@details ステージセレクトメニュークラスのデストラクタ(ここでは何もしない)
 *	@param なし
 *	@return なし
 */
@@ -105,7 +104,6 @@ void StageSelectMenu::Initialize(CommonResources* resources, int width, int heig
 void StageSelectMenu::Update(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
-	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();// キーボードのトラッカーを取得する
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();// マウスのトラッカーを取得する
 	auto& mouseState = m_commonResources->GetInputManager()->GetMouseState();// マウスの状態を取得
 	m_hit = false;// 何かにヒットしたか
@@ -127,7 +125,7 @@ void StageSelectMenu::Update(float elapsedTime)
 	}
 	m_time += elapsedTime;// 時間を加算する
 	if (!m_hit)m_menuIndex = INVALID_MENU_INDEX;// もし一個もヒットしてなかったら選択なしにする
-	if (m_hit && kbTracker->pressed.Space || mtracker->GetLastState().leftButton)m_num = static_cast<SceneID>(m_menuIndex);// 左クリックされたら選択メニューのシーンIDを更新
+	if (mtracker->GetLastState().leftButton)m_num = static_cast<SceneID>(m_menuIndex);// 左クリックされたら選択メニューのシーンIDを更新
 	for (int i = 0; i < m_pUI.size(); i++)// メニューアイテムの選択先を更新
 	{
 		//  アイテムの選択状態を更新

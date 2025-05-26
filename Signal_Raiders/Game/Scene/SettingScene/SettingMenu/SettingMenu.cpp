@@ -24,6 +24,8 @@ SettingMenu::SettingMenu()
 	, m_windowWidth{ 0 }// ウィンドウ幅
 	, m_windowHeight{ 0 }// ウィンドウ高さ
 	, m_selectNum{ SelectID::NONE }// 選択ID
+	, m_SEVolume{ 0.0f }// SE音量
+	, m_isSEPlay{ false }// SE再生フラグ
 {
 }
 /*
@@ -114,8 +116,14 @@ void SettingMenu::Update(float elapsedTime)
 	{
 		if (m_pUI[i]->IsHit(mousePos))// マウスの座標がアイテムの範囲内にあるかどうかを判定
 		{
-			m_menuIndex = i;// ヒットしたメニューのインデックスを保存
 			hit = true;	// ヒットフラグを立てる
+			if ((int(m_menuIndex)) != i) m_isSEPlay = false;// 前回選択したメニューと違う場合はSEを再生するフラグを立てる
+			if (!m_isSEPlay)// SEが再生されていない場合
+			{
+				m_commonResources->GetAudioManager()->PlaySound("Select", m_SEVolume);// SEの再生
+				m_isSEPlay = true;// 再生フラグを立てる
+			}
+			m_menuIndex = i;// ヒットしたメニューのインデックスを保存
 			break;	// ヒットしたらループを抜ける
 		}
 	}

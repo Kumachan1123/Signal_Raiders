@@ -49,7 +49,6 @@ UI::~UI() {/*do nothing*/ }
 */
 void UI::LoadTexture(const wchar_t* path)
 {
-
 	HRESULT result = DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, m_pTextureResource.ReleaseAndGetAddressOf(), m_pTexture.ReleaseAndGetAddressOf());// 指定された画像を読み込む
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> tex;// テクスチャ一時保存用変数
 	DX::ThrowIfFailed(m_pTextureResource.As(&tex));// テクスチャを取得する
@@ -96,9 +95,9 @@ bool UI::IsHit(const DirectX::SimpleMath::Vector2& pos) const
 {
 
 	DirectX::SimpleMath::Vector2 leftTop = // 画像の左上の座標を取得
-		m_position - DirectX::SimpleMath::Vector2(float(m_textureWidth / 2), float(m_textureHeight / 2));
+		m_position - DirectX::SimpleMath::Vector2(float(m_textureWidth / 2), float(m_textureHeight / 2)) * m_scale.x / 2;
 	DirectX::SimpleMath::Vector2 rightBottom =// 画像の右下の座標を取得
-		m_position + DirectX::SimpleMath::Vector2(float(m_textureWidth / 2), float(m_textureHeight / 2));
+		m_position + DirectX::SimpleMath::Vector2(float(m_textureWidth / 2), float(m_textureHeight / 2)) * m_scale.y / 2;
 
 	if (leftTop.x <= pos.x && pos.x <= rightBottom.x	// 画像の左上の座標と右下の座標を比較して、
 		&& leftTop.y <= pos.y && pos.y <= rightBottom.y)// 	マウスの座標が範囲内にあるかを判定する
@@ -166,6 +165,7 @@ void UI::Render()
 		m_pDrawPolygon->SetShader(m_StageSelectShaders, nullptr, 0);// 	ステージセレクト用のシェーダをセットする
 	m_pDrawPolygon->DrawColorTexture(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex[0], 1);// 板ポリゴンを描画
 	m_pDrawPolygon->ReleaseShader();// シェーダの登録を解除しておく
+
 }
 /*
 *	@brief	ウィンドウのサイズを設定

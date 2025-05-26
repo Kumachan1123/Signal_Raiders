@@ -25,44 +25,41 @@ public:// 構造体
 		float time;// 時間
 		DirectX::SimpleMath::Vector3 color;// 色
 	};
-
-	enum class ShaderType
+	// 列挙型
+	enum class ShaderType// シェーダータイプ
 	{
-		NORMAL,
-		STAGE_SELECT
+		NORMAL = 0,// 通常のメニュー用
+		STAGE_SELECT// ステージセレクト用
 	};
-public:
-	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
-
-	UI();
-	~UI();
-	void LoadTexture(const wchar_t* path);
-
-	void Create(DX::DeviceResources* pDR
+public:// アクセサ
+	void SetWindowSize(const int& width, const int& height);// ウィンドウのサイズを設定
+	void SetShaderType(ShaderType shaderType) { m_shaderType = shaderType; };// シェーダータイプを設定
+	DirectX::SimpleMath::Vector2 GetScale() const { return m_scale; }// スケールを取得
+	void SetScale(DirectX::SimpleMath::Vector2 scale) { m_scale = scale; };// スケールを設定
+	DirectX::SimpleMath::Vector2 GetSelectScale() const { return m_baseScale; }// 選択状態のスケールを取得
+	DirectX::SimpleMath::Vector2 GetPosition() const { return m_position; } // 位置を取得
+	void SetPosition(DirectX::SimpleMath::Vector2 position) { m_position = position; };// 位置を設定
+	KumachiLib::ANCHOR GetAnchor() const { return m_anchor; }// アンカーを取得
+	void SetAnchor(KumachiLib::ANCHOR anchor) { m_anchor = anchor; }// アンカーを設定
+	float GetTime() const { return m_time; }// 時間を取得
+	void SetTime(float time) { m_time = time; }// 時間を設定
+	bool IsHit(const DirectX::SimpleMath::Vector2& pos) const; // 指定位置にヒットしたかどうかを取得
+public:// public関数
+	UI();// コンストラクタ
+	~UI();// デストラクタ
+	void LoadTexture(const wchar_t* path);// テクスチャの読み込み
+	void Create(DX::DeviceResources* pDR// UIの作成
 		, const wchar_t* path
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
 		, KumachiLib::ANCHOR anchor);
-	void Update(float elapsedTime);
-
-	void Render();
-
-	void SetWindowSize(const int& width, const int& height);
-	void SetShaderType(ShaderType shaderType) { m_shaderType = shaderType; };
-	void SetScale(DirectX::SimpleMath::Vector2 scale) { m_scale = scale; };
-	DirectX::SimpleMath::Vector2 GetScale() const { return m_scale; }
-	DirectX::SimpleMath::Vector2 GetSelectScale() const { return m_baseScale; }
-	void SetPosition(DirectX::SimpleMath::Vector2 position) { m_position = position; };
-	DirectX::SimpleMath::Vector2 GetPosition() const { return m_position; }
-	void SetAnchor(KumachiLib::ANCHOR anchor) { m_anchor = anchor; };
-	KumachiLib::ANCHOR GetAnchor() const { return m_anchor; }
-	void SetTime(float time) { m_time = time; };
-	float GetTime() const { return m_time; }
-	bool IsHit(const DirectX::SimpleMath::Vector2& pos) const;
-private:
-
-	void CreateShaders();
-public:// public変数
+	void Update(float elapsedTime);// 更新
+	void Render();// 描画
+private:// private関数
+	void CreateShaders();// シェーダーの作成
+public:// 定数
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;// インプットレイアウト
+private:// private変数
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;
 	// 時間

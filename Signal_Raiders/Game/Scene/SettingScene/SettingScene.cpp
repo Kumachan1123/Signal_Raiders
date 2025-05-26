@@ -53,7 +53,12 @@ void SettingScene::Initialize(CommonResources* resources)
 	m_pFade->SetState(Fade::FadeState::FadeIn);// フェードインに移行
 	m_pBackGround = std::make_unique<BackGround>(m_commonResources);// 背景を作成する
 	m_pBackGround->Create(DR);// 背景の初期化
+	m_pSettingData = std::make_unique<SettingData>();// 設定データクラスの作成
+	m_pSettingData->Load();// 設定ファイルの読み込み
+	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume());// BGM音量を設定
+	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume());// SE音量を設定
 	m_pSettingMenu = std::make_unique<SettingMenu>();// セッティングメニューを作成
+	m_pSettingMenu->SetSEVolume(m_SEvolume);// SEの音量を設定
 	m_pMousePointer = std::make_unique<MousePointer>();// マウスポインターを作成
 	m_pSettingBar = std::make_unique<SettingBar>();// セッティングバーを作成
 	m_pSettingBar->SetSettingMenu(m_pSettingMenu.get());// セッティングメニューをセット
@@ -61,10 +66,7 @@ void SettingScene::Initialize(CommonResources* resources)
 	m_pUI.push_back(std::move(m_pSettingBar));// セッティングバーをUIに登録
 	m_pUI.push_back(std::move(m_pMousePointer));// マウスポインターをUIに登録
 	for (int it = 0; it < m_pUI.size(); ++it)m_pUI[it]->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);// UIの初期化
-	m_pSettingData = std::make_unique<SettingData>();// 設定データクラスの作成
-	m_pSettingData->Load();// 設定ファイルの読み込み
-	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume());// BGM音量を設定
-	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume());// SE音量を設定
+
 }
 /*
 *	@brief 更新
@@ -227,7 +229,7 @@ void SettingScene::HandleMenuSelection(const UpdateContext& ctx)
 			{
 				m_commonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);// SEの再生
 				m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
-				return;
+				return;// もう他のUIは見なくていいのでこの処理を終える
 			}
 			UpdateMousePointers(ctx);// マウスポインターの更新
 		}

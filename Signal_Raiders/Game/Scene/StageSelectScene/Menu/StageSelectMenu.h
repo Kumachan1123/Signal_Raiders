@@ -9,11 +9,7 @@
 #include <DeviceResources.h>
 #include "Game/CommonResources.h"
 #include <SimpleMath.h>
-#include <Effects.h>
-#include <PrimitiveBatch.h>
-#include <VertexTypes.h>
 #include <WICTextureLoader.h>
-#include <CommonStates.h>
 #include <Mouse.h>
 // ŠO•”ƒ‰ƒCƒuƒ‰ƒŠ
 #include "Libraries/MyLib/InputManager.h"

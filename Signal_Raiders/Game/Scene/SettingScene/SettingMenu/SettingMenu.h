@@ -26,21 +26,23 @@ class SettingMenu : public IMenuUI
 public:// 列挙型
 	enum SettingID// 設定項目 
 	{
-		BGM = 0,
-		SE = 1,
-		MOUSE = 2
+		BGM = 0,// BGM
+		SE = 1,// SE
+		MOUSE = 2// マウス感度
 
 	};
 	enum SelectID// 選択項目
 	{
-		NONE = -1,
-		APPLY = 0,
-		END = 1
+		NONE = -1,// 選択なし
+		APPLY = 0,// 適用
+		END = 1// 何もせず終了
 	};
 public:// アクセサ
 	SelectID GetSelectIDNum() const { return m_selectNum; }// 選択ID取得
 	void SetSelectIDNum(SelectID num) { m_selectNum = num; }// 選択ID設定
-	unsigned int GetMenuIndex() const { return m_menuIndex; }// メニューインデックス取得
+	unsigned int GetMenuIndex() const { return m_menuIndex; }// メニューインデックス取得	
+	void SetSEVolume(float volume) { m_SEVolume = volume; }// SEの音量設定
+
 public:// public関数
 	SettingMenu();// コンストラクタ
 	~SettingMenu();// デストラクタ
@@ -79,4 +81,8 @@ private://	変数
 	SelectID m_selectNum;
 	// 時間
 	float m_time;
+	// SEの音量
+	float m_SEVolume;
+	// 再生フラグ
+	bool m_isSEPlay;
 };

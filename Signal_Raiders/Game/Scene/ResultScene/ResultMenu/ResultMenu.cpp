@@ -15,17 +15,19 @@ const int ResultMenu::INVALID_MENU_INDEX = 6;// 無効なメニューインデックス
 *	@return なし
 */
 ResultMenu::ResultMenu()
-	: m_menuIndex{ 0 }                         // 現在選択中のメニューインデックス
-	, m_pDR{ nullptr }                         // デバイスリソースへのポインタ
-	, m_commonResources{ nullptr }             // 共通リソースへのポインタ
-	, m_pUI{}                                  // UIオブジェクトリスト
-	, m_pSelect{}                              // 選択された時に表示する背景UIリスト
-	, m_pSelectTexturePath{ nullptr }          // 選択背景のテクスチャパス
-	, m_windowWidth{ 0 }                       // ウィンドウ幅
-	, m_windowHeight{ 0 }                      // ウィンドウ高さ
-	, m_num{ SceneID::REPLAY }                 // 選ばれたシーン（初期はREPLAY）
-	, m_hit{ false }						   // マウスがUIにヒットしたかどうか
-	, m_time{ 0.0f }						   // 時間
+	: m_menuIndex{ 0 }						// 現在選択中のメニューインデックス
+	, m_pDR{ nullptr }						// デバイスリソースへのポインタ
+	, m_commonResources{ nullptr }			// 共通リソースへのポインタ
+	, m_pUI{}								// UIオブジェクトリスト
+	, m_pSelect{}							// 選択された時に表示する背景UIリスト
+	, m_pSelectTexturePath{ nullptr }		// 選択背景のテクスチャパス
+	, m_windowWidth{ 0 }					// ウィンドウ幅
+	, m_windowHeight{ 0 }					// ウィンドウ高さ
+	, m_num{ SceneID::REPLAY }				// 選ばれたシーン（初期はREPLAY）
+	, m_hit{ false }						// マウスがUIにヒットしたかどうか
+	, m_time{ 0.0f }						// 時間
+	, m_SEVolume{ 0.0f }					// SE音量
+	, m_isSEPlay{ false }					// SE再生フラグ
 {
 }
 /*
@@ -92,18 +94,24 @@ void ResultMenu::Update(float elapsedTime)
 	using namespace DirectX::SimpleMath;
 	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker(); // マウスのトラッカーを取得する
 	auto& mouseState = m_commonResources->GetInputManager()->GetMouseState();// マウスの状態を取得
+	m_time += elapsedTime;// 時間を加算
 	m_hit = false; // 何かにヒットしたかどうかを初期化
 	Vector2 mousePos = Vector2(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));// マウスの座標を取得
 	for (int i = 0; i < m_pUI.size(); i++)// メニューアイテムの数だけ繰り返す
 	{
 		if (m_pUI[i]->IsHit(mousePos))// マウスの座標がアイテムの範囲内にあるかどうかを判定
 		{
-			m_menuIndex = i;	// ヒットしたメニューのインデックスを保存
 			m_hit = true;	// ヒットフラグを立てる
+			if ((int(m_menuIndex)) != i) m_isSEPlay = false;// 前回選択したメニューと違う場合はSEを再生するフラグを立てる
+			if (!m_isSEPlay)// SEが再生されていない場合
+			{
+				m_commonResources->GetAudioManager()->PlaySound("Select", m_SEVolume);// SEの再生
+				m_isSEPlay = true;// 再生フラグを立てる
+			}
+			m_menuIndex = i;	// ヒットしたメニューのインデックスを保存
 			break;	// ヒットしたらループを抜ける
 		}
 	}
-	m_time += elapsedTime;// 時間を加算
 	if (!m_hit) m_menuIndex = INVALID_MENU_INDEX;// ヒット無しなら選択インデックスを無効値に設定
 	if (mtracker->GetLastState().leftButton)m_num = static_cast<SceneID>(m_menuIndex);// 左クリックされたら選択メニューのシーンIDを更新
 	for (int i = 0; i < m_pUI.size(); i++)//  メニューアイテムの選択先を更新

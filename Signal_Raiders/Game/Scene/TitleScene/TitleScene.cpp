@@ -58,13 +58,15 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_pTitleLogo->Create(DR);// タイトルロゴの初期化
 	m_pSettingData = std::make_unique<SettingData>();// 設定データの作成
 	m_pSettingData->Load();// 設定ファイルの読み込み
-	m_pUI.push_back(std::move(std::make_unique<TitleMenu>()));	// メニューを作成
+	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume());// BGMの音量を設定 
+	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume());// SEの音量を設定 
+	m_pTitleMenu = std::make_unique<TitleMenu>();// タイトルメニューを作成
+	m_pTitleMenu->SetSEVolume(m_SEvolume);// SEの音量を設定
+	m_pUI.push_back(std::move(m_pTitleMenu));	// メニューを作成
 	m_pUI.push_back(std::move(std::make_unique<MousePointer>()));	// マウスポインターを作成
 	for (int it = 0; it < m_pUI.size(); ++it)// 一斉初期化
 		m_pUI[it]->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);// UIの初期化
-	// 音量の設定
-	m_BGMvolume = VOLUME * static_cast<float>(m_pSettingData->GetBGMVolume());// BGM音量
-	m_SEvolume = VOLUME * static_cast<float>(m_pSettingData->GetSEVolume());// SE音量
+
 }
 /*
 *	@brief 更新する
@@ -86,16 +88,17 @@ void TitleScene::Update(float elapsedTime)
 				{
 					m_commonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);// SEの再生
 					m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
+					break; // もう他のUIは見なくていいのでループ抜ける
 				}
 			}
 		}
+		UpdateContext ctx;// UIの更新に必要な情報をまとめた構造体
+		ctx.elapsedTime = elapsedTime;// フレーム時間を代入
+		ctx.playerHP = 0;// 使わない値
+		ctx.dashStamina = 0;// 使わない値
+		ctx.bulletPoint = 0;// 使わない値
+		for (int it = 0; it < m_pUI.size(); ++it)m_pUI[it]->Update(ctx);// UIの更新
 	}
-	UpdateContext ctx;// UIの更新に必要な情報をまとめた構造体
-	ctx.elapsedTime = elapsedTime;// フレーム時間を代入
-	ctx.playerHP = 0;// 使わない値
-	ctx.dashStamina = 0;// 使わない値
-	ctx.bulletPoint = 0;// 使わない値
-	for (int it = 0; it < m_pUI.size(); ++it)m_pUI[it]->Update(ctx);// UIの更新
 	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;// フェードアウトが終了したらシーン変更を可能にする
 	m_commonResources->GetAudioManager()->PlaySound("TitleBGM", m_BGMvolume);// BGMの再生
 	m_pBackGround->Update(elapsedTime);// 背景の更新

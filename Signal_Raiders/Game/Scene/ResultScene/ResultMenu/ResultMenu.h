@@ -33,6 +33,7 @@ public:// アクセサ
 	void SetSceneNum(SceneID num) { m_num = num; }// シーン番号設定
 	bool GetIsHit()const { return m_hit; }// UIにヒットしたかどうか取得
 	void SetIsHit(bool hit) { m_hit = hit; }// UIにヒットしたかどうか設定
+	void SetSEVolume(float volume) { m_SEVolume = volume; }// SEの音量設定
 public:// public関数
 	ResultMenu();// コンストラクタ
 	~ResultMenu();// デストラクタ
@@ -71,5 +72,8 @@ private:// private変数
 	float m_time;
 	// UIのヒットフラグ
 	bool m_hit;
-
+	// SEの音量
+	float m_SEVolume;
+	// 再生フラグ
+	bool m_isSEPlay;
 };

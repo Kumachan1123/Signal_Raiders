@@ -55,6 +55,8 @@ private:
 	std::unique_ptr<BackGround> m_pBackGround;
 	// タイトルロゴ
 	std::unique_ptr<TitleLogo> m_pTitleLogo;
+	// タイトルメニュー
+	std::unique_ptr<TitleMenu> m_pTitleMenu;
 	// タイトル画面のUI(メニュー、マウスカーソル）
 	std::vector<std::unique_ptr<IMenuUI>> m_pUI;
 	// 設定データ

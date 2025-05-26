@@ -1,6 +1,6 @@
 ﻿/*
-*	@file	ResultScene.cpp
-*	@brief　リザルトシーンクラス
+*	@file	StageSelectScene.cpp
+*	@brief	ステージセレクトシーンクラス
 */
 #include "pch.h"
 #include "StageSelectScene.h"
