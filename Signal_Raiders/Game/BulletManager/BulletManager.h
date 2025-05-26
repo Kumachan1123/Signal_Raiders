@@ -1,5 +1,6 @@
 /*
 	@file	BulletManager.h
+	@details 敵とプレイヤーの弾を管理するマネージャークラス
 	@brief	弾管理クラス
 */
 #pragma once
@@ -8,12 +9,12 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <cassert>
+// DirectX
 #include <SimpleMath.h>
+#include "DeviceResources.h"
 // 外部ライブラリ
 #include "Game/CommonResources.h"
-#include "DeviceResources.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
-
 // 自作ヘッダーファイル
 #include "Game/Player/PlayerBullet/PlayerBullet.h"
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
@@ -65,7 +66,6 @@ private:
 	bool CheckCollisionWithEnemies(const std::unique_ptr<PlayerBullet>& bullet);// 敵とプレイヤーの弾の当たり判定
 	bool CheckCollisionWithPlayer(const std::unique_ptr<EnemyBullet>& bullet, const std::unique_ptr<IEnemy>& enemy);// プレイヤーと敵の弾の当たり判定
 	void CheckCollisionWithBullets();	// 敵の弾とプレイヤーの弾の当たり判定
-	void SetSound();// 効果音設定
 private:
 	// privateメンバ変数
 	// コモンリソース

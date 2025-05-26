@@ -58,6 +58,7 @@ void AudioManager::Initialize()
 	LoadSound("Resources/Sounds/result.mp3", "ResultBGM");// 結果画面のBGM
 	LoadSound("Resources/Sounds/click.mp3", "Select"); // タイトル画面の選択音
 	LoadSound("Resources/Sounds/title.mp3", "TitleBGM");// タイトル画面のBGM
+	LoadSound("Resources/Sounds/BulletCollision.mp3", "BulletCollision");// 弾同士の衝突音
 
 
 }

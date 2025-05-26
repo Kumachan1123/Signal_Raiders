@@ -48,7 +48,6 @@ void BulletManager::Initialize(Player* pPlayer, EnemyManager* pEnemies)
 {
 	m_pPlayer = pPlayer;// プレイヤーのポインターを取得
 	m_pEnemyManager = pEnemies;// 敵全体のポインターを取得
-	SetSound();// 効果音の設定
 	m_playerBulletCount = BulletParameters::MAX_PLAYER_BULLET_COUNT;// プレイヤーの弾の数を設定
 }
 
@@ -241,16 +240,7 @@ void BulletManager::UpdateEnemyBullets(float elapsedTime, std::unique_ptr<IEnemy
 	}
 }
 
-/*
-	@brief	効果音の設定
-	@return	なし
-*/
-void BulletManager::SetSound()
-{
-	//m_audioManager->Initialize();
-	//m_audioManager->LoadSound("Resources/Sounds/playerBullet.mp3", "Shoot");// プレイヤーの弾のSE
-	//m_audioManager->LoadSound("Resources/Sounds/Hit.mp3", "Hit");// ヒットのSE
-}
+
 
 /*
 	@brief	プレイヤーの弾が敵に当たったかどうか
@@ -321,6 +311,7 @@ void BulletManager::CheckCollisionWithBullets()
 		{
 			if (playerBullet->GetBoundingSphere().Intersects(enemyBullet->GetBoundingSphere()))	// 衝突があった場合、削除対象に追加
 			{
+				m_commonResources->GetAudioManager()->PlaySound("BulletCollision", m_pPlayer->GetVolume() * BulletParameters::HIT_VOLUME);// 弾同士の衝突音を再生
 				enemyBulletsToRemove.insert(enemyBullet.get());	// 敵の弾を消す
 				playerBulletsToRemove.insert(playerBullet.get());// プレイヤーの弾を消す
 			}
