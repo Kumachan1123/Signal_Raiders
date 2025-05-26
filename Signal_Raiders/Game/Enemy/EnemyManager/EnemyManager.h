@@ -66,7 +66,8 @@ public:
 	bool GetisBorned() const { return m_isBorned; }// 敵生成済みフラグ
 	bool GetIsBossAlive() const { return m_isBossAlive; }// ボス生存フラグ
 	bool GetIsBossAppear() const { return m_isBossAppear; }// ボス生成演出再生フラグ
-	void SetVolume(float volume) { m_SEVolume = volume; }// 音量取得
+	float GetSEVolume() const { return m_SEVolume; }// SEの音量取得
+	void SetSEVolume(float volume) { m_SEVolume = volume; }// SEの音量設定
 	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; }// ステージ番号設定
 	void SetWall(Wall* pWall) { m_pWall = pWall; };// 壁のポインター設定
 	BulletManager* GetBulletManager() { return m_pBulletManager; }// 弾マネージャー取得

@@ -29,6 +29,7 @@ BossBase::BossBase(Player* pPlayer, CommonResources* resources, int hp)
 	, m_bossDamage(EnemyParameters::BOSS_DAMAGE)// ボスがプレイヤーに与えるダメージ
 	, m_SEVolume(0.0f)// SEの音量
 	, m_SEVolumeCorrection(0.0f)// SEの音量補正
+	, m_isBarrierSEPlay(false)// バリアSEの再生フラグ
 	, m_pBossModel{}// ボスモデル
 	, m_pBossAI{}// AI
 	, m_pHPBar{}// HPバー
@@ -148,7 +149,9 @@ void BossBase::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMa
 */
 void BossBase::PlayBarrierSE()
 {
-	m_commonResources->GetAudioManager()->PlaySound("Barrier", this->GetSheildSEVolume());// サウンド再生 
+	if (m_isBarrierSEPlay) return;// 既に再生中なら何もしない
+	m_commonResources->GetAudioManager()->PlaySound("Barrier", m_pPlayer->GetVolume());// サウンド再生 
+	m_isBarrierSEPlay = true;// 再生フラグを立てる
 }
 /*
 *	@brief	弾発射

@@ -5,7 +5,7 @@
 #include "pch.h"
 #include "PlayerController.h"
 const float PlayerController::MOVE_SPEED = 5.0f;// 通常移動速度
-const float PlayerController::DASH_SPEED = 10.0f;// ダッシュ移動速度
+const float PlayerController::DASH_SPEED = 15.0f;// ダッシュ移動速度
 const float PlayerController::DASH_TIME = 10.0f;// ダッシュ時間
 const float PlayerController::GRAVITY = 0.75f;// 重力
 const float PlayerController::PITCH_LIMIT = 80.0f;// ピッチの制限

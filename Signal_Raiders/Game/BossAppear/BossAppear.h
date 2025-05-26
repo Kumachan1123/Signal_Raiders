@@ -32,7 +32,8 @@ private:
 		DirectX::SimpleMath::Vector4 colors;    // カラー
 		DirectX::SimpleMath::Vector4 time;    // 時間	
 	};
-
+public:// アクセサ
+	void SetSEVolume(float volume) { m_seVolume = volume; } // SE音量の設定
 public:// publicメンバ関数
 	BossAppear();//	コンストラクタ
 	~BossAppear();//	デストラクタ
@@ -81,4 +82,8 @@ private:// privateメンバ変数
 	float m_timer;
 	// シェーダーに渡すバッファ
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
+	// SE音量
+	float m_seVolume;
+	// 再生フラグ
+	bool m_isPlaying;
 };

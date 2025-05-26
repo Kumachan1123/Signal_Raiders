@@ -33,6 +33,7 @@ EnemyBullet::EnemyBullet(float size)
 	, m_pSpeedBullet{ nullptr }// 速い弾
 	, m_pEnemyBullet{ nullptr }// 弾の種類ごとに処理を変えるためのポインター
 	, m_bulletType{ BulletType::NORMAL }// 弾の種類
+	, m_seVolume{ 0.0f }// SE音量
 {
 }
 /*
@@ -53,6 +54,8 @@ void EnemyBullet::Initialize(CommonResources* resources)
 	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
 	m_pEnemyBullet = EnemyBulletFactory::CreateBullet(m_bulletType);// ファクトリで生成
 	m_pEnemyBullet->SetEnemyBullet(this);// 敵弾ポインターを設定する
+	m_pEnemyBullet->SetCommonResources(m_commonResources);// 弾に共通リソースを設定
+	m_pEnemyBullet->SetSEVolume(m_seVolume);// SE音量を設定
 	DrawCollision::Initialize(m_commonResources);// 境界球の初期化
 	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_Shadow.cso");// 影用のピクセルシェーダー読み込み
 	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pixelShader.ReleaseAndGetAddressOf()));// ピクセルシェーダーの作成

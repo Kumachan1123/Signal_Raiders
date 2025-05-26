@@ -65,24 +65,17 @@ public:
 	void SetShooter(IEnemy* enemy) { m_pShooter = enemy; }// 発射した敵のポインターを設定
 	DirectX::SimpleMath::Vector3 GetTarget() const { return m_target; }// 弾発射時のターゲットの位置を取得
 	void SetTarget(DirectX::SimpleMath::Vector3 target) { m_target = target; }// 弾発射時のターゲットの位置を設定
-	// プレイヤーからの距離を取得
-	float GetDistance() const { return m_distance; }
-	// プレイヤーからの距離を設定
-	void SetDistance(float distance) { m_distance = distance; }
-	// プレイヤーの角度を取得
-	float GetAngle() const { return m_spiralAngle; }
-	// プレイヤーの角度を設定
-	void SetAngle(float angle) { m_spiralAngle = angle; }
-	// 展開完了フラグを取得
-	bool GetIsExpand() const { return m_isExpand; }
-	// 展開完了フラグを設定
-	void SetIsExpand(bool isExpand) { m_isExpand = isExpand; }
-	// 発射フラグを取得
-	bool GetIsShot() const { return m_isShot; }
-	// 発射フラグを設定
-	void SetIsShot(bool isShot) { m_isShot = isShot; }
-	// 螺旋弾の回転方向を決める
-	void SetRotateDirection(int direction) { m_rotateDirection = direction; }
+	float GetDistance() const { return m_distance; }	// プレイヤーからの距離を取得
+	void SetDistance(float distance) { m_distance = distance; }	// プレイヤーからの距離を設定
+	float GetAngle() const { return m_spiralAngle; }// プレイヤーの角度を取得
+	void SetAngle(float angle) { m_spiralAngle = angle; }	// プレイヤーの角度を設定
+	bool GetIsExpand() const { return m_isExpand; }// 展開完了フラグを取得
+	void SetIsExpand(bool isExpand) { m_isExpand = isExpand; }// 展開完了フラグを設定
+	bool GetIsShot() const { return m_isShot; }	// 発射フラグを取得
+	void SetIsShot(bool isShot) { m_isShot = isShot; }	// 発射フラグを設定
+	void SetRotateDirection(int direction) { m_rotateDirection = direction; }// 螺旋弾の回転方向を決める
+	float GetSEVolume() const { return m_seVolume; } // SE音量を取得
+	void SetSEVolume(float volume) { m_seVolume = volume; } // SE音量を設定
 public:
 	// public関数
 	EnemyBullet(float size);// コンストラクタ
@@ -156,7 +149,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
 	// 弾の種類
 	BulletType m_bulletType;
-
+	// SE音量
+	float m_seVolume; // SE音量
 };
 #endif //ENEMY_BULLET_DEFINED
 

@@ -46,19 +46,23 @@ void AudioManager::Initialize()
 		return;// 終了
 	}
 	// 各種効果音・BGMの読み込み
-	LoadSound("Resources/Sounds/playerBullet.mp3", "Shoot");// プレイヤーの弾のSE
-	LoadSound("Resources/Sounds/Hit.mp3", "Hit");// ヒットのSE
-	LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet");// 弾発射音
-	LoadSound("Resources/Sounds/Explosion.mp3", "EnemyDead");// 敵死亡音
-	LoadSound("Resources/Sounds/damage.mp3", "Damage");// プレイヤーがダメージを食らう音
-	LoadSound("Resources/Sounds/Barrier.mp3", "Barrier");// ボスのバリアが出現する音
-	LoadSound("Resources/Sounds/BarrierBreak.mp3", "BarrierBreak");// ボスのバリアが破壊される音
-	LoadSound("Resources/Sounds/playbgm.mp3", "PlayBGM");// プレイ中のBGM
-	LoadSound("Resources/Sounds/select.mp3", "SE");// 選択音
-	LoadSound("Resources/Sounds/result.mp3", "ResultBGM");// 結果画面のBGM
-	LoadSound("Resources/Sounds/click.mp3", "Select"); // タイトル画面の選択音
-	LoadSound("Resources/Sounds/title.mp3", "TitleBGM");// タイトル画面のBGM
-	LoadSound("Resources/Sounds/BulletCollision.mp3", "BulletCollision");// 弾同士の衝突音
+	LoadSound("Resources/Sounds/playerBullet.mp3", "Shoot", true);// プレイヤーの弾のSE
+	LoadSound("Resources/Sounds/Hit.mp3", "Hit", true);// ヒットのSE
+	LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet", true);// 弾発射音
+	LoadSound("Resources/Sounds/Explosion.mp3", "EnemyDead", true);// 敵死亡音
+	LoadSound("Resources/Sounds/damage.mp3", "Damage", true);// プレイヤーがダメージを食らう音
+	LoadSound("Resources/Sounds/Barrier.mp3", "Barrier", false);// ボスのバリアが出現する音
+	LoadSound("Resources/Sounds/BarrierBreak.mp3", "BarrierBreak", true);// ボスのバリアが破壊される音
+	LoadSound("Resources/Sounds/playbgm.mp3", "PlayBGM", false);// プレイ中のBGM
+	LoadSound("Resources/Sounds/select.mp3", "SE", true);// 選択音
+	LoadSound("Resources/Sounds/result.mp3", "ResultBGM", false);// 結果画面のBGM
+	LoadSound("Resources/Sounds/click.mp3", "Select", true); // タイトル画面の選択音
+	LoadSound("Resources/Sounds/title.mp3", "TitleBGM", false);// タイトル画面のBGM
+	LoadSound("Resources/Sounds/BulletCollision.mp3", "BulletCollision", true);// 弾同士の衝突音
+	LoadSound("Resources/Sounds/BossAppear.mp3", "BossAppear", true);// ボス登場演出音
+	LoadSound("Resources/Sounds/SpecialAttack.mp3", "SpecialAttack", true);// ボスの特殊攻撃音
+	LoadSound("Resources/Sounds/ChargeSpecial.mp3", "ChargeSpecial", true);// ボスの特殊攻撃待機音
+
 
 
 }
@@ -71,22 +75,27 @@ void AudioManager::Initialize()
 */
 void AudioManager::PlaySound(const std::string& soundKey, float volume)
 {
+
 	auto soundIt = m_sounds.find(soundKey);// 指定された音声データのキーを検索
 	if (soundIt != m_sounds.end())// 音声データが見つかった場合
 	{
 		FMOD::Sound* sound = soundIt->second;// 音声データの取得
-		if (soundKey.find("BGM") != std::string::npos)// サウンドキーに「BGM」が含まれている場合
+		// 音声データが見つかった場合
+		auto allowIt = m_allowMultiplePlayMap.find(soundKey); // 二重再生可否のフラグを取得
+		bool allowMultiple = (allowIt != m_allowMultiplePlayMap.end()) ? allowIt->second : false; // 見つからなければデフォルトで false
+
+		if (!allowMultiple) // 二重再生を許可していない場合
 		{
-			auto channelIt = m_channels.find(soundKey);// チャンネルを検索
-			if (channelIt != m_channels.end())// チャンネルがみつかったら
+			auto channelIt = m_channels.find(soundKey); // チャンネルを検索
+			if (channelIt != m_channels.end()) // チャンネルが見つかった場合
 			{
-				FMOD::Channel* existingChannel = channelIt->second;// チャンネルの取得
-				bool isPlaying = false;// 再生中フラグを宣言
-				existingChannel->isPlaying(&isPlaying);// チャンネルの再生状態を取得
-				if (isPlaying)// 再生中の場合
+				FMOD::Channel* existingChannel = channelIt->second; // チャンネルの取得
+				bool isPlaying = false; // 再生中かどうかを保持する変数
+				existingChannel->isPlaying(&isPlaying); // 再生中か確認
+				if (isPlaying) // もし再生中なら
 				{
-					existingChannel->setVolume(volume);// 音量を設定
-					return; // 既に再生中のため、何もしない
+					existingChannel->setVolume(volume); // 音量だけ更新
+					return; // 再生しない（重複再生防止）
 				}
 			}
 		}
@@ -148,15 +157,17 @@ void AudioManager::Shutdown()
 *	@details 音声データをロードする(ロード済みなら何もしない)
 *	@param filePath ロードする音声ファイルのパス
 *	@param key 音声データのキー
+*	@param allowMultiplePlay 二重再生を許可するかどうか
 *	@return 成功した場合は true、失敗した場合は false
 */
-bool AudioManager::LoadSound(const std::string& filePath, const std::string& key)
+bool AudioManager::LoadSound(const std::string& filePath, const std::string& key, bool allowMultiplePlay)
 {
 	if (m_sounds.find(key) != m_sounds.end()) return false;// 既にロード済みなら終了
 	FMOD::Sound* sound = nullptr;// 音声データを宣言
 	FMOD_RESULT result = m_system->createSound(filePath.c_str(), FMOD_DEFAULT, nullptr, &sound);// 音声データの作成
 	if (result != FMOD_OK || !sound) return false;// エラー処理
 	m_sounds[key] = sound;// 音声データを保存
+	m_allowMultiplePlayMap[key] = allowMultiplePlay; // 二重再生の可否を保存
 	return true;// ここまでこれたら成功
 }
 /*

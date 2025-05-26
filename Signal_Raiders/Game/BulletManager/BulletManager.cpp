@@ -120,6 +120,7 @@ void BulletManager::CreateEnemyBullet(const Vector3& position, Vector3& directio
 		for (int i = 0; i < GetSpecialAttackCount(); i++)
 		{
 			auto bullet = std::make_unique<EnemyBullet>(m_enemyBulletSize);// “G’e‚Ì¶¬
+			bullet->SetSEVolume(m_pPlayer->GetVolume());// SE‰¹—Ê‚ğİ’è
 			bullet->SetBulletType(m_enemyBulletType);// ’e‚Ìí—Şİ’è
 			bullet->Initialize(m_commonResources);// ‰Šú‰»
 			bullet->SetShooter(m_pShooter);// ”­ËŒ³‚ğİ’è

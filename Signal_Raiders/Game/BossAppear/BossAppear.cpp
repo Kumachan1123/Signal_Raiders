@@ -32,6 +32,8 @@ BossAppear::BossAppear()
 	, m_pInputLayout{}// インプットレイアウト
 	, m_texture{}// テクスチャ
 	, m_commonResources{}// コモンリソース
+	, m_seVolume(0.0f)// SE音量
+	, m_isPlaying(false)// 再生フラグ
 {
 }
 
@@ -103,6 +105,13 @@ void BossAppear::SettingShader()
 void BossAppear::Update(float elapsedTime)
 {
 	m_timer += elapsedTime;// 時間加算
+	m_commonResources->GetAudioManager()->Update();// オーディオマネージャーの更新
+	if (!m_isPlaying)
+	{
+		m_isPlaying = !m_isPlaying;// 再生フラグを立てる
+		m_commonResources->GetAudioManager()->PlaySound("BossAppear", m_seVolume);// ボス登場演出音を再生
+	}
+
 }
 
 /*

@@ -25,7 +25,7 @@ public:
 	AudioManager();	// コンストラクタ
 	~AudioManager();	// デストラクタ
 	void Initialize();	// 初期化
-	bool LoadSound(const std::string& filePath, const std::string& key);	// 音声データのロード
+	bool LoadSound(const std::string& filePath, const std::string& key, bool allowMultiplePlay);	// 音声データのロード
 	FMOD::Sound* GetSound(const std::string& key);	// 音声データの取得
 	void PlaySound(const std::string& soundKey, float volume);	// 音を再生する
 	void StopSound(const std::string& soundKey);	// 音を停止する
@@ -36,4 +36,6 @@ private:
 	FMOD::System* m_system;	// FMODシステム
 	std::unordered_map<std::string, FMOD::Channel*> m_channels;	// チャンネル
 	std::unordered_map<std::string, FMOD::Sound*> m_sounds;	// サウンド
+	std::unordered_map<std::string, bool> m_allowMultiplePlayMap; // キーごとの二重再生可否
+	float m_volume;	// ボリューム
 };

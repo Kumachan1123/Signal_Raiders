@@ -10,6 +10,8 @@
 */
 SpeedBullet::SpeedBullet()
 	: m_pEnemyBullet(nullptr)// 敵弾ポインター
+	, m_commonResources(nullptr)// 共通リソース
+	, m_seVolume(0.0f)// SE音量
 {
 }
 /*

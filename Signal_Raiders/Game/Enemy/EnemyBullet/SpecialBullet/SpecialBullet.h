@@ -4,6 +4,7 @@
 */
 #pragma once
 // 自作ヘッダーファイル
+#include "Game/CommonResources.h"
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 #include "Game/Interface/IEnemyBullet.h"
 #include "Game/KumachiLib/KumachiLib.h"
@@ -16,6 +17,8 @@ public:
 	void Initialize() override;// 初期化関数
 	void Update(float elapsedTime) override;// 更新関数
 	void SetEnemyBullet(EnemyBullet* pEnemyBullet) override { m_pEnemyBullet = pEnemyBullet; }// 敵弾ポインターをセットする関数
+	void SetCommonResources(CommonResources* commonResources) override { m_commonResources = commonResources; }// 共通リソースをセットする関数
+	void SetSEVolume(float volume) override { m_seVolume = volume; } // SE音量をセットする関数
 private:
 	// private関数
 	void Expand();		// 回転弾を展開する
@@ -24,6 +27,7 @@ private:
 	void ComeBack();	// 回転弾を自分の周りに戻す
 private:
 	// privateメンバ変数	
+	CommonResources* m_commonResources;				// 共通リソース
 	EnemyBullet* m_pEnemyBullet;					// 敵弾ポインター
 	DirectX::SimpleMath::Vector3 m_position;		// 弾の座標
 	DirectX::SimpleMath::Vector3 m_velocity;		// 弾の速さ
@@ -39,5 +43,7 @@ private:
 	float m_distance;								// 弾の敵との距離
 	float m_height;									// 弾の高さ
 	DirectX::SimpleMath::Vector3 m_positionOffSet;	// 弾の位置オフセット
-
+	float m_seVolume;								// SE音量
+	bool m_isPlayChargeSE;							// チャージSE再生フラグ
+	bool m_isPlayShotSE;							// 発射SE再生フラグ
 };

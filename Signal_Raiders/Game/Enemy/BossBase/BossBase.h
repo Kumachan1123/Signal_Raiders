@@ -136,9 +136,10 @@ private:
 	std::unique_ptr<BossModel>		m_pBossModel;//モデル
 	std::unique_ptr<BossSheild>		m_pBossSheild;// シールド
 	std::unique_ptr<EnemyHPBar>		m_pHPBar;// HPバー
-	// 音量
+	// 音声周り
 	float m_SEVolume;// SEの音量
 	float m_SEVolumeCorrection;// SEの音量補正
+	bool m_isBarrierSEPlay;// バリアSEの再生フラグ
 	// プレイヤーのポインター
 	Player* m_pPlayer;
 	// カメラのポインター

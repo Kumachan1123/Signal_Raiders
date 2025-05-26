@@ -75,7 +75,7 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pPlayer->SetMouseSensitive(m_mouseSensitivity);// マウス感度を設定する
 	m_pPlayer->Initialize(m_pEnemyManager.get());// プレイヤーを初期化する
 	m_pEnemyManager->Initialize(m_pPlayer.get());// 敵を初期化する
-	m_pEnemyManager->SetVolume(m_SEvolume);// 敵が出す効果音の音量を設定する
+	m_pEnemyManager->SetSEVolume(m_SEvolume);// 敵が出す効果音の音量を設定する
 	m_pEnemyManager->SetWall(m_pWall.get());// 敵に壁の情報を渡す
 	m_pBulletManager = std::make_unique<BulletManager>(resources);// 弾マネージャーを初期化する
 	m_pBulletManager->Initialize(m_pPlayer.get(), m_pEnemyManager.get());// 弾マネージャーを初期化する
@@ -104,6 +104,7 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pRadar->Initialize(m_pPlayer.get(), m_pEnemyManager.get());// レーダーを初期化する
 	m_pBossAppear = std::make_unique<BossAppear>();// ボス登場演出を生成する
 	m_pBossAppear->Initialize(m_commonResources);// ボス登場演出を初期化する
+	m_pBossAppear->SetSEVolume(m_SEvolume);// ボス登場演出のSE音量を設定する
 	m_pBloom->CreatePostProcess(resources);// ブルームエフェクトの生成する
 }
 /*
