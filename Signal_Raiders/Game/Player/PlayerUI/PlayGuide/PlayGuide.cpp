@@ -1,83 +1,109 @@
-//--------------------------------------------------------------------------------------
-// File: PlayGuide.cpp
-//
-// プレイ操作説明クラス
-//
-//-------------------------------------------------------------------------------------
-#include "pch.h"
+/*
+*	@file PlayGuide.cpp
+*	@brief プレイ操作説明クラス
+*/
+#include <pch.h>
 #include "PlayGuide.h"
-#include "Game/Player/PlayerUI/PlayerUI.h"
-#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
-#include <DeviceResources.h>
-#include <SimpleMath.h>
-#include <Effects.h>
-#include <PrimitiveBatch.h>
-#include <VertexTypes.h>
-#include <WICTextureLoader.h>
-#include <CommonStates.h>
-#include <vector>
-#include "Game/Screen.h"
-using namespace DirectX;
-
-
+/*
+*	@brief コンストラクタ
+*	@details ウィンドウの幅と高さを初期化
+*	@param なし
+*	@return なし
+*/
 PlayGuide::PlayGuide()
-	: m_menuIndex(0)
-	, m_windowHeight(720)
-	, m_windowWidth(1280)
+	: m_windowHeight(Screen::UI_HEIGHT)
+	, m_windowWidth(Screen::UI_WIDTH)
 	, m_pDR(nullptr)
-	, m_baseTexturePath(nullptr)
-	, m_pointer(nullptr)
+	, m_pPlayGuide(nullptr)
 {
 }
-
-PlayGuide::~PlayGuide()
-{
-}
-
+/*
+*	@brief デストラクタ
+*	@details ここでは何もしない
+*	@param なし
+*	@return なし
+*/
+PlayGuide::~PlayGuide() {/*do nothing*/ }
+/*
+*	@brief 初期化関数
+*	@details デバイスリソースを取得し、ウィンドウの幅と高さを設定後、UIを作成する
+*	@param resources デバイスリソース
+*	@param width ウィンドウの幅
+*	@param height ウィンドウの高さ
+*	@return なし
+*/
 void PlayGuide::Initialize(CommonResources* resources, int width, int height)
 {
-	m_pDR = resources->GetDeviceResources();
-	m_windowWidth = width;
-	m_windowHeight = height;
-	CreatePlayerUI(L"Resources/Textures/PlayGuide.png"
-		, SimpleMath::Vector2(0, 720)
-		, SimpleMath::Vector2(0.5f, 0.5f)
+	using namespace DirectX::SimpleMath;
+	m_pDR = resources->GetDeviceResources();// デバイスリソースを取得
+	m_windowWidth = width;// ウィンドウの幅を設定
+	m_windowHeight = height;// ウィンドウの高さを設定
+	CreatePlayerUI(L"Resources/Textures/PlayGuide.png"// プレイ操作説明のテクスチャパス
+		, Vector2(Screen::UI_LEFT, Screen::UI_BOTTOM)
+		, Vector2(0.5f, 0.5f)
 		, KumachiLib::ANCHOR::BOTTOM_LEFT);
-
 }
-
+/*
+*	@brief 更新関数(外部用)
+*	@details プレイ操作説明の更新を行う(このUIは変化させないので更新処理はしない
+*	@param context 更新コンテキスト
+*	@return なし
+*/
 void PlayGuide::Update(const UpdateContext& context)
 {
-	UNREFERENCED_PARAMETER(context);
-	Update();
+	UNREFERENCED_PARAMETER(context);// 更新コンテキストは使用しないので無視する
 }
-
-void PlayGuide::Update()
-{
-	auto keystate = Keyboard::Get().GetState();
-	m_tracker.Update(keystate);
-}
-
+/*
+*	@brief 更新関数(内部用)
+*	@details プレイ操作説明の更新を行う(このUIは変化させないので更新処理はしない
+*	@param なし
+*	@return なし
+*/
+void PlayGuide::Update() {/*do nothing*/ }
+/*
+*	@brief 描画関数
+*	@details プレイ操作説明の描画を行う
+*	@param なし
+*	@return なし
+*/
 void PlayGuide::Render()
 {
-	m_pointer->SetShaderType(PlayerUI::ShaderType::OTHER);
-	m_pointer->Render();
+	m_pPlayGuide->SetShaderType(PlayerUI::ShaderType::OTHER);// シェーダータイプを設定
+	m_pPlayGuide->Render();// プレイ操作説明の描画を行う
 }
-
+/*
+*	@brief UIの追加関数
+*	@details PlayerUIを追加する
+*	@param pPlayerUI 追加するPlayerUIのポインタ
+*	@param path テクスチャのパス
+*	@param position UIの位置
+*	@param scale UIのスケール
+*	@param anchor UIのアンカー
+*	@return なし
+*/
 void PlayGuide::Add(std::unique_ptr<PlayerUI>& pPlayerUI, const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
 {
-	pPlayerUI = std::make_unique<PlayerUI>();
-	pPlayerUI->Create(m_pDR
-		, path
-		, position
-		, scale
-		, anchor);
-	pPlayerUI->SetWindowSize(m_windowWidth, m_windowHeight);
+	pPlayerUI = std::make_unique<PlayerUI>();// PlayerUIのインスタンスを生成
+	// UIの初期化
+	pPlayerUI->Create(m_pDR	// デバイスリソース
+		, path				// テクスチャのパス
+		, position			// UIの位置
+		, scale				// UIのスケール
+		, anchor);			// UIのアンカーを設定
+	pPlayerUI->SetWindowSize(m_windowWidth, m_windowHeight);// ウィンドウのサイズを設定
 }
-
+/*
+*	@brief UI作成関数
+*	@details プレイ操作説明のUIを作成する
+*	@param path テクスチャのパス
+*	@param position UIの位置
+*	@param scale UIのスケール
+*	@param anchor UIのアンカー
+*	@return なし
+*/
 void PlayGuide::CreatePlayerUI(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
 {
-	Add(m_pointer, path, position, scale, anchor);
+	Add(m_pPlayGuide, path, position, scale, anchor);// UIを追加する関数を呼び出す
 }
 
 

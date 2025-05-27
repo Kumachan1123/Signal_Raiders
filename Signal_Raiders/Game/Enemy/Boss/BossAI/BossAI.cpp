@@ -2,7 +2,7 @@
 *	@file	BossAI.cpp
 *	@brief	敵AIクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "BossAI.h"
 /*
 *	@brief	コンストラクタ

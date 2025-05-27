@@ -38,7 +38,7 @@ private:// privateメンバ関数
 private:// private定数
 	static const int STAGE_MAX;// ステージ数
 private:// privateメンバ変数
-	std::unique_ptr<IScene> m_currentScene;// 現在のシーン
+	std::unique_ptr<IScene> m_pCurrentScene;// 現在のシーン
 	CommonResources* m_pCommonResources;// 共通リソース
 	IScene::SceneID m_nowSceneID;// 現在のシーンID
 	int m_stageNumber;// プレイシーンにステージ番号を渡すための変数

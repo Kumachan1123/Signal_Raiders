@@ -2,7 +2,7 @@
 *	@file ModelManager.cpp
 *	@brief モデルマネージャークラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "ModelManager.h"
 
 /*
@@ -11,9 +11,9 @@
 */
 ModelManager::ModelManager()
 	: m_pCommonResources(nullptr) // 共通リソース
-	, m_device(nullptr) // デバイス
-	, m_modelMap() // モデルのマップ
-	, m_effectFactory(nullptr) // エフェクトファクトリー
+	, m_pDevice(nullptr) // デバイス
+	, m_pModelMap() // モデルのマップ
+	, m_pEffectFactory(nullptr) // エフェクトファクトリー
 {
 }
 /*
@@ -23,9 +23,9 @@ ModelManager::ModelManager()
 */
 ModelManager::~ModelManager()
 {
-	m_modelMap.clear(); // モデルのマップをクリア
-	m_effectFactory.reset(); // エフェクトファクトリーをリセット
-	m_device = nullptr; // デバイスをnullptrに設定
+	m_pModelMap.clear(); // モデルのマップをクリア
+	m_pEffectFactory.reset(); // エフェクトファクトリーをリセット
+	m_pDevice = nullptr; // デバイスをnullptrに設定
 	m_pCommonResources = nullptr; // 共通リソースをnullptrに設定
 }
 /*
@@ -35,14 +35,33 @@ ModelManager::~ModelManager()
 */
 void ModelManager::Initialize()
 {
-	m_device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
-	m_effectFactory = std::make_unique<DirectX::EffectFactory>(m_device);// エフェクトファクトリーの作成
+	m_pDevice = m_pCommonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
+	m_pEffectFactory = std::make_unique<DirectX::EffectFactory>(m_pDevice);// エフェクトファクトリーの作成
+	m_pEffectFactory->SetSharing(false);// エフェクトの共有を無効にする
+	CreateSkyModels(); // 空モデルの作成
 	CreateBulletModels(); // 弾モデルの作成
 	CreateEnemyModels(); // 敵モデルの作成
 	CreateVerticalAttackerModels(); // 垂直攻撃敵モデルの作成
 	CreateBossModels(); // ボスモデルの作成
 	CreateLastBossModels(); // ラスボスモデルの作成
 	CreateBarrierModels(); // バリアモデルの作成
+}
+/*
+*	@brief 空モデルの作成
+*	@details ステージに応じた空のモデルを作成する
+*	@param なし
+*	@return なし
+*/
+void ModelManager::CreateSkyModels()
+{
+	//m_pEffectFactory->ReleaseCache();// キャッシュを解放する
+	m_pEffectFactory->SetDirectory(L"Resources/Models/sky");// モデルのディレクトリを指定
+	m_pModelMap["Stage1"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/sky/sky.cmo", *m_pEffectFactory);// ステージ1の空モデルを読み込む
+	m_pModelMap["Stage2"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/sky/CloudySky.cmo", *m_pEffectFactory);// ステージ2の空モデルを読み込む
+	m_pModelMap["Stage3"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/sky/EveningSky.cmo", *m_pEffectFactory);// ステージ3の空モデルを読み込む
+	m_pModelMap["Stage4"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/sky/NightSky.cmo", *m_pEffectFactory);// ステージ4の空モデルを読み込む
+	m_pModelMap["Stage5"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/sky/MidNightSky.cmo", *m_pEffectFactory);// ステージ5の空モデルを読み込む
+	// モデルのエフェクトはすべて同じなので、渡した先で共通のエフェクトを設定する
 }
 /*
 *	@brief 弾モデルの作成
@@ -52,18 +71,18 @@ void ModelManager::Initialize()
 */
 void ModelManager::CreateBulletModels()
 {
-	m_effectFactory->ReleaseCache();// キャッシュを解放する
-	m_effectFactory->SetDirectory(L"Resources/Models");// モデルのディレクトリを指定
-	m_modelMap["PlayerBullet"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/Bullet.cmo", *m_effectFactory);// 弾モデルを読み込む
-	m_modelMap["PlayerBullet"]->UpdateEffects([&](DirectX::IEffect* effect)// エフェクトの更新
+	//m_pEffectFactory->ReleaseCache();// キャッシュを解放する
+	m_pEffectFactory->SetDirectory(L"Resources/Models");// モデルのディレクトリを指定
+	m_pModelMap["PlayerBullet"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Bullet.cmo", *m_pEffectFactory);// 弾モデルを読み込む
+	m_pModelMap["PlayerBullet"]->UpdateEffects([&](DirectX::IEffect* effect)// エフェクトの更新
 		{
 			auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);
 			basicEffect->SetDiffuseColor(DirectX::Colors::SkyBlue);
 			basicEffect->SetEmissiveColor(DirectX::Colors::Cyan);
 		});// 自弾モデルのエフェクトを設定する
-	m_effectFactory->ReleaseCache();// キャッシュを解放する
-	m_modelMap["EnemyBullet"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/Bullet.cmo", *m_effectFactory);// 弾モデルを読み込む
-	m_modelMap["EnemyBullet"]->UpdateEffects([&](DirectX::IEffect* effect)	// モデルのエフェクトを設定する
+	m_pEffectFactory->ReleaseCache();// キャッシュを解放する
+	m_pModelMap["EnemyBullet"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Bullet.cmo", *m_pEffectFactory);// 弾モデルを読み込む
+	m_pModelMap["EnemyBullet"]->UpdateEffects([&](DirectX::IEffect* effect)	// モデルのエフェクトを設定する
 		{
 			auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);
 			basicEffect->SetDiffuseColor(DirectX::SimpleMath::Vector4(1, 0.2f, 0, 1));
@@ -79,15 +98,15 @@ void ModelManager::CreateBulletModels()
 */
 void ModelManager::CreateEnemyModels()
 {
-	m_effectFactory->ReleaseCache(); // キャッシュを解放する
-	m_effectFactory->SetDirectory(L"Resources/Models/Enemy");// モデルのディレクトリを指定
-	m_modelMap["EnemyHead"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/Enemy/Enemy_Head.cmo", *m_effectFactory);// 敵の頭モデルを読み込む
-	m_modelMap["EnemyAntenna"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/Enemy/Enemy_Antenna.cmo", *m_effectFactory);// 敵のアンテナモデルを読み込む
-	m_modelMap["EnemyHand"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/Enemy/Enemy_Hand.cmo", *m_effectFactory);// 敵の手モデルを読み込む
-	m_modelMap["EnemyShadow"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/Enemy/Enemy.cmo", *m_effectFactory);// 敵の影用モデルを読み込む
-	m_modelMap["EnemyDamage"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/Enemy/Enemy_DamageFace.cmo", *m_effectFactory);// 敵のダメージ顔モデルを読み込む
-	m_modelMap["EnemyAttack"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/Enemy/Enemy_AttackFace.cmo", *m_effectFactory);// 敵の攻撃顔モデルを読み込む
-	m_modelMap["EnemyIdling"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/Enemy/Enemy_IdlingHead.cmo", *m_effectFactory);// 敵の普段の顔モデルを読み込む
+	//m_pEffectFactory->ReleaseCache(); // キャッシュを解放する
+	m_pEffectFactory->SetDirectory(L"Resources/Models/Enemy");// モデルのディレクトリを指定
+	m_pModelMap["EnemyHead"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Enemy/Enemy_Head.cmo", *m_pEffectFactory);// 敵の頭モデルを読み込む
+	m_pModelMap["EnemyAntenna"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Enemy/Enemy_Antenna.cmo", *m_pEffectFactory);// 敵のアンテナモデルを読み込む
+	m_pModelMap["EnemyHand"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Enemy/Enemy_Hand.cmo", *m_pEffectFactory);// 敵の手モデルを読み込む
+	m_pModelMap["EnemyShadow"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Enemy/Enemy.cmo", *m_pEffectFactory);// 敵の影用モデルを読み込む
+	m_pModelMap["EnemyDamage"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Enemy/Enemy_DamageFace.cmo", *m_pEffectFactory);// 敵のダメージ顔モデルを読み込む
+	m_pModelMap["EnemyAttack"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Enemy/Enemy_AttackFace.cmo", *m_pEffectFactory);// 敵の攻撃顔モデルを読み込む
+	m_pModelMap["EnemyIdling"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Enemy/Enemy_IdlingHead.cmo", *m_pEffectFactory);// 敵の普段の顔モデルを読み込む
 }
 /*
 *	@brief 垂直攻撃敵モデルの作成
@@ -97,9 +116,9 @@ void ModelManager::CreateEnemyModels()
 */
 void ModelManager::CreateVerticalAttackerModels()
 {
-	m_effectFactory->ReleaseCache(); // キャッシュを解放する
-	m_effectFactory->SetDirectory(L"Resources/Models/VerticalAttacker");// モデルのディレクトリを指定
-	m_modelMap["VerticalAttacker"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/VerticalAttacker/VerticalAttacker.cmo", *m_effectFactory);// 垂直攻撃敵のモデルを読み込む
+	//m_pEffectFactory->ReleaseCache(); // キャッシュを解放する
+	m_pEffectFactory->SetDirectory(L"Resources/Models/VerticalAttacker");// モデルのディレクトリを指定
+	m_pModelMap["VerticalAttacker"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/VerticalAttacker/VerticalAttacker.cmo", *m_pEffectFactory);// 垂直攻撃敵のモデルを読み込む
 }
 /*
 *	@brief ボスモデルの作成
@@ -109,12 +128,12 @@ void ModelManager::CreateVerticalAttackerModels()
 */
 void ModelManager::CreateBossModels()
 {
-	m_effectFactory->ReleaseCache(); // キャッシュを解放する
-	m_effectFactory->SetDirectory(L"Resources/Models/Boss");// モデルのディレクトリを指定
-	m_modelMap["BossBody"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/Boss/Boss.cmo", *m_effectFactory);// ボスの胴体モデルを読み込む
-	m_modelMap["BossFaceDamage"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/Boss/Boss_Face_Damage.cmo", *m_effectFactory);// ボスのダメージ顔モデルを読み込む
-	m_modelMap["BossFaceAttack"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/Boss/Boss_Face_Attack.cmo", *m_effectFactory);// ボスの攻撃顔モデルを読み込む
-	m_modelMap["BossFaceAngry"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/Boss/Boss_Face_Angry.cmo", *m_effectFactory);// 怒り状態の顔
+	//m_pEffectFactory->ReleaseCache(); // キャッシュを解放する
+	m_pEffectFactory->SetDirectory(L"Resources/Models/Boss");// モデルのディレクトリを指定
+	m_pModelMap["BossBody"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/Boss.cmo", *m_pEffectFactory);// ボスの胴体モデルを読み込む
+	m_pModelMap["BossFaceDamage"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/Boss_Face_Damage.cmo", *m_pEffectFactory);// ボスのダメージ顔モデルを読み込む
+	m_pModelMap["BossFaceAttack"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/Boss_Face_Attack.cmo", *m_pEffectFactory);// ボスの攻撃顔モデルを読み込む
+	m_pModelMap["BossFaceAngry"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/Boss_Face_Angry.cmo", *m_pEffectFactory);// 怒り状態の顔
 }
 /*
 *	@brief ラスボスモデルの作成
@@ -124,12 +143,12 @@ void ModelManager::CreateBossModels()
 */
 void ModelManager::CreateLastBossModels()
 {
-	m_effectFactory->ReleaseCache(); // キャッシュを解放する
-	m_effectFactory->SetDirectory(L"Resources/Models/Boss");// モデルのディレクトリを指定
-	m_modelMap["LastBossBody"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/Boss/LastBoss_Body.cmo", *m_effectFactory);// ラスボスの胴体モデルを読み込む
-	m_modelMap["LastBossFaceDamage"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/Boss/LastBoss_DamageFace.cmo", *m_effectFactory);// ラスボスのダメージ顔モデルを読み込む
-	m_modelMap["LastBossFaceAttack"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/Boss/LastBoss_Face.cmo", *m_effectFactory);// ラスボスの攻撃顔モデルを読み込む
-	m_modelMap["LastBossFaceAngry"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/Boss/LastBoss_AngryFace.cmo", *m_effectFactory);// ラスボスの怒り顔モデルを読み込む
+	//m_pEffectFactory->ReleaseCache(); // キャッシュを解放する
+	m_pEffectFactory->SetDirectory(L"Resources/Models/Boss");// モデルのディレクトリを指定
+	m_pModelMap["LastBossBody"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/LastBoss_Body.cmo", *m_pEffectFactory);// ラスボスの胴体モデルを読み込む
+	m_pModelMap["LastBossFaceDamage"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/LastBoss_DamageFace.cmo", *m_pEffectFactory);// ラスボスのダメージ顔モデルを読み込む
+	m_pModelMap["LastBossFaceAttack"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/LastBoss_Face.cmo", *m_pEffectFactory);// ラスボスの攻撃顔モデルを読み込む
+	m_pModelMap["LastBossFaceAngry"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/LastBoss_AngryFace.cmo", *m_pEffectFactory);// ラスボスの怒り顔モデルを読み込む
 }
 /*
 *	@brief バリアモデルの作成
@@ -139,14 +158,19 @@ void ModelManager::CreateLastBossModels()
 */
 void ModelManager::CreateBarrierModels()
 {
-	m_effectFactory->ReleaseCache(); // キャッシュを解放する
-	m_effectFactory->SetDirectory(L"Resources/Models/Boss");// モデルのディレクトリを指定
-	m_modelMap["Barrier"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/Boss/Boss_Barrier.cmo", *m_effectFactory);// ボスのバリアモデルを読み込む
+	//m_pEffectFactory->ReleaseCache(); // キャッシュを解放する
+	m_pEffectFactory->SetDirectory(L"Resources/Models/Boss");// モデルのディレクトリを指定
+	m_pModelMap["Barrier"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/Boss_Barrier.cmo", *m_pEffectFactory);// ボスのバリアモデルを読み込む
 }
-
+/*
+*	@brief モデルを取得する
+*	@details 指定されたキーに対応するモデルを取得する
+*	@param key モデルのキー
+*	@return 指定されたキーに対応するモデルのポインタ。見つからない場合はnullptrを返す
+*/
 DirectX::Model* ModelManager::GetModel(const std::string& key)
 {
-	auto it = m_modelMap.find(key);
-	if (it != m_modelMap.end())	return it->second.get();
-	return nullptr;
+	auto it = m_pModelMap.find(key);// キーに対応するモデルを検索
+	if (it != m_pModelMap.end())	return it->second.get();// 見つかった場合はモデルを返す
+	return nullptr;// 見つからなかった場合はnullptrを返す
 }

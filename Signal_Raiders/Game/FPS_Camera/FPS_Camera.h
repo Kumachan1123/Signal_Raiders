@@ -1,9 +1,9 @@
 /*
-@file	FPS_Camera.h
-@brief	FPSカメラクラス
+*	@file	FPS_Camera.h
+*	@brief	FPSカメラクラス
 */
 #pragma once
-// 標準ライブラリ
+// DirectxX
 #include <SimpleMath.h>
 // 自作ヘッダーファイル
 #include "Game/Screen.h"

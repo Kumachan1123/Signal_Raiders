@@ -1,11 +1,12 @@
 /*
-	@file	FPS_Camera.cpp
-	@brief	FPSカメラクラス
+*	@file	FPS_Camera.cpp
+*	@brief	FPSカメラクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "FPS_Camera.h"
 /*
 *	@brief	コンストラクタ
+*	@details FPSカメラの初期化を行う
 *	@param   eye	カメラ座標
 *	@param   target	注視点
 *	@param   up		カメラの頭の方向
@@ -24,6 +25,7 @@ FPS_Camera::FPS_Camera(const DirectX::SimpleMath::Vector3& eye,
 }
 /*
 *	@brief 更新処理
+*	@details カメラの位置と注視点を更新する
 *	@param newEye	新しいeye座標
 *	@param pitch	ピッチ角度
 */
@@ -41,6 +43,8 @@ void FPS_Camera::Update(const DirectX::SimpleMath::Vector3& newEye, float pitch)
 }
 /*
 *	@brief ビュー行列を計算する
+*	@details カメラの位置と注視点を基にビュー行列を計算する
+*	@param なし
 *	@return なし
 */
 void FPS_Camera::CalculateViewMatrix()
@@ -49,6 +53,8 @@ void FPS_Camera::CalculateViewMatrix()
 }
 /*
 *	@brief プロジェクション行列を計算する
+*	@details ウィンドウサイズを基にプロジェクション行列を計算する
+*	@param なし
 *	@return なし
 */
 void FPS_Camera::CalculateProjectionMatrix()
@@ -62,6 +68,8 @@ void FPS_Camera::CalculateProjectionMatrix()
 }
 /*
 *	@brief カメラの方向ベクトルを取得する
+*	@details カメラの注視点と位置から方向ベクトルを計算し、正規化して返す
+*	@param なし
 *	@return カメラの方向ベクトル
 */
 DirectX::SimpleMath::Vector3 FPS_Camera::GetDirection() const

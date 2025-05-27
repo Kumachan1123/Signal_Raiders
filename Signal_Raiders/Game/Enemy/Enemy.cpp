@@ -2,7 +2,7 @@
 	@file	Enemy.cpp
 	@brief	敵クラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "Enemy.h"
 // 自作ヘッダーファイル
 #include "Game/Enemy/EnemyAI/EnemyAI.h"
@@ -23,7 +23,7 @@ Enemy::Enemy(Player* pPlayer, CommonResources* pCommonResources, int hp)
 	, m_pCommonResources{ pCommonResources }// 共通リソース
 	, m_currentHP{ hp }// 敵のHP
 	, m_attackCooldown{ EnemyParameters::ATTACK_COOLDOWN }// 攻撃のクールダウンタイム
-	, m_enemyModel{}// 敵のモデル
+	, m_pEnemyModel{}// 敵のモデル
 	, m_pEnemyAI{}// 敵のAI
 	, m_pHPBar{}// 敵のHPバー
 	, m_position{}// 敵の座標
@@ -58,8 +58,8 @@ void Enemy::Initialize()
 {
 	using namespace DirectX::SimpleMath;
 	DrawCollision::Initialize(m_pCommonResources);// 当たり判定描画クラスの初期化
-	m_enemyModel = std::make_unique<EnemyModel>();	// 敵のモデルを読み込む
-	m_enemyModel->Initialize(m_pCommonResources);// モデルの初期化
+	m_pEnemyModel = std::make_unique<EnemyModel>();	// 敵のモデルを読み込む
+	m_pEnemyModel->Initialize(m_pCommonResources);// モデルの初期化
 	m_pHPBar = std::make_unique<EnemyHPBar>();	// HPBar生成
 	m_pHPBar->SetEnemyMaxHP(m_currentHP);// 最大HP設定
 	m_pHPBar->Initialize(m_pCommonResources);// 初期化
@@ -80,7 +80,7 @@ void Enemy::Initialize()
 */
 void Enemy::Update(float elapsedTime)
 {
-	m_enemyModel->SetState(m_pEnemyAI->GetState());// モデルの更新
+	m_pEnemyModel->SetState(m_pEnemyAI->GetState());// モデルの更新
 	m_pHPBar->SetCurrentHP(m_currentHP);// HPの更新
 	m_pHPBar->Update(elapsedTime);// HPバーの更新
 	m_pEnemyAI->Update(elapsedTime);// AIの更新
@@ -106,7 +106,7 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 		* Matrix::CreateTranslation(m_position);	// 平行移動行列
 	Vector3 hpBarPos = m_position + EnemyParameters::ENEMY_HPBAR_OFFSET;	// HPBarの座標を設定
 	m_pHPBar->Render(view, proj, hpBarPos, m_rotate);	// HPBar描画
-	m_enemyModel->Render(context, states, world, view, proj);	// 敵描画	
+	m_pEnemyModel->Render(context, states, world, view, proj);	// 敵描画	
 }
 /*
 *	@brief	敵の当たり判定を描画

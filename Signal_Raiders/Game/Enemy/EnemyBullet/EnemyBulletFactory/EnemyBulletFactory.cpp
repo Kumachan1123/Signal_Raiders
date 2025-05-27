@@ -2,7 +2,7 @@
 *	@file	EnemyBulletFactory.cpp
 *	@brief	敵弾ファクトリークラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "EnemyBulletFactory.h"
 /*
 *	@brief	弾の生成

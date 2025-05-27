@@ -2,7 +2,7 @@
 	@file	DebugCamera.h
 	@brief	デバッグ用カメラクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "DebugCamera.h"
 #include <Libraries/MyLib/InputManager.h>
 

@@ -2,7 +2,7 @@
 *	@file	EnemyFactory.cpp
 *	@brief	敵ファクトリークラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "EnemyFactory.h"
 /*
 *	@brief	敵生成

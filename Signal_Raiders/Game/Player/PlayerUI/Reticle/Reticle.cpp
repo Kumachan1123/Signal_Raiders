@@ -1,74 +1,98 @@
-//--------------------------------------------------------------------------------------
-// File: Reticle.cpp
-//
-// 照準クラス
-//
-//-------------------------------------------------------------------------------------
-#include "pch.h"
+/*
+*	@file Reticle.cpp
+*	@brief 照準クラス
+*/
+#include <pch.h>
 #include "Reticle.h"
-
-using namespace DirectX;
-
-
+/*
+*	@brief コンストラクタ
+*	@details ウィンドウの幅と高さを初期化
+*	@param なし
+*	@return なし
+*/
 Reticle::Reticle()
-	: m_windowHeight(0)
-	, m_windowWidth(0)
-	, m_pDR(nullptr)
-	, m_baseTexturePath(nullptr)
-	, m_reticle(nullptr)
+	: m_windowHeight(0)		// ウィンドウの高さ
+	, m_windowWidth(0)		// ウィンドウの幅
+	, m_pDR(nullptr)		// デバイスリソース
+	, m_pReticle(nullptr)	// 照準UI
 {
 }
-
-Reticle::~Reticle()
-{
-}
-
+/*
+*	@brief デストラクタ
+*	@details ここでは何もしない
+*	@param なし
+*	@return なし
+*/
+Reticle::~Reticle() {/*do nothing*/ }
+/*
+*	@brief 初期化関数
+*	@details デバイスリソースを取得し、ウィンドウの幅と高さを設定後、照準UIを作成する
+*	@param resources デバイスリソース
+*	@param width ウィンドウの幅
+*	@param height ウィンドウの高さ
+*	@return なし
+*/
 void Reticle::Initialize(CommonResources* resources, int width, int height)
 {
-	m_pDR = resources->GetDeviceResources();
-	m_windowWidth = width;
-	m_windowHeight = height;
-
-
-	Add(m_reticle
+	using namespace DirectX::SimpleMath;
+	m_pDR = resources->GetDeviceResources();// デバイスリソースを取得
+	m_windowWidth = width;// ウィンドウの幅を設定
+	m_windowHeight = height;// ウィンドウの高さを設定
+	Add(m_pReticle// 照準UIの追加
 		, L"Resources/Textures/Reticle.png"
-		, SimpleMath::Vector2(640, 360)
-		, SimpleMath::Vector2(0.25f, 0.25f)
+		, Vector2(640, 360)
+		, Vector2(0.25f, 0.25f)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER);
 
 }
-
+/*
+*	@brief 更新関数(外部用)
+*	@details 照準の更新を行う(このUIは変化させないので更新処理はしない)
+*	@param context 更新コンテキスト
+*	@return なし
+*/
 void Reticle::Update(const UpdateContext& context)
 {
-	// UpdateContextについて、未使用警告を出さない
-	UNREFERENCED_PARAMETER(context);
-	Update();
-
+	UNREFERENCED_PARAMETER(context);// 更新コンテキストは使用しないので無視する
 }
-
-void Reticle::Update()
-{
-
-	auto keystate = Keyboard::Get().GetState();
-	m_tracker.Update(keystate);
-}
-
+/*
+*	@brief 更新関数(内部用)
+*	@details 照準の更新を行う(このUIは変化させないので更新処理はしない)
+*	@param なし
+*	@return なし
+*/
+void Reticle::Update() { /*do nothing*/ }
+/*
+*	@brief 描画関数
+*	@details 照準の描画を行う
+*	@param なし
+*	@return なし
+*/
 void Reticle::Render()
 {
-	m_reticle->SetShaderType(PlayerUI::ShaderType::OTHER);
-	m_reticle->Render();
+	m_pReticle->SetShaderType(PlayerUI::ShaderType::OTHER);// シェーダータイプを設定
+	m_pReticle->Render();// 照準の描画を行う
 }
-
+/*
+*	@brief UIの追加関数
+*	@details PlayerUIのインスタンスを生成し、UIの初期化を行う
+*	@param pPlayerUI PlayerUIのインスタンス
+*	@param path テクスチャのパス
+*	@param position UIの位置
+*	@param scale UIのスケール
+*	@param anchor UIのアンカー
+*	@return なし
+*/
 void Reticle::Add(std::unique_ptr<PlayerUI>& pPlayerUI, const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
 {
-	pPlayerUI = std::make_unique<PlayerUI>();
-	pPlayerUI->Create(m_pDR
-		, path
-		, position
-		, scale
-		, anchor);
-	pPlayerUI->SetWindowSize(m_windowWidth, m_windowHeight);
-
+	pPlayerUI = std::make_unique<PlayerUI>();// PlayerUIのインスタンスを生成
+	// UIの初期化
+	pPlayerUI->Create(m_pDR	// デバイスリソース
+		, path				// テクスチャのパス
+		, position			// UIの位置
+		, scale				// UIのスケール
+		, anchor);			// UIのアンカーを設定
+	pPlayerUI->SetWindowSize(m_windowWidth, m_windowHeight);// ウィンドウのサイズを設定
 }
 
 

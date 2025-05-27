@@ -2,7 +2,7 @@
 *	@file	StageSelectScene.cpp
 *	@brief	ステージセレクトシーンクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "StageSelectScene.h"
 // 音量の基準値
 const float StageSelectScene::VOLUME = 0.05f;

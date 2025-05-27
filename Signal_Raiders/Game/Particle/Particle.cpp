@@ -2,7 +2,7 @@
 *	@file	Particle.cpp
 *	@brief	パーティクルクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "Particle.h"
 
 /*
@@ -31,7 +31,7 @@ Particle::Particle(ParticleUtility::Type type, float size)
 	, m_pTexture{}// テクスチャ
 	, m_pVertexShader{}// 頂点シェーダー
 	, m_pPixelShader{}// ピクセルシェーダー
-	, m_geometryShader{}// ジオメトリシェーダー
+	, m_pGeometryShader{}// ジオメトリシェーダー
 	, m_world{}// ワールド行列
 	, m_view{}// ビュー行列
 	, m_proj{}// プロジェクション行列
@@ -97,13 +97,13 @@ void Particle::CreateShaders()
 	// シェーダーの作成
 	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Particle/VS_Particle.cso", m_pVertexShader);// 頂点シェーダーの作成
 	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Particle/PS_Particle.cso", m_pPixelShader);// ピクセルシェーダーの作成
-	m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/Particle/GS_Particle.cso", m_geometryShader);// ジオメトリシェーダーの作成
+	m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/Particle/GS_Particle.cso", m_pGeometryShader);// ジオメトリシェーダーの作成
 	m_pInputLayout = m_pCreateShader->GetInputLayout();// インプットレイアウトを受け取る
 	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));// 定数バッファ作成
 	// シェーダーの構造体にシェーダーを渡す
 	m_shaders.vs = m_pVertexShader.Get();// 頂点シェーダー
 	m_shaders.ps = m_pPixelShader.Get();// ピクセルシェーダー
-	m_shaders.gs = m_geometryShader.Get();// ジオメトリシェーダー
+	m_shaders.gs = m_pGeometryShader.Get();// ジオメトリシェーダー
 }
 
 /*

@@ -7,13 +7,13 @@
 // DirectXのヘッダファイル
 #include <PostProcess.h>
 #include <CommonStates.h>
-// 外部ライブラリ
 #include <DeviceResources.h>
+// 外部ライブラリ
+#include <Libraries/Microsoft/RenderTexture/RenderTexture.h>
+// 自作ヘッダーファイル
 #include "Game/CommonResources.h"
-#include "Libraries/Microsoft/RenderTexture/RenderTexture.h"
 //前方宣言
 class CommonResources;
-
 class Bloom
 {
 public:
@@ -42,41 +42,41 @@ private:
 private:
 	//private変数
 	// シングルトンインスタンス
-	static std::unique_ptr<Bloom> m_instance;
+	static std::unique_ptr<Bloom> m_pInstance;
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 共通リソース
-	ID3D11DeviceContext1* m_context;
+	ID3D11DeviceContext1* m_pDeviceContext;
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;
 	// デバイス
-	ID3D11Device1* m_device;
+	ID3D11Device1* m_pDevice;
 	// ブルームエフェクトのコモンステート
-	std::unique_ptr<DirectX::CommonStates> m_states;
+	std::unique_ptr<DirectX::CommonStates> m_pStates;
 	// ブラー
 	Blur m_blur1;
 	Blur m_blur2;
 	// ポストプロセス
-	std::unique_ptr<DirectX::BasicPostProcess> m_basicPostProcess;
+	std::unique_ptr<DirectX::BasicPostProcess> m_pBasicPostProcess;
 	// デュアルポストプロセス
-	std::unique_ptr<DirectX::DualPostProcess> m_dualPostProcess;
+	std::unique_ptr<DirectX::DualPostProcess> m_pDualPostProcess;
 	// スクリーンサイズ
 	RECT m_screenSize;
 	// レンダーテクスチャ
-	std::unique_ptr<DX::RenderTexture> m_offScreenRT;// オフスクリーン用のRT
-	std::unique_ptr<DX::RenderTexture> m_blur1RT;// ブラー1用のRT
-	std::unique_ptr<DX::RenderTexture> m_blur2RT;// ブラー2用のRT
-	std::unique_ptr<DX::RenderTexture> m_savedOffScreenRT;// 保存されたオフスクリーン用のRT
+	std::unique_ptr<DX::RenderTexture> m_pOffScreenRT;// オフスクリーン用のRT
+	std::unique_ptr<DX::RenderTexture> m_pBlur1RT;// ブラー1用のRT
+	std::unique_ptr<DX::RenderTexture> m_pBlur2RT;// ブラー2用のRT
+	std::unique_ptr<DX::RenderTexture> m_pSavedOffScreenRT;// 保存されたオフスクリーン用のRT
 	// オフスクリーン用のレンダーターゲットビュー
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_offScreenRTV;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_pOffScreenRTV;
 	// オフスクリーン用のシェーダーリソースビュー
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_offScreenSRV;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pOffScreenSRV;
 	// デフォルトの深度ステンシルビュー
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_defaultDSV;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_pDefaultDSV;
 	// デフォルトのレンダーターゲットビュー
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_defaultRTV;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_pDefaultRTV;
 	// スプライトバッチ
-	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
+	std::unique_ptr<DirectX::SpriteBatch> m_pSpriteBatch;
 
 };
 

@@ -17,6 +17,7 @@
 #include <DeviceResources.h>
 // 外部ライブラリ
 #include <Libraries/MyLib/InputManager.h>
+#include <Libraries/MyLib/DebugString.h>
 #include <Libraries/MyLib/MemoryLeakDetector.h>
 // 自作ヘッダーファイル
 #include "Game/CommonResources.h"
@@ -36,17 +37,18 @@ public:// public関数
 private:
 	std::wstring ConvertToWString(const std::string& str);// 文字列変換
 private:// private定数
-	const std::unordered_map<int, const std::string> m_texturePathMap =// ステージ番号に応じた空のモデルのパス
+	const std::unordered_map<int, const std::string> m_keyMap =// ステージ番号に応じた空のモデルのKey
 	{
-		{0, "Resources/models/sky/sky.cmo"},// ステージ１
-		{1, "Resources/models/sky/CloudySky.cmo"},// ステージ２
-		{2, "Resources/models/sky/EveningSky.cmo"},// ステージ３
-		{3, "Resources/models/sky/NightSky.cmo"},// ステージ４
-		{4, "Resources/models/sky/MidNightSky.cmo"}// ステージ５
+		{0, "Stage1"},// ステージ１
+		{1, "Stage2"},// ステージ２
+		{2, "Stage3"},// ステージ３
+		{3, "Stage4"},// ステージ４
+		{4, "Stage5"} // ステージ５
 	};
 private:// private変数
 	CommonResources* m_pCommonResources;// 共通リソース
-	std::unique_ptr<DirectX::Model> m_model;// モデル
+	DirectX::Model* m_pModel;// モデル
 	wchar_t m_texturePath[256];// テクスチャパス
 	int m_stageID;// ステージID
+	std::string Path;
 };

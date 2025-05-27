@@ -2,7 +2,7 @@
 *	@file	Fade.cpp
 *	@brief	フェードクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "Fade.h"
 
 /*

@@ -1,9 +1,8 @@
 /*
 *	@file PlayerUI.cpp
 *	@brief プレイヤーUIクラス
-*
 */
-#include "pch.h"
+#include <pch.h>
 #include "PlayerUI.h"
 // インプットレイアウト
 const std::vector<D3D11_INPUT_ELEMENT_DESC> PlayerUI::INPUT_LAYOUT =
@@ -105,29 +104,29 @@ void PlayerUI::CreateShaders()
 	// シェーダーの作成
 	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/PlayerUI/VS_PlayerUI.cso", m_pVertexShader);// 頂点シェーダーの作成
 	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/PlayerUI/PS_PlayerUI.cso", m_pPixelShader);// ピクセルシェーダーの作成
-	m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/PlayerUI/GS_PlayerUI.cso", m_geometryShader);// ジオメトリシェーダーの作成
+	m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/PlayerUI/GS_PlayerUI.cso", m_pGeometryShader);// ジオメトリシェーダーの作成
 	m_pInputLayout = m_pCreateShader->GetInputLayout();// インプットレイアウトを受け取る
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/PlayerUI/PS_PlayerHP.cso", m_hpPixelShader);// HP用シェーダーの作成
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/PlayerUI/PS_CircleGauge.cso", m_circlePixelShader);// 円形ゲージ用シェーダーの作成
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/PlayerUI/PS_Loading.cso", m_animPixelShader);// UVアニメーション用シェーダーの作成
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/PlayerUI/PS_PlayerHP.cso", m_pHPPixelShader);// HP用シェーダーの作成
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/PlayerUI/PS_CircleGauge.cso", m_pCirclePixelShader);// 円形ゲージ用シェーダーの作成
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/PlayerUI/PS_Loading.cso", m_pAnimPixelShader);// UVアニメーション用シェーダーの作成
 	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));// HP用シェーダーにデータを渡すためのコンスタントバッファ生成
 	// シェーダーの構造体にシェーダーを渡す
 	// HP以外のシェーダー
 	m_shaders.vs = m_pVertexShader.Get();			// 頂点シェーダーをセット
 	m_shaders.ps = m_pPixelShader.Get();			// ピクセルシェーダーをセット
-	m_shaders.gs = m_geometryShader.Get();			// ジオメトリシェーダーをセット
+	m_shaders.gs = m_pGeometryShader.Get();			// ジオメトリシェーダーをセット
 	// HP用シェーダー
 	m_hpShaders.vs = m_pVertexShader.Get();			// 頂点シェーダーをセット
-	m_hpShaders.ps = m_hpPixelShader.Get();			// ピクセルシェーダーをセット
-	m_hpShaders.gs = m_geometryShader.Get();		// ジオメトリシェーダーをセット
+	m_hpShaders.ps = m_pHPPixelShader.Get();			// ピクセルシェーダーをセット
+	m_hpShaders.gs = m_pGeometryShader.Get();		// ジオメトリシェーダーをセット
 	// 円形ゲージ用シェーダー
 	m_circleShaders.vs = m_pVertexShader.Get();		// 頂点シェーダーをセット
-	m_circleShaders.ps = m_circlePixelShader.Get();	// ピクセルシェーダーをセット
-	m_circleShaders.gs = m_geometryShader.Get();	// ジオメトリシェーダーをセット
+	m_circleShaders.ps = m_pCirclePixelShader.Get();	// ピクセルシェーダーをセット
+	m_circleShaders.gs = m_pGeometryShader.Get();	// ジオメトリシェーダーをセット
 	// UVアニメーション用シェーダー
 	m_animShaders.vs = m_pVertexShader.Get();		// 頂点シェーダーをセット
-	m_animShaders.ps = m_animPixelShader.Get();		// ピクセルシェーダーをセット
-	m_animShaders.gs = m_geometryShader.Get();		// ジオメトリシェーダーをセット
+	m_animShaders.ps = m_pAnimPixelShader.Get();		// ピクセルシェーダーをセット
+	m_animShaders.gs = m_pGeometryShader.Get();		// ジオメトリシェーダーをセット
 }
 
 

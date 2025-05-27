@@ -2,7 +2,7 @@
 *	@file	UI.cpp
 *	@brief	UIクラス(タイトル・リザルト・セッティング)
 */
-#include "pch.h"
+#include <pch.h>
 #include "UI.h"
 
 // UIクラスのインプットレイアウト

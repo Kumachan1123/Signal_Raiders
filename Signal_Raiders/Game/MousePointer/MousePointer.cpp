@@ -1,6 +1,6 @@
 /*
-	@file	TitleMenu.cpp
-	@brief	タイトル画面のメニュークラス
+*	@file	TitleMenu.cpp
+*	@brief	タイトル画面のメニュークラス
 */
 #include <pch.h>
 #include "MousePointer.h"

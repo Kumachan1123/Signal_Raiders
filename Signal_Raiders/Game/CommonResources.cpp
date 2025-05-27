@@ -2,7 +2,7 @@
 *	@file	CommonResources.cpp
 *	@brief	シーンへ渡す、ゲーム内で使用する共通リソース
 */
-#include "pch.h"
+#include <pch.h>
 #include "CommonResources.h"
 /*
 *	@brief	コンストラクタ

@@ -1,47 +1,48 @@
-//--------------------------------------------------------------------------------------
-// File: WifiLoading.h
-//
-// Wi-FiローディングUIクラス
-//
-//-------------------------------------------------------------------------------------
+/*
+*	@file	WifiLoading.h
+*	@brief	Wi-Fiローディングクラス
+*/
 #pragma once
-#include "StepTimer.h"
-#include "Game/Player/PlayerUI/PlayerUI.h"
-#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
-#include <DeviceResources.h>
-#include <SimpleMath.h>
-#include <Effects.h>
-#include <PrimitiveBatch.h>
-#include <VertexTypes.h>
-#include <WICTextureLoader.h>
-#include <CommonStates.h>
+// 標準ライブラリ
 #include <vector>
 #include <memory>
-#include "Keyboard.h"
+// DirectX
+#include <DeviceResources.h>
+#include <SimpleMath.h>
+#include <WICTextureLoader.h>
+// 自作ヘッダーファイル 
 #include "Game/Screen.h"
 #include "Game/Interface/IPlayUI.h"
-
-
+#include "Game/Player/PlayerUI/PlayerUI.h"
+#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 class WifiLoading : public IPlayUI
 {
-
-	//変数
-private:
-
+public:// public関数
+	WifiLoading();// コンストラクタ
+	~WifiLoading();// デストラクタ
+	void Initialize(CommonResources* resources, int width, int height) override;// 初期化関数
+	void Update(const UpdateContext& data)override { Update(data.elapsedTime); }// 更新関数
+	void Render()override;// 描画関数
+	void Add(std::unique_ptr<PlayerUI>& pPlayerUI, const wchar_t* path// UIの追加関数
+		, DirectX::SimpleMath::Vector2 position
+		, DirectX::SimpleMath::Vector2 scale
+		, KumachiLib::ANCHOR anchor)override;
+private:// private関数
+	void Update(float elapsedTime);// 更新関数
+private:// private変数
+	// デバイスリソース
 	DX::DeviceResources* m_pDR;
-
-
-	std::unique_ptr<PlayerUI> m_loading;// Wi-FiローディングUI
-
-	std::unique_ptr<PlayerUI> m_loadgingText;// ローディングテキスト
-
-
-	const wchar_t* m_baseTexturePath;
-
-
-	int m_windowWidth, m_windowHeight;
-	// フレームの行数と列数
+	// Wi-FiローディングUI
+	std::unique_ptr<PlayerUI> m_pLoading;
+	// ローディングテキスト
+	std::unique_ptr<PlayerUI> m_pLoadgingText;
+	// ウィンドウの幅
+	int m_windowWidth;
+	// ウィンドウの高さ
+	int m_windowHeight;
+	// フレームの行数 
 	int m_frameRows;
+	// フレームの列数
 	int m_frameCols;
 	// フレーム数
 	int m_anim;
@@ -49,26 +50,4 @@ private:
 	float m_animSpeed;
 	// アニメーション時間
 	float m_animTime;
-	DirectX::Keyboard::KeyboardStateTracker m_tracker;
-
-
-	//関数
-public:
-	WifiLoading();
-	~WifiLoading();
-
-	void Initialize(CommonResources* resources, int width, int height) override;
-	void Update(const UpdateContext& data)override
-	{
-		Update(data.elapsedTime);
-	};
-	void Render()override;
-
-	void Add(std::unique_ptr<PlayerUI>& pPlayerUI, const wchar_t* path
-		, DirectX::SimpleMath::Vector2 position
-		, DirectX::SimpleMath::Vector2 scale
-		, KumachiLib::ANCHOR anchor)override;
-private:
-	void Update(float elapsedTime);
-
 };

@@ -2,7 +2,7 @@
 *	@file	SettingBar.cpp
 *	@brief	設定バークラス（音量や感度などのスライダー）
 */
-#include "pch.h"
+#include <pch.h>
 #include "SettingBar.h"
 const DirectX::SimpleMath::Vector2 SettingBar::BGM_POSITION = { Screen::CENTER_X + 300, Screen::CENTER_Y - 300 };// BGMの位置
 const DirectX::SimpleMath::Vector2 SettingBar::SE_POSITION = { Screen::CENTER_X + 300, Screen::CENTER_Y - 150 };// SEの位置
@@ -24,6 +24,7 @@ SettingBar::SettingBar()
 	, m_pSettingBarPointerTexturePath{}// 設定バーの玉テクスチャパス
 	, m_windowWidth{ 0 }// ウィンドウ幅
 	, m_windowHeight{ 0 }// ウィンドウ高さ
+	, m_time{ 0.0f }// 時間
 	, m_num{ SettingMenu::SettingID::BGM }// 状態ID
 	, m_selectNum{ SettingMenu::SelectID::NONE }// 選択番号
 	, m_setting{ 0,0,0 }// 設定データ(BGM音量,SE音量,マウス感度)

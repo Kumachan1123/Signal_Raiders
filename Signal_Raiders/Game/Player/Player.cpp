@@ -2,7 +2,7 @@
 *	@file	Player.cpp
 *	@brief	プレイヤークラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "Player.h"
 /*
 *	@brief	コンストラクタ

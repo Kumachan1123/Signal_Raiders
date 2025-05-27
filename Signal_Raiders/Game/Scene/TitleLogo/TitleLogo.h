@@ -62,7 +62,7 @@ private:// private変数
 	// データ受け渡し用コンスタントバッファ
 	ConstBuffer m_ConstBuffer;
 	// タイトル画像
-	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_titleTexture;
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_pTitleTexture;
 	// 時間
 	float m_time;
 	// ワールド行列

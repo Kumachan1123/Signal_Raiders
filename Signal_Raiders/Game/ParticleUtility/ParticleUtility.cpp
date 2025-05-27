@@ -2,7 +2,7 @@
 *	@file	ParticleUtility.cpp
 *	@brief	パーティクルユーティリティクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "ParticleUtility.h"
 
 const static float ENDLESS = -100.0f;// 無限大の値

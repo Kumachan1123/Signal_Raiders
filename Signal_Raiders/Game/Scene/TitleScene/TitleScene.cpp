@@ -2,7 +2,7 @@
 *	@file	TitleScene.cpp
 *	@brief	タイトルシーンクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "TitleScene.h"
 // 音量の基準
 const float TitleScene::VOLUME = 0.05f;

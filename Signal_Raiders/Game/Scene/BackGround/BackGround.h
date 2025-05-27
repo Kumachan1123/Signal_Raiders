@@ -39,6 +39,8 @@ public:// public関数
 	void Render();// 描画
 private:// private関数
 	void CreateShaders();// シェーダー作成
+public:// 定数
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;// インプットレイアウト
 private:// private変数
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;
@@ -46,17 +48,13 @@ private:// private変数
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_pCBuffer;
 	// 共通リソース
 	CommonResources* m_pCommonResources;
-	//	入力レイアウト
+	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
-	//	プリミティブバッチ
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_batch;
-	//	コモンステート
-	std::unique_ptr<DirectX::CommonStates> m_states;
-	//	テクスチャハンドル
+	// テクスチャハンドル
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_pTexture;
-	//	頂点シェーダ
+	// 頂点シェーダ
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_pVertexShader;
-	//	ピクセルシェーダ
+	// ピクセルシェーダ
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
@@ -76,7 +74,5 @@ private:// private変数
 	float m_time;
 	// シェーダーに渡す色
 	DirectX::SimpleMath::Vector4 m_color;
-public:
-	// 定数
-	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
+
 };

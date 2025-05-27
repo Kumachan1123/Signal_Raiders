@@ -2,7 +2,7 @@
 	@file	Effect.cpp
 	@brief	エフェクトクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "Effect.h"
 
 /*

@@ -2,7 +2,7 @@
 *	@file BossAppear.cpp
 *	@brief ボス出現演出のクラスのソースファイル
 */
-#include "pch.h"
+#include <pch.h>
 #include "BossAppear.h"
 
 using namespace DirectX;

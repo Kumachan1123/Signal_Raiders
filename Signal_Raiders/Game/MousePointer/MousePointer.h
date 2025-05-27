@@ -1,6 +1,6 @@
 /*
-	@file	TitleMenu.h
-	@brief	タイトル画面のメニュークラス
+*	@file	TitleMenu.h
+*	@brief	タイトル画面のメニュークラス
 */
 #pragma once
 //	標準ライブラリ
@@ -11,9 +11,9 @@
 #include <Mouse.h>
 // 外部ライブラリ
 #include <DeviceResources.h>
-#include "Game/CommonResources.h"
 #include <Libraries/MyLib/InputManager.h>
 // 自作ヘッダーファイル
+#include "Game/CommonResources.h"
 #include "Game/Screen.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "Game/UI/UI.h"

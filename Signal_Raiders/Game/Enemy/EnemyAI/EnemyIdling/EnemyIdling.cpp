@@ -2,7 +2,7 @@
 *	@file	EnemyIdling.cpp
 *	@brief	敵徘徊クラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "EnemyIdling.h"
 /*
 *	@brief	コンストラクタ

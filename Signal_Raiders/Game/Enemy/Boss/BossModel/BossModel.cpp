@@ -2,7 +2,7 @@
 *	@file	BossModel.cpp
 *	@brief	ボスモデルクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "BossModel.h"
 /*
 *	@breif	コンストラクタ

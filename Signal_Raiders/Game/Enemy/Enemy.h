@@ -1,21 +1,22 @@
 /*
-	@file	Enemy.h
-	@brief	敵クラス
+*	@file	Enemy.h
+*	@brief	敵クラス
 */
 #pragma once
 // 標準ライブラリ
 #include <cassert>
-#include <SimpleMath.h>
 #include <random>
 #include <memory>
-// 外部ライブラリ
-#include "Game/CommonResources.h"
+// DirectX
+#include <SimpleMath.h>
 #include <DeviceResources.h>
+// 外部ライブラリ
 #include <Libraries/MyLib/DebugString.h>
 #include <Libraries/MyLib/MemoryLeakDetector.h>
 #include <Libraries/Microsoft/DebugDraw.h>
 #include <Libraries/Microsoft/ReadData.h>
 // 自作ヘッダーファイル
+#include "Game/CommonResources.h"
 #include "Game/Enemy/EnemyHPBar/EnemyHPBar.h"
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 #include "Game/Enemy/EnemyModel/EnemyModel.h"
@@ -85,7 +86,7 @@ private:
 private:
 	// メンバ変数
 	CommonResources* m_pCommonResources;	// 共通リソース
-	std::unique_ptr<EnemyModel>		m_enemyModel;// 敵のモデル
+	std::unique_ptr<EnemyModel>		m_pEnemyModel;// 敵のモデル
 	std::unique_ptr<EnemyAI>		m_pEnemyAI;// 敵のAI
 	std::unique_ptr<EnemyHPBar>		m_pHPBar;// 敵のHPバー
 	Player* m_pPlayer;	// プレイヤーのポインター

@@ -2,7 +2,7 @@
 *	@file	PlayScene.cpp
 *	@brief	プレイシーンクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "PlayScene.h"
 // 音量の基準
 const float PlayScene::VOLUME = 0.05f;
@@ -65,8 +65,8 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pStage->Initialize(resources);// 地面を初期化する
 	m_pWall = std::make_unique<Wall>(resources);// 壁生成
 	m_pWall->Create(DR);// 壁を生成する
-	m_sky = std::make_unique<Sky>(m_stageNumber);// 空生成
-	m_sky->Initialize(resources);// 空を初期化する
+	m_pSky = std::make_unique<Sky>(m_stageNumber);// 空生成
+	m_pSky->Initialize(resources);// 空を初期化する
 	m_pPlayer = std::make_unique<Player>(resources);// プレイヤーを初期化する
 	m_pEnemyManager = std::make_unique<EnemyManager>(resources);// 敵全体を初期化する
 	m_pEnemyManager->SetStageNumber(m_stageNumber);// ステージ番号を設定する
@@ -116,10 +116,10 @@ void PlayScene::Initialize(CommonResources* resources)
 void PlayScene::Update(float elapsedTime)
 {
 	m_time += elapsedTime;// 経過時間
+	m_pCommonResources->GetAudioManager()->Update();// オーディオマネージャーの更新
 	m_pCommonResources->GetAudioManager()->PlaySound("PlayBGM", m_BGMvolume);// 二重再生しない
 	DirectX::SimpleMath::Vector3 cameraDirection = m_pPlayer->GetCamera()->GetDirection();// カメラが向いている方向を取得する
 	m_pWall->Update(elapsedTime);// 壁の更新
-	m_pCommonResources->GetAudioManager()->Update();// オーディオマネージャーの更新
 	m_pEnemyManager->Update(elapsedTime);// 敵の更新
 	m_pPlayer->Update(elapsedTime);// プレイヤーの更新
 	UpdateContext ctx;// 各種UIに渡す情報をまとめた構造体
@@ -182,7 +182,7 @@ void PlayScene::Render()
 	Matrix skyWorld = Matrix::Identity * Matrix::CreateScale(10);;// スカイボックスのワールド行列(サイズ10倍)
 	Matrix world = Matrix::Identity;// ワールド行列
 	m_pBloom->ChangeOffScreenRT();// オフスクリーンにオブジェクトを描画する
-	m_sky->Render(view, projection, skyWorld, m_pPlayer->GetPlayerController()->GetPlayerPosition());// 天球描画
+	m_pSky->Render(view, projection, skyWorld, m_pPlayer->GetPlayerController()->GetPlayerPosition());// 天球描画
 	m_pStage->Render(view, projection, world, Vector3(0, 0, 0));// 地面描画
 	m_pWall->Render(view, projection);// 壁描画
 	m_pEnemyManager->Render();// 敵を描画する
@@ -219,7 +219,7 @@ void PlayScene::Render()
 */
 void PlayScene::Finalize()
 {
-	m_sky.reset();// 空を解放する
+	m_pSky.reset();// 空を解放する
 }
 /*
 *	@brief シーン変更

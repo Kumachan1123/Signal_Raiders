@@ -2,7 +2,7 @@
 *	@file Wall.cpp
 *	@brief •ÇƒNƒ‰ƒX
 */
-#include "pch.h"
+#include <pch.h>
 #include "Wall.h"
 
 // •Ç‚Ì•

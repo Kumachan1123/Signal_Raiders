@@ -2,7 +2,7 @@
 *	@file	Sky.cpp
 *	@brief	スカイクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "Sky.h"
 /*
 *	@brief	コンストラクタ
@@ -12,7 +12,7 @@
 */
 Sky::Sky(int StageID)
 	: m_pCommonResources{}// 共通リソース
-	, m_model{}// モデル
+	, m_pModel{}// モデル
 	, m_texturePath{}// テクスチャパス
 	, m_stageID{ StageID }// ステージID
 {
@@ -36,16 +36,14 @@ void Sky::Initialize(CommonResources* resources)
 	using namespace DirectX::SimpleMath;
 	assert(resources);// リソースがnullptrでないことを確認
 	m_pCommonResources = resources;// リソースを保存
-	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
-	std::unique_ptr<EffectFactory> fx = std::make_unique<EffectFactory>(device);// モデルを読み込む準備
-	fx->SetDirectory(L"Resources/models/sky");// モデルのディレクトリを設定
-	auto it = m_texturePathMap.find(m_stageID);// ステージIDに応じた空のモデルのパスを取得
-	if (it != m_texturePathMap.end()) // マップの要素が見つかった場合
-	{
-		std::wstring wpath = ConvertToWString(it->second);// ステージIDに応じた空のモデルのパスを取得
-		m_model = Model::CreateFromCMO(device, wpath.c_str(), *fx);// モデルを読み込む
-	}
-	m_model->UpdateEffects([](DirectX::IEffect* effect)	// モデルのエフェクト情報を更新する
+	//auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
+	//std::unique_ptr<EffectFactory> fx = std::make_unique<EffectFactory>(device);// モデルを読み込む準備
+	//fx->SetDirectory(L"Resources/models/sky");// モデルのディレクトリを設定
+	auto it = m_keyMap.find(m_stageID);// ステージIDに応じた空のモデルのパスを取得
+	Path = it->second; // ステージIDに応じた空のモデルのパスを保存
+	if (it != m_keyMap.end()) // マップの要素が見つかった場合
+		m_pModel = m_pCommonResources->GetModelManager()->GetModel(Path); // モデルマネージャーからモデルを取得
+	m_pModel->UpdateEffects([](DirectX::IEffect* effect)	// モデルのエフェクト情報を更新する
 		{
 			BasicEffect* basicEffect = dynamic_cast<BasicEffect*>(effect);// ベーシックエフェクトを設定する
 			if (!basicEffect)return;// エフェクトがnullptrの場合は処理を終える
@@ -73,7 +71,10 @@ void Sky::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix p
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストを取得
 	auto states = m_pCommonResources->GetCommonStates();// 共通ステートを取得
 	world *= Matrix::CreateTranslation(pos);// ワールド行列を更新
-	m_model->Draw(context, *states, world, view, proj);// モデルを描画する
+	m_pModel->Draw(context, *states, world, view, proj);// モデルを描画する
+	auto debugString = m_pCommonResources->GetDebugString();// デバッグ情報を表示する
+	debugString->AddString("Sky StageID: %d", m_stageID);// ステージIDをデバッグ情報に追加
+	debugString->AddString("Sky Path: %s", Path.c_str());// パスをデバッグ情報に追加
 }
 /*
 *	@brief	文字列変換

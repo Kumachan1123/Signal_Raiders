@@ -2,7 +2,7 @@
 *	@file	EnemyAI.cpp
 *	@brief	“GAIƒNƒ‰ƒX
 */
-#include "pch.h"
+#include <pch.h>
 #include "EnemyAI.h"
 
 /*

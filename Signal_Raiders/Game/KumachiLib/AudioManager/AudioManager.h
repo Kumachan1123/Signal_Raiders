@@ -33,9 +33,9 @@ public:
 	void Shutdown();	// 解放
 private:
 	// private変数
-	FMOD::System* m_system;	// FMODシステム
-	std::unordered_map<std::string, FMOD::Channel*> m_channels;	// チャンネル
-	std::unordered_map<std::string, FMOD::Sound*> m_sounds;	// サウンド
-	std::unordered_map<std::string, bool> m_allowMultiplePlayMap; // キーごとの二重再生可否
+	FMOD::System* m_pFMODSystem;	// FMODシステム
+	std::unordered_map<std::string, FMOD::Channel*> m_pChannels;	// チャンネル
+	std::unordered_map<std::string, FMOD::Sound*> m_pSounds;	// サウンド
+	std::unordered_map<std::string, bool> m_pAllowMultiplePlayMap; // キーごとの二重再生可否
 	float m_volume;	// ボリューム
 };

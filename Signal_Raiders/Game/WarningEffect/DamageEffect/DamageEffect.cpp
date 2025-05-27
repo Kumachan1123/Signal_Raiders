@@ -2,7 +2,7 @@
 *	@file DamageEffect.cpp
 *	@brief 攻撃を受けた時の演出クラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "DamageEffect.h"
 
 // インプットレイアウト

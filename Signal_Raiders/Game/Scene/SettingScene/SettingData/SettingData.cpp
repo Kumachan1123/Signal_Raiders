@@ -2,7 +2,7 @@
 *	@file	SettingData.cpp
 *	@brief	設定データの読み書きを管理するクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "SettingData.h"
 /*
 *	@brief コンストラクタ

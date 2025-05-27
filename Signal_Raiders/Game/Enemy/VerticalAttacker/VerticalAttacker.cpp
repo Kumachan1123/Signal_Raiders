@@ -2,7 +2,7 @@
 *	@file	VerticalAttacker.cpp
 *	@brief	垂直攻撃敵クラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "VerticalAttacker.h"
 // 自作ヘッダーファイル
 #include "Game/Enemy/EnemyAI/EnemyAI.h"

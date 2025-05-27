@@ -2,7 +2,7 @@
 *	@file	Result.cpp
 *	@brief	結果クラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "Result.h"
 /*
 *	@brief インプットレイアウト

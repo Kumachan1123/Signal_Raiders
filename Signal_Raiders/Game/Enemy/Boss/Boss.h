@@ -3,14 +3,13 @@
 	@brief	ボスクラス
 */
 #pragma once
-// 標準ライブラリ
+// DirectX
 #include <SimpleMath.h>
-// 外部ライブラリ
 #include <DeviceResources.h>
+// 外部ライブラリ
 #include <Libraries/MyLib/DebugString.h>
 #include <Libraries/MyLib/MemoryLeakDetector.h>
 // 自作ヘッダーファイル
-
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/Interface/IBossLogic.h"
 #include "Game/Enemy/BossBase/BossBase.h"

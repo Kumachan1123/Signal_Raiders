@@ -2,7 +2,7 @@
 *	@file Output.cpp
 *	@brief 情報表示に関するソースファイル
 */
-#include "pch.h"
+#include <pch.h>
 #include "Output.h"
 /*
 *	@brief コンストラクタ

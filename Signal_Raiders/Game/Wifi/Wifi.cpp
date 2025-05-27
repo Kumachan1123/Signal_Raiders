@@ -2,7 +2,7 @@
 *	@file	Wifi.cpp
 *	@brief	Wi-Fiの情報を取得するクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "Wifi.h"
 /*
 *	@brief	コンストラクタ

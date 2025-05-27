@@ -2,7 +2,7 @@
 *	@file	EnemyModel.cpp
 *	@brief	敵モデルクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "EnemyModel.h"
 /*
 *	@brief	コンストラクタ

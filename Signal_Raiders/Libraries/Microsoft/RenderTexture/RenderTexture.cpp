@@ -7,7 +7,7 @@
 // Licensed under the MIT License.
 //-------------------------------------------------------------------------------------
 
-#include "pch.h"
+#include <pch.h>
 #include "RenderTexture.h"
 
 #include "DirectXHelpers.h"

@@ -74,7 +74,7 @@ private:// private•Ï”
 	// İ’èƒf[ƒ^
 	unsigned int m_setting[3];
 	// ŠÔ
-	float m_time = 0;
+	float m_time;
 
 
 };

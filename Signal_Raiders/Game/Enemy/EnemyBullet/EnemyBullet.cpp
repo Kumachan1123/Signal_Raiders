@@ -2,7 +2,7 @@
 *	@file	EnemyBullet.cpp
 *	@brief	敵の弾クラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "EnemyBullet.h"
 /*
 *	@brief コンストラクタ

@@ -2,7 +2,7 @@
 *	@file	StageSelectMenu.cpp
 *	@brief	メニュークラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "StageSelectMenu.h"
 // 無効なメニューインデックス
 const int StageSelectMenu::INVALID_MENU_INDEX = 6;// 無効なメニューインデックス

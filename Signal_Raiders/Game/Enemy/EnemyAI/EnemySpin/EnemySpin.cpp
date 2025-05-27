@@ -2,7 +2,7 @@
 *	@file	EnemySpin.cpp
 *	@brief	敵スピンクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "EnemySpin.h"
 /*
 *	@brief	コンストラクタ

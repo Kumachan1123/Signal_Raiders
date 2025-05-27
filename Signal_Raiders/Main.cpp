@@ -3,7 +3,7 @@
 *	@brief ゲームの画面を表示するメイン関数
 */
 // ヘッダーファイル
-#include "pch.h"
+#include <pch.h>
 #include "Game.h"
 #include <Libraries/MyLib/MemoryLeakDetector.h>
 

@@ -2,7 +2,7 @@
 *	@file	TitleLogo.cpp
 *	@brief	タイトルロゴクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "TitleLogo.h"
 /*
 *	@brief インプットレイアウト
@@ -25,7 +25,7 @@ TitleLogo::TitleLogo(CommonResources* resources)
 	, m_pInputLayout{}// インプットレイアウト
 	, m_pDR{}// デバイスリソース
 	, m_pCBuffer{}// コンスタントバッファ
-	, m_titleTexture{}// テクスチャ
+	, m_pTitleTexture{}// テクスチャ
 	, m_time{ 0.0f }// 時間
 	, m_world{}// ワールド行列
 	, m_view{}// ビュー行列
@@ -54,7 +54,7 @@ void TitleLogo::LoadTexture(const wchar_t* path)
 {
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;// 一時保存用テクスチャ
 	DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, nullptr, texture.ReleaseAndGetAddressOf());// テクスチャの読み込み
-	m_titleTexture.push_back(texture);// 配列に登録
+	m_pTitleTexture.push_back(texture);// 配列に登録
 }
 /*
 *	@brief タイトルロゴの初期化
@@ -123,7 +123,7 @@ void TitleLogo::Render()
 		DrawPolygon::BlendStates::NONPREMULTIPLIED,// ブレンドステート
 		DrawPolygon::RasterizerStates::CULL_NONE,// ラスタライザーステート
 		DrawPolygon::DepthStencilStates::DEPTH_NONE);// 深度ステンシルステート
-	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_titleTexture);// 描画
+	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pTitleTexture);// 描画
 	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);	// 頂点シェーダもピクセルシェーダも、同じ値を渡す
 	m_pDrawPolygon->DrawTexture(vertex);// 板ポリゴンを描画
 	m_pDrawPolygon->ReleaseShader();// シェーダの登録を解除しておく

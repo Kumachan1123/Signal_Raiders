@@ -2,7 +2,7 @@
 *	@file	PlayerController.cpp
 *	@brief	プレイヤーコントローラークラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "PlayerController.h"
 const float PlayerController::MOVE_SPEED = 5.0f;// 通常移動速度
 const float PlayerController::DASH_SPEED = 15.0f;// ダッシュ移動速度

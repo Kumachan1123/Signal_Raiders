@@ -31,8 +31,8 @@ public:// 列挙型
 	{
 		DirectX::SimpleMath::Vector4	windowSize;	// ウィンドウサイズ
 		DirectX::SimpleMath::Vector2	frame;		// フレーム数
-		float							animCount;	// アニメーションカウント
-		float							renderRatio;// レンダリング比率
+		float							animCount = 0.0f;	// アニメーションカウント
+		float							renderRatio = 0.0f;// レンダリング比率
 	};
 public:// アクセサ
 	void SetWindowSize(const int& width, const int& height);// ウィンドウサイズの設定
@@ -85,17 +85,16 @@ private:// private変数
 	// ピクセルシェーダ
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
 	// ジオメトリシェーダ
-	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_geometryShader;
+	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_pGeometryShader;
 	// HPで使うシェーダー
 	// ピクセルシェーダ
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_hpPixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pHPPixelShader;
 	// 円形ゲージのシェーダー
 	// ピクセルシェーダ
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_circlePixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pCirclePixelShader;
 	// UVアニメーション用シェーダー
 	// ピクセルシェーダ
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_animPixelShader;
-
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pAnimPixelShader;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
 	// シェーダーの構造体
@@ -134,7 +133,6 @@ private:// private変数
 	float m_renderRatio;
 	// レンダリング比率のオフセット
 	float m_renderRatioOffset;
-
 };
 
 

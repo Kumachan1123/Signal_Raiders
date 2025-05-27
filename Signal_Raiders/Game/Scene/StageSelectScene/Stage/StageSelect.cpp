@@ -2,7 +2,7 @@
 *	@file	StageSelect.cpp
 *	@brief	ステージ選択クラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "StageSelect.h"
 /*
 *	@brief インプットレイアウト

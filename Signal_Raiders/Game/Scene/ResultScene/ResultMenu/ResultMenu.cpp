@@ -2,7 +2,7 @@
 *	@file   ResultMenu.cpp
 *   @brief  リザルト画面のメニューを管理するクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "ResultMenu.h"
 
 // 無効なメニューインデックス

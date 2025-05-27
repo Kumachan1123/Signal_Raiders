@@ -2,7 +2,7 @@
 *	@file	SettingScene.cpp
 *	@brief	メニュークラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "SettingScene.h"
 
 const float SettingScene::VOLUME = 0.05f;// 音量の基準値

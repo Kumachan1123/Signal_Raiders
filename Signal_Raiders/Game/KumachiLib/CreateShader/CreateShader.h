@@ -33,9 +33,9 @@ private:
 	CreateShader& operator=(const CreateShader&) = delete;// 代入演算子の禁止
 private:
 	// シングルトンインスタンス
-	static std::unique_ptr<CreateShader> m_instance;
+	static std::unique_ptr<CreateShader> m_pInstance;
 	// デバイス
-	ID3D11Device1* m_device;
+	ID3D11Device1* m_pDevice;
 	// 入力レイアウト
 	const D3D11_INPUT_ELEMENT_DESC* m_pIDE;
 	// 要素数

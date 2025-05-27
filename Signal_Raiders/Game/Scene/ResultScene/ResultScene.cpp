@@ -2,7 +2,7 @@
 	@file	ResultScene.cpp
 	@brief　リザルトシーンクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "ResultScene.h"
 // 音量の基準
 const float ResultScene::VOLUME = 0.05f;

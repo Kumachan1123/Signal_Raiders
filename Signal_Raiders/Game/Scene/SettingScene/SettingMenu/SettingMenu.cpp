@@ -2,7 +2,7 @@
 	@file	SettingMenu.cpp
 	@brief	セッティングメニュークラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "SettingMenu.h"
 // 無効なメニューインデックス
 const int SettingMenu::INVALID_MENU_INDEX = 6;// 無効なメニューインデックス

@@ -2,7 +2,7 @@
 	@file	EnemyParameters.cpp
 	@brief	敵AI用パラメータークラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "EnemyParameters.h"
 
 using namespace DirectX::SimpleMath;

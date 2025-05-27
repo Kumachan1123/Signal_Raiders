@@ -2,7 +2,7 @@
 *	@file	TitleMenu.cpp
 *	@brief	タイトルメニュークラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "TitleMenu.h"
 // 無効なメニューインデックス
 const int TitleMenu::INVALID_MENU_INDEX = 6;// 無効なメニューインデックス

@@ -2,7 +2,7 @@
 	@file	DebugString.cpp
 	@brief	デバッグ文字列の描画クラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "DebugString.h"
 #include <cstdarg>
 #include <cassert>

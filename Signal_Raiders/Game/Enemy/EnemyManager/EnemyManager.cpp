@@ -2,7 +2,7 @@
 *	@file	EnemyManager.cpp
 *	@brief	敵マネージャークラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "EnemyManager.h"
 /*
 *	@brief	コンストラクタ

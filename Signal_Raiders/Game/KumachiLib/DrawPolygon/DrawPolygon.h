@@ -91,17 +91,17 @@ private:
 private:
 	// private変数
 	// 共通リソース
-	ID3D11DeviceContext1* m_context;
+	ID3D11DeviceContext1* m_pDeviceContext;
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;
 	// デバイス
-	ID3D11Device1* m_device;
+	ID3D11Device1* m_pDevice;
 	// プリミティブバッチ（頂点、テクスチャ）
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_primitiveBatchTexture;
+	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_pPrimitiveBatchTexture;
 	// プリミティブバッチ（頂点、色、テクスチャ）
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_primitiveBatchColorTexture;
+	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_pPrimitiveBatchColorTexture;
 	//コモンステート
-	std::unique_ptr<DirectX::CommonStates> m_states;
+	std::unique_ptr<DirectX::CommonStates> m_pStates;
 	// シングルトンインスタンス
-	static std::unique_ptr<DrawPolygon> m_instance;
+	static std::unique_ptr<DrawPolygon> m_pInstance;
 };

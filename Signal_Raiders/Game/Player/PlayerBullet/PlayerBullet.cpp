@@ -2,12 +2,12 @@
 *	@file	PlayerBullet.cpp
 *	@brief	プレイヤーの弾クラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "PlayerBullet.h"
 /*
 *	@brief	コンストラクタ
 *	@details プレイヤーの弾クラスのコンストラクタ
-*	@param [in]	なし
+*	@param	なし
 *	@return	なし
 */
 PlayerBullet::PlayerBullet()
@@ -24,15 +24,15 @@ PlayerBullet::PlayerBullet()
 /*
 *	@brief	デストラクタ
 *	@details プレイヤーの弾クラスのデストラクタ
-*	@param [in]	なし
+*	@param	なし
 *	@return	なし
 */
 PlayerBullet::~PlayerBullet()
 {
-	m_model.reset();// モデルの解放
-	m_pPixelShader.Reset();// ピクセルシェーダーの解放
-	m_bulletTrail.reset();// 軌跡ポインターの解放
+ 	m_pPixelShader.Reset();// ピクセルシェーダーの解放
+	m_pBulletTrail.reset();// 軌跡ポインターの解放
 	m_pCommonResources = nullptr;// 共通リソースの解放
+	m_pModel = nullptr;// モデルポインターの解放
 }
 /*
 *	@brief	初期化
@@ -47,8 +47,8 @@ void PlayerBullet::Initialize(CommonResources* resources)
 	m_pCommonResources = resources;// 共通リソースの設定
 	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();// デバイスの取得
 	DrawCollision::Initialize(m_pCommonResources);// 当たり判定可視化用クラスの初期化
-	m_bulletTrail = std::make_unique<Particle>(ParticleUtility::Type::PLAYERTRAIL, BulletParameters::PLAYER_BULLET_SIZE);// 弾の軌道生成
-	m_bulletTrail->Initialize(m_pCommonResources);// 弾の軌道生成の初期化
+	m_pBulletTrail = std::make_unique<Particle>(ParticleUtility::Type::PLAYERTRAIL, BulletParameters::PLAYER_BULLET_SIZE);// 弾の軌道生成
+	m_pBulletTrail->Initialize(m_pCommonResources);// 弾の軌道生成の初期化
 	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_Shadow.cso");// 影用のピクセルシェーダー読み込み
 	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pPixelShader.ReleaseAndGetAddressOf()));// ピクセルシェーダーの作成
 	m_pModel = m_pCommonResources->GetModelManager()->GetModel("PlayerBullet");// マネージャーからモデルを取得
@@ -74,8 +74,8 @@ void PlayerBullet::Update(float elapsedTime)
 	m_velocity *= BulletParameters::ADJUST_MOVE * elapsedTime;// 移動量を補正する
 	m_position += m_velocity;// 実際に移動する
 	m_boundingSphere.Center = m_position;// バウンディングスフィアの位置更新
-	m_bulletTrail->SetBulletPosition(m_position);// 現在の弾の位置を軌跡リストに追加
-	m_bulletTrail->Update(elapsedTime);// 軌跡の更新
+	m_pBulletTrail->SetBulletPosition(m_position);// 現在の弾の位置を軌跡リストに追加
+	m_pBulletTrail->Update(elapsedTime);// 軌跡の更新
 	m_time += elapsedTime;// 時間計測
 	m_worldMatrix = Matrix::CreateScale(BulletParameters::PLAYER_BULLET_SIZE);// 弾のサイズを設定
 	m_worldMatrix *= Matrix::CreateRotationX(DirectX::XMConvertToRadians(m_angle));// 弾の回転を設定
@@ -106,8 +106,8 @@ void PlayerBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 {
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストの取得
 	auto states = m_pCommonResources->GetCommonStates();// 共通ステートの取得
-	m_bulletTrail->CreateBillboard(m_cameraTarget, m_cameraEye, m_cameraUp);// 軌跡のビルボード行列を作成
-	m_bulletTrail->Render(view, proj);// 軌跡描画
+	m_pBulletTrail->CreateBillboard(m_cameraTarget, m_cameraEye, m_cameraUp);// 軌跡のビルボード行列を作成
+	m_pBulletTrail->Render(view, proj);// 軌跡描画
 	m_pModel->Draw(context, *states, m_worldMatrix, view, proj);// 弾描画
 }
 /*

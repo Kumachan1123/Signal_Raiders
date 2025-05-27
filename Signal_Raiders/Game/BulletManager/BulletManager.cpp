@@ -2,7 +2,7 @@
 *	@file	BulletManager.cpp
 *	@brief	弾管理クラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "BulletManager.h"
 /*
 *	@brief	コンストラクタ

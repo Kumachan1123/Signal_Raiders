@@ -2,7 +2,7 @@
 	@file	Sky.cpp
 	@brief	スカイクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "Stage.h"
 
 const float Stage::STAGE_SIZE = 98.5f;	// ステージの広さ

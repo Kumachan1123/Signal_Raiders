@@ -1,60 +1,41 @@
-//--------------------------------------------------------------------------------------
-// File: BulletGauge.h
-//
-// 弾ゲージクラス
-//
-//-------------------------------------------------------------------------------------
-
+/*
+*	@file BulletGauge.h
+*	@brief 弾ゲージクラス
+*/
 #pragma once
-
-#include "StepTimer.h"
+// 標準ライブラリ
+#include <vector>
+// DirectX
 #include <DeviceResources.h>
 #include <SimpleMath.h>
-#include <Effects.h>
-#include <PrimitiveBatch.h>
-#include <VertexTypes.h>
 #include <WICTextureLoader.h>
-#include <CommonStates.h>
-#include <vector>
-#include "Keyboard.h"
+// 自作ヘッダーファイル
 #include "Game/Player/PlayerUI/PlayerUI.h"
 #include "Game/Interface/IPlayUI.h"
+#include "Game/Player/PlayerUI/PlayerUI.h"
+#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
+
 class BulletGauge : public IPlayUI
 {
-
-	//変数
-private:
-
-	unsigned int m_menuIndex;
-	DX::DeviceResources* m_pDR;
-
-	std::unique_ptr<PlayerUI> m_gauge;
-
-
-	const wchar_t* m_baseTexturePath;
-
-
-
-	int m_windowWidth, m_windowHeight;
-
-	//関数
-public:
-	BulletGauge();
-	~BulletGauge();
-
-	void Initialize(CommonResources* resources, int width, int height)override;
-	void Update(const UpdateContext& context)override
-	{
-		Update(context.bulletPoint);
-
-	};
-	void Render()override;
-	void Add(std::unique_ptr<PlayerUI>& pPlayerUI, const wchar_t* path
+public:// public関数
+	BulletGauge();// コンストラクタ
+	~BulletGauge();// デストラクタ
+	void Initialize(CommonResources* resources, int width, int height)override;// 初期化関数
+	void Update(const UpdateContext& context)override { Update(context.bulletPoint); }// 更新関数
+	void Render()override;// 描画関数
+	void Add(std::unique_ptr<PlayerUI>& pPlayerUI, const wchar_t* path// 追加関数
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
 		, KumachiLib::ANCHOR anchor)override;
-
-private:
-	void Update(float bulletPoint);
-
+private:// private関数
+	void Update(float bulletPoint);// 更新関数
+private:// private変数
+	// デバイスリソース
+	DX::DeviceResources* m_pDR;
+	// ゲージ
+	std::unique_ptr<PlayerUI> m_pGauge;
+	// ベーステクスチャのパス
+	const wchar_t* m_baseTexturePath;
+	// ウィンドウの幅と高さ
+	int m_windowWidth, m_windowHeight;
 };

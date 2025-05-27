@@ -1,12 +1,14 @@
 /*
-	@file	DrawCollision.h
-	@brief	当たり判定描画用クラス
+*	@file	DrawCollision.h
+*	@brief	当たり判定描画用クラス
 */
 #pragma once
-// 外部ライブラリ
-#include "Game/CommonResources.h"
+// DirectX
 #include <DeviceResources.h>
+// 外部ライブラリ
 #include <Libraries/Microsoft/DebugDraw.h>
+// 自作ヘッダーファイル
+#include "Game/CommonResources.h"
 //前方宣言
 class CommonResources;
 
@@ -22,11 +24,11 @@ public:
 private:
 	// private変数
 	// ベーシックエフェクト
-	static std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
+	static std::unique_ptr<DirectX::BasicEffect> m_pBasicEffect;
 	// 入力レイアウト
 	static Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	// プリミティブバッチ
-	static std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
+	static std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_pPrimitiveBatch;
 	// 共通リソース
 	static CommonResources* m_pCommonResources;
 };

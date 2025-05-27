@@ -23,6 +23,7 @@ public:// public関数
 	~ModelManager();// デストラクタ
 	void Initialize();// モデルの初期化
 private:
+	void CreateSkyModels();// 空モデルの作成
 	void CreateBulletModels(); // 弾モデルの作成
 	void CreateEnemyModels(); // 敵モデルの作成
 	void CreateVerticalAttackerModels(); // 垂直攻撃敵モデルの作成
@@ -33,9 +34,9 @@ private:// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// デバイス
-	ID3D11Device1* m_device;
+	ID3D11Device1* m_pDevice;
 	// モデルのマップ
-	std::unordered_map<std::string, std::shared_ptr<DirectX::Model>> m_modelMap;
+	std::unordered_map<std::string, std::shared_ptr<DirectX::Model>> m_pModelMap;
 	// エフェクトファクトリー
-	std::unique_ptr<DirectX::EffectFactory> m_effectFactory;
+	std::unique_ptr<DirectX::EffectFactory> m_pEffectFactory;
 };

@@ -77,7 +77,7 @@ private:
 	// プレイヤー
 	std::unique_ptr<Player> m_pPlayer;
 	// スカイボックス用のメンバ変数
-	std::unique_ptr<Sky> m_sky;
+	std::unique_ptr<Sky> m_pSky;
 	// 敵全体
 	std::unique_ptr<EnemyManager> m_pEnemyManager;
 	// 弾マネージャー

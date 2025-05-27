@@ -2,7 +2,7 @@
 *	@file	EnemyHPBar.cpp
 *	@brief	“GHPBarƒNƒ‰ƒX
 */
-#include "pch.h"
+#include <pch.h>
 #include "EnemyHPBar.h"
 
 

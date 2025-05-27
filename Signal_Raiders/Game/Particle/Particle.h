@@ -16,11 +16,11 @@
 #include <CommonStates.h>
 // 外部ライブラリ
 #include <DeviceResources.h>
-#include "Game/CommonResources.h"
 // 自作ヘッダーファイル
+#include "Game/CommonResources.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
-#include <Game/ParticleUtility/ParticleUtility.h>
+#include "Game/ParticleUtility/ParticleUtility.h"
 #include  "Game/KumachiLib/BinaryFile/BinaryFile.h"
 //前方宣言
 class CommonResources;
@@ -62,14 +62,14 @@ private:
 	void CreateShaders();// シェーダー作成
 	void Trail();// 軌跡
 	void BarrierBreak();// バリア破壊
+private:// 定数
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;// インプットレイアウト
 public:
 	// public変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;
-	//	関数
-	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 	// 経過時間
 	float m_timer;
 	// コンスタントバッファ
@@ -96,7 +96,7 @@ public:
 	//	ピクセルシェーダ
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
 	//	ジオメトリシェーダ
-	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_geometryShader;
+	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_pGeometryShader;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
 	// 描画クラス

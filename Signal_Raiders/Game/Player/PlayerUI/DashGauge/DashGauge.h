@@ -1,65 +1,45 @@
-//--------------------------------------------------------------------------------------
-// File: DashGauge.h
-//
-// ダッシュゲージクラス
-//
-//-------------------------------------------------------------------------------------
-
+/*
+*	@file DashGauge.h
+*	@brief ダッシュゲージクラス
+*/
 #pragma once
-
-#include "StepTimer.h"
+// 標準ライブラリ
+#include <vector>
+// DirectX
 #include <DeviceResources.h>
 #include <SimpleMath.h>
-#include <Effects.h>
-#include <PrimitiveBatch.h>
-#include <VertexTypes.h>
 #include <WICTextureLoader.h>
-#include <CommonStates.h>
-#include <vector>
-#include "Keyboard.h"
+// 自作ヘッダーファイル
 #include "Game/Player/PlayerUI/PlayerUI.h"
 #include "Game/Interface/IPlayUI.h"
+#include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 class DashGauge : public IPlayUI
 {
-
-	//変数
-private:
-
-	unsigned int m_menuIndex;
-	DX::DeviceResources* m_pDR;
-
-	std::unique_ptr<PlayerUI> m_dash;
-	std::unique_ptr<PlayerUI> m_gauge;
-	std::unique_ptr<PlayerUI> m_frame;
-	std::unique_ptr<PlayerUI> m_base;
-
-
-	const wchar_t* m_baseTexturePath;
-
-	std::unique_ptr<PlayerUI> m_baseWindow;
-
-	int m_windowWidth, m_windowHeight;
-
-	DirectX::Keyboard::KeyboardStateTracker m_tracker;
-
-
-	//関数
-public:
-	DashGauge();
-	~DashGauge();
-
-	void Initialize(CommonResources* resources, int width, int height)override;
-	void Update(const UpdateContext& context)override
-	{
-		Update(context.dashStamina);
-
-	}
-	void Render()override;
-	void Add(std::unique_ptr<PlayerUI>& pPlayerUI, const wchar_t* path
+public:// public関数
+	DashGauge();// コンストラクタ
+	~DashGauge();// デストラクタ
+	void Initialize(CommonResources* resources, int width, int height)override;// 初期化
+	void Update(const UpdateContext& context)override { Update(context.dashStamina); }// 更新
+	void Render()override;// 描画
+	void Add(std::unique_ptr<PlayerUI>& pPlayerUI, const wchar_t* path// UI追加
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
 		, KumachiLib::ANCHOR anchor)override;
-
-private:
-	void Update(float dashStamina);
+private:// private関数
+	void Update(float dashStamina);// 更新
+private:// private変数
+	// デバイスリソース
+	DX::DeviceResources* m_pDR;
+	// ダッシュアイコン
+	std::unique_ptr<PlayerUI> m_pDashIcon;
+	// ゲージ本体
+	std::unique_ptr<PlayerUI> m_pGauge;
+	// ゲージの枠
+	std::unique_ptr<PlayerUI> m_pFrame;
+	// ゲージの背景
+	std::unique_ptr<PlayerUI> m_pBack;
+	// ウィンドウの幅
+	int m_windowWidth;
+	// ウィンドウの高さ
+	int m_windowHeight;
 };

@@ -2,7 +2,7 @@
 *	@file	EnemyCounter.cpp
 *	@brief	敵カウンタ―クラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "EnemyCounter.h"
 /*
 *	@brief	インプットレイアウト

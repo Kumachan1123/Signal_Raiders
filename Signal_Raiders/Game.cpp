@@ -2,7 +2,7 @@
 *	@file Game.cpp
 *	@brief ゲームのメインクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "Game.h"
 /*
 *	@brief ゲームを終了する

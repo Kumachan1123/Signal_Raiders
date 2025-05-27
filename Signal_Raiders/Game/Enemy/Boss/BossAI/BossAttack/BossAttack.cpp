@@ -2,7 +2,7 @@
 *	@file	BossAttack.cpp
 *	@brief	ボス攻撃クラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "BossAttack.h"
 /*
 *	@brief	コンストラクタ

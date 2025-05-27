@@ -2,7 +2,7 @@
 *	@file	BossSheild.cpp
 *	@brief	ボスシールドクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "BossSheild.h"
 
 /*
