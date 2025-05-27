@@ -1,6 +1,6 @@
 /*
-	@file	EnemyHPBar.cpp
-	@brief	敵HPBarクラス
+*	@file	EnemyHPBar.cpp
+*	@brief	敵HPBarクラス
 */
 #include "pch.h"
 #include "EnemyHPBar.h"
@@ -17,6 +17,7 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC>  EnemyHPBar::INPUT_LAYOUT =
 };
 /*
 *	@brief	コンストラクタ
+*	@details 敵HPBarクラスのコンストラクタ
 *	@param	なし
 *	@return なし
 */
@@ -48,12 +49,18 @@ EnemyHPBar::EnemyHPBar()
 
 /*
 *	@brief	デストラクタ
+*	@details 各種ポインターをnullptrに設定
+*	@param	なし
 *	@return なし
 */
-EnemyHPBar::~EnemyHPBar() {/*do nothing*/ }
+EnemyHPBar::~EnemyHPBar()
+{
+	m_pCommonResources = nullptr;	// 共通リソースをnullptrに設定
+}
 
 /*
 *	@brief	画像を読み込む
+*	@details	敵HPバーのテクスチャを読み込む
 *	@param	const wchar_t*　path	画像のパス
 *	@return なし
 */
@@ -62,10 +69,11 @@ void EnemyHPBar::LoadTexture(const wchar_t* path)
 	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;// テクスチャを格納するポインタ
 	DirectX::CreateWICTextureFromFile(device, path, nullptr, texture.ReleaseAndGetAddressOf());// テクスチャを読み込む
-	m_gaugeTexture.push_back(texture);// テクスチャを格納する
+	m_pGaugeTexture.push_back(texture);// テクスチャを格納する
 }
 /*
 *	@brief	シェーダーを作成する
+*	@details	敵HPバーのシェーダーを作成する
 *	@param	なし
 *	@return なし
 */
@@ -84,6 +92,7 @@ void EnemyHPBar::CreateShaders()
 }
 /*
 *	@brief	初期化
+*	@details	敵HPバーの初期化
 *	@param	CommonResources* resources	共通リソース
 *	@return なし
 */
@@ -99,6 +108,7 @@ void EnemyHPBar::Initialize(CommonResources* resources)
 }
 /*
 *	@brief	更新
+*	@details	敵HPバーの更新
 *	@param	float elapsedTime	経過時間
 *	@return なし
 */
@@ -119,6 +129,7 @@ void EnemyHPBar::Update(float elapsedTime)
 }
 /*
 *	@brief	描画
+*	@details	敵HPバーの描画
 *	@param	DirectX::SimpleMath::Matrix view	ビュー行列
 *	@param	DirectX::SimpleMath::Matrix proj	プロジェクション行列
 *	@param	DirectX::SimpleMath::Vector3 pos	座標
@@ -151,20 +162,20 @@ void EnemyHPBar::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::M
 	// HPbar(背景)描画///////////////////////////////////////////////////////////////////////////////
 	m_constBuffer.colors = SimpleMath::Vector4(0.0f, 0.0f, 0.0f, 1.0f);	// 色設定 
 	CreateBuffer();// シェーダーに渡すバッファを作成
-	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_gaugeTexture);	// 描画準備
+	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pGaugeTexture);	// 描画準備
 	m_pDrawPolygon->DrawTexture(m_hpbarBackVert);	// ポリゴンを描画
 	m_pDrawPolygon->ReleaseShader();	// シェーダの登録を解除しておく
-
 	// HPbar(緑)描画///////////////////////////////////////////////////////////////////////////////
 	m_constBuffer.colors = SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);// 色設定
 	CreateBuffer();// シェーダーに渡すバッファを作成
-	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_gaugeTexture);	// 描画準備
+	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pGaugeTexture);	// 描画準備
 	m_pDrawPolygon->DrawTexture(m_hpbarVert);	// ポリゴンを描画
 	m_pDrawPolygon->ReleaseShader();	// シェーダの登録を解除しておく
 }
 
 /*
 *	@brief	シェーダーに渡すバッファを作成
+*	@details	敵HPバーのシェーダーに渡すバッファを作成する
 *	@param	なし
 *	@return なし
 */
@@ -176,5 +187,4 @@ void EnemyHPBar::CreateBuffer()
 	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };	// シェーダーにバッファを渡す
 	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);	// 頂点シェーダもピクセルシェーダも、同じ値を渡す
 	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);	// シェーダをセットする
-
 }

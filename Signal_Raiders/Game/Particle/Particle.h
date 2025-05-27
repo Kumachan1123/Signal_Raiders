@@ -15,7 +15,7 @@
 #include <WICTextureLoader.h>
 #include <CommonStates.h>
 // 外部ライブラリ
-#include "DeviceResources.h"
+#include <DeviceResources.h>
 #include "Game/CommonResources.h"
 // 自作ヘッダーファイル
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"

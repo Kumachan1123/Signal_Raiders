@@ -1,13 +1,17 @@
+/*
+*	@file	BossBase.cpp
+*	@brief	ボスベースクラス
+*/
 #include <pch.h>
 #include "BossBase.h"
 // 自作ヘッダーファイル
 #include "Game/Enemy/Boss/BossAI/BossAI.h"
 #include "Game/Enemy/EnemyManager/EnemyManager.h"
 
-using namespace DirectX;
-using namespace DirectX::SimpleMath;
+
 /*
 *	@brief	コンストラクタ
+*	@details ボスベースクラスのコンストラクタ
 *	@param pPlayer		プレイヤーのポインタ
 *	@param resources	共通リソース
 *	@param hp			ボスの体力
@@ -59,11 +63,15 @@ BossBase::BossBase(Player* pPlayer, CommonResources* resources, int hp)
 }
 /*
 *	@brief	デストラクタ
+*	@details 倒されたら弾を削除する
+*	@param	なし
 *	@return	なし
 */
 BossBase::~BossBase() { m_pBulletManager->RemoveBulletsByShooter(this); }// 弾を削除
 /*
 *	@brief	初期化処理
+*	@details ボスベースクラスの初期化
+*	@param	なし
 *	@return	なし
 */
 void BossBase::Initialize()
@@ -87,6 +95,7 @@ void BossBase::Initialize()
 }
 /*
 *	@brief	更新処理
+*	@details ボスベースクラスの更新処理
 *	@param elapsedTime 経過時間
 *	@return	なし
 */
@@ -113,6 +122,7 @@ void BossBase::Update(float elapsedTime)
 }
 /*
 *	@brief	描画処理
+*	@details ボスベースクラスの描画処理
 *	@param view ビュー行列
 *	@param proj プロジェクション行列
 *	@return	なし
@@ -126,12 +136,14 @@ void BossBase::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Mat
 }
 /*
 *	@brief	当たり判定描画処理
+*	@details ボスベースクラスの当たり判定描画処理（デバッグ用）
 *	@param view ビュー行列
 *	@param proj プロジェクション行列
 *	@return	なし
 */
 void BossBase::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
+	using namespace DirectX;
 	UNREFERENCED_PARAMETER(view);// 未使用の警告を出さない
 	UNREFERENCED_PARAMETER(proj);// 未使用の警告を出さない
 #ifdef _DEBUG
@@ -145,6 +157,8 @@ void BossBase::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMa
 }
 /*
 *	@brief	シールド展開音再生
+*	@details シールド展開音を再生する
+*	@param	なし
 *	@return	なし
 */
 void BossBase::PlayBarrierSE()
@@ -155,10 +169,13 @@ void BossBase::PlayBarrierSE()
 }
 /*
 *	@brief	弾発射
+*	@details ボスが弾を発射する処理
+*	@param	なし
 *	@return	なし
 */
 void BossBase::ShootBullet()
 {
+	using namespace DirectX::SimpleMath;
 	if (m_attackCooldown <= EnemyParameters::ATTACK_COOLDOWN_THRESHOLD)	// 攻撃のクールダウンタイムを管理
 	{
 		m_pCommonResources->GetAudioManager()->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
@@ -178,6 +195,8 @@ void BossBase::ShootBullet()
 
 /*
 *	@brief	真下に落ちて加速する弾を発射
+*	@details ボスが真下に落ちて加速する弾を発射する処理
+*	@param	なし
 *	@return	なし
 */
 void BossBase::CreateVerticalBullet()
@@ -188,6 +207,8 @@ void BossBase::CreateVerticalBullet()
 
 /*
 *	@brief	特殊攻撃をする
+*	@details ボスが特殊攻撃をする処理
+*	@param	なし
 *	@return	なし
 */
 void BossBase::CreateSpiralBullet()
@@ -197,6 +218,7 @@ void BossBase::CreateSpiralBullet()
 }
 /*
 *	@brief	敵のHPを設定
+*	@details 敵のHPを設定する
 *	@param hp 敵のHP
 *	@return	なし
 */

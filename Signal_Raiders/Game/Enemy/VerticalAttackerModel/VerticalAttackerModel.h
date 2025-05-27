@@ -10,8 +10,8 @@
 #include <unordered_map>
 // 外部ライブラリ
 #include "Game/CommonResources.h"
-#include "DeviceResources.h"
-#include "Libraries/Microsoft/ReadData.h"
+#include <DeviceResources.h>
+#include <Libraries/Microsoft/ReadData.h>
 // 自作ヘッダーファイル
 #include "Game/Enemy/VerticalAttacker/VerticalAttacker.h"
 #include "Game/Interface/IState.h"
@@ -37,7 +37,7 @@ private:
 	// private変数
 	CommonResources* m_pCommonResources;	// 共通リソース
 	// モデル
-	DirectX::Model* m_bodyModel;//胴体
+	DirectX::Model* m_pBodyModel;//胴体
 	std::unordered_map<IState::EnemyState, DirectX::Model*> m_pFaceModelMap;// 表情によって変わる顔のモデルのマップ
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;	// モデルの影用のピクセルシェーダー
 	IState::EnemyState m_nowState;	// 現在のステータス

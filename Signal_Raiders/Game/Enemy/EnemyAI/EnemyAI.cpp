@@ -1,12 +1,13 @@
 /*
-	@file	EnemyAI.cpp
-	@brief	敵AIクラス
+*	@file	EnemyAI.cpp
+*	@brief	敵AIクラス
 */
 #include "pch.h"
 #include "EnemyAI.h"
 
 /*
 *	@brief	コンストラクタ
+*	@details 敵AIクラスのコンストラクタ
 *	@param	IEnemy* pEnemy　敵
 *	@return	なし
 */
@@ -32,12 +33,23 @@ EnemyAI::EnemyAI(IEnemy* pEnemy)
 
 /*
 *	@brief	デストラクタ
+*	@details 各種ポインターをnullptrに設定
+*	@param	なし
 *	@return	なし
 */
-EnemyAI::~EnemyAI() {/*do nothing*/ }
+EnemyAI::~EnemyAI()
+{
+	m_pEnemyAttack.reset(); // 攻撃クラスの解放
+	m_pEnemyIdling.reset(); // 徘徊クラスの解放
+	m_pEnemySpin.reset(); // スピンクラスの解放
+	m_pCurrentState = nullptr; // 現在の状態をnullptrに設定
+	m_pEnemy = nullptr; // 敵のポインターをnullptrに設定
+}
 
 /*
 *	@brief	初期化
+*	@details 敵AIクラスの初期化
+*	@param	なし
 *	@return	なし
 */
 void EnemyAI::Initialize()
@@ -55,6 +67,7 @@ void EnemyAI::Initialize()
 }
 /*
 *	@brief	更新
+*	@details 敵AIクラスの更新
 *	@param	float elapsedTime　経過時間
 *	@return	なし
 */
@@ -73,7 +86,7 @@ void EnemyAI::Update(float elapsedTime)
 		m_enemyState = IState::EnemyState::ATTACK;// 徘徊態勢
 		SetIsAttack(true);// 攻撃中にする
 	}
-	else
+	else// 敵がプレイヤーの一定範囲外にいる場合
 	{
 		ChangeState(m_pEnemyIdling.get());//徘徊態勢にする
 		m_enemyState = IState::EnemyState::IDLING;// 徘徊態勢
@@ -92,13 +105,13 @@ void EnemyAI::Update(float elapsedTime)
 }
 /*
 *	@brief	状態変更
+*	@details 敵AIクラスの状態変更
 *	@param	IState* newState　新しい状態
 *	@return	なし
 */
 void EnemyAI::ChangeState(IState* newState)
 {
-	// 新しい状態が現在の状態と異なる場合
-	if (m_pCurrentState != newState)
+	if (m_pCurrentState != newState)// 新しい状態が現在の状態と異なる場合
 	{
 		m_pCurrentState = newState;// 新しい状態に変更
 		m_pCurrentState->Initialize(); // 新しい状態を初期化
@@ -108,6 +121,7 @@ void EnemyAI::ChangeState(IState* newState)
 
 /*
 *	@brief	ノックバック処理
+*	@details 敵がプレイヤーの弾に当たった時のノックバック処理
 *	@param	float elapsedTime　経過時間
 *	@return	なし
 */

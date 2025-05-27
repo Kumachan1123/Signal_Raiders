@@ -8,7 +8,7 @@
 #include <PostProcess.h>
 #include <CommonStates.h>
 // 外部ライブラリ
-#include "DeviceResources.h"
+#include <DeviceResources.h>
 #include "Game/CommonResources.h"
 #include "Libraries/Microsoft/RenderTexture/RenderTexture.h"
 //前方宣言

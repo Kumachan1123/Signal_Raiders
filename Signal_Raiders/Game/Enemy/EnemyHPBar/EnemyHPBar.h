@@ -1,22 +1,23 @@
 /*
-	@file	EnemyHPBar.h
-	@brief	敵HPBarクラス
+*	@file	EnemyHPBar.h
+*	@brief	敵HPBarクラス
 */
 #pragma once
 // 標準ライブラリ
-#include <SimpleMath.h>
 #include <cassert>
 #include <random>
 #include <memory>
+// DirectX
+#include <SimpleMath.h>
+#include <DeviceResources.h>
 // 外部ライブラリ
-#include "Game/CommonResources.h"
-#include "DeviceResources.h"
-#include "Libraries/MyLib/DebugString.h"
+#include <Libraries/MyLib/DebugString.h>
 #include "Libraries/MyLib/GridFloor.h"
-#include "Libraries/MyLib/InputManager.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
+#include <Libraries/MyLib/InputManager.h>
+#include <Libraries/MyLib/MemoryLeakDetector.h>
 #include <Libraries/Microsoft/DebugDraw.h>
 // 自作ヘッダーファイル
+#include "Game/CommonResources.h"
 #include "Game/Enemy/Enemy.h"
 #include "Game/FPS_Camera/FPS_Camera.h"
 #include "Game/KumachiLib/KumachiLib.h"
@@ -102,7 +103,7 @@ private:
 	DirectX::VertexPositionTexture	m_hpbarVert[VERTEX_COUNT];// HPバーの頂点情報
 	DirectX::VertexPositionTexture	m_hpbarBackVert[VERTEX_COUNT];// HPバーの背景の頂点情報
 	// テクスチャ
-	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_gaugeTexture;
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_pGaugeTexture;
 	// 敵の情報
 	DirectX::SimpleMath::Vector3 m_position;		// 座標
 	DirectX::SimpleMath::Vector3 m_velocity;		// 速度

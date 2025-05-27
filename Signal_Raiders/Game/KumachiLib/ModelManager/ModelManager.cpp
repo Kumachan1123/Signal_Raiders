@@ -42,6 +42,7 @@ void ModelManager::Initialize()
 	CreateVerticalAttackerModels(); // 垂直攻撃敵モデルの作成
 	CreateBossModels(); // ボスモデルの作成
 	CreateLastBossModels(); // ラスボスモデルの作成
+	CreateBarrierModels(); // バリアモデルの作成
 }
 /*
 *	@brief 弾モデルの作成
@@ -124,11 +125,11 @@ void ModelManager::CreateBossModels()
 void ModelManager::CreateLastBossModels()
 {
 	m_effectFactory->ReleaseCache(); // キャッシュを解放する
-	m_effectFactory->SetDirectory(L"Resources/Models/LastBoss");// モデルのディレクトリを指定
-	m_modelMap["LastBossBody"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/LastBoss/LastBoss_Body.cmo", *m_effectFactory);// ラスボスの胴体モデルを読み込む
-	m_modelMap["LastBossFaceDamage"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/LastBoss/LastBoss_Face.cmo", *m_effectFactory);// ラスボスのダメージ顔モデルを読み込む
-	m_modelMap["LastBossFaceAttack"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/LastBoss/LastBoss_AttackFace.cmo", *m_effectFactory);// ラスボスの攻撃顔モデルを読み込む
-	m_modelMap["LastBossFaceAngry"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/LastBoss/LastBoss_AngryFace.cmo", *m_effectFactory);// ラスボスの怒り顔モデルを読み込む
+	m_effectFactory->SetDirectory(L"Resources/Models/Boss");// モデルのディレクトリを指定
+	m_modelMap["LastBossBody"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/Boss/LastBoss_Body.cmo", *m_effectFactory);// ラスボスの胴体モデルを読み込む
+	m_modelMap["LastBossFaceDamage"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/Boss/LastBoss_DamageFace.cmo", *m_effectFactory);// ラスボスのダメージ顔モデルを読み込む
+	m_modelMap["LastBossFaceAttack"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/Boss/LastBoss_Face.cmo", *m_effectFactory);// ラスボスの攻撃顔モデルを読み込む
+	m_modelMap["LastBossFaceAngry"] = DirectX::Model::CreateFromCMO(m_device, L"Resources/Models/Boss/LastBoss_AngryFace.cmo", *m_effectFactory);// ラスボスの怒り顔モデルを読み込む
 }
 /*
 *	@brief バリアモデルの作成

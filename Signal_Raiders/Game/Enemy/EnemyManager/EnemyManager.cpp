@@ -1,17 +1,18 @@
 /*
-	@file	EnemyManager.cpp
-	@brief	敵マネージャークラス
+*	@file	EnemyManager.cpp
+*	@brief	敵マネージャークラス
 */
 #include "pch.h"
 #include "EnemyManager.h"
 /*
 *	@brief	コンストラクタ
-*	@param	CommonResources* commonResources 共通リソース
+*	@details 敵マネージャークラスのコンストラクタ
+*	@param	CommonResources* pCommonResources 共通リソース
 *	@return なし
 */
-EnemyManager::EnemyManager(CommonResources* commonResources)
-	: m_pCommonResources{ commonResources }// 共通リソース
-	, m_enemies{}// 敵リスト
+EnemyManager::EnemyManager(CommonResources* pCommonResources)
+	: m_pCommonResources{ pCommonResources }// 共通リソース
+	, m_pEnemies{}// 敵リスト
 	, m_isEnemyBorn{ false }// 敵生成フラグ
 	, m_isBorned{ false }// 敵生成済みフラグ
 	, m_isHitPlayerToEnemy{ false }// プレイヤーと敵の当たり判定フラグ
@@ -41,12 +42,14 @@ EnemyManager::EnemyManager(CommonResources* commonResources)
 }
 /*
 *	@brief	デストラクタ
+*	@details 敵マネージャークラスのデストラクタ
 *	@param	なし
 *	@return なし
 */
 EnemyManager::~EnemyManager() {/*do nothing*/ }
 /*
 *	@brief	初期化
+*	@details 敵マネージャークラスの初期化
 *	@param	Player* pPlayer プレイヤー
 *	@return なし
 */
@@ -57,6 +60,7 @@ void EnemyManager::Initialize(Player* pPlayer)
 }
 /*
 *	@brief	更新
+*	@details 敵マネージャークラスの更新
 *	@param	float elapsedTime 経過時間
 *	@return なし
 */
@@ -74,6 +78,7 @@ void EnemyManager::Update(float elapsedTime)
 }
 /*
 *	@brief	描画
+*	@details 敵マネージャークラスの描画
 *	@param	なし
 *	@return なし
 */
@@ -82,25 +87,26 @@ void EnemyManager::Render()
 	using namespace DirectX::SimpleMath;
 	Matrix view = m_pPlayer->GetCamera()->GetViewMatrix();//	ビュー行列取得
 	Matrix projection = m_pPlayer->GetCamera()->GetProjectionMatrix();//	プロジェクション行列
-	if (m_enemies.size() > 0)for (const auto& enemy : m_enemies)//	全ての敵を描画する
+	if (m_pEnemies.size() > 0)for (const auto& enemy : m_pEnemies)//	全ての敵を描画する
 	{
 		enemy->Render(view, projection);//	敵を描画する
-#ifdef _DEBUG
+#ifdef _DEBUG// デバッグモードなら
 		enemy->DrawCollision(view, projection);//	当たり判定を描画する
 #endif
 	}
-	GetEffect().erase(std::remove_if(GetEffect().begin(), GetEffect().end(),	// エフェクトを描画する
-		[&](const std::unique_ptr<Effect>& effect)//	再生終了したパーティクルを削除する
+	GetEffects().erase(std::remove_if(GetEffects().begin(), GetEffects().end(),	// エフェクトを描画する
+		[&](const std::unique_ptr<Effect>& pEffect)//	再生終了したパーティクルを削除する
 		{
-			if (!effect->IsPlaying()) return true;// 再生終了したパーティクルは削除する
-			effect->Render(view, projection);// パーティクルを描画する
+			if (!pEffect->IsPlaying()) return true;// 再生終了したパーティクルは削除する
+			pEffect->Render(view, projection);// パーティクルを描画する
 			return false;//	再生中のパーティクルは削除しない
 		}),
-		GetEffect().end()//	削除対象のパーティクルを削除する
+		GetEffects().end()//	削除対象のパーティクルを削除する
 	);
 }
 /*
 *	@brief	敵の生成上限設定
+*	@details ステージデータから敵の生成上限を設定する
 *	@param	なし
 *	@return なし
 */
@@ -117,18 +123,21 @@ void EnemyManager::SetEnemyMax()
 }
 /*
 *	@brief	経過時間を加算
+*	@details 敵生成開始時間を更新する
 *	@param	float elapsedTime 経過時間
 *	@return なし
 */
 void EnemyManager::UpdateStartTime(float elapsedTime) { m_startTime += elapsedTime; }
 /*
 *	@brief	全エフェクトの更新
+*	@details エフェクトの更新を行う
 *	@param	float elapsedTime 経過時間
 *	@return なし
 */
-void EnemyManager::UpdateEffects(float elapsedTime) { for (auto& effect : GetEffect())effect->Update(elapsedTime); }
+void EnemyManager::UpdateEffects(float elapsedTime) { for (auto& effect : GetEffects())effect->Update(elapsedTime); }
 /*
 *	@brief	敵生成処理
+*	@details 敵の生成処理を行う
 *	@param	float elapsedTime 経過時間
 *	@return なし
 */
@@ -149,7 +158,7 @@ void EnemyManager::HandleEnemySpawning(float elapsedTime)
 		}
 	}
 	if (m_enemyIndex >= enemyNum)FinalizeEnemySpawn();// 生成上限に達したら敵生成完了処理
-	if (m_enemies.empty() && m_isBorned && !m_isBossBorned)	// 敵がいなくなったらボスを生成
+	if (m_pEnemies.empty() && m_isBorned && !m_isBossBorned)	// 敵がいなくなったらボスを生成
 	{
 		m_isBossAppear = true; // ボス生成演出フラグを立てる
 		m_bossBornWaitTime += elapsedTime;// ボス生成待機時間を更新
@@ -159,6 +168,7 @@ void EnemyManager::HandleEnemySpawning(float elapsedTime)
 }
 /*
 *	@brief	敵生成処理
+*	@details 指定した敵の種類を生成する
 *	@param	EnemyType type 敵の種類
 *	@return なし
 */
@@ -168,12 +178,13 @@ void EnemyManager::SpawnEnemy(EnemyType type)
 		m_pWifi->GetWifiLevels()[m_enemyIndex]);// ファクトリで敵生成
 	enemy->Initialize();// 敵を初期化
 	enemy->SetBulletManager(m_pBulletManager);// 弾マネージャーを設定
-	m_enemies.push_back(std::move(enemy));// 敵リストに追加
+	m_pEnemies.push_back(std::move(enemy));// 敵リストに追加
 	m_enemyBornTimer = 0.0f;// 敵生成タイマーを初期化
 	m_enemyIndex++; // 敵インデックスを増加
 }
 /*
 *	@brief	敵生成完了処理
+*	@details 敵生成完了処理を行う
 *	@param	なし
 *	@return なし
 *
@@ -186,6 +197,7 @@ void EnemyManager::FinalizeEnemySpawn()
 }
 /*
 *	@brief	ボス生成処理
+*	@details ボスを生成する
 *	@param	なし
 *	@return なし
 */
@@ -198,46 +210,48 @@ void EnemyManager::SpawnBoss()
 	boss->SetBulletType(m_bossBulletType);// ボスの弾の種類を設定
 	boss->GetBulletManager()->SetSpecialAttackCount(m_specialAttackCount);// ボスの特殊攻撃の数を設定
 	boss->Initialize();// ボスを初期化
-	m_enemies.push_back(std::move(boss)); // ボスも enemies に統一
+	m_pEnemies.push_back(std::move(boss)); // ボスも enemies に統一
 	m_isBossBorned = true; // ボス生成完了
 	m_isBossAppear = false; // ボス生成演出フラグを下ろす
 }
 /*
 *	@brief	敵同士の当たり判定処理
+*	@details 敵同士の当たり判定を処理する
 *	@param	なし
 *	@return なし
 */
 void EnemyManager::HandleEnemyCollisions()
 {
 	using namespace DirectX::SimpleMath;
-	for (size_t i = 0; i < m_enemies.size(); ++i)// 敵の数だけループ
+	for (size_t i = 0; i < m_pEnemies.size(); ++i)// 敵の数だけループ
 	{
-		for (size_t j = i + 1; j < m_enemies.size(); ++j)// 敵の数だけループ
+		for (size_t j = i + 1; j < m_pEnemies.size(); ++j)// 敵の数だけループ
 		{
 			if (i == j) { continue; } // 同じ敵同士は当たり判定しない
-			bool hit = m_enemies[i]->GetBoundingSphere().Intersects(m_enemies[j]->GetBoundingSphere());// 当たり判定を取得
-			m_enemies[i]->SetHitToOtherEnemy(hit);// 当たり判定結果を設定
-			m_enemies[j]->SetHitToOtherEnemy(hit);// 当たり判定結果を設定
+			bool hit = m_pEnemies[i]->GetBoundingSphere().Intersects(m_pEnemies[j]->GetBoundingSphere());// 当たり判定を取得
+			m_pEnemies[i]->SetHitToOtherEnemy(hit);// 当たり判定結果を設定
+			m_pEnemies[j]->SetHitToOtherEnemy(hit);// 当たり判定結果を設定
 			if (hit)// 当たり判定があったら
 			{
-				// m_enemies[i]の新しい座標
-				auto& enemyA = m_enemies[i]->GetBoundingSphere();// 敵Aの当たり判定を取得
-				auto& enemyB = m_enemies[j]->GetBoundingSphere();// 敵Bの当たり判定を取得
+				// m_pEnemies[i]の新しい座標
+				auto& enemyA = m_pEnemies[i]->GetBoundingSphere();// 敵Aの当たり判定を取得
+				auto& enemyB = m_pEnemies[j]->GetBoundingSphere();// 敵Bの当たり判定を取得
 				Vector3 newPos = CheckHitOtherObject(enemyA, enemyB);// 押し戻し考慮
-				m_enemies[i]->SetPosition(newPos);// 敵Aの位置を設定
+				m_pEnemies[i]->SetPosition(newPos);// 敵Aの位置を設定
 			}
 		}
 	}
 }
 /*
 *	@brief	敵と壁の当たり判定処理
+*	@details 敵と壁の当たり判定を処理する
 *	@param	なし
 *	@return なし
 */
 void EnemyManager::HandleWallCollision()
 {
 	using namespace DirectX::SimpleMath;
-	for (auto& enemy : m_enemies)// 敵の数だけループ
+	for (auto& enemy : m_pEnemies)// 敵の数だけループ
 	{
 		for (int i = 0; i < m_pWall->GetWallNum(); i++)// 壁の数だけループ
 		{
@@ -251,13 +265,14 @@ void EnemyManager::HandleWallCollision()
 }
 /*
 *	@brief	敵全体の更新処理
+*	@details 敵の更新処理を行う
 *	@param	float elapsedTime 経過時間
 * 	@return なし
 */
 void EnemyManager::UpdateEnemies(float elapsedTime)
 {
-	m_attackingEnemies.clear();// 攻撃中の敵配列をクリア
-	for (auto& enemy : m_enemies)// 敵の数だけ
+	m_pAttackingEnemies.clear();// 攻撃中の敵配列をクリア
+	for (auto& enemy : m_pEnemies)// 敵の数だけ
 	{
 		enemy->Update(elapsedTime);// 敵の更新
 		HandleEnemyBulletCollision(enemy);// 敵の弾がプレイヤーに当たったら
@@ -266,75 +281,79 @@ void EnemyManager::UpdateEnemies(float elapsedTime)
 }
 /*
 *	@brief	敵の弾とプレイヤーの当たり判定処理
-*	@param	std::unique_ptr<IEnemy>& enemy 敵のポインタ
+*	@details 敵の弾がプレイヤーに当たったかどうかを処理する
+*	@param	std::unique_ptr<IEnemy>& pEnemy 敵のポインタ
 *	@return なし
 */
-void EnemyManager::HandleEnemyBulletCollision(std::unique_ptr<IEnemy>& enemy)
+void EnemyManager::HandleEnemyBulletCollision(std::unique_ptr<IEnemy>& pEnemy)
 {
-	bool hit = enemy->GetPlayerHitByEnemyBullet();// 敵の弾がプレイヤーに当たったかどうか
+	bool hit = pEnemy->GetPlayerHitByEnemyBullet();// 敵の弾がプレイヤーに当たったかどうか
 	if (hit)// 敵弾がプレイヤーに当たったら
 	{
-		float playerHP = m_pPlayer->GetPlayerHP() - enemy->GetToPlayerDamage();// プレイヤーのHPを減少
+		float playerHP = m_pPlayer->GetPlayerHP() - pEnemy->GetToPlayerDamage();// プレイヤーのHPを減少
 		m_pPlayer->SetPlayerHP(playerHP);// プレイヤーのHPを設定
-		enemy->SetPlayerHitByEnemyBullet(false); // プレイヤーのHPを減少したらフラグを下ろす
+		pEnemy->SetPlayerHitByEnemyBullet(false); // プレイヤーのHPを減少したらフラグを下ろす
 		m_pCommonResources->GetAudioManager()->PlaySound("Damage", m_pPlayer->GetVolume()); // SEを再生
 	}
 }
 /*
 *	@brief	敵とプレイヤーの当たり判定処理
-*	@param	std::unique_ptr<IEnemy>& enemy 敵のポインタ
+*	@details 敵がプレイヤーに当たったかどうかを処理する
+*	@param	std::unique_ptr<IEnemy>& pEnemy 敵のポインタ
 *	@return なし
 */
-void EnemyManager::HandleEnemyPlayerCollision(std::unique_ptr<IEnemy>& enemy)
+void EnemyManager::HandleEnemyPlayerCollision(std::unique_ptr<IEnemy>& pEnemy)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	m_isHitPlayerToEnemy = false; // フラグを初期化
-	if (enemy->GetBoundingSphere().Intersects(m_pPlayer->GetInPlayerArea()))// 敵の当たり判定とプレイヤーの当たり判定が交差したら
+	if (pEnemy->GetBoundingSphere().Intersects(m_pPlayer->GetInPlayerArea()))// 敵の当たり判定とプレイヤーの当たり判定が交差したら
 	{
 		m_isHitPlayerToEnemy = true;// フラグを立てる
 		BoundingSphere playerSphere = m_pPlayer->GetInPlayerArea();// プレイヤーの当たり判定を取得
 		playerSphere.Radius /= 3.0f;// プレイヤーの当たり判定を縮小
 		// 敵がプレイヤーを認識する範囲 / 3.0f = プレイヤーの当たり判定の半径
-		if (enemy->GetBoundingSphere().Intersects(playerSphere))// 敵の当たり判定とプレイヤーの当たり判定が交差したら
+		if (pEnemy->GetBoundingSphere().Intersects(playerSphere))// 敵の当たり判定とプレイヤーの当たり判定が交差したら
 		{
-			auto& enemySphere = enemy->GetBoundingSphere(); // 敵の当たり判定を取得　
+			auto& enemySphere = pEnemy->GetBoundingSphere(); // 敵の当たり判定を取得　
 			Vector3 newPos = CheckHitOtherObject(enemySphere, playerSphere); // 押し戻し考慮
-			enemy->SetPosition(newPos); // 敵の位置を設定
+			pEnemy->SetPosition(newPos); // 敵の位置を設定
 		}
 	}
-	enemy->SetHitToPlayer(m_isHitPlayerToEnemy);	//　敵がプレイヤーに当たったかどうかのフラグを設定
-	enemy->SetPlayerBoundingSphere(m_pPlayer->GetPlayerSphere()); // プレイヤーの当たり判定を設定
+	pEnemy->SetHitToPlayer(m_isHitPlayerToEnemy);	//　敵がプレイヤーに当たったかどうかのフラグを設定
+	pEnemy->SetPlayerBoundingSphere(m_pPlayer->GetPlayerSphere()); // プレイヤーの当たり判定を設定
 }
 /*
 *	@brief	死亡した敵を削除
+*	@details 敵のリストから死亡した敵を削除する
 *	@param	なし
 *	@return なし
 */
 void EnemyManager::RemoveDeadEnemies()
 {
-	m_enemies.erase(std::remove_if(m_enemies.begin(), m_enemies.end(),		// 死亡した敵を削除する
-		[this](std::unique_ptr<IEnemy>& enemy)
+	m_pEnemies.erase(std::remove_if(m_pEnemies.begin(), m_pEnemies.end(),		// 死亡した敵を削除する
+		[this](std::unique_ptr<IEnemy>& pEnemy)
 		{
-			if (enemy->GetEnemyIsDead())// 敵が倒されたら
+			if (pEnemy->GetEnemyIsDead())// 敵が倒されたら
 			{
-				HandleEnemyDeath(enemy);// 死亡処理
+				HandleEnemyDeath(pEnemy);// 死亡処理
 				return true; // 削除
 			}
 			return false; // 残す
 		}),
-		m_enemies.end());// 削除対象の敵を削除する
+		m_pEnemies.end());// 削除対象の敵を削除する
 }
 
 /*
 *	@brief	敵の死亡処理
-*	@param	std::unique_ptr<IEnemy>& enemy 敵のポインタ
+*	@details 敵が死亡した時の処理を行う
+*	@param	std::unique_ptr<IEnemy>& pEnemy 敵のポインタ
 *	@return なし
 */
-void EnemyManager::HandleEnemyDeath(std::unique_ptr<IEnemy>& enemy)
+void EnemyManager::HandleEnemyDeath(std::unique_ptr<IEnemy>& pEnemy)
 {
 	float effectScale;// 初期値
-	auto pBoss = dynamic_cast<BossBase*>(enemy.get());// IEnemyからBossのポインターを抽出
+	auto pBoss = dynamic_cast<BossBase*>(pEnemy.get());// IEnemyからBossのポインターを抽出
 	if (pBoss)	// もしボスだったら
 	{
 		effectScale = pBoss->GetDeadEffectSize();// ボスの場合はエフェクトのスケールを大きくする
@@ -344,11 +363,11 @@ void EnemyManager::HandleEnemyDeath(std::unique_ptr<IEnemy>& enemy)
 	{
 		effectScale = EnemyParameters::ENEMY_DEADEFFECT_SCALE;// ザコ敵の場合はエフェクトのスケールを小さくする
 	}
-	m_effect.push_back(std::make_unique<Effect>(m_pCommonResources,// エフェクトを生成
+	m_pEffects.push_back(std::make_unique<Effect>(m_pCommonResources,// エフェクトを生成
 		Effect::EffectType::ENEMY_DEAD,// エフェクトの種類指定
-		enemy->GetPosition(), // 座標設定
+		pEnemy->GetPosition(), // 座標設定
 		effectScale,// スケール設定
-		enemy->GetMatrix()));// ワールド行列作成
+		pEnemy->GetMatrix()));// ワールド行列作成
 	m_pCommonResources->GetAudioManager()->PlaySound("EnemyDead", m_pPlayer->GetVolume() + m_pPlayer->GetVolumeCorrection());// 敵のSEを再生
 
 }

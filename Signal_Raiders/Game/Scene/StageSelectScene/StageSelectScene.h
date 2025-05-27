@@ -6,10 +6,10 @@
 // 標準ライブラリ
 #include <cassert>
 // DirectX
-#include "DeviceResources.h"
+#include <DeviceResources.h>
 #include <Mouse.h>
  // 外部ライブラリ
-#include "Libraries/MyLib/InputManager.h"
+#include <Libraries/MyLib/InputManager.h>
 #include <Libraries/Microsoft/DebugDraw.h>
 // 自作ヘッダーファイル
 #include "Game/Screen.h"

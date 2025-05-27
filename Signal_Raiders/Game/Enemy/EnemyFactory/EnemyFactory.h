@@ -1,6 +1,6 @@
 /*
-	@file	EnemyFactory.h
-	@brief	敵ファクトリークラス
+*	@file	EnemyFactory.h
+*	@brief	敵ファクトリークラス
 */
 #pragma once
 // 標準ライブラリ

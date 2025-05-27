@@ -6,6 +6,7 @@
 #include "EnemyBullet.h"
 /*
 *	@brief コンストラクタ
+*	@details 敵の弾クラスのコンストラクタ
 *	@param size 弾のサイズ
 *	@return なし
 */
@@ -37,19 +38,33 @@ EnemyBullet::EnemyBullet(float size)
 }
 /*
 *	@brief デストラクタ
+*	@details 各種ポインターをnullptrに設定
+*	@param なし
 *	@return なし
 */
-EnemyBullet::~EnemyBullet() {}
+EnemyBullet::~EnemyBullet()
+{
+	m_pCommonResources = nullptr; // 共通リソースのポインターをnullptrに設定
+	m_pEnemyBullet = nullptr; // 弾の種類ごとに処理を変えるためのポインターをnullptrに設定
+	m_pNormalBullet = nullptr; // 通常弾のポインターをnullptrに設定
+	m_pSpeedBullet = nullptr; // 速い弾のポインターをnullptrに設定
+	m_pSpecialBullet = nullptr; // 特殊弾のポインターをnullptrに設定
+	m_pModel = nullptr; // 弾のモデルをnullptrに設定
+	m_pPixelShader.Reset(); // ピクセルシェーダーをリセット
+	m_bulletTrail.reset(); // 弾の軌道をリセット
+	m_pShooter = nullptr; // 発射した敵のポインターをnullptrに設定
+}
 /*
 *	@brief 初期化
-*	@param resources 共通リソース
+*	@details 敵の弾クラスの初期化
+*	@param pCmmonResources 共通リソース
 *	@return なし
 */
-void EnemyBullet::Initialize(CommonResources* resources)
+void EnemyBullet::Initialize(CommonResources* pCmmonResources)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	m_pCommonResources = resources;// 共通リソースを設定
+	m_pCommonResources = pCmmonResources;// 共通リソースを設定
 	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
 	m_pEnemyBullet = EnemyBulletFactory::CreateBullet(m_bulletType);// ファクトリで生成
 	m_pEnemyBullet->SetEnemyBullet(this);// 敵弾ポインターを設定する
@@ -60,7 +75,7 @@ void EnemyBullet::Initialize(CommonResources* resources)
 	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pPixelShader.ReleaseAndGetAddressOf()));// ピクセルシェーダーの作成
 	m_pModel = m_pCommonResources->GetModelManager()->GetModel("EnemyBullet");// マネージャーからモデルを取得
 	m_bulletTrail = std::make_unique<Particle>(ParticleUtility::Type::ENEMYTRAIL, m_size);	// 弾の軌道生成
-	m_bulletTrail->Initialize(resources);// 弾の軌道初期化
+	m_bulletTrail->Initialize(pCmmonResources);// 弾の軌道初期化
 	m_direction = Vector3::Zero;// 方向を初期化
 	m_velocity = Vector3::Zero;// 速度を初期化
 	m_position = Vector3::Zero;// 位置を初期化
@@ -70,9 +85,11 @@ void EnemyBullet::Initialize(CommonResources* resources)
 }
 /*
 *	@brief 弾の発射
-*	@param const DirectX::SimpleMath::Vector3& pos 弾の座標
-*	@param const DirectX::SimpleMath::Vector3& dir 弾の方向
-*	@param const DirectX::SimpleMath::Vector3& target 弾発射時のターゲットの位置
+*	@details 弾の発射処理を行う
+*	@param pos 弾の座標
+*	@param dir 弾の方向
+*	@param target 弾発射時のターゲットの位置
+*	@return なし
 */
 void EnemyBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir, DirectX::SimpleMath::Vector3& target)
 {
@@ -85,7 +102,9 @@ void EnemyBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::Sim
 
 /*
 *	@brief 弾が生成されてからの経過時間が寿命を超えたかどうかを判定する
-*	@return bool true:寿命を超えた false:寿命を超えていない
+*	@details 弾の種類によって寿命を判定する
+*	@param なし
+*	@return true:寿命を超えた false:寿命を超えていない
 */
 bool EnemyBullet::IsExpired() const
 {
@@ -97,7 +116,8 @@ bool EnemyBullet::IsExpired() const
 
 /*
 *	@brief 弾の更新
-*	@param float elapsedTime 更新時間
+*	@details 弾の更新処理を行う
+*	@param elapsedTime 更新時間
 *	@return なし
 */
 void EnemyBullet::Update(float elapsedTime)
@@ -111,8 +131,10 @@ void EnemyBullet::Update(float elapsedTime)
 }
 /*
 *	@brief 弾の描画
-*	@param DirectX::SimpleMath::Matrix view ビュー行列
-*	@param DirectX::SimpleMath::Matrix proj プロジェクション行列
+*	@details 弾の描画処理を行う
+*	@param view ビュー行列
+*	@param proj プロジェクション行列
+*	@return なし
 */
 void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
@@ -125,8 +147,10 @@ void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 }
 /*
 *	@brief 弾の影描画
-*	@param DirectX::SimpleMath::Matrix view ビュー行列
-*	@param DirectX::SimpleMath::Matrix proj プロジェクション行列
+*	@details 弾の影描画処理を行う
+*	@param view ビュー行列
+*	@param proj プロジェクション行列
+*	@return なし
 */
 void EnemyBullet::RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
@@ -147,8 +171,9 @@ void EnemyBullet::RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::Simple
 }
 /*
 *	@brief 弾の境界球を描画(デバッグ用)
-*	@param DirectX::SimpleMath::Matrix view ビュー行列
-*	@param DirectX::SimpleMath::Matrix proj プロジェクション行列
+*	@details 弾の境界球を描画する
+*	@param view ビュー行列
+*	@param proj プロジェクション行列
 *	@return なし
 */
 void EnemyBullet::RenderBoundingSphere(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
@@ -171,6 +196,7 @@ void EnemyBullet::RenderBoundingSphere(DirectX::SimpleMath::Matrix view, DirectX
 
 /*
 *	@brief 弾のワールド行列を作成
+*	@details 弾のワールド行列を作成する
 *	@param なし
 *	@return DirectX::SimpleMath::Matrix 弾のワールド行列
 */

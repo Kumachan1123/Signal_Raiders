@@ -6,6 +6,8 @@
 #include "SpecialBullet.h"
 /*
 *	@brief コンストラクタ
+*	@details 敵弾クラス(特殊弾)のコンストラクタ
+*	@param なし
 *	@return なし
 */
 SpecialBullet::SpecialBullet()
@@ -27,11 +29,19 @@ SpecialBullet::SpecialBullet()
 }
 /*
 *	@brief デストラクタ
+*	@details 各種ポインターをnullptrに設定
+*	@param なし
 *	@return なし
 */
-SpecialBullet::~SpecialBullet() {/*do nothing*/ }
+SpecialBullet::~SpecialBullet()
+{
+	m_pCommonResources = nullptr; // 共通リソースのポインターをnullptrに設定
+	m_pEnemyBullet = nullptr; // 敵弾のポインターをnullptrに設定
+}
 /*
 *	@brief 初期化関数
+*	@details 敵弾クラス(特殊弾)の初期化関数
+*	@param なし
 *	@return なし
 */
 void SpecialBullet::Initialize()
@@ -44,7 +54,8 @@ void SpecialBullet::Initialize()
 }
 /*
 *	@brief 更新関数
-*	@param[in] float elapsedTime 更新時間
+*	@details 敵弾クラス(特殊弾)の更新関数
+*	@param float elapsedTime 更新時間
 *	@return なし
 */
 void SpecialBullet::Update(float elapsedTime)
@@ -74,6 +85,8 @@ void SpecialBullet::Update(float elapsedTime)
 }
 /*
 *	@brief 回転弾を展開する
+*	@details 回転弾を展開する関数
+*	@param なし
 *	@return なし
 */
 void SpecialBullet::Expand()
@@ -91,6 +104,8 @@ void SpecialBullet::Expand()
 }
 /*
 *	@brief 回転弾を発射する
+*	@details 回転弾を発射する関数
+*	@param なし
 *	@return なし
 */
 void SpecialBullet::Shot()
@@ -104,10 +119,11 @@ void SpecialBullet::Shot()
 		m_pCommonResources->GetAudioManager()->PlaySound("SpecialAttack", m_seVolume);// SEを再生
 		m_isPlayShotSE = true;// SE再生フラグを立てる
 	}
-
 }
 /*
 *	@brief 回転弾の展開をやめる
+*	@details 回転弾の展開をやめる関数
+*	@param なし
 *	@return なし
 */
 void SpecialBullet::StopExpand()
@@ -119,6 +135,8 @@ void SpecialBullet::StopExpand()
 }
 /*
 *	@brief 回転弾を自分の周りに戻す
+*	@details 回転弾を自分の周りに戻す関数
+*	@param なし
 *	@return なし
 */
 void SpecialBullet::ComeBack()

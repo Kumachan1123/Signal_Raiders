@@ -1,6 +1,6 @@
 /*
-	@file	EnemyModel.h
-	@brief	敵モデルクラス
+*	@file	EnemyModel.h
+*	@brief	敵モデルクラス
 */
 #pragma once
 #ifndef ENEMY_MODEL_DEFINED
@@ -8,11 +8,12 @@
 // 標準ライブラリ
 #include <SimpleMath.h>
 #include <unordered_map>
+// DirectX
+#include <DeviceResources.h>
 // 外部ライブラリ
-#include "Game/CommonResources.h"
-#include "DeviceResources.h"
-#include "Libraries/Microsoft/ReadData.h"
+#include <Libraries/Microsoft/ReadData.h>
 // 自作ヘッダーファイル
+#include "Game/CommonResources.h"
 #include "Game/Enemy/Enemy.h"
 #include "Game/Interface/IState.h"
 #include "Game/Interface/IModel.h"
@@ -38,11 +39,11 @@ private:
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// モデル
-	DirectX::Model* m_bodyModel;// 頭 
-	DirectX::Model* m_antennaModel;//アンテナ
-	DirectX::Model* m_handModel;//手
+	DirectX::Model* m_pBodyModel;// 頭 
+	DirectX::Model* m_pAntennaModel;//アンテナ
+	DirectX::Model* m_pHandModel;//手
 	std::unordered_map<IState::EnemyState, DirectX::Model*> m_pFaceModelMap;// 表情によって変わる顔のモデルのマップ
-	DirectX::Model* m_shadowModel;	// 影用のモデル
+	DirectX::Model* m_pShadowModel;	// 影用のモデル
 	// モデルの影用のピクセルシェーダー
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
 	// 現在のステータス

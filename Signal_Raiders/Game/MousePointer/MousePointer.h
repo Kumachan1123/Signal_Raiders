@@ -12,7 +12,7 @@
 // 外部ライブラリ
 #include <DeviceResources.h>
 #include "Game/CommonResources.h"
-#include "Libraries/MyLib/InputManager.h"
+#include <Libraries/MyLib/InputManager.h>
 // 自作ヘッダーファイル
 #include "Game/Screen.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"

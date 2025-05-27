@@ -6,6 +6,8 @@
 #include "SpeedBullet.h"
 /*
 *	@brief コンストラクタ
+*	@details 敵弾クラス(速い弾)のコンストラクタ
+*	@param なし
 *	@return なし
 */
 SpeedBullet::SpeedBullet()
@@ -16,11 +18,19 @@ SpeedBullet::SpeedBullet()
 }
 /*
 *	@brief デストラクタ
+*	@details 各種ポインターをnullptrに設定
+*	@param なし
 *	@return なし
 */
-SpeedBullet::~SpeedBullet() {/*do nothing*/ }
+SpeedBullet::~SpeedBullet()
+{
+	m_pCommonResources = nullptr; // 共通リソースのポインターをnullptrに設定
+	m_pEnemyBullet = nullptr; // 敵弾のポインターをnullptrに設定
+}
 /*
 *	@brief 初期化関数
+*	@details 敵弾クラス(速い弾)の初期化関数
+*	@param なし
 *	@return なし
 */
 void SpeedBullet::Initialize()
@@ -32,7 +42,8 @@ void SpeedBullet::Initialize()
 }
 /*
 *	@brief 更新関数
-*	@param[in] float elapsedTime 更新時間
+*	@details 敵弾クラス(速い弾)の更新関数
+*	@param float elapsedTime 更新時間
 *	@return なし
 */
 void SpeedBullet::Update(float elapsedTime)

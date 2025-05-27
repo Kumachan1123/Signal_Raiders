@@ -1,18 +1,14 @@
 /*
-	@file	LastBoss.cpp
-	@brief	ラスボスクラス
+*	@file	LastBoss.cpp
+*	@brief	ラスボスクラス
 */
 #include <pch.h>
 #include "LastBoss.h"
 // 自作ヘッダーファイル
 #include "Game/Enemy/Boss/BossAI/BossAI.h"
-
-
-using namespace DirectX;
-using namespace DirectX::SimpleMath;
-
 /*
 *	@brief	コンストラクタ
+*	@details ラスボスクラスのコンストラクタ
 *	@param pBoss		ボスベースのポインタ
 *	@param resources	共通リソース
 *	@return	なし
@@ -31,11 +27,20 @@ LastBoss::LastBoss(BossBase* pBoss, CommonResources* commonResources)
 }
 /*
 *	@brief	デストラクタ
+*	@details 各種ポインターをnullptrに設定
+*	@param	なし
 *	@return	なし
 */
-LastBoss::~LastBoss() {  }
+LastBoss::~LastBoss()
+{
+	m_pCommonResources = nullptr;	// 共通リソースのポインタをnullptrに設定
+	m_pBossBase = nullptr;	// ボスのポインタをnullptrに設定
+	m_pBossModel = nullptr;	// ラスボスモデルのポインタをnullptrに設定
+}
 /*
 *	@brief	初期化処理
+*	@details ラスボスのモデルを生成し、初期化を行う
+*	@param	なし
 *	@return	なし
 */
 void LastBoss::Initialize()
@@ -63,21 +68,24 @@ void LastBoss::Initialize()
 }
 /*
 *	@brief	更新処理
+*	@details ラスボスの状態を更新する
+*	@param	なし
 *	@return	なし
 */
 void LastBoss::ChangeState()
 {
 	m_pBossModel->SetState(m_pBossBase->GetBossAI()->GetState());// モデルのアニメーション更新
-
 }
 /*
 *	@brief	描画処理
+*	@details ラスボスのモデルとシールド、HPバーを描画する
 *	@param view ビュー行列
 *	@param proj プロジェクション行列
 *	@return	なし
 */
 void LastBoss::Draw(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
+	using namespace DirectX::SimpleMath;
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキスト
 	auto states = m_pCommonResources->GetCommonStates();// ステート
 	// ワールド行列を設定
@@ -99,10 +107,13 @@ void LastBoss::Draw(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matri
 }
 /*
 *	@brief	弾の位置設定
+*	@details ラスボスの弾の発射位置を決定する
+*	@param	なし
 *	@return	なし
 */
 void LastBoss::BulletPositioning()
 {
+	using namespace DirectX::SimpleMath;
 	Matrix transform = Matrix::CreateFromQuaternion(m_pBossBase->GetBossAI()->GetRotation())// 弾の発射位置を設定
 		* Matrix::CreateTranslation(m_pBossBase->GetPosition());
 	m_bulletPosLeftDown = Vector3::Transform(EnemyParameters::LASTBOSS_LEFTDOWN_GUN_OFFSET, transform);// 左下の座標に回転を適用
@@ -111,7 +122,12 @@ void LastBoss::BulletPositioning()
 	m_bulletPosRightUp = Vector3::Transform(EnemyParameters::LASTBOSS_RIGHTUP_GUN_OFFSET, transform);// 右上の座標に回転を適用
 
 }
-
+/*
+*	@brief	弾を生成する
+*	@details ラスボスの弾を生成する
+*	@param	なし
+*	@return	なし
+*/
 void LastBoss::CreateBullet()
 {
 	m_pBossBase->GetBulletManager()->SetEnemyBulletSize(EnemyParameters::LASTBOSS_BULLET_SIZE);// 弾のサイズを設定

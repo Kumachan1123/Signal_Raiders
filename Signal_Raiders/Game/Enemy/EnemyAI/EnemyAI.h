@@ -1,6 +1,6 @@
 /*
-	@file	EnemyAI.h
-	@brief	敵AIクラス
+*	@file	EnemyAI.h
+*	@brief	敵AIクラス
 */
 #pragma once
 #ifndef ENEMY_AI_DEFINED
@@ -11,9 +11,9 @@
 #include <type_traits>
 #include <SimpleMath.h>
 // 外部ライブラリ
-#include "Libraries/MyLib/DebugString.h"
-#include "Libraries/MyLib/InputManager.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
+#include <Libraries/MyLib/DebugString.h>
+#include <Libraries/MyLib/InputManager.h>
+#include <Libraries/MyLib/MemoryLeakDetector.h>
 // 自作ライブラリ
 #include "Game/KumachiLib/KumachiLib.h"
 #include "Game/Enemy/Parameters/EnemyParameters.h"
@@ -68,7 +68,7 @@ private:
 	// privateメンバ変数
 	std::unique_ptr<EnemyIdling> m_pEnemyIdling;	// 平常時
 	std::unique_ptr<EnemyAttack> m_pEnemyAttack;	// 攻撃時
-	std::unique_ptr<EnemySpin> m_pEnemySpin;	// スピン
+	std::unique_ptr<EnemySpin>	 m_pEnemySpin;		// スピン
 	IState* m_pCurrentState;	// 現在の状態
 	IState::EnemyState m_enemyState;// 敵の状態
 	IEnemy* m_pEnemy;	// 敵のポインター

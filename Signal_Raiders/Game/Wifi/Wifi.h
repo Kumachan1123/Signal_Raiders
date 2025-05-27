@@ -6,7 +6,7 @@
 // 標準ライブラリ
 #include <memory>
 // 外部ライブラリ
-#include "Libraries/MyLib/DebugString.h"
+#include <Libraries/MyLib/DebugString.h>
 // 自作ヘッダーファイル
 #include "Game/CommonResources.h"
 #include "Game/Wifi/Interface/IWifiParts.h"

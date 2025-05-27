@@ -1,6 +1,6 @@
 /*
-	@file	LastBossModel.h
-	@brief	ラスボスモデルクラス
+*	@file	LastBossModel.h
+*	@brief	ラスボスモデルクラス
 */
 #pragma once
 #ifndef LASTBOSS_MODEL_DEFINED
@@ -8,11 +8,12 @@
 // 標準ライブラリ
 #include <SimpleMath.h>
 #include <unordered_map>
+// DirectX
+#include <DeviceResources.h>
 // 外部ライブラリ
-#include "Game/CommonResources.h"
-#include "DeviceResources.h"
-#include "Libraries/Microsoft/ReadData.h"
+#include <Libraries/Microsoft/ReadData.h>
 // 自作ヘッダーファイル
+#include "Game/CommonResources.h"
 #include "Game/Enemy/Boss/Boss.h"
 #include "Game/KumachiLib/KumachiLib.h"
 #include "Game/Interface/IState.h"
@@ -43,7 +44,7 @@ private:
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 胴体
-	DirectX::Model* m_bodyModel;
+	DirectX::Model* m_pBodyModel;
 	// 表情によって変わる顔のモデルのマップ
 	std::unordered_map<IState::EnemyState, DirectX::Model*> m_pFaceModelMap;
 	// モデルの影用のピクセルシェーダー

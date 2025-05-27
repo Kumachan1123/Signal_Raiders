@@ -1,6 +1,6 @@
 /*
 	@file	EnemyIdling.h
-	@brief	敵Idlingクラス
+	@brief	敵徘徊クラス
 */
 #pragma once
 #ifndef ENEMY_IDLING_DEFINED
@@ -10,9 +10,9 @@
 #include <random>  
 #include <SimpleMath.h>
 // 外部ライブラリ
-#include "Libraries/MyLib/DebugString.h"
-#include "Libraries/MyLib/InputManager.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
+#include <Libraries/MyLib/DebugString.h>
+#include <Libraries/MyLib/InputManager.h>
+#include <Libraries/MyLib/MemoryLeakDetector.h>
 // 自作ヘッダーファイル
 #include "Game/Interface/IState.h"
 #include "Game/Enemy/EnemyAI/EnemyAI.h"
@@ -36,7 +36,7 @@ public:
 	void Update(float elapsedTime) override;// 更新
 private:
 	// privateメンバ関数
-	EnemyAI* m_enemyAI;//敵AI
+	EnemyAI* m_pEnemyAI;//敵AI
 	DirectX::SimpleMath::Vector3 m_position;//移動
 	DirectX::SimpleMath::Vector3 m_initialPosition;// 座標初期値
 	DirectX::SimpleMath::Vector3 m_scale;//サイズ

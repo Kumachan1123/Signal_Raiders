@@ -1,6 +1,6 @@
 /*
-	@file	EnemySpin.h
-	@brief	敵スピンクラス
+*	@file	EnemySpin.h
+*	@brief	敵スピンクラス
 */
 #pragma once
 #ifndef ENEMY_SPIN_DEFINED
@@ -10,9 +10,9 @@
 #include <random>  
 #include <SimpleMath.h>
 // 外部ライブラリ
-#include "Libraries/MyLib/DebugString.h"
-#include "Libraries/MyLib/InputManager.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
+#include <Libraries/MyLib/DebugString.h>
+#include <Libraries/MyLib/InputManager.h>
+#include <Libraries/MyLib/MemoryLeakDetector.h>
 // 自作ライブラリ
 #include "Game/Enemy/EnemyAI/EnemyAI.h"
 #include "Game/KumachiLib/KumachiLib.h"
@@ -35,7 +35,7 @@ public:
 	void Initialize() override;// 初期化
 	void Update(float elapsedTime) override;// 更新
 private:
-	EnemyAI* m_enemyAI;//敵AI
+	EnemyAI* m_pEnemyAI;//敵AI
 	DirectX::SimpleMath::Vector3 m_position;//移動
 	DirectX::SimpleMath::Vector3 m_initialPosition;// 座標初期値
 	DirectX::SimpleMath::Vector3 m_scale;//サイズ

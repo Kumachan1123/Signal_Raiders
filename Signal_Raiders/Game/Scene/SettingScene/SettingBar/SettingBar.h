@@ -11,8 +11,8 @@
 #include <CommonStates.h>
 #include <DeviceResources.h>
 // 外部ライブラリ
-#include "Libraries/MyLib/DebugString.h"
-#include "Libraries/MyLib/InputManager.h"
+#include <Libraries/MyLib/DebugString.h>
+#include <Libraries/MyLib/InputManager.h>
 // 自作ヘッダーファイル
 #include "Game/CommonResources.h"
 #include "Game/Scene/SettingScene/SettingData/SettingData.h"

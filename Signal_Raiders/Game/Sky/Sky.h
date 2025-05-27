@@ -14,10 +14,10 @@
 #include <SimpleMath.h>
 #include <Model.h>
 #include <Effects.h>
-#include "DeviceResources.h"
+#include <DeviceResources.h>
 // 外部ライブラリ
-#include "Libraries/MyLib/InputManager.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
+#include <Libraries/MyLib/InputManager.h>
+#include <Libraries/MyLib/MemoryLeakDetector.h>
 // 自作ヘッダーファイル
 #include "Game/CommonResources.h"
 // 前方宣言

@@ -11,10 +11,10 @@
 #include <cassert>
 // DirectX
 #include <SimpleMath.h>
-#include "DeviceResources.h"
+#include <DeviceResources.h>
 // 外部ライブラリ
 #include "Game/CommonResources.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
+#include <Libraries/MyLib/MemoryLeakDetector.h>
 // 自作ヘッダーファイル
 #include "Game/Player/PlayerBullet/PlayerBullet.h"
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"

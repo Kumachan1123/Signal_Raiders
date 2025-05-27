@@ -14,7 +14,7 @@
 // 外部ライブラリ
 #include "Game/CommonResources.h"
 #include <DeviceResources.h>
-#include "Libraries/MyLib/DebugString.h"
+#include <Libraries/MyLib/DebugString.h>
 // 自作ヘッダーファイル
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"

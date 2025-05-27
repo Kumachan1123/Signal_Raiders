@@ -1,18 +1,14 @@
 /*
-	@file	Boss.cpp
-	@brief	ボスクラス
+*	@file	Boss.cpp
+*	@brief	ボスクラス
 */
 #include "pch.h"
 #include "Boss.h"
 // 自作ヘッダーファイル
 #include "Game/Enemy/Boss/BossAI/BossAI.h"
-
-
-using namespace DirectX;
-using namespace DirectX::SimpleMath;
-
 /*
 *	@brief	コンストラクタ
+*	@details ボスクラスのコンストラクタ
 *	@param pBoss		ボスベースのポインタ
 *	@param resources	共通リソース
 *	@return	なし
@@ -33,11 +29,20 @@ Boss::Boss(BossBase* pBoss, CommonResources* commonResources)
 }
 /*
 *	@brief	デストラクタ
+*	@details ボスクラスのデストラクタ
+*	@param	なし
 *	@return	なし
 */
-Boss::~Boss() {  }
+Boss::~Boss()
+{
+	m_pBossModel.reset();	// ボスモデルの解放
+	m_pHPBar.reset();		// HPバーの解放
+	m_pCommonResources = nullptr;// 共通リソースのポインタをnullptrに設定
+}
 /*
 *	@brief	初期化処理
+*	@details ボスクラスの初期化
+*	@param	なし
 *	@return	なし
 */
 void Boss::Initialize()
@@ -55,6 +60,8 @@ void Boss::Initialize()
 }
 /*
 *	@brief	更新処理
+*	@details ボスクラスの更新処理
+*	@param elapsedTime	経過時間
 *	@return	なし
 */
 void Boss::ChangeState()
@@ -63,12 +70,14 @@ void Boss::ChangeState()
 }
 /*
 *	@brief	描画処理
+*	@details ボスクラスの描画処理
 *	@param view ビュー行列
 *	@param proj プロジェクション行列
 *	@return	なし
 */
 void Boss::Draw(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
+	using namespace DirectX::SimpleMath;
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキスト
 	auto states = m_pCommonResources->GetCommonStates();// ステート
 	// ワールド行列を設定
@@ -87,14 +96,15 @@ void Boss::Draw(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix pr
 	m_pBossBase->GetHPBar()->SetScale(Vector3(EnemyParameters::BOSS_HPBAR_SCALE));// HPバーのスケールを設定
 	m_pBossBase->GetHPBar()->Render(view, proj, hpBarPos, m_rotate);// HPバー描画
 }
-
-
 /*
 *	@brief	弾の位置設定
+*	@details ボスクラスの弾の発射位置を設定
+*	@param	なし
 *	@return	なし
 */
 void Boss::BulletPositioning()
 {
+	using namespace DirectX::SimpleMath;
 	Matrix transform = Matrix::CreateFromQuaternion(m_pBossBase->GetBossAI()->GetRotation())// 弾の発射位置を設定
 		* Matrix::CreateTranslation(m_pBossBase->GetPosition());
 	m_bulletPosCenter = Vector3::Transform(EnemyParameters::BOSS_HEAD_OFFSET, transform);// 中央の座標に回転を適用
@@ -103,6 +113,8 @@ void Boss::BulletPositioning()
 }
 /*
 *	@brief	弾の生成
+*	@details ボスの弾を生成
+*	@param	なし
 *	@return	なし
 */
 void Boss::CreateBullet()
@@ -129,7 +141,9 @@ void Boss::CreateBullet()
 }
 /*
 *	@brief	中央から弾を発射
+*	@details ボスの中央から弾を発射する
 *	@param type 弾の種類
+*	@return	なし
 */
 void Boss::CreateCenterBullet(BulletType type)
 {
@@ -138,7 +152,9 @@ void Boss::CreateCenterBullet(BulletType type)
 }
 /*
 *	@brief	左の弾を発射
+*	@details ボスの左から弾を発射する
 *	@param type 弾の種類
+*	@return	なし
 */
 void Boss::CreateLeftBullet(BulletType type)
 {
@@ -147,7 +163,9 @@ void Boss::CreateLeftBullet(BulletType type)
 }
 /*
 *	@brief 右の弾を発射
+*	@details ボスの右から弾を発射する
 *	@param type 弾の種類
+*	@return なし
 */
 void Boss::CreateRightBullet(BulletType type)
 {

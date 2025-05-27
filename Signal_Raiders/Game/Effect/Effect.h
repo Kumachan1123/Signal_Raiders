@@ -10,7 +10,7 @@
 #include <DeviceResources.h>
 // 外部ライブラリ
 #include "Game/CommonResources.h"
-#include "Libraries/MyLib/DebugString.h"
+#include <Libraries/MyLib/DebugString.h>
 // 自作ヘッダーファイル
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"

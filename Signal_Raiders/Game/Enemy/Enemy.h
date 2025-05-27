@@ -10,11 +10,11 @@
 #include <memory>
 // 外部ライブラリ
 #include "Game/CommonResources.h"
-#include "DeviceResources.h"
-#include "Libraries/MyLib/DebugString.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
+#include <DeviceResources.h>
+#include <Libraries/MyLib/DebugString.h>
+#include <Libraries/MyLib/MemoryLeakDetector.h>
 #include <Libraries/Microsoft/DebugDraw.h>
-#include "Libraries/Microsoft/ReadData.h"
+#include <Libraries/Microsoft/ReadData.h>
 // 自作ヘッダーファイル
 #include "Game/Enemy/EnemyHPBar/EnemyHPBar.h"
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
@@ -86,7 +86,7 @@ private:
 	// メンバ変数
 	CommonResources* m_pCommonResources;	// 共通リソース
 	std::unique_ptr<EnemyModel>		m_enemyModel;// 敵のモデル
-	std::unique_ptr<EnemyAI>		m_enemyAI;// 敵のAI
+	std::unique_ptr<EnemyAI>		m_pEnemyAI;// 敵のAI
 	std::unique_ptr<EnemyHPBar>		m_pHPBar;// 敵のHPバー
 	Player* m_pPlayer;	// プレイヤーのポインター
 	FPS_Camera* m_pCamera;	// カメラのポインター

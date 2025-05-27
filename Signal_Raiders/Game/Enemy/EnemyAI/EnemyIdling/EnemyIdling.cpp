@@ -1,16 +1,17 @@
 /*
-	@file	EnemyIdling.cpp
-	@brief	敵Idlingクラス
+*	@file	EnemyIdling.cpp
+*	@brief	敵徘徊クラス
 */
 #include "pch.h"
 #include "EnemyIdling.h"
 /*
 *	@brief	コンストラクタ
-*	@param	EnemyAI* enemy
+*	@details 敵徘徊クラスのコンストラクタ
+*	@param	EnemyAI* pEnemyAI
 *	@return	なし
 */
-EnemyIdling::EnemyIdling(EnemyAI* enemyAI)
-	: m_enemyAI(enemyAI)// 敵AI
+EnemyIdling::EnemyIdling(EnemyAI* pEnemyAI)
+	: m_pEnemyAI(pEnemyAI)// 敵AI
 	, m_rotation(DirectX::SimpleMath::Quaternion::Identity)// 回転
 	, m_velocity(DirectX::SimpleMath::Vector3::Zero)// 速度
 	, m_scale(DirectX::SimpleMath::Vector3::One)// スケール
@@ -20,23 +21,31 @@ EnemyIdling::EnemyIdling(EnemyAI* enemyAI)
 {}
 /*
 *	@brief	デストラクタ
+*	@details 各種ポインターをnullptrに設定
+*	@param	なし
 *	@return	なし
 */
-EnemyIdling::~EnemyIdling() {/*do nothing*/ }
+EnemyIdling::~EnemyIdling()
+{
+	m_pEnemyAI = nullptr; // 敵AIのポインターをnullptrに設定
+}
 /*
 *	@brief	初期化
+*	@details 敵徘徊クラスの初期化
+*	@param	なし
 *	@return	なし
 */
 void EnemyIdling::Initialize()
 {
-	m_rotation = m_enemyAI->GetRotation();// 回転取得
-	m_velocity = m_enemyAI->GetVelocity();// 速度取得
-	m_scale = m_enemyAI->GetScale();// スケール取得
-	m_initialPosition = m_enemyAI->GetPosition(); // 初期位置取得
+	m_rotation = m_pEnemyAI->GetRotation();// 回転取得
+	m_velocity = m_pEnemyAI->GetVelocity();// 速度取得
+	m_scale = m_pEnemyAI->GetScale();// スケール取得
+	m_initialPosition = m_pEnemyAI->GetPosition(); // 初期位置取得
 	m_rotationSpeed = EnemyParameters::INITIAL_ROTATION_SPEED; // 回転速度
 }
 /*
 *	@brief	更新
+*	@details 敵徘徊クラスの更新
 *	@param	float elapsedTime
 *	@return	なし
 */
@@ -50,8 +59,8 @@ void EnemyIdling::Update(float elapsedTime)
 	m_rotation *= deltaRotation;  // 既存の回転に新しい回転を適用
 	m_rotation.Normalize();  // 回転を正規化し、安定したクォータニオンを維持
 	Vector3 forward = Vector3::Transform(Vector3::Backward * EnemyParameters::MOVE_SPEED, m_rotation);  // 前方ベクトルを取得
-	m_enemyAI->SetPosition(m_enemyAI->GetPosition() + forward * (m_velocity.Length()) * elapsedTime);  // 敵の位置を更新
-	m_enemyAI->SetRotation(m_rotation);  // 敵の回転を更新
-	m_enemyAI->SetVelocity(m_velocity);  // 敵の速度を更新
+	m_pEnemyAI->SetPosition(m_pEnemyAI->GetPosition() + forward * (m_velocity.Length()) * elapsedTime);  // 敵の位置を更新
+	m_pEnemyAI->SetRotation(m_rotation);  // 敵の回転を更新
+	m_pEnemyAI->SetVelocity(m_velocity);  // 敵の速度を更新
 }
 

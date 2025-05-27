@@ -5,7 +5,7 @@
 // ヘッダーファイル
 #include "pch.h"
 #include "Game.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
+#include <Libraries/MyLib/MemoryLeakDetector.h>
 
 using namespace DirectX;
 

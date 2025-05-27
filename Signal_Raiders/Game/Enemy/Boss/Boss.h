@@ -6,10 +6,11 @@
 // 標準ライブラリ
 #include <SimpleMath.h>
 // 外部ライブラリ
-#include "DeviceResources.h"
-#include "Libraries/MyLib/DebugString.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
+#include <DeviceResources.h>
+#include <Libraries/MyLib/DebugString.h>
+#include <Libraries/MyLib/MemoryLeakDetector.h>
 // 自作ヘッダーファイル
+
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/Interface/IBossLogic.h"
 #include "Game/Enemy/BossBase/BossBase.h"
@@ -22,8 +23,8 @@
 //前方宣言
 class CommonResources;
 class BossBase;
-class BossAI;
 class BossModel;
+class BossAI;
 class Boss : public IBossLogic
 {
 public:

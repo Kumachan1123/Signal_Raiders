@@ -1,6 +1,6 @@
 /*
-	@file	EnemyBulletFactory.h
-	@brief	敵弾ファクトリークラス
+*	@file	EnemyBulletFactory.h
+*	@brief	敵弾ファクトリークラス
 */
 #pragma once
 #ifndef ENEMY_BULLET_FACTORY_DEFINED

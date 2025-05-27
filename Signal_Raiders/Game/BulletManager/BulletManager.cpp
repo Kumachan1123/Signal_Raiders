@@ -264,7 +264,7 @@ bool BulletManager::CheckCollisionWithEnemies(const std::unique_ptr<PlayerBullet
 			if (enemy->GetCanAttack() == true)// 攻撃可能な敵の場合
 				enemy->ApplyDamageToEnemy(bullet->Damage());// 敵のHPを減らす
 			float effectSize = dynamic_cast<Boss*>(enemy.get()) ? 10.0f : 3.0f;// エフェクトを追加　ボスの場合は大きめにする
-			m_pEnemyManager->GetEffect().push_back(std::make_unique<Effect>(// エフェクトを追加
+			m_pEnemyManager->GetEffects().push_back(std::make_unique<Effect>(// エフェクトを追加
 				m_pCommonResources,// 共通リソース
 				Effect::EffectType::ENEMY_HIT,// エフェクトの種類
 				enemy->GetPosition(),// 位置

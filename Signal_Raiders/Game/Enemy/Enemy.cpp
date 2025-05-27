@@ -11,20 +11,20 @@
 /*
 *	@brief	コンストラクタ
 *	@param	pPlayer	プレイヤーのポインター
-*	@param	resources	共通リソース
+*	@param	pCommonResources	共通リソース
 *	@param	hp	敵のHP
 *	@return	なし
 */
-Enemy::Enemy(Player* pPlayer, CommonResources* resources, int hp)
-	: IEnemy(pPlayer, resources, hp)// 親クラスのコンストラクタを呼ぶ
+Enemy::Enemy(Player* pPlayer, CommonResources* pCommonResources, int hp)
+	: IEnemy(pPlayer, pCommonResources, hp)// 親クラスのコンストラクタを呼ぶ
 	, m_pPlayer{ pPlayer }// プレイヤーのポインター
 	, m_pCamera{ pPlayer->GetCamera() }// カメラのポインター
 	, m_enemyBS{}// 敵の境界球
-	, m_pCommonResources{ resources }// 共通リソース
+	, m_pCommonResources{ pCommonResources }// 共通リソース
 	, m_currentHP{ hp }// 敵のHP
 	, m_attackCooldown{ EnemyParameters::ATTACK_COOLDOWN }// 攻撃のクールダウンタイム
 	, m_enemyModel{}// 敵のモデル
-	, m_enemyAI{}// 敵のAI
+	, m_pEnemyAI{}// 敵のAI
 	, m_pHPBar{}// 敵のHPバー
 	, m_position{}// 敵の座標
 	, m_velocity{}// 敵の速度
@@ -63,12 +63,12 @@ void Enemy::Initialize()
 	m_pHPBar = std::make_unique<EnemyHPBar>();	// HPBar生成
 	m_pHPBar->SetEnemyMaxHP(m_currentHP);// 最大HP設定
 	m_pHPBar->Initialize(m_pCommonResources);// 初期化
-	m_enemyAI = std::make_unique<EnemyAI>(this);	// AI生成
-	m_enemyAI->Initialize();// AI初期化
+	m_pEnemyAI = std::make_unique<EnemyAI>(this);	// AI生成
+	m_pEnemyAI->Initialize();// AI初期化
 	Vector3 position = 	// 乱数生成
 		Vector3(GenerateRandomMultiplier(-EnemyParameters::ENEMY_SPAWN_RADIUS, EnemyParameters::ENEMY_SPAWN_RADIUS));
 	m_position = Vector3{ position.x, 0.0f,position.z };// 敵の初期位置を設定
-	m_enemyAI->SetPosition(m_position);	// 敵の座標を設定
+	m_pEnemyAI->SetPosition(m_position);	// 敵の座標を設定
 	m_enemyBS.Center = m_position;	// 境界球の座標設定
 	m_enemyBS.Radius = EnemyParameters::NORMAL_ENEMY_RADIUS;// 境界球の半径設定
 
@@ -80,12 +80,12 @@ void Enemy::Initialize()
 */
 void Enemy::Update(float elapsedTime)
 {
-	m_enemyModel->SetState(m_enemyAI->GetState());// モデルの更新
+	m_enemyModel->SetState(m_pEnemyAI->GetState());// モデルの更新
 	m_pHPBar->SetCurrentHP(m_currentHP);// HPの更新
 	m_pHPBar->Update(elapsedTime);// HPバーの更新
-	m_enemyAI->Update(elapsedTime);// AIの更新
+	m_pEnemyAI->Update(elapsedTime);// AIの更新
 	m_pCommonResources->GetAudioManager()->Update();// オーディオマネージャーの更新
-	if (m_enemyAI->GetNowState() == m_enemyAI->GetEnemyAttack())// 攻撃態勢なら
+	if (m_pEnemyAI->GetNowState() == m_pEnemyAI->GetEnemyAttack())// 攻撃態勢なら
 		ShootBullet();// 弾を発射
 	m_enemyBS.Center = m_position;	// 敵の当たり判定の座標を更新
 	m_isDead = m_pHPBar->GetIsDead();// 敵のHPが0になったら死亡
@@ -101,8 +101,8 @@ void Enemy::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	using namespace DirectX::SimpleMath;
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキスト取得
 	auto states = m_pCommonResources->GetCommonStates();// 共通ステート取得
-	Matrix world = Matrix::CreateScale(m_enemyAI->GetScale())// スケール行列
-		* Matrix::CreateFromQuaternion(m_enemyAI->GetRotation())// 回転行列
+	Matrix world = Matrix::CreateScale(m_pEnemyAI->GetScale())// スケール行列
+		* Matrix::CreateFromQuaternion(m_pEnemyAI->GetRotation())// 回転行列
 		* Matrix::CreateTranslation(m_position);	// 平行移動行列
 	Vector3 hpBarPos = m_position + EnemyParameters::ENEMY_HPBAR_OFFSET;	// HPBarの座標を設定
 	m_pHPBar->Render(view, proj, hpBarPos, m_rotate);	// HPBar描画
@@ -135,16 +135,16 @@ void Enemy::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 */
 void Enemy::ShootBullet()
 {
-	m_attackCooldown = m_enemyAI->GetEnemyAttack()->GetCoolTime();// クールダウンタイムを取得
+	m_attackCooldown = m_pEnemyAI->GetEnemyAttack()->GetCoolTime();// クールダウンタイムを取得
 	if (m_attackCooldown <= EnemyParameters::ATTACK_INTERVAL)	// 攻撃のクールダウンタイムを管理
 	{
 		m_pCommonResources->GetAudioManager()->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
 		DirectX::SimpleMath::Vector3 direction =
-			DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_enemyAI->GetRotation());// クォータニオンから方向ベクトルを計算
+			DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_pEnemyAI->GetRotation());// クォータニオンから方向ベクトルを計算
 		m_pBulletManager->SetEnemyBulletType(BulletType::NORMAL);// 弾の種類を設定
 		m_pBulletManager->SetEnemyBulletSize(EnemyParameters::ENEMY_BULLET_SIZE);// 弾のサイズを設定
 		m_pBulletManager->SetShooter(this);// 弾の発射者を設定
 		m_pBulletManager->CreateEnemyBullet(m_position, direction);// 弾を生成
-		m_enemyAI->GetEnemyAttack()->SetCoolTime(EnemyParameters::ATTACK_COOLDOWN);	// クールダウンタイムをリセット
+		m_pEnemyAI->GetEnemyAttack()->SetCoolTime(EnemyParameters::ATTACK_COOLDOWN);	// クールダウンタイムをリセット
 	}
 }

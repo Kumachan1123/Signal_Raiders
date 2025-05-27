@@ -1,6 +1,6 @@
 /*
-	@file	EnemyAttack.h
-	@brief	敵Attackクラス
+*	@file	EnemyAttack.h
+*	@brief	敵Attackクラス
 */
 #pragma once
 #ifndef ENEMY_ATTACK_DEFINED
@@ -10,12 +10,12 @@
 #include <cassert>
 #include <random>  
 // 外部ライブラリ
-#include "Game/CommonResources.h"
-#include "DeviceResources.h"
-#include "Libraries/MyLib/DebugString.h"
-#include "Libraries/MyLib/InputManager.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
+#include <DeviceResources.h>
+#include <Libraries/MyLib/DebugString.h>
+#include <Libraries/MyLib/InputManager.h>
+#include <Libraries/MyLib/MemoryLeakDetector.h>
 // 自作ヘッダーファイル
+#include "Game/CommonResources.h"
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 #include "Game/Interface/IState.h"
 #include "Game/KumachiLib/KumachiLib.h"
@@ -46,7 +46,7 @@ private:
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 敵AI
-	EnemyAI* m_enemyAI;
+	EnemyAI* m_pEnemyAI;
 	// 移動
 	DirectX::SimpleMath::Vector3 m_position;
 	// 回転

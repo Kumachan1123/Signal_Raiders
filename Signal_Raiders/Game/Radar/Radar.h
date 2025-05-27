@@ -13,8 +13,8 @@
 #include <Effects.h>
 // 外部ライブラリ
 #include "Game/CommonResources.h"
-#include "DeviceResources.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
+#include <DeviceResources.h>
+#include <Libraries/MyLib/MemoryLeakDetector.h>
 #include <Libraries/Microsoft/DebugDraw.h>
 // 自作ヘッダーファイル
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"

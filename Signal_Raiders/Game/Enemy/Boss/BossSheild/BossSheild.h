@@ -8,10 +8,10 @@
 // 標準ライブラリ
 #include <SimpleMath.h>
 // 外部ライブラリ
-#include "Game/CommonResources.h"
-#include "DeviceResources.h"
-#include "Libraries/Microsoft/ReadData.h"
+#include <DeviceResources.h>
+#include <Libraries/Microsoft/ReadData.h>
 // 自作ヘッダーファイル
+#include "Game/CommonResources.h"
 #include "Game/KumachiLib/KumachiLib.h"
 #include "Game/Enemy/Parameters/EnemyParameters.h"
 #include "Game/Interface/IState.h"

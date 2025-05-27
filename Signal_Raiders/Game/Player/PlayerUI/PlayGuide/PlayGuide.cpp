@@ -8,7 +8,7 @@
 #include "PlayGuide.h"
 #include "Game/Player/PlayerUI/PlayerUI.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
-#include "DeviceResources.h"
+#include <DeviceResources.h>
 #include <SimpleMath.h>
 #include <Effects.h>
 #include <PrimitiveBatch.h>

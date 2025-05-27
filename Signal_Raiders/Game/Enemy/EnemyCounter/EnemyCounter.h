@@ -1,21 +1,22 @@
 /*
-	@file	EnemyCounter.h
-	@brief	敵カウントクラス
+*	@file	EnemyCounter.h
+*	@brief	敵カウントクラス
 */
 #pragma once
 // 標準ライブラリ
 #include <vector>
 #include <cassert>
+#include <memory>
+// DirectX
 #include <SimpleMath.h>
 #include <Model.h>
 #include <Effects.h>
-#include <memory>
+#include <DeviceResources.h>
 // 外部ライブラリ
-#include "DeviceResources.h"
-#include "Game/CommonResources.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
+#include <Libraries/MyLib/MemoryLeakDetector.h>
 #include <Libraries/Microsoft/DebugDraw.h>
 // 自作ヘッダーファイル
+#include "Game/CommonResources.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
@@ -121,9 +122,9 @@ private:
 	// 数字テクスチャ
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_pTexture;
 	// 「残り：」テクスチャ
-	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_remaining;
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_pRemaining;
 	// 「/」テクスチャ
-	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_slash;
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_pSlash;
 	// コンスタントバッファ
 	ConstBuffer m_constBuffer;
 	//	入力レイアウト 

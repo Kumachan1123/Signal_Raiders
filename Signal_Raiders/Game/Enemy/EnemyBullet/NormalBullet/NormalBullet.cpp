@@ -6,6 +6,7 @@
 #include "NormalBullet.h"
 /*
 *	@brief コンストラクタ
+*	@details 敵弾クラス(通常弾)のコンストラクタ
 *	@return なし
 */
 NormalBullet::NormalBullet()
@@ -16,11 +17,19 @@ NormalBullet::NormalBullet()
 }
 /*
 *	@brief デストラクタ
+*	@details 各種ポインターをnullptrに設定
+*	@param なし
 *	@return なし
 */
-NormalBullet::~NormalBullet() {/*do nothing*/ }
+NormalBullet::~NormalBullet()
+{
+	m_pCommonResources = nullptr; // 共通リソースのポインターをnullptrに設定
+	m_pEnemyBullet = nullptr; // 敵弾のポインターをnullptrに設定
+}
 /*
 *	@brief 初期化関数
+*	@details 敵弾クラス(通常弾)の初期化関数
+*	@param なし
 *	@return なし
 */
 void NormalBullet::Initialize()
@@ -34,7 +43,8 @@ void NormalBullet::Initialize()
 }
 /*
 *	@brief 更新関数
-*	@param[in] float elapsedTime 更新時間
+*	@details 敵弾クラス(通常弾)の更新関数
+*	@param float elapsedTime 更新時間
 *	@return なし
 */
 void NormalBullet::Update(float elapsedTime)

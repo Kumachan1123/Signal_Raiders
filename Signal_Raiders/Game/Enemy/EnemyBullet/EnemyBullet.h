@@ -1,21 +1,20 @@
 /*
-	@file	EnemyBullet.h
-	@brief	敵の弾クラス
+*	@file	EnemyBullet.h
+*	@brief	敵の弾クラス
 */
-
 #pragma once
 #ifndef ENEMY_BULLET_DEFINED
 #define ENEMY_BULLET_DEFINED
 // 標準ライブラリ
 #include <memory>
-#include <SimpleMath.h>
 #include <cassert>
+#include <SimpleMath.h>
 // 外部ライブラリ
-#include "DeviceResources.h"
-#include "Libraries/MyLib/DebugString.h"
-#include "Libraries/MyLib/InputManager.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
-#include "Libraries/Microsoft/ReadData.h"
+#include <DeviceResources.h>
+#include <Libraries/MyLib/DebugString.h>
+#include <Libraries/MyLib/InputManager.h>
+#include <Libraries/MyLib/MemoryLeakDetector.h>
+#include <Libraries/Microsoft/ReadData.h>
 #include "Libraries/Microsoft/DebugDraw.h"
 // 自作ヘッダーファイル
 #include "Game/BulletParameters/BulletParameters.h"
@@ -30,6 +29,7 @@
 #include "Game/Interface/IBullet.h"
 #include "Game/Enemy/EnemyBullet/EnemyBulletFactory/EnemyBulletFactory.h"
 #include "Game/Enemy/EnemyBullet/EnemyBulletType/EnemyBulletType.h"
+// 前方宣言
 class CommonResources;
 class IEnemyBullet;
 class NormalBullet;
@@ -80,15 +80,13 @@ public:
 	// public関数
 	EnemyBullet(float size);// コンストラクタ
 	~EnemyBullet()override;// デストラクタ
-	void Initialize(CommonResources* resources)override;// 初期化
+	void Initialize(CommonResources* pCommonResources)override;// 初期化
 	void Update(float elapsedTime)override;// 更新
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;// 描画
 	void RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;// 影描画
 	void RenderBoundingSphere(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);// 境界球描画
 	void MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir, DirectX::SimpleMath::Vector3& target);// 弾の生成
-	// 弾が生成されてからの経過時間が寿命を超えたかどうかを判定する
-	bool IsExpired() const;
-
+	bool IsExpired() const;// 弾が生成されてからの経過時間が寿命を超えたかどうかを判定する
 private:
 	// private関数
 	DirectX::SimpleMath::Matrix BulletWorldMatrix();//弾のワールド行列を作成
@@ -105,7 +103,6 @@ private:
 	DirectX::SimpleMath::Vector3 m_direction;		// 弾が飛ぶ方向
 	DirectX::SimpleMath::Vector3 m_positionOffSet;	// 弾の位置オフセット
 	float m_distance;								// 弾の敵との距離
-	std::unique_ptr<DirectX::Model> m_model;
 	DirectX::Model* m_pModel;					// 弾のモデル
 	float m_time;									// 生存時間
 	float m_elapsedTime;							// 経過時間

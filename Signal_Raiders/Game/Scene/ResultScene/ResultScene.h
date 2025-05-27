@@ -7,11 +7,11 @@
 #include <cassert>
 #include <unordered_map>
 // DirectX
-#include "DeviceResources.h"
+#include <DeviceResources.h>
 #include <Mouse.h>
 // 外部ライブラリ
 #include <Libraries/Microsoft/DebugDraw.h>
-#include "Libraries/MyLib/InputManager.h"
+#include <Libraries/MyLib/InputManager.h>
 // 自作ヘッダーファイル
 #include "Game/Screen.h"
 #include "Game/CommonResources.h"

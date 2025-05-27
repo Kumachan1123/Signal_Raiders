@@ -11,7 +11,7 @@
 #include <Mouse.h>
 #include <DeviceResources.h>
 // 外部ライブラリ
-#include "Libraries/MyLib/InputManager.h"
+#include <Libraries/MyLib/InputManager.h>
 // 自作ヘッダーファイル
 #include "Game/CommonResources.h"
 #include "Game/UI/UI.h"

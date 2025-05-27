@@ -1,20 +1,19 @@
 /*
-	@file	EnemyManager.h
-	@brief	敵マネージャークラス
+*	@file	EnemyManager.h
+*	@brief	敵マネージャークラス
 */
 #pragma once
 // 標準ライブラリ
 #include <cassert>
-#include <Effects.h>
-#include <SimpleMath.h>
 #include <memory>
-#include <Model.h>
 #include <vector>
+// DirectX
+#include <SimpleMath.h>
+#include <DeviceResources.h>
 // 外部ライブラリ
-#include "DeviceResources.h"
-#include "Game/CommonResources.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
+#include <Libraries/MyLib/MemoryLeakDetector.h>
 // 自作ヘッダーファイル
+#include "Game/CommonResources.h"
 #include "Game/BulletManager/BulletManager.h"
 #include "Game/Effect/Effect.h"
 #include "Game/Enemy/EnemyFactory/EnemyFactory.h"
@@ -54,15 +53,14 @@ private:
 		{4, {40, 1000,10,BossBase::BossBulletType::STAGE_5}}// ステージ5
 
 	};
-
 public:
 	// アクセサ
-	std::vector<std::unique_ptr<IEnemy>>& GetEnemies() { return m_enemies; }  // 敵リスト取得
-	std::vector<std::unique_ptr<IEnemy>>& GetAttackingEnemies() { return m_attackingEnemies; }  // 攻撃中の敵リスト取得
+	std::vector<std::unique_ptr<IEnemy>>& GetEnemies() { return m_pEnemies; }  // 敵リスト取得
+	std::vector<std::unique_ptr<IEnemy>>& GetAttackingEnemies() { return m_pAttackingEnemies; }  // 攻撃中の敵リスト取得
 	int GetEnemyIndex() const { return m_enemyIndex; }// 生成された敵の最大数取得
-	int GetEnemySize() const { return static_cast<int>(m_enemies.size()); }// 敵の数取得
+	int GetEnemySize() const { return static_cast<int>(m_pEnemies.size()); }// 敵の数取得
 	std::unique_ptr<Wifi>& GetWifi() { return m_pWifi; }// Wi-Fiポインター取得
-	std::vector<std::unique_ptr<Effect>>& GetEffect() { return m_effect; }// エフェクト取得
+	std::vector<std::unique_ptr<Effect>>& GetEffects() { return m_pEffects; }// エフェクト取得
 	bool GetisBorned() const { return m_isBorned; }// 敵生成済みフラグ
 	bool GetIsBossAlive() const { return m_isBossAlive; }// ボス生存フラグ
 	bool GetIsBossAppear() const { return m_isBossAppear; }// ボス生成演出再生フラグ
@@ -93,19 +91,19 @@ private:
 	void SpawnBoss();// ボス生成
 	void HandleEnemyCollisions();// 敵の当たり判定
 	void UpdateEnemies(float elapsedTime);// プレイヤーと敵の当たり判定
-	void HandleEnemyBulletCollision(std::unique_ptr<IEnemy>& enemy);// 敵の弾とプレイヤーの当たり判定
-	void HandleEnemyPlayerCollision(std::unique_ptr<IEnemy>& enemy);// 敵とプレイヤーの当たり判定
+	void HandleEnemyBulletCollision(std::unique_ptr<IEnemy>& pEnemy);// 敵の弾とプレイヤーの当たり判定
+	void HandleEnemyPlayerCollision(std::unique_ptr<IEnemy>& pEnemy);// 敵とプレイヤーの当たり判定
 	void HandleWallCollision();// 壁との当たり判定
 	void RemoveDeadEnemies();// 死亡した敵を削除
-	void HandleEnemyDeath(std::unique_ptr<IEnemy>& enemy);// 敵の死亡処理
+	void HandleEnemyDeath(std::unique_ptr<IEnemy>& pEnemy);// 敵の死亡処理
 private:
 	// private変数
 	// コモンリソース
 	CommonResources* m_pCommonResources;
 	// 敵
-	std::vector<std::unique_ptr<IEnemy>> m_enemies;
+	std::vector<std::unique_ptr<IEnemy>> m_pEnemies;
 	// 攻撃中の敵配列
-	std::vector<std::unique_ptr<IEnemy>> m_attackingEnemies;
+	std::vector<std::unique_ptr<IEnemy>> m_pAttackingEnemies;
 	// ステージ番号（0から4をプレイシーンから参照）
 	int m_stageNumber;
 	// 敵生成フラグ
@@ -147,7 +145,7 @@ private:
 	// 壁
 	Wall* m_pWall;
 	// エフェクト
-	std::vector<std::unique_ptr<Effect>> m_effect;
+	std::vector<std::unique_ptr<Effect>> m_pEffects;
 	// SEの音量
 	float m_SEVolume;
 	// ボスの弾の種類

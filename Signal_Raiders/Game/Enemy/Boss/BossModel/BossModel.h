@@ -11,7 +11,7 @@
 #include <SimpleMath.h>
 #include <DeviceResources.h>
 // 外部ライブラリ
-#include "Libraries/Microsoft/ReadData.h"
+#include <Libraries/Microsoft/ReadData.h>
 // 自作ヘッダーファイル
 #include "Game/CommonResources.h"
 #include "Game/Enemy/Boss/Boss.h"

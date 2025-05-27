@@ -1,34 +1,36 @@
 /*
-	@file	EnemyModel.cpp
-	@brief	敵モデルクラス
+*	@file	EnemyModel.cpp
+*	@brief	敵モデルクラス
 */
 #include "pch.h"
 #include "EnemyModel.h"
 /*
 *	@brief	コンストラクタ
+*	@details 敵モデルクラスのコンストラクタ
 *	@param	なし
 *	@return	なし
 */
 EnemyModel::EnemyModel()
 	: m_pCommonResources{}// 共通リソース
-	, m_bodyModel{}// 胴体モデル
-	, m_antennaModel{}// アンテナモデル
-	, m_handModel{}// 手モデル
-	, m_shadowModel{}// 影用のモデル
+	, m_pBodyModel{}// 胴体モデル
+	, m_pAntennaModel{}// アンテナモデル
+	, m_pHandModel{}// 手モデル
+	, m_pShadowModel{}// 影用のモデル
 	, m_nowState{ IState::EnemyState::IDLING }// 現在の状態
 {}
 /*
 *	@brief	デストラクタ
+*	@details 各種ポインターをnullptrに設定
 *	@param	なし
 *	@return	なし
 */
 EnemyModel::~EnemyModel()
 {
 	m_pCommonResources = nullptr;	// 共通リソースを解放
-	m_bodyModel = nullptr;			// 胴体モデルを解放
-	m_antennaModel = nullptr;		// アンテナモデルを解放
-	m_handModel = nullptr;			// 手モデルを解放
-	m_shadowModel = nullptr;		// 影用のモデルを解放
+	m_pBodyModel = nullptr;			// 胴体モデルを解放
+	m_pAntennaModel = nullptr;		// アンテナモデルを解放
+	m_pHandModel = nullptr;			// 手モデルを解放
+	m_pShadowModel = nullptr;		// 影用のモデルを解放
 	m_pPixelShader.Reset();			// ピクセルシェーダーをリセット
 	m_pFaceModelMap.clear();			// 顔のモデルマップをクリア
 }
@@ -36,6 +38,7 @@ EnemyModel::~EnemyModel()
 
 /*
 *	@brief	初期化
+*	@details 敵モデルクラスの初期化
 *	@param	CommonResources* resources 共通リソース
 *	@return	なし
 */
@@ -48,10 +51,10 @@ void EnemyModel::Initialize(CommonResources* resources)
 	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_Shadow.cso");	// 影用のシェーダーを読み込む
 	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pPixelShader.ReleaseAndGetAddressOf()));// シェーダー作成
 	// モデルを読み込む（ 頭、アンテナ、手、表情差分）
-	m_bodyModel = m_pCommonResources->GetModelManager()->GetModel("EnemyHead");// モデルマネージャーから頭モデルを取得
-	m_antennaModel = m_pCommonResources->GetModelManager()->GetModel("EnemyAntenna");// モデルマネージャーからアンテナモデルを取得
-	m_handModel = m_pCommonResources->GetModelManager()->GetModel("EnemyHand");// モデルマネージャーから手モデルを取得
-	m_shadowModel = m_pCommonResources->GetModelManager()->GetModel("EnemyShadow");// モデルマネージャーから影用モデルを取得
+	m_pBodyModel = m_pCommonResources->GetModelManager()->GetModel("EnemyHead");// モデルマネージャーから頭モデルを取得
+	m_pAntennaModel = m_pCommonResources->GetModelManager()->GetModel("EnemyAntenna");// モデルマネージャーからアンテナモデルを取得
+	m_pHandModel = m_pCommonResources->GetModelManager()->GetModel("EnemyHand");// モデルマネージャーから手モデルを取得
+	m_pShadowModel = m_pCommonResources->GetModelManager()->GetModel("EnemyShadow");// モデルマネージャーから影用モデルを取得
 	m_pFaceModelMap[IState::EnemyState::HIT] = m_pCommonResources->GetModelManager()->GetModel("EnemyDamage");// モデルマネージャーからダメージ顔モデルを取得
 	m_pFaceModelMap[IState::EnemyState::ATTACK] = m_pCommonResources->GetModelManager()->GetModel("EnemyAttack");// モデルマネージャーから攻撃顔モデルを取得
 	m_pFaceModelMap[IState::EnemyState::ANGRY] = m_pCommonResources->GetModelManager()->GetModel("EnemyAttack");// モデルマネージャーから攻撃顔モデルを取得
@@ -59,6 +62,7 @@ void EnemyModel::Initialize(CommonResources* resources)
 }
 /*
 *	@brief	描画
+*	@details 敵モデルの描画を行う
 *	@param	ID3D11DeviceContext1* context コンテキスト
 *	@param	DirectX::DX11::CommonStates* states ステート
 *	@param	DirectX::SimpleMath::Matrix world ワールド行列
@@ -74,14 +78,14 @@ void EnemyModel::Render(ID3D11DeviceContext1* context,
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	m_bodyModel->Draw(context, *states, world, view, proj);// 頭
-	m_antennaModel->Draw(context, *states, world, view, proj);// アンテナ
-	m_handModel->Draw(context, *states, world, view, proj);	// 手
+	m_pBodyModel->Draw(context, *states, world, view, proj);// 頭
+	m_pAntennaModel->Draw(context, *states, world, view, proj);// アンテナ
+	m_pHandModel->Draw(context, *states, world, view, proj);	// 手
 	Vector3 lightDir = Vector3::UnitY;	// ライトの方向
 	lightDir.Normalize();// 正規化
 	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, 0.01f));	// 影行列の元を作る
 	shadowMatrix = world * shadowMatrix;	// 影の行列をワールド行列にかける
-	m_shadowModel->Draw(context, *states, shadowMatrix * Matrix::Identity, view, proj, true, [&]()	// 影描画
+	m_pShadowModel->Draw(context, *states, shadowMatrix * Matrix::Identity, view, proj, true, [&]()	// 影描画
 		{
 			context->OMSetBlendState(states->Opaque(), nullptr, 0xffffffff);// ブレンドステートを不透明にする
 			context->OMSetDepthStencilState(states->DepthNone(), 0);	// 深度ステンシルステートを無効にする

@@ -6,9 +6,9 @@
 // 標準ライブラリ
 #include <cassert>
 // DirectX
-#include "DeviceResources.h"
+#include <DeviceResources.h>
 // 外部ライブラリ
-#include "Libraries/MyLib/InputManager.h"
+#include <Libraries/MyLib/InputManager.h>
 // 自作ヘッダーファイル
 #include "IScene.h"
 #include "Game/Screen.h"

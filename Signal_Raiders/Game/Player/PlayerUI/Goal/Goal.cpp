@@ -6,7 +6,7 @@
 #include "Goal.h"
 #include "Game/CommonResources.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
-#include "DeviceResources.h"
+#include <DeviceResources.h>
 #include <SimpleMath.h>
 #include <Effects.h>
 #include <PrimitiveBatch.h>
@@ -14,7 +14,7 @@
 #include <WICTextureLoader.h>
 #include <CommonStates.h>
 #include <vector>
-#include "Libraries/MyLib/DebugString.h"
+#include <Libraries/MyLib/DebugString.h>
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 using namespace DirectX;
 

@@ -12,7 +12,7 @@
 #include <WICTextureLoader.h>
 #include <Mouse.h>
 // 外部ライブラリ
-#include "Libraries/MyLib/InputManager.h"
+#include <Libraries/MyLib/InputManager.h>
 // 自作ヘッダーファイル
 #include "Game/UI/UI.h"
 #include "Game/Interface/IMenuUI.h"

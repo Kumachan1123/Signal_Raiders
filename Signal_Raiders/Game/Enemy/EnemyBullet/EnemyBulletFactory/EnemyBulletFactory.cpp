@@ -1,11 +1,12 @@
 /*
-	@file	EnemyBulletFactory.cpp
-	@brief	敵弾ファクトリークラス
+*	@file	EnemyBulletFactory.cpp
+*	@brief	敵弾ファクトリークラス
 */
 #include "pch.h"
 #include "EnemyBulletFactory.h"
 /*
 *	@brief	弾の生成
+*	@details 敵弾ファクトリークラスの静的関数
 *	@param	BulletType type 弾の種類
 *	@return	生成した弾のポインタ
 */

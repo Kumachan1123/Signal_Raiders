@@ -14,7 +14,7 @@
 #include <CommonStates.h>
 // 外部ライブラリ
 #include "Game/CommonResources.h"
-#include "DeviceResources.h"
+#include <DeviceResources.h>
 #include <Libraries/Microsoft/DebugDraw.h>
 // 前方宣言
 class CommonResources;

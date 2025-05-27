@@ -9,7 +9,7 @@
 #include <CommonStates.h>
 // 外部ライブラリ
 #include "Game/CommonResources.h"
-#include "DeviceResources.h"
+#include <DeviceResources.h>
 // 自作ヘッダーファイル
 #include "Game/KumachiLib/KumachiLib.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"

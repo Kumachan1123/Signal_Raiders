@@ -12,9 +12,9 @@
 // DirectX
 #include <SimpleMath.h>
 // 外部ライブラリ
-#include "Libraries/MyLib/DebugString.h"
-#include "Libraries/MyLib/InputManager.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
+#include <Libraries/MyLib/DebugString.h>
+#include <Libraries/MyLib/InputManager.h>
+#include <Libraries/MyLib/MemoryLeakDetector.h>
 // 自作ヘッダーファイル
 #include "Game/CommonResources.h"
 #include "Game/KumachiLib/KumachiLib.h"

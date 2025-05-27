@@ -1,14 +1,14 @@
 /*
-	@file	BossBase.h
-	@brief	ボスベースクラス
+*	@file	BossBase.h
+*	@brief	ボスベースクラス
 */
 #pragma once
 // 標準ライブラリ
 #include <SimpleMath.h>
 // 外部ライブラリ
-#include "DeviceResources.h"
-#include "Libraries/MyLib/DebugString.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
+#include <DeviceResources.h>
+#include <Libraries/MyLib/DebugString.h>
+#include <Libraries/MyLib/MemoryLeakDetector.h>
 // 自作ヘッダーファイル
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/Interface/IEnemy.h"
@@ -132,7 +132,7 @@ private:
 	// privateメンバ変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
-	std::unique_ptr<BossAI>		m_pBossAI;// AI
+	std::unique_ptr<BossAI>			m_pBossAI;// AI
 	std::unique_ptr<BossModel>		m_pBossModel;//モデル
 	std::unique_ptr<BossSheild>		m_pBossSheild;// シールド
 	std::unique_ptr<EnemyHPBar>		m_pHPBar;// HPバー
@@ -145,17 +145,17 @@ private:
 	// カメラのポインター
 	FPS_Camera* m_pCamera;
 	// 敵の情報
-	DirectX::SimpleMath::Vector3 m_position;		// 座標
-	DirectX::SimpleMath::Vector3 m_velocity;		// 速度
-	DirectX::SimpleMath::Vector3 m_rotate;		// 回転
+	DirectX::SimpleMath::Vector3	m_position;		// 座標
+	DirectX::SimpleMath::Vector3	m_velocity;		// 速度
+	DirectX::SimpleMath::Vector3	m_rotate;		// 回転
 	DirectX::SimpleMath::Quaternion m_quaternion;	// 回転用クォータニオン
-	DirectX::SimpleMath::Vector3 m_scale;		// スケール
+	DirectX::SimpleMath::Vector3	m_scale;		// スケール
+	DirectX::SimpleMath::Matrix		m_matrix;		// マトリクス
 	// 砲塔境界球
 	DirectX::BoundingSphere m_bossBS;	//敵の境界球
 	DirectX::BoundingSphere m_enemyBSToPlayerArea;// 敵とPlayerとの一定範囲の当たり判定に使う
 	DirectX::BoundingSphere m_enemyBulletBS;// 敵の弾の境界球
 	DirectX::BoundingSphere m_playerBS;// プレイヤーの境界球
-	DirectX::SimpleMath::Matrix m_matrix;// マトリクス
 	// 弾の発射位置
 	DirectX::SimpleMath::Vector3 m_bulletPosCenter;
 	float m_bossDamage;// ボスがプレイヤーに与えるダメージ

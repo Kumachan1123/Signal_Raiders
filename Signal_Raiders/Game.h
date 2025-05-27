@@ -4,11 +4,11 @@
 */
 #pragma once
 // DirectX
-#include "DeviceResources.h"
+#include <DeviceResources.h>
 #include "StepTimer.h"
 // 外部ライブラリ
-#include "Libraries/MyLib/DebugString.h"
-#include "Libraries/MyLib/InputManager.h"
+#include <Libraries/MyLib/DebugString.h>
+#include <Libraries/MyLib/InputManager.h>
 // ゲーム関連
 #include "Game/CommonResources.h"
 #include "Game/Scene/IScene.h"

@@ -1,11 +1,12 @@
 /*
-	@file	EnemyFactory.cpp
-	@brief	敵ファクトリークラス
+*	@file	EnemyFactory.cpp
+*	@brief	敵ファクトリークラス
 */
 #include "pch.h"
 #include "EnemyFactory.h"
 /*
 *	@brief	敵生成
+*	@details 敵ファクトリークラスの敵生成関数
 *	@param	EnemyType type	敵の種類
 *	@param	Player* player	プレイヤーのポインタ
 *	@param	CommonResources* resources	リソースのポインタ
@@ -29,6 +30,7 @@ std::unique_ptr<IEnemy> EnemyFactory::CreateEnemy(EnemyType type, Player* player
 
 /*
 *	@brief	ボス生成
+*	@details 敵ファクトリークラスのボス生成関数
 *	@param	BossType type	ボスの種類
 *	@param	BossBase* pBoss	ボスのポインタ
 *	@param	CommonResources* resources	リソースのポインタ
