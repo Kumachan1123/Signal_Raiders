@@ -1,6 +1,6 @@
 /*
-	@file	UI.cpp
-	@brief	UIクラス(タイトル・リザルト・セッティング)
+*	@file	UI.cpp
+*	@brief	UIクラス(タイトル・リザルト・セッティング)
 */
 #include "pch.h"
 #include "UI.h"
@@ -49,7 +49,7 @@ UI::~UI() {/*do nothing*/ }
 */
 void UI::LoadTexture(const wchar_t* path)
 {
-	HRESULT result = DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, m_pTextureResource.ReleaseAndGetAddressOf(), m_pTexture.ReleaseAndGetAddressOf());// 指定された画像を読み込む
+	DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, m_pTextureResource.ReleaseAndGetAddressOf(), m_pTexture.ReleaseAndGetAddressOf());// 指定された画像を読み込む
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> tex;// テクスチャ一時保存用変数
 	DX::ThrowIfFailed(m_pTextureResource.As(&tex));// テクスチャを取得する
 	D3D11_TEXTURE2D_DESC desc;// 読み込んだ画像の情報を取得する
@@ -58,7 +58,6 @@ void UI::LoadTexture(const wchar_t* path)
 	//	読み込んだ画像のサイズを取得する
 	m_textureWidth = desc.Width;// 幅
 	m_textureHeight = desc.Height;// 高さ
-	UNREFERENCED_PARAMETER(result);// 未使用変数の警告を無視する
 }
 /*
 *	@brief	初期化
@@ -104,7 +103,12 @@ bool UI::IsHit(const DirectX::SimpleMath::Vector2& pos) const
 		return true;// 当たり判定あり
 	return false;// 当たり判定なし
 }
-
+/*
+*	@brief	シェーダーの作成
+*	@details 各種シェーダーを作成
+*	@param なし
+*	@return なし
+*/
 void UI::CreateShaders()
 {
 	// シェーダーを作成する
@@ -141,12 +145,12 @@ void UI::Render()
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	VertexPositionColorTexture vertex[1] = {// 頂点情報
-		VertexPositionColorTexture(SimpleMath::Vector3(m_scale.x, m_scale.y, static_cast<float>(m_anchor))// 大きさとアンカー
-		, SimpleMath::Vector4(m_position.x, m_position.y, static_cast<float>(m_textureWidth), static_cast<float>(m_textureHeight))// 位置と幅と高さ
-		, SimpleMath::Vector2(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight)))// ウィンドウの幅と高さ
+		VertexPositionColorTexture(Vector3(m_scale.x, m_scale.y, static_cast<float>(m_anchor))// 大きさとアンカー
+		, Vector4(m_position.x, m_position.y, static_cast<float>(m_textureWidth), static_cast<float>(m_textureHeight))// 位置と幅と高さ
+		, Vector2(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight)))// ウィンドウの幅と高さ
 	};
 	//	シェーダーに渡す追加のバッファを作成する
-	m_constBuffer.windowSize = SimpleMath::Vector4(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 1, 1);// ウィンドウサイズ
+	m_constBuffer.windowSize = Vector4(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 1, 1);// ウィンドウサイズ
 	m_constBuffer.time = m_time;// 時間
 	m_constBuffer.color = Vector3(0.5, 0.5, 0.5);// 色
 	m_pDrawPolygon->UpdateSubResources(m_pCBuffer.Get(), &m_constBuffer);// 受け渡し用バッファの内容更新
@@ -158,7 +162,6 @@ void UI::Render()
 		DrawPolygon::RasterizerStates::CULL_NONE,// ラスタライザーステート
 		DrawPolygon::DepthStencilStates::DEPTH_NONE);// 深度ステンシルステート
 	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pTextures);// 描画開始
-
 	if (m_shaderType == ShaderType::NORMAL)	// 普通のメニューだったら
 		m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);			//	普通のシェーダをセットする
 	else									// ステージセレクトだったら

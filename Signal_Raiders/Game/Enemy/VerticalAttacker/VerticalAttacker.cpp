@@ -20,7 +20,7 @@ VerticalAttacker::VerticalAttacker(Player* pPlayer, CommonResources* resources, 
 	, m_pPlayer{ pPlayer }// プレイヤーのポインター
 	, m_pCamera{ pPlayer->GetCamera() }// カメラのポインター
 	, m_enemyBS{}// 敵の境界球
-	, m_commonResources{ resources }// 共通リソース
+	, m_pCommonResources{ resources }// 共通リソース
 	, m_currentHP{ hp }// 敵のHP
 	, m_attackCooldown{ EnemyParameters::ATTACK_COOLDOWN }// 攻撃のクールダウンタイム
 	, m_pVerticalAttackerModel{}// 敵のモデル
@@ -58,12 +58,12 @@ VerticalAttacker::~VerticalAttacker()
 void VerticalAttacker::Initialize()
 {
 	using namespace DirectX::SimpleMath;
-	DrawCollision::Initialize(m_commonResources);// 当たり判定描画クラスの初期化
+	DrawCollision::Initialize(m_pCommonResources);// 当たり判定描画クラスの初期化
 	m_pVerticalAttackerModel = std::make_unique<VerticalAttackerModel>();	// モデルを読み込む
-	m_pVerticalAttackerModel->Initialize(m_commonResources);// モデルの初期化
+	m_pVerticalAttackerModel->Initialize(m_pCommonResources);// モデルの初期化
 	m_pHPBar = std::make_unique<EnemyHPBar>();	// HPBar生成
 	m_pHPBar->SetEnemyMaxHP(m_currentHP);// 最大HP設定
-	m_pHPBar->Initialize(m_commonResources);// 初期化
+	m_pHPBar->Initialize(m_pCommonResources);// 初期化
 	m_enemyAI = std::make_unique<EnemyAI>(this);	// AI生成
 	m_enemyAI->Initialize();// AI初期化
 	Vector3 position = 	// 乱数生成
@@ -85,7 +85,7 @@ void VerticalAttacker::Update(float elapsedTime)
 	m_pHPBar->SetCurrentHP(m_currentHP);// HPの更新
 	m_pHPBar->Update(elapsedTime);// HPバーの更新
 	m_enemyAI->Update(elapsedTime);// AIの更新
-	m_commonResources->GetAudioManager()->Update();// オーディオマネージャーの更新
+	m_pCommonResources->GetAudioManager()->Update();// オーディオマネージャーの更新
 	if (m_enemyAI->GetNowState() == m_enemyAI->GetEnemyAttack())// 攻撃態勢なら
 		ShootBullet();// 弾を発射
 	m_enemyBS.Center = m_position;	// 敵の当たり判定の座標を更新
@@ -101,8 +101,8 @@ void VerticalAttacker::Update(float elapsedTime)
 void VerticalAttacker::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
 	using namespace DirectX::SimpleMath;
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキスト取得
-	auto states = m_commonResources->GetCommonStates();// 共通ステート取得
+	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキスト取得
+	auto states = m_pCommonResources->GetCommonStates();// 共通ステート取得
 	Matrix world = Matrix::CreateScale(m_enemyAI->GetScale())// スケール行列
 		* Matrix::CreateFromQuaternion(m_enemyAI->GetRotation())// 回転行列
 		* Matrix::CreateTranslation(m_position);	// 平行移動行列
@@ -140,7 +140,7 @@ void VerticalAttacker::ShootBullet()
 	m_attackCooldown = m_enemyAI->GetEnemyAttack()->GetCoolTime();// クールダウンタイムを取得
 	if (m_attackCooldown <= EnemyParameters::ATTACK_INTERVAL)	// 攻撃のクールダウンタイムを管理
 	{
-		m_commonResources->GetAudioManager()->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
+		m_pCommonResources->GetAudioManager()->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
 		DirectX::SimpleMath::Vector3 direction =
 			DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Backward, m_enemyAI->GetRotation());// クォータニオンから方向ベクトルを計算
 		m_pBulletManager->SetEnemyBulletType(BulletType::SPEED);// 弾の種類を設定

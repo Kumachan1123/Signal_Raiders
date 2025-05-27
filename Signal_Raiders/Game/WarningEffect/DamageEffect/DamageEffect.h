@@ -99,9 +99,9 @@ private:
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;
 	// コンスタントバッファ
-	Microsoft::WRL::ComPtr<ID3D11Buffer> m_cBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_pCBuffer;
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// プレイヤーのポインター
 	Player* m_pPlayer;
 	// 敵のポインター
@@ -119,11 +119,11 @@ private:
 	// コモンステート
 	std::unique_ptr<DirectX::CommonStates> m_states;
 	// テクスチャハンドル
-	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_textures;
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_pTextures;
 	// 頂点シェーダ
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_pVertexShader;
 	// ピクセルシェーダ
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
 	// ワールド行列

@@ -20,10 +20,10 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC>  EnemyCounter::INPUT_LAYOUT =
 *	@return なし
 */
 EnemyCounter::EnemyCounter()
-	: m_commonResources{}// 共通リソースへのポインタ
+	: m_pCommonResources{}// 共通リソースへのポインタ
 	, m_enemyIndex{ 0 }// 敵の総数(保存用）
 	, m_nowEnemy{ 0 }// 現在の敵の数(保存用）
-	, m_texture{}//	数字画像
+	, m_pTexture{}//	数字画像
 	, m_enemyIndex10{ 0 }// 敵の総数(10の位)
 	, m_enemyIndex1{ 0 }// 敵の総数(1の位)
 	, m_nowEnemy10{ 0 }// 現在の敵の数(10の位)
@@ -48,37 +48,37 @@ EnemyCounter::~EnemyCounter() {}
 
 /*
 *	@brief	テクスチャの読み込み
-*	@param[in] const wchar_t* path	テクスチャのパス
-*	@param[in] std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& tex	テクスチャの格納先
+*	@param const wchar_t* path	テクスチャのパス
+*	@param std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& tex	テクスチャの格納先
 */
 void EnemyCounter::LoadTexture(const wchar_t* path, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& tex)
 {
-	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();// デバイス取得
+	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();// デバイス取得
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;// テクスチャ格納用
 	DirectX::CreateWICTextureFromFile(device, path, nullptr, texture.ReleaseAndGetAddressOf());// テクスチャ読み込み
 	tex.push_back(texture);// 配列に登録
 }
 /*
 *	@brief 初期化
-*	@param[in] CommonResources* commonResources	共通リソースへのポインタ
+*	@param CommonResources* commonResources	共通リソースへのポインタ
 *	@return なし
 */
 void EnemyCounter::Initialize(CommonResources* commonResources)
 {
-	m_commonResources = commonResources;// 共通リソースへのポインタ取得
-	LoadTexture(L"Resources/Textures/number.png", m_texture);//	数字テクスチャの読み込み
+	m_pCommonResources = commonResources;// 共通リソースへのポインタ取得
+	LoadTexture(L"Resources/Textures/number.png", m_pTexture);//	数字テクスチャの読み込み
 	LoadTexture(L"Resources/Textures/remaining.png", m_remaining);//	「残り：」テクスチャの読み込み
 	LoadTexture(L"Resources/Textures/slash.png", m_slash);//	「/」テクスチャの読み込み
-	m_pDrawPolygon->InitializePositionTexture(m_commonResources->GetDeviceResources());	// 板ポリゴン描画クラス初期化
-	m_pCreateShader->Initialize(m_commonResources->GetDeviceResources()->GetD3DDevice(), 	// シェーダー作成クラスの初期化
+	m_pDrawPolygon->InitializePositionTexture(m_pCommonResources->GetDeviceResources());	// 板ポリゴン描画クラス初期化
+	m_pCreateShader->Initialize(m_pCommonResources->GetDeviceResources()->GetD3DDevice(), 	// シェーダー作成クラスの初期化
 		&INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
-	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Counter/VS_Counter.cso", m_vertexShader);// 頂点シェーダー作成
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Counter/PS_Counter.cso", m_pixelShader);// ピクセルシェーダー作成
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Counter/VS_Counter.cso", m_pVertexShader);// 頂点シェーダー作成
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Counter/PS_Counter.cso", m_pPixelShader);// ピクセルシェーダー作成
 	m_pInputLayout = m_pCreateShader->GetInputLayout();	// インプットレイアウトを受け取る
-	m_pCreateShader->CreateConstantBuffer(m_cBuffer, sizeof(ConstBuffer));	// シェーダーにデータを渡すためのコンスタントバッファ生成
+	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));	// シェーダーにデータを渡すためのコンスタントバッファ生成
 	// シェーダーの構造体にセット
-	m_shaders.vs = m_vertexShader.Get();// 頂点シェーダー
-	m_shaders.ps = m_pixelShader.Get();// ピクセルシェーダー
+	m_shaders.vs = m_pVertexShader.Get();// 頂点シェーダー
+	m_shaders.ps = m_pPixelShader.Get();// ピクセルシェーダー
 	m_shaders.gs = nullptr;// ジオメトリシェーダ（使わないのでnullptr）
 	for (int i = 0; i < VERTEX_COUNT; i++)	// 各頂点の初期化
 	{
@@ -92,7 +92,7 @@ void EnemyCounter::Initialize(CommonResources* commonResources)
 }
 /*
 *	@brief 更新
-*	@param[in] float elapsedTime	経過時間
+*	@param float elapsedTime	経過時間
 *	@return なし
 */
 void EnemyCounter::Update(float elapsedTime)
@@ -106,7 +106,7 @@ void EnemyCounter::Update(float elapsedTime)
 }
 /*
 *	@brief 描画
-*	@param[in] float elapsedTime	経過時間
+*	@param float elapsedTime	経過時間
 *	@return なし
 */
 void EnemyCounter::Render()
@@ -125,7 +125,7 @@ void EnemyCounter::Render()
 void EnemyCounter::DrawNowEnemy10()
 {
 	DrawQuad(
-		m_texture, m_verticesNowEnemy10,// 画像と頂点情報
+		m_pTexture, m_verticesNowEnemy10,// 画像と頂点情報
 		NOW_ENEMY_10_POS_X, NOW_ENEMY_10_POS_Y, NOW_ENEMY_SIZE_X, NOW_ENEMY_SIZE_Y, // 位置とサイズ
 		m_nowEnemy10, m_frameCols, m_frameRows // 今の敵の数の10の位とフレーム情報
 	);
@@ -137,7 +137,7 @@ void EnemyCounter::DrawNowEnemy10()
 void EnemyCounter::DrawNowEnemy1()
 {
 	DrawQuad(
-		m_texture, m_verticesNowEnemy1,// 画像と頂点情報
+		m_pTexture, m_verticesNowEnemy1,// 画像と頂点情報
 		NOW_ENEMY_1_POS_X, NOW_ENEMY_1_POS_Y, NOW_ENEMY_SIZE_X, NOW_ENEMY_SIZE_Y, // 位置とサイズ
 		m_nowEnemy1, m_frameCols, m_frameRows  // 今の敵の数の10の位とフレーム情報
 	);
@@ -149,7 +149,7 @@ void EnemyCounter::DrawNowEnemy1()
 void EnemyCounter::DrawEnemyIndex10()
 {
 	DrawQuad(
-		m_texture, m_verticesEnemyIndex10,// 画像と頂点情報
+		m_pTexture, m_verticesEnemyIndex10,// 画像と頂点情報
 		ENEMY_INDEX_10_POS_X, ENEMY_INDEX_10_POS_Y, ENEMY_INDEX_SIZE_X, ENEMY_INDEX_SIZE_Y, // 位置とサイズ
 		m_enemyIndex10, m_frameCols, m_frameRows // 敵の総数の10の位とフレーム情報
 	);
@@ -162,22 +162,22 @@ void EnemyCounter::DrawEnemyIndex10()
 void EnemyCounter::DrawEnemyIndex1()
 {
 	DrawQuad(
-		m_texture, m_verticesEnemyIndex1,// 画像と頂点情報
+		m_pTexture, m_verticesEnemyIndex1,// 画像と頂点情報
 		ENEMY_INDEX_1_POS_X, ENEMY_INDEX_1_POS_Y, ENEMY_INDEX_SIZE_X, ENEMY_INDEX_SIZE_Y,// 位置とサイズ
 		m_enemyIndex1, m_frameCols, m_frameRows // 敵の総数の1の位とフレーム情報
 	);
 }
 /*
 *	@brief	Quad描画
-*	@param[in] std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& texture	テクスチャ
-*	@param[in] DirectX::VertexPositionTexture* vertices	頂点情報
-*	@param[in] float startX	開始位置X
-*	@param[in] float startY	開始位置Y
-*	@param[in] float width	幅
-*	@param[in] float height	高さ
-*	@param[in] int frameIndex	フレームインデックス
-*	@param[in] int frameCols	フレームの列数
-*	@param[in] int frameRows	フレームの行数
+*	@param std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& texture	テクスチャ
+*	@param DirectX::VertexPositionTexture* vertices	頂点情報
+*	@param float startX	開始位置X
+*	@param float startY	開始位置Y
+*	@param float width	幅
+*	@param float height	高さ
+*	@param int frameIndex	フレームインデックス
+*	@param int frameCols	フレームの列数
+*	@param int frameRows	フレームの行数
 */
 void EnemyCounter::DrawQuad(
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& texture,
@@ -199,8 +199,8 @@ void EnemyCounter::DrawQuad(
 	m_constBuffer.count = Vector4((float)(frameIndex));// フレームインデックス
 	m_constBuffer.height = Vector4((float)(frameRows));// 高さ
 	m_constBuffer.width = Vector4((float)(frameCols)); // 幅
-	m_pDrawPolygon->UpdateSubResources(m_cBuffer.Get(), &m_constBuffer);	// 受け渡し用バッファの内容更新
-	ID3D11Buffer* cb[1] = { m_cBuffer.Get() };// ConstBufferからID3D11Bufferへの変換
+	m_pDrawPolygon->UpdateSubResources(m_pCBuffer.Get(), &m_constBuffer);	// 受け渡し用バッファの内容更新
+	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };// ConstBufferからID3D11Bufferへの変換
 	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);// シェーダーにバッファを渡す
 	m_pDrawPolygon->DrawSetting(	// 描画前設定
 		DrawPolygon::SamplerStates::LINEAR_WRAP,// サンプラーステート

@@ -101,7 +101,7 @@ public:
 private:
 	// private変数
 	// 共通リソースへのポインタ
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// 敵の総数(保存用）
 	int m_enemyIndex;
 	// 現在の敵の数(保存用）
@@ -119,7 +119,7 @@ private:
 	// 画像の列数
 	int m_frameCols;
 	// 数字テクスチャ
-	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_texture;
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_pTexture;
 	// 「残り：」テクスチャ
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_remaining;
 	// 「/」テクスチャ
@@ -128,7 +128,7 @@ private:
 	ConstBuffer m_constBuffer;
 	//	入力レイアウト 
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_cBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_pCBuffer;
 	// 頂点情報
 	// 総数の10の位
 	DirectX::DX11::VertexPositionTexture m_verticesEnemyIndex10[VERTEX_COUNT];
@@ -147,9 +147,9 @@ private:
 	// シェーダー作成クラス
 	CreateShader* m_pCreateShader;
 	// 頂点シェーダ
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_pVertexShader;
 	// ピクセルシェーダ
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
 	// ワールド行列

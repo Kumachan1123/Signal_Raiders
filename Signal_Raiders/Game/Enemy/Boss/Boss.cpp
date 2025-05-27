@@ -13,12 +13,12 @@ using namespace DirectX::SimpleMath;
 
 /*
 *	@brief	コンストラクタ
-*	@param[in] pBoss		ボスベースのポインタ
-*	@param[in] resources	共通リソース
+*	@param pBoss		ボスベースのポインタ
+*	@param resources	共通リソース
 *	@return	なし
 */
 Boss::Boss(BossBase* pBoss, CommonResources* commonResources)
-	: m_commonResources(commonResources)// 共通リソース
+	: m_pCommonResources(commonResources)// 共通リソース
 	, m_pBossBase(pBoss)// ボスのポインタ
 	, m_bossBS{}// 境界球の初期化
 	, m_pBossModel{}// ボスモデル
@@ -43,7 +43,7 @@ Boss::~Boss() {  }
 void Boss::Initialize()
 {
 	m_pBossModel = std::make_unique<BossModel>();	// ボスモデル生成
-	m_pBossModel->Initialize(m_commonResources);// ボスモデル初期化
+	m_pBossModel->Initialize(m_pCommonResources);// ボスモデル初期化
 	m_position = EnemyParameters::INITIAL_BOSS_POSITION;// ラスボスの初期位置を設定
 	m_pBossBase->SetPosition(m_position);// ベースクラスに初期位置を設定
 	m_pBossBase->SetDefaultHitRadius(EnemyParameters::NORMAL_BOSS_RADIUS);// 通常時ボスの当たり判定を設定
@@ -63,14 +63,14 @@ void Boss::ChangeState()
 }
 /*
 *	@brief	描画処理
-*	@param[in] view ビュー行列
-*	@param[in] proj プロジェクション行列
+*	@param view ビュー行列
+*	@param proj プロジェクション行列
 *	@return	なし
 */
 void Boss::Draw(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキスト
-	auto states = m_commonResources->GetCommonStates();// ステート
+	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキスト
+	auto states = m_pCommonResources->GetCommonStates();// ステート
 	// ワールド行列を設定
 	Matrix enemyWorld = Matrix::CreateScale(m_pBossBase->GetScale())// スケール
 		* Matrix::CreateFromQuaternion(m_pBossBase->GetQuaternion())// 回転
@@ -129,7 +129,7 @@ void Boss::CreateBullet()
 }
 /*
 *	@brief	中央から弾を発射
-*	@param[in] type 弾の種類
+*	@param type 弾の種類
 */
 void Boss::CreateCenterBullet(BulletType type)
 {
@@ -138,7 +138,7 @@ void Boss::CreateCenterBullet(BulletType type)
 }
 /*
 *	@brief	左の弾を発射
-*	@param[in] type 弾の種類
+*	@param type 弾の種類
 */
 void Boss::CreateLeftBullet(BulletType type)
 {
@@ -147,7 +147,7 @@ void Boss::CreateLeftBullet(BulletType type)
 }
 /*
 *	@brief 右の弾を発射
-*	@param[in] type 弾の種類
+*	@param type 弾の種類
 */
 void Boss::CreateRightBullet(BulletType type)
 {

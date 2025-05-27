@@ -23,7 +23,7 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC>  Wall::INPUT_LAYOUT =
 *	@return なし
 */
 Wall::Wall(CommonResources* resources)
-	: m_commonResources(resources)// 共通リソース
+	: m_pCommonResources(resources)// 共通リソース
 	, m_time(0.0f)// 時間
 	, m_constBuffer()// シェーダーに渡す情報
 	, m_wall()// 壁の頂点
@@ -34,7 +34,7 @@ Wall::Wall(CommonResources* resources)
 	, m_wallBox()// 壁の当たり判定
 	, m_pCreateShader{ CreateShader::GetInstance() }// シェーダー作成クラス
 {
-	m_pCreateShader->Initialize(m_commonResources->GetDeviceResources()->GetD3DDevice(), // シェーダー作成クラスの初期化
+	m_pCreateShader->Initialize(m_pCommonResources->GetDeviceResources()->GetD3DDevice(), // シェーダー作成クラスの初期化
 		&INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
 }
 /*
@@ -73,13 +73,13 @@ void  Wall::Create(DX::DeviceResources* pDR)
 }
 void Wall::CreateShaders()
 {
-	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/TitleScene/VS_Title.cso", m_vertexShader);// 頂点シェーダー作成
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/TitleScene/PS_Title.cso", m_pixelShader);// ピクセルシェーダ作成
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/TitleScene/VS_Title.cso", m_pVertexShader);// 頂点シェーダー作成
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/TitleScene/PS_Title.cso", m_pPixelShader);// ピクセルシェーダ作成
 	m_pInputLayout = m_pCreateShader->GetInputLayout();// インプットレイアウトを受け取る
-	m_pCreateShader->CreateConstantBuffer(m_cBuffer, sizeof(ConstBuffer));	// シェーダーにデータを渡すためのコンスタントバッファ生成
+	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));	// シェーダーにデータを渡すためのコンスタントバッファ生成
 	// シェーダーの構造体にシェーダーを渡す
-	m_shaders.vs = m_vertexShader.Get();// 頂点シェーダー
-	m_shaders.ps = m_pixelShader.Get();// ピクセルシェーダー
+	m_shaders.vs = m_pVertexShader.Get();// 頂点シェーダー
+	m_shaders.ps = m_pPixelShader.Get();// ピクセルシェーダー
 	m_shaders.gs = nullptr;// ジオメトリシェーダー（使わないのでnullptr）
 
 }
@@ -152,8 +152,8 @@ void Wall::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix 
 	m_constBuffer.matWorld = m_world.Transpose();// ワールド行列
 	m_constBuffer.colors = DirectX::SimpleMath::Vector4(0, 1.0f, 1.0f, 0.0f);// 色（水色）
 	m_constBuffer.time = DirectX::SimpleMath::Vector4(m_time);// 時間
-	m_pDrawPolygon->UpdateSubResources(m_cBuffer.Get(), &m_constBuffer);// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	ID3D11Buffer* cb[1] = { m_cBuffer.Get() };// シェーダーにバッファを渡す
+	m_pDrawPolygon->UpdateSubResources(m_pCBuffer.Get(), &m_constBuffer);// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
+	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };// シェーダーにバッファを渡す
 	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);// 頂点シェーダもピクセルシェーダも、同じ値を渡す
 	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);// シェーダをセットする
 	m_pDrawPolygon->DrawSetting(// 描画前設定

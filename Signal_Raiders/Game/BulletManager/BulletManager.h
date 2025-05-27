@@ -1,7 +1,7 @@
 /*
-	@file	BulletManager.h
-	@details 敵とプレイヤーの弾を管理するマネージャークラス
-	@brief	弾管理クラス
+*	@file	BulletManager.h
+*	@details 敵とプレイヤーの弾を管理するマネージャークラス
+*	@brief	弾管理クラス
 */
 #pragma once
 // 標準ライブラリ
@@ -24,9 +24,7 @@
 #include "Game/KumachiLib/KumachiLib.h"
 #include "Game/Player/Player.h"
 #include "Game/Enemy/EnemyManager/EnemyManager.h"
-
-
-// クラスの前方宣言
+// 前方宣言
 class CommonResources;
 class Player;
 class IEnemy;
@@ -69,7 +67,7 @@ private:
 private:
 	// privateメンバ変数
 	// コモンリソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// プレイヤー
 	Player* m_pPlayer;
 	// 敵全体
@@ -89,13 +87,11 @@ private:
 	// リロード中フラグ
 	bool m_isReloading;
 	// プレイヤーの弾
-	std::vector<std::unique_ptr<PlayerBullet>> m_playerBullets;
+	std::vector<std::unique_ptr<PlayerBullet>> m_pPlayerBullets;
 	// 敵の弾
-	std::vector<std::unique_ptr<EnemyBullet>> m_enemyBullets;
+	std::vector<std::unique_ptr<EnemyBullet>> m_pEnemyBullets;
 	// プレイヤーの弾の最大数
 	int m_playerBulletCount;
 	// ボスが出す特殊攻撃の数
 	int m_specialAttackCount;
-
-
 };

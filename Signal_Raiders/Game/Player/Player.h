@@ -84,7 +84,7 @@ private:// 定数
 	const float DAMAGE_DURATION = 0.25f;         // ダメージエフェクトの継続時間
 private:
 	// コモンリソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// 敵
 	EnemyManager* m_pEnemyManager;
 	// プレイヤーの位置

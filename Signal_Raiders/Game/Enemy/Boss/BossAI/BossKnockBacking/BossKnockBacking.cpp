@@ -4,18 +4,19 @@
 */
 #include "pch.h"
 #include "BossKnockBacking.h"
-using namespace DirectX::SimpleMath;
+
 /*
 *	@brief	コンストラクタ
-*	@param[in]	pBoss	ボスAIクラスのポインタ
+*	@details ボスのノックバック中の処理クラスのコンストラクタ
+*	@param	pBoss	ボスAIクラスのポインタ
 *	@return	なし
 */
 BossKnockBacking::BossKnockBacking(BossAI* pBoss)
 	: m_pBoss(pBoss)// ボスAIクラスのポインタ
-	, m_rotation(Quaternion::Identity)// 回転
-	, m_velocity(Vector3::Zero)// 速度
-	, m_scale(Vector3::One)// スケール
-	, m_initialPosition(Vector3::Zero)// 座標初期値
+	, m_rotation(DirectX::SimpleMath::Quaternion::Identity)// 回転
+	, m_velocity(DirectX::SimpleMath::Vector3::Zero)// 速度
+	, m_scale(DirectX::SimpleMath::Vector3::One)// スケール
+	, m_initialPosition(DirectX::SimpleMath::Vector3::Zero)// 座標初期値
 	, m_time(0.0f)// 時間の初期化
 	, m_rotationSpeed(0.0f)// 回転速度
 	, m_angle(0.0f)// 角度
@@ -23,11 +24,14 @@ BossKnockBacking::BossKnockBacking(BossAI* pBoss)
 }
 /*
 *	@brief デストラクタ
+*	@details ボスのノックバック中の処理クラスのデストラクタ(ここでは何もしない)
 *	@return なし
 */
 BossKnockBacking::~BossKnockBacking() {/*do nothing*/ }
 /*
 *	@brief 初期化
+*	@details ボスのノックバック中の処理クラスの初期化
+*	@param なし
 *	@return なし
 */
 void BossKnockBacking::Initialize()
@@ -41,7 +45,8 @@ void BossKnockBacking::Initialize()
 
 /*
 *	@brief 更新
-*	@param[in] elapsedTime 経過時間
+*	@details ボスのノックバック中の処理クラスの更新
+*	@param elapsedTime 経過時間
 *	@return なし
 */
 void BossKnockBacking::Update(float elapsedTime)

@@ -14,7 +14,7 @@ const int SceneManager::STAGE_MAX = 5;
 */
 SceneManager::SceneManager()
 	: m_currentScene{}// 現在のシーン
-	, m_commonResources{}// 共通リソース
+	, m_pCommonResources{}// 共通リソース
 	, m_stageNumber{ 0 }// ステージ番号
 	, m_nowSceneID{ IScene::SceneID::NONE }// 現在のシーンID
 {
@@ -35,7 +35,7 @@ SceneManager::~SceneManager() { Finalize(); }
 void SceneManager::Initialize(CommonResources* resources)
 {
 	assert(resources);// リソースがnullptrでないことを確認
-	m_commonResources = resources;// 共通リソースを取得
+	m_pCommonResources = resources;// 共通リソースを取得
 	ChangeScene(IScene::SceneID::TITLE);// タイトルシーンに変更
 }
 /*
@@ -122,7 +122,7 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 		assert(resultScene);// リザルトシーンが取得できていることを確認
 		resultScene->SetStageNumber(m_stageNumber);// ステージ番号をセット
 	}
-	m_currentScene->Initialize(m_commonResources);// シーンの初期化
+	m_currentScene->Initialize(m_pCommonResources);// シーンの初期化
 	SetSceneID(sceneID);// シーンIDをセット
 }
 /*

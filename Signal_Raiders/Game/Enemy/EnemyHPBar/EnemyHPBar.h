@@ -81,15 +81,15 @@ public:
 	const float BAR_LEFT = -1.50f;	// HPバーの幅
 private:
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// 描画クラス
 	DrawPolygon* m_pDrawPolygon;
 	// シェーダー作成クラス
 	CreateShader* m_pCreateShader;
 	// 頂点シェーダ
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_pVertexShader;
 	// ピクセルシェーダ
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
 	// コンスタントバッファ
@@ -97,7 +97,7 @@ private:
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	// 定数バッファ
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_pCBuffer;
 	// 頂点情報
 	DirectX::VertexPositionTexture	m_hpbarVert[VERTEX_COUNT];// HPバーの頂点情報
 	DirectX::VertexPositionTexture	m_hpbarBackVert[VERTEX_COUNT];// HPバーの背景の頂点情報

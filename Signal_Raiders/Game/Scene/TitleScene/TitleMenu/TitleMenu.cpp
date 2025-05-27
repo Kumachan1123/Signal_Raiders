@@ -15,7 +15,7 @@ const int TitleMenu::INVALID_MENU_INDEX = 6;// 無効なメニューインデックス
 TitleMenu::TitleMenu()
 	: m_menuIndex{ 0 }// 現在選択中のメニューインデックス
 	, m_pDR{ nullptr }// デバイスリソースへのポインタ
-	, m_commonResources{ nullptr }// 共通リソースへのポインタ
+	, m_pCommonResources{ nullptr }// 共通リソースへのポインタ
 	, m_pUI{}// UIのポインター
 	, m_pSelect{}// 選択された時に表示する背景UIのポインター
 	, m_pSelectTexturePath{ nullptr }// 選択背景のテクスチャパス
@@ -47,8 +47,8 @@ void TitleMenu::Initialize(CommonResources* resources, int width, int height)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	m_commonResources = resources;// 共通リソースをセット
-	m_pDR = m_commonResources->GetDeviceResources();// デバイスリソース取得
+	m_pCommonResources = resources;// 共通リソースをセット
+	m_pDR = m_pCommonResources->GetDeviceResources();// デバイスリソース取得
 	m_windowWidth = width;// ウィンドウ幅
 	m_windowHeight = height;// ウィンドウ高さ
 	m_pSelectTexturePath = L"Resources/Textures/select.png";// 選択枠のテクスチャパス設定
@@ -87,8 +87,8 @@ void TitleMenu::Initialize(CommonResources* resources, int width, int height)
 void TitleMenu::Update(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
-	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();// マウスのトラッカーを取得する
-	auto& mouseState = m_commonResources->GetInputManager()->GetMouseState();// マウスの状態を取得
+	auto& mtracker = m_pCommonResources->GetInputManager()->GetMouseTracker();// マウスのトラッカーを取得する
+	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();// マウスの状態を取得
 	m_hit = false;// 何かにヒットしたか
 	Vector2 mousePos = Vector2(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));// マウスの座標を取得
 	for (int i = 0; i < m_pUI.size(); i++)// メニューアイテムの数だけ繰り返す
@@ -99,7 +99,7 @@ void TitleMenu::Update(float elapsedTime)
 			if ((int(m_menuIndex)) != i) m_isSEPlay = false;// 前回選択したメニューと違う場合はSEを再生するフラグを立てる
 			if (!m_isSEPlay)// SEが再生されていない場合
 			{
-				m_commonResources->GetAudioManager()->PlaySound("Select", m_SEVolume);// SEの再生
+				m_pCommonResources->GetAudioManager()->PlaySound("Select", m_SEVolume);// SEの再生
 				m_isSEPlay = true;// 再生フラグを立てる
 			}
 			m_menuIndex = i;// ヒットしたメニューのインデックスを保存
@@ -144,7 +144,7 @@ void TitleMenu::Render()
 	}
 	for (unsigned int i = 0; i < m_pGuide.size(); i++)m_pGuide[i]->Render();// 選択不可能なアイテムを表示
 #ifdef _DEBUG// デバッグモードの時のみ実行する
-	auto debugString = m_commonResources->GetDebugString(); // デバッグ情報を表示する
+	auto debugString = m_pCommonResources->GetDebugString(); // デバッグ情報を表示する
 	for (int i = 0; i < m_transforms.size(); i++)// 登録したUIの数ループ
 		debugString->AddString("Transform.Pos:%f,%f  Scale:%f,%f",//  UIの座標を表示
 			m_transforms[i].position.x,// X座標

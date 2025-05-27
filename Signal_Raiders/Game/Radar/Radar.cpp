@@ -33,7 +33,7 @@ const float Radar::DISTANCE = 125.0f;	// プレイヤーとの距離
 *	@return なし
 */
 Radar::Radar(CommonResources* commonResources)
-	: m_commonResources{ commonResources }// 共通リソース
+	: m_pCommonResources{ commonResources }// 共通リソース
 	, m_pPlayer{ nullptr }// プレイヤー
 	, m_pEnemyManager{ nullptr }// 敵マネージャー
 	, m_radarPos{ Radar::RADAR_POSITION_X , Radar::RADAR_POSITION_Y }// レーダーの位置
@@ -45,7 +45,7 @@ Radar::Radar(CommonResources* commonResources)
 	, m_pDrawPolygon{ DrawPolygon::GetInstance() }// 描画クラス
 	, m_pCreateShader{ CreateShader::GetInstance() }// シェーダー作成クラス
 {
-	m_pCreateShader->Initialize(m_commonResources->GetDeviceResources()->GetD3DDevice(), // シェーダー作成クラスの初期化
+	m_pCreateShader->Initialize(m_pCommonResources->GetDeviceResources()->GetD3DDevice(), // シェーダー作成クラスの初期化
 		&INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
 }
 /*
@@ -66,10 +66,10 @@ Radar::~Radar()
 */
 void Radar::LoadTexture(const wchar_t* path)
 {
-	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
+	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;// テクスチャを格納するポインタ
 	DirectX::CreateWICTextureFromFile(device, path, nullptr, texture.ReleaseAndGetAddressOf());// テクスチャを読み込む
-	m_textures.push_back(texture);// テクスチャを格納
+	m_pTextures.push_back(texture);// テクスチャを格納
 }
 /*
 *	@brief	初期化
@@ -82,17 +82,17 @@ void Radar::Initialize(Player* pPlayer, EnemyManager* pEnemyManager)
 {
 	m_pPlayer = pPlayer;// プレイヤーのポインターを渡す
 	m_pEnemyManager = pEnemyManager;// 敵マネージャーのポインターを渡す
-	m_pDrawPolygon->InitializePositionTexture(m_commonResources->GetDeviceResources());// 板ポリゴン描画準備
+	m_pDrawPolygon->InitializePositionTexture(m_pCommonResources->GetDeviceResources());// 板ポリゴン描画準備
 	LoadTexture(L"Resources/Textures/RadarBack.png");// 背景
 	LoadTexture(L"Resources/Textures/PlayerPin.png");// プレイヤー
 	LoadTexture(L"Resources/Textures/EnemyPin.png ");// 敵
-	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Radar/VS_Radar.cso", m_vertexShader); // 頂点シェーダ
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Radar/PS_Radar.cso", m_pixelShader); // ピクセルシェーダ
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Radar/VS_Radar.cso", m_pVertexShader); // 頂点シェーダ
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Radar/PS_Radar.cso", m_pPixelShader); // ピクセルシェーダ
 	m_pInputLayout = m_pCreateShader->GetInputLayout();// インプットレイアウトを受け取る
-	m_pCreateShader->CreateConstantBuffer(m_cBuffer, sizeof(ConstBuffer));// シェーダーにデータを渡すためのコンスタントバッファ生成
+	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));// シェーダーにデータを渡すためのコンスタントバッファ生成
 	// シェーダーの構造体にシェーダーを渡す
-	m_shaders.vs = m_vertexShader.Get();// 頂点シェーダー
-	m_shaders.ps = m_pixelShader.Get();// ピクセルシェーダー
+	m_shaders.vs = m_pVertexShader.Get();// 頂点シェーダー
+	m_shaders.ps = m_pPixelShader.Get();// ピクセルシェーダー
 	m_shaders.gs = nullptr;// ジオメトリシェーダー(使わないのでnullptr)
 }
 /*
@@ -151,7 +151,7 @@ void Radar::DrawBackground()
 	CreateBuffer();// バッファを作成
 	DrawSetting();// 描画前設定
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures;	// 画像引き渡し
-	textures.push_back(m_textures[(int)(RadarState::Background)].Get());// 背景画像
+	textures.push_back(m_pTextures[(int)(RadarState::Background)].Get());// 背景画像
 	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), textures);// 描画準備
 	m_pDrawPolygon->DrawTexture(vertex);// ポリゴンを描画
 	m_pDrawPolygon->ReleaseShader();// シェーダの登録を解除しておく
@@ -177,7 +177,7 @@ void Radar::DrawPlayer()
 	CreateBuffer();// バッファを作成
 	DrawSetting();// 描画前設定
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures;// 画像引き渡し
-	textures.push_back(m_textures[(int)(RadarState::Player)].Get());// プレイヤー画像
+	textures.push_back(m_pTextures[(int)(RadarState::Player)].Get());// プレイヤー画像
 	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), textures);// 描画準備
 	m_pDrawPolygon->DrawTexture(playerVertex);// 板ポリゴンを描画
 	m_pDrawPolygon->ReleaseShader();// シェーダの登録を解除しておく
@@ -214,7 +214,7 @@ void Radar::DrawEnemy()
 		{
 			DrawSetting();// 描画前設定
 			std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures;// 画像引き渡し
-			textures.push_back(m_textures[(int)(RadarState::Enemy)].Get());// 敵画像
+			textures.push_back(m_pTextures[(int)(RadarState::Enemy)].Get());// 敵画像
 			m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), textures);	// 描画準備
 			VertexPositionTexture enemyVertex[4] =
 			{
@@ -239,8 +239,8 @@ void Radar::CreateBuffer()
 {
 	using namespace DirectX::SimpleMath;
 	m_constBuffer.time = Vector4(m_time);// 時間設定
-	m_pDrawPolygon->UpdateSubResources(m_cBuffer.Get(), &m_constBuffer);// 受け渡し用バッファの内容更新
-	ID3D11Buffer* cb[1] = { m_cBuffer.Get() };// シェーダーにバッファを渡す
+	m_pDrawPolygon->UpdateSubResources(m_pCBuffer.Get(), &m_constBuffer);// 受け渡し用バッファの内容更新
+	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };// シェーダーにバッファを渡す
 	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);// 頂点シェーダもピクセルシェーダも、同じ値を渡す
 	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);// シェーダをセットする
 }

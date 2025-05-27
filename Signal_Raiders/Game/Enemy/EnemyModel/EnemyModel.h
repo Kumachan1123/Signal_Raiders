@@ -36,15 +36,15 @@ public:
 private:
 	// private変数
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// モデル
-	std::unique_ptr<DirectX::Model> m_bodyModel;//胴体
-	std::unique_ptr<DirectX::Model> m_antennaModel;//アンテナ
-	std::unique_ptr<DirectX::Model> m_handModel;//手
-	std::unordered_map<IState::EnemyState, std::unique_ptr<DirectX::Model>> m_faceModelMap;// 表情によって変わる顔のモデルのマップ
-	std::unique_ptr<DirectX::Model> m_shadowModel;	// 影用のモデル
+	DirectX::Model* m_bodyModel;// 頭 
+	DirectX::Model* m_antennaModel;//アンテナ
+	DirectX::Model* m_handModel;//手
+	std::unordered_map<IState::EnemyState, DirectX::Model*> m_pFaceModelMap;// 表情によって変わる顔のモデルのマップ
+	DirectX::Model* m_shadowModel;	// 影用のモデル
 	// モデルの影用のピクセルシェーダー
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
 	// 現在のステータス
 	IState::EnemyState m_nowState;
 

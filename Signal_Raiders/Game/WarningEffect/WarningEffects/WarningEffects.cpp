@@ -10,7 +10,7 @@
 *	@return なし
 */
 WarningEffects::WarningEffects(CommonResources* resources)
-	: m_commonResources(resources)// 共通リソース
+	: m_pCommonResources(resources)// 共通リソース
 	, m_warningEffectCount{ 0 }// 攻撃しようとしている敵の数
 	, m_pPlayer{}// プレイヤー
 	, m_pEnemyManager{}// 敵マネージャー
@@ -45,7 +45,7 @@ void WarningEffects::Initialize(Player* pPlayer, EnemyManager* pEnemyManager)
 */
 void WarningEffects::CreateDamageEffects()
 {
-	std::unique_ptr<DamageEffect> damageEffect = std::make_unique<DamageEffect>(m_commonResources);// ダメージエフェクトの生成
+	std::unique_ptr<DamageEffect> damageEffect = std::make_unique<DamageEffect>(m_pCommonResources);// ダメージエフェクトの生成
 	damageEffect->SetPlayer(m_pPlayer);// プレイヤーのポインタを設定
 	damageEffect->SetEffectType(DamageEffect::EffectType::DAMAGE);// エフェクトタイプを設定
 	damageEffect->Initialize();// 初期化
@@ -64,7 +64,7 @@ void WarningEffects::CreateInComingEnemy()
 	{
 		if (!attackingEnemy->GetIsAttack())continue;// 攻撃フラグが立っていなかったら次のループへ
 		if (m_enemyEffectMap.find(attackingEnemy.get()) != m_enemyEffectMap.end())continue;// すでに生成されていたら次のループへ
-		std::unique_ptr<DamageEffect> warningEffect = std::make_unique<DamageEffect>(m_commonResources);// ダメージエフェクトの生成
+		std::unique_ptr<DamageEffect> warningEffect = std::make_unique<DamageEffect>(m_pCommonResources);// ダメージエフェクトの生成
 		warningEffect->SetPlayer(m_pPlayer);// プレイヤーのポインタを設定
 		warningEffect->SetEffectType(DamageEffect::EffectType::INCOMINGENEMY);// エフェクトタイプを設定
 		warningEffect->SetEnemy(attackingEnemy.get());// 攻撃してきた敵のポインタを設定

@@ -1,6 +1,6 @@
 /*
-	@file	BossSheild.h
-	@brief	ボスシールドクラス
+*	@file	BossSheild.h
+*	@brief	ボスシールドクラス
 */
 #pragma once
 #ifndef BOSS_SHEILD_DEFINED
@@ -58,9 +58,9 @@ public:
 private:
 	// privateメンバ変数
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// シールドモデル
-	std::unique_ptr < DirectX::Model> m_sheildModel;
+	DirectX::Model* m_pSheildModel;
 	// パーティクル
 	std::unique_ptr<Particle> m_pParticle;
 	// ボスポインター

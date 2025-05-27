@@ -40,7 +40,7 @@ public:
 	void CreateRightBullet(BulletType type);// 右の弾を生成
 private:
 	// privateメンバ変数
-	CommonResources* m_commonResources;	// 共通リソース
+	CommonResources* m_pCommonResources;	// 共通リソース
 	std::unique_ptr<BossModel>		m_pBossModel;//モデル
 	std::unique_ptr<EnemyHPBar>		m_pHPBar;// HPバー
 	// 敵の情報

@@ -6,10 +6,10 @@
 #include "EnemyFactory.h"
 /*
 *	@brief	敵生成
-*	@param[in]	EnemyType type	敵の種類
-*	@param[in]	Player* player	プレイヤーのポインタ
-*	@param[in]	CommonResources* resources	リソースのポインタ
-*	@param[in]	int HP	敵のHP
+*	@param	EnemyType type	敵の種類
+*	@param	Player* player	プレイヤーのポインタ
+*	@param	CommonResources* resources	リソースのポインタ
+*	@param	int HP	敵のHP
 *	@return	敵のポインタ
 */
 std::unique_ptr<IEnemy> EnemyFactory::CreateEnemy(EnemyType type, Player* player, CommonResources* resources, int HP)
@@ -29,9 +29,9 @@ std::unique_ptr<IEnemy> EnemyFactory::CreateEnemy(EnemyType type, Player* player
 
 /*
 *	@brief	ボス生成
-*	@param[in]	BossType type	ボスの種類
-*	@param[in]	BossBase* pBoss	ボスのポインタ
-*	@param[in]	CommonResources* resources	リソースのポインタ
+*	@param	BossType type	ボスの種類
+*	@param	BossBase* pBoss	ボスのポインタ
+*	@param	CommonResources* resources	リソースのポインタ
 *	@return	ボスのポインタ
 */
 std::unique_ptr<IBossLogic> EnemyFactory::CreateBoss(BossType type, BossBase* pBoss, CommonResources* resources)

@@ -26,7 +26,7 @@ PlayerController::PlayerController(Player* pPlayer)
 	, m_pitch{}// カメラのY軸回転
 	, m_pitchLimit{ PlayerController::PITCH_LIMIT }// ピッチの制限
 	, m_dash{}// ダッシュ速度
-	, m_commonResources{}// 共通リソース
+	, m_pCommonResources{}// 共通リソース
 	, m_hWnd{ nullptr }// ウィンドウハンドル
 	, m_sensitive{ pPlayer->GetMouseSensitive() + 1.0f }// マウス感度:Player->GetMouseSensitive()のままだと最小値が0.0fになるので + 1.0fする
 	, m_rotate{}// プレイヤーの回転
@@ -73,7 +73,7 @@ void PlayerController::MoveStop()
 *	@param resources コモンリソース
 *	@return なし
 */
-void PlayerController::Initialize(CommonResources* resources) { m_commonResources = resources; }// 初期化
+void PlayerController::Initialize(CommonResources* resources) { m_pCommonResources = resources; }// 初期化
 /*
 *	@brief プレイヤーの移動を更新
 *	@details WASDで移動、マウスで視点を変更する
@@ -84,7 +84,7 @@ void PlayerController::Update(float elapsedTime)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();// キーボードステートトラッカーを取得する
+	const auto& kbTracker = m_pCommonResources->GetInputManager()->GetKeyboardTracker();// キーボードステートトラッカーを取得する
 	MoveStop();// 移動を止める
 	POINT point;// マウスの座標
 	GetCursorPos(&point);// マウスの位置を取得
@@ -170,8 +170,8 @@ void PlayerController::Update(float elapsedTime)
 */
 void PlayerController::DebugCommand()
 {
-	const auto& kbTracker = m_commonResources->GetInputManager()->GetKeyboardTracker();// キーボードステートトラッカーを取得する
-	auto& mTracker = m_commonResources->GetInputManager()->GetMouseTracker();// マウスのトラッカーを取得する
+	const auto& kbTracker = m_pCommonResources->GetInputManager()->GetKeyboardTracker();// キーボードステートトラッカーを取得する
+	auto& mTracker = m_pCommonResources->GetInputManager()->GetMouseTracker();// マウスのトラッカーを取得する
 	if (mTracker->GetLastState().rightButton && m_pPlayer->GetisCheat() == false)// 右クリックで敵を一掃
 	{
 		m_pPlayer->SetisCheat(true);// チートフラグを立てる
@@ -190,7 +190,7 @@ void PlayerController::DebugCommand()
 */
 void PlayerController::Shoot()
 {
-	auto& mTracker = m_commonResources->GetInputManager()->GetMouseTracker();// マウスのトラッカーを取得する
+	auto& mTracker = m_pCommonResources->GetInputManager()->GetMouseTracker();// マウスのトラッカーを取得する
 	if (mTracker->GetLastState().leftButton &&// 左クリックされたとき
 		m_pPlayer->GetBulletManager()->GetIsPlayerShoot() == false &&// 弾が発射されていないとき
 		m_pPlayer->GetBulletManager()->GetPlayerBulletCount() > 0 && // 弾が残っているとき
@@ -210,7 +210,7 @@ void PlayerController::Shoot()
 */
 void PlayerController::Reload()
 {
-	const auto& kbState = m_commonResources->GetInputManager()->GetKeyboardState();// キーボードステートトラッカーを取得する
+	const auto& kbState = m_pCommonResources->GetInputManager()->GetKeyboardState();// キーボードステートトラッカーを取得する
 	if (kbState.R)m_pPlayer->GetBulletManager()->SetIsReloading(true);// Rキーでリロードフラグを立てる
 	if (m_pPlayer->GetBulletManager()->GetIsReloading())// リロード中のとき 
 		m_pPlayer->GetBulletManager()->ReLoadPlayerBullet();// 弾を補充する

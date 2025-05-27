@@ -11,7 +11,7 @@
 *	@return なし
 */
 Player::Player(CommonResources* commonResources)
-	: m_commonResources{ commonResources }// 共通リソース
+	: m_pCommonResources{ commonResources }// 共通リソース
 	, m_playerHP{  }// プレイヤーのHP
 	, m_maxPlayerHP{  }// プレイヤーの最大HP
 	, m_pPlayerController{}// プレイヤーコントローラー
@@ -62,9 +62,9 @@ void Player::Initialize(EnemyManager* pEnemiyManager)
 	m_pEnemyManager = pEnemiyManager;// 敵マネージャーのポインターを渡す
 	m_pCamera = std::make_unique<FPS_Camera>();// FPSカメラを作成する
 	m_pPlayerController = std::make_unique<PlayerController>(this);// プレイヤーのコントローラーを作成する
-	m_pPlayerController->Initialize(m_commonResources);// プレイヤーコントローラーの初期化
+	m_pPlayerController->Initialize(m_pCommonResources);// プレイヤーコントローラーの初期化
 	m_pPlayerController->SetPlayetPosition(m_pCamera->GetEyePosition());// プレイヤーの位置を設定
-	m_pWarningEffects = std::make_unique<WarningEffects>(m_commonResources);// ダメージエフェクトを管理するクラスを作成する
+	m_pWarningEffects = std::make_unique<WarningEffects>(m_pCommonResources);// ダメージエフェクトを管理するクラスを作成する
 	m_pWarningEffects->Initialize(this, m_pEnemyManager);// ダメージエフェクトの初期化
 }
 /*

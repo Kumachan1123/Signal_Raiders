@@ -44,7 +44,7 @@ private:
 	// シングルトンインスタンス
 	static std::unique_ptr<Bloom> m_instance;
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// 共通リソース
 	ID3D11DeviceContext1* m_context;
 	// デバイスリソース

@@ -101,7 +101,7 @@ private:
 private:
 	// private変数
 	// コモンリソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// 敵
 	std::vector<std::unique_ptr<IEnemy>> m_enemies;
 	// 攻撃中の敵配列

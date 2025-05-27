@@ -7,6 +7,7 @@
 #include <cassert>
 // 自作ヘッダーファイル
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
+#include "Game/KumachiLib/ModelManager/ModelManager.h"
 
 // 前方宣言
 namespace DX
@@ -19,6 +20,7 @@ namespace mylib
 	class DebugString;
 	class InputManager;
 }
+class ModelManager;
 
 class CommonResources
 {
@@ -29,6 +31,7 @@ public:// アクセサ
 	mylib::DebugString* GetDebugString() const { return m_debugString; }// デバッグ文字列を取得する
 	mylib::InputManager* GetInputManager() const { return m_inputManager; }// 入力マネージャを取得する
 	AudioManager* GetAudioManager() const { return m_audioManager; }// オーディオマネージャを取得する
+	ModelManager* GetModelManager() const { return m_modelManager; }// モデルマネージャを取得する
 public:// publicメソッド
 	CommonResources();// コンストラクタ
 	~CommonResources() = default;// デストラクタ defaultで定義
@@ -38,7 +41,8 @@ public:// publicメソッド
 		DirectX::CommonStates* commonStates,// 受け渡しするコモンステート
 		mylib::DebugString* debugString,// 受け渡しするデバッグ文字列
 		mylib::InputManager* inputManager,// 受け渡しする入力マネージャ
-		AudioManager* audioManager// 受け渡しするオーディオマネージャ
+		AudioManager* audioManager,// 受け渡しするオーディオマネージャ
+		ModelManager* modelManager// 受け渡しするモデルマネージャ
 	);
 private:// privateメンバ変数
 	// 受け渡しするリソース一覧
@@ -54,4 +58,6 @@ private:// privateメンバ変数
 	mylib::InputManager* m_inputManager;
 	// オーディオマネージャ
 	AudioManager* m_audioManager;
+	// モデルマネージャ
+	ModelManager* m_modelManager;
 };

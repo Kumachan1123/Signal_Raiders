@@ -17,7 +17,7 @@ const int ResultMenu::INVALID_MENU_INDEX = 6;// 無効なメニューインデックス
 ResultMenu::ResultMenu()
 	: m_menuIndex{ 0 }						// 現在選択中のメニューインデックス
 	, m_pDR{ nullptr }						// デバイスリソースへのポインタ
-	, m_commonResources{ nullptr }			// 共通リソースへのポインタ
+	, m_pCommonResources{ nullptr }			// 共通リソースへのポインタ
 	, m_pUI{}								// UIオブジェクトリスト
 	, m_pSelect{}							// 選択された時に表示する背景UIリスト
 	, m_pSelectTexturePath{ nullptr }		// 選択背景のテクスチャパス
@@ -59,8 +59,8 @@ ResultMenu::~ResultMenu()
 void ResultMenu::Initialize(CommonResources* resources, int width, int height)
 {
 	using namespace DirectX::SimpleMath;
-	m_commonResources = resources;// 共通リソースをセット
-	m_pDR = m_commonResources->GetDeviceResources();// デバイスリソース取得
+	m_pCommonResources = resources;// 共通リソースをセット
+	m_pDR = m_pCommonResources->GetDeviceResources();// デバイスリソース取得
 	m_windowWidth = width;// ウィンドウ幅保存
 	m_windowHeight = height;// ウィンドウ高さ保存
 	m_pSelectTexturePath = L"Resources/Textures/ResultSelect.png";// 選択枠のテクスチャパス設定
@@ -92,8 +92,8 @@ void ResultMenu::Initialize(CommonResources* resources, int width, int height)
 void ResultMenu::Update(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
-	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker(); // マウスのトラッカーを取得する
-	auto& mouseState = m_commonResources->GetInputManager()->GetMouseState();// マウスの状態を取得
+	auto& mtracker = m_pCommonResources->GetInputManager()->GetMouseTracker(); // マウスのトラッカーを取得する
+	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();// マウスの状態を取得
 	m_time += elapsedTime;// 時間を加算
 	m_hit = false; // 何かにヒットしたかどうかを初期化
 	Vector2 mousePos = Vector2(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));// マウスの座標を取得
@@ -105,7 +105,7 @@ void ResultMenu::Update(float elapsedTime)
 			if ((int(m_menuIndex)) != i) m_isSEPlay = false;// 前回選択したメニューと違う場合はSEを再生するフラグを立てる
 			if (!m_isSEPlay)// SEが再生されていない場合
 			{
-				m_commonResources->GetAudioManager()->PlaySound("Select", m_SEVolume);// SEの再生
+				m_pCommonResources->GetAudioManager()->PlaySound("Select", m_SEVolume);// SEの再生
 				m_isSEPlay = true;// 再生フラグを立てる
 			}
 			m_menuIndex = i;	// ヒットしたメニューのインデックスを保存

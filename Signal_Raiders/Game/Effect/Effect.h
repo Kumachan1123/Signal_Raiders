@@ -3,21 +3,19 @@
 *	@brief エフェクトクラス
 */
 #pragma once
-// 標準ライブラリ
+// DirectX
 #include <PrimitiveBatch.h>
 #include <VertexTypes.h> 
 #include <WICTextureLoader.h> 
+#include <DeviceResources.h>
 // 外部ライブラリ
 #include "Game/CommonResources.h"
-#include "DeviceResources.h"
 #include "Libraries/MyLib/DebugString.h"
 // 自作ヘッダーファイル
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
-
-// クラスの前方宣言
+// 前方宣言
 class CommonResources;
-
 class Effect
 {
 public:
@@ -38,8 +36,7 @@ public:
 		DirectX::SimpleMath::Vector4 count;     // カウント
 		DirectX::SimpleMath::Vector4 height;    // 高さ
 		DirectX::SimpleMath::Vector4 width;     // 幅
-
-	}m_constBuffer;
+	};
 public:
 	// アクセサ
 	bool IsPlaying() const { return m_isPlaying; }// 再生中か
@@ -56,20 +53,20 @@ public:
 	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);// 描画
 	void Finalize();// 終了処理
 
-public:
+
+private:
+	void LoadTexture(const wchar_t* path);// 画像を読み込む
+private:// 定数
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;// 入力レイアウト
 	// 板ポリゴンの頂点座標
 	static const float m_vertexMinX;//左
 	static const float m_vertexMaxX;//右
 	static const float m_vertexMinY;//下
 	static const float m_vertexMaxY;//上
-
-private:
-	void LoadTexture(const wchar_t* path);// 画像を読み込む
 private:
 	// メンバ変数
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// エフェクトを再生する座標
 	DirectX::SimpleMath::Vector3 m_position;
 	// エフェクトのスケール
@@ -79,25 +76,23 @@ private:
 	// シェーダー作成クラス
 	CreateShader* m_pCreateShader;
 	// 頂点シェーダ
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_pVertexShader;
 	// ピクセルシェーダ
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
 	// ワールド行列
 	DirectX::SimpleMath::Matrix m_world;
 	//	入力レイアウト 
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_InputLayout;
-	//	共通ステートオブジェクトへのポインタ
-	std::unique_ptr<DirectX::CommonStates> m_states;
-	//	エフェクト 
-	std::unique_ptr<DirectX::AlphaTestEffect> m_batchEffect;
-	//	テクスチャハンドル 
-	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_textures;
+	// コンスタントバッファ
+	ConstBuffer m_constBuffer;
+	// テクスチャハンドル 
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_pTextures;
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	// 定数バッファ
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_cBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_pCBuffer;
 	//	プリミティブバッチ 
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_Batch;
 	// フレームの頂点情報

@@ -52,7 +52,7 @@ private:// private定数
 	static const float VOLUME;// 音量の基準
 private:// private変数
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	//	変数
 	DX::DeviceResources* m_pDR;
 	// フェード

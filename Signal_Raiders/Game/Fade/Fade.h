@@ -79,22 +79,22 @@ private:
 	// 変数
 	DX::DeviceResources* m_pDR;
 	// 定数バッファ
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_pCBuffer;
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// 描画クラス
 	DrawPolygon* m_pDrawPolygon;
 	// シェーダー作成クラス
 	CreateShader* m_pCreateShader;
 
 	// テクスチャハンドル
-	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_texture;
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_pTexture;
 	// 頂点シェーダ
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_pVertexShader;
 	// ピクセルシェーダ
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
 	// ワールド行列

@@ -6,7 +6,7 @@
 #include "EnemySpin.h"
 /*
 *	@brief	コンストラクタ
-*	@param[in]	EnemyAI* enemyAI 敵AI
+*	@param	EnemyAI* enemyAI 敵AI
 *	@return	なし
 */
 EnemySpin::EnemySpin(EnemyAI* enemyAI)
@@ -37,7 +37,7 @@ void EnemySpin::Initialize()
 }
 /*
 *	@brief	更新
-*	@param[in]	float elapsedTime　経過時間
+*	@param	float elapsedTime　経過時間
 *	@return	なし
 */
 void EnemySpin::Update(float elapsedTime)

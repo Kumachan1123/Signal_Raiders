@@ -42,11 +42,11 @@ public:// public定数
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;// インプットレイアウト
 private:// private変数
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// 頂点シェーダ
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_pVertexShader;
 	// ピクセルシェーダ
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
 	// 描画クラス
@@ -58,7 +58,7 @@ private:// private変数
 	// 変数
 	DX::DeviceResources* m_pDR;
 	// 定数バッファ
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_pCBuffer;
 	// データ受け渡し用コンスタントバッファ
 	ConstBuffer m_ConstBuffer;
 	// タイトル画像

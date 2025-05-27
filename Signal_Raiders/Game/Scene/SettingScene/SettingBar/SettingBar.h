@@ -54,7 +54,7 @@ private:// private変数
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// 設定バー
 	std::vector<std::unique_ptr<UI>> m_pBar;
 	// 設定バーの玉

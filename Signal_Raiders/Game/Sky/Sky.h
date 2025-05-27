@@ -45,7 +45,7 @@ private:// private定数
 		{4, "Resources/models/sky/MidNightSky.cmo"}// ステージ５
 	};
 private:// private変数
-	CommonResources* m_commonResources;// 共通リソース
+	CommonResources* m_pCommonResources;// 共通リソース
 	std::unique_ptr<DirectX::Model> m_model;// モデル
 	wchar_t m_texturePath[256];// テクスチャパス
 	int m_stageID;// ステージID

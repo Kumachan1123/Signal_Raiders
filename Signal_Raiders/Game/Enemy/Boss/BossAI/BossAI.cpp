@@ -1,20 +1,17 @@
 /*
-	@file	BossAI.cpp
-	@brief	敵AIクラス
+*	@file	BossAI.cpp
+*	@brief	敵AIクラス
 */
 #include "pch.h"
 #include "BossAI.h"
-
-using namespace DirectX::SimpleMath;
-
-
 /*
 *	@brief	コンストラクタ
-*	@param[in] pBoss ボスクラスのポインタ
+*	@details ボスクラスのAIを管理するクラス
+*	@param pBoss ボスクラスのポインタ
 *	@return なし
 */
 BossAI::BossAI(IEnemy* pBoss)
-	: m_currentState(nullptr)// 現在のステート
+	: m_pCurrentState(nullptr)// 現在のステート
 	, m_attackCooldown(0.0f)// 攻撃クールダウン
 	, m_knockTime(0.0f)// ノックバック時間
 	, m_time(0.0f)// 時間
@@ -28,17 +25,20 @@ BossAI::BossAI(IEnemy* pBoss)
 {
 	m_pBossAttack = std::make_unique<BossAttack>(this);// 攻撃時
 	m_pBossKnockBacking = std::make_unique<BossKnockBacking>(this);// ノックバック時
-
 }
 
 /*
 *	@brief デストラクタ
+*	@details ボスAIクラスのデストラクタ(ここでは何もしない)
+*	@param なし
 *	@return なし
 */
-BossAI::~BossAI() {}
+BossAI::~BossAI() {/*do nothing*/ }
 
 /*
 *	@brief 初期化
+*	@details ボスAIクラスの初期化
+*	@param なし
 *	@return なし
 */
 void BossAI::Initialize()
@@ -47,13 +47,14 @@ void BossAI::Initialize()
 	m_velocity = EnemyParameters::INITIAL_VELOCITY; // 浮遊の初期速度
 	m_scale = EnemyParameters::INITIAL_BOSS_SCALE; // スケール初期化
 	m_position = m_initialPosition;// 初期位置を設定
-	m_currentState = m_pBossAttack.get();// 現在のステートを攻撃態勢に設定
-	m_currentState->Initialize();// 初期化
+	m_pCurrentState = m_pBossAttack.get();// 現在のステートを攻撃態勢に設定
+	m_pCurrentState->Initialize();// 初期化
 	m_enemyState = m_attackState;// 攻撃状態
 }
 /*
 *	@brief 更新
-*	@param[in] elapsedTime 経過時間
+*	@details ボスAIクラスの更新
+*	@param elapsedTime 経過時間
 *	@return なし
 */
 void BossAI::Update(float elapsedTime)
@@ -61,7 +62,7 @@ void BossAI::Update(float elapsedTime)
 	if (m_pBoss->GetEnemyHitByPlayerBullet())m_isHitPlayerBullet = true;// プレイヤーの弾に当たったか
 	m_time += elapsedTime;// 時間の更新
 	m_position = m_pBoss->GetPosition();// 位置の更新
-	m_currentState->Update(elapsedTime);// 現在のステートを更新
+	m_pCurrentState->Update(elapsedTime);// 現在のステートを更新
 	m_position.y = m_initialPosition.y + EnemyParameters::AMPLITUDE * std::sin(EnemyParameters::FREQUENCY * m_time);// Y座標を更新
 	m_position.y += m_velocity.y * elapsedTime;// Y座標を更新
 	auto boss = dynamic_cast<BossBase*>(m_pBoss);// IEnemyからBossのポインターを抽出
@@ -82,25 +83,28 @@ void BossAI::Update(float elapsedTime)
 }
 /*
 *	@brief ステート変更
-*	@param[in] newState 新しいステート
+*	@details ボスAIクラスのステート変更
+*	@param newState 新しいステート
 *	@return なし
 */
 void BossAI::ChangeState(IState* newState)
 {
-	if (m_currentState != newState)// 現在のステートと新しいステートが違う場合
+	if (m_pCurrentState != newState)// 現在のステートと新しいステートが違う場合
 	{
-		m_currentState = newState;// 現在のステートを新しいステートに変更
-		m_currentState->Initialize();// 初期化
+		m_pCurrentState = newState;// 現在のステートを新しいステートに変更
+		m_pCurrentState->Initialize();// 初期化
 	}
 }
 
 /*
 *	@brief ノックバック
-*	@param[in] elapsedTime 経過時間
+*	@details ボスがプレイヤーの弾に当たった時のノックバック処理
+*	@param elapsedTime 経過時間
 *	@return なし
 */
 void BossAI::KnockBack(float elapsedTime)
 {
+	using namespace DirectX::SimpleMath;
 	if (m_knockTime == 0.0f)// ノックバック開始時の処理
 	{
 		m_knockStartPosition = m_position; // ノックバック開始位置
@@ -124,6 +128,5 @@ void BossAI::KnockBack(float elapsedTime)
 		m_pBoss->SetEnemyHitByPlayerBullet(false); // ノックバック終了	
 		m_isKnockBack = true;// これ以降ノックバック処理を行わない
 		m_attackState = IState::EnemyState::ANGRY;// 怒り状態
-
 	}
 }

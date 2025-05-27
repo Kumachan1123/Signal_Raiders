@@ -7,8 +7,8 @@
 #include <cassert>
 // DirectXライブラリ
 #include <SimpleMath.h>
-// 外部ライブラリ
 #include <DeviceResources.h>
+// 外部ライブラリ
 #include "Libraries/MyLib/DebugString.h"
 #include "Libraries/MyLib/InputManager.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
@@ -57,13 +57,13 @@ private:
 	// 軌跡用の履歴を保存する配列
 	std::vector<DirectX::SimpleMath::Vector3> m_trailPositions;
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// ワールド行列
 	DirectX::SimpleMath::Matrix m_worldMatrix;
 	// 「弾」境界ボックス
 	DirectX::BoundingSphere m_boundingSphere;
 	// モデルの影
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
 	// 弾の自転
 	float m_angle;
 	// 弾の軌跡ポインター
@@ -83,4 +83,5 @@ private:
 	float m_time;									// 生存時間
 	// 弾モデル
 	std::unique_ptr<DirectX::Model> m_model;
+	DirectX::Model* m_pModel;					// 弾のモデル
 };

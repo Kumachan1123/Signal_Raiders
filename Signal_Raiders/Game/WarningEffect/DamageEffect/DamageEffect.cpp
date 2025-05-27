@@ -19,7 +19,7 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC>  DamageEffect::INPUT_LAYOUT =
 *	@return なし
 */
 DamageEffect::DamageEffect(CommonResources* resources)
-	: m_commonResources(resources)// リソースクラスのポインタ
+	: m_pCommonResources(resources)// リソースクラスのポインタ
 	, m_time(0.0f)// 時間
 	, m_constBuffer{}// コンスタントバッファ
 	, m_pDR(resources->GetDeviceResources())// デバイスリソース
@@ -77,7 +77,7 @@ void  DamageEffect::LoadTexture(const wchar_t* path)
 {
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;// テクスチャリソースビュー
 	DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, nullptr, texture.ReleaseAndGetAddressOf());// テクスチャの読み込み
-	m_textures.push_back(texture);// テクスチャリソースビューを格納
+	m_pTextures.push_back(texture);// テクスチャリソースビューを格納
 }
 /*
 *	@brief シェーダー作成
@@ -87,12 +87,12 @@ void  DamageEffect::LoadTexture(const wchar_t* path)
 */
 void  DamageEffect::MakeShader()
 {
-	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/DamageEffect/VS_Damage.cso", m_vertexShader);// 頂点シェーダー作成
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/DamageEffect/PS_Damage.cso", m_pixelShader);	// ピクセルシェーダー作成
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/DamageEffect/VS_Damage.cso", m_pVertexShader);// 頂点シェーダー作成
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/DamageEffect/PS_Damage.cso", m_pPixelShader);	// ピクセルシェーダー作成
 	m_pInputLayout = m_pCreateShader->GetInputLayout();// 入力レイアウト取得
-	m_pCreateShader->CreateConstantBuffer(m_cBuffer, sizeof(ConstBuffer));// コンスタントバッファ作成
-	m_shaders.vs = m_vertexShader.Get();// 頂点シェーダーをセット
-	m_shaders.ps = m_pixelShader.Get();// ピクセルシェーダーをセット
+	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));// コンスタントバッファ作成
+	m_shaders.vs = m_pVertexShader.Get();// 頂点シェーダーをセット
+	m_shaders.ps = m_pPixelShader.Get();// ピクセルシェーダーをセット
 	m_shaders.gs = nullptr;// ジオメトリシェーダーは使わないのでnullptr
 }
 /*
@@ -168,15 +168,15 @@ void  DamageEffect::Render()
 	m_constBuffer.matView = m_view.Transpose();// ビュー行列を転置
 	m_constBuffer.matProj = m_proj.Transpose();// プロジェクション行列を転置
 	m_constBuffer.matWorld = m_world.Transpose();// ワールド行列を転置
-	m_pDrawPolygon->UpdateSubResources(m_cBuffer.Get(), &m_constBuffer);// コンスタントバッファの更新
-	ID3D11Buffer* cb[1] = { m_cBuffer.Get() };// コンスタントバッファのセット
+	m_pDrawPolygon->UpdateSubResources(m_pCBuffer.Get(), &m_constBuffer);// コンスタントバッファの更新
+	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };// コンスタントバッファのセット
 	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);	// 頂点シェーダもピクセルシェーダも、同じ値を渡す
 	m_pDrawPolygon->DrawSetting(// 	// 描画前設定
 		DrawPolygon::SamplerStates::LINEAR_WRAP,// サンプラーステート
 		DrawPolygon::BlendStates::NONPREMULTIPLIED,// ブレンドステート
 		DrawPolygon::RasterizerStates::CULL_NONE,// ラスタライザーステート
 		DrawPolygon::DepthStencilStates::DEPTH_NONE);// 深度ステンシルステート
-	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_textures);// 描画開始
+	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pTextures);// 描画開始
 	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);// シェーダーの登録
 	m_pDrawPolygon->DrawTexture(vertex);// 板ポリゴンを描画
 	m_pDrawPolygon->ReleaseShader();// シェーダー解放

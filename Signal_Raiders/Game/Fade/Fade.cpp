@@ -41,12 +41,12 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> Fade::INPUT_LAYOUT =
 */
 Fade::Fade(CommonResources* commonResources)
 	: m_pDR{ }// デバイスリソース
-	, m_CBuffer{}// 定数バッファ
+	, m_pCBuffer{}// 定数バッファ
 	, m_pInputLayout{}// 入力レイアウト
-	, m_commonResources{ commonResources }// 共通リソース
-	, m_texture{}// テクスチャ
-	, m_vertexShader{}// 頂点シェーダー
-	, m_pixelShader{}// ピクセルシェーダー
+	, m_pCommonResources{ commonResources }// 共通リソース
+	, m_pTexture{}// テクスチャ
+	, m_pVertexShader{}// 頂点シェーダー
+	, m_pPixelShader{}// ピクセルシェーダー
 	, m_world{}// ワールド行列
 	, m_view{}// ビュー行列
 	, m_proj{}// プロジェクション行列
@@ -55,7 +55,7 @@ Fade::Fade(CommonResources* commonResources)
 	, m_pDrawPolygon{ DrawPolygon::GetInstance() }// 板ポリゴン描画クラス
 	, m_pCreateShader{ CreateShader::GetInstance() }// シェーダー作成クラス
 {
-	m_pCreateShader->Initialize(m_commonResources->GetDeviceResources()->GetD3DDevice(),
+	m_pCreateShader->Initialize(m_pCommonResources->GetDeviceResources()->GetD3DDevice(),
 		&INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);	// シェーダー作成クラスの初期化
 }
 /*
@@ -73,7 +73,7 @@ void Fade::LoadTexture(const wchar_t* path)
 {
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;// 一時保存用変数
 	DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, nullptr, texture.ReleaseAndGetAddressOf());// テクスチャの読み込み
-	m_texture.push_back(texture);// 配列に追加
+	m_pTexture.push_back(texture);// 配列に追加
 }
 /*
 *	@brief 生成
@@ -82,7 +82,7 @@ void Fade::LoadTexture(const wchar_t* path)
 */
 void Fade::Initialize()
 {
-	m_pDR = m_commonResources->GetDeviceResources();	// デバイスリソースの取得
+	m_pDR = m_pCommonResources->GetDeviceResources();	// デバイスリソースの取得
 	CreateShaders();// シェーダーの作成
 	LoadTexture(L"Resources/Textures/fade.png");	// 画像の読み込み
 	m_pDrawPolygon->InitializePositionTexture(m_pDR);	// 板ポリゴン描画用
@@ -94,13 +94,13 @@ void Fade::Initialize()
 */
 void Fade::CreateShaders()
 {
-	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Fade/VS_Fade.cso", m_vertexShader);// 頂点シェーダー作成
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Fade/PS_Fade.cso", m_pixelShader);// ピクセルシェーダー作成
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Fade/VS_Fade.cso", m_pVertexShader);// 頂点シェーダー作成
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Fade/PS_Fade.cso", m_pPixelShader);// ピクセルシェーダー作成
 	m_pInputLayout = m_pCreateShader->GetInputLayout();	// インプットレイアウトを受け取る
-	m_pCreateShader->CreateConstantBuffer(m_CBuffer, sizeof(ConstBuffer));	// シェーダーにデータを渡すためのコンスタントバッファ生成
+	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));	// シェーダーにデータを渡すためのコンスタントバッファ生成
 	// シェーダーの構造体にシェーダーを渡す
-	m_shaders.vs = m_vertexShader.Get();// 頂点シェーダー
-	m_shaders.ps = m_pixelShader.Get();// ピクセルシェーダー
+	m_shaders.vs = m_pVertexShader.Get();// 頂点シェーダー
+	m_shaders.ps = m_pPixelShader.Get();// ピクセルシェーダー
 	m_shaders.gs = nullptr;// ジオメトリシェーダー(使わないのでnullptr)
 }
 
@@ -170,15 +170,15 @@ void Fade::Render()
 	ConstBuffer cbuff;	// シェーダーに渡すバッファを作成
 	cbuff.smoothness = FADE_SMOOTHNESS;// フェードの滑らかさ
 	cbuff.fadeAmount = m_time;	// フェードの進行度
-	m_pDrawPolygon->UpdateSubResources(m_CBuffer.Get(), &cbuff);	// ConstBufferからID3D11Bufferへの変換
-	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };	//	シェーダーにバッファを渡す
+	m_pDrawPolygon->UpdateSubResources(m_pCBuffer.Get(), &cbuff);	// ConstBufferからID3D11Bufferへの変換
+	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };	//	シェーダーにバッファを渡す
 	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);	//	頂点シェーダもピクセルシェーダも、同じ値を渡す
 	m_pDrawPolygon->DrawSetting(	// 描画前設定
 		DrawPolygon::SamplerStates::LINEAR_WRAP,// サンプラーステート
 		DrawPolygon::BlendStates::NONPREMULTIPLIED,// ブレンドステート
 		DrawPolygon::RasterizerStates::CULL_NONE,// ラスタライザーステート
 		DrawPolygon::DepthStencilStates::DEPTH_NONE);	// 深度ステンシルステート
-	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_texture);	//	描画準備
+	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pTexture);	//	描画準備
 	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);	//	シェーダをセットする
 	m_pDrawPolygon->DrawTexture(vertex);	//	板ポリゴンを描画
 	m_pDrawPolygon->ReleaseShader();	//	シェーダの登録を解除しておく

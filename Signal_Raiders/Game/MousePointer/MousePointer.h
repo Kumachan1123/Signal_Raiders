@@ -41,7 +41,7 @@ private:
 	// private変数
 	unsigned int m_menuIndex;// メニューのインデックス
 	DX::DeviceResources* m_pDR;// デバイスリソース
-	CommonResources* m_commonResources;// 共通リソース
+	CommonResources* m_pCommonResources;// 共通リソース
 	std::unique_ptr<UI> m_pMousePointer;// マウスポインター
 	int m_windowWidth, m_windowHeight;// ウィンドウの幅と高さ
 	DirectX::Keyboard::KeyboardStateTracker m_tracker;// キーボードのトラッカー

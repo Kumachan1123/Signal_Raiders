@@ -44,7 +44,7 @@ private:
 	static	const float VOLUME;
 private:
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	//	変数
 	DX::DeviceResources* m_pDR;
 	// フェード

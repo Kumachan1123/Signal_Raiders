@@ -22,15 +22,15 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> Particle::INPUT_LAYOUT =
 *	@return なし
 */
 Particle::Particle(ParticleUtility::Type type, float size)
-	:m_commonResources{}// 共通リソース
+	:m_pCommonResources{}// 共通リソース
 	, m_timer(0.0f)// 経過時間
 	, m_elapsedTime(0.0f)// フレーム時間
 	, m_pDR{}// デバイスリソース
-	, m_CBuffer{}// コンスタントバッファ
+	, m_pCBuffer{}// コンスタントバッファ
 	, m_pInputLayout{}// 入力レイアウト
-	, m_texture{}// テクスチャ
-	, m_vertexShader{}// 頂点シェーダー
-	, m_pixelShader{}// ピクセルシェーダー
+	, m_pTexture{}// テクスチャ
+	, m_pVertexShader{}// 頂点シェーダー
+	, m_pPixelShader{}// ピクセルシェーダー
 	, m_geometryShader{}// ジオメトリシェーダー
 	, m_world{}// ワールド行列
 	, m_view{}// ビュー行列
@@ -63,8 +63,8 @@ Particle::~Particle() {/*do nothing.*/ }
 */
 void Particle::Initialize(CommonResources* resources)
 {
-	m_commonResources = resources;// 共通リソースを取得
-	m_pDR = m_commonResources->GetDeviceResources();// デバイスリソースを取得
+	m_pCommonResources = resources;// 共通リソースを取得
+	m_pDR = m_pCommonResources->GetDeviceResources();// デバイスリソースを取得
 	m_pCreateShader->Initialize(m_pDR->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);// シェーダー作成クラスの初期化
 	CreateShaders();// シェーダーの作成
 	switch (m_type)// 画像の読み込み
@@ -95,14 +95,14 @@ void Particle::Initialize(CommonResources* resources)
 void Particle::CreateShaders()
 {
 	// シェーダーの作成
-	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Particle/VS_Particle.cso", m_vertexShader);// 頂点シェーダーの作成
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Particle/PS_Particle.cso", m_pixelShader);// ピクセルシェーダーの作成
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Particle/VS_Particle.cso", m_pVertexShader);// 頂点シェーダーの作成
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Particle/PS_Particle.cso", m_pPixelShader);// ピクセルシェーダーの作成
 	m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/Particle/GS_Particle.cso", m_geometryShader);// ジオメトリシェーダーの作成
 	m_pInputLayout = m_pCreateShader->GetInputLayout();// インプットレイアウトを受け取る
-	m_pCreateShader->CreateConstantBuffer(m_CBuffer, sizeof(ConstBuffer));// 定数バッファ作成
+	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));// 定数バッファ作成
 	// シェーダーの構造体にシェーダーを渡す
-	m_shaders.vs = m_vertexShader.Get();// 頂点シェーダー
-	m_shaders.ps = m_pixelShader.Get();// ピクセルシェーダー
+	m_shaders.vs = m_pVertexShader.Get();// 頂点シェーダー
+	m_shaders.ps = m_pPixelShader.Get();// ピクセルシェーダー
 	m_shaders.gs = m_geometryShader.Get();// ジオメトリシェーダー
 }
 
@@ -116,7 +116,7 @@ void Particle::LoadTexture(const wchar_t* path)
 {
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;// 一時保存用テクスチャハンドル
 	DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, nullptr, texture.GetAddressOf());// テクスチャの読み込み
-	m_texture.push_back(texture);// 配列に登録
+	m_pTexture.push_back(texture);// 配列に登録
 }
 /*
 *	@brief 更新
@@ -195,8 +195,8 @@ void Particle::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Mat
 	m_constantBuffer.count = Vector4((float)(m_anim));// フレーム数
 	m_constantBuffer.height = Vector4((float)(m_frameRows));// 行数
 	m_constantBuffer.width = Vector4((float)(m_frameCols));// 列数
-	m_pDrawPolygon->UpdateSubResources(m_CBuffer.Get(), &m_constantBuffer);// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };// シェーダーにバッファを渡す
+	m_pDrawPolygon->UpdateSubResources(m_pCBuffer.Get(), &m_constantBuffer);// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
+	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };// シェーダーにバッファを渡す
 	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);// シェーダーにバッファを渡す
 	if (m_type == ParticleUtility::Type::BARRIERBREAK)// バリアが壊れたときの破片は深度バッファを使わない
 	{
@@ -216,7 +216,7 @@ void Particle::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Mat
 			DrawPolygon::RasterizerStates::CULL_NONE,// ラスタライザーステート
 			DrawPolygon::DepthStencilStates::DEPTH_READ); // 深度ステンシルステート
 	}
-	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_texture);	// 描画準備
+	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pTexture);	// 描画準備
 	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);// シェーダをセットする
 	m_pDrawPolygon->DrawColorTexture(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &m_vertices[0], m_vertices.size());// 指定した座標を中心に、シェーダ側で板ポリゴンを生成・描画させる
 	m_pDrawPolygon->ReleaseShader();// シェーダの登録を解除しておく

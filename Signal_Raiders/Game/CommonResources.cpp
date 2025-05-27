@@ -17,6 +17,7 @@ CommonResources::CommonResources()
 	, m_debugString{ nullptr }		// デバッグ文字列
 	, m_inputManager{ nullptr }		// 入力マネージャ
 	, m_audioManager{ nullptr }		// オーディオマネージャ
+	, m_modelManager{ nullptr }		// モデルマネージャ
 {
 }
 /*
@@ -36,7 +37,8 @@ void CommonResources::Initialize(
 	DirectX::CommonStates* commonStates,
 	mylib::DebugString* debugString,
 	mylib::InputManager* inputManager,
-	AudioManager* audioManager
+	AudioManager* audioManager,
+	ModelManager* modelManager
 )
 {
 	assert(timer);			// タイマーがnullptrでないことを確認
@@ -45,6 +47,7 @@ void CommonResources::Initialize(
 	assert(debugString);	// デバッグ文字列がnullptrでないことを確認
 	assert(inputManager);	// 入力マネージャがnullptrでないことを確認
 	assert(audioManager);	// オーディオマネージャがnullptrでないことを確認
+	assert(modelManager);	// モデルマネージャがnullptrでないことを確認
 
 	m_stepTimer = timer;			// タイマーを設定する
 	m_deviceResources = dr;			// デバイスリソースを設定する
@@ -52,4 +55,5 @@ void CommonResources::Initialize(
 	m_debugString = debugString;	// デバッグ文字列を設定する
 	m_inputManager = inputManager;	// 入力マネージャを設定する
 	m_audioManager = audioManager;	// オーディオマネージャを設定する
+	m_modelManager = modelManager;	// モデルマネージャを設定する
 }

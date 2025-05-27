@@ -64,7 +64,7 @@ private://	変数
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// 選択可能UI
 	std::vector<std::unique_ptr<UI>> m_pUI;
 	// 選択不可能UI

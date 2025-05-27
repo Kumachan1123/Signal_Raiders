@@ -14,7 +14,7 @@ const float Stage::STAGE_HEIGHT = 3.0f;	// ステージの高さ
 *	@return なし
 */
 Stage::Stage()
-	: m_commonResources{}
+	: m_pCommonResources{}
 	, m_model{}
 	, m_texturePath{}
 {
@@ -37,8 +37,8 @@ void Stage::Initialize(CommonResources* resources)
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	assert(resources);// リソースがnullptrでないことを確認
-	m_commonResources = resources;// リソースを保存
-	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
+	m_pCommonResources = resources;// リソースを保存
+	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
 	std::unique_ptr<EffectFactory> fx = std::make_unique<EffectFactory>(device);// モデルを読み込む準備
 	fx->SetDirectory(L"Resources/models/Stage");// モデルのディレクトリを設定
 	wcscpy_s(m_texturePath, L"Resources/models/Stage/Stage.cmo");//テクスチャパスを設定する
@@ -69,8 +69,8 @@ void Stage::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストを取得
-	auto states = m_commonResources->GetCommonStates();// 共通ステートを取得
+	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストを取得
+	auto states = m_pCommonResources->GetCommonStates();// 共通ステートを取得
 	world *= Matrix::CreateTranslation(pos);// ワールド行列を更新
 	m_model->Draw(context, *states, world, view, proj);// モデルを描画する
 }

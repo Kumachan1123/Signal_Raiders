@@ -20,10 +20,12 @@ Game::Game() noexcept(false)
 	: m_deviceResources{}
 	, m_timer{}
 	, m_commonStates{}
-	, m_commonResources{}
+	, m_pCommonResources{}
 	, m_debugString{}
 	, m_inputManager{}
 	, m_sceneManager{}
+	, m_audioManager{}
+	, m_modelManager{}
 	, m_fullscreen{ FALSE }
 {
 	m_deviceResources = std::make_unique<DX::DeviceResources>();// デバイスリソースを作成する
@@ -58,17 +60,21 @@ void Game::Initialize(HWND window, int width, int height)
 		L"Resources/Fonts/SegoeUI_18.spritefont"// フォントファイルのパス
 	);
 	m_audioManager = std::make_unique<AudioManager>();// オーディオマネージャーを作成する
-	m_commonResources = std::make_unique<CommonResources>();// 共通リソースを作成する
-	m_commonResources->Initialize(// シーンへ渡す共通リソースを設定する
+	m_pCommonResources = std::make_unique<CommonResources>();// 共通リソースを作成する
+	m_modelManager = std::make_unique<ModelManager>();// モデルマネージャを作成する
+	m_pCommonResources->Initialize(// シーンへ渡す共通リソースを設定する
 		&m_timer,				// タイマー
 		m_deviceResources.get(),// デバイスリソース
 		m_commonStates.get(),	// コモンステート
 		m_debugString.get(),	// デバッグ文字列
 		m_inputManager.get(),	// 入力マネージャ
-		m_audioManager.get()	// オーディオマネージャ
+		m_audioManager.get(),	// オーディオマネージャ
+		m_modelManager.get()	// モデルマネージャ
 	);
+	m_modelManager->SetCommonResources(m_pCommonResources.get());// モデルマネージャに共通リソースを設定する
+	m_modelManager->Initialize();// モデルマネージャを初期化する
 	m_sceneManager = std::make_unique<SceneManager>();	// シーンマネージャを作成する
-	m_sceneManager->Initialize(m_commonResources.get());// シーンマネージャを初期化する
+	m_sceneManager->Initialize(m_pCommonResources.get());// シーンマネージャを初期化する
 	ShowCursor(FALSE);//カーソルを見えるようにする
 }
 

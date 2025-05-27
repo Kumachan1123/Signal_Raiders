@@ -6,7 +6,7 @@
 #include "EnemyBulletFactory.h"
 /*
 *	@brief	’e‚Ì¶¬
-*	@param[in]	BulletType type ’e‚Ìí—Ş
+*	@param	BulletType type ’e‚Ìí—Ş
 *	@return	¶¬‚µ‚½’e‚Ìƒ|ƒCƒ“ƒ^
 */
 std::unique_ptr<IEnemyBullet> EnemyBulletFactory::CreateBullet(BulletType type)

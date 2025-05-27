@@ -131,7 +131,7 @@ private:
 private:
 	// privateメンバ変数
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	std::unique_ptr<BossAI>		m_pBossAI;// AI
 	std::unique_ptr<BossModel>		m_pBossModel;//モデル
 	std::unique_ptr<BossSheild>		m_pBossSheild;// シールド

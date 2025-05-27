@@ -11,7 +11,7 @@
 *	@return なし
 */
 MousePointer::MousePointer()
-	: m_commonResources{}// 共通リソース
+	: m_pCommonResources{}// 共通リソース
 	, m_menuIndex{}// メニューのインデックス
 	, m_pDR{}// デバイスリソース
 	, m_pMousePointer{}// マウスポインターのUI
@@ -38,8 +38,8 @@ MousePointer::~MousePointer() {	/*do nothing.*/ }
 void MousePointer::Initialize(CommonResources* resources, int width, int height)
 {
 	using namespace DirectX::SimpleMath;
-	m_commonResources = resources;// 共通リソースを取得
-	m_pDR = m_commonResources->GetDeviceResources();// デバイスリソースを取得
+	m_pCommonResources = resources;// 共通リソースを取得
+	m_pDR = m_pCommonResources->GetDeviceResources();// デバイスリソースを取得
 	m_pMousePointer = std::make_unique<UI>();// マウスポインターのUIを作成
 	m_windowWidth = width;// ウィンドウの幅をセット
 	m_windowHeight = height;// ウィンドウの高さをセット
@@ -60,7 +60,7 @@ void MousePointer::Update(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
 	UNREFERENCED_PARAMETER(elapsedTime);// 未使用警告非表示
-	auto& mouseState = m_commonResources->GetInputManager()->GetMouseState();// マウスの状態を取得
+	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();// マウスの状態を取得
 	Vector2 mousePos = Vector2(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));// マウスの座標を取得
 	m_pMousePointer->SetPosition(mousePos);// マウスの座標をセット
 }

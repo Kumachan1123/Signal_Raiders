@@ -19,12 +19,12 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC>  TitleLogo::INPUT_LAYOUT =
 *	@return なし
 */
 TitleLogo::TitleLogo(CommonResources* resources)
-	: m_commonResources{ resources }// 共通リソース
-	, m_vertexShader{}// 頂点シェーダー
-	, m_pixelShader{}// ピクセルシェーダー
+	: m_pCommonResources{ resources }// 共通リソース
+	, m_pVertexShader{}// 頂点シェーダー
+	, m_pPixelShader{}// ピクセルシェーダー
 	, m_pInputLayout{}// インプットレイアウト
 	, m_pDR{}// デバイスリソース
-	, m_CBuffer{}// コンスタントバッファ
+	, m_pCBuffer{}// コンスタントバッファ
 	, m_titleTexture{}// テクスチャ
 	, m_time{ 0.0f }// 時間
 	, m_world{}// ワールド行列
@@ -34,7 +34,7 @@ TitleLogo::TitleLogo(CommonResources* resources)
 	, m_pDrawPolygon{ DrawPolygon::GetInstance() }// 板ポリゴン描画クラス
 	, m_pCreateShader{ CreateShader::GetInstance() }// シェーダー作成クラス
 {
-	m_pCreateShader->Initialize(m_commonResources->GetDeviceResources()->GetD3DDevice(), // シェーダー作成クラスの初期化
+	m_pCreateShader->Initialize(m_pCommonResources->GetDeviceResources()->GetD3DDevice(), // シェーダー作成クラスの初期化
 		&INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
 }
 /*
@@ -72,13 +72,13 @@ void TitleLogo::Create(DX::DeviceResources* pDR)
 
 void TitleLogo::CreateShaders()
 {
-	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/TitleScene/VS_Title.cso", m_vertexShader);// 頂点シェーダーの作成
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/TitleScene/PS_Title.cso", m_pixelShader);// ピクセルシェーダーの作成
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/TitleScene/VS_Title.cso", m_pVertexShader);// 頂点シェーダーの作成
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/TitleScene/PS_Title.cso", m_pPixelShader);// ピクセルシェーダーの作成
 	m_pInputLayout = m_pCreateShader->GetInputLayout();	// インプットレイアウトを受け取る
-	m_pCreateShader->CreateConstantBuffer(m_CBuffer, sizeof(ConstBuffer));// シェーダーにデータを渡すためのコンスタントバッファ生成
+	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));// シェーダーにデータを渡すためのコンスタントバッファ生成
 	// シェーダーの構造体にシェーダーを渡す
-	m_shaders.vs = m_vertexShader.Get();// 頂点シェーダー
-	m_shaders.ps = m_pixelShader.Get();// ピクセルシェーダー
+	m_shaders.vs = m_pVertexShader.Get();// 頂点シェーダー
+	m_shaders.ps = m_pPixelShader.Get();// ピクセルシェーダー
 	m_shaders.gs = nullptr;// ジオメトリシェーダー(使わないのでnullptr)
 }
 /*
@@ -115,8 +115,8 @@ void TitleLogo::Render()
 	m_ConstBuffer.matWorld = m_world.Transpose();// ワールド設定
 	m_ConstBuffer.Colors = Vector4(0.25f, 0.75f, 0.75f, 0);// グラデーションエフェクトの色設定 
 	m_ConstBuffer.time = Vector4(m_time);// 時間設定
-	m_pDrawPolygon->UpdateSubResources(m_CBuffer.Get(), &m_ConstBuffer);// 受け渡し用バッファの内容更新
-	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };// ConstBufferからID3D11Bufferへの変換
+	m_pDrawPolygon->UpdateSubResources(m_pCBuffer.Get(), &m_ConstBuffer);// 受け渡し用バッファの内容更新
+	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };// ConstBufferからID3D11Bufferへの変換
 	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);// シェーダーにバッファを渡す
 	m_pDrawPolygon->DrawSetting(// 描画前設定
 		DrawPolygon::SamplerStates::LINEAR_WRAP,// サンプラーステート

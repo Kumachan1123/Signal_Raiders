@@ -34,7 +34,7 @@ public:
 	void Update(float elapsedTime);// 更新
 	void Render();// 描画
 private:
-	CommonResources* m_commonResources;// 共通リソース
+	CommonResources* m_pCommonResources;// 共通リソース
 	Player* m_pPlayer;// プレイヤー
 	EnemyManager* m_pEnemyManager;// 敵
 	std::vector<std::unique_ptr<DamageEffect>> m_pDamageEffect;	// ダメージエフェクト

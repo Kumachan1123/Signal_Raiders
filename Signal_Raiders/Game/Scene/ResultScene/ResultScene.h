@@ -49,7 +49,7 @@ public:
 	static const int STAGE_SELECT;
 private:
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// 設定データ
 	std::unique_ptr<SettingData> m_pSettingData;
 	// マウスポインター

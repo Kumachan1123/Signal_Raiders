@@ -11,7 +11,7 @@
 *	@return なし
 */
 Sky::Sky(int StageID)
-	: m_commonResources{}// 共通リソース
+	: m_pCommonResources{}// 共通リソース
 	, m_model{}// モデル
 	, m_texturePath{}// テクスチャパス
 	, m_stageID{ StageID }// ステージID
@@ -35,8 +35,8 @@ void Sky::Initialize(CommonResources* resources)
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	assert(resources);// リソースがnullptrでないことを確認
-	m_commonResources = resources;// リソースを保存
-	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
+	m_pCommonResources = resources;// リソースを保存
+	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
 	std::unique_ptr<EffectFactory> fx = std::make_unique<EffectFactory>(device);// モデルを読み込む準備
 	fx->SetDirectory(L"Resources/models/sky");// モデルのディレクトリを設定
 	auto it = m_texturePathMap.find(m_stageID);// ステージIDに応じた空のモデルのパスを取得
@@ -70,8 +70,8 @@ void Sky::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix p
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストを取得
-	auto states = m_commonResources->GetCommonStates();// 共通ステートを取得
+	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストを取得
+	auto states = m_pCommonResources->GetCommonStates();// 共通ステートを取得
 	world *= Matrix::CreateTranslation(pos);// ワールド行列を更新
 	m_model->Draw(context, *states, world, view, proj);// モデルを描画する
 }

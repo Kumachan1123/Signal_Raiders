@@ -34,7 +34,7 @@ public:// 定数
 	static const float STAGE_HEIGHT;	// ステージの高さ
 private:// private変数
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// モデル
 	std::unique_ptr<DirectX::Model> m_model;
 	// テクスチャパス

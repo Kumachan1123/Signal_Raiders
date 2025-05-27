@@ -14,7 +14,7 @@ EnemyAttack::EnemyAttack(EnemyAI* enemyAI)
 	: m_enemyAI(enemyAI)// 敵AI
 	, m_attackCooldown(EnemyParameters::ATTACK_COOLDOWN)// 攻撃のクールダウンタイム
 	, m_rotationSpeed{}// 回転速度
-	, m_commonResources{}// 共通リソース
+	, m_pCommonResources{}// 共通リソース
 {
 }
 /*

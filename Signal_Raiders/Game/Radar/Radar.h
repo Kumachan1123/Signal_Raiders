@@ -84,7 +84,7 @@ public:// 定数
 	static const float DISTANCE;// プレイヤーとの距離
 private:// private変数
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// プレイヤー
 	Player* m_pPlayer;
 	// 敵マネージャー
@@ -92,7 +92,7 @@ private:// private変数
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	// 定数バッファ
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_cBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_pCBuffer;
 	// レーダーの範囲
 	float m_range;
 	// プレイヤーとの距離
@@ -112,11 +112,11 @@ private:// private変数
 	// 時間
 	float m_time;
 	// テクスチャ
-	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_textures;
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_pTextures;
 	//	頂点シェーダ
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_pVertexShader;
 	//	ピクセルシェーダ
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
 	// 描画クラス

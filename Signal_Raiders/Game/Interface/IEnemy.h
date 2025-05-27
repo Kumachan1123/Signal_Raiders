@@ -16,7 +16,7 @@ protected:
 	// protected変数
 	Player* m_pPlayer;// プレイヤー
 	BulletManager* m_pBulletManager;// 弾管理クラス
-	CommonResources* m_commonResources;// 共通リソース
+	CommonResources* m_pCommonResources;// 共通リソース
 	int m_currentHP;// 敵のHP
 public:
 	// アクセサ										  
@@ -59,7 +59,7 @@ public:
 	// コンストラクタ
 	IEnemy(Player* pPlayer, CommonResources* resources, int hp)
 		: m_pPlayer(pPlayer)// プレイヤー
-		, m_commonResources(resources)// 共通リソース
+		, m_pCommonResources(resources)// 共通リソース
 		, m_currentHP(hp)// 敵のHP
 		, m_pBulletManager(nullptr) // 弾管理クラス
 	{}

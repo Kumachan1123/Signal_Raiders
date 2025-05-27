@@ -7,11 +7,11 @@
 
 /*
 *	@brief	コンストラクタ
-*	@param[in]	IEnemy* pEnemy　敵
+*	@param	IEnemy* pEnemy　敵
 *	@return	なし
 */
 EnemyAI::EnemyAI(IEnemy* pEnemy)
-	: m_currentState(nullptr)// 現在の状態
+	: m_pCurrentState(nullptr)// 現在の状態
 	, m_attackCooldown(0.0f)// 攻撃クールダウン
 	, m_time(0.0f)// 時間
 	, m_isHitPlayerBullet(false)// プレイヤーの弾に当たったか
@@ -49,13 +49,13 @@ void EnemyAI::Initialize()
 	m_velocity = EnemyParameters::INITIAL_VELOCITY; // 浮遊の初期速度
 	m_scale = Vector3::One; // スケール初期化
 	m_position = m_initialPosition;// 位置初期化
-	m_currentState = m_pEnemyIdling.get(); // 徘徊態勢にする
-	m_currentState->Initialize();// 状態を初期化
+	m_pCurrentState = m_pEnemyIdling.get(); // 徘徊態勢にする
+	m_pCurrentState->Initialize();// 状態を初期化
 	m_enemyState = IState::EnemyState::IDLING;// 待機態勢
 }
 /*
 *	@brief	更新
-*	@param[in]	float elapsedTime　経過時間
+*	@param	float elapsedTime　経過時間
 *	@return	なし
 */
 void EnemyAI::Update(float elapsedTime)
@@ -87,28 +87,28 @@ void EnemyAI::Update(float elapsedTime)
 		m_enemyState = IState::EnemyState::HIT;// 攻撃を食らった状態にする
 		SetIsAttack(false);// 攻撃中でない
 	}
-	m_currentState->Update(elapsedTime); // 現在の状態を更新
+	m_pCurrentState->Update(elapsedTime); // 現在の状態を更新
 	m_pEnemy->SetPosition(m_position); // 敵の位置を更新
 }
 /*
 *	@brief	状態変更
-*	@param[in]	IState* newState　新しい状態
+*	@param	IState* newState　新しい状態
 *	@return	なし
 */
 void EnemyAI::ChangeState(IState* newState)
 {
 	// 新しい状態が現在の状態と異なる場合
-	if (m_currentState != newState)
+	if (m_pCurrentState != newState)
 	{
-		m_currentState = newState;// 新しい状態に変更
-		m_currentState->Initialize(); // 新しい状態を初期化
+		m_pCurrentState = newState;// 新しい状態に変更
+		m_pCurrentState->Initialize(); // 新しい状態を初期化
 	}
 }
 
 
 /*
 *	@brief	ノックバック処理
-*	@param[in]	float elapsedTime　経過時間
+*	@param	float elapsedTime　経過時間
 *	@return	なし
 */
 void EnemyAI::KnockBack(float elapsedTime)

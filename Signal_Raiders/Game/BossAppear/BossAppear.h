@@ -46,15 +46,17 @@ private:	// privateメンバ関数
 	void LoadTexture(const wchar_t* path);// テクスチャの読み込み
 	void DrawMain();// メインの演出を描画
 	void DrawBack();// 背景の演出を描画
+private:// 定数
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;// インプットレイアウト
 private:// privateメンバ変数
 	//	頂点シェーダ(Main)
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_pVertexShader;
 	//	ピクセルシェーダ(Main)
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
 	//  頂点シェーダ(Back)
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShaderBack;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_pVertexShaderBack;
 	// ピクセルシェーダ(Back)
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShaderBack;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShaderBack;
 	// シェーダーの構造体(Main)
 	DrawPolygon::Shaders m_shaders;
 	// シェーダーの構造体(Back)
@@ -63,25 +65,26 @@ private:// privateメンバ変数
 	DrawPolygon* m_pDrawPolygon;
 	// シェーダー作成クラス
 	CreateShader* m_pCreateShader;
-	DirectX::SimpleMath::Matrix m_world;// ワールド行列
-	DirectX::SimpleMath::Matrix m_view;// ビュー行列
-	DirectX::SimpleMath::Matrix m_proj;	// プロジェクション行列
+	// ワールド行列
+	DirectX::SimpleMath::Matrix m_world;
+	// ビュー行列
+	DirectX::SimpleMath::Matrix m_view;
+	// プロジェクション行列
+	DirectX::SimpleMath::Matrix m_proj;
 	//	テクスチャハンドル
-	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_texture;
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_pTextures;
 	// コンスタントバッファ
 	ConstBuffer m_constantBuffer;
 	//	入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	// 共通リソース
-	CommonResources* m_commonResources;
-	//	関数
-	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
-	//	変数
+	CommonResources* m_pCommonResources;
+	// デバイスリソース
 	DX::DeviceResources* m_pDR;
-	//	タイマー
+	// タイマー
 	float m_timer;
 	// シェーダーに渡すバッファ
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_pCBuffer;
 	// SE音量
 	float m_seVolume;
 	// 再生フラグ

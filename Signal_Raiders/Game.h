@@ -14,6 +14,7 @@
 #include "Game/Scene/IScene.h"
 #include "Game/Scene/SceneManager.h"
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
+#include "Game/KumachiLib/ModelManager/ModelManager.h"
 #include "Game/Screen.h"
 
 class Game final : public DX::IDeviceNotify
@@ -58,7 +59,7 @@ private:// private変数
 	// コモンステート
 	std::unique_ptr<DirectX::CommonStates>  m_commonStates;
 	// コモンリソース
-	std::unique_ptr<CommonResources>        m_commonResources;
+	std::unique_ptr<CommonResources>        m_pCommonResources;
 	// デバッグ文字列
 	std::unique_ptr<mylib::DebugString>     m_debugString;
 	// 入力マネージャ
@@ -67,4 +68,6 @@ private:// private変数
 	std::unique_ptr<SceneManager>           m_sceneManager;
 	// オーディオマネージャ
 	std::unique_ptr<AudioManager>           m_audioManager;
+	// モデルマネージャ
+	std::unique_ptr<ModelManager>           m_modelManager;
 };

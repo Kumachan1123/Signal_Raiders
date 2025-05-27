@@ -44,7 +44,7 @@ public:
 	void Update(float elapsedTime) override;// 更新する
 private:
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// 敵AI
 	EnemyAI* m_enemyAI;
 	// 移動

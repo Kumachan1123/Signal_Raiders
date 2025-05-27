@@ -1,22 +1,20 @@
 /*
-	@file	BossAttack.cpp
-	@brief	ボス攻撃クラス
+*	@file	BossAttack.cpp
+*	@brief	ボス攻撃クラス
 */
 #include "pch.h"
 #include "BossAttack.h"
-
-using namespace DirectX::SimpleMath;
-
 /*
 *	@brief	コンストラクタ
-*	@param[in]	pBoss	ボスAIクラスのポインタ
+*	@details ボスの攻撃クラスのコンストラクタ
+*	@param	pBoss	ボスAIクラスのポインタ
 *	@return	なし
 */
 BossAttack::BossAttack(BossAI* pBoss)
 	: m_pBoss(pBoss)// ボスAIクラスのポインタ
 	, m_attackCooldown{  }// 攻撃クールダウン
 	, m_rotationSpeed{  }// 回転速度
-	, m_commonResources{}// 共通リソース
+	, m_pCommonResources{}// 共通リソース
 {
 	m_attackCooldown = ATTACK_INTERVAL;// 攻撃クールダウン
 	m_rotationSpeed = ROTATION_SPEED;// 回転速度
@@ -24,12 +22,16 @@ BossAttack::BossAttack(BossAI* pBoss)
 
 /*
 *	@brief	デストラクタ
+*	@details ボスの攻撃クラスのデストラクタ(ここでは何もしない)
+*	@param	なし
 *	@return	なし
 */
-BossAttack::~BossAttack() {}
+BossAttack::~BossAttack() {/*do nothing*/ }
 
 /*
 *	@brief	初期化
+*	@details ボスの攻撃クラスの初期化
+*	@param	なし
 *	@return	なし
 */
 void BossAttack::Initialize()
@@ -41,19 +43,22 @@ void BossAttack::Initialize()
 }
 /*
 *	@brief	プレイヤーの方向に回転
-*	@param[in] playerPos プレイヤーの位置
+*	@details プレイヤーの方向に回転する
+*	@param playerPos プレイヤーの位置
 *	@return なし
 */
 void BossAttack::RotateTowardsPlayer(DirectX::SimpleMath::Vector3 playerPos)
 {
-	m_rotation = DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll
+	using namespace DirectX::SimpleMath;
+	m_rotation = Quaternion::CreateFromYawPitchRoll
 	(CalculateAngle(m_position, playerPos), 0.0f, 0.0f);// プレイヤーの方向に回転
 }
 
 /*
 *	@brief	プレイヤーの方向に移動
-*	@param[in] elapsedTime 経過時間
-*	@param[in] playerPos プレイヤーの位置
+*	@details プレイヤーの方向に移動する
+*	@param elapsedTime 経過時間
+*	@param playerPos プレイヤーの位置
 *	@return なし
 */
 void BossAttack::MoveTowardsPlayer(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
@@ -63,7 +68,8 @@ void BossAttack::MoveTowardsPlayer(float elapsedTime, DirectX::SimpleMath::Vecto
 
 /*
 *	@brief	攻撃クールダウンの管理
-*	@param[in] elapsedTime 経過時間
+*	@details 攻撃クールダウンを管理する
+*	@param elapsedTime 経過時間
 *	@return なし
 */
 void BossAttack::ManageAttackCooldown(float elapsedTime)
@@ -78,7 +84,8 @@ void BossAttack::ManageAttackCooldown(float elapsedTime)
 
 /*
 *	@brief	更新
-*	@param[in] elapsedTime 経過時間
+*	@details ボスの攻撃クラスの更新
+*	@param elapsedTime 経過時間
 *	@return なし
 */
 void BossAttack::Update(float elapsedTime)

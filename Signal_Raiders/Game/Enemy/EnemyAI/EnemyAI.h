@@ -51,7 +51,7 @@ public:
 	EnemyIdling* GetEnemyIdling()const { return m_pEnemyIdling.get(); } // œpœjƒNƒ‰ƒXæ“¾
 	EnemySpin* GetEnemySpin()const { return m_pEnemySpin.get(); } // “¦”ğƒNƒ‰ƒXæ“¾
 	IEnemy* GetEnemy()const { return m_pEnemy; } // “Gæ“¾
-	IState* GetNowState()const { return m_currentState; } // Œ»İ‚Ìó‘Ôæ“¾
+	IState* GetNowState()const { return m_pCurrentState; } // Œ»İ‚Ìó‘Ôæ“¾
 	bool GetisAttack()const { return m_pEnemy->GetIsAttack(); } // UŒ‚’†‚©
 	void SetIsAttack(bool isAttack) { m_pEnemy->SetIsAttack(isAttack); } // UŒ‚’†‚É‚·‚é
 public:
@@ -69,7 +69,7 @@ private:
 	std::unique_ptr<EnemyIdling> m_pEnemyIdling;	// •½í
 	std::unique_ptr<EnemyAttack> m_pEnemyAttack;	// UŒ‚
 	std::unique_ptr<EnemySpin> m_pEnemySpin;	// ƒXƒsƒ“
-	IState* m_currentState;	// Œ»İ‚Ìó‘Ô
+	IState* m_pCurrentState;	// Œ»İ‚Ìó‘Ô
 	IState::EnemyState m_enemyState;// “G‚Ìó‘Ô
 	IEnemy* m_pEnemy;	// “G‚Ìƒ|ƒCƒ“ƒ^[
 	DirectX::SimpleMath::Vector3 m_position;//ˆÚ“®

@@ -1,37 +1,34 @@
 /*
-	@file	BossAI.h
-	@brief	ボスAIクラス
+*	@file	BossAI.h
+*	@brief	ボスAIクラス
 */
 #pragma once
 #ifndef BOSS_AI_DEFINED
 #define BOSS_AI_DEFINED
 // 標準ライブラリ
-#include <SimpleMath.h>
 #include <cassert>
 #include <random>
 #include <type_traits> // std::enable_if, std::is_integral
+// DirectX
+#include <SimpleMath.h>
 // 外部ライブラリ
-#include "Game/CommonResources.h"
 #include "Libraries/MyLib/DebugString.h"
 #include "Libraries/MyLib/InputManager.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
 // 自作ヘッダーファイル
+#include "Game/CommonResources.h"
 #include "Game/KumachiLib/KumachiLib.h"
 #include "Game/Enemy/Parameters/EnemyParameters.h"
 #include "Game/Enemy/Boss/BossAI/BossAttack/BossAttack.h"
 #include "Game/Enemy/Boss/BossAI/BossKnockBacking/BossKnockBacking.h"
 #include "Game/Player/Player.h"
 #include "Game/Interface/IState.h"
-
 //前方宣言
 class CommonResources;
 class BossAttack;
 class BossKnockBacking;
-
 class BossAI
 {
-
-
 public:
 	// アクセサ
 	DirectX::SimpleMath::Vector3 GetInitialPosition() const { return m_initialPosition; }// 初期位置を取得
@@ -45,30 +42,28 @@ public:
 	void SetScale(DirectX::SimpleMath::Vector3 sca) { m_scale = sca; }// スケールを設定
 	BossAttack* GetBossAttack()const { return m_pBossAttack.get(); }// 攻撃時の状態を取得
 	IEnemy* GetEnemy()const { return m_pBoss; }// 敵を取得
-	IState* GetNowState()const { return m_currentState; }// 現在の状態を取得
+	IState* GetNowState()const { return m_pCurrentState; }// 現在の状態を取得
 	IState::EnemyState GetState()const { return m_enemyState; }// 状態を取得
 	void SetState(IState::EnemyState state) { m_enemyState = state; }// 状態を設定
 	void SetHitPlayerBullet(bool hit) { m_isHitPlayerBullet = hit; }// プレイヤーの弾に当たったか設定
 	bool GetIsAttack()const { return m_pBoss->GetIsAttack(); }// 攻撃中か取得
 	void SetIsAttack(bool attack) { m_pBoss->SetIsAttack(attack); }// 攻撃中か設定
-
 public:
-	// publicメンバ関数
+	// public関数
 	BossAI(IEnemy* pBoss);// コンストラクタ
 	~BossAI();	// デストラクタ
 	void Initialize();// 初期化
 	void Update(float elapsedTime);// 更新
 	void ChangeState(IState* newState);// ステート変更
-private:
+private:// private関数
 	void KnockBack(float elapsedTime);// ノックバック
-private:
-
+private:// private変数
 	//攻撃時
 	std::unique_ptr<BossAttack> m_pBossAttack;
 	//ノックバック時
 	std::unique_ptr<BossKnockBacking> m_pBossKnockBacking;
 	// 現在の状態
-	IState* m_currentState;
+	IState* m_pCurrentState;
 	// 状態
 	IState::EnemyState m_enemyState;
 	// 攻撃時表情差分

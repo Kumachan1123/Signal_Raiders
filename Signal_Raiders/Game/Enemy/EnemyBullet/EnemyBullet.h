@@ -95,7 +95,7 @@ private:
 private:
 	// privateメンバ変数
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// ワールド行列
 	DirectX::SimpleMath::Matrix m_worldMatrix;		// 弾のワールド行列
 	DirectX::SimpleMath::Vector3 m_enemyPosition;	// 敵の座標
@@ -106,6 +106,7 @@ private:
 	DirectX::SimpleMath::Vector3 m_positionOffSet;	// 弾の位置オフセット
 	float m_distance;								// 弾の敵との距離
 	std::unique_ptr<DirectX::Model> m_model;
+	DirectX::Model* m_pModel;					// 弾のモデル
 	float m_time;									// 生存時間
 	float m_elapsedTime;							// 経過時間
 	// 発射した敵のポインター
@@ -146,7 +147,7 @@ private:
 	// 弾の種類ごとに処理を変えるためのポインター
 	std::unique_ptr<IEnemyBullet> m_pEnemyBullet;
 	// モデルの影
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
 	// 弾の種類
 	BulletType m_bulletType;
 	// SE音量

@@ -6,17 +6,18 @@
 #ifndef BOSS_KNOCKBACKING_DEFINED
 #define BOSS_KNOCKBACKING_DEFINED
 // 標準ライブラリ
-#include <SimpleMath.h>
 #include <cassert>
 #include <random>
 #include <cmath>
+// DirectX
+#include <SimpleMath.h>
+#include <DeviceResources.h>
 // 外部ライブラリ
 #include "Libraries/MyLib/DebugString.h"
 #include "Libraries/MyLib/InputManager.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
-#include "Game/CommonResources.h"
-#include "DeviceResources.h"
 // 自作ヘッダーファイル
+#include "Game/CommonResources.h"
 #include "Game/Enemy/Boss/BossAI/BossAI.h"
 #include "Game/KumachiLib/KumachiLib.h"
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
@@ -24,7 +25,6 @@
 
 //前方宣言
 class BossAI;
-
 class BossKnockBacking : public IState
 {
 public:

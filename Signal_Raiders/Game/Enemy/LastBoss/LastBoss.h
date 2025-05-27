@@ -40,7 +40,7 @@ public:
 
 private:
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	std::unique_ptr<LastBossModel>		m_pBossModel;//モデル
 	std::unique_ptr<EnemyHPBar>		m_pHPBar;// HPバー
 	// 敵の情報

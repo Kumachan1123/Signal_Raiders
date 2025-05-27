@@ -16,7 +16,7 @@ const float SettingBar::BAR_POINTER_DIVISION = 60.0f;// 玉の位置に除算する値
 *	@return なし
 */
 SettingBar::SettingBar()
-	: m_commonResources{}// 共通リソース
+	: m_pCommonResources{}// 共通リソース
 	, m_pDR{}// デバイスリソース
 	, m_pSettingMenu{   }// 設定メニュー
 	, m_pBar{}// UIオブジェクトリスト
@@ -47,8 +47,8 @@ SettingBar::~SettingBar() {/*do nothing*/ }
 void SettingBar::Initialize(CommonResources* resources, int width, int height)
 {
 	using namespace DirectX::SimpleMath;
-	m_commonResources = resources;// 共通リソースをセット
-	m_pDR = m_commonResources->GetDeviceResources();// デバイスリソース取得
+	m_pCommonResources = resources;// 共通リソースをセット
+	m_pDR = m_pCommonResources->GetDeviceResources();// デバイスリソース取得
 	m_windowWidth = width;// ウィンドウ幅
 	m_windowHeight = height;// ウィンドウ高さ
 	m_pSettingBarTexturePath = L"Resources/Textures/SettingBar.png";// 設定バーテクスチャパス
@@ -92,9 +92,9 @@ void SettingBar::Initialize(CommonResources* resources, int width, int height)
 void SettingBar::Update(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
-	auto& mouseState = m_commonResources->GetInputManager()->GetMouseState();// マウスの状態を取得
+	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();// マウスの状態を取得
 	Vector2 mousePos = Vector2(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));// マウスの座標を取得
-	auto& mouseTracker = m_commonResources->GetInputManager()->GetMouseTracker();// マウスボタン状態を取得
+	auto& mouseTracker = m_pCommonResources->GetInputManager()->GetMouseTracker();// マウスボタン状態を取得
 	bool isDragging = false;// ドラッグ状態を保持
 	int dragIndex = -1;// ドラッグ中のアイテムのインデックス(-1ではドラッグしていない状態)
 	m_time += elapsedTime;// 時間を加算
@@ -120,7 +120,7 @@ void SettingBar::Update(float elapsedTime)
 	if (m_pSettingMenu->GetSelectIDNum() == SettingMenu::APPLY && mouseTracker->GetLastState().leftButton)//「へんこう」が押されたら
 		m_pSettingData->Save(m_setting[0], m_setting[1], m_setting[2]);// 設定を保存する
 #ifdef _DEBUG// デバッグモードのみ有効
-	auto debugString = m_commonResources->GetDebugString();// デバッグ情報を表示する
+	auto debugString = m_pCommonResources->GetDebugString();// デバッグ情報を表示する
 	Vector2 pos = Vector2(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));// ウィンドウ上のマウス座標を取得する
 	for (unsigned int i = 0; i < m_pBarPointer.size(); i++)// 設定バーの玉の数だけ処理
 		debugString->AddString("SelectNum:%i Setting:%i", m_pBarPointer[i]->IsHit(mousePos), m_setting[i]);// 選ばれているUI番号と設定値を表示

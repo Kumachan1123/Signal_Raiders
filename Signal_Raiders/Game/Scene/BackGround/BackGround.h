@@ -43,9 +43,9 @@ private:// private変数
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;
 	// デバイスコンテキスト
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_cBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_pCBuffer;
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	//	入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	//	プリミティブバッチ
@@ -53,11 +53,11 @@ private:// private変数
 	//	コモンステート
 	std::unique_ptr<DirectX::CommonStates> m_states;
 	//	テクスチャハンドル
-	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_texture;
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_pTexture;
 	//	頂点シェーダ
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_pVertexShader;
 	//	ピクセルシェーダ
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
 	// 描画クラス

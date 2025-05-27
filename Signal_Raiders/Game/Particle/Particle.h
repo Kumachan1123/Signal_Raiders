@@ -65,7 +65,7 @@ private:
 public:
 	// public変数
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;
 	//	関数
@@ -73,11 +73,11 @@ public:
 	// 経過時間
 	float m_timer;
 	// コンスタントバッファ
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_pCBuffer;
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	// テクスチャハンドルの配列
-	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_texture;
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_pTexture;
 	// コンスタントバッファ（構造体）
 	ConstBuffer m_constantBuffer;
 	// フレームの行数と列数
@@ -92,9 +92,9 @@ public:
 	// フレーム時間
 	float m_elapsedTime;
 	//	頂点シェーダ
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_pVertexShader;
 	//	ピクセルシェーダ
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
 	//	ジオメトリシェーダ
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_geometryShader;
 	// シェーダーの構造体

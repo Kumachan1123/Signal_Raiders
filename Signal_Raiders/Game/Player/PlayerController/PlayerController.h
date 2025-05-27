@@ -54,7 +54,7 @@ public:// 定数
 
 private:// private変数
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// 一人称視点カメラの座標
 	DirectX::SimpleMath::Vector3 m_position;
 	// プレイヤーの移動ベクトル

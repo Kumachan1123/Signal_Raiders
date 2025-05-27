@@ -73,7 +73,7 @@ public:
 	static const float CRISIS_HP;
 private:
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// プレイヤー
 	std::unique_ptr<Player> m_pPlayer;
 	// スカイボックス用のメンバ変数

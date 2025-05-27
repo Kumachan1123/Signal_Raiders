@@ -6,7 +6,7 @@
 #include "EnemyIdling.h"
 /*
 *	@brief	コンストラクタ
-*	@param[in]	EnemyAI* enemy
+*	@param	EnemyAI* enemy
 *	@return	なし
 */
 EnemyIdling::EnemyIdling(EnemyAI* enemyAI)
@@ -37,7 +37,7 @@ void EnemyIdling::Initialize()
 }
 /*
 *	@brief	更新
-*	@param[in]	float elapsedTime
+*	@param	float elapsedTime
 *	@return	なし
 */
 void EnemyIdling::Update(float elapsedTime)

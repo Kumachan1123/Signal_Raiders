@@ -10,7 +10,7 @@
 std::unique_ptr<DirectX::BasicEffect> DrawCollision::m_basicEffect = nullptr;// ベーシックエフェクト
 Microsoft::WRL::ComPtr<ID3D11InputLayout> DrawCollision::m_pInputLayout = nullptr;// 入力レイアウト
 std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> DrawCollision::m_primitiveBatch = nullptr;// プリミティブバッチ
-CommonResources* DrawCollision::m_commonResources = nullptr;// 共通リソース
+CommonResources* DrawCollision::m_pCommonResources = nullptr;// 共通リソース
 
 /*
 *	@brief 初期化
@@ -22,9 +22,9 @@ void DrawCollision::Initialize(CommonResources* commonResources)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	m_commonResources = commonResources;// 共通リソースを設定
-	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストを取得
+	m_pCommonResources = commonResources;// 共通リソースを設定
+	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
+	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストを取得
 	m_basicEffect = std::make_unique<BasicEffect>(device);// ベーシックエフェクトを作成する
 	m_basicEffect->SetVertexColorEnabled(true);// 頂点カラーを有効にする
 	DX::ThrowIfFailed(CreateInputLayoutFromEffect<VertexPositionColor>	// 入力レイアウトを作成する
@@ -43,8 +43,8 @@ void DrawCollision::DrawStart(DirectX::SimpleMath::Matrix view, DirectX::SimpleM
 
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストを取得
-	auto states = m_commonResources->GetCommonStates();// コモンステートを取得
+	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストを取得
+	auto states = m_pCommonResources->GetCommonStates();// コモンステートを取得
 	// 各パラメータを設定する
 	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);// ブレンドステートを設定する
 	context->OMSetDepthStencilState(states->DepthRead(), 0);// 深度ステンシルステートを設定する
@@ -87,5 +87,5 @@ void DrawCollision::Finalize()
 	m_basicEffect.reset();// ベーシックエフェクトを解放
 	m_pInputLayout.Reset();// 入力レイアウトを解放
 	m_primitiveBatch.reset();// プリミティブバッチを解放
-	m_commonResources = nullptr;// 共通リソースを解放
+	m_pCommonResources = nullptr;// 共通リソースを解放
 }

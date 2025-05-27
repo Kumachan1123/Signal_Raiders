@@ -82,7 +82,7 @@ private:
 	void ShootBullet();// 弾を撃つ
 private:
 	// メンバ変数
-	CommonResources* m_commonResources;	// 共通リソース
+	CommonResources* m_pCommonResources;	// 共通リソース
 	std::unique_ptr<VerticalAttackerModel>		m_pVerticalAttackerModel;// 敵のモデル
 	std::unique_ptr<EnemyAI>		m_enemyAI;// 敵のAI
 	std::unique_ptr<EnemyHPBar>		m_pHPBar;// 敵のHPバー

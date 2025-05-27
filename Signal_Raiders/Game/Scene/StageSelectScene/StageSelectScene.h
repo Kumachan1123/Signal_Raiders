@@ -47,7 +47,7 @@ private:
 	static const int TITLE;
 private:
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// 設定データ
 	std::unique_ptr<SettingData> m_pSettingData;
 	// ステージ選択メニュー

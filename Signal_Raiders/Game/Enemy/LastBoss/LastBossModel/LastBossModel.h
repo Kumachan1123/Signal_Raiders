@@ -41,13 +41,13 @@ public:
 
 private:
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// 胴体
-	std::unique_ptr<DirectX::Model> m_bodyModel;
+	DirectX::Model* m_bodyModel;
 	// 表情によって変わる顔のモデルのマップ
-	std::unordered_map<IState::EnemyState, std::unique_ptr<DirectX::Model>> m_faceModelMap;
+	std::unordered_map<IState::EnemyState, DirectX::Model*> m_pFaceModelMap;
 	// モデルの影用のピクセルシェーダー
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
 	// 現在のステート
 	IState::EnemyState m_nowState;
 };

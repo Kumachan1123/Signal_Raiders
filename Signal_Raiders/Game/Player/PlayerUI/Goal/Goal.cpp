@@ -31,11 +31,11 @@ Goal::Goal(CommonResources* resources)
 	, m_time(0.0f)
 	, m_constBuffer()
 	, m_pDrawPolygon{ DrawPolygon::GetInstance() }
-	, m_commonResources{ resources }
+	, m_pCommonResources{ resources }
 	, m_pCreateShader{ CreateShader::GetInstance() }
 {
 	// シェーダー作成クラスの初期化
-	m_pCreateShader->Initialize(m_commonResources->GetDeviceResources()->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
+	m_pCreateShader->Initialize(m_pCommonResources->GetDeviceResources()->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
 	// 色の初期化
 	m_constBuffer.colors = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 0.0f);
 
@@ -51,7 +51,7 @@ void  Goal::LoadTexture(const wchar_t* path)
 {
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;
 	DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, nullptr, texture.ReleaseAndGetAddressOf());
-	m_texture.push_back(texture);
+	m_pTexture.push_back(texture);
 }
 
 // 生成関数
@@ -72,15 +72,15 @@ void  Goal::Create(DX::DeviceResources* pDR)
 void  Goal::CreateShader()
 {
 	// 頂点シェーダーをピクセルシェーダーを作成
-	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/ReadyGo/VS_ReadyGo.cso", m_vertexShader);
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/ReadyGo/PS_ReadyGo.cso", m_pixelShader);
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/ReadyGo/VS_ReadyGo.cso", m_pVertexShader);
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/ReadyGo/PS_ReadyGo.cso", m_pPixelShader);
 	// インプットレイアウトを受け取る
 	m_pInputLayout = m_pCreateShader->GetInputLayout();
 	//	シェーダーにデータを渡すためのコンスタントバッファ生成
-	m_pCreateShader->CreateConstantBuffer(m_cBuffer, sizeof(ConstBuffer));
+	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));
 	// シェーダーの構造体にシェーダーを渡す
-	m_shaders.vs = m_vertexShader.Get();
-	m_shaders.ps = m_pixelShader.Get();
+	m_shaders.vs = m_pVertexShader.Get();
+	m_shaders.ps = m_pPixelShader.Get();
 	m_shaders.gs = nullptr;
 }
 
@@ -125,9 +125,9 @@ void  Goal::Render()
 	m_constBuffer.matWorld = m_world.Transpose();
 	m_constBuffer.time = SimpleMath::Vector4(m_time);
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	m_pDrawPolygon->UpdateSubResources(m_cBuffer.Get(), &m_constBuffer);
+	m_pDrawPolygon->UpdateSubResources(m_pCBuffer.Get(), &m_constBuffer);
 	//	シェーダーにバッファを渡す
-	ID3D11Buffer* cb[1] = { m_cBuffer.Get() };
+	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };
 	//	頂点シェーダもピクセルシェーダも、同じ値を渡す
 	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
 	//	シェーダをセットする
@@ -139,7 +139,7 @@ void  Goal::Render()
 		DrawPolygon::RasterizerStates::CULL_NONE,
 		DrawPolygon::DepthStencilStates::DEPTH_NONE);
 	// 描画準備
-	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_texture);
+	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pTexture);
 	// 板ポリゴンを描画
 	m_pDrawPolygon->DrawTexture(vertex);
 	// シェーダの登録を解除しておく

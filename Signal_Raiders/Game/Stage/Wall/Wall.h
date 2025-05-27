@@ -53,7 +53,7 @@ public:// 定数
 	static const float WALL_WIDTH;
 private:
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// 変数
 	DX::DeviceResources* m_pDR;
 	// 壁テクスチャ
@@ -71,9 +71,9 @@ private:
 	// 時間
 	float m_time;
 	// 頂点シェーダ
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_pVertexShader;
 	// ピクセルシェーダ
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
 	// 描画クラス
@@ -85,6 +85,6 @@ private:
 	// 入力レイアウト 
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	// コンスタントバッファ
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_cBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_pCBuffer;
 
 };

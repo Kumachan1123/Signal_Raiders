@@ -28,5 +28,5 @@ private:
 	// プリミティブバッチ
 	static std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
 	// 共通リソース
-	static CommonResources* m_commonResources;
+	static CommonResources* m_pCommonResources;
 };

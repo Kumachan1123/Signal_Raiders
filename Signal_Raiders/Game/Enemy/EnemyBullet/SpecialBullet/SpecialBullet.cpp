@@ -10,7 +10,7 @@
 */
 SpecialBullet::SpecialBullet()
 	: m_pEnemyBullet(nullptr)// 敵弾ポインター
-	, m_commonResources(nullptr)// 共通リソース
+	, m_pCommonResources(nullptr)// 共通リソース
 	, m_rotationSpeed(0.0f)// 弾の回転速度
 	, m_distance(5.0f)// 弾の敵との距離
 	, m_height(0.0f)// 弾の高さ
@@ -50,7 +50,7 @@ void SpecialBullet::Initialize()
 void SpecialBullet::Update(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
-	m_commonResources->GetAudioManager()->Update();// オーディオマネージャーの更新
+	m_pCommonResources->GetAudioManager()->Update();// オーディオマネージャーの更新
 	m_time += elapsedTime;// 時間の加算
 	m_elapsedTime = elapsedTime;// 経過時間を保存
 	m_spiralAngle += m_rotationSpeed * elapsedTime;	// 時計回りに回転するための角度
@@ -84,7 +84,7 @@ void SpecialBullet::Expand()
 	m_height = 2.0f; // 弾の高さを補完
 	if (!m_isPlayChargeSE)// SEが再生されていない場合
 	{
-		m_commonResources->GetAudioManager()->PlaySound("ChargeSpecial", m_seVolume);// SEを再生
+		m_pCommonResources->GetAudioManager()->PlaySound("ChargeSpecial", m_seVolume);// SEを再生
 		m_isPlayChargeSE = true;// SE再生フラグを立てる
 	}
 
@@ -101,7 +101,7 @@ void SpecialBullet::Shot()
 	m_basePos = Lerp(m_basePos, m_pEnemyBullet->GetCurrentTarget(), m_elapsedTime * 2);// 基準点を目的地に向かって線形補完
 	if (!m_isPlayShotSE)// SEが再生されていない場合
 	{
-		m_commonResources->GetAudioManager()->PlaySound("SpecialAttack", m_seVolume);// SEを再生
+		m_pCommonResources->GetAudioManager()->PlaySound("SpecialAttack", m_seVolume);// SEを再生
 		m_isPlayShotSE = true;// SE再生フラグを立てる
 	}
 

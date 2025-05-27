@@ -13,7 +13,7 @@ const float SettingScene::VOLUME = 0.05f;// 音量の基準値
 *	@return なし
 */
 SettingScene::SettingScene(IScene::SceneID sceneID)
-	: m_commonResources{}// 共通リソース
+	: m_pCommonResources{}// 共通リソース
 	, m_isChangeScene{ false }// シーン変更フラグ
 	, m_isFade{ false }// フェードフラグ
 	, m_BGMvolume{ VOLUME }// BGM音量
@@ -46,12 +46,12 @@ SettingScene::~SettingScene()
 void SettingScene::Initialize(CommonResources* resources)
 {
 	assert(resources);// リソースがnullptrでないことを確認
-	m_commonResources = resources;// 共通リソースをセット
-	auto DR = m_commonResources->GetDeviceResources();// デバイスリソースを取得
-	m_pFade = std::make_unique<Fade>(m_commonResources);// フェードの生成
+	m_pCommonResources = resources;// 共通リソースをセット
+	auto DR = m_pCommonResources->GetDeviceResources();// デバイスリソースを取得
+	m_pFade = std::make_unique<Fade>(m_pCommonResources);// フェードの生成
 	m_pFade->Initialize();// フェードの初期化
 	m_pFade->SetState(Fade::FadeState::FadeIn);// フェードインに移行
-	m_pBackGround = std::make_unique<BackGround>(m_commonResources);// 背景を作成する
+	m_pBackGround = std::make_unique<BackGround>(m_pCommonResources);// 背景を作成する
 	m_pBackGround->Create(DR);// 背景の初期化
 	m_pSettingData = std::make_unique<SettingData>();// 設定データクラスの作成
 	m_pSettingData->Load();// 設定ファイルの読み込み
@@ -65,7 +65,7 @@ void SettingScene::Initialize(CommonResources* resources)
 	m_pUI.push_back(std::move(m_pSettingMenu));// メニューをUIに登録
 	m_pUI.push_back(std::move(m_pSettingBar));// セッティングバーをUIに登録
 	m_pUI.push_back(std::move(m_pMousePointer));// マウスポインターをUIに登録
-	for (int it = 0; it < m_pUI.size(); ++it)m_pUI[it]->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);// UIの初期化
+	for (int it = 0; it < m_pUI.size(); ++it)m_pUI[it]->Initialize(m_pCommonResources, Screen::WIDTH, Screen::HEIGHT);// UIの初期化
 
 }
 /*
@@ -119,9 +119,9 @@ IScene::SceneID SettingScene::GetNextSceneID() const
 
 	if (m_isChangeScene)// シーン変更がある場合
 	{
-		m_commonResources->GetAudioManager()->StopSound("TitleBGM");// BGMの停止
-		m_commonResources->GetAudioManager()->StopSound("SE");// SEの停止
-		m_commonResources->GetAudioManager()->StopSound("Select");// Selectの停止
+		m_pCommonResources->GetAudioManager()->StopSound("TitleBGM");// BGMの停止
+		m_pCommonResources->GetAudioManager()->StopSound("SE");// SEの停止
+		m_pCommonResources->GetAudioManager()->StopSound("Select");// Selectの停止
 		return IScene::SceneID::TITLE;// タイトルシーンに移行
 	}
 	return IScene::SceneID::NONE;// シーン変更がない場合
@@ -180,8 +180,8 @@ void SettingScene::UpdateSettingBars(const UpdateContext& ctx)
 */
 void SettingScene::UpdateFadeAndMouse(const UpdateContext& ctx)
 {
-	m_commonResources->GetAudioManager()->Update();// オーディオマネージャーの更新処理
-	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();// マウスのトラッカーを取得する
+	m_pCommonResources->GetAudioManager()->Update();// オーディオマネージャーの更新処理
+	auto& mtracker = m_pCommonResources->GetInputManager()->GetMouseTracker();// マウスのトラッカーを取得する
 	if (m_pFade->GetState() != Fade::FadeState::FadeInEnd)return;// メニューでの選択処理が行われたら
 	if (mtracker->GetLastState().leftButton) HandleMenuSelection(ctx);// 左クリックされたらメニュー選択処理を行う
 	else UpdateMousePointers(ctx);// マウスポインターの更新
@@ -195,7 +195,7 @@ void SettingScene::UpdateFadeAndMouse(const UpdateContext& ctx)
 void SettingScene::UpdateBackgroundAndFade(float elapsedTime)
 {
 	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)m_isChangeScene = true;// シーン変更フラグを立てる
-	m_commonResources->GetAudioManager()->PlaySound("TitleBGM", m_BGMvolume);// BGMの再生
+	m_pCommonResources->GetAudioManager()->PlaySound("TitleBGM", m_BGMvolume);// BGMの再生
 	m_pBackGround->Update(elapsedTime);// 背景の更新
 	m_pFade->Update(elapsedTime);// フェードの更新
 }
@@ -227,7 +227,7 @@ void SettingScene::HandleMenuSelection(const UpdateContext& ctx)
 			if (selectID == SettingMenu::SelectID::END ||// 「終わる」か
 				selectID == SettingMenu::SelectID::APPLY)// 「適用」かが選ばれれば
 			{
-				m_commonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);// SEの再生
+				m_pCommonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);// SEの再生
 				m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
 				return;// もう他のUIは見なくていいのでこの処理を終える
 			}

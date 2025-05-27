@@ -15,7 +15,7 @@ const int ResultScene::STAGE_SELECT = 5;
 *	@return なし
 */
 ResultScene::ResultScene(IScene::SceneID sceneID)
-	: m_commonResources{}// 共通リソース
+	: m_pCommonResources{}// 共通リソース
 	, m_isChangeScene{}// シーン変更フラグ
 	, m_BGMvolume{ VOLUME }// BGM音量
 	, m_SEvolume{ VOLUME }// SE音量
@@ -41,12 +41,12 @@ ResultScene::~ResultScene() { Finalize(); }
 void ResultScene::Initialize(CommonResources* resources)
 {
 	assert(resources);// リソースがnullptrでないことを確認
-	m_commonResources = resources;// 共通リソースをセット
-	auto DR = m_commonResources->GetDeviceResources();// デバイスリソースを取得
-	m_pFade = std::make_unique<Fade>(m_commonResources);// フェードの生成
+	m_pCommonResources = resources;// 共通リソースをセット
+	auto DR = m_pCommonResources->GetDeviceResources();// デバイスリソースを取得
+	m_pFade = std::make_unique<Fade>(m_pCommonResources);// フェードの生成
 	m_pFade->Initialize();// フェードの初期化
 	m_pFade->SetState(Fade::FadeState::FadeIn);// フェードインに移行
-	m_pBackGround = std::make_unique<BackGround>(m_commonResources);// 背景を作成する
+	m_pBackGround = std::make_unique<BackGround>(m_pCommonResources);// 背景を作成する
 	m_pBackGround->Create(DR);// 背景の初期化
 	m_pSettingData = std::make_unique<SettingData>();// 設定データの初期化
 	m_pSettingData->Load();// 設定ファイルの読み込み
@@ -56,11 +56,11 @@ void ResultScene::Initialize(CommonResources* resources)
 	m_pResultMenu->SetSEVolume(m_SEvolume);// SEの音量を設定
 	m_pUI.push_back(std::move(m_pResultMenu));// メニューを作成し、UIに登録
 	m_pUI.push_back(std::move(std::make_unique<MousePointer>()));// マウスポインターを作成し、UIに登録
-	for (int it = 0; it < m_pUI.size(); ++it)m_pUI[it]->Initialize(m_commonResources, Screen::WIDTH, Screen::HEIGHT);// UIの初期化
+	for (int it = 0; it < m_pUI.size(); ++it)m_pUI[it]->Initialize(m_pCommonResources, Screen::WIDTH, Screen::HEIGHT);// UIの初期化
 	// 結果に応じて変わるテクスチャパスマップ
 	m_pResultTexturePathMap[IScene::SceneID::GAMEOVER] = L"Resources/Textures/GameOver.png";// ゲームオーバー
 	m_pResultTexturePathMap[IScene::SceneID::CLEAR] = L"Resources/Textures/Clear.png";// クリア
-	m_pResult = std::make_unique<Result>(m_commonResources);// 結果クラス作成
+	m_pResult = std::make_unique<Result>(m_pCommonResources);// 結果クラス作成
 	auto textureMap = m_pResultTexturePathMap.find(m_nowSceneID);// ステートによって顔のモデルを変更
 	if (textureMap != m_pResultTexturePathMap.end() && textureMap->second)// マップに存在する場合
 		m_pResult->Create(DR, textureMap->second);// 結果クラスの初期化
@@ -74,8 +74,8 @@ void ResultScene::Initialize(CommonResources* resources)
 */
 void ResultScene::Update(float elapsedTime)
 {
-	m_commonResources->GetAudioManager()->Update();// オーディオマネージャーの更新
-	auto& mtracker = m_commonResources->GetInputManager()->GetMouseTracker();// マウスのトラッカーを取得する
+	m_pCommonResources->GetAudioManager()->Update();// オーディオマネージャーの更新
+	auto& mtracker = m_pCommonResources->GetInputManager()->GetMouseTracker();// マウスのトラッカーを取得する
 	UpdateContext ctx;// 各種UIに渡す情報をまとめた構造体
 	ctx.bulletPoint = 0;// 使わない
 	ctx.dashStamina = 0;// 使わない
@@ -90,7 +90,7 @@ void ResultScene::Update(float elapsedTime)
 			mtracker->GetLastState().leftButton &&// マウス左ボタンが押されていて
 			pMenu->GetIsHit())// メニューにヒットしている場合
 		{
-			m_commonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);// SEの再生
+			m_pCommonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);// SEの再生
 			m_pFade->SetState(Fade::FadeState::FadeOut);// フェードアウトに移行
 			ResultMenu::SceneID id = pMenu->GetSceneNum();// 選択されたメニューのIDを取得
 			if (id == ResultMenu::SceneID::SELECT_STAGE)
@@ -98,7 +98,7 @@ void ResultScene::Update(float elapsedTime)
 		}
 	}
 	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)m_isChangeScene = true;	// フェードアウトが終了したら
-	m_commonResources->GetAudioManager()->PlaySound("ResultBGM", m_BGMvolume);// BGMの再生
+	m_pCommonResources->GetAudioManager()->PlaySound("ResultBGM", m_BGMvolume);// BGMの再生
 	m_pBackGround->Update(elapsedTime);// 背景の更新
 	m_pFade->Update(elapsedTime);// フェードの更新
 	m_pResult->Update(elapsedTime);// 結果の更新
@@ -139,8 +139,8 @@ IScene::SceneID ResultScene::GetNextSceneID() const
 {
 	if (m_isChangeScene)// シーン変更がある場合
 	{
-		m_commonResources->GetAudioManager()->StopSound("ResultBGM");// BGM停止
-		m_commonResources->GetAudioManager()->StopSound("SE");// SE停止
+		m_pCommonResources->GetAudioManager()->StopSound("ResultBGM");// BGM停止
+		m_pCommonResources->GetAudioManager()->StopSound("SE");// SE停止
 		for (int it = 0; it < m_pUI.size(); ++it)// 登録したUIの分だけ処理
 		{
 			if (auto pMenu = dynamic_cast<ResultMenu*>(m_pUI[it].get()))// メニューのポインターを取得

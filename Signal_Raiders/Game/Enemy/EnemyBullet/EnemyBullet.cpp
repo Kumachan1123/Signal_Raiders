@@ -4,17 +4,15 @@
 */
 #include "pch.h"
 #include "EnemyBullet.h"
-
-
 /*
 *	@brief コンストラクタ
-*	@param[in] size 弾のサイズ
+*	@param size 弾のサイズ
 *	@return なし
 */
 EnemyBullet::EnemyBullet(float size)
 	: m_position{}// 弾の座標
 	, m_velocity{}// 弾の速さ
-	, m_commonResources{}// 共通リソース
+	, m_pCommonResources{}// 共通リソース
 	, m_time{ 0.0f }// 経過時間
 	, m_elapsedTime{ 0.0f }// 更新時間
 	, m_angle{ 0.0f }// 弾の自転
@@ -28,6 +26,7 @@ EnemyBullet::EnemyBullet(float size)
 	, m_isExpand{ false }// 展開完了フラグ
 	, m_isShot{ false }// 発射フラグ
 	, m_pShooter{ nullptr }// 発射した敵のポインター
+	, m_pModel{ nullptr }// 弾のモデル
 	, m_pSpecialBullet{ nullptr }// 特殊弾
 	, m_pNormalBullet{ nullptr }// 通常弾
 	, m_pSpeedBullet{ nullptr }// 速い弾
@@ -43,32 +42,23 @@ EnemyBullet::EnemyBullet(float size)
 EnemyBullet::~EnemyBullet() {}
 /*
 *	@brief 初期化
-*	@param[in] resources 共通リソース
+*	@param resources 共通リソース
 *	@return なし
 */
 void EnemyBullet::Initialize(CommonResources* resources)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	m_commonResources = resources;// 共通リソースを設定
-	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
+	m_pCommonResources = resources;// 共通リソースを設定
+	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
 	m_pEnemyBullet = EnemyBulletFactory::CreateBullet(m_bulletType);// ファクトリで生成
 	m_pEnemyBullet->SetEnemyBullet(this);// 敵弾ポインターを設定する
-	m_pEnemyBullet->SetCommonResources(m_commonResources);// 弾に共通リソースを設定
+	m_pEnemyBullet->SetCommonResources(m_pCommonResources);// 弾に共通リソースを設定
 	m_pEnemyBullet->SetSEVolume(m_seVolume);// SE音量を設定
-	DrawCollision::Initialize(m_commonResources);// 境界球の初期化
+	DrawCollision::Initialize(m_pCommonResources);// 境界球の初期化
 	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_Shadow.cso");// 影用のピクセルシェーダー読み込み
-	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pixelShader.ReleaseAndGetAddressOf()));// ピクセルシェーダーの作成
-	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);	// モデルを読み込む準備
-	fx->SetDirectory(L"Resources/Models");// モデルのディレクトリを設定
-	m_model = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Bullet.cmo", *fx);	// モデルを読み込む
-	m_model->UpdateEffects([&](DirectX::IEffect* effect)	// モデルのエフェクトを設定する
-		{
-			auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);// ベーシックエフェクトを取得する
-			basicEffect->SetDiffuseColor(DirectX::SimpleMath::Vector4(1, .2, 0, 1));// ディフューズカラーを設定する
-			basicEffect->SetAmbientLightColor(DirectX::Colors::Red);// アンビエントライトカラーを設定する
-			basicEffect->SetEmissiveColor(DirectX::Colors::Tomato);// エミッシブカラーを設定する
-		});
+	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pPixelShader.ReleaseAndGetAddressOf()));// ピクセルシェーダーの作成
+	m_pModel = m_pCommonResources->GetModelManager()->GetModel("EnemyBullet");// マネージャーからモデルを取得
 	m_bulletTrail = std::make_unique<Particle>(ParticleUtility::Type::ENEMYTRAIL, m_size);	// 弾の軌道生成
 	m_bulletTrail->Initialize(resources);// 弾の軌道初期化
 	m_direction = Vector3::Zero;// 方向を初期化
@@ -80,9 +70,9 @@ void EnemyBullet::Initialize(CommonResources* resources)
 }
 /*
 *	@brief 弾の発射
-*	@param[in] const DirectX::SimpleMath::Vector3& pos 弾の座標
-*	@param[in] const DirectX::SimpleMath::Vector3& dir 弾の方向
-*	@param[in] const DirectX::SimpleMath::Vector3& target 弾発射時のターゲットの位置
+*	@param const DirectX::SimpleMath::Vector3& pos 弾の座標
+*	@param const DirectX::SimpleMath::Vector3& dir 弾の方向
+*	@param const DirectX::SimpleMath::Vector3& target 弾発射時のターゲットの位置
 */
 void EnemyBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir, DirectX::SimpleMath::Vector3& target)
 {
@@ -107,7 +97,7 @@ bool EnemyBullet::IsExpired() const
 
 /*
 *	@brief 弾の更新
-*	@param[in] float elapsedTime 更新時間
+*	@param float elapsedTime 更新時間
 *	@return なし
 */
 void EnemyBullet::Update(float elapsedTime)
@@ -121,44 +111,44 @@ void EnemyBullet::Update(float elapsedTime)
 }
 /*
 *	@brief 弾の描画
-*	@param[in] DirectX::SimpleMath::Matrix view ビュー行列
-*	@param[in] DirectX::SimpleMath::Matrix proj プロジェクション行列
+*	@param DirectX::SimpleMath::Matrix view ビュー行列
+*	@param DirectX::SimpleMath::Matrix proj プロジェクション行列
 */
 void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
 	using namespace DirectX::SimpleMath;
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストを取得
-	auto states = m_commonResources->GetCommonStates();// コモンステートを取得
+	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストを取得
+	auto states = m_pCommonResources->GetCommonStates();// コモンステートを取得
 	m_bulletTrail->CreateBillboard(m_cameraTarget, m_cameraEye, m_cameraUp);// ビルボードを作成
 	m_bulletTrail->Render(view, proj);	// 軌跡描画
-	m_model->Draw(context, *states, BulletWorldMatrix(), view, proj);	// 弾描画
+	m_pModel->Draw(context, *states, BulletWorldMatrix(), view, proj);	// 弾描画
 }
 /*
 *	@brief 弾の影描画
-*	@param[in] DirectX::SimpleMath::Matrix view ビュー行列
-*	@param[in] DirectX::SimpleMath::Matrix proj プロジェクション行列
+*	@param DirectX::SimpleMath::Matrix view ビュー行列
+*	@param DirectX::SimpleMath::Matrix proj プロジェクション行列
 */
 void EnemyBullet::RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
 	using namespace DirectX::SimpleMath;
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストを取得
-	auto states = m_commonResources->GetCommonStates();// コモンステートを取得
+	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストを取得
+	auto states = m_pCommonResources->GetCommonStates();// コモンステートを取得
 	Vector3 lightDir = Vector3::UnitY;	// ライトの方向
 	lightDir.Normalize();// 正規化
 	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, BulletParameters::SHADOW_PLANE);	// 影行列の元を作る
 	shadowMatrix = BulletWorldMatrix() * shadowMatrix;	// 影行列をワールド行列に適用する
-	m_model->Draw(context, *states, shadowMatrix * Matrix::Identity, view, proj, true, [&]()	// 影描画
+	m_pModel->Draw(context, *states, shadowMatrix * Matrix::Identity, view, proj, true, [&]()	// 影描画
 		{
 			context->OMSetBlendState(states->Opaque(), nullptr, 0xffffffff);// ブレンドステートを設定
 			context->OMSetDepthStencilState(states->DepthNone(), 0);// 深度ステンシルステートを設定
 			context->RSSetState(states->CullClockwise());	// カリングを設定
-			context->PSSetShader(m_pixelShader.Get(), nullptr, 0);	// ピクセルシェーダーを設定
+			context->PSSetShader(m_pPixelShader.Get(), nullptr, 0);	// ピクセルシェーダーを設定
 		});
 }
 /*
 *	@brief 弾の境界球を描画(デバッグ用)
-*	@param[in] DirectX::SimpleMath::Matrix view ビュー行列
-*	@param[in] DirectX::SimpleMath::Matrix proj プロジェクション行列
+*	@param DirectX::SimpleMath::Matrix view ビュー行列
+*	@param DirectX::SimpleMath::Matrix proj プロジェクション行列
 *	@return なし
 */
 void EnemyBullet::RenderBoundingSphere(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
@@ -181,7 +171,7 @@ void EnemyBullet::RenderBoundingSphere(DirectX::SimpleMath::Matrix view, DirectX
 
 /*
 *	@brief 弾のワールド行列を作成
-*	@param[in] なし
+*	@param なし
 *	@return DirectX::SimpleMath::Matrix 弾のワールド行列
 */
 DirectX::SimpleMath::Matrix EnemyBullet::BulletWorldMatrix()

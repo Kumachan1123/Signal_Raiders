@@ -1,16 +1,17 @@
 /*
-	@file	BossSheild.cpp
-	@brief	ボスシールドクラス
+*	@file	BossSheild.cpp
+*	@brief	ボスシールドクラス
 */
 #include "pch.h"
 #include "BossSheild.h"
 
 /*
 *	@brief	コンストラクタ
+*	@details ボスシールドクラスのコンストラクタ
 *	@return	なし
 */
 BossSheild::BossSheild()
-	: m_commonResources{}// 共通リソース
+	: m_pCommonResources{}// 共通リソース
 	, m_isSheild(false)// シールド展開フラグ
 	, m_isParticle(false)// パーティクル再生フラグ
 	, m_sheildSize(DirectX::SimpleMath::Vector3::Zero)// シールドのサイズ
@@ -18,18 +19,26 @@ BossSheild::BossSheild()
 	, m_sheildHP(0)// シールドのHP
 	, m_bossType(BossShieldType::BOSS)// ボスの種類
 	, m_pBoss(nullptr)// ボスクラスのポインタ
+	, m_pSheildModel(nullptr)// シールドモデル
 {
 }
 /*
 *	@brief	デストラクタ
+*	@details 各種ポインターをnullptrに設定
 *	@return	なし
 */
-BossSheild::~BossSheild() {}
+BossSheild::~BossSheild()
+{
+	m_pCommonResources = nullptr;// 共通リソースをnullptrに設定
+	m_pSheildModel = nullptr;// シールドモデルをnullptrに設定
+	m_pBoss = nullptr;// ボスクラスのポインタをnullptrに設定
+	m_pParticle = nullptr;// パーティクルをnullptrに設定 
+}
 
 /*
 *	@brief	シールドの初期化
-*	@param[in] sheildHP シールドのHP
-*	@param[in] pBoss ボスクラスのポインタ
+*	@param sheildHP シールドのHP
+*	@param pBoss ボスクラスのポインタ
 *	@return	なし
 */
 void BossSheild::SetUp(int sheildHP, IEnemy* pBoss)
@@ -44,23 +53,20 @@ void BossSheild::SetUp(int sheildHP, IEnemy* pBoss)
 
 /*
 *	@brief	初期化
-*	@param[in] resources 共通リソース
+*	@param resources 共通リソース
 *	@return	なし
 */
 void BossSheild::Initialize(CommonResources* resources)
 {
-	m_commonResources = resources;// 共通リソースを設定
-	auto device = resources->GetDeviceResources()->GetD3DDevice();// デバイス取得
+	m_pCommonResources = resources;// 共通リソースを設定
 	m_pParticle = std::make_unique<Particle>(ParticleUtility::Type::BARRIERBREAK, 0.0f);// 0.0fなのはすでに内部で設定されているから
-	m_pParticle->Initialize(m_commonResources);// パーティクル初期化
-	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);// エフェクトファクトリー作成
-	fx->SetDirectory(L"Resources/Models/Boss");// ディレクトリ設定
-	m_sheildModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Boss/Boss_Barrier.cmo", *fx);// モデル作成
+	m_pParticle->Initialize(m_pCommonResources);// パーティクル初期化
+	m_pSheildModel = m_pCommonResources->GetModelManager()->GetModel("Barrier");// マネージャーからシールドモデルを取得
 }
 
 /*
 *	@brief	更新
-*	@param[in] elapsedTime 経過時間
+*	@param elapsedTime 経過時間
 *	@return	なし
 */
 void BossSheild::Update(float elapsedTime)
@@ -87,11 +93,11 @@ void BossSheild::Update(float elapsedTime)
 }
 /*
 *	@brief	描画
-*	@param[in] context デバイスコンテキスト
-*	@param[in] states ステート
-*	@param[in] world ワールド行列
-*	@param[in] view ビュー行列
-*	@param[in] proj プロジェクション行列
+*	@param context デバイスコンテキスト
+*	@param states ステート
+*	@param world ワールド行列
+*	@param view ビュー行列
+*	@param proj プロジェクション行列
 *	@return	なし
 */
 void BossSheild::Render(ID3D11DeviceContext1* context,
@@ -102,13 +108,11 @@ void BossSheild::Render(ID3D11DeviceContext1* context,
 {
 
 	using namespace DirectX::SimpleMath;
-
-	// m_pBossをBossクラスのポインタにキャスト
-	auto pBoss = dynamic_cast<BossBase*>(m_pBoss);
+	auto pBoss = dynamic_cast<BossBase*>(m_pBoss);// m_pBossをBossクラスのポインタにキャスト
 	if (m_isSheild)// シールドが展開されている間
 	{
 		Matrix shieldWorld = Matrix::CreateScale(m_sheildSize) * world;// シールドのワールド行列
-		m_sheildModel->Draw(context, *states, shieldWorld, view, proj, false, [&]()// シールド描画
+		m_pSheildModel->Draw(context, *states, shieldWorld, view, proj, false, [&]()// シールド描画
 			{
 				context->OMSetDepthStencilState(states->DepthRead(), 0);// 深度ステンシルステート設定
 				context->RSSetState(states->CullClockwise());// ラスタライザーステート設定

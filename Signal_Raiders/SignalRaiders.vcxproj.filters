@@ -268,8 +268,6 @@
     <ClInclude Include="Game\Enemy\EnemyAI\EnemySpin\EnemySpin.h" />
     <ClInclude Include="Game\KumachiLib\DrawPolygon\DrawPolygon.h" />
     <ClInclude Include="Game\KumachiLib\CreateShader\CreateShader.h" />
-    <ClInclude Include="Game\KumachiLib\json.hpp" />
-    <ClInclude Include="Game\KumachiLib\RenderTexture\RenderTexture.h" />
     <ClInclude Include="Game\KumachiLib\Bloom\Bloom.h" />
     <ClInclude Include="Game\WarningEffect\WarningEffects\WarningEffects.h" />
     <ClInclude Include="Game\Stage\Stage.h" />
@@ -300,6 +298,9 @@
     <ClInclude Include="Game\Interface\IBullet.h" />
     <ClInclude Include="Game\Enemy\EnemyBullet\EnemyBulletFactory\EnemyBulletFactory.h" />
     <ClInclude Include="Game\Enemy\EnemyBullet\EnemyBulletType\EnemyBulletType.h" />
+    <ClInclude Include="Libraries\nlohmann\json.hpp" />
+    <ClInclude Include="Libraries\Microsoft\RenderTexture\RenderTexture.h" />
+    <ClInclude Include="Game\KumachiLib\ModelManager\ModelManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -418,7 +419,6 @@
     <ClCompile Include="Game\Enemy\EnemyAI\EnemySpin\EnemySpin.cpp" />
     <ClCompile Include="Game\KumachiLib\DrawPolygon\DrawPolygon.cpp" />
     <ClCompile Include="Game\KumachiLib\CreateShader\CreateShader.cpp" />
-    <ClCompile Include="Game\KumachiLib\RenderTexture\RenderTexture.cpp" />
     <ClCompile Include="Game\KumachiLib\Bloom\Bloom.cpp" />
     <ClCompile Include="Game\WarningEffect\WarningEffects\WarningEffects.cpp" />
     <ClCompile Include="Game\Stage\Stage.cpp" />
@@ -439,6 +439,8 @@
     <ClCompile Include="Game\Enemy\LastBoss\LastBossModel\LastBossModel.cpp" />
     <ClCompile Include="Game\Enemy\BossBase\BossBase.cpp" />
     <ClCompile Include="Game\Enemy\EnemyBullet\EnemyBulletFactory\EnemyBulletFactory.cpp" />
+    <ClCompile Include="Libraries\Microsoft\RenderTexture\RenderTexture.cpp" />
+    <ClCompile Include="Game\KumachiLib\ModelManager\ModelManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

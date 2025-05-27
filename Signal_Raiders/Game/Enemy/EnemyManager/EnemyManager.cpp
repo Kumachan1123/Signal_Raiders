@@ -6,11 +6,11 @@
 #include "EnemyManager.h"
 /*
 *	@brief	コンストラクタ
-*	@param[in]	CommonResources* commonResources 共通リソース
+*	@param	CommonResources* commonResources 共通リソース
 *	@return なし
 */
 EnemyManager::EnemyManager(CommonResources* commonResources)
-	: m_commonResources{ commonResources }// 共通リソース
+	: m_pCommonResources{ commonResources }// 共通リソース
 	, m_enemies{}// 敵リスト
 	, m_isEnemyBorn{ false }// 敵生成フラグ
 	, m_isBorned{ false }// 敵生成済みフラグ
@@ -41,13 +41,13 @@ EnemyManager::EnemyManager(CommonResources* commonResources)
 }
 /*
 *	@brief	デストラクタ
-*	@param[in]	なし
+*	@param	なし
 *	@return なし
 */
 EnemyManager::~EnemyManager() {/*do nothing*/ }
 /*
 *	@brief	初期化
-*	@param[in]	Player* pPlayer プレイヤー
+*	@param	Player* pPlayer プレイヤー
 *	@return なし
 */
 void EnemyManager::Initialize(Player* pPlayer)
@@ -57,7 +57,7 @@ void EnemyManager::Initialize(Player* pPlayer)
 }
 /*
 *	@brief	更新
-*	@param[in]	float elapsedTime 経過時間
+*	@param	float elapsedTime 経過時間
 *	@return なし
 */
 void EnemyManager::Update(float elapsedTime)
@@ -74,7 +74,7 @@ void EnemyManager::Update(float elapsedTime)
 }
 /*
 *	@brief	描画
-*	@param[in]	なし
+*	@param	なし
 *	@return なし
 */
 void EnemyManager::Render()
@@ -101,7 +101,7 @@ void EnemyManager::Render()
 }
 /*
 *	@brief	敵の生成上限設定
-*	@param[in]	なし
+*	@param	なし
 *	@return なし
 */
 void EnemyManager::SetEnemyMax()
@@ -117,19 +117,19 @@ void EnemyManager::SetEnemyMax()
 }
 /*
 *	@brief	経過時間を加算
-*	@param[in]	float elapsedTime 経過時間
+*	@param	float elapsedTime 経過時間
 *	@return なし
 */
 void EnemyManager::UpdateStartTime(float elapsedTime) { m_startTime += elapsedTime; }
 /*
 *	@brief	全エフェクトの更新
-*	@param[in]	float elapsedTime 経過時間
+*	@param	float elapsedTime 経過時間
 *	@return なし
 */
 void EnemyManager::UpdateEffects(float elapsedTime) { for (auto& effect : GetEffect())effect->Update(elapsedTime); }
 /*
 *	@brief	敵生成処理
-*	@param[in]	float elapsedTime 経過時間
+*	@param	float elapsedTime 経過時間
 *	@return なし
 */
 void EnemyManager::HandleEnemySpawning(float elapsedTime)
@@ -159,12 +159,12 @@ void EnemyManager::HandleEnemySpawning(float elapsedTime)
 }
 /*
 *	@brief	敵生成処理
-*	@param[in]	EnemyType type 敵の種類
+*	@param	EnemyType type 敵の種類
 *	@return なし
 */
 void EnemyManager::SpawnEnemy(EnemyType type)
 {
-	auto enemy = EnemyFactory::CreateEnemy(type, m_pPlayer, m_commonResources,
+	auto enemy = EnemyFactory::CreateEnemy(type, m_pPlayer, m_pCommonResources,
 		m_pWifi->GetWifiLevels()[m_enemyIndex]);// ファクトリで敵生成
 	enemy->Initialize();// 敵を初期化
 	enemy->SetBulletManager(m_pBulletManager);// 弾マネージャーを設定
@@ -174,7 +174,7 @@ void EnemyManager::SpawnEnemy(EnemyType type)
 }
 /*
 *	@brief	敵生成完了処理
-*	@param[in]	なし
+*	@param	なし
 *	@return なし
 *
 */
@@ -186,12 +186,12 @@ void EnemyManager::FinalizeEnemySpawn()
 }
 /*
 *	@brief	ボス生成処理
-*	@param[in]	なし
+*	@param	なし
 *	@return なし
 */
 void EnemyManager::SpawnBoss()
 {
-	auto boss = std::make_unique<BossBase>(m_pPlayer, m_commonResources, m_bossHP);// ボスを生成
+	auto boss = std::make_unique<BossBase>(m_pPlayer, m_pCommonResources, m_bossHP);// ボスを生成
 	if (m_stageNumber >= 3) boss->SetBossType(BossType::LAST_BOSS);// ボスの種類を設定
 	else boss->SetBossType(BossType::NORMAL_BOSS);// ボスの種類を設定
 	boss->SetBulletManager(m_pBulletManager);// 弾マネージャーを設定
@@ -204,7 +204,7 @@ void EnemyManager::SpawnBoss()
 }
 /*
 *	@brief	敵同士の当たり判定処理
-*	@param[in]	なし
+*	@param	なし
 *	@return なし
 */
 void EnemyManager::HandleEnemyCollisions()
@@ -231,7 +231,7 @@ void EnemyManager::HandleEnemyCollisions()
 }
 /*
 *	@brief	敵と壁の当たり判定処理
-*	@param[in]	なし
+*	@param	なし
 *	@return なし
 */
 void EnemyManager::HandleWallCollision()
@@ -251,7 +251,7 @@ void EnemyManager::HandleWallCollision()
 }
 /*
 *	@brief	敵全体の更新処理
-*	@param[in]	float elapsedTime 経過時間
+*	@param	float elapsedTime 経過時間
 * 	@return なし
 */
 void EnemyManager::UpdateEnemies(float elapsedTime)
@@ -266,7 +266,7 @@ void EnemyManager::UpdateEnemies(float elapsedTime)
 }
 /*
 *	@brief	敵の弾とプレイヤーの当たり判定処理
-*	@param[in]	std::unique_ptr<IEnemy>& enemy 敵のポインタ
+*	@param	std::unique_ptr<IEnemy>& enemy 敵のポインタ
 *	@return なし
 */
 void EnemyManager::HandleEnemyBulletCollision(std::unique_ptr<IEnemy>& enemy)
@@ -277,12 +277,12 @@ void EnemyManager::HandleEnemyBulletCollision(std::unique_ptr<IEnemy>& enemy)
 		float playerHP = m_pPlayer->GetPlayerHP() - enemy->GetToPlayerDamage();// プレイヤーのHPを減少
 		m_pPlayer->SetPlayerHP(playerHP);// プレイヤーのHPを設定
 		enemy->SetPlayerHitByEnemyBullet(false); // プレイヤーのHPを減少したらフラグを下ろす
-		m_commonResources->GetAudioManager()->PlaySound("Damage", m_pPlayer->GetVolume()); // SEを再生
+		m_pCommonResources->GetAudioManager()->PlaySound("Damage", m_pPlayer->GetVolume()); // SEを再生
 	}
 }
 /*
 *	@brief	敵とプレイヤーの当たり判定処理
-*	@param[in]	std::unique_ptr<IEnemy>& enemy 敵のポインタ
+*	@param	std::unique_ptr<IEnemy>& enemy 敵のポインタ
 *	@return なし
 */
 void EnemyManager::HandleEnemyPlayerCollision(std::unique_ptr<IEnemy>& enemy)
@@ -308,7 +308,7 @@ void EnemyManager::HandleEnemyPlayerCollision(std::unique_ptr<IEnemy>& enemy)
 }
 /*
 *	@brief	死亡した敵を削除
-*	@param[in]	なし
+*	@param	なし
 *	@return なし
 */
 void EnemyManager::RemoveDeadEnemies()
@@ -328,7 +328,7 @@ void EnemyManager::RemoveDeadEnemies()
 
 /*
 *	@brief	敵の死亡処理
-*	@param[in]	std::unique_ptr<IEnemy>& enemy 敵のポインタ
+*	@param	std::unique_ptr<IEnemy>& enemy 敵のポインタ
 *	@return なし
 */
 void EnemyManager::HandleEnemyDeath(std::unique_ptr<IEnemy>& enemy)
@@ -344,11 +344,11 @@ void EnemyManager::HandleEnemyDeath(std::unique_ptr<IEnemy>& enemy)
 	{
 		effectScale = EnemyParameters::ENEMY_DEADEFFECT_SCALE;// ザコ敵の場合はエフェクトのスケールを小さくする
 	}
-	m_effect.push_back(std::make_unique<Effect>(m_commonResources,// エフェクトを生成
+	m_effect.push_back(std::make_unique<Effect>(m_pCommonResources,// エフェクトを生成
 		Effect::EffectType::ENEMY_DEAD,// エフェクトの種類指定
 		enemy->GetPosition(), // 座標設定
 		effectScale,// スケール設定
 		enemy->GetMatrix()));// ワールド行列作成
-	m_commonResources->GetAudioManager()->PlaySound("EnemyDead", m_pPlayer->GetVolume() + m_pPlayer->GetVolumeCorrection());// 敵のSEを再生
+	m_pCommonResources->GetAudioManager()->PlaySound("EnemyDead", m_pPlayer->GetVolume() + m_pPlayer->GetVolumeCorrection());// 敵のSEを再生
 
 }

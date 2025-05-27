@@ -10,7 +10,7 @@
 *	@param	なし
 */
 VerticalAttackerModel::VerticalAttackerModel()
-	: m_commonResources{}// 共通リソース
+	: m_pCommonResources{}// 共通リソース
 	, m_bodyModel{}// モデル
 	, m_nowState{ IState::EnemyState::IDLING }// 現在のステータス
 {}
@@ -26,18 +26,15 @@ VerticalAttackerModel::~VerticalAttackerModel() {}
 */
 void VerticalAttackerModel::Initialize(CommonResources* resources)
 {
-	m_commonResources = resources;// 共通リソース
+	m_pCommonResources = resources;// 共通リソース
 	auto device = resources->GetDeviceResources()->GetD3DDevice();// デバイス取得
 	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_Shadow.cso");	// 影用のシェーダーを読み込む
-	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pixelShader.ReleaseAndGetAddressOf()));// シェーダーを作成
-	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);	// モデルを読み込む準備
-	fx->SetDirectory(L"Resources/Models/VerticalAttacker");// モデルのディレクトリを指定
-	m_bodyModel = DirectX::Model::CreateFromCMO(device, L"Resources/Models/VerticalAttacker/VerticalAttacker.cmo", *fx);//  胴体モデルを読み込む
-	fx->SetDirectory(L"Resources/Models/Enemy");// モデルのディレクトリを指定（通常の敵の表情差分を流用）
-	m_faceModelMap[IState::EnemyState::HIT] = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_DamageFace.cmo", *fx);// 攻撃を受けた時の顔
-	m_faceModelMap[IState::EnemyState::ATTACK] = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_Face.cmo", *fx);// 攻撃時の顔
-	m_faceModelMap[IState::EnemyState::ANGRY] = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_AttackFace.cmo", *fx);// 怒り時の顔
-	m_faceModelMap[IState::EnemyState::IDLING] = DirectX::Model::CreateFromCMO(device, L"Resources/Models/Enemy/Enemy_IdlingHead.cmo", *fx);// 徘徊時の顔
+	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pPixelShader.ReleaseAndGetAddressOf()));// シェーダーを作成
+	m_bodyModel = m_pCommonResources->GetModelManager()->GetModel("VerticalAttacker");// モデルマネージャーから垂直攻撃敵のモデルを取得
+	m_pFaceModelMap[IState::EnemyState::HIT] = m_pCommonResources->GetModelManager()->GetModel("EnemyDamage");// モデルマネージャーからダメージ顔モデルを取得
+	m_pFaceModelMap[IState::EnemyState::ATTACK] = m_pCommonResources->GetModelManager()->GetModel("EnemyAttack");// モデルマネージャーから攻撃顔モデルを取得
+	m_pFaceModelMap[IState::EnemyState::ANGRY] = m_pCommonResources->GetModelManager()->GetModel("EnemyAttack");// モデルマネージャーから攻撃顔モデルを取得
+	m_pFaceModelMap[IState::EnemyState::IDLING] = m_pCommonResources->GetModelManager()->GetModel("EnemyIdling");// モデルマネージャーから攻撃顔モデルを取得
 }
 /*
 *	@brief	描画する
@@ -66,9 +63,9 @@ void VerticalAttackerModel::Render(ID3D11DeviceContext1* context,
 			context->OMSetBlendState(states->Opaque(), nullptr, 0xffffffff);// ブレンドステート
 			context->OMSetDepthStencilState(states->DepthNone(), 0);// 深度ステンシルステート
 			context->RSSetState(states->CullNone());	// カリング
-			context->PSSetShader(m_pixelShader.Get(), nullptr, 0);// ピクセルシェーダー設定
+			context->PSSetShader(m_pPixelShader.Get(), nullptr, 0);// ピクセルシェーダー設定
 		});
-	auto it = m_faceModelMap.find(m_nowState);// ステートによって顔のモデルを変更
-	if (it != m_faceModelMap.end() && it->second)// マップに存在する場合
+	auto it = m_pFaceModelMap.find(m_nowState);// ステートによって顔のモデルを変更
+	if (it != m_pFaceModelMap.end() && it->second)// マップに存在する場合
 		it->second->Draw(context, *states, world, view, proj);// 顔のモデルを描画
 }

@@ -17,11 +17,11 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC>  EnemyHPBar::INPUT_LAYOUT =
 };
 /*
 *	@brief	コンストラクタ
-*	@param[in]	なし
+*	@param	なし
 *	@return なし
 */
 EnemyHPBar::EnemyHPBar()
-	: m_commonResources{}// 共通リソース
+	: m_pCommonResources{}// 共通リソース
 	, m_maxHP(100)// 敵の最大HP
 	, m_currentHP(100)// 敵の現在HP
 	, m_displayedHP(100)// 敵の表示HP
@@ -54,52 +54,52 @@ EnemyHPBar::~EnemyHPBar() {/*do nothing*/ }
 
 /*
 *	@brief	画像を読み込む
-*	@param[in]	const wchar_t*　path	画像のパス
+*	@param	const wchar_t*　path	画像のパス
 *	@return なし
 */
 void EnemyHPBar::LoadTexture(const wchar_t* path)
 {
-	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
+	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;// テクスチャを格納するポインタ
 	DirectX::CreateWICTextureFromFile(device, path, nullptr, texture.ReleaseAndGetAddressOf());// テクスチャを読み込む
 	m_gaugeTexture.push_back(texture);// テクスチャを格納する
 }
 /*
 *	@brief	シェーダーを作成する
-*	@param[in]	なし
+*	@param	なし
 *	@return なし
 */
 void EnemyHPBar::CreateShaders()
 {
-	m_pCreateShader->Initialize(m_commonResources->GetDeviceResources()->GetD3DDevice(),
+	m_pCreateShader->Initialize(m_pCommonResources->GetDeviceResources()->GetD3DDevice(),
 		&INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);// シェーダー作成クラスの初期化
-	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/EnemyHP/VS_EnemyHP.cso", m_vertexShader);// 頂点シェーダー作成
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/EnemyHP/PS_EnemyHP.cso", m_pixelShader);// ピクセルシェーダー作成
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/EnemyHP/VS_EnemyHP.cso", m_pVertexShader);// 頂点シェーダー作成
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/EnemyHP/PS_EnemyHP.cso", m_pPixelShader);// ピクセルシェーダー作成
 	m_pInputLayout = m_pCreateShader->GetInputLayout();	// インプットレイアウトを受け取る
-	m_pCreateShader->CreateConstantBuffer(m_CBuffer, sizeof(ConstBuffer));	//	シェーダーにデータを渡すためのコンスタントバッファ生成
+	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));	//	シェーダーにデータを渡すためのコンスタントバッファ生成
 	// シェーダーの構造体にシェーダーを渡す
-	m_shaders.vs = m_vertexShader.Get();// 頂点シェーダー
-	m_shaders.ps = m_pixelShader.Get();// ピクセルシェーダー
+	m_shaders.vs = m_pVertexShader.Get();// 頂点シェーダー
+	m_shaders.ps = m_pPixelShader.Get();// ピクセルシェーダー
 	m_shaders.gs = nullptr;// ジオメトリシェーダー(使わないのでnullptr)
 }
 /*
 *	@brief	初期化
-*	@param[in]	CommonResources* resources	共通リソース
+*	@param	CommonResources* resources	共通リソース
 *	@return なし
 */
 void EnemyHPBar::Initialize(CommonResources* resources)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	m_commonResources = resources;// 共通リソースを取得
-	m_pDrawPolygon->InitializePositionTexture(m_commonResources->GetDeviceResources());	// 板ポリゴン描画用クラスの初期化
+	m_pCommonResources = resources;// 共通リソースを取得
+	m_pDrawPolygon->InitializePositionTexture(m_pCommonResources->GetDeviceResources());	// 板ポリゴン描画用クラスの初期化
 	CreateShaders();	// シェーダーの作成
 	LoadTexture(L"Resources/Textures/EnemyHPBar.png");// テクスチャ読み込み
 	m_displayedHP = (float)(m_maxHP);// 初期HP
 }
 /*
 *	@brief	更新
-*	@param[in]	float elapsedTime	経過時間
+*	@param	float elapsedTime	経過時間
 *	@return なし
 */
 void EnemyHPBar::Update(float elapsedTime)
@@ -119,10 +119,10 @@ void EnemyHPBar::Update(float elapsedTime)
 }
 /*
 *	@brief	描画
-*	@param[in]	DirectX::SimpleMath::Matrix view	ビュー行列
-*	@param[in]	DirectX::SimpleMath::Matrix proj	プロジェクション行列
-*	@param[in]	DirectX::SimpleMath::Vector3 pos	座標
-*	@param[in]	DirectX::SimpleMath::Vector3 rot	回転
+*	@param	DirectX::SimpleMath::Matrix view	ビュー行列
+*	@param	DirectX::SimpleMath::Matrix proj	プロジェクション行列
+*	@param	DirectX::SimpleMath::Vector3 pos	座標
+*	@param	DirectX::SimpleMath::Vector3 rot	回転
 *	@return なし
 */
 void EnemyHPBar::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj,
@@ -165,15 +165,15 @@ void EnemyHPBar::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::M
 
 /*
 *	@brief	シェーダーに渡すバッファを作成
-*	@param[in]	なし
+*	@param	なし
 *	@return なし
 */
 void EnemyHPBar::CreateBuffer()
 {
 	using namespace DirectX::SimpleMath;
 	m_constBuffer.hp = Vector4(float(m_currentHP), float(m_maxHP), 0, 0);	// 時間設定
-	m_pDrawPolygon->UpdateSubResources(m_CBuffer.Get(), &m_constBuffer);	// 受け渡し用バッファの内容更新
-	ID3D11Buffer* cb[1] = { m_CBuffer.Get() };	// シェーダーにバッファを渡す
+	m_pDrawPolygon->UpdateSubResources(m_pCBuffer.Get(), &m_constBuffer);	// 受け渡し用バッファの内容更新
+	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };	// シェーダーにバッファを渡す
 	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);	// 頂点シェーダもピクセルシェーダも、同じ値を渡す
 	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);	// シェーダをセットする
 

@@ -35,11 +35,11 @@ public:
 		DirectX::SimpleMath::Matrix proj)override;
 private:
 	// private変数
-	CommonResources* m_commonResources;	// 共通リソース
+	CommonResources* m_pCommonResources;	// 共通リソース
 	// モデル
-	std::unique_ptr<DirectX::Model> m_bodyModel;//胴体
-	std::unordered_map<IState::EnemyState, std::unique_ptr<DirectX::Model>> m_faceModelMap;// 表情によって変わる顔のモデルのマップ
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;	// モデルの影用のピクセルシェーダー
+	DirectX::Model* m_bodyModel;//胴体
+	std::unordered_map<IState::EnemyState, DirectX::Model*> m_pFaceModelMap;// 表情によって変わる顔のモデルのマップ
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;	// モデルの影用のピクセルシェーダー
 	IState::EnemyState m_nowState;	// 現在のステータス
 };
 #endif //AREA_ATTACKER_MODEL_DEFINED

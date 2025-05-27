@@ -13,12 +13,12 @@ using namespace DirectX::SimpleMath;
 
 /*
 *	@brief	コンストラクタ
-*	@param[in] pBoss		ボスベースのポインタ
-*	@param[in] resources	共通リソース
+*	@param pBoss		ボスベースのポインタ
+*	@param resources	共通リソース
 *	@return	なし
 */
 LastBoss::LastBoss(BossBase* pBoss, CommonResources* commonResources)
-	: m_commonResources(commonResources)// 共通リソース
+	: m_pCommonResources(commonResources)// 共通リソース
 	, m_pBossBase(pBoss)// ボスのポインタ
 	, m_bossBS{}// 境界球の初期化
 	, m_time(0.0f)// 時間
@@ -41,7 +41,7 @@ LastBoss::~LastBoss() {  }
 void LastBoss::Initialize()
 {
 	m_pBossModel = std::make_unique<LastBossModel>();	// ラスボスモデル生成
-	m_pBossModel->Initialize(m_commonResources);// ラスボスモデル初期化 
+	m_pBossModel->Initialize(m_pCommonResources);// ラスボスモデル初期化 
 	m_position = EnemyParameters::INITIAL_LASTBOSS_POSITION;// ラスボスの初期位置を設定
 	m_pBossBase->SetPosition(m_position);// ベースクラスに初期位置を設定
 	m_pBossBase->SetDefaultHitRadius(EnemyParameters::NORMAL_LASTBOSS_RADIUS);// 通常時のラスボスの当たり判定を設定
@@ -72,14 +72,14 @@ void LastBoss::ChangeState()
 }
 /*
 *	@brief	描画処理
-*	@param[in] view ビュー行列
-*	@param[in] proj プロジェクション行列
+*	@param view ビュー行列
+*	@param proj プロジェクション行列
 *	@return	なし
 */
 void LastBoss::Draw(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキスト
-	auto states = m_commonResources->GetCommonStates();// ステート
+	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキスト
+	auto states = m_pCommonResources->GetCommonStates();// ステート
 	// ワールド行列を設定
 	Matrix enemyWorld = Matrix::CreateScale(m_pBossBase->GetScale())// スケール
 		* Matrix::CreateFromQuaternion(m_pBossBase->GetQuaternion())// 回転
