@@ -38,7 +38,6 @@ void ModelManager::Initialize()
 	m_pDevice = m_pCommonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
 	m_pEffectFactory = std::make_unique<DirectX::EffectFactory>(m_pDevice);// エフェクトファクトリーの作成
 	m_pEffectFactory->SetSharing(false);// エフェクトの共有を無効にする
-	CreateSkyModels(); // 空モデルの作成
 	CreateBulletModels(); // 弾モデルの作成
 	CreateEnemyModels(); // 敵モデルの作成
 	CreateVerticalAttackerModels(); // 垂直攻撃敵モデルの作成
@@ -46,23 +45,7 @@ void ModelManager::Initialize()
 	CreateLastBossModels(); // ラスボスモデルの作成
 	CreateBarrierModels(); // バリアモデルの作成
 }
-/*
-*	@brief 空モデルの作成
-*	@details ステージに応じた空のモデルを作成する
-*	@param なし
-*	@return なし
-*/
-void ModelManager::CreateSkyModels()
-{
-	//m_pEffectFactory->ReleaseCache();// キャッシュを解放する
-	m_pEffectFactory->SetDirectory(L"Resources/Models/sky");// モデルのディレクトリを指定
-	m_pModelMap["Stage1"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/sky/sky.cmo", *m_pEffectFactory);// ステージ1の空モデルを読み込む
-	m_pModelMap["Stage2"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/sky/CloudySky.cmo", *m_pEffectFactory);// ステージ2の空モデルを読み込む
-	m_pModelMap["Stage3"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/sky/EveningSky.cmo", *m_pEffectFactory);// ステージ3の空モデルを読み込む
-	m_pModelMap["Stage4"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/sky/NightSky.cmo", *m_pEffectFactory);// ステージ4の空モデルを読み込む
-	m_pModelMap["Stage5"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/sky/MidNightSky.cmo", *m_pEffectFactory);// ステージ5の空モデルを読み込む
-	// モデルのエフェクトはすべて同じなので、渡した先で共通のエフェクトを設定する
-}
+
 /*
 *	@brief 弾モデルの作成
 *	@details プレイヤーと敵の弾モデルを作成し、エフェクトを設定する
@@ -174,3 +157,19 @@ DirectX::Model* ModelManager::GetModel(const std::string& key)
 	if (it != m_pModelMap.end())	return it->second.get();// 見つかった場合はモデルを返す
 	return nullptr;// 見つからなかった場合はnullptrを返す
 }
+/*
+*	@brief 指定されたステージの空のモデルを作成して返す
+*	@details ステージIDに応じた空のモデルを取得する
+*	@param stageID ステージID
+*	@return 指定されたステージの空のモデルのポインタ。見つからない場合はnullptrを返す
+*/
+DirectX::Model* ModelManager::GetSkyModel(const std::string& stageID)
+{
+	auto it = m_skyModelPaths.find(stageID); // ステージIDに対応する空のモデルのパスを検索
+	if (it == m_skyModelPaths.end())	return nullptr; // 見つからなかった場合はnullptrを返す
+	m_pEffectFactory->SetDirectory(L"Resources/Models/sky");// モデルのディレクトリを指定
+	std::wstring wpath = ConvertToWString(it->second); // 文字列をワイド文字列に変換
+	m_pModelMap["Sky"] = DirectX::Model::CreateFromCMO(m_pDevice, wpath.c_str(), *m_pEffectFactory); // モデルを保持
+	return m_pModelMap["Sky"].get(); // モデルを返す
+}
+std::wstring ModelManager::ConvertToWString(const std::string& str) { return std::wstring(str.begin(), str.end()); }

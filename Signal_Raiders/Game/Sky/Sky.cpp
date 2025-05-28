@@ -36,13 +36,9 @@ void Sky::Initialize(CommonResources* resources)
 	using namespace DirectX::SimpleMath;
 	assert(resources);// リソースがnullptrでないことを確認
 	m_pCommonResources = resources;// リソースを保存
-	//auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
-	//std::unique_ptr<EffectFactory> fx = std::make_unique<EffectFactory>(device);// モデルを読み込む準備
-	//fx->SetDirectory(L"Resources/models/sky");// モデルのディレクトリを設定
 	auto it = m_keyMap.find(m_stageID);// ステージIDに応じた空のモデルのパスを取得
 	Path = it->second; // ステージIDに応じた空のモデルのパスを保存
-	if (it != m_keyMap.end()) // マップの要素が見つかった場合
-		m_pModel = m_pCommonResources->GetModelManager()->GetModel(Path); // モデルマネージャーからモデルを取得
+	m_pModel = m_pCommonResources->GetModelManager()->GetSkyModel(Path);
 	m_pModel->UpdateEffects([](DirectX::IEffect* effect)	// モデルのエフェクト情報を更新する
 		{
 			BasicEffect* basicEffect = dynamic_cast<BasicEffect*>(effect);// ベーシックエフェクトを設定する
@@ -53,6 +49,7 @@ void Sky::Initialize(CommonResources* resources)
 			basicEffect->SetEmissiveColor(Colors::White);// エミッシブカラーを設定する
 		}
 	);
+
 }
 /*
 *	@brief	描画
@@ -72,14 +69,9 @@ void Sky::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix p
 	auto states = m_pCommonResources->GetCommonStates();// 共通ステートを取得
 	world *= Matrix::CreateTranslation(pos);// ワールド行列を更新
 	m_pModel->Draw(context, *states, world, view, proj);// モデルを描画する
+#ifdef _DEBUG
 	auto debugString = m_pCommonResources->GetDebugString();// デバッグ情報を表示する
 	debugString->AddString("Sky StageID: %d", m_stageID);// ステージIDをデバッグ情報に追加
 	debugString->AddString("Sky Path: %s", Path.c_str());// パスをデバッグ情報に追加
+#endif
 }
-/*
-*	@brief	文字列変換
-*	@details 文字列をワイド文字列に変換する
-*	@param str 変換する文字列
-*	@return ワイド文字列
-*/
-std::wstring Sky::ConvertToWString(const std::string& str) { return std::wstring(str.begin(), str.end()); }

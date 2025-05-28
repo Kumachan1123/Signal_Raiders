@@ -34,8 +34,6 @@ public:// public関数
 		DirectX::SimpleMath::Matrix world,
 		DirectX::SimpleMath::Vector3 pos
 	);
-private:
-	std::wstring ConvertToWString(const std::string& str);// 文字列変換
 private:// private定数
 	const std::unordered_map<int, const std::string> m_keyMap =// ステージ番号に応じた空のモデルのKey
 	{
