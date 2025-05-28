@@ -24,8 +24,6 @@ Wifi::Wifi()
 	, m_network{}// スキャン結果
 	, m_ssid{}// SSID
 	, m_converter{}// wstringをstringに変換するための変数
-	, m_output{ nullptr }// 出力用クラス
-	, m_memory{ nullptr }// メモリ解放用クラス
 	, m_isGotCurrentWifiInfo(false)// 現在接続しているWi-Fi情報を取得済みか
 	, m_time(0.0f)// Wi-Fi取得時間
 {
@@ -37,17 +35,7 @@ Wifi::Wifi()
 *	@return なし
 */
 Wifi::~Wifi() {/*do nothing*/ }
-/*
-*	@brief 初期化処理
-*	@details Wi-Fiクラスの初期化処理
-*	@param なし
-*	@return なし
-*/
-void Wifi::Initialize()
-{
-	m_output = std::make_unique<Output>();// 出力用クラスの初期化
-	m_memory = std::make_unique<ReleaseMemory>();// メモリ解放用クラスの初期化
-}
+
 /*
 *	@brief 更新処理
 *	@details Wi-Fiクラスの更新処理
@@ -66,8 +54,6 @@ void Wifi::Update(float elapsedTime)
 	ClearExportInfo();// 表示準備
 	ProcessingScanResults();// スキャン結果の処理
 	std::sort(m_networkInfos.begin(), m_networkInfos.end(), CompareBySignalQuality());// 電波の強さでソート
-	m_output->SetInformation(m_networkInfos);// ソート後の情報を表示
-	m_output->DisplayInformation(m_networkInfos);// 情報を表示
 	m_time += elapsedTime;// 時間を加算
 	if (m_dwResult != ERROR_SUCCESS)// Wi-Fiを取得できない状態の時
 	{
@@ -108,7 +94,7 @@ void Wifi::Update(float elapsedTime)
 				break;// ループを抜ける
 			}
 			int ssidLength = (int)(networkInfo.ssid.length());// ssidの文字数を可変長配列に登録
-			int ssidValue = m_output->ConvertSsidToInt(networkInfo.ssid);// ssidの文字のASCIIコードの合計を可変長配列に登録
+			int ssidValue = ConvertSsidToInt(networkInfo.ssid);// ssidの文字のASCIIコードの合計を可変長配列に登録
 			int enemyType = (ssidValue * ssidLength) % ENEMY_TYPE_MAX;// (文字数×文字のASCIIコードの合計)/ENEMY_TYPE_MAXの余りを敵の種類に変換
 			m_preWifilevels.push_back(networkInfo.signalQuality);// 電波の強さを可変長配列に登録
 			m_preEnemyTypes.push_back(enemyType);// 敵の種類を設定	
@@ -126,7 +112,10 @@ void Wifi::Update(float elapsedTime)
 void Wifi::Clear()
 {
 	if (m_dwResult != ERROR_SUCCESS || m_time >= WiFiParameters::MAX_TIME)return;// 五秒経ったら更新終了
-	m_memory->FreeMemoryAndCloseHandle(m_pInterfaceList, m_hClient, m_networkInfos, m_exportSSIDs);// メモリの解放
+	WlanFreeMemory(m_pInterfaceList);// インターフェースリストのメモリを解放
+	WlanCloseHandle(m_hClient, NULL);// ハンドルをクローズ
+	m_networkInfos.clear();// Wi-Fi情報を格納する可変長配列をクリア
+	m_exportSSIDs.clear();// 表示済みSSIDのセットをクリア
 	m_preWifilevels.clear();// 電波の強さをクリア
 	m_preEnemyTypes.clear();// 敵の種類をクリア
 }
@@ -181,7 +170,6 @@ void Wifi::GetInterfacesList()
 */
 void Wifi::StartScan()
 {
-
 	m_dwResult = WlanScan(// 指定したインターフェースでWi-Fiスキャンを開始
 		m_hClient, // Wi-Fiクライアントのハンドル
 		&m_pInterfaceList->InterfaceInfo[0].InterfaceGuid, // 使用するアダプタのGUID
@@ -232,7 +220,6 @@ void Wifi::ClearExportInfo()
 */
 void Wifi::GetCurrentWifiInfo()
 {
-
 	if (m_isGotCurrentWifiInfo)return;// すでに取得済みなら終了
 	PWLAN_CONNECTION_ATTRIBUTES pConnectInfo = NULL;// 接続情報のポインター
 	DWORD connectInfoSize = 0;// 接続情報のサイズ
@@ -292,4 +279,15 @@ void Wifi::ProcessingScanResults()
 		m_networkInfos.push_back(networkInfo); // ネットワーク情報をベクターに追加
 	}
 }
-
+/*
+*	@brief SSIDを無理やり数値に変換する関数
+*	@details SSIDを無理やり数値に変換する関数（各文字のASCIIコードの合計）
+*	@param ssid SSID
+*	@return 変換した数値
+*/
+int Wifi::ConvertSsidToInt(const std::string& ssid)
+{
+	int sum = 0;// 合計値
+	for (char c : ssid)sum += static_cast<int>(c); // 文字ごとのASCIIコードを合計
+	return abs(sum);// 合計値を絶対値に変換して返す
+}

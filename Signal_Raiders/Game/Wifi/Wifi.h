@@ -10,8 +10,6 @@
 // 自作ヘッダーファイル
 #include "Game/CommonResources.h"
 #include "Game/Wifi/Interface/IWifiParts.h"
-#include "Game/Wifi/Output/Output.h"
-#include "Game/Wifi/ReleaseMemory/ReleaseMemory.h"
 #include "Game/Wifi/Wifi.h"
 #include "Game/Wifi/Parameters/WiFiParameters.h"
 // 前方宣言
@@ -61,7 +59,6 @@ public:// アクセサ
 public:// public関数
 	Wifi();// コンストラクタ
 	~Wifi();// デストラクタ
-	void Initialize();// 初期化処理
 	void Update(float elapsedTime);// 更新処理
 	void Clear();// クリア
 private:// private関数
@@ -73,12 +70,9 @@ private:// private関数
 	void ClearExportInfo();// 表示準備
 	void GetCurrentWifiInfo();// 現在接続しているWi-Fi情報を取得
 	void ProcessingScanResults();// スキャン結果の処理
+	int ConvertSsidToInt(const std::string& ssid);// SSIDを無理やり数値に変換する関数（各文字のASCIIコードの合計）
 private:// private変数
 
-	// 出力用クラス
-	std::unique_ptr<Output> m_output;
-	// メモリ解放用クラス
-	std::unique_ptr<ReleaseMemory> m_memory;
 	// 最大のクライアント数
 	DWORD  m_dwMaxClient;
 	// クライアントハンドル

@@ -38,7 +38,6 @@ EnemyManager::EnemyManager(CommonResources* pCommonResources)
 
 {
 	m_pWifi = std::make_unique<Wifi>();	// Wi-Fiクラスを生成
-	m_pWifi->Initialize();// 初期化
 }
 /*
 *	@brief	デストラクタ

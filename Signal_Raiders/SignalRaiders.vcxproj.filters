@@ -183,12 +183,6 @@
     <ClInclude Include="Game\Wifi\Interface\IWifiParts.h">
       <Filter>Game\Wi-Fi\IWifiParts</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Wifi\Output\Output.h">
-      <Filter>Game\Wi-Fi\Output</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Wifi\ReleaseMemory\ReleaseMemory.h">
-      <Filter>Game\Wi-Fi\ReleaseMemory</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Wifi\Wifi.h">
       <Filter>Game\Wi-Fi</Filter>
     </ClInclude>
@@ -344,12 +338,6 @@
     </ClCompile>
     <ClCompile Include="Game\Player\PlayerController\PlayerController.cpp">
       <Filter>Game\Player\PlayerController</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Wifi\Output\Output.cpp">
-      <Filter>Game\Wi-Fi\Output</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Wifi\ReleaseMemory\ReleaseMemory.cpp">
-      <Filter>Game\Wi-Fi\ReleaseMemory</Filter>
     </ClCompile>
     <ClCompile Include="Game\Wifi\Wifi.cpp">
       <Filter>Game\Wi-Fi</Filter>

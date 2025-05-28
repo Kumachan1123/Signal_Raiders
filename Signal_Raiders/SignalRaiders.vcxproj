@@ -285,9 +285,7 @@
     <ClInclude Include="Game\KumachiLib\KumachiLib.h" />
     <ClInclude Include="Game\UI\UI.h" />
     <ClInclude Include="Game\Wifi\Interface\IWifiParts.h" />
-    <ClInclude Include="Game\Wifi\Output\Output.h" />
     <ClInclude Include="Game\Wifi\Parameters\WiFiParameters.h" />
-    <ClInclude Include="Game\Wifi\ReleaseMemory\ReleaseMemory.h" />
     <ClInclude Include="Game\Wifi\Wifi.h" />
     <ClInclude Include="Libraries\Microsoft\DebugDraw.h" />
     <ClInclude Include="Libraries\Microsoft\ReadData.h" />
@@ -382,8 +380,6 @@
     <ClCompile Include="Game\Stage\Stage.cpp" />
     <ClCompile Include="Game\Stage\Wall\Wall.cpp" />
     <ClCompile Include="Game\UI\UI.cpp" />
-    <ClCompile Include="Game\Wifi\Output\Output.cpp" />
-    <ClCompile Include="Game\Wifi\ReleaseMemory\ReleaseMemory.cpp" />
     <ClCompile Include="Game\Wifi\Wifi.cpp" />
     <ClCompile Include="Libraries\Microsoft\DebugDraw.cpp" />
     <ClCompile Include="Libraries\MyLib\DebugCamera.cpp" />
