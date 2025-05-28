@@ -31,6 +31,7 @@ EnemyManager::EnemyManager(CommonResources* pCommonResources)
 	, m_startTime{ 0.0f }// ゲーム開始時間
 	, m_bossBornWaitTime{ 0.0f }// ボス生成待機時間
 	, m_pWifi{ nullptr }	// Wi-Fi
+	, m_wifiThread{}	// Wi-Fiを取得するためのスレッド
 	, m_pWall{ nullptr }// 壁
 	, m_pPlayer{ nullptr }// プレイヤー
 	, m_pBulletManager{ nullptr }// 弾マネージャー
@@ -67,7 +68,6 @@ void EnemyManager::Update(float elapsedTime)
 {
 	UpdateStartTime(elapsedTime);	// ゲーム開始時間を更新
 	m_pWifi->Update(elapsedTime);	// Wi-Fiの更新
-	//m_pWifi->Clear(); // Wi-Fiのクリア
 	UpdateEffects(elapsedTime);	// エフェクトの更新
 	HandleEnemySpawning(elapsedTime);	// 敵の生成処理
 	HandleEnemyCollisions();	// 敵同士の当たり判定

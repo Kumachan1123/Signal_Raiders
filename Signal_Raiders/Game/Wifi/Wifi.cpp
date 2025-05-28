@@ -51,7 +51,7 @@ void Wifi::Update(float elapsedTime)
 	StartScan();// スキャンの開始
 	GetScanResults();// スキャン結果の取得
 	GetCurrentWifiInfo();// 現在接続しているWi-Fi情報を取得
-	ClearExportInfo();// 表示準備
+	ClearExportInfo();// 出力準備
 	ProcessingScanResults();// スキャン結果の処理
 	std::sort(m_networkInfos.begin(), m_networkInfos.end(), CompareBySignalQuality());// 電波の強さでソート
 	m_time += elapsedTime;// 時間を加算
@@ -88,7 +88,7 @@ void Wifi::Update(float elapsedTime)
 		// 以下、正常にWi-Fiを取得できた場合
 		for (const auto& networkInfo : m_networkInfos)// 取得した数だけ繰り返す
 		{
-			if (m_time >= WiFiParameters::MAX_TIME)// 五秒経ったら更新終了
+			if (m_time >= WiFiParameters::MAX_TIME)// 一定期間経ったら更新終了
 			{
 				m_time = WiFiParameters::MAX_TIME;// 時間を最大値に固定
 				break;// ループを抜ける

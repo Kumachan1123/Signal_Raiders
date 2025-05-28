@@ -7,6 +7,7 @@
 #include <cassert>
 #include <memory>
 #include <vector>
+#include <thread>
 // DirectX
 #include <SimpleMath.h>
 #include <DeviceResources.h>
@@ -138,6 +139,8 @@ private:
 	int m_specialAttackCount;
 	// wi-fi
 	std::unique_ptr<Wifi> m_pWifi;
+	// Wi-Fiを取得するためのスレッド
+	std::thread m_wifiThread;
 	// プレイヤー(コントローラー)
 	Player* m_pPlayer;
 	// 弾マネージャー（プレイシーンから受け取る）
