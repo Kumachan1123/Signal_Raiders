@@ -67,13 +67,13 @@ void EnemyManager::Update(float elapsedTime)
 {
 	UpdateStartTime(elapsedTime);	// ゲーム開始時間を更新
 	m_pWifi->Update(elapsedTime);	// Wi-Fiの更新
+	//m_pWifi->Clear(); // Wi-Fiのクリア
 	UpdateEffects(elapsedTime);	// エフェクトの更新
 	HandleEnemySpawning(elapsedTime);	// 敵の生成処理
 	HandleEnemyCollisions();	// 敵同士の当たり判定
 	UpdateEnemies(elapsedTime);	// 敵とプレイヤーの当たり判定
 	HandleWallCollision();	// 敵と壁の当たり判定
 	RemoveDeadEnemies();	// ザコ敵の削除処理
-	m_pWifi->Clear(); // Wi-Fiのクリア
 }
 /*
 *	@brief	描画

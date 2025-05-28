@@ -102,6 +102,7 @@ void Wifi::Update(float elapsedTime)
 			m_enemyTypes = m_preEnemyTypes;// 敵の種類を可変長配列に登録
 		}
 	}
+	Clear();// 各種ポインターをクリア
 }
 /*
 *	@brief	クリア
