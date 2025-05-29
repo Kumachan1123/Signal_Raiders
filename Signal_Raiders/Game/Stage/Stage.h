@@ -35,8 +35,6 @@ public:// 定数
 private:// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
-	// モデル
-	std::unique_ptr<DirectX::Model> m_model;
-	// テクスチャパス
-	wchar_t m_texturePath[256];
+	// モデルポインタ
+	DirectX::Model* m_pModel;
 };

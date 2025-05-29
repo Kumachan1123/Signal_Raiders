@@ -31,6 +31,7 @@ private:
 	void CreateBossModels(); // ボスモデルの作成
 	void CreateLastBossModels(); // ラスボスモデルの作成
 	void CreateBarrierModels(); // バリアモデルの作成
+	void CreateStageModels(); // ステージモデルの作成
 private:// 定数
 	const std::unordered_map<std::string, std::string> m_skyModelPaths = // 空モデルのパス
 	{

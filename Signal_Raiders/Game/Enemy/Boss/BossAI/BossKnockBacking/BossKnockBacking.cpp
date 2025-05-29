@@ -87,4 +87,3 @@ void BossKnockBacking::Update(float elapsedTime)
 	m_pBoss->SetVelocity(m_velocity);// 速度をセット
 	m_pBoss->SetRotation(m_rotation);// 回転をセット
 }
-

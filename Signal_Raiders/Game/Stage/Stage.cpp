@@ -1,6 +1,6 @@
 /*
-	@file	Sky.cpp
-	@brief	スカイクラス
+*	@file	Stage.cpp
+*	@brief	ステージクラス
 */
 #include <pch.h>
 #include "Stage.h"
@@ -15,8 +15,7 @@ const float Stage::STAGE_HEIGHT = 3.0f;	// ステージの高さ
 */
 Stage::Stage()
 	: m_pCommonResources{}
-	, m_model{}
-	, m_texturePath{}
+	, m_pModel{}
 {
 }
 /*
@@ -38,22 +37,7 @@ void Stage::Initialize(CommonResources* resources)
 	using namespace DirectX::SimpleMath;
 	assert(resources);// リソースがnullptrでないことを確認
 	m_pCommonResources = resources;// リソースを保存
-	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
-	std::unique_ptr<EffectFactory> fx = std::make_unique<EffectFactory>(device);// モデルを読み込む準備
-	fx->SetDirectory(L"Resources/models/Stage");// モデルのディレクトリを設定
-	wcscpy_s(m_texturePath, L"Resources/models/Stage/Stage.cmo");//テクスチャパスを設定する
-	m_model = Model::CreateFromCMO(device, m_texturePath, *fx);// モデルを読み込む
-	m_model->UpdateEffects([](DirectX::IEffect* effect)	// モデルのエフェクト情報を更新する
-		{
-
-			BasicEffect* basicEffect = dynamic_cast<BasicEffect*>(effect);// ベーシックエフェクトを設定する
-			if (!basicEffect)return;// エフェクトがnullptrの場合は処理を終える
-			basicEffect->SetLightEnabled(0, false);// ライトを無効にする
-			basicEffect->SetLightEnabled(1, false);// ライトを無効にする
-			basicEffect->SetLightEnabled(2, false);// ライトを無効にする
-			basicEffect->SetEmissiveColor(Colors::White);// モデルを自発光させる
-		}
-	);
+	m_pModel = m_pCommonResources->GetModelManager()->GetModel("Stage");// モデルマネージャーからステージモデルを取得
 }
 /*
 *	@brief	描画
@@ -72,5 +56,5 @@ void Stage::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストを取得
 	auto states = m_pCommonResources->GetCommonStates();// 共通ステートを取得
 	world *= Matrix::CreateTranslation(pos);// ワールド行列を更新
-	m_model->Draw(context, *states, world, view, proj);// モデルを描画する
+	m_pModel->Draw(context, *states, world, view, proj);// モデルを描画する
 }

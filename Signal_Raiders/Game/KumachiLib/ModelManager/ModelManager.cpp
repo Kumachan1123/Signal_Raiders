@@ -8,6 +8,8 @@
 /*
 *	@brief コンストラクタ
 *	@details モデルマネージャークラスのコンストラクタ
+*	@param なし
+*	@return なし
 */
 ModelManager::ModelManager()
 	: m_pCommonResources(nullptr) // 共通リソース
@@ -19,6 +21,7 @@ ModelManager::ModelManager()
 /*
 *	@brief デストラクタ
 *	@details モデルマネージャークラスのデストラクタ
+*	@param なし
 *	@return なし
 */
 ModelManager::~ModelManager()
@@ -31,6 +34,7 @@ ModelManager::~ModelManager()
 /*
 *	@brief モデルの初期化
 *	@details 各種モデルのロードとエフェクトの設定を行う
+*	@param なし
 *	@return なし
 */
 void ModelManager::Initialize()
@@ -44,6 +48,7 @@ void ModelManager::Initialize()
 	CreateBossModels(); // ボスモデルの作成
 	CreateLastBossModels(); // ラスボスモデルの作成
 	CreateBarrierModels(); // バリアモデルの作成
+	CreateStageModels(); // ステージモデルの作成
 }
 
 /*
@@ -140,6 +145,27 @@ void ModelManager::CreateBarrierModels()
 	m_pModelMap["Barrier"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/Boss_Barrier.cmo", *m_pEffectFactory);// ボスのバリアモデルを読み込む
 }
 /*
+*	@brief ステージモデルの作成
+*	@details ステージのモデルを作成する
+*	@param なし
+*	@return なし
+*/
+void ModelManager::CreateStageModels()
+{
+	m_pEffectFactory->SetDirectory(L"Resources/models/Stage");// モデルのディレクトリを設定
+	m_pModelMap["Stage"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/models/Stage/Stage.cmo", *m_pEffectFactory);// ステージモデルを読み込む
+	m_pModelMap["Stage"]->UpdateEffects([](DirectX::IEffect* effect)	// モデルのエフェクト情報を更新する
+		{
+			auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);
+			if (!basicEffect)return;// エフェクトがnullptrの場合は処理を終える
+			basicEffect->SetLightEnabled(0, false);// ライトを無効にする
+			basicEffect->SetLightEnabled(1, false);// ライトを無効にする
+			basicEffect->SetLightEnabled(2, false);// ライトを無効にする
+			basicEffect->SetEmissiveColor(DirectX::Colors::White);// モデルを自発光させる
+		}
+	);
+}
+/*
 *	@brief モデルを取得する
 *	@details 指定されたキーに対応するモデルを取得する
 *	@param key モデルのキー
@@ -166,4 +192,10 @@ DirectX::Model* ModelManager::GetSkyModel(const std::string& stageID)
 	m_pModelMap["Sky"] = DirectX::Model::CreateFromCMO(m_pDevice, wpath.c_str(), *m_pEffectFactory); // モデルを保持
 	return m_pModelMap["Sky"].get(); // モデルを返す
 }
+/*
+*	@brief 文字列をワイド文字列に変換する
+*	@details std::stringをstd::wstringに変換する
+*	@param str 変換する文字列
+*	@return 変換後のワイド文字列
+*/
 std::wstring ModelManager::ConvertToWString(const std::string& str) { return std::wstring(str.begin(), str.end()); }
