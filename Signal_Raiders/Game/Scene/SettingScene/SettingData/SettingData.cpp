@@ -33,7 +33,7 @@ void SettingData::Load()
 {
 	using json = nlohmann::json;
 	using namespace std;
-	string filename = "Resources/Jsons/Setting.json";//読み込むファイルの名前を作成
+	string filename = "Resources/Setting/Setting.json";//読み込むファイルの名前を作成
 	ifstream ifs(filename.c_str());//ファイルを開く
 	if (ifs.good())// ファイルが正常に開けたら
 	{

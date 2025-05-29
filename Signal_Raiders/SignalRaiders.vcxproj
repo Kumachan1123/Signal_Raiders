@@ -202,7 +202,6 @@
     <ClInclude Include="Game\Interface\IPlayUI.h" />
     <ClInclude Include="Game\Interface\IUI.h" />
     <ClInclude Include="Game\KumachiLib\ModelManager\ModelManager.h" />
-    <ClInclude Include="Game\KumachiLib\TextureManager\TextureManager.h" />
     <ClInclude Include="Game\WarningEffect\WarningEffects\WarningEffects.h" />
     <ClInclude Include="Game\Enemy\Boss\BossSheild\BossSheild.h" />
     <ClInclude Include="Game\BulletManager\BulletManager.h" />
@@ -308,7 +307,6 @@
     <ClCompile Include="Game\Enemy\LastBoss\LastBoss.cpp" />
     <ClCompile Include="Game\Enemy\LastBoss\LastBossModel\LastBossModel.cpp" />
     <ClCompile Include="Game\KumachiLib\ModelManager\ModelManager.cpp" />
-    <ClCompile Include="Game\KumachiLib\TextureManager\TextureManager.cpp" />
     <ClCompile Include="Game\WarningEffect\WarningEffects\WarningEffects.cpp" />
     <ClCompile Include="Game\Enemy\Boss\BossSheild\BossSheild.cpp" />
     <ClCompile Include="Game\BulletManager\BulletManager.cpp" />
@@ -419,8 +417,6 @@
     <None Include="HLSL\Stage\Stage.hlsli" />
     <None Include="packages.config" />
     <None Include="HLSL\Menu\Menu.hlsli" />
-    <None Include="Resources\Jsons\Setting.json" />
-    <None Include="Resources\Jsons\Textures.json" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\BossAppear\PS_BossAppear.hlsl">

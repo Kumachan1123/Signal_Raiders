@@ -18,7 +18,6 @@ CommonResources::CommonResources()
 	, m_inputManager{ nullptr }		// 入力マネージャ
 	, m_audioManager{ nullptr }		// オーディオマネージャ
 	, m_modelManager{ nullptr }		// モデルマネージャ
-	, m_textureManager{ nullptr }	// テクスチャマネージャ
 {
 }
 /*
@@ -30,8 +29,6 @@ CommonResources::CommonResources()
 *	@param	debugString		受け渡しするデバッグ文字列
 *	@param	inputManager	受け渡しする入力マネージャ
 *	@param	audioManager	受け渡しするオーディオマネージャ
-*	@param	modelManager	受け渡しするモデルマネージャ
-*	@param	textureManager	受け渡しするテクスチャマネージャ
 *	@return	なし
 */
 void CommonResources::Initialize(
@@ -41,8 +38,7 @@ void CommonResources::Initialize(
 	mylib::DebugString* debugString,
 	mylib::InputManager* inputManager,
 	AudioManager* audioManager,
-	ModelManager* modelManager,
-	TextureManager* textureManager
+	ModelManager* modelManager
 )
 {
 	assert(timer);			// タイマーがnullptrでないことを確認
@@ -52,7 +48,6 @@ void CommonResources::Initialize(
 	assert(inputManager);	// 入力マネージャがnullptrでないことを確認
 	assert(audioManager);	// オーディオマネージャがnullptrでないことを確認
 	assert(modelManager);	// モデルマネージャがnullptrでないことを確認
-	assert(textureManager);	// テクスチャマネージャがnullptrでないことを確認
 
 	m_stepTimer = timer;			// タイマーを設定する
 	m_deviceResources = dr;			// デバイスリソースを設定する
@@ -61,5 +56,4 @@ void CommonResources::Initialize(
 	m_inputManager = inputManager;	// 入力マネージャを設定する
 	m_audioManager = audioManager;	// オーディオマネージャを設定する
 	m_modelManager = modelManager;	// モデルマネージャを設定する
-	m_textureManager = textureManager;	// テクスチャマネージャを設定する
 }
