@@ -67,7 +67,6 @@ void ModelManager::CreateBulletModels()
 			basicEffect->SetDiffuseColor(DirectX::Colors::SkyBlue);
 			basicEffect->SetEmissiveColor(DirectX::Colors::Cyan);
 		});// 自弾モデルのエフェクトを設定する
-	m_pEffectFactory->ReleaseCache();// キャッシュを解放する
 	m_pModelMap["EnemyBullet"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Bullet.cmo", *m_pEffectFactory);// 弾モデルを読み込む
 	m_pModelMap["EnemyBullet"]->UpdateEffects([&](DirectX::IEffect* effect)	// モデルのエフェクトを設定する
 		{
@@ -186,7 +185,7 @@ DirectX::Model* ModelManager::GetModel(const std::string& key)
 DirectX::Model* ModelManager::GetSkyModel(const std::string& stageID)
 {
 	auto it = m_skyModelPaths.find(stageID); // ステージIDに対応する空のモデルのパスを検索
-	if (it == m_skyModelPaths.end())	return nullptr; // 見つからなかった場合はnullptrを返す
+	if (it == m_skyModelPaths.end())return nullptr; // 見つからなかった場合はnullptrを返す
 	m_pEffectFactory->SetDirectory(L"Resources/Models/sky");// モデルのディレクトリを指定
 	std::wstring wpath = ConvertToWString(it->second); // 文字列をワイド文字列に変換
 	m_pModelMap["Sky"] = DirectX::Model::CreateFromCMO(m_pDevice, wpath.c_str(), *m_pEffectFactory); // モデルを保持

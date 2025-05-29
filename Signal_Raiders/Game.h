@@ -15,6 +15,7 @@
 #include "Game/Scene/SceneManager.h"
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/KumachiLib/ModelManager/ModelManager.h"
+#include "Game/KumachiLib/TextureManager/TextureManager.h"
 #include "Game/Screen.h"
 
 class Game final : public DX::IDeviceNotify
@@ -70,4 +71,6 @@ private:// private変数
 	std::unique_ptr<AudioManager>           m_audioManager;
 	// モデルマネージャ
 	std::unique_ptr<ModelManager>           m_modelManager;
+	// テクスチャマネージャ
+	std::unique_ptr<TextureManager>         m_textureManager;
 };

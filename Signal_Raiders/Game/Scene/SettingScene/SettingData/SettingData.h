@@ -7,7 +7,7 @@
 #include <string>
 #include <fstream>
 // ŠO•”ƒ‰ƒCƒuƒ‰ƒŠ
-#include "Libraries/nlohmann/json.hpp"
+#include "nlohmann/json.hpp"
 class SettingData
 {
 public:// publicŠÖ”
