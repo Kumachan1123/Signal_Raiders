@@ -62,13 +62,10 @@ public:
 	void Update(float elapsedTime); // 更新
 	void ChangeState(IState* newState); // 状態変更
 private:
-	// privateメンバ関数
-	void KnockBack(float elapsedTime); // ノックバック
-private:
 	// privateメンバ変数
-	std::unique_ptr<EnemyIdling> m_pEnemyIdling;	// 平常時
-	std::unique_ptr<EnemyAttack> m_pEnemyAttack;	// 攻撃時
-	std::unique_ptr<EnemySpin>	 m_pEnemySpin;		// スピン
+	std::unique_ptr<EnemyIdling> m_pEnemyIdling;		// 平常時
+	std::unique_ptr<EnemyAttack> m_pEnemyAttack;		// 攻撃時
+	std::unique_ptr<EnemySpin>	 m_pEnemySpin;			// スピン
 	IState* m_pCurrentState;	// 現在の状態
 	IState::EnemyState m_enemyState;// 敵の状態
 	IEnemy* m_pEnemy;	// 敵のポインター

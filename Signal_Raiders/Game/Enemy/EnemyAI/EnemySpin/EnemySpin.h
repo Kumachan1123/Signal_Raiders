@@ -35,13 +35,20 @@ public:
 	void Initialize() override;// 初期化
 	void Update(float elapsedTime) override;// 更新
 private:
+	void UpdateSpin(float elapsedTime);// スピンの更新
+	void UpdateKnockBack(float elapsedTime);// ノックバックの更新
+private:
 	EnemyAI* m_pEnemyAI;//敵AI
 	DirectX::SimpleMath::Vector3 m_position;//移動
 	DirectX::SimpleMath::Vector3 m_initialPosition;// 座標初期値
 	DirectX::SimpleMath::Vector3 m_scale;//サイズ
 	DirectX::SimpleMath::Quaternion m_rotation;//回転
 	DirectX::SimpleMath::Vector3 m_velocity;// 移動速度
+	DirectX::SimpleMath::Vector3 m_knockStartPosition;// ノックバック開始位置
+	DirectX::SimpleMath::Vector3 m_knockEndPosition;// ノックバック終了位置
+	DirectX::SimpleMath::Vector3 m_initialVelocity;// ノックバックの初期速度
 	float m_angle;//角度
 	float  m_time;  // 時間の初期化
+	float m_knockTime;// ノックバックする時間
 };
 #endif //ENEMY_SPIN_DEFINED

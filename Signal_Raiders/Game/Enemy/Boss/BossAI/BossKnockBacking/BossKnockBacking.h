@@ -59,5 +59,13 @@ private:
 	float  m_time;
 	// 角度
 	float m_angle;
+	// ノックバック時間
+	float m_knockTime;
+	// ノックバックの開始位置 
+	DirectX::SimpleMath::Vector3 m_knockStartPosition;
+	// ノックバックの終了位置
+	DirectX::SimpleMath::Vector3 m_knockEndPosition;
+	// ノックバックの初速度
+	DirectX::SimpleMath::Vector3 m_initialVelocity;
 };
 #endif //BOSS_KNOCKBACKING_DEFINED

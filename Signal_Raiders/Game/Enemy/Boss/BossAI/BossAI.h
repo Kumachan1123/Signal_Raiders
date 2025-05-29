@@ -48,6 +48,10 @@ public:
 	void SetHitPlayerBullet(bool hit) { m_isHitPlayerBullet = hit; }// プレイヤーの弾に当たったか設定
 	bool GetIsAttack()const { return m_pBoss->GetIsAttack(); }// 攻撃中か取得
 	void SetIsAttack(bool attack) { m_pBoss->SetIsAttack(attack); }// 攻撃中か設定
+	IState::EnemyState GetAttackState() const { return m_attackState; }// 攻撃時の表情差分を取得
+	void SetAttackState(IState::EnemyState state) { m_attackState = state; }// 攻撃時の表情差分を設定
+	bool GetIsKnockBack() const { return m_isKnockBack; }// ノックバックが完了したか取得
+	void SetIsKnockBack(bool isKnockBack) { m_isKnockBack = isKnockBack; }// ノックバックが完了したか設定
 public:
 	// public関数
 	BossAI(IEnemy* pBoss);// コンストラクタ
@@ -55,8 +59,6 @@ public:
 	void Initialize();// 初期化
 	void Update(float elapsedTime);// 更新
 	void ChangeState(IState* newState);// ステート変更
-private:// private関数
-	void KnockBack(float elapsedTime);// ノックバック
 private:// private変数
 	//攻撃時
 	std::unique_ptr<BossAttack> m_pBossAttack;

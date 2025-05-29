@@ -95,7 +95,8 @@ void EnemyAI::Update(float elapsedTime)
 	// プレイヤーの弾に当たった場合
 	if (m_pEnemy->GetEnemyHitByPlayerBullet())
 	{
-		KnockBack(elapsedTime);// ノックバックする
+		//KnockBack(elapsedTime);// ノックバックする
+		//ChangeState(m_pEnemyKnockBack.get());// ノックバック状態にする
 		ChangeState(m_pEnemySpin.get());//スピンする
 		m_enemyState = IState::EnemyState::HIT;// 攻撃を食らった状態にする
 		SetIsAttack(false);// 攻撃中でない
@@ -118,46 +119,3 @@ void EnemyAI::ChangeState(IState* newState)
 	}
 }
 
-
-/*
-*	@brief	ノックバック処理
-*	@details 敵がプレイヤーの弾に当たった時のノックバック処理
-*	@param	float elapsedTime　経過時間
-*	@return	なし
-*/
-void EnemyAI::KnockBack(float elapsedTime)
-{
-	using namespace DirectX::SimpleMath;
-	// ノックバックが始まったばかりなら初期設定を行う
-	if (m_knockTime == 0.0f)
-	{
-		m_knockStartPosition = m_position; // ノックバック開始位置
-		Vector3 knockBackDirection = (m_position - m_pEnemy->GetPlayer()->GetPlayerPos()); // プレイヤーから敵への方向ベクトル
-		knockBackDirection.Normalize(); // 正規化して方向ベクトルにする
-		m_knockEndPosition = m_position + knockBackDirection; // ノックバック終了位置
-		m_initialVelocity = knockBackDirection * EnemyParameters::FIXED_INITIAL_SPEED; // 初期速度
-		m_pEnemy->SetCanAttack(false);// 攻撃不可能にする
-	}
-	// ノックバック時間の更新
-	m_knockTime += elapsedTime;
-	// ノックバックの進行度
-	float Progression = std::min(m_knockTime / EnemyParameters::KNOCKBACK_DURATION, EnemyParameters::KNOCKBACK_PROGRESS_MAX);
-	// 減衰係数の計算（指数関数的減衰）
-	float decayFactor = std::exp(EnemyParameters::KNOCKBACK_DECAY_RATE * Progression); // 減衰速度を調整するために指数のベースを調整
-	// 減衰した速度を使って位置を更新
-	Vector3 velocity = m_initialVelocity * decayFactor;
-	m_position += velocity * elapsedTime; // ノックバックの位置を更新
-	if (GetState() != IState::EnemyState::ANGRY)// 怒り態勢でない場合
-		SetState(IState::EnemyState::HIT);// 攻撃を食らった状態にする
-	// ノックバックが終了したかどうかチェック
-	if (Progression >= EnemyParameters::KNOCKBACK_TIME.canAttackTime)
-		m_pEnemy->SetCanAttack(true);// 攻撃可能にする
-	// ノックバックが終了したかどうかチェック
-	if (Progression >= EnemyParameters::KNOCKBACK_TIME.endKnockTime)
-	{
-		m_knockEndPosition = m_position; // ノックバック終了位置を今の場所にする
-		m_knockTime = 0.0f; // ノックバック時間のリセット
-		m_pEnemy->SetEnemyHitByPlayerBullet(false); // ノックバック終了
-		SetState(IState::EnemyState::IDLING);// 待機態勢
-	}
-}

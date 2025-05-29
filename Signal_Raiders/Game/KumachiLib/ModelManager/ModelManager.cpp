@@ -54,7 +54,6 @@ void ModelManager::Initialize()
 */
 void ModelManager::CreateBulletModels()
 {
-	//m_pEffectFactory->ReleaseCache();// キャッシュを解放する
 	m_pEffectFactory->SetDirectory(L"Resources/Models");// モデルのディレクトリを指定
 	m_pModelMap["PlayerBullet"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Bullet.cmo", *m_pEffectFactory);// 弾モデルを読み込む
 	m_pModelMap["PlayerBullet"]->UpdateEffects([&](DirectX::IEffect* effect)// エフェクトの更新
@@ -81,7 +80,6 @@ void ModelManager::CreateBulletModels()
 */
 void ModelManager::CreateEnemyModels()
 {
-	//m_pEffectFactory->ReleaseCache(); // キャッシュを解放する
 	m_pEffectFactory->SetDirectory(L"Resources/Models/Enemy");// モデルのディレクトリを指定
 	m_pModelMap["EnemyHead"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Enemy/Enemy_Head.cmo", *m_pEffectFactory);// 敵の頭モデルを読み込む
 	m_pModelMap["EnemyAntenna"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Enemy/Enemy_Antenna.cmo", *m_pEffectFactory);// 敵のアンテナモデルを読み込む
@@ -99,7 +97,6 @@ void ModelManager::CreateEnemyModels()
 */
 void ModelManager::CreateVerticalAttackerModels()
 {
-	//m_pEffectFactory->ReleaseCache(); // キャッシュを解放する
 	m_pEffectFactory->SetDirectory(L"Resources/Models/VerticalAttacker");// モデルのディレクトリを指定
 	m_pModelMap["VerticalAttacker"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/VerticalAttacker/VerticalAttacker.cmo", *m_pEffectFactory);// 垂直攻撃敵のモデルを読み込む
 }
@@ -111,7 +108,6 @@ void ModelManager::CreateVerticalAttackerModels()
 */
 void ModelManager::CreateBossModels()
 {
-	//m_pEffectFactory->ReleaseCache(); // キャッシュを解放する
 	m_pEffectFactory->SetDirectory(L"Resources/Models/Boss");// モデルのディレクトリを指定
 	m_pModelMap["BossBody"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/Boss.cmo", *m_pEffectFactory);// ボスの胴体モデルを読み込む
 	m_pModelMap["BossFaceDamage"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/Boss_Face_Damage.cmo", *m_pEffectFactory);// ボスのダメージ顔モデルを読み込む
@@ -126,7 +122,6 @@ void ModelManager::CreateBossModels()
 */
 void ModelManager::CreateLastBossModels()
 {
-	//m_pEffectFactory->ReleaseCache(); // キャッシュを解放する
 	m_pEffectFactory->SetDirectory(L"Resources/Models/Boss");// モデルのディレクトリを指定
 	m_pModelMap["LastBossBody"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/LastBoss_Body.cmo", *m_pEffectFactory);// ラスボスの胴体モデルを読み込む
 	m_pModelMap["LastBossFaceDamage"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/LastBoss_DamageFace.cmo", *m_pEffectFactory);// ラスボスのダメージ顔モデルを読み込む
@@ -141,7 +136,6 @@ void ModelManager::CreateLastBossModels()
 */
 void ModelManager::CreateBarrierModels()
 {
-	//m_pEffectFactory->ReleaseCache(); // キャッシュを解放する
 	m_pEffectFactory->SetDirectory(L"Resources/Models/Boss");// モデルのディレクトリを指定
 	m_pModelMap["Barrier"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/Boss_Barrier.cmo", *m_pEffectFactory);// ボスのバリアモデルを読み込む
 }

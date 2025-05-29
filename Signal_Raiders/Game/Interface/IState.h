@@ -15,6 +15,7 @@ public:
 		ATTACK,// 攻撃
 		HIT,// 攻撃を食らった
 		ANGRY,// 怒り
+		KNOCKBACK,// ノックバック
 	};
 public:
 	virtual ~IState() = default;	// デストラクタ

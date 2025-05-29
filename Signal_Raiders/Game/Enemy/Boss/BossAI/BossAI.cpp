@@ -69,7 +69,6 @@ void BossAI::Update(float elapsedTime)
 	if (!m_isKnockBack && boss->GetBossSheild()->GetSheildHP() <= 0)	// シールドが壊されたらノックバック
 	{
 		ChangeState(m_pBossKnockBacking.get());//ノックバック状態にする
-		KnockBack(elapsedTime);// ノックバック処理
 		m_enemyState = IState::EnemyState::HIT;// 攻撃を受けた時の動き
 		SetIsAttack(false);// 攻撃中ではない
 	}
@@ -96,37 +95,3 @@ void BossAI::ChangeState(IState* newState)
 	}
 }
 
-/*
-*	@brief ノックバック
-*	@details ボスがプレイヤーの弾に当たった時のノックバック処理
-*	@param elapsedTime 経過時間
-*	@return なし
-*/
-void BossAI::KnockBack(float elapsedTime)
-{
-	using namespace DirectX::SimpleMath;
-	if (m_knockTime == 0.0f)// ノックバック開始時の処理
-	{
-		m_knockStartPosition = m_position; // ノックバック開始位置
-		Vector3 knockBackDirection = (m_position - m_pBoss->GetPlayer()->GetPlayerPos()); // プレイヤーから敵への方向ベクトル
-		knockBackDirection.Normalize(); // 正規化して方向ベクトルにする
-		m_knockEndPosition = m_position + knockBackDirection; // ノックバック終了位置
-		m_initialVelocity = knockBackDirection * EnemyParameters::FIXED_INITIAL_SPEED; // 初期速度
-		m_pBoss->SetCanAttack(false);// 攻撃不可能にする
-	}
-	m_knockTime += elapsedTime;	// ノックバック時間の更新
-	float Progression = std::min(m_knockTime / EnemyParameters::KNOCKBACK_DURATION,
-		EnemyParameters::KNOCKBACK_PROGRESS_MAX);	// ノックバックの進行度
-	float decayFactor = std::exp(EnemyParameters::KNOCKBACK_DECAY_RATE * Progression); // 減衰速度を調整するために指数のベースを調整
-	Vector3 velocity = m_initialVelocity * decayFactor;	// 減衰した速度を使って位置を更新
-	m_position += velocity * elapsedTime;	// 位置を更新
-	if (Progression >= EnemyParameters::KNOCKBACK_TIME.canAttackTime)m_pBoss->SetCanAttack(true);// ノックバックの進行度が一定以上になったら攻撃可能にする
-	if (Progression >= EnemyParameters::KNOCKBACK_TIME.endKnockTime)	// ノックバックが終了したかどうかチェック
-	{
-		m_knockEndPosition = m_position; // ノックバック終了位置を更新
-		m_knockTime = 0.0f; // ノックバック時間のリセット
-		m_pBoss->SetEnemyHitByPlayerBullet(false); // ノックバック終了	
-		m_isKnockBack = true;// これ以降ノックバック処理を行わない
-		m_attackState = IState::EnemyState::ANGRY;// 怒り状態
-	}
-}
