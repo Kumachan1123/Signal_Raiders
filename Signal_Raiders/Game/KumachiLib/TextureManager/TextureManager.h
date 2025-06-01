@@ -32,4 +32,5 @@ private:
 	ID3D11Device1* m_pDevice;
 	// テクスチャのマップ
 	std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_pTextureMap;
+
 };

@@ -15,24 +15,30 @@ extern void ExitGame() noexcept;
 
 
 using Microsoft::WRL::ComPtr;
-
+/*
+*	@brief コンストラクタ
+*	@detail ゲームのメインクラスのコンストラクタ
+*	@param なし
+*	@return なし
+*/
 Game::Game() noexcept(false)
-	: m_deviceResources{}
-	, m_timer{}
-	, m_commonStates{}
-	, m_pCommonResources{}
-	, m_debugString{}
-	, m_inputManager{}
-	, m_sceneManager{}
-	, m_audioManager{}
-	, m_modelManager{}
-	, m_fullscreen{ FALSE }
+	: m_deviceResources{}// デバイスリソース
+	, m_timer{}// タイマー
+	, m_commonStates{}// コモンステート
+	, m_pCommonResources{}// 共通リソース
+	, m_debugString{}// デバッグ文字列
+	, m_inputManager{}// 入力マネージャ
+	, m_sceneManager{}// シーンマネージャ
+	, m_audioManager{}// オーディオマネージャ
+	, m_modelManager{}// モデルマネージャ
+	, m_textureManager{}// テクスチャマネージャ
+	, m_fullscreen{ FALSE }// フルスクリーン状態
 {
 	m_deviceResources = std::make_unique<DX::DeviceResources>();// デバイスリソースを作成する
 	m_deviceResources->RegisterDeviceNotify(this);// デバイス通知を登録する
 }
 
-// Initialize the Direct3D resources required to run.
+
 /*
 *	@brief ゲームの初期化
 *	@detail ゲームの実行に必要なDirect3Dリソースを初期化
@@ -63,6 +69,16 @@ void Game::Initialize(HWND window, int width, int height)
 	m_pCommonResources = std::make_unique<CommonResources>();// 共通リソースを作成する
 	m_modelManager = std::make_unique<ModelManager>();// モデルマネージャを作成する
 	m_textureManager = std::make_unique<TextureManager>();// テクスチャマネージャを作成する
+	std::thread modelInitializeThread([this, device]() {// モデルマネージャの初期化を別スレッドで行う
+		m_modelManager->Initialize(m_deviceResources->GetD3DDevice());// モデルマネージャを初期化する
+		});
+	std::thread textureInitializeThread([this, device]() {// テクスチャマネージャの初期化を別スレッドで行う
+		m_textureManager->Initialize(m_deviceResources->GetD3DDevice());// テクスチャマネージャを初期化する
+		});
+	modelInitializeThread.join();// モデルマネージャの初期化が完了するまで待機する
+	textureInitializeThread.join();// テクスチャマネージャの初期化が完了するまで待機する
+	//m_modelManager->Initialize(m_deviceResources->GetD3DDevice());// モデルマネージャを初期化する
+	//m_textureManager->Initialize(m_deviceResources->GetD3DDevice());// テクスチャマネージャを初期化する
 	m_pCommonResources->Initialize(// シーンへ渡す共通リソースを設定する
 		&m_timer,				// タイマー
 		m_deviceResources.get(),// デバイスリソース
@@ -73,10 +89,6 @@ void Game::Initialize(HWND window, int width, int height)
 		m_modelManager.get(),	// モデルマネージャ
 		m_textureManager.get()	// テクスチャマネージャ (デフォルトはnullptr, モデルマネージャから取得する
 	);
-	m_modelManager->SetCommonResources(m_pCommonResources.get());// モデルマネージャに共通リソースを設定する
-	m_modelManager->Initialize();// モデルマネージャを初期化する
-
-	m_textureManager->Initialize(m_deviceResources->GetD3DDevice());// テクスチャマネージャを初期化する
 	m_sceneManager = std::make_unique<SceneManager>();	// シーンマネージャを作成する
 	m_sceneManager->Initialize(m_pCommonResources.get());// シーンマネージャを初期化する
 	ShowCursor(FALSE);//カーソルを見えるようにする

@@ -4,6 +4,8 @@
 */
 #include <pch.h>
 #include "ModelManager.h"
+// 外部ライブラリ
+#include "Libraries/nlohmann/json.hpp"
 
 /*
 *	@brief コンストラクタ
@@ -12,9 +14,9 @@
 *	@return なし
 */
 ModelManager::ModelManager()
-	: m_pCommonResources(nullptr) // 共通リソース
-	, m_pDevice(nullptr) // デバイス
+	: m_pDevice(nullptr) // デバイス
 	, m_pModelMap() // モデルのマップ
+	, m_skyModelPathMap() // 天球モデルパスのマップ
 	, m_pEffectFactory(nullptr) // エフェクトファクトリー
 {
 }
@@ -29,7 +31,6 @@ ModelManager::~ModelManager()
 	m_pModelMap.clear(); // モデルのマップをクリア
 	m_pEffectFactory.reset(); // エフェクトファクトリーをリセット
 	m_pDevice = nullptr; // デバイスをnullptrに設定
-	m_pCommonResources = nullptr; // 共通リソースをnullptrに設定
 }
 /*
 *	@brief モデルの初期化
@@ -37,124 +38,92 @@ ModelManager::~ModelManager()
 *	@param なし
 *	@return なし
 */
-void ModelManager::Initialize()
+void ModelManager::Initialize(ID3D11Device1* pDevice)
 {
-	m_pDevice = m_pCommonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
+	m_pDevice = pDevice; // デバイスを設定
 	m_pEffectFactory = std::make_unique<DirectX::EffectFactory>(m_pDevice);// エフェクトファクトリーの作成
 	m_pEffectFactory->SetSharing(false);// エフェクトの共有を無効にする
-	CreateBulletModels(); // 弾モデルの作成
-	CreateEnemyModels(); // 敵モデルの作成
-	CreateVerticalAttackerModels(); // 垂直攻撃敵モデルの作成
-	CreateBossModels(); // ボスモデルの作成
-	CreateLastBossModels(); // ラスボスモデルの作成
-	CreateBarrierModels(); // バリアモデルの作成
-	CreateStageModels(); // ステージモデルの作成
+	LoadJsonFile();// JSONファイルの読み込み
+	LoadSkyModelsJson(); // 天球モデルのパスをJSONファイルから読み込む
+	SetupBulletModelEffects(); // 弾モデルの作成
+	SetupStageModelEffects(); // ステージモデルの作成
+}
+/*
+*	@brief JSONファイルの読み込み
+*	@details モデルのパスをJSONファイルから読み込む
+*	@param なし
+*	@return なし
+*/
+void ModelManager::LoadJsonFile()
+{
+	using json = nlohmann::json;// nlohmann::jsonのエイリアスを定義
+	using namespace std;// 標準名前空間を使用
+	string filename = "Resources/Jsons/Models.json";//読み込むファイルの名前を作成
+	ifstream ifs(filename.c_str());//ファイルを開く
+	if (!ifs.good())return;// ファイルが正常に開けなかったら強制終了
+	json j;							//jsonオブジェクト
+	ifs >> j;						//ファイルから読み込む
+	ifs.close();					//ファイルを閉じる
+	for (const auto& item : j.items())// JSONの各アイテムに対してループ
+	{
+		std::string key = item.key();                    // キー
+		std::string path = item.value();                 // 値（ファイルパス）
+		std::wstring wpath(path.begin(), path.end());    // 文字列変換
+		m_pEffectFactory->SetDirectory(L"Resources/Models");// モデルのディレクトリを指定
+		m_pModelMap[key] = DirectX::Model::CreateFromCMO(m_pDevice, wpath.c_str(), *m_pEffectFactory);// モデルを読み込む
+	}
+
+}
+void ModelManager::LoadSkyModelsJson()
+{
+	using json = nlohmann::json;// nlohmann::jsonのエイリアスを定義
+	using namespace std;// 標準名前空間を使用
+	string filename = "Resources/Jsons/SkyModels.json";//読み込むファイルの名前を作成
+	ifstream ifs(filename.c_str());//ファイルを開く
+	if (!ifs.good())return;// ファイルが正常に開けなかったら強制終了
+	json j;							//jsonオブジェクト
+	ifs >> j;						//ファイルから読み込む
+	ifs.close();					//ファイルを閉じる
+	for (const auto& item : j.items())// JSONの各アイテムに対してループ
+	{
+		std::string key = item.key();                    // キー
+		std::string path = item.value();                 // 値（ファイルパス）
+		std::wstring wpath(path.begin(), path.end());    // 文字列変換
+		m_skyModelPathMap[key] = wpath; // モデルパスをマップに追加
+	}
+}
+/*
+*	@brief 弾モデルのエフェクト設定
+*	@details 自弾と敵弾のモデルにエフェクトを設定する
+*	@param なし
+*	@return なし
+*/
+void ModelManager::SetupBulletModelEffects()
+{
+	m_pModelMap["PlayerBullet"]->UpdateEffects([&](DirectX::IEffect* effect)// 自弾モデルのエフェクトを設定する
+		{
+			auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);// エフェクトをBasicEffectにキャスト
+			basicEffect->SetDiffuseColor(DirectX::Colors::SkyBlue);// 拡散色を設定
+			basicEffect->SetEmissiveColor(DirectX::Colors::Cyan); // 自発光色を設定
+		});
+	m_pModelMap["EnemyBullet"]->UpdateEffects([&](DirectX::IEffect* effect)// 敵弾モデルのエフェクトを設定する
+		{
+			auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);// エフェクトをBasicEffectにキャスト
+			basicEffect->SetDiffuseColor(DirectX::SimpleMath::Vector4(1, 0.2f, 0, 1)); // 拡散色を設定
+			basicEffect->SetAmbientLightColor(DirectX::Colors::Red); // 環境光の色を設定
+			basicEffect->SetEmissiveColor(DirectX::Colors::Tomato); // 自発光色を設定
+		});
 }
 
 /*
-*	@brief 弾モデルの作成
-*	@details プレイヤーと敵の弾モデルを作成し、エフェクトを設定する
+*	@brief ステージモデルのエフェクト設定
+*	@details ステージモデルにエフェクトを設定する
 *	@param なし
 *	@return なし
 */
-void ModelManager::CreateBulletModels()
+void ModelManager::SetupStageModelEffects()
 {
-	m_pEffectFactory->SetDirectory(L"Resources/Models");// モデルのディレクトリを指定
-	m_pModelMap["PlayerBullet"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Bullet.cmo", *m_pEffectFactory);// 弾モデルを読み込む
-	m_pModelMap["PlayerBullet"]->UpdateEffects([&](DirectX::IEffect* effect)// エフェクトの更新
-		{
-			auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);
-			basicEffect->SetDiffuseColor(DirectX::Colors::SkyBlue);
-			basicEffect->SetEmissiveColor(DirectX::Colors::Cyan);
-		});// 自弾モデルのエフェクトを設定する
-	m_pEffectFactory->ReleaseCache();// キャッシュを解放する
-	m_pModelMap["EnemyBullet"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Bullet.cmo", *m_pEffectFactory);// 弾モデルを読み込む
-	m_pModelMap["EnemyBullet"]->UpdateEffects([&](DirectX::IEffect* effect)	// モデルのエフェクトを設定する
-		{
-			auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);
-			basicEffect->SetDiffuseColor(DirectX::SimpleMath::Vector4(1, 0.2f, 0, 1));
-			basicEffect->SetAmbientLightColor(DirectX::Colors::Red);
-			basicEffect->SetEmissiveColor(DirectX::Colors::Tomato);
-		});// 敵弾モデルのエフェクトを設定する
-}
-/*
-*	@brief 敵モデルの作成
-*	@details 敵のモデルを作成する
-*	@param なし
-*	@return なし
-*/
-void ModelManager::CreateEnemyModels()
-{
-	m_pEffectFactory->SetDirectory(L"Resources/Models/Enemy");// モデルのディレクトリを指定
-	m_pModelMap["EnemyHead"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Enemy/Enemy_Head.cmo", *m_pEffectFactory);// 敵の頭モデルを読み込む
-	m_pModelMap["EnemyAntenna"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Enemy/Enemy_Antenna.cmo", *m_pEffectFactory);// 敵のアンテナモデルを読み込む
-	m_pModelMap["EnemyHand"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Enemy/Enemy_Hand.cmo", *m_pEffectFactory);// 敵の手モデルを読み込む
-	m_pModelMap["EnemyShadow"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Enemy/Enemy.cmo", *m_pEffectFactory);// 敵の影用モデルを読み込む
-	m_pModelMap["EnemyDamage"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Enemy/Enemy_DamageFace.cmo", *m_pEffectFactory);// 敵のダメージ顔モデルを読み込む
-	m_pModelMap["EnemyAttack"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Enemy/Enemy_AttackFace.cmo", *m_pEffectFactory);// 敵の攻撃顔モデルを読み込む
-	m_pModelMap["EnemyIdling"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Enemy/Enemy_IdlingHead.cmo", *m_pEffectFactory);// 敵の普段の顔モデルを読み込む
-}
-/*
-*	@brief 垂直攻撃敵モデルの作成
-*	@details 垂直攻撃敵のモデルを作成する
-*	@param なし
-*	@return なし
-*/
-void ModelManager::CreateVerticalAttackerModels()
-{
-	m_pEffectFactory->SetDirectory(L"Resources/Models/VerticalAttacker");// モデルのディレクトリを指定
-	m_pModelMap["VerticalAttacker"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/VerticalAttacker/VerticalAttacker.cmo", *m_pEffectFactory);// 垂直攻撃敵のモデルを読み込む
-}
-/*
-*	@brief ボスモデルの作成
-*	@details ボスのモデルを作成する
-*	@param なし
-*	@return なし
-*/
-void ModelManager::CreateBossModels()
-{
-	m_pEffectFactory->SetDirectory(L"Resources/Models/Boss");// モデルのディレクトリを指定
-	m_pModelMap["BossBody"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/Boss.cmo", *m_pEffectFactory);// ボスの胴体モデルを読み込む
-	m_pModelMap["BossFaceDamage"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/Boss_Face_Damage.cmo", *m_pEffectFactory);// ボスのダメージ顔モデルを読み込む
-	m_pModelMap["BossFaceAttack"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/Boss_Face_Attack.cmo", *m_pEffectFactory);// ボスの攻撃顔モデルを読み込む
-	m_pModelMap["BossFaceAngry"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/Boss_Face_Angry.cmo", *m_pEffectFactory);// 怒り状態の顔
-}
-/*
-*	@brief ラスボスモデルの作成
-*	@details ラスボスのモデルを作成する
-*	@param なし
-*	@return なし
-*/
-void ModelManager::CreateLastBossModels()
-{
-	m_pEffectFactory->SetDirectory(L"Resources/Models/Boss");// モデルのディレクトリを指定
-	m_pModelMap["LastBossBody"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/LastBoss_Body.cmo", *m_pEffectFactory);// ラスボスの胴体モデルを読み込む
-	m_pModelMap["LastBossFaceDamage"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/LastBoss_DamageFace.cmo", *m_pEffectFactory);// ラスボスのダメージ顔モデルを読み込む
-	m_pModelMap["LastBossFaceAttack"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/LastBoss_Face.cmo", *m_pEffectFactory);// ラスボスの攻撃顔モデルを読み込む
-	m_pModelMap["LastBossFaceAngry"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/LastBoss_AngryFace.cmo", *m_pEffectFactory);// ラスボスの怒り顔モデルを読み込む
-}
-/*
-*	@brief バリアモデルの作成
-*	@details バリアのモデルを作成する
-*	@param なし
-*	@return なし
-*/
-void ModelManager::CreateBarrierModels()
-{
-	m_pEffectFactory->SetDirectory(L"Resources/Models/Boss");// モデルのディレクトリを指定
-	m_pModelMap["Barrier"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/Models/Boss/Boss_Barrier.cmo", *m_pEffectFactory);// ボスのバリアモデルを読み込む
-}
-/*
-*	@brief ステージモデルの作成
-*	@details ステージのモデルを作成する
-*	@param なし
-*	@return なし
-*/
-void ModelManager::CreateStageModels()
-{
-	m_pEffectFactory->SetDirectory(L"Resources/models/Stage");// モデルのディレクトリを設定
-	m_pModelMap["Stage"] = DirectX::Model::CreateFromCMO(m_pDevice, L"Resources/models/Stage/Stage.cmo", *m_pEffectFactory);// ステージモデルを読み込む
-	m_pModelMap["Stage"]->UpdateEffects([](DirectX::IEffect* effect)	// モデルのエフェクト情報を更新する
+	m_pModelMap["Stage"]->UpdateEffects([](DirectX::IEffect* effect)// ステージモデルのエフェクトを設定する
 		{
 			auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);
 			if (!basicEffect)return;// エフェクトがnullptrの場合は処理を終える
@@ -185,17 +154,8 @@ DirectX::Model* ModelManager::GetModel(const std::string& key)
 */
 DirectX::Model* ModelManager::GetSkyModel(const std::string& stageID)
 {
-	auto it = m_skyModelPaths.find(stageID); // ステージIDに対応する空のモデルのパスを検索
-	if (it == m_skyModelPaths.end())	return nullptr; // 見つからなかった場合はnullptrを返す
-	m_pEffectFactory->SetDirectory(L"Resources/Models/sky");// モデルのディレクトリを指定
-	std::wstring wpath = ConvertToWString(it->second); // 文字列をワイド文字列に変換
-	m_pModelMap["Sky"] = DirectX::Model::CreateFromCMO(m_pDevice, wpath.c_str(), *m_pEffectFactory); // モデルを保持
+	auto it = m_skyModelPathMap.find(stageID); // ステージIDに対応する空のモデルのパスを検索
+	if (it == m_skyModelPathMap.end())	return nullptr; // 見つからなかった場合はnullptrを返す
+	m_pModelMap["Sky"] = DirectX::Model::CreateFromCMO(m_pDevice, it->second.c_str(), *m_pEffectFactory); // モデルを保持
 	return m_pModelMap["Sky"].get(); // モデルを返す
 }
-/*
-*	@brief 文字列をワイド文字列に変換する
-*	@details std::stringをstd::wstringに変換する
-*	@param str 変換する文字列
-*	@return 変換後のワイド文字列
-*/
-std::wstring ModelManager::ConvertToWString(const std::string& str) { return std::wstring(str.begin(), str.end()); }

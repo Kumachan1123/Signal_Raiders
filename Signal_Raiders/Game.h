@@ -3,6 +3,8 @@
 *	@brief ゲームのメインクラス
 */
 #pragma once
+// 標準ライブラリ
+#include <thread>
 // DirectX
 #include <DeviceResources.h>
 #include "StepTimer.h"
