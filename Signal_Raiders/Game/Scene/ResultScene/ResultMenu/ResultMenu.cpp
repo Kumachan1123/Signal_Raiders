@@ -65,19 +65,19 @@ void ResultMenu::Initialize(CommonResources* resources, int width, int height)
 	m_windowHeight = height;// ウィンドウ高さ保存
 	m_pSelectTexturePath = L"Resources/Textures/ResultSelect.png";// 選択枠のテクスチャパス設定
 	//  「もういっかいやる」を読み込む
-	Add(L"Resources/Textures/RePlay.png"
+	Add("RePlay"
 		, Vector2(Screen::CENTER_X, Screen::CENTER_Y + 250)
 		, Vector2(.5, .5)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	// 　「ステージをえらぶ」を読み込む
-	Add(L"Resources/Textures/ToStageSelect.png"
+	Add("ToStageSelect"
 		, Vector2(Screen::CENTER_X, Screen::CENTER_Y + 400)
 		, Vector2(.5, .5)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	// 「操作説明」を読み込む
-	Add(L"Resources/Textures/Guide.png"
+	Add("Guide"
 		, Vector2(Screen::RIGHT, Screen::BOTTOM)
 		, Vector2(1, 1)
 		, KumachiLib::ANCHOR::BOTTOM_RIGHT
@@ -154,23 +154,23 @@ void ResultMenu::Render()
 /*
 	@brief メニューアイテムを追加する
 	@details 指定の画像でUIを作成し、内部リストに追加する (選択可なら背景枠も作成)
-	@param path 画像ファイルのパス
+	@param key 画像ファイルのキー
 	@param position 描画位置
 	@param scale 描画スケール
 	@param anchor アンカー指定
 	@param type メニューの種類（選択可/不可）
 	@return なし
 */
-void ResultMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor, UIType type)
+void ResultMenu::Add(std::string key, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor, UIType type)
 {
-	std::unique_ptr<UI> userInterface = std::make_unique<UI>();// UIオブジェクトの生成
-	userInterface->Create(m_pDR, path, position, scale, anchor);// 指定画像でUI作成
+	std::unique_ptr<UI> userInterface = std::make_unique<UI>(m_pCommonResources);// UIオブジェクトの生成
+	userInterface->Create(m_pDR, key, position, scale, anchor);// 指定画像でUI作成
 	userInterface->SetWindowSize(m_windowWidth, m_windowHeight);// ウィンドウサイズを設定
 	if (type == UIType::SELECT)// 選択可能なアイテムなら
 	{
 		m_pUI.push_back(std::move(userInterface));// アイテムを新しく追加
-		std::unique_ptr<UI> back = std::make_unique<UI>();// 背景用の選択枠も追加する
-		back->Create(m_pDR, m_pSelectTexturePath, position, scale, anchor);// 指定画像でUI作成
+		std::unique_ptr<UI> back = std::make_unique<UI>(m_pCommonResources);// 背景用の選択枠も追加する
+		back->Create(m_pDR, "ResultSelect", position, scale, anchor);// 指定画像でUI作成
 		back->SetWindowSize(m_windowWidth, m_windowHeight);// ウィンドウサイズを設定
 		m_pSelect.push_back(std::move(back)); // 背景用のアイテムも新しく追加する
 	}

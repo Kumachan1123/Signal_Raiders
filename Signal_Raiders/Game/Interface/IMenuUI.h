@@ -3,6 +3,8 @@
 #define IMENUUI_DEFINED
 // 標準ライブラリ
 #include <memory>
+#include <string>
+// DirectX
 #include <SimpleMath.h>
 // 自作ヘッダーファイル
 #include "Game/KumachiLib/Anchor.h"
@@ -21,7 +23,7 @@ public:
 public:
 	virtual ~IMenuUI() = default;// デストラクタ
 	virtual void Add(							// UI追加	
-		const wchar_t* path						// テクスチャパス
+		std::string key					// テクスチャのキー
 		, DirectX::SimpleMath::Vector2 position	// 位置
 		, DirectX::SimpleMath::Vector2 scale	// スケール
 		, KumachiLib::ANCHOR anchor				// アンカー

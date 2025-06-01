@@ -11,16 +11,17 @@
 *	@return なし
 */
 WifiLoading::WifiLoading()
-	: m_windowHeight(0)			// ウィンドウの高さ
-	, m_windowWidth(0)			// ウィンドウの幅
-	, m_pDR(nullptr)			// デバイスリソース
-	, m_pLoading(nullptr)		// ローディングUI
-	, m_pLoadgingText(nullptr)	// ローディングテキスト
-	, m_animSpeed(1)			// アニメーションスピード
-	, m_anim(0)					// アニメーションカウント
-	, m_animTime(0)				// アニメーション時間
-	, m_frameRows(1)			// 画像の行数
-	, m_frameCols(4)			// 画像の列数
+	: m_windowHeight(0)				// ウィンドウの高さ
+	, m_windowWidth(0)				// ウィンドウの幅
+	, m_pDR(nullptr)				// デバイスリソース
+	, m_pCommonResources(nullptr)	// 共通リソース
+	, m_pLoading(nullptr)			// ローディングUI
+	, m_pLoadgingText(nullptr)		// ローディングテキスト
+	, m_animSpeed(1)				// アニメーションスピード
+	, m_anim(0)						// アニメーションカウント
+	, m_animTime(0)					// アニメーション時間
+	, m_frameRows(1)				// 画像の行数
+	, m_frameCols(4)				// 画像の列数
 {
 }
 /*
@@ -41,15 +42,16 @@ WifiLoading::~WifiLoading() { /*do nothing*/ }
 void WifiLoading::Initialize(CommonResources* resources, int width, int height)
 {
 	m_pDR = resources->GetDeviceResources();// デバイスリソースを取得
+	m_pCommonResources = resources;// 共通リソースを設定
 	m_windowWidth = width;// ウィンドウの幅
 	m_windowHeight = height;// ウィンドウの高さ
 	// ローディング画像
-	Add(m_pLoading, L"Resources/Textures/Loading.png",
+	Add(m_pLoading, "Loading",
 		DirectX::SimpleMath::Vector2((float)(m_windowWidth), (float)(m_windowHeight)),
 		DirectX::SimpleMath::Vector2(.4f, .4f),
 		KumachiLib::ANCHOR::BOTTOM_RIGHT);
 	// ローディングテキスト
-	Add(m_pLoadgingText, L"Resources/Textures/Loading_Text.png",
+	Add(m_pLoadgingText, "LoadingText",
 		DirectX::SimpleMath::Vector2((float)(m_windowWidth - 70), (float)(m_windowHeight)),
 		DirectX::SimpleMath::Vector2(.4f, .4f),
 		KumachiLib::ANCHOR::BOTTOM_RIGHT);
@@ -87,18 +89,18 @@ void WifiLoading::Render()
 *	@brief UIの追加関数
 *	@details 指定されたパスのUIを追加する
 *	@param pPlayerUI 追加するUIのスマートポインタ
-*	@param path UIのテクスチャパス
+*	@param key UIのテクスチャキー
 *	@param position UIの位置
 *	@param scale UIのスケール
 *	@param anchor UIのアンカー
 *	@return なし
 */
-void WifiLoading::Add(std::unique_ptr<PlayerUI>& pPlayerUI, const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
+void WifiLoading::Add(std::unique_ptr<PlayerUI>& pPlayerUI, std::string key, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
 {
-	pPlayerUI = std::make_unique<PlayerUI>();// PlayerUIのインスタンスを生成
+	pPlayerUI = std::make_unique<PlayerUI>(m_pCommonResources);// PlayerUIのインスタンスを生成
 	// UIの初期化
 	pPlayerUI->Create(m_pDR	// デバイスリソース
-		, path				// テクスチャのパス
+		, key				// テクスチャのキー
 		, position			// UIの位置
 		, scale				// UIのスケール
 		, anchor);			// UIのアンカーを設定

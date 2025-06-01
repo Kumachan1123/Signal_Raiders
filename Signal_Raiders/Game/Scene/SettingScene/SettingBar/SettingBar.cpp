@@ -56,19 +56,19 @@ void SettingBar::Initialize(CommonResources* resources, int width, int height)
 	m_pSettingBarPointerTexturePath = L"Resources/Textures/SettingBarPointer.png";// 設定バーの玉テクスチャパス
 	m_pSettingData = std::make_unique<SettingData>();// 設定データの初期化
 	//  「BGM」の場所に配置
-	Add(m_pSettingBarTexturePath
+	Add("SettingBar"
 		, Vector2(BGM_POSITION)
 		, Vector2(1, 1)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::NON_SELECT);
 	//  「SE」の場所に配置
-	Add(m_pSettingBarTexturePath
+	Add("SettingBar"
 		, Vector2(SE_POSITION)
 		, Vector2(1, 1)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::NON_SELECT);
 	//  「マウスかんど」の場所に配置
-	Add(m_pSettingBarTexturePath
+	Add("SettingBar"
 		, Vector2(SENSITIVITY_POSITION)
 		, Vector2(1, 1)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
@@ -147,13 +147,13 @@ void SettingBar::Render()
 /*
 *	@brief メニューアイテムを追加する
 *	@details 指定の画像でUIを作成し、内部リストに追加する (選択可なら背景枠も作成)
-*	@param path メニューアイテムの画像パス
+*	@param key メニューアイテムのキー
 *	@param position メニューアイテムの位置
 *	@param scale メニューアイテムのスケール
 *	@param anchor メニューアイテムのアンカー
 *	@param type メニューアイテムの種類
 */
-void SettingBar::Add(const wchar_t* path
+void SettingBar::Add(std::string key
 	, DirectX::SimpleMath::Vector2 position
 	, DirectX::SimpleMath::Vector2 scale
 	, KumachiLib::ANCHOR anchor
@@ -161,12 +161,12 @@ void SettingBar::Add(const wchar_t* path
 {
 	using namespace DirectX::SimpleMath;
 	UNREFERENCED_PARAMETER(type);// 未使用警告非表示
-	std::unique_ptr<UI> userInterface = std::make_unique<UI>();// UIオブジェクトの生成
-	userInterface->Create(m_pDR, path, position, Vector2(scale.x / 1.45f, scale.y / 2.0f), anchor);// 指定された画像を表示するためのアイテムを作成する
+	std::unique_ptr<UI> userInterface = std::make_unique<UI>(m_pCommonResources);// UIオブジェクトの生成
+	userInterface->Create(m_pDR, key, position, Vector2(scale.x / 1.45f, scale.y / 2.0f), anchor);// 指定された画像を表示するためのアイテムを作成する
 	userInterface->SetWindowSize(m_windowWidth, m_windowHeight);// ウィンドウサイズを設定
 	m_pBar.push_back(std::move(userInterface));// アイテムを新しく追加
-	std::unique_ptr<UI> base = std::make_unique<UI>();// 背景用のウィンドウ画像も追加する
-	base->Create(m_pDR, m_pSettingBarPointerTexturePath, position, scale, anchor);// 指定された画像を表示するためのアイテムを作成する
+	std::unique_ptr<UI> base = std::make_unique<UI>(m_pCommonResources);// 背景用のウィンドウ画像も追加する
+	base->Create(m_pDR, "SettingBarPointer", position, scale, anchor);// 指定された画像を表示するためのアイテムを作成する
 	base->SetWindowSize(m_windowWidth, m_windowHeight);// ウィンドウサイズを設定
 	m_pBarPointer.push_back(std::move(base));// 背景用のアイテムも新しく追加する
 }

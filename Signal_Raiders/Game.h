@@ -9,12 +9,14 @@
 // 外部ライブラリ
 #include <Libraries/MyLib/DebugString.h>
 #include <Libraries/MyLib/InputManager.h>
+#include <Libraries/nlohmann/json.hpp>
 // ゲーム関連
 #include "Game/CommonResources.h"
 #include "Game/Scene/IScene.h"
 #include "Game/Scene/SceneManager.h"
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/KumachiLib/ModelManager/ModelManager.h"
+#include "Game/KumachiLib/TextureManager/TextureManager.h"
 #include "Game/Screen.h"
 
 class Game final : public DX::IDeviceNotify
@@ -70,4 +72,6 @@ private:// private変数
 	std::unique_ptr<AudioManager>           m_audioManager;
 	// モデルマネージャ
 	std::unique_ptr<ModelManager>           m_modelManager;
+	// テクスチャマネージャ
+	std::unique_ptr<TextureManager>         m_textureManager;
 };

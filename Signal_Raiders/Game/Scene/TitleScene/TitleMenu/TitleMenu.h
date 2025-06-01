@@ -5,6 +5,7 @@
 #pragma once
 // 標準ライブラリ
 #include <vector>
+#include <string>
 // DirectX
 #include <DeviceResources.h>
 #include "Game/CommonResources.h"
@@ -47,7 +48,7 @@ public:// public関数
 	void Initialize(CommonResources* resources, int width, int height);// 初期化
 	void Update(const UpdateContext& context)override { Update(context.elapsedTime); }// 更新
 	void Render();// 描画
-	void Add(const wchar_t* path// UI追加
+	void Add(std::string key// UI追加
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
 		, KumachiLib::ANCHOR anchor

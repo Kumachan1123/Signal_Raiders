@@ -17,8 +17,9 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> PlayerUI::INPUT_LAYOUT =
 *	@param なし
 *	@return なし
 */
-PlayerUI::PlayerUI()
+PlayerUI::PlayerUI(CommonResources* pCommonResources)
 	: m_pDR{ nullptr }// デバイスリソース
+	, m_pCommonResources{ pCommonResources }// 共通リソースへのポインタ
 	, m_windowWidth{ 0 }// ウィンドウの幅
 	, m_windowHeight{ 0 }// ウィンドウの高さ
 	, m_textureWidth{ 0 }// テクスチャの幅
@@ -50,35 +51,37 @@ PlayerUI::~PlayerUI() {/*do nothing*/ }
 /*
 *	@brief	テクスチャの読み込み
 *	@details テクスチャの読み込み
-*	@param path テクスチャのパス
+*	@param key テクスチャのキー
 *	@return なし
 */
-void PlayerUI::LoadTexture(const wchar_t* path)
+void PlayerUI::LoadTexture(std::string key)
 {
-	DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, m_pTextureResource.ReleaseAndGetAddressOf(), m_pTexture.ReleaseAndGetAddressOf());// 指定された画像を読み込む
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> tex;// テクスチャ一時保存用変数
-	DX::ThrowIfFailed(m_pTextureResource.As(&tex));// テクスチャを取得する
-	D3D11_TEXTURE2D_DESC desc;// 読み込んだ画像の情報を取得する
-	tex->GetDesc(&desc);// テクスチャの情報を取得する
-	m_pTextures.push_back(m_pTexture);// テクスチャを保存する
-	//	読み込んだ画像のサイズを取得する
-	m_textureWidth = desc.Width;// 幅
-	m_textureHeight = desc.Height;// 高さ
-
+	m_pTexture = m_pCommonResources->GetTextureManager()->GetTexture(key);// テクスチャマネージャーからテクスチャを取得
+	// サイズ取得のための準備
+	Microsoft::WRL::ComPtr<ID3D11Resource> resource;// 一時保存用リソースハンドル
+	m_pTexture->GetResource(resource.GetAddressOf());// テクスチャからリソースを取得
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> texture2D;// 一時保存用テクスチャハンドル
+	DX::ThrowIfFailed(resource.As(&texture2D));// リソースをテクスチャに変換
+	// テクスチャの情報を取得
+	D3D11_TEXTURE2D_DESC desc;// テクスチャの情報を格納する構造体
+	texture2D->GetDesc(&desc);// テクスチャの情報を取得
+	m_pTextures.push_back(m_pTexture.Get()); // テクスチャを配列に追加
+	m_textureWidth = desc.Width; // テクスチャの幅を取得
+	m_textureHeight = desc.Height; // テクスチャの高さを取得
 }
 
 /*
 *	@brief	UIの生成
 *	@details UIの生成
 *	@param pDR デバイスリソース
-*	@param path テクスチャのパス
+*	@param key テクスチャのキー
 *	@param position UIの位置
 *	@param scale UIのスケール
 *	@param anchor UIのアンカー
 *	@return なし
 */
 void PlayerUI::Create(DX::DeviceResources* pDR
-	, const wchar_t* path
+	, std::string key
 	, DirectX::SimpleMath::Vector2 position
 	, DirectX::SimpleMath::Vector2 scale
 	, KumachiLib::ANCHOR anchor)
@@ -90,7 +93,7 @@ void PlayerUI::Create(DX::DeviceResources* pDR
 	m_pCreateShader->Initialize(m_pDR->GetD3DDevice(), &INPUT_LAYOUT[0], // シェーダー作成クラスの初期化
 		static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
 	CreateShaders();// シェーダーの作成
-	LoadTexture(path);// テクスチャを読み込む
+	LoadTexture(key);// テクスチャを読み込む
 	m_pDrawPolygon->InitializePositionColorTexture(m_pDR);	// 板ポリゴン描画用
 }
 /*

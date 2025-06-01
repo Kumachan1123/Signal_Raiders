@@ -40,27 +40,28 @@ PlayerHP::~PlayerHP() {/*do nothing*/ }
 void PlayerHP::Initialize(CommonResources* resources, int width, int height)
 {
 	using namespace DirectX::SimpleMath;
+	m_pCommonResources = resources; // 共通リソースを設定
 	m_pDR = resources->GetDeviceResources();// デバイスリソースを取得
 	m_windowWidth = width;// ウィンドウの幅を設定
 	m_windowHeight = height;// ウィンドウの高さを設定
 	// HPバー
-	Add(m_pGauge, L"Resources/Textures/HPBar.png"
+	Add(m_pGauge, "HPBar"
 		, Vector2(328, 40)
 		, Vector2(.50f, .50f)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER);
 	m_pGauge->SetRenderRatioOffset(0);// ゲージのオフセットを0に設定
 	// HPバーの背景
-	Add(m_pBack, L"Resources/Textures/HPBarBase.png"
+	Add(m_pBack, "HPBarBase"
 		, Vector2(328, 40)
 		, Vector2(.50f, .50f)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER);
 	// HPバーの枠
-	Add(m_pFrame, L"Resources/Textures/HPBarFrame.png"
+	Add(m_pFrame, "HPBarFrame"
 		, Vector2(328, 40)
 		, Vector2(.50f, .50f)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER);
 	// ハートアイコン
-	Add(m_pHeartIcon, L"Resources/Textures/HP.png"
+	Add(m_pHeartIcon, "HP"
 		, Vector2(0, -5)
 		, Vector2(.50f, .50f)
 		, KumachiLib::ANCHOR::TOP_LEFT);
@@ -96,18 +97,18 @@ void PlayerHP::Render()
 *	@brief UIの追加関数
 *	@details PlayerUIを追加する
 *	@param pPlayerUI 追加するPlayerUIのポインタ
-*	@param path テクスチャのパス
+*	@param key テクスチャのキー
 *	@param position UIの位置
 *	@param scale UIのスケール
 *	@param anchor UIのアンカー
 *	@return なし
 */
-void PlayerHP::Add(std::unique_ptr<PlayerUI>& pPlayerUI, const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
+void PlayerHP::Add(std::unique_ptr<PlayerUI>& pPlayerUI, std::string key, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
 {
-	pPlayerUI = std::make_unique<PlayerUI>();// PlayerUIのインスタンスを生成
+	pPlayerUI = std::make_unique<PlayerUI>(m_pCommonResources);// PlayerUIのインスタンスを生成
 	// UIの初期化
 	pPlayerUI->Create(m_pDR	// デバイスリソース
-		, path				// テクスチャのパス
+		, key				// テクスチャのパス
 		, position			// UIの位置
 		, scale				// UIのスケール
 		, anchor);			// UIのアンカーを設定

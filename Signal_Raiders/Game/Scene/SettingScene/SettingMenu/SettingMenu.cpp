@@ -60,39 +60,39 @@ void SettingMenu::Initialize(CommonResources* resources, int width, int height)
 	m_pDR = m_pCommonResources->GetDeviceResources();// デバイスリソース取得
 	m_windowWidth = width;// ウィンドウ幅
 	m_windowHeight = height;// ウィンドウ高さ
-	m_pSelectTexturePath = L"Resources/Textures/select.png";// 選択枠のテクスチャパス設定
+	m_pSelectTexturePath = L"Resources/Textures/Select.png";// 選択枠のテクスチャパス設定
 	//  「BGM」を読み込む
-	Add(L"Resources/Textures/BGM.png"
+	Add("BGM"
 		, Vector2(Screen::LEFT + 400, Screen::CENTER_Y - 300)
 		, Vector2(.75, .75)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::NON_SELECT);
 	//  「SE」を読み込む
-	Add(L"Resources/Textures/SE.png"
+	Add("SE"
 		, Vector2(Screen::LEFT + 400, Screen::CENTER_Y - 150)
 		, Vector2(.75, .75)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::NON_SELECT);
 	//  「マウスかんど」を読み込む
-	Add(L"Resources/Textures/Mouse.png"
+	Add("Mouse"
 		, Vector2(Screen::LEFT + 400, Screen::CENTER_Y)
 		, Vector2(.75, .75)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::NON_SELECT);
 	//  「へんこう」を読み込む
-	Add(L"Resources/Textures/Apply.png"
+	Add("Apply"
 		, Vector2(Screen::LEFT + 400, Screen::CENTER_Y + 150)
 		, Vector2(.75, .75)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//  「おわる」を読み込む
-	Add(L"Resources/Textures/end.png"
+	Add("Cancel"
 		, Vector2(Screen::LEFT + 400, Screen::CENTER_Y + 300)
 		, Vector2(.75, .75)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	// 「操作説明」を読み込む
-	Add(L"Resources/Textures/Guide.png"
+	Add("Guide"
 		, Vector2(Screen::RIGHT, Screen::BOTTOM)
 		, Vector2(1, 1)
 		, KumachiLib::ANCHOR::BOTTOM_RIGHT
@@ -159,23 +159,23 @@ void SettingMenu::Render()
 /*
 	@brief メニューアイテムを追加する
 	@details 指定の画像でUIを作成し、内部リストに追加する (選択可なら背景枠も作成)
-	@param path 画像ファイルのパス
+	@param key 画像ファイルのキー
 	@param position 描画位置
 	@param scale 描画スケール
 	@param anchor アンカー指定
 	@param type メニューの種類（選択可/不可）
 	@return なし
 */
-void SettingMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor, UIType type)
+void SettingMenu::Add(std::string key, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor, UIType type)
 {
-	std::unique_ptr<UI> userInterface = std::make_unique<UI>();// UIオブジェクトの生成
-	userInterface->Create(m_pDR, path, position, scale, anchor);// 指定画像でUI作成
+	std::unique_ptr<UI> userInterface = std::make_unique<UI>(m_pCommonResources);// UIオブジェクトの生成
+	userInterface->Create(m_pDR, key, position, scale, anchor);// 指定画像でUI作成
 	userInterface->SetWindowSize(m_windowWidth, m_windowHeight);// ウィンドウサイズを設定
 	if (type == UIType::SELECT)// 選択可能なアイテムなら
 	{
 		m_pUI.push_back(std::move(userInterface));// アイテムを新しく追加
-		std::unique_ptr<UI> base = std::make_unique<UI>();// 背景用の選択枠も追加する
-		base->Create(m_pDR, m_pSelectTexturePath, position, scale, anchor);// 指定画像でUI作成
+		std::unique_ptr<UI> base = std::make_unique<UI>(m_pCommonResources);// 背景用の選択枠も追加する
+		base->Create(m_pDR, "Select", position, scale, anchor);// 指定画像でUI作成
 		base->SetWindowSize(m_windowWidth, m_windowHeight);// ウィンドウサイズを設定
 	}
 	else// 選択不可なアイテムなら

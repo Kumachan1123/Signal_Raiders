@@ -84,7 +84,7 @@ void Fade::Initialize()
 {
 	m_pDR = m_pCommonResources->GetDeviceResources();	// デバイスリソースの取得
 	CreateShaders();// シェーダーの作成
-	LoadTexture(L"Resources/Textures/fade.png");	// 画像の読み込み
+	m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Fade"));// テクスチャの取得
 	m_pDrawPolygon->InitializePositionTexture(m_pDR);	// 板ポリゴン描画用
 }
 /*

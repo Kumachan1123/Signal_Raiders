@@ -71,9 +71,9 @@ void EnemyCounter::LoadTexture(const wchar_t* path, std::vector<Microsoft::WRL::
 void EnemyCounter::Initialize(CommonResources* pCommonResources)
 {
 	m_pCommonResources = pCommonResources;// 共通リソースへのポインタ取得
-	LoadTexture(L"Resources/Textures/number.png", m_pTexture);//	数字テクスチャの読み込み
-	LoadTexture(L"Resources/Textures/remaining.png", m_pRemaining);//	「残り：」テクスチャの読み込み
-	LoadTexture(L"Resources/Textures/slash.png", m_pSlash);//	「/」テクスチャの読み込み
+	m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Number")); //	数字テクスチャの取得
+	m_pRemaining.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Remaining"));//	「残り：」テクスチャの取得
+	m_pSlash.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Slash"));//	「/」テクスチャの取得
 	m_pDrawPolygon->InitializePositionTexture(m_pCommonResources->GetDeviceResources());	// 板ポリゴン描画クラス初期化
 	m_pCreateShader->Initialize(m_pCommonResources->GetDeviceResources()->GetD3DDevice(), 	// シェーダー作成クラスの初期化
 		&INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);

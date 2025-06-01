@@ -62,6 +62,7 @@ void Game::Initialize(HWND window, int width, int height)
 	m_audioManager = std::make_unique<AudioManager>();// オーディオマネージャーを作成する
 	m_pCommonResources = std::make_unique<CommonResources>();// 共通リソースを作成する
 	m_modelManager = std::make_unique<ModelManager>();// モデルマネージャを作成する
+	m_textureManager = std::make_unique<TextureManager>();// テクスチャマネージャを作成する
 	m_pCommonResources->Initialize(// シーンへ渡す共通リソースを設定する
 		&m_timer,				// タイマー
 		m_deviceResources.get(),// デバイスリソース
@@ -69,10 +70,13 @@ void Game::Initialize(HWND window, int width, int height)
 		m_debugString.get(),	// デバッグ文字列
 		m_inputManager.get(),	// 入力マネージャ
 		m_audioManager.get(),	// オーディオマネージャ
-		m_modelManager.get()	// モデルマネージャ
+		m_modelManager.get(),	// モデルマネージャ
+		m_textureManager.get()	// テクスチャマネージャ (デフォルトはnullptr, モデルマネージャから取得する
 	);
 	m_modelManager->SetCommonResources(m_pCommonResources.get());// モデルマネージャに共通リソースを設定する
 	m_modelManager->Initialize();// モデルマネージャを初期化する
+
+	m_textureManager->Initialize(m_deviceResources->GetD3DDevice());// テクスチャマネージャを初期化する
 	m_sceneManager = std::make_unique<SceneManager>();	// シーンマネージャを作成する
 	m_sceneManager->Initialize(m_pCommonResources.get());// シーンマネージャを初期化する
 	ShowCursor(FALSE);//カーソルを見えるようにする

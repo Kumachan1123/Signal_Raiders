@@ -11,11 +11,13 @@
 #include <WICTextureLoader.h>
 #include <CommonStates.h>
 // 自作ヘッダーファイル
+#include "Game/CommonResources.h"
 #include "Game/KumachiLib/Anchor.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
-
+// 前方宣言
+class CommonResources;
 class  UI
 {
 public:// 構造体
@@ -45,11 +47,11 @@ public:// アクセサ
 	void SetTime(float time) { m_time = time; }// 時間を設定
 	bool IsHit(const DirectX::SimpleMath::Vector2& pos) const; // 指定位置にヒットしたかどうかを取得
 public:// public関数
-	UI();// コンストラクタ
+	UI(CommonResources* pCommonResources);// コンストラクタ
 	~UI();// デストラクタ
-	void LoadTexture(const wchar_t* path);// テクスチャの読み込み
+	void LoadTexture(std::string key);// テクスチャの読み込み
 	void Create(DX::DeviceResources* pDR// UIの作成
-		, const wchar_t* path
+		, std::string key
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
 		, KumachiLib::ANCHOR anchor);
@@ -60,6 +62,8 @@ private:// private関数
 public:// 定数
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;// インプットレイアウト
 private:// private変数
+	// 共通リソース
+	CommonResources* m_pCommonResources;
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;
 	// 時間

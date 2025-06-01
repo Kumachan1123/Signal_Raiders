@@ -60,7 +60,7 @@ void  Crisis::Create(DX::DeviceResources* pDR)
 	m_pDR = pDR;// デバイスリソースをセット
 	m_pDrawPolygon->InitializePositionTexture(m_pDR);// 板ポリゴン描画用
 	CreateShaders();// シェーダーの作成
-	LoadTexture(L"Resources/Textures/crisis.png");// 画像の読み込み
+	m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Crisis"));
 }
 /*
 *	@brief	シェーダー作成関数

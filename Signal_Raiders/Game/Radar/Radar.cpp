@@ -83,9 +83,9 @@ void Radar::Initialize(Player* pPlayer, EnemyManager* pEnemyManager)
 	m_pPlayer = pPlayer;// プレイヤーのポインターを渡す
 	m_pEnemyManager = pEnemyManager;// 敵マネージャーのポインターを渡す
 	m_pDrawPolygon->InitializePositionTexture(m_pCommonResources->GetDeviceResources());// 板ポリゴン描画準備
-	LoadTexture(L"Resources/Textures/RadarBack.png");// 背景
-	LoadTexture(L"Resources/Textures/PlayerPin.png");// プレイヤー
-	LoadTexture(L"Resources/Textures/EnemyPin.png ");// 敵
+	m_pTextures.push_back(m_pCommonResources->GetTextureManager()->GetTexture("RadarBack"));// 背景
+	m_pTextures.push_back(m_pCommonResources->GetTextureManager()->GetTexture("PlayerPin"));// プレイヤーのピン
+	m_pTextures.push_back(m_pCommonResources->GetTextureManager()->GetTexture("EnemyPin"));// 敵のピン
 	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Radar/VS_Radar.cso", m_pVertexShader); // 頂点シェーダ
 	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Radar/PS_Radar.cso", m_pPixelShader); // ピクセルシェーダ
 	m_pInputLayout = m_pCreateShader->GetInputLayout();// インプットレイアウトを受け取る

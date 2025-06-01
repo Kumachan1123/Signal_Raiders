@@ -5,6 +5,7 @@
 #pragma once
 // 標準ライブラリ
 #include <vector>
+#include <string>
 // DirectX
 #include <DeviceResources.h>
 #include "Game/CommonResources.h"
@@ -43,11 +44,11 @@ public:// public関数
 	void Initialize(CommonResources* resources, int width, int height)override;// 初期化
 	void Update(const UpdateContext& context)override { Update(context.elapsedTime); }// 更新(contextから時間を取得して更新)
 	void Render()override;// 描画
-	void Add(const wchar_t* path// メニューアイテムを追加
+	void Add(std::string key// メニューアイテムを追加
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
 		, KumachiLib::ANCHOR anchor
-		, UIType type);
+		, UIType type)override;
 private:// private関数
 	void Update(float elapsedTime);// 更新
 private:// private定数

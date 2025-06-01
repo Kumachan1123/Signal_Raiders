@@ -53,7 +53,6 @@ void DamageEffect::Initialize()
 	using namespace DirectX::SimpleMath;
 	m_playEffect = true;// エフェクト再生フラグをtrueにする
 	MakeShader();	// シェーダーの作成
-	LoadTexture(L"Resources/Textures/WARNING.png");// テクスチャ読み込み
 	m_pDrawPolygon->InitializePositionTexture(m_pDR);// 頂点情報の初期化
 	if (m_effectType == EffectType::DAMAGE)// ダメージエフェクトなら
 	{

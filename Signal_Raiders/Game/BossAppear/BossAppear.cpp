@@ -58,7 +58,7 @@ void BossAppear::Initialize(CommonResources* resources)
 	m_pDR = m_pCommonResources->GetDeviceResources();	// デバイスリソースの取得
 	m_pCreateShader->Initialize(m_pDR->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);	// シェーダー作成クラスの初期化
 	this->SettingShader();	// シェーダーの作成
-	this->LoadTexture(L"Resources/Textures/BossAppear.png");// テクスチャの読み込み
+	m_pTextures.push_back(m_pCommonResources->GetTextureManager()->GetTexture("BossAppear"));// テクスチャの取得
 	m_pDrawPolygon->InitializePositionTexture(m_pDR);// 板ポリゴン描画用
 
 }

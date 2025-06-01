@@ -59,8 +59,8 @@ void  Goal::Create(DX::DeviceResources* pDR)
 	m_pDR = pDR;// デバイスリソースをセット
 	CreateShaders();// シェーダーの作成
 	// 各画像の読み込み
-	LoadTexture(L"Resources/Textures/crisis.png");// 背景
-	LoadTexture(L"Resources/Textures/killAll.png");// 「すべての敵を倒せ！」のテクスチャ
+	m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Crisis"));// 背景テクスチャ
+	m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("KillAll"));// 「すべての敵を倒せ！」のテクスチャ
 	m_pDrawPolygon->InitializePositionTexture(m_pDR);// 板ポリゴン描画
 }
 /*

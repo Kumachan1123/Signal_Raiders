@@ -48,12 +48,12 @@ Effect::Effect(CommonResources* resources, EffectType type, DirectX::SimpleMath:
 	switch (m_type)// エフェクトの種類によって画像を読み込む
 	{
 	case EffectType::ENEMY_DEAD:// 敵死亡エフェクト
-		LoadTexture(L"Resources/Textures/effect.png");// テクスチャの読み込み
+		m_pTextures.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Effect")); // テクスチャの取得
 		m_frameRows = 4; // 画像の行数
 		m_frameCols = 5; // 画像の列数
 		break;
 	case EffectType::ENEMY_HIT:// 敵ヒットエフェクト
-		LoadTexture(L"Resources/Textures/hit.png");// テクスチャの読み込み
+		m_pTextures.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Hit")); // テクスチャの取得
 		m_frameRows = 2; // 画像の行数
 		m_frameCols = 4; // 画像の列数
 		break;

@@ -66,7 +66,7 @@ void TitleLogo::Create(DX::DeviceResources* pDR)
 {
 	m_pDR = pDR;// デバイスリソースをセット
 	CreateShaders();// シェーダーの作成
-	LoadTexture(L"Resources/Textures/Title.png");// 画像の読み込み　
+	m_pTitleTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Title"));// タイトルロゴのテクスチャを取得
 	m_pDrawPolygon->InitializePositionTexture(m_pDR);// 板ポリゴンの描画用
 }
 

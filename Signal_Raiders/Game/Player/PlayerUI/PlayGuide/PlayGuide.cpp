@@ -11,10 +11,11 @@
 *	@return なし
 */
 PlayGuide::PlayGuide()
-	: m_windowHeight(Screen::UI_HEIGHT)
-	, m_windowWidth(Screen::UI_WIDTH)
-	, m_pDR(nullptr)
-	, m_pPlayGuide(nullptr)
+	: m_windowHeight(Screen::UI_HEIGHT)	// ウィンドウの高さ
+	, m_windowWidth(Screen::UI_WIDTH)	// ウィンドウの幅
+	, m_pCommonResources(nullptr)		// 共通リソースへのポインタ
+	, m_pDR(nullptr)					// デバイスリソースへのポインタ
+	, m_pPlayGuide(nullptr)				// プレイ操作説明のUIポインタ
 {
 }
 /*
@@ -35,10 +36,11 @@ PlayGuide::~PlayGuide() {/*do nothing*/ }
 void PlayGuide::Initialize(CommonResources* resources, int width, int height)
 {
 	using namespace DirectX::SimpleMath;
+	m_pCommonResources = resources;// 共通リソースを設定
 	m_pDR = resources->GetDeviceResources();// デバイスリソースを取得
 	m_windowWidth = width;// ウィンドウの幅を設定
 	m_windowHeight = height;// ウィンドウの高さを設定
-	CreatePlayerUI(L"Resources/Textures/PlayGuide.png"// プレイ操作説明のテクスチャパス
+	CreatePlayerUI("PlayGuide"// プレイ操作説明のテクスチャパス
 		, Vector2(Screen::UI_LEFT, Screen::UI_BOTTOM)
 		, Vector2(0.5f, 0.5f)
 		, KumachiLib::ANCHOR::BOTTOM_LEFT);
@@ -75,18 +77,18 @@ void PlayGuide::Render()
 *	@brief UIの追加関数
 *	@details PlayerUIを追加する
 *	@param pPlayerUI 追加するPlayerUIのポインタ
-*	@param path テクスチャのパス
+*	@param key テクスチャのキー
 *	@param position UIの位置
 *	@param scale UIのスケール
 *	@param anchor UIのアンカー
 *	@return なし
 */
-void PlayGuide::Add(std::unique_ptr<PlayerUI>& pPlayerUI, const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
+void PlayGuide::Add(std::unique_ptr<PlayerUI>& pPlayerUI, std::string key, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
 {
-	pPlayerUI = std::make_unique<PlayerUI>();// PlayerUIのインスタンスを生成
+	pPlayerUI = std::make_unique<PlayerUI>(m_pCommonResources);// PlayerUIのインスタンスを生成
 	// UIの初期化
 	pPlayerUI->Create(m_pDR	// デバイスリソース
-		, path				// テクスチャのパス
+		, key				// テクスチャのパス
 		, position			// UIの位置
 		, scale				// UIのスケール
 		, anchor);			// UIのアンカーを設定
@@ -95,15 +97,15 @@ void PlayGuide::Add(std::unique_ptr<PlayerUI>& pPlayerUI, const wchar_t* path, D
 /*
 *	@brief UI作成関数
 *	@details プレイ操作説明のUIを作成する
-*	@param path テクスチャのパス
+*	@param key テクスチャのキー
 *	@param position UIの位置
 *	@param scale UIのスケール
 *	@param anchor UIのアンカー
 *	@return なし
 */
-void PlayGuide::CreatePlayerUI(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
+void PlayGuide::CreatePlayerUI(std::string key, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
 {
-	Add(m_pPlayGuide, path, position, scale, anchor);// UIを追加する関数を呼び出す
+	Add(m_pPlayGuide, key, position, scale, anchor);// UIを追加する関数を呼び出す
 }
 
 

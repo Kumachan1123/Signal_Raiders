@@ -53,43 +53,43 @@ void StageSelectMenu::Initialize(CommonResources* resources, int width, int heig
 	m_windowHeight = height;// ウィンドウ高さ
 	m_pSelectTexturePath = L"Resources/Textures/StageSelect.png";// 選択枠のテクスチャパス設定
 	//「ステージ1の写真」を読み込む
-	Add(L"Resources/Textures/stage1.png"
+	Add("Stage1"
 		, Vector2(Screen::CENTER_X - 550, Screen::CENTER_Y - 70)
 		, Vector2(.7, .7)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//「ステージ2の写真」を読み込む
-	Add(L"Resources/Textures/stage2.png"
+	Add("Stage2"
 		, Vector2(Screen::CENTER_X, Screen::CENTER_Y - 70)
 		, Vector2(.7, .7)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//「ステージ3の写真」を読み込む
-	Add(L"Resources/Textures/stage3.png"
+	Add("Stage3"
 		, Vector2(Screen::CENTER_X + 550, Screen::CENTER_Y - 70)
 		, Vector2(.7, .7)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//「ステージ4の写真」を読み込む
-	Add(L"Resources/Textures/stage4.png"
+	Add("Stage4"
 		, Vector2(Screen::CENTER_X - 550, Screen::CENTER_Y + 250)
 		, Vector2(.7, .7)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//「ステージ5の写真」を読み込む
-	Add(L"Resources/Textures/stage5.png"
+	Add("Stage5"
 		, Vector2(Screen::CENTER_X, Screen::CENTER_Y + 250)
 		, Vector2(.7, .7)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//「タイトルに戻る」を読み込む
-	Add(L"Resources/Textures/ToTitle.png"
+	Add("ToTitle"
 		, Vector2(Screen::CENTER_X + 550, Screen::CENTER_Y + 250)
 		, Vector2(.7, .7)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//「操作説明」を読み込む
-	Add(L"Resources/Textures/Guide.png"
+	Add("Guide"
 		, Vector2(Screen::RIGHT, Screen::BOTTOM)
 		, Vector2(1, 1)
 		, KumachiLib::ANCHOR::BOTTOM_RIGHT
@@ -168,23 +168,23 @@ void StageSelectMenu::Render()
 /*
 	@brief メニューアイテムを追加する
 	@details 指定の画像でUIを作成し、内部リストに追加する (選択可なら背景枠も作成)
-	@param path 画像ファイルのパス
+	@param key 画像ファイルのキー
 	@param position 描画位置
 	@param scale 描画スケール
 	@param anchor アンカー指定
 	@param type メニューの種類（選択可/不可）
 	@return なし
 */
-void StageSelectMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor, UIType type)
+void StageSelectMenu::Add(std::string key, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor, UIType type)
 {
-	std::unique_ptr<UI> userInterface = std::make_unique<UI>();// UIオブジェクトの生成
-	userInterface->Create(m_pDR, path, position, scale, anchor);// 指定画像でUI作成
+	std::unique_ptr<UI> userInterface = std::make_unique<UI>(m_pCommonResources);// UIオブジェクトの生成
+	userInterface->Create(m_pDR, key, position, scale, anchor);// 指定画像でUI作成
 	userInterface->SetWindowSize(m_windowWidth, m_windowHeight);// ウィンドウサイズを設定
 	if (type == UIType::SELECT)// 選択可能なアイテムなら
 	{
 		m_pUI.push_back(std::move(userInterface));// アイテムを新しく追加		
-		std::unique_ptr<UI> base = std::make_unique<UI>();// 背景用のウィンドウ画像も追加する
-		base->Create(m_pDR, m_pSelectTexturePath, position, scale, anchor);// 指定画像でUI作成
+		std::unique_ptr<UI> base = std::make_unique<UI>(m_pCommonResources);// 背景用のウィンドウ画像も追加する
+		base->Create(m_pDR, "StageSelect", position, scale, anchor);// 指定画像でUI作成
 		base->SetWindowSize(m_windowWidth, m_windowHeight);// ウィンドウサイズを設定
 		m_pSelect.push_back(std::move(base));// 背景用のアイテムも新しく追加する
 	}

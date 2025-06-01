@@ -63,7 +63,7 @@ void StageSelect::Create(DX::DeviceResources* pDR)
 	using namespace DirectX::SimpleMath;
 	m_pDR = pDR;// デバイスリソースをセット
 	CreateShaders();// シェーダーの作成
-	LoadTexture(L"Resources/Textures/StageSelectTex.png");// 画像の読み込み
+	m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("StageSelectText"));// テクスチャの取得
 	m_ConstBuffer.color = SimpleMath::Vector4(.25, .25, .25, 0);// グラデーションエフェクトの色設定
 	VertexPositionTexture vertex[4] =// 頂点情報とUV情報
 	{

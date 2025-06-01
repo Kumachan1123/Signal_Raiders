@@ -74,13 +74,13 @@ void Particle::Initialize(CommonResources* resources)
 		m_animSpeed = 1;//	アニメーションの速度
 		m_frameCols = 1;//	フレームの列数
 		m_frameRows = 1;//	フレームの行数
-		LoadTexture(L"Resources/Textures/Trail.png");// テクスチャの読み込み
+		m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Trail"));// テクスチャの取得
 		break;
 	case ParticleUtility::Type::BARRIERBREAK:// バリア破壊
 		m_animSpeed = 17.0f;// アニメーションの速度
 		m_frameCols = 5;// 	フレームの列数
 		m_frameRows = 4;// 	フレームの行数
-		LoadTexture(L"Resources/Textures/break.png");// テクスチャの読み込み
+		m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Break"));// テクスチャの取得
 		break;
 	default:// それ以外のパーティクル
 		break;

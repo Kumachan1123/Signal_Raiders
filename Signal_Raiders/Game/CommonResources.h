@@ -8,6 +8,7 @@
 // 自作ヘッダーファイル
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/KumachiLib/ModelManager/ModelManager.h"
+#include "Game/KumachiLib/TextureManager/TextureManager.h"
 
 // 前方宣言
 namespace DX
@@ -21,7 +22,7 @@ namespace mylib
 	class InputManager;
 }
 class ModelManager;
-
+class TextureManager;
 class CommonResources
 {
 public:// アクセサ
@@ -32,6 +33,7 @@ public:// アクセサ
 	mylib::InputManager* GetInputManager() const { return m_inputManager; }// 入力マネージャを取得する
 	AudioManager* GetAudioManager() const { return m_audioManager; }// オーディオマネージャを取得する
 	ModelManager* GetModelManager() const { return m_modelManager; }// モデルマネージャを取得する
+	TextureManager* GetTextureManager() const { return m_textureManager; }// テクスチャマネージャを取得する
 public:// publicメソッド
 	CommonResources();// コンストラクタ
 	~CommonResources() = default;// デストラクタ defaultで定義
@@ -42,7 +44,9 @@ public:// publicメソッド
 		mylib::DebugString* debugString,// 受け渡しするデバッグ文字列
 		mylib::InputManager* inputManager,// 受け渡しする入力マネージャ
 		AudioManager* audioManager,// 受け渡しするオーディオマネージャ
-		ModelManager* modelManager// 受け渡しするモデルマネージャ
+		ModelManager* modelManager,// 受け渡しするモデルマネージャ
+		TextureManager* textureManager  // 受け渡しするテクスチャマネージャ (デフォルトはnullptr, モデルマネージャから取得するため)
+
 	);
 private:// privateメンバ変数
 	// 受け渡しするリソース一覧
@@ -60,4 +64,6 @@ private:// privateメンバ変数
 	AudioManager* m_audioManager;
 	// モデルマネージャ
 	ModelManager* m_modelManager;
+	// テクスチャマネージャ
+	TextureManager* m_textureManager;
 };

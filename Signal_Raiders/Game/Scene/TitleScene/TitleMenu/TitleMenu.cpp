@@ -51,27 +51,27 @@ void TitleMenu::Initialize(CommonResources* resources, int width, int height)
 	m_pDR = m_pCommonResources->GetDeviceResources();// デバイスリソース取得
 	m_windowWidth = width;// ウィンドウ幅
 	m_windowHeight = height;// ウィンドウ高さ
-	m_pSelectTexturePath = L"Resources/Textures/select.png";// 選択枠のテクスチャパス設定
+	//m_pSelectTexturePath = L"Resources/Textures/Select.png";// 選択枠のテクスチャパス設定
 	//  「プレイ」を読み込む
-	Add(L"Resources/Textures/play.png"
+	Add("Play"
 		, Vector2(Screen::CENTER_X, Screen::CENTER_Y + 250)
 		, Vector2(.5, .5)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//  「せってい」を読み込む
-	Add(L"Resources/Textures/setting.png"
+	Add("Setting"
 		, Vector2(Screen::CENTER_X, Screen::CENTER_Y + 350)
 		, Vector2(.5, .5)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//  「おわる」を読み込む
-	Add(L"Resources/Textures/end.png"
+	Add("Cancel"
 		, Vector2(Screen::CENTER_X, Screen::CENTER_Y + 450)
 		, Vector2(.5, .5)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	//  「操作説明」を読み込む
-	Add(L"Resources/Textures/Guide.png"
+	Add("Guide"
 		, Vector2(Screen::RIGHT, Screen::BOTTOM)
 		, Vector2(1, 1)
 		, KumachiLib::ANCHOR::BOTTOM_RIGHT
@@ -156,24 +156,24 @@ void TitleMenu::Render()
 /*
 	@brief メニューアイテムを追加する
 	@details 指定の画像でUIを作成し、内部リストに追加する (選択可なら背景枠も作成)
-	@param path 画像ファイルのパス
+	@param key 画像ファイルのキー
 	@param position 描画位置
 	@param scale 描画スケール
 	@param anchor アンカー指定
 	@param type メニューの種類（選択可/不可）
 	@return なし
 */
-void TitleMenu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor, UIType type)
+void TitleMenu::Add(std::string key, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor, UIType type)
 {
-	std::unique_ptr<UI> userInterface = std::make_unique<UI>();// メニューとしてアイテムを追加する
-	userInterface->Create(m_pDR, path, position, scale, anchor);// 指定された画像を表示するためのアイテムを作成する
+	std::unique_ptr<UI> userInterface = std::make_unique<UI>(m_pCommonResources);// メニューとしてアイテムを追加する
+	userInterface->Create(m_pDR, key, position, scale, anchor);// 指定された画像を表示するためのアイテムを作成する
 	userInterface->SetWindowSize(m_windowWidth, m_windowHeight);// ウィンドウのサイズを設定する
 	if (type == UIType::SELECT)// 選択可能なアイテムなら
 	{
 		m_pUI.push_back(std::move(userInterface));//  選択可能アイテムを新しく追加
 
-		std::unique_ptr<UI> base = std::make_unique<UI>();//  背景用のウィンドウ画像も追加する
-		base->Create(m_pDR, m_pSelectTexturePath, position, scale, anchor);// 指定された画像を表示するためのアイテムを作成する
+		std::unique_ptr<UI> base = std::make_unique<UI>(m_pCommonResources);//  背景用のウィンドウ画像も追加する
+		base->Create(m_pDR, "Select", position, scale, anchor);// 指定された画像を表示するためのアイテムを作成する
 		base->SetWindowSize(m_windowWidth, m_windowHeight);// ウィンドウのサイズを設定する
 		m_pSelect.push_back(std::move(base));// 背景用のアイテムも新しく追加する
 		m_transforms.push_back({ position, scale });// UIの情報を配列に登録

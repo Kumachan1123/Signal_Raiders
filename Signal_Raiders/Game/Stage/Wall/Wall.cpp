@@ -65,10 +65,11 @@ void  Wall::LoadTexture(const wchar_t* path)
 void  Wall::Create(DX::DeviceResources* pDR)
 {
 	using namespace DirectX;
+	auto pTexture = m_pCommonResources->GetTextureManager();// テクスチャマネージャーを取得
 	m_pDR = pDR;// デバイスリソースを保存
 	CreateShaders();// シェーダーの作成
 	CreateWalls();// 壁の初期化
-	LoadTexture(L"Resources/Textures/Wall.png");// 画像の読み込み 
+	m_pWallTexture.push_back(pTexture->GetTexture("Wall"));// 壁のテクスチャを追加 
 	m_pDrawPolygon->InitializePositionTexture(m_pDR);// 板ポリゴン描画用
 }
 void Wall::CreateShaders()

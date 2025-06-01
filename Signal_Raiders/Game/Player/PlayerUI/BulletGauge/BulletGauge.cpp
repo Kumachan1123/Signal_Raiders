@@ -14,6 +14,7 @@ BulletGauge::BulletGauge()
 	: m_windowHeight(0)// ウィンドウの高さ
 	, m_windowWidth(0)// ウィンドウの幅
 	, m_pDR(nullptr) // デバイスリソースへのポインタ
+	, m_pCommonResources(nullptr) // 共通リソースへのポインタ
 	, m_baseTexturePath(nullptr) // ベーステクスチャのパス
 	, m_pGauge(nullptr) // ゲージのポインタ
 {
@@ -36,11 +37,12 @@ BulletGauge::~BulletGauge() {/*do nothing*/ }
 void BulletGauge::Initialize(CommonResources* resources, int width, int height)
 {
 	using namespace DirectX::SimpleMath;
+	m_pCommonResources = resources; // 共通リソースを設定
 	m_pDR = resources->GetDeviceResources();// デバイスリソース取得
 	m_windowWidth = width;// ウィンドウ幅
 	m_windowHeight = height;// ウィンドウ高さ
-	Add(m_pGauge,// ゲージの追加
-		L"Resources/Textures/BulletGauge.png"
+	Add(m_pGauge// ゲージの追加
+		, "BulletGauge"
 		, Vector2(640, 360)
 		, Vector2(0.8f, 0.8f)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER);
@@ -72,21 +74,21 @@ void BulletGauge::Render()
 *	@brief プレイヤーUIを追加する
 *	@details プレイヤーUIを追加する
 *	@param pPlayerUI プレイヤーUIのユニークポインタ
-*	@param path テクスチャのパス
+*	@param key テクスチャのキー
 *	@param position プレイヤーUIの位置
 *	@param scale プレイヤーUIのスケール
 *	@param anchor アンカーの種類
 */
 void BulletGauge::Add(std::unique_ptr<PlayerUI>& pPlayerUI
-	, const wchar_t* path
+	, std::string key
 	, DirectX::SimpleMath::Vector2 position
 	, DirectX::SimpleMath::Vector2 scale
 	, KumachiLib::ANCHOR anchor)
 {
-	pPlayerUI = std::make_unique<PlayerUI>();// プレイヤーUIのユニークポインタを生成
+	pPlayerUI = std::make_unique<PlayerUI>(m_pCommonResources);// プレイヤーUIのユニークポインタを生成
 	// プレイヤーUIの作成
 	pPlayerUI->Create(m_pDR	// デバイスリソース
-		, path				// テクスチャのパス
+		, key				// テクスチャのパス
 		, position			// プレイヤーUIの位置
 		, scale				// プレイヤーUIのスケール
 		, anchor);			// アンカーの種類

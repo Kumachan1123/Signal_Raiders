@@ -103,7 +103,7 @@ void EnemyHPBar::Initialize(CommonResources* resources)
 	m_pCommonResources = resources;// 共通リソースを取得
 	m_pDrawPolygon->InitializePositionTexture(m_pCommonResources->GetDeviceResources());	// 板ポリゴン描画用クラスの初期化
 	CreateShaders();	// シェーダーの作成
-	LoadTexture(L"Resources/Textures/EnemyHPBar.png");// テクスチャ読み込み
+	m_pGaugeTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("EnemyHPBar"));// テクスチャの取得
 	m_displayedHP = (float)(m_maxHP);// 初期HP
 }
 /*

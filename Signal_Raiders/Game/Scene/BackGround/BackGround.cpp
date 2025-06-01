@@ -63,7 +63,7 @@ void  BackGround::Create(DX::DeviceResources* pDR)
 {
 	m_pDR = pDR;// デバイスリソースの取得
 	CreateShaders();// シェーダーの作成
-	LoadTexture(L"Resources/Textures/Back.png");// 画像の読み込み　
+	m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("BackGround"));// テクスチャの取得
 	m_pDrawPolygon->InitializePositionTexture(m_pDR);// 板ポリゴン描画用
 }
 /*

@@ -5,6 +5,7 @@
 #pragma once
 // 標準ライブラリ
 #include <vector>
+#include <string>
 // DirectX
 #include <DeviceResources.h>
 #include <SimpleMath.h>
@@ -15,6 +16,8 @@
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/KumachiLib/Anchor.h"
+// 前方宣言
+class CommonResources;
 class PlayerUI
 {
 public:// 列挙型
@@ -52,11 +55,11 @@ public:// アクセサ
 	void SetFrameRows(int rows) { m_frameRows = rows; }// フレームの行数の設定
 	void SetFrameCols(int cols) { m_frameCols = cols; }// フレームの列数の設定
 public:// public関数
-	PlayerUI();// コンストラクタ
+	PlayerUI(CommonResources* pCommonResources);// コンストラクタ
 	~PlayerUI();// デストラクタ
-	void LoadTexture(const wchar_t* path);// テクスチャの読み込み
+	void LoadTexture(std::string key);// テクスチャの読み込み
 	void Create(DX::DeviceResources* pDR// UIの作成
-		, const wchar_t* path
+		, std::string key
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
 		, KumachiLib::ANCHOR anchor);
@@ -67,6 +70,8 @@ private:// private関数
 private:// 定数
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;// インプットレイアウト
 private:// private変数
+	// 共通リソースへのポインタ
+	CommonResources* m_pCommonResources;
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;
 	// コンスタントバッファ
