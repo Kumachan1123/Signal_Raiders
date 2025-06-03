@@ -82,10 +82,10 @@ public:
 	~EnemyBullet()override;// ƒfƒXƒgƒ‰ƒNƒ^
 	void Initialize(CommonResources* pCommonResources)override;// ‰Šú‰»
 	void Update(float elapsedTime)override;// XV
-	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;// •`‰æ
-	void RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;// ‰e•`‰æ
-	void RenderBoundingSphere(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);// ‹«ŠE‹…•`‰æ
-	void MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir, DirectX::SimpleMath::Vector3& target);// ’e‚Ì¶¬
+	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)override;// •`‰æ
+	void RenderShadow(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)override;// ‰e•`‰æ
+	void RenderBoundingSphere(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);// ‹«ŠE‹…•`‰æ
+	void MakeBall(const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Vector3& dir, const DirectX::SimpleMath::Vector3& target);// ’e‚Ì¶¬
 	bool IsExpired() const;// ’e‚ª¶¬‚³‚ê‚Ä‚©‚ç‚ÌŒo‰ßŠÔ‚ªõ–½‚ğ’´‚¦‚½‚©‚Ç‚¤‚©‚ğ”»’è‚·‚é
 private:
 	// privateŠÖ”

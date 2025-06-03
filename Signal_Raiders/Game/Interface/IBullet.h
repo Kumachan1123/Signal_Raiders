@@ -7,12 +7,16 @@
 class CommonResources;
 class IBullet
 {
-public:
-	// 関数
-	virtual ~IBullet() = default;// デストラクタ
-	virtual void Initialize(CommonResources* resources) = 0;// 初期化
-	virtual void Update(float elapsedTime) = 0;// 更新
-	virtual void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) = 0;// 描画
-	virtual void RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) = 0;// 影の描画
+public:	// public関数
+	// デストラクタ
+	virtual ~IBullet() = default;
+	// 初期化
+	virtual void Initialize(CommonResources* resources) = 0;
+	// 更新
+	virtual void Update(float elapsedTime) = 0;
+	// 描画
+	virtual void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj) = 0;
+	// 影の描画
+	virtual void RenderShadow(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj) = 0;
 };
 #endif		// IBULLET_DEFINED

@@ -8,8 +8,7 @@
 class EnemyBullet;
 class IEnemyBullet
 {
-public:
-	// public関数
+public:// public関数
 	virtual ~IEnemyBullet() = default;// デストラクタ
 	virtual void Initialize() = 0;// 初期化
 	virtual void Update(float elapsedTime) = 0;//	更新

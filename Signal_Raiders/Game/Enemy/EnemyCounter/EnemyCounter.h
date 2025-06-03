@@ -24,9 +24,9 @@
 class CommonResources;
 class EnemyCounter
 {
-private:
-	// private構造体
-	struct ConstBuffer// コンスタントバッファ
+private:// private構造体
+	// シェーダーに渡す定数バッファ
+	struct ConstBuffer
 	{
 		DirectX::SimpleMath::Matrix matWorld;   // ワールド行列
 		DirectX::SimpleMath::Matrix matView;    // ビュー行列
@@ -34,9 +34,8 @@ private:
 		DirectX::SimpleMath::Vector4 count;     // カウント
 		DirectX::SimpleMath::Vector4 height;    // 高さ
 		DirectX::SimpleMath::Vector4 width;     // 幅
-
 	};
-public:
+public:// public関数
 	// コンストラクタ
 	EnemyCounter();
 	// デストラクタ
@@ -47,11 +46,11 @@ public:
 	void Update(float elapsedTime);
 	// 描画する
 	void Render();
+	// 敵の総数を設定する
 	void SetEnemyIndex(int enemyIndex) { m_enemyIndex = enemyIndex; }
 	// 現在の敵の数を設定する
 	void SetNowEnemy(int nowEnemy) { m_nowEnemy = nowEnemy; }
-private:
-	void LoadTexture(const wchar_t* path, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& tex);
+private:// private関数
 	// 総数の10の位を描画
 	void DrawEnemyIndex10();
 	// 総数の1の位を描画
@@ -65,42 +64,37 @@ private:
 		DirectX::VertexPositionTexture* vertices,
 		float startX, float startY, float width, float height,
 		int frameIndex, int frameCols, int frameRows);
-public:
-	// public定数
-	static const int VERTEX_COUNT = 4; // 頂点数
-	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;// インプットレイアウト
-
+public:	// public定数
+	// 頂点数
+	static const int VERTEX_COUNT = 4;
+	// インプットレイアウト
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 	// 各画像の描画位置とサイズ
 	// 「残り：」の描画位置・サイズ
-	const float REMAINING_POS_X = 0.4f;
-	const float REMAINING_POS_Y = 1.0f;
-	const float REMAINING_SIZE_X = 0.25f;
-	const float REMAINING_SIZE_Y = 0.18f;
-
+	const float REMAINING_POS_X = 0.4f;// 残りの表示位置X
+	const float REMAINING_POS_Y = 1.0f;// 残りの表示位置Y
+	const float REMAINING_SIZE_X = 0.25f;// 残りの表示サイズX
+	const float REMAINING_SIZE_Y = 0.18f;//	残りの表示サイズY
 	// 「/」の描画位置・サイズ
-	const float SLASH_POS_X = 0.8f;
-	const float SLASH_POS_Y = 1.0f;
-	const float SLASH_SIZE_X = 0.05f;
-	const float SLASH_SIZE_Y = 0.18f;
-
+	const float SLASH_POS_X = 0.8f;// 「/」の表示位置X
+	const float SLASH_POS_Y = 1.0f;// 「/」の表示位置Y
+	const float SLASH_SIZE_X = 0.05f;// 「/」の表示サイズX
+	const float SLASH_SIZE_Y = 0.18f;// 「/」の表示サイズY
 	// 現在の敵の数の1の位・10の位の描画位置・サイズ
-	const float NOW_ENEMY_10_POS_X = 0.66f;
-	const float NOW_ENEMY_10_POS_Y = 1.0f;
-	const float NOW_ENEMY_1_POS_X = 0.72f;
-	const float NOW_ENEMY_1_POS_Y = 1.0f;
-	const float NOW_ENEMY_SIZE_X = 0.08f;
-	const float NOW_ENEMY_SIZE_Y = 0.18f;
-
+	const float NOW_ENEMY_10_POS_X = 0.66f;// 現在の敵の数の10の位の表示位置X
+	const float NOW_ENEMY_10_POS_Y = 1.0f;// 現在の敵の数の10の位の表示位置Y
+	const float NOW_ENEMY_1_POS_X = 0.72f;// 現在の敵の数の1の位の表示位置X
+	const float NOW_ENEMY_1_POS_Y = 1.0f;// 現在の敵の数の1の位の表示位置Y
+	const float NOW_ENEMY_SIZE_X = 0.08f;// 現在の敵の数の表示サイズX
+	const float NOW_ENEMY_SIZE_Y = 0.18f;// 現在の敵の数の表示サイズY
 	// 敵の総数の1の位・10の位の描画位置・サイズ
-	const float ENEMY_INDEX_10_POS_X = 0.86f;
-	const float ENEMY_INDEX_10_POS_Y = 1.0f;
-	const float ENEMY_INDEX_1_POS_X = 0.92f;
-	const float ENEMY_INDEX_1_POS_Y = 1.0f;
-	const float ENEMY_INDEX_SIZE_X = 0.08f;
-	const float ENEMY_INDEX_SIZE_Y = 0.18f;
-
-private:
-	// private変数
+	const float ENEMY_INDEX_10_POS_X = 0.86f;// 敵の総数の10の位の表示位置X
+	const float ENEMY_INDEX_10_POS_Y = 1.0f;// 敵の総数の10の位の表示位置Y
+	const float ENEMY_INDEX_1_POS_X = 0.92f;// 敵の総数の1の位の表示位置X
+	const float ENEMY_INDEX_1_POS_Y = 1.0f;// 敵の総数の1の位の表示位置Y
+	const float ENEMY_INDEX_SIZE_X = 0.08f;// 敵の総数の表示サイズX
+	const float ENEMY_INDEX_SIZE_Y = 0.18f;// 敵の総数の表示サイズY
+private:// private変数
 	// 共通リソースへのポインタ
 	CommonResources* m_pCommonResources;
 	// 敵の総数(保存用）
@@ -159,7 +153,4 @@ private:
 	DirectX::SimpleMath::Matrix m_view;
 	// プロジェクション行列
 	DirectX::SimpleMath::Matrix m_proj;
-
-
-
 };

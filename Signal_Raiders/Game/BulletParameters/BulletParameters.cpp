@@ -1,6 +1,6 @@
 /*
-	@file	BulletParameters.cpp
-	@brief	弾パラメータークラス
+*	@file	BulletParameters.cpp
+*	@brief	弾パラメータークラス
 */
 #include <pch.h>
 #include "BulletParameters.h"

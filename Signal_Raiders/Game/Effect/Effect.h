@@ -18,17 +18,17 @@
 class CommonResources;
 class Effect
 {
-public:
-	// 列挙型
-	enum class EffectType// エフェクトの種類
+public:	// 列挙型
+	// エフェクトの種類
+	enum class EffectType
 	{
 		ENEMY_DEAD = 0,// 敵死亡エフェクト
 		ENEMY_HIT,// 敵ヒットエフェクト
 		NONE,// なし
 	};
-public:
-	// 構造体
-	struct ConstBuffer	// データ受け渡し用コンスタントバッファ(送信側)
+public:// 構造体
+	// シェーダーに渡す定数バッファ
+	struct ConstBuffer
 	{
 		DirectX::SimpleMath::Matrix matWorld;   // ワールド行列
 		DirectX::SimpleMath::Matrix matView;    // ビュー行列
@@ -37,34 +37,38 @@ public:
 		DirectX::SimpleMath::Vector4 height;    // 高さ
 		DirectX::SimpleMath::Vector4 width;     // 幅
 	};
-public:
-	// アクセサ
-	bool IsPlaying() const { return m_isPlaying; }// 再生中か
-	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }// 座標取得
+public:	// アクセサ
+	// 再生中かのフラグ取得
+	bool IsPlaying() const { return m_isPlaying; }
+	// 座標取得
+	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
 	// publicメンバ関数
-	Effect(	// コンストラクタ
-		CommonResources* resources,// 共通リソース
+	// コンストラクタ
+	Effect(CommonResources* resources,// 共通リソース
 		EffectType type,// エフェクトの種類
-		DirectX::SimpleMath::Vector3 playPos,// 再生する座標
+		const DirectX::SimpleMath::Vector3& playPos,// 再生する座標
 		float scale,// スケール
-		DirectX::SimpleMath::Matrix world);// ワールド行列
-	~Effect();	// デストラクタ
-	void Update(float elapsedTime);// 更新
-	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);// 描画
-	void Finalize();// 終了処理
-
-
-private:
-	void LoadTexture(const wchar_t* path);// 画像を読み込む
+		const DirectX::SimpleMath::Matrix& world);// ワールド行列
+	// デストラクタ
+	~Effect();
+	// 更新
+	void Update(float elapsedTime);
+	// 描画
+	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+	// 終了処理
+	void Finalize();
+private:// privateメンバ関数
+	// 画像を読み込む
+	void LoadTexture(const wchar_t* path);
 private:// 定数
-	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;// 入力レイアウト
+	// 入力レイアウト
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 	// 板ポリゴンの頂点座標
 	static const float m_vertexMinX;//左
 	static const float m_vertexMaxX;//右
 	static const float m_vertexMinY;//下
 	static const float m_vertexMaxY;//上
-private:
-	// メンバ変数
+private:// privateメンバ変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// エフェクトを再生する座標
@@ -112,7 +116,4 @@ private:
 	int m_frameCols;//列
 	// エフェクトによって高さを変える
 	float m_offSetY;
-
-
-
 };

@@ -1,6 +1,6 @@
 /*
-	@file	BulletParameters.h
-	@brief	弾パラメータークラス
+*	@file	BulletParameters.h
+*	@brief	弾パラメータークラス
 */
 #pragma once
 class BulletParameters

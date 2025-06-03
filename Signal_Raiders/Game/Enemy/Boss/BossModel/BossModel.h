@@ -24,17 +24,21 @@ class CommonResources;
 class IState;
 class BossModel : public IModel
 {
-public:
-	// publicメンバ関数
-	BossModel();// コンストラクタ
-	~BossModel()override;// デストラクタ
-	void Initialize(CommonResources* resources)override;// 初期化
-	void SetState(IState::EnemyState State) { m_nowState = State; }// ステートの設定
-	void Render(ID3D11DeviceContext1* context,// 描画
+public:// publicメンバ関数
+	// コンストラクタ
+	BossModel();
+	// デストラクタ
+	~BossModel()override;
+	// 初期化
+	void Initialize(CommonResources* resources)override;
+	// ステートの設定
+	void SetState(IState::EnemyState State) { m_nowState = State; }
+	// 描画
+	void Render(ID3D11DeviceContext1* context,
 		DirectX::DX11::CommonStates* states,
-		DirectX::SimpleMath::Matrix world,
-		DirectX::SimpleMath::Matrix view,
-		DirectX::SimpleMath::Matrix proj)override;
+		const DirectX::SimpleMath::Matrix& world,
+		const DirectX::SimpleMath::Matrix& view,
+		const DirectX::SimpleMath::Matrix& proj)override;
 private:
 	// 共通リソース
 	CommonResources* m_pCommonResources;

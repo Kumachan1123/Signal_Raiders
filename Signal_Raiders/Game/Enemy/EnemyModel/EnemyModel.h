@@ -23,31 +23,37 @@ class CommonResources;
 class IState;
 class EnemyModel : public IModel
 {
-public:
-	// public関数
-	EnemyModel();// コンストラクタ
-	~EnemyModel()override;	// デストラクタ
-	void Initialize(CommonResources* resources)override;//　初期化
-	void SetState(IState::EnemyState State)override { m_nowState = State; }// 状態をセット
-	void Render(ID3D11DeviceContext1* context,// 描画
+public:	// public関数
+	// コンストラクタ
+	EnemyModel();
+	// デストラクタ
+	~EnemyModel()override;
+	// 初期化
+	void Initialize(CommonResources* resources)override;
+	// 状態をセット
+	void SetState(IState::EnemyState State)override { m_nowState = State; }
+	// 描画
+	void Render(ID3D11DeviceContext1* context,
 		DirectX::DX11::CommonStates* states,
-		DirectX::SimpleMath::Matrix world,
-		DirectX::SimpleMath::Matrix view,
-		DirectX::SimpleMath::Matrix proj)override;
-private:
-	// private変数
+		const DirectX::SimpleMath::Matrix& world,
+		const DirectX::SimpleMath::Matrix& view,
+		const DirectX::SimpleMath::Matrix& proj)override;
+private:// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
-	// モデル
-	DirectX::Model* m_pBodyModel;// 頭 
-	DirectX::Model* m_pAntennaModel;//アンテナ
-	DirectX::Model* m_pHandModel;//手
-	std::unordered_map<IState::EnemyState, DirectX::Model*> m_pFaceModelMap;// 表情によって変わる顔のモデルのマップ
-	DirectX::Model* m_pShadowModel;	// 影用のモデル
+	// 頭モデル
+	DirectX::Model* m_pBodyModel;
+	// アンテナモデル
+	DirectX::Model* m_pAntennaModel;
+	// 手モデル
+	DirectX::Model* m_pHandModel;
+	// 表情によって変わる顔のモデルのマップ
+	std::unordered_map<IState::EnemyState, DirectX::Model*> m_pFaceModelMap;
+	// 影用のモデル
+	DirectX::Model* m_pShadowModel;
 	// モデルの影用のピクセルシェーダー
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
 	// 現在のステータス
 	IState::EnemyState m_nowState;
-
 };
 #endif //ENEMY_MODEL_DEFINED

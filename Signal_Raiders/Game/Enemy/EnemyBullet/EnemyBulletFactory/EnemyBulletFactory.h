@@ -22,9 +22,9 @@ class SpecialBullet;
 class EnemyBullet;
 class EnemyBulletFactory
 {
-public:
-	// publicÃ“IŠÖ”
-	static std::unique_ptr<IEnemyBullet> CreateBullet(BulletType type);// ’e‚Ì¶¬
+public:// publicÃ“IŠÖ”
+	// ’e‚Ì¶¬
+	static std::unique_ptr<IEnemyBullet> CreateBullet(BulletType type);
 };
 #endif //ENEMY_BULLET_FACTORY_DEFINED
 

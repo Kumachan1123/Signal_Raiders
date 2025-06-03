@@ -26,22 +26,32 @@ class CommonResources;
 class EnemyAI;
 class EnemyAttack : public IState
 {
-public:
-	// アクセサ
-	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }// 位置を取得
-	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }// 位置を設定
-	DirectX::SimpleMath::Quaternion GetRotation() const { return m_rotation; }// 回転を取得
-	void SetRotation(DirectX::SimpleMath::Quaternion rot) { m_rotation = rot; }// 回転を設定
-	float GetCoolTime() const { return m_attackCooldown; }// クールタイムを取得
-	void SetCoolTime(float coolTime) { m_attackCooldown = coolTime; }// クールタイムを設定
-	void SetScale(DirectX::SimpleMath::Vector3 sca) { m_scale = sca; }// サイズを設定
-	void SetRotationSpeed(float speed) { m_rotationSpeed = speed; }// 回転速度を設定
-public:
-	// publicメンバ関数
-	EnemyAttack(EnemyAI* enemyAI);// コンストラクタ
-	~EnemyAttack();	// デストラクタ
-	void Initialize() override;// 初期化する
-	void Update(float elapsedTime) override;// 更新する
+public:	// アクセサ
+	// 現在の位置を取得する
+	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
+	// 位置を設定する
+	void SetPosition(const DirectX::SimpleMath::Vector3& pos) { m_position = pos; }
+	// 現在の回転を取得する
+	DirectX::SimpleMath::Quaternion GetRotation() const { return m_rotation; }
+	// 回転を設定する
+	void SetRotation(const DirectX::SimpleMath::Quaternion& rot) { m_rotation = rot; }
+	// 攻撃のクールタイムを取得する
+	float GetCoolTime() const { return m_attackCooldown; }
+	// 攻撃のクールタイムを設定する
+	void SetCoolTime(float coolTime) { m_attackCooldown = coolTime; }
+	// モデルのスケールを設定する
+	void SetScale(const DirectX::SimpleMath::Vector3& sca) { m_scale = sca; }
+	// 回転スピードを設定する
+	void SetRotationSpeed(float speed) { m_rotationSpeed = speed; }
+public:// publicメンバ関数
+	// コンストラクタ
+	EnemyAttack(EnemyAI* enemyAI);
+	// デストラクタ
+	~EnemyAttack();
+	// 初期化する
+	void Initialize() override;
+	// 更新する
+	void Update(float elapsedTime) override;
 private:
 	// 共通リソース
 	CommonResources* m_pCommonResources;

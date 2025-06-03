@@ -21,28 +21,43 @@
 class EnemyAI;
 class EnemyIdling : public IState
 {
-public:
-	// アクセサ
-	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }// 位置取得
-	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }// 位置設定
-	DirectX::SimpleMath::Quaternion GetRotation() const { return m_rotation; }// 回転取得
-	void SetRotation(DirectX::SimpleMath::Quaternion rot) { m_rotation = rot; }// 回転設定
-	void SetScale(DirectX::SimpleMath::Vector3 sca) { m_scale = sca; }// サイズ設定
-public:
-	// publicメンバ関数
-	EnemyIdling(EnemyAI* enemyAI);// コンストラクタ
-	~EnemyIdling();// デストラクタ
-	void Initialize() override;// 初期化
-	void Update(float elapsedTime) override;// 更新
-private:
-	// privateメンバ関数
-	EnemyAI* m_pEnemyAI;//敵AI
-	DirectX::SimpleMath::Vector3 m_position;//移動
-	DirectX::SimpleMath::Vector3 m_initialPosition;// 座標初期値
-	DirectX::SimpleMath::Vector3 m_scale;//サイズ
-	DirectX::SimpleMath::Quaternion m_rotation;//回転
-	DirectX::SimpleMath::Vector3 m_velocity;// 移動速度
-	float m_rotationSpeed;//回転速度
-	float  m_time;  // 時間の初期化
+public:	// アクセサ
+	// 現在の位置を取得する
+	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
+	// 位置を設定する
+	void SetPosition(const DirectX::SimpleMath::Vector3& pos) { m_position = pos; }
+	// 現在の回転を取得する
+	DirectX::SimpleMath::Quaternion GetRotation() const { return m_rotation; }
+	// 回転を設定する
+	void SetRotation(const DirectX::SimpleMath::Quaternion& rot) { m_rotation = rot; }
+	// モデルのスケールを設定する
+	void SetScale(const DirectX::SimpleMath::Vector3& sca) { m_scale = sca; }
+public:// publicメンバ関数
+	// コンストラクタ
+	EnemyIdling(EnemyAI* enemyAI);
+	// デストラクタ
+	~EnemyIdling();
+	// 初期化
+	void Initialize() override;
+	// 更新
+	void Update(float elapsedTime) override;
+private:// private変数
+	// 敵AIへのポインタ
+	EnemyAI* m_pEnemyAI;
+	// 現在の位置
+	DirectX::SimpleMath::Vector3 m_position;
+	// 初期位置
+	DirectX::SimpleMath::Vector3 m_initialPosition;
+	// スケール
+	DirectX::SimpleMath::Vector3 m_scale;
+	// 回転
+	DirectX::SimpleMath::Quaternion m_rotation;
+	// 移動速度ベクトル
+	DirectX::SimpleMath::Vector3 m_velocity;
+	// 回転速度
+	float m_rotationSpeed;
+	// 経過時間の管理用変数
+	float m_time;
+
 };
 #endif //ENEMY_IDLING_DEFINED

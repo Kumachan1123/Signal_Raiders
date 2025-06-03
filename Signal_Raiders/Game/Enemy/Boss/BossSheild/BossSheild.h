@@ -24,39 +24,47 @@ class Player;
 class CommonResources;
 class IState;
 class BossBase;
-
 class BossSheild
 {
-public:
+public:// 列挙型
 	// ボスの種類
 	enum class BossShieldType
 	{
 		BOSS = 0,	// ボス
 		LASTBOSS,	// ラスボス
 	};
-public:
-	// アクセサ
-	bool GetSheild() const { return m_isSheild; }// シールド展開フラグ取得
-	void SetSheild(bool isSheild) { m_isSheild = isSheild; }// シールド展開フラグ設定
-	int GetSheildHP() const { return m_sheildHP; }// シールドのHP取得
-	void SetSheildHP(int sheildHP) { m_sheildHP = sheildHP; }// シールドのHP設定
-	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_sheildPosition = pos; }// シールドの座標設定
-	void SetRotation(DirectX::SimpleMath::Quaternion rot) { m_sheildRotation = rot; }// シールドの回転設定
-	void SetUp(int sheildHP, IEnemy* pBoss);// シールドの初期化
+public:// アクセサ
+	// シールド展開フラグ取得
+	bool GetSheild() const { return m_isSheild; }
+	// シールド展開フラグ設定
+	void SetSheild(bool isSheild) { m_isSheild = isSheild; }
+	// シールドのHP取得
+	int GetSheildHP() const { return m_sheildHP; }
+	// シールドのHP設定
+	void SetSheildHP(int sheildHP) { m_sheildHP = sheildHP; }
+	// シールドの座標設定
+	void SetPosition(const DirectX::SimpleMath::Vector3& pos) { m_sheildPosition = pos; }
+	// シールドの回転設定
+	void SetRotation(const DirectX::SimpleMath::Quaternion& rot) { m_sheildRotation = rot; }
+	// シールドの初期化
+	void SetUp(int sheildHP, IEnemy* pBoss);
 
-public:
-	// public関数
-	BossSheild();// コンストラクタ
-	~BossSheild();// デストラクタ
-	void Initialize(CommonResources* resources);// 初期化
-	void Update(float elapsedTime);// 更新
-	void Render(ID3D11DeviceContext1* context,// 描画
+public:// public関数
+	// コンストラクタ
+	BossSheild();
+	// デストラクタ
+	~BossSheild();
+	// 初期化
+	void Initialize(CommonResources* resources);
+	// 更新
+	void Update(float elapsedTime);
+	// 描画
+	void Render(ID3D11DeviceContext1* context,
 		DirectX::DX11::CommonStates* states,
-		DirectX::SimpleMath::Matrix world,
-		DirectX::SimpleMath::Matrix view,
-		DirectX::SimpleMath::Matrix proj);
-private:
-	// privateメンバ変数
+		const DirectX::SimpleMath::Matrix& world,
+		const DirectX::SimpleMath::Matrix& view,
+		const DirectX::SimpleMath::Matrix& proj);
+private:// privateメンバ変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// シールドモデル
@@ -79,6 +87,5 @@ private:
 	bool m_isParticle;
 	// シールドのHP
 	int m_sheildHP;
-
 };
 #endif //BOSS_SHEILD_DEFINED

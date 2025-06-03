@@ -11,15 +11,18 @@ class CommonResources;
 class IState;
 class IModel
 {
-public:
-	// public関数
-	virtual ~IModel() = default;	// デストラクタ
-	virtual void Initialize(CommonResources* resources) = 0;	// 初期化
-	virtual	void SetState(IState::EnemyState State) = 0;	// ステート設定
-	virtual void Render(ID3D11DeviceContext1* context,	// 描画
+public:// public関数
+	// デストラクタ
+	virtual ~IModel() = default;
+	// 初期化
+	virtual void Initialize(CommonResources* resources) = 0;
+	// ステート設定
+	virtual	void SetState(IState::EnemyState State) = 0;
+	// 描画
+	virtual void Render(ID3D11DeviceContext1* context,
 		DirectX::DX11::CommonStates* states,
-		DirectX::SimpleMath::Matrix world,
-		DirectX::SimpleMath::Matrix view,
-		DirectX::SimpleMath::Matrix proj) = 0;
+		const DirectX::SimpleMath::Matrix& world,
+		const DirectX::SimpleMath::Matrix& view,
+		const DirectX::SimpleMath::Matrix& proj) = 0;
 };
 #endif//IMODEL_DEFINED

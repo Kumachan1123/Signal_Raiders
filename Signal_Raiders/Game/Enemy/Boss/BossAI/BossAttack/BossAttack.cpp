@@ -36,10 +36,14 @@ BossAttack::~BossAttack() {/*do nothing*/ }
 */
 void BossAttack::Initialize()
 {
-	m_position = m_pBoss->GetPosition();// 位置
-	m_rotation = m_pBoss->GetRotation();// 回転
-	m_velocity = m_pBoss->GetVelocity();// 速度
-	m_scale = m_pBoss->GetScale();// スケール
+	// ボスの位置を初期化
+	m_position = m_pBoss->GetPosition();
+	// ボスの回転を初期化
+	m_rotation = m_pBoss->GetRotation();
+	// ボスの速度を初期化
+	m_velocity = m_pBoss->GetVelocity();
+	// ボスのスケールを初期化
+	m_scale = m_pBoss->GetScale();
 }
 /*
 *	@brief	プレイヤーの方向に回転
@@ -47,11 +51,11 @@ void BossAttack::Initialize()
 *	@param playerPos プレイヤーの位置
 *	@return なし
 */
-void BossAttack::RotateTowardsPlayer(DirectX::SimpleMath::Vector3 playerPos)
+void BossAttack::RotateTowardsPlayer(const DirectX::SimpleMath::Vector3& playerPos)
 {
 	using namespace DirectX::SimpleMath;
-	m_rotation = Quaternion::CreateFromYawPitchRoll
-	(CalculateAngle(m_position, playerPos), 0.0f, 0.0f);// プレイヤーの方向に回転
+	// プレイヤーの方向に回転
+	m_rotation = Quaternion::CreateFromYawPitchRoll(CalculateAngle(m_position, playerPos), 0.0f, 0.0f);
 }
 
 /*
@@ -61,9 +65,10 @@ void BossAttack::RotateTowardsPlayer(DirectX::SimpleMath::Vector3 playerPos)
 *	@param playerPos プレイヤーの位置
 *	@return なし
 */
-void BossAttack::MoveTowardsPlayer(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos)
+void BossAttack::MoveTowardsPlayer(float elapsedTime, const DirectX::SimpleMath::Vector3& playerPos)
 {
-	m_position += Seek(m_pBoss->GetPosition(), playerPos, elapsedTime * EnemyParameters::BOSS_CHASE_SPEED);// プレイヤーの方向に移動
+	// プレイヤーの方向に移動
+	m_position += Seek(m_pBoss->GetPosition(), playerPos, elapsedTime * EnemyParameters::BOSS_CHASE_SPEED);
 }
 
 /*
@@ -74,14 +79,17 @@ void BossAttack::MoveTowardsPlayer(float elapsedTime, DirectX::SimpleMath::Vecto
 */
 void BossAttack::ManageAttackCooldown(float elapsedTime)
 {
-	m_attackCooldown -= elapsedTime;// クールダウンを減らす
-	if (m_attackCooldown <= 0.0f)// クールダウンが0を下回ったら
+	// クールダウンを減らす
+	m_attackCooldown -= elapsedTime;
+	// クールダウンが0を下回ったら
+	if (m_attackCooldown <= 0.0f)
 	{
-		m_attackCooldown = EnemyParameters::ATTACK_INTERVAL;  // クールダウンリセット
-		m_pBoss->SetState(IState::EnemyState::ATTACK);  // 攻撃状態に遷移
+		// クールダウンリセット
+		m_attackCooldown = EnemyParameters::ATTACK_INTERVAL;
+		// 攻撃状態に遷移
+		m_pBoss->SetState(IState::EnemyState::ATTACK);
 	}
 }
-
 /*
 *	@brief	更新
 *	@details ボスの攻撃クラスの更新
@@ -90,11 +98,16 @@ void BossAttack::ManageAttackCooldown(float elapsedTime)
 */
 void BossAttack::Update(float elapsedTime)
 {
-	RotateTowardsPlayer(m_pBoss->GetEnemy()->GetPlayer()->GetPlayerPos());	// プレイヤーの方向に回転
-	MoveTowardsPlayer(elapsedTime, m_pBoss->GetEnemy()->GetPlayer()->GetPlayerPos());	// プレイヤーの方向に移動
-	ManageAttackCooldown(elapsedTime);	// 攻撃クールダウンの管理
-	// ボスの状態を更新
-	m_pBoss->SetRotation(m_rotation);// 回転
-	m_pBoss->SetVelocity(m_velocity);// 速度
-	m_pBoss->SetPosition(m_position);// 位置
+	// プレイヤーの方向に回転
+	RotateTowardsPlayer(m_pBoss->GetEnemy()->GetPlayer()->GetPlayerPos());
+	// プレイヤーの方向に移動
+	MoveTowardsPlayer(elapsedTime, m_pBoss->GetEnemy()->GetPlayer()->GetPlayerPos());
+	// 攻撃クールダウンの管理
+	ManageAttackCooldown(elapsedTime);
+	// ボスの回転を更新
+	m_pBoss->SetRotation(m_rotation);
+	// ボスの速度を更新
+	m_pBoss->SetVelocity(m_velocity);
+	// ボスの位置を更新
+	m_pBoss->SetPosition(m_position);
 }

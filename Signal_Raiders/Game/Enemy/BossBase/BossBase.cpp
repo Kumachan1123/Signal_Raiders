@@ -18,12 +18,12 @@
 *	@return	なし
 */
 BossBase::BossBase(Player* pPlayer, CommonResources* resources, int hp)
-	: IEnemy(pPlayer, resources, hp)// 親クラスのコンストラクタを呼び出す
-	, m_pPlayer(pPlayer)// プレイヤーのポインタを設定
+	: m_pPlayer(pPlayer)// プレイヤーのポインタを設定
 	, m_pCamera(pPlayer->GetCamera())// カメラのポインタを設定
 	, m_bossBS{}// 境界球の初期化
 	, m_pCommonResources(resources)// 共通リソース
 	, m_currentHP(hp)// 現在のHP
+	, m_pBulletManager(nullptr)// 弾管理クラスのポインタを設定
 	, m_maxHP{}// 最大HP
 	, m_attackCooldown(EnemyParameters::ATTACK_COOLDOWN)// 攻撃のクールダウンタイム
 	, m_specialAttackCooldown(EnemyParameters::SPECIAL_ATTACK_COOLDOWN)// 特殊攻撃のクールダウンタイム
@@ -76,22 +76,39 @@ BossBase::~BossBase() { m_pBulletManager->RemoveBulletsByShooter(this); }// 弾を
 */
 void BossBase::Initialize()
 {
-	m_pBoss = EnemyFactory::CreateBoss(m_bossType, this, m_pCommonResources);// ボス生成
-	DrawCollision::Initialize(m_pCommonResources);// 当たり判定描画の初期化
-	m_maxHP = m_currentHP;// 最大HPを設定
-	m_pHPBar = std::make_unique<EnemyHPBar>();	// HPバー生成
-	m_pHPBar->SetEnemyMaxHP(m_currentHP);// HPバーのHPを設定
-	m_pHPBar->Initialize(m_pCommonResources);// HPバー初期化
-	m_pBoss->Initialize();// ボス初期化
-	m_pBossAI = std::make_unique<BossAI>(this);// ボスAI生成
-	m_pBossAI->Initialize();// ボスAI初期化
-	m_pBossAI->SetPosition(m_position);// AIに座標を設定
-	m_bossBS.Center = m_position;// 境界球の中心座標を設定
-	m_SEVolume = m_pPlayer->GetVolume();// SEの音量を設定
-	m_SEVolumeCorrection = m_pPlayer->GetVolumeCorrection();// SEの音量補正を設定
-	m_pBossSheild = std::make_unique<BossSheild>();// シールド生成 これはタイプによって分岐予定
-	m_pBossSheild->SetUp(m_maxHP, this);// シールドの初期化
-	m_pBossSheild->Initialize(m_pCommonResources);// シールド初期化 これはタイプによって分岐予定
+	// ボス生成
+	m_pBoss = EnemyFactory::CreateBoss(m_bossType, this, m_pCommonResources);
+	// 当たり判定描画の初期化
+	DrawCollision::Initialize(m_pCommonResources);
+	// 最大HPを設定
+	m_maxHP = m_currentHP;
+	// HPバー生成
+	m_pHPBar = std::make_unique<EnemyHPBar>();
+	// HPバーのHPを設定
+	m_pHPBar->SetEnemyMaxHP(m_currentHP);
+	// HPバー初期化
+	m_pHPBar->Initialize(m_pCommonResources);
+	// ボス初期化
+	m_pBoss->Initialize();
+	// ボスAI生成
+	m_pBossAI = std::make_unique<BossAI>(this);
+	// ボスAI初期化
+	m_pBossAI->Initialize();
+	// AIに座標を設定
+	m_pBossAI->SetPosition(m_position);
+	// 境界球の中心座標を設定
+	m_bossBS.Center = m_position;
+	// SEの音量を設定
+	m_SEVolume = m_pPlayer->GetVolume();
+	// SEの音量補正を設定
+	m_SEVolumeCorrection = m_pPlayer->GetVolumeCorrection();
+	// シールド生成
+	m_pBossSheild = std::make_unique<BossSheild>();
+	// シールドの初期化
+	m_pBossSheild->SetUp(m_maxHP, this);
+	// シールド初期化
+	m_pBossSheild->Initialize(m_pCommonResources);
+
 }
 /*
 *	@brief	更新処理
@@ -101,24 +118,42 @@ void BossBase::Initialize()
 */
 void BossBase::Update(float elapsedTime)
 {
-	m_cameraEye = m_pCamera->GetEyePosition();// カメラの位置を取得
-	m_cameraTarget = m_pCamera->GetTargetPosition();// カメラの注視点を取得
-	m_cameraUp = m_pCamera->GetUpVector();// カメラの上方向を取得
-	m_pBoss->ChangeState();// ボスの更新
-	m_pBossAI->Update(elapsedTime);// AIの更新
-	m_position = m_pBossAI->GetPosition();// 敵の座標を更新
-	m_pCommonResources->GetAudioManager()->Update();// オーディオマネージャーの更新
-	m_attackCooldown = m_pBossAI->GetBossAttack()->GetCoolTime();// 攻撃のクールダウンタイムを取得
-	m_specialAttackCooldown -= elapsedTime;// 特殊攻撃のクールダウンタイムを減らす
-	m_pBoss->BulletPositioning();// 弾の位置設定
-	this->ShootBullet();// 弾発射
-	m_bossBS.Center = m_position + EnemyParameters::BOSS_SPHERE_OFFSET;// 境界球の中心座標を更新
-	m_bossBS.Radius = m_defaultHitRadius;// 通常時のボスの当たり判定を設定
-	m_pHPBar->SetCurrentHP(m_currentHP);// HPバーのHPを更新
-	m_pHPBar->Update(elapsedTime);// HPバーの更新
-	if (m_currentHP <= m_maxHP / 2)	m_pBossSheild->SetSheild(true);// HPが半分以下になったらシールドを出す
-	m_pBossSheild->Update(elapsedTime);// シールドの更新
-	m_isDead = m_pHPBar->GetIsDead();// 死んだかどうかを受け取る
+	// カメラの位置を取得
+	m_cameraEye = m_pCamera->GetEyePosition();
+	// カメラの注視点を取得
+	m_cameraTarget = m_pCamera->GetTargetPosition();
+	// カメラの上方向を取得
+	m_cameraUp = m_pCamera->GetUpVector();
+	// ボスの更新
+	m_pBoss->ChangeState();
+	// AIの更新
+	m_pBossAI->Update(elapsedTime);
+	// 敵の座標を更新
+	m_position = m_pBossAI->GetPosition();
+	// オーディオマネージャーの更新
+	m_pCommonResources->GetAudioManager()->Update();
+	// 攻撃のクールダウンタイムを取得
+	m_attackCooldown = m_pBossAI->GetBossAttack()->GetCoolTime();
+	// 特殊攻撃のクールダウンタイムを減らす
+	m_specialAttackCooldown -= elapsedTime;
+	// 弾の位置設定
+	m_pBoss->BulletPositioning();
+	// 弾発射
+	ShootBullet();
+	// 境界球の中心座標を更新
+	m_bossBS.Center = m_position + EnemyParameters::BOSS_SPHERE_OFFSET;
+	// 通常時のボスの当たり判定を設定
+	m_bossBS.Radius = m_defaultHitRadius;
+	// HPバーのHPを更新
+	m_pHPBar->SetCurrentHP(m_currentHP);
+	// HPバーの更新
+	m_pHPBar->Update(elapsedTime);
+	// HPが半分以下になったらシールドを出す
+	if (m_currentHP <= m_maxHP / 2)	m_pBossSheild->SetSheild(true);
+	// シールドの更新
+	m_pBossSheild->Update(elapsedTime);
+	// 死んだかどうかを受け取る
+	m_isDead = m_pHPBar->GetIsDead();
 }
 /*
 *	@brief	描画処理
@@ -127,12 +162,16 @@ void BossBase::Update(float elapsedTime)
 *	@param proj プロジェクション行列
 *	@return	なし
 */
-void BossBase::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void BossBase::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
-	m_position = m_pBossAI->GetPosition();// 敵の座標を更新
-	m_quaternion = m_pBossAI->GetRotation();// 敵の回転を更新
-	m_scale = m_pBossAI->GetScale();// 敵のスケールを更新
-	m_pBoss->Draw(view, proj);// ボス描画
+	// 敵の座標を更新
+	m_position = m_pBossAI->GetPosition();
+	// 敵の回転を更新
+	m_quaternion = m_pBossAI->GetRotation();
+	// 敵のスケールを更新
+	m_scale = m_pBossAI->GetScale();
+	// ボス描画
+	m_pBoss->Draw(view, proj);
 }
 /*
 *	@brief	当たり判定描画処理
@@ -141,18 +180,34 @@ void BossBase::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Mat
 *	@param proj プロジェクション行列
 *	@return	なし
 */
-void BossBase::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void BossBase::DrawCollision(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
 	using namespace DirectX;
-	UNREFERENCED_PARAMETER(view);// 未使用の警告を出さない
-	UNREFERENCED_PARAMETER(proj);// 未使用の警告を出さない
+	// 未使用の警告を出さない
+	UNREFERENCED_PARAMETER(view);
+	// 未使用の警告を出さない
+	UNREFERENCED_PARAMETER(proj);
 #ifdef _DEBUG
-	DrawCollision::DrawStart(view, proj);// 描画開始
-	DirectX::XMVECTOR color = Colors::Black;// 色
-	if (m_isHitToPlayer)color = m_isHitToOtherEnemy ? Colors::Tomato : Colors::Blue;// 当たった
-	else color = m_isHitToOtherEnemy ? Colors::White : Colors::Black;// 当たっていない
-	DrawCollision::DrawBoundingSphere(m_bossBS, color);// 境界球の描画
-	DrawCollision::DrawEnd();// 描画終了
+	// 描画開始
+	DrawCollision::DrawStart(view, proj);
+	// 色を設定
+	DirectX::XMVECTOR color = Colors::Black;
+	// プレイヤーに当たっている場合
+	if (m_isHitToPlayer)
+	{
+		// 他の敵にも当たっているならトマト色、そうでなければ青
+		color = m_isHitToOtherEnemy ? Colors::Tomato : Colors::Blue;
+	}
+	// プレイヤーに当たっていない場合
+	else
+	{
+		// 他の敵に当たっているなら白、そうでなければ黒
+		color = m_isHitToOtherEnemy ? Colors::White : Colors::Black;
+	}
+	// 境界球の描画
+	DrawCollision::DrawBoundingSphere(m_bossBS, color);
+	// 描画終了
+	DrawCollision::DrawEnd();
 #endif
 }
 /*
@@ -163,9 +218,12 @@ void BossBase::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMa
 */
 void BossBase::PlayBarrierSE()
 {
-	if (m_isBarrierSEPlay) return;// 既に再生中なら何もしない
-	m_pCommonResources->GetAudioManager()->PlaySound("Barrier", m_pPlayer->GetVolume());// サウンド再生 
-	m_isBarrierSEPlay = true;// 再生フラグを立てる
+	// 既に再生中なら何もしない
+	if (m_isBarrierSEPlay) return;
+	// シールド展開音再生 
+	m_pCommonResources->GetAudioManager()->PlaySound("Barrier", m_pPlayer->GetVolume());
+	// 再生フラグを立てる
+	m_isBarrierSEPlay = true;
 }
 /*
 *	@brief	弾発射
@@ -176,20 +234,31 @@ void BossBase::PlayBarrierSE()
 void BossBase::ShootBullet()
 {
 	using namespace DirectX::SimpleMath;
-	if (m_attackCooldown <= EnemyParameters::ATTACK_COOLDOWN_THRESHOLD)	// 攻撃のクールダウンタイムを管理
+	// 通常攻撃のクールダウンタイムをチェック
+	if (m_attackCooldown <= EnemyParameters::ATTACK_COOLDOWN_THRESHOLD)
 	{
-		m_pCommonResources->GetAudioManager()->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
-		m_bulletDirection = Vector3::Transform(Vector3::Backward, m_pBossAI->GetRotation());// クォータニオンから方向ベクトルを計算
-		m_pBoss->CreateBullet();// 弾を発射
-		m_pBossAI->GetBossAttack()->SetCoolTime(m_bulletCooldown);// クールダウンタイムを設定
+		// 通常弾のサウンド再生
+		m_pCommonResources->GetAudioManager()->PlaySound("EnemyBullet", m_pPlayer->GetVolume());
+		// 弾の飛ぶ方向を、現在のボスの回転から計算
+		m_bulletDirection = Vector3::Transform(Vector3::Backward, m_pBossAI->GetRotation());
+		// 通常弾の生成
+		m_pBoss->CreateBullet();
+		// 攻撃クールダウンタイムをリセット
+		m_pBossAI->GetBossAttack()->SetCoolTime(m_bulletCooldown);
 	}
-	if (m_specialAttackCooldown <= 0.0f)// 特殊攻撃のクールダウンタイムを管理
+	// 特殊攻撃のクールダウンタイムをチェック
+	if (m_specialAttackCooldown <= 0.0f)
 	{
-		m_pCommonResources->GetAudioManager()->PlaySound("EnemyBullet", m_pPlayer->GetVolume());// サウンド再生 
-		m_pBulletManager->SetEnemyBulletSize(m_bulletSize);// 弾のサイズを設定
-		m_pBulletManager->SetShooter(this);// 弾を発射したオブジェクトを設定
-		this->CreateSpiralBullet();// 		// 特殊攻撃
-		m_specialAttackCooldown = m_initSpecialAttackCooldown;// クールダウンタイムを設定
+		// 特殊弾のサウンド再生
+		m_pCommonResources->GetAudioManager()->PlaySound("EnemyBullet", m_pPlayer->GetVolume());
+		// 弾のサイズを設定
+		m_pBulletManager->SetEnemyBulletSize(m_bulletSize);
+		// 発射したオブジェクトを指定
+		m_pBulletManager->SetShooter(this);
+		// 特殊攻撃（スパイラル弾）の生成
+		CreateSpiralBullet();
+		// 特殊攻撃のクールダウンをリセット
+		m_specialAttackCooldown = m_initSpecialAttackCooldown;
 	}
 }
 
@@ -201,8 +270,10 @@ void BossBase::ShootBullet()
 */
 void BossBase::CreateVerticalBullet()
 {
-	m_pBulletManager->SetEnemyBulletType(BulletType::SPEED);// 弾の種類を設定
-	m_pBulletManager->CreateEnemyBullet(m_bulletPosCenter, m_bulletDirection);// 弾を生成
+	// 弾の種類を設定
+	m_pBulletManager->SetEnemyBulletType(BulletType::SPEED);
+	// 弾を生成
+	m_pBulletManager->CreateEnemyBullet(m_bulletPosCenter, m_bulletDirection);
 }
 
 /*
@@ -213,8 +284,10 @@ void BossBase::CreateVerticalBullet()
 */
 void BossBase::CreateSpiralBullet()
 {
-	m_pBulletManager->SetEnemyBulletType(BulletType::SPECIAL);// 弾の種類を設定
-	m_pBulletManager->CreateEnemyBullet(m_bulletPosCenter, m_bulletDirection);// 弾を生成
+	// 弾の種類を設定
+	m_pBulletManager->SetEnemyBulletType(BulletType::SPECIAL);
+	// 弾を生成
+	m_pBulletManager->CreateEnemyBullet(m_bulletPosCenter, m_bulletDirection);
 }
 /*
 *	@brief	敵のHPを設定
@@ -224,12 +297,14 @@ void BossBase::CreateSpiralBullet()
 */
 void BossBase::ApplyDamageToEnemy(int hp)
 {
-	if (m_pBossSheild->GetSheildHP() > 0 &&// シールドがある場合
-		m_pBossSheild->GetSheild() == true)// シールドが展開されている場合
+	// シールドがあり、シールドが展開されている場合
+	if (m_pBossSheild->GetSheildHP() > 0 && m_pBossSheild->GetSheild() == true)
 	{
-		m_pBossSheild->SetSheildHP(m_pBossSheild->GetSheildHP() - hp);// シールドのHPを減らす
-		if (m_pBossSheild->GetSheildHP() <= 0)// シールドが壊れたらサウンド再生
-			m_pCommonResources->GetAudioManager()->PlaySound("BarrierBreak", m_pPlayer->GetVolume());
+		// シールドのHPを減らす
+		m_pBossSheild->SetSheildHP(m_pBossSheild->GetSheildHP() - hp);
+		// シールドが壊れたらサウンド再生
+		if (m_pBossSheild->GetSheildHP() <= 0)m_pCommonResources->GetAudioManager()->PlaySound("BarrierBreak", m_pPlayer->GetVolume());
 	}
-	else m_currentHP -= hp;// シールドがない場合は敵のHPを減らす
+	else // シールドがない場合は敵のHPを減らす
+		m_currentHP -= hp;
 }

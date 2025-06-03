@@ -23,8 +23,10 @@ BossAI::BossAI(IEnemy* pBoss)
 	, m_isKnockBack(false)// ノックバック中か
 	, m_isAttack(false)// 攻撃中か
 {
-	m_pBossAttack = std::make_unique<BossAttack>(this);// 攻撃時
-	m_pBossKnockBacking = std::make_unique<BossKnockBacking>(this);// ノックバック時
+	// 攻撃状態にするためのステートを生成
+	m_pBossAttack = std::make_unique<BossAttack>(this);
+	// ノックバック状態にするためのステートを生成
+	m_pBossKnockBacking = std::make_unique<BossKnockBacking>(this);
 }
 
 /*
@@ -43,13 +45,20 @@ BossAI::~BossAI() {/*do nothing*/ }
 */
 void BossAI::Initialize()
 {
-	m_initialPosition = m_pBoss->GetPosition();  // 初期位置を保存
-	m_velocity = EnemyParameters::INITIAL_VELOCITY; // 浮遊の初期速度
-	m_scale = EnemyParameters::INITIAL_BOSS_SCALE; // スケール初期化
-	m_position = m_initialPosition;// 初期位置を設定
-	m_pCurrentState = m_pBossAttack.get();// 現在のステートを攻撃態勢に設定
-	m_pCurrentState->Initialize();// 初期化
-	m_enemyState = m_attackState;// 攻撃状態
+	// 初期位置を保存
+	m_initialPosition = m_pBoss->GetPosition();
+	// 浮遊の初期速度を設定
+	m_velocity = EnemyParameters::INITIAL_VELOCITY;
+	// スケール初期化
+	m_scale = EnemyParameters::INITIAL_BOSS_SCALE;
+	// 初期位置を設定
+	m_position = m_initialPosition;
+	// 現在のステートを攻撃状態に設定
+	m_pCurrentState = m_pBossAttack.get();
+	// 現在のステートを初期化
+	m_pCurrentState->Initialize();
+	// 攻撃時の表情差分を設定
+	m_enemyState = m_attackState;
 }
 /*
 *	@brief 更新
@@ -59,26 +68,41 @@ void BossAI::Initialize()
 */
 void BossAI::Update(float elapsedTime)
 {
-	if (m_pBoss->GetEnemyHitByPlayerBullet())m_isHitPlayerBullet = true;// プレイヤーの弾に当たったか
-	m_time += elapsedTime;// 時間の更新
-	m_position = m_pBoss->GetPosition();// 位置の更新
-	m_pCurrentState->Update(elapsedTime);// 現在のステートを更新
-	m_position.y = m_initialPosition.y + EnemyParameters::AMPLITUDE * std::sin(EnemyParameters::FREQUENCY * m_time);// Y座標を更新
-	m_position.y += m_velocity.y * elapsedTime;// Y座標を更新
-	auto boss = dynamic_cast<BossBase*>(m_pBoss);// IEnemyからBossのポインターを抽出
-	if (!m_isKnockBack && boss->GetBossSheild()->GetSheildHP() <= 0)	// シールドが壊されたらノックバック
+	// プレイヤーの弾に当たったらヒットフラグをtrueにする
+	if (m_pBoss->GetEnemyHitByPlayerBullet())m_isHitPlayerBullet = true;
+	// 時間の更新
+	m_time += elapsedTime;
+	// 位置の更新
+	m_position = m_pBoss->GetPosition();
+	// 現在のステートを更新
+	m_pCurrentState->Update(elapsedTime);
+	// 初期位置を基準に、サイン波を使って上下に揺れるような動きを加える
+	m_position.y = m_initialPosition.y + EnemyParameters::AMPLITUDE * std::sin(EnemyParameters::FREQUENCY * m_time);
+	// Y座標を更新
+	m_position.y += m_velocity.y * elapsedTime;
+	// IEnemyからBossのポインターを抽出
+	auto boss = dynamic_cast<BossBase*>(m_pBoss);
+	// シールドが壊されたらノックバック
+	if (!m_isKnockBack && boss->GetBossSheild()->GetSheildHP() <= 0)
 	{
-		ChangeState(m_pBossKnockBacking.get());//ノックバック状態にする
-		m_enemyState = IState::EnemyState::HIT;// 攻撃を受けた時の動き
-		SetIsAttack(false);// 攻撃中ではない
+		//ノックバック状態にする
+		ChangeState(m_pBossKnockBacking.get());
+		// 攻撃を受けた時の動き
+		m_enemyState = IState::EnemyState::HIT;
+		// 攻撃中ではない
+		SetIsAttack(false);
 	}
 	else // シールドが壊されていない場合
 	{
-		ChangeState(m_pBossAttack.get());//攻撃態勢にする
-		SetIsAttack(true);// 攻撃中にする
-		m_enemyState = m_attackState;// 攻撃状態
+		//攻撃状態にする
+		ChangeState(m_pBossAttack.get());
+		// 攻撃中にする
+		SetIsAttack(true);
+		// 攻撃時の表情差分を設定
+		m_enemyState = m_attackState;
 	}
-	m_pBoss->SetPosition(m_position);// 位置をセット
+	// 位置をセット
+	m_pBoss->SetPosition(m_position);
 }
 /*
 *	@brief ステート変更
@@ -88,10 +112,12 @@ void BossAI::Update(float elapsedTime)
 */
 void BossAI::ChangeState(IState* newState)
 {
-	if (m_pCurrentState != newState)// 現在のステートと新しいステートが違う場合
+	// 現在のステートと新しいステートが違う場合
+	if (m_pCurrentState != newState)
 	{
-		m_pCurrentState = newState;// 現在のステートを新しいステートに変更
-		m_pCurrentState->Initialize();// 初期化
+		// 現在のステートを新しいステートに変更
+		m_pCurrentState = newState;
+		// 新しいステートを初期化
+		m_pCurrentState->Initialize();
 	}
 }
-

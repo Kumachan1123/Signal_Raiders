@@ -15,13 +15,14 @@
 */
 std::unique_ptr<IEnemy> EnemyFactory::CreateEnemy(EnemyType type, Player* player, CommonResources* resources, int HP)
 {
-	switch (type)// 敵の種類によって生成する敵を変える
+	// 敵の種類によって生成する敵を変える
+	switch (type)
 	{
-	case EnemyType::NORMAL:// 通常敵
+	case EnemyType::NORMAL:// 通常敵を生成
 		return std::make_unique<Enemy>(player, resources, HP);
-	case EnemyType::VERTICAL_ATTACKER:// 速い弾を撃つ敵
+	case EnemyType::VERTICAL_ATTACKER:// 速い弾を撃つ敵を生成
 		return std::make_unique<VerticalAttacker>(player, resources, HP);
-	case EnemyType::BOSS:// ボス
+	case EnemyType::BOSS:// ボスを生成
 		return std::make_unique<BossBase>(player, resources, HP);
 	default:// それ以外の敵は生成しない
 		return nullptr;
@@ -38,11 +39,12 @@ std::unique_ptr<IEnemy> EnemyFactory::CreateEnemy(EnemyType type, Player* player
 */
 std::unique_ptr<IBossLogic> EnemyFactory::CreateBoss(BossType type, BossBase* pBoss, CommonResources* resources)
 {
-	switch (type)// ボスの種類によって生成するボスを変える
+	// ボスの種類によって生成するボスを変える
+	switch (type)
 	{
-	case BossType::NORMAL_BOSS:// 通常ボス
+	case BossType::NORMAL_BOSS:// 通常ボスを生成
 		return std::make_unique<Boss>(pBoss, resources);
-	case BossType::LAST_BOSS:// 最終ボス
+	case BossType::LAST_BOSS:// 最終ボスを生成
 		return std::make_unique<LastBoss>(pBoss, resources);
 	default:// それ以外のボスは生成しない
 		return nullptr;

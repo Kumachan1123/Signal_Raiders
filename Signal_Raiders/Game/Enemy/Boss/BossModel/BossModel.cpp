@@ -33,14 +33,22 @@ BossModel::~BossModel() {/*do nothing*/ }
 */
 void BossModel::Initialize(CommonResources* resources)
 {
-	m_pCommonResources = resources;// 共通リソース
-	auto device = resources->GetDeviceResources()->GetD3DDevice();// デバイス
-	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_Shadow.cso");// ピクセルシェーダーの読み込み
-	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pPixelShader.ReleaseAndGetAddressOf()));// ピクセルシェーダーの作成
-	m_pBodyModel = m_pCommonResources->GetModelManager()->GetModel("BossBody");// 胴体モデルをマネージャーから取得
-	m_pFaceModelMap[IState::EnemyState::HIT] = m_pCommonResources->GetModelManager()->GetModel("BossFaceDamage");// ダメージ顔モデルをマネージャーから取得
-	m_pFaceModelMap[IState::EnemyState::ATTACK] = m_pCommonResources->GetModelManager()->GetModel("BossFaceAttack");// 攻撃顔モデルをマネージャーから取得
-	m_pFaceModelMap[IState::EnemyState::ANGRY] = m_pCommonResources->GetModelManager()->GetModel("BossFaceAngry");// 怒り顔モデルをマネージャーから取得
+	// 共通リソースを設定
+	m_pCommonResources = resources;
+	// デバイスリソースからデバイスを取得する
+	auto device = resources->GetDeviceResources()->GetD3DDevice();
+	// ピクセルシェーダーを読み込む
+	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_Shadow.cso");
+	// ピクセルシェーダーの作成
+	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pPixelShader.ReleaseAndGetAddressOf()));
+	// 胴体モデルをマネージャーから取得
+	m_pBodyModel = m_pCommonResources->GetModelManager()->GetModel("BossBody");
+	// ダメージ顔モデルをマネージャーから取得
+	m_pFaceModelMap[IState::EnemyState::HIT] = m_pCommonResources->GetModelManager()->GetModel("BossFaceDamage");
+	// 攻撃顔モデルをマネージャーから取得
+	m_pFaceModelMap[IState::EnemyState::ATTACK] = m_pCommonResources->GetModelManager()->GetModel("BossFaceAttack");
+	// 怒り顔モデルをマネージャーから取得
+	m_pFaceModelMap[IState::EnemyState::ANGRY] = m_pCommonResources->GetModelManager()->GetModel("BossFaceAngry");
 }
 /*
 *	@brief	描画
@@ -54,24 +62,31 @@ void BossModel::Initialize(CommonResources* resources)
 */
 void BossModel::Render(ID3D11DeviceContext1* context,
 	DirectX::DX11::CommonStates* states,
-	DirectX::SimpleMath::Matrix world,
-	DirectX::SimpleMath::Matrix view,
-	DirectX::SimpleMath::Matrix proj)
+	const DirectX::SimpleMath::Matrix& world,
+	const DirectX::SimpleMath::Matrix& view,
+	const DirectX::SimpleMath::Matrix& proj)
 {
 	using namespace DirectX::SimpleMath;
-	Vector3 lightDir = Vector3::UnitY;// ライトの方向
-	lightDir.Normalize();// 正規化
-	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, 0.01f));	// 影行列の元を作る
-	shadowMatrix = world * shadowMatrix;// 影行列
-	m_pBodyModel->Draw(context, *states, shadowMatrix * Matrix::Identity, view, proj, true, [&]()	// 影描画
+	// ライトの方向を設定
+	Vector3 lightDir = Vector3::UnitY;
+	// ライトの方向を正規化
+	lightDir.Normalize();
+	// 影行列の元を作る
+	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, Plane(0.0f, 1.0f, 0.0f, 0.01f));
+	// 影行列にワールド行列を掛ける
+	shadowMatrix = world * shadowMatrix;
+	// 影を描画する
+	m_pBodyModel->Draw(context, *states, shadowMatrix * Matrix::Identity, view, proj, true, [&]()
 		{
 			context->OMSetBlendState(states->Opaque(), nullptr, 0xffffffff);// ブレンドステート
 			context->OMSetDepthStencilState(states->DepthNone(), 0);// 深度ステンシルステート
 			context->RSSetState(states->CullClockwise());// ラスタライザーステート
 			context->PSSetShader(m_pPixelShader.Get(), nullptr, 0);// ピクセルシェーダー
 		});
-	m_pBodyModel->Draw(context, *states, world, view, proj);// 胴体
-	auto it = m_pFaceModelMap.find(m_nowState);// ステートによって顔のモデルを変更
-	if (it != m_pFaceModelMap.end() && it->second)// マップに存在する場合
-		it->second->Draw(context, *states, world, view, proj);// 顔のモデルを描画
+	// 胴体を描画する
+	m_pBodyModel->Draw(context, *states, world, view, proj);
+	// ステートによって顔のモデルを変更
+	auto it = m_pFaceModelMap.find(m_nowState);
+	// マップに存在する場合、顔を描画する
+	if (it != m_pFaceModelMap.end() && it->second)it->second->Draw(context, *states, world, view, proj);
 }

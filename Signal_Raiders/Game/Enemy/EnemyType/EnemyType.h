@@ -1,6 +1,6 @@
 /*
-	@file	EnemyType.h
-	@brief	敵タイプクラス
+*	@file	EnemyType.h
+*	@brief	敵タイプクラス
 */
 #pragma once
 // 敵のタイプ

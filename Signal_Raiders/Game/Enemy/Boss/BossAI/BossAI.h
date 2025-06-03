@@ -29,36 +29,60 @@ class BossAttack;
 class BossKnockBacking;
 class BossAI
 {
-public:
-	// アクセサ
-	DirectX::SimpleMath::Vector3 GetInitialPosition() const { return m_initialPosition; }// 初期位置を取得
-	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }// 位置を取得
-	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }// 位置を設定
-	DirectX::SimpleMath::Quaternion GetRotation() const { return m_rotation; }// 回転を取得
-	void SetRotation(DirectX::SimpleMath::Quaternion rot) { m_rotation = rot; }// 回転を設定
-	DirectX::SimpleMath::Vector3 GetVelocity() const { return m_velocity; }// 速度を取得
-	void SetVelocity(DirectX::SimpleMath::Vector3& vel) { m_velocity = vel; }// 速度を設定
-	DirectX::SimpleMath::Vector3 GetScale() const { return m_scale; }// スケールを取得
-	void SetScale(DirectX::SimpleMath::Vector3 sca) { m_scale = sca; }// スケールを設定
-	BossAttack* GetBossAttack()const { return m_pBossAttack.get(); }// 攻撃時の状態を取得
-	IEnemy* GetEnemy()const { return m_pBoss; }// 敵を取得
-	IState* GetNowState()const { return m_pCurrentState; }// 現在の状態を取得
-	IState::EnemyState GetState()const { return m_enemyState; }// 状態を取得
-	void SetState(IState::EnemyState state) { m_enemyState = state; }// 状態を設定
-	void SetHitPlayerBullet(bool hit) { m_isHitPlayerBullet = hit; }// プレイヤーの弾に当たったか設定
-	bool GetIsAttack()const { return m_pBoss->GetIsAttack(); }// 攻撃中か取得
-	void SetIsAttack(bool attack) { m_pBoss->SetIsAttack(attack); }// 攻撃中か設定
-	IState::EnemyState GetAttackState() const { return m_attackState; }// 攻撃時の表情差分を取得
-	void SetAttackState(IState::EnemyState state) { m_attackState = state; }// 攻撃時の表情差分を設定
-	bool GetIsKnockBack() const { return m_isKnockBack; }// ノックバックが完了したか取得
-	void SetIsKnockBack(bool isKnockBack) { m_isKnockBack = isKnockBack; }// ノックバックが完了したか設定
-public:
-	// public関数
-	BossAI(IEnemy* pBoss);// コンストラクタ
-	~BossAI();	// デストラクタ
-	void Initialize();// 初期化
-	void Update(float elapsedTime);// 更新
-	void ChangeState(IState* newState);// ステート変更
+public:	// アクセサ
+	// 初期位置を取得
+	DirectX::SimpleMath::Vector3 GetInitialPosition() const { return m_initialPosition; }
+	// 位置を取得
+	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
+	// 位置を設定
+	void SetPosition(const DirectX::SimpleMath::Vector3& pos) { m_position = pos; }
+	// 回転を取得
+	DirectX::SimpleMath::Quaternion GetRotation() const { return m_rotation; }
+	// 回転を設定
+	void SetRotation(const DirectX::SimpleMath::Quaternion& rot) { m_rotation = rot; }
+	// 速度を取得
+	DirectX::SimpleMath::Vector3 GetVelocity() const { return m_velocity; }
+	// 速度を設定
+	void SetVelocity(const DirectX::SimpleMath::Vector3& vel) { m_velocity = vel; }
+	// スケールを取得
+	DirectX::SimpleMath::Vector3 GetScale() const { return m_scale; }
+	// スケールを設定
+	void SetScale(const DirectX::SimpleMath::Vector3& sca) { m_scale = sca; }
+	// 攻撃時の状態を取得
+	BossAttack* GetBossAttack()const { return m_pBossAttack.get(); }
+	// 敵を取得
+	IEnemy* GetEnemy()const { return m_pBoss; }
+	// 現在の状態を取得
+	IState* GetNowState()const { return m_pCurrentState; }
+	// 状態を取得
+	IState::EnemyState GetState()const { return m_enemyState; }
+	// 状態を設定
+	void SetState(IState::EnemyState state) { m_enemyState = state; }
+	// プレイヤーの弾に当たったか設定
+	void SetHitPlayerBullet(bool hit) { m_isHitPlayerBullet = hit; }
+	// 攻撃中か取得
+	bool GetIsAttack()const { return m_pBoss->GetIsAttack(); }
+	// 攻撃中か設定
+	void SetIsAttack(bool attack) { m_pBoss->SetIsAttack(attack); }
+	// 攻撃時の表情差分を取得
+	IState::EnemyState GetAttackState() const { return m_attackState; }
+	// 攻撃時の表情差分を設定
+	void SetAttackState(IState::EnemyState state) { m_attackState = state; }
+	// ノックバックが完了したか取得
+	bool GetIsKnockBack() const { return m_isKnockBack; }
+	// ノックバックが完了したか設定
+	void SetIsKnockBack(bool isKnockBack) { m_isKnockBack = isKnockBack; }
+public:	// public関数
+	// コンストラクタ
+	BossAI(IEnemy* pBoss);
+	// デストラクタ
+	~BossAI();
+	// 初期化
+	void Initialize();
+	// 更新
+	void Update(float elapsedTime);
+	// 状態変更
+	void ChangeState(IState* newState);
 private:// private変数
 	//攻撃時
 	std::unique_ptr<BossAttack> m_pBossAttack;
@@ -102,6 +126,5 @@ private:// private変数
 	bool m_isKnockBack;
 	// 攻撃中か
 	bool m_isAttack;
-
 };
 #endif //BOSS_AI_DEFINED

@@ -91,7 +91,7 @@ void EnemyBullet::Initialize(CommonResources* pCmmonResources)
 *	@param target 弾発射時のターゲットの位置
 *	@return なし
 */
-void EnemyBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir, DirectX::SimpleMath::Vector3& target)
+void EnemyBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Vector3& dir, const DirectX::SimpleMath::Vector3& target)
 {
 	using namespace DirectX::SimpleMath;
 	m_position = pos;// 弾の座標
@@ -136,7 +136,7 @@ void EnemyBullet::Update(float elapsedTime)
 *	@param proj プロジェクション行列
 *	@return なし
 */
-void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void EnemyBullet::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
 	using namespace DirectX::SimpleMath;
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストを取得
@@ -152,7 +152,7 @@ void EnemyBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 *	@param proj プロジェクション行列
 *	@return なし
 */
-void EnemyBullet::RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void EnemyBullet::RenderShadow(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
 	using namespace DirectX::SimpleMath;
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストを取得
@@ -176,7 +176,7 @@ void EnemyBullet::RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::Simple
 *	@param proj プロジェクション行列
 *	@return なし
 */
-void EnemyBullet::RenderBoundingSphere(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void EnemyBullet::RenderBoundingSphere(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
 	UNREFERENCED_PARAMETER(view);// 未使用変数の警告を抑制
 	UNREFERENCED_PARAMETER(proj);// 未使用変数の警告を抑制

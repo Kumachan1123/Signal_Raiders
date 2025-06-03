@@ -35,16 +35,17 @@ class Wifi;
 class Wall;
 class EnemyManager
 {
-private:
-	// 構造体
-	struct StageSettings// ステージごとの設定
+private:// 構造体
+	// ステージごとの設定
+	struct StageSettings
 	{
-		int enemyMax;// 敵の生成上限
-		int bossHP;// ボスの体力
-		int specialAttackCount;// 一度に出る特殊攻撃の数
+		int enemyMax;						// 敵の生成上限
+		int bossHP;							// ボスの体力
+		int specialAttackCount;				// 一度に出る特殊攻撃の数
 		BossBase::BossBulletType bulletType;// ボスの弾の種類
 	};
-	const std::unordered_map<int, StageSettings> stageData =// ステージごとの設定のマップ
+	// ステージごとの設定のマップ
+	const std::unordered_map<int, StageSettings> stageData =
 	{
 		//{ステージ番号, {敵の生成上限, ボスの体力, 一度に出る特殊攻撃の数, ボスの弾の種類}}
 		{0, {5, 100, 3,BossBase::BossBulletType::STAGE_1}},// ステージ1
@@ -54,51 +55,83 @@ private:
 		{4, {40, 1000,10,BossBase::BossBulletType::STAGE_5}}// ステージ5
 
 	};
-public:
-	// アクセサ
-	std::vector<std::unique_ptr<IEnemy>>& GetEnemies() { return m_pEnemies; }  // 敵リスト取得
-	std::vector<std::unique_ptr<IEnemy>>& GetAttackingEnemies() { return m_pAttackingEnemies; }  // 攻撃中の敵リスト取得
-	int GetEnemyIndex() const { return m_enemyIndex; }// 生成された敵の最大数取得
-	int GetEnemySize() const { return static_cast<int>(m_pEnemies.size()); }// 敵の数取得
-	std::unique_ptr<Wifi>& GetWifi() { return m_pWifi; }// Wi-Fiポインター取得
-	std::vector<std::unique_ptr<Effect>>& GetEffects() { return m_pEffects; }// エフェクト取得
-	bool GetisBorned() const { return m_isBorned; }// 敵生成済みフラグ
-	bool GetIsBossAlive() const { return m_isBossAlive; }// ボス生存フラグ
-	bool GetIsBossAppear() const { return m_isBossAppear; }// ボス生成演出再生フラグ
-	float GetSEVolume() const { return m_SEVolume; }// SEの音量取得
-	void SetSEVolume(float volume) { m_SEVolume = volume; }// SEの音量設定
-	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; }// ステージ番号設定
-	void SetWall(Wall* pWall) { m_pWall = pWall; };// 壁のポインター設定
-	BulletManager* GetBulletManager() { return m_pBulletManager; }// 弾マネージャー取得
-	void SetBulletManager(BulletManager* pBulletManager) { m_pBulletManager = pBulletManager; }// 弾マネージャー設定
-	int GetSpecialAttackCount() const { return m_specialAttackCount; }// 特殊攻撃の数取得
-	void SetSpecialAttackCount(int count) { m_specialAttackCount = count; }// 特殊攻撃の数設定
-public:
-	// public関数
-	EnemyManager(CommonResources* commonResources);// コンストラクタ
-	~EnemyManager();// デストラクタ
-	void Initialize(Player* pPlayer);	// 初期化
-	void Update(float elapsedTime);	// 更新
-	void Render();	// 描画
-private:
-	// private関数
-	void SetEnemyMax();	// 敵の生成上限設定
+public:	// アクセサ
+	// 敵リスト取得
+	std::vector<std::unique_ptr<IEnemy>>& GetEnemies() { return m_pEnemies; }
+	// 攻撃中の敵リスト取得
+	std::vector<std::unique_ptr<IEnemy>>& GetAttackingEnemies() { return m_pAttackingEnemies; }
+	// 生成された敵の最大数取得
+	int GetEnemyIndex() const { return m_enemyIndex; }
+	// 敵の数取得
+	int GetEnemySize() const { return static_cast<int>(m_pEnemies.size()); }
+	// Wi-Fiポインター取得
+	std::unique_ptr<Wifi>& GetWifi() { return m_pWifi; }
+	// エフェクト取得
+	std::vector<std::unique_ptr<Effect>>& GetEffects() { return m_pEffects; }
+	// 敵生成済みフラグ
+	bool GetisBorned() const { return m_isBorned; }
+	// ボス生存フラグ
+	bool GetIsBossAlive() const { return m_isBossAlive; }
+	// ボス生成演出再生フラグ
+	bool GetIsBossAppear() const { return m_isBossAppear; }
+	// SEの音量取得
+	float GetSEVolume() const { return m_SEVolume; }
+	// SEの音量設定
+	void SetSEVolume(float volume) { m_SEVolume = volume; }
+	// ステージ番号設定
+	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; }
+	// 壁のポインター設定
+	void SetWall(Wall* pWall) { m_pWall = pWall; };
+	// 弾マネージャー取得
+	BulletManager* GetBulletManager() { return m_pBulletManager; }
+	// 弾マネージャー設定
+	void SetBulletManager(BulletManager* pBulletManager) { m_pBulletManager = pBulletManager; }
+	// 特殊攻撃の数取得
+	int GetSpecialAttackCount() const { return m_specialAttackCount; }
+	// 特殊攻撃の数設定
+	void SetSpecialAttackCount(int count) { m_specialAttackCount = count; }
+public:	// public関数
+	// コンストラクタ
+	EnemyManager(CommonResources* commonResources);
+	// デストラクタ
+	~EnemyManager();
+	// 初期化
+	void Initialize(Player* pPlayer);
+	// 更新
+	void Update(float elapsedTime);
+	// 描画
+	void Render();
+private:// private関数
+	// 敵の生成上限設定
+	void SetEnemyMax();
 	// 更新処理を分割するメソッド
-	void UpdateStartTime(float elapsedTime);// 敵生成開始時間
-	void UpdateEffects(float elapsedTime);// エフェクト
-	void HandleEnemySpawning(float elapsedTime);// 敵生成
-	void SpawnEnemy(EnemyType type);// 敵生成(指定タイプ
-	void FinalizeEnemySpawn();// 敵生成終了
-	void SpawnBoss();// ボス生成
-	void HandleEnemyCollisions();// 敵の当たり判定
-	void UpdateEnemies(float elapsedTime);// プレイヤーと敵の当たり判定
-	void HandleEnemyBulletCollision(std::unique_ptr<IEnemy>& pEnemy);// 敵の弾とプレイヤーの当たり判定
-	void HandleEnemyPlayerCollision(std::unique_ptr<IEnemy>& pEnemy);// 敵とプレイヤーの当たり判定
-	void HandleWallCollision();// 壁との当たり判定
-	void RemoveDeadEnemies();// 死亡した敵を削除
-	void HandleEnemyDeath(std::unique_ptr<IEnemy>& pEnemy);// 敵の死亡処理
-private:
-	// private変数
+	// 敵生成開始時間の更新
+	void UpdateStartTime(float elapsedTime);
+	// エフェクトの更新
+	void UpdateEffects(float elapsedTime);
+	// 敵の生成
+	void HandleEnemySpawning(float elapsedTime);
+	// タイプを指定して敵を生成
+	void SpawnEnemy(EnemyType type);
+	// 敵生成終了処理
+	void FinalizeEnemySpawn();
+	// ボス生成
+	void SpawnBoss();
+	// 敵の当たり判定
+	void HandleEnemyCollisions();
+	// プレイヤーと敵の当たり判定
+	void UpdateEnemies(float elapsedTime);
+	// 敵の弾とプレイヤーの当たり判定
+	void HandleEnemyBulletCollision(std::unique_ptr<IEnemy>& pEnemy);
+	// 敵とプレイヤーの当たり判定
+	void HandleEnemyPlayerCollision(std::unique_ptr<IEnemy>& pEnemy);
+	// 壁との当たり判定
+	void HandleWallCollision();
+	// 死亡した敵を削除
+	void RemoveDeadEnemies();
+	// 敵の死亡処理
+	void HandleEnemyDeath(std::unique_ptr<IEnemy>& pEnemy);
+private:// private変数
 	// コモンリソース
 	CommonResources* m_pCommonResources;
 	// 敵
@@ -153,6 +186,4 @@ private:
 	float m_SEVolume;
 	// ボスの弾の種類
 	BossBase::BossBulletType m_bossBulletType;
-
-
 };

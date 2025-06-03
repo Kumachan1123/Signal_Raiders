@@ -44,10 +44,10 @@ public:
 	~PlayerBullet()override;
 	void Initialize(CommonResources* resources)override;// ‰Šú‰»
 	void Update(float elapsedTime)override;// XV
-	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;// •`‰æ
-	void RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;// ‰e‚Ì•`‰æ
-	void DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);// “–‚½‚è”»’è‚Ì•`‰æ
-	void MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir);// ’e‚ğ¶¬
+	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)override;// •`‰æ
+	void RenderShadow(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)override;// ‰e‚Ì•`‰æ
+	void DrawCollision(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);// “–‚½‚è”»’è‚Ì•`‰æ
+	void MakeBall(const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Vector3& dir);// ’e‚ğ¶¬
 	bool IsExpired() const { return m_time >= BulletParameters::PLAYER_BULLET_LIFETIME; }// ’e‚ª¶¬‚³‚ê‚Ä‚©‚ç‚ÌŒo‰ßŠÔ‚ªõ–½‚ğ’´‚¦‚½‚©‚Ç‚¤‚©‚ğ”»’è‚·‚é
 	int Damage()const { return BulletParameters::DAMAGE + m_additionalDamage; }// “G‚Éƒ_ƒ[ƒW‚ğ—^‚¦‚é
 private:// private•Ï”

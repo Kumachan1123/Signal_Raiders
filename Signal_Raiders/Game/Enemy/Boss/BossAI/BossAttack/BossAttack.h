@@ -22,42 +22,54 @@
 #include "Game/KumachiLib/KumachiLib.h"
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 #include "Game/Interface/IState.h"
-
 //前方宣言
 class CommonResources;
 class BossAI;
-
 class BossAttack : public IState
 {
-public:
-	// アクセサ
-	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }// 座標取得
-	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }// 座標設定
-	DirectX::SimpleMath::Quaternion GetRotation() const { return m_rotation; }// 回転取得
-	void SetRotation(DirectX::SimpleMath::Quaternion rot) { m_rotation = rot; }// 回転設定
-	float GetCoolTime() const { return m_attackCooldown; }// クールタイム取得
-	void SetCoolTime(float coolTime) { m_attackCooldown = coolTime; }// クールタイム設定
-	void SetScale(DirectX::SimpleMath::Vector3 sca) { m_scale = sca; }// スケール設定
-	void SetRotationSpeed(float speed) { m_rotationSpeed = speed; }// 回転速度設定
-public:
-	// publicメンバ関数
-	BossAttack(BossAI* pBoss);// コンストラクタ
-	~BossAttack();// デストラクタ
-	void Initialize() override;// 初期化
-	void Update(float elapsedTime) override;// 更新
-private:
-	// privateメンバ関数
-	void RotateTowardsPlayer(DirectX::SimpleMath::Vector3 playerPos);// プレイヤーの方向に回転
-	void MoveTowardsPlayer(float elapsedTime, DirectX::SimpleMath::Vector3 playerPos);// プレイヤーの方向に移動
-	void ManageAttackCooldown(float elapsedTime);// 攻撃クールダウンの管理
-private:
-	// private定数
-	const float ROTATION_SPEED = 5.5f;// 回転速度
-	const float RANDOM_MAX = 2.0f;// ランダムの最大値
-	const float RANDOM_MIN = 0.5f;// ランダムの最小値
-	const float ATTACK_INTERVAL = 1.0f; // 攻撃間隔
-private:
-	// privateメンバ変数
+public:	// アクセサ
+	// 座標取得
+	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
+	// 座標設定
+	void SetPosition(const DirectX::SimpleMath::Vector3& pos) { m_position = pos; }
+	// 回転取得
+	DirectX::SimpleMath::Quaternion GetRotation() const { return m_rotation; }
+	// 回転設定
+	void SetRotation(const DirectX::SimpleMath::Quaternion& rot) { m_rotation = rot; }
+	// クールタイム取得
+	float GetCoolTime() const { return m_attackCooldown; }
+	// クールタイム設定
+	void SetCoolTime(float coolTime) { m_attackCooldown = coolTime; }
+	// スケール設定
+	void SetScale(const DirectX::SimpleMath::Vector3& sca) { m_scale = sca; }
+	// 回転速度設定
+	void SetRotationSpeed(float speed) { m_rotationSpeed = speed; }
+public:	// publicメンバ関数
+	// コンストラクタ
+	BossAttack(BossAI* pBoss);
+	// デストラクタ
+	~BossAttack();
+	// 初期化
+	void Initialize() override;
+	// 更新
+	void Update(float elapsedTime) override;
+private:// privateメンバ関数
+	// プレイヤーの方向に回転
+	void RotateTowardsPlayer(const DirectX::SimpleMath::Vector3& playerPos);
+	// プレイヤーの方向に移動
+	void MoveTowardsPlayer(float elapsedTime, const DirectX::SimpleMath::Vector3& playerPos);
+	// 攻撃クールダウンの管理
+	void ManageAttackCooldown(float elapsedTime);
+private:// private定数
+	// 回転速度
+	const float ROTATION_SPEED = 5.5f;
+	// ランダムの最大値
+	const float RANDOM_MAX = 2.0f;
+	// ランダムの最小値
+	const float RANDOM_MIN = 0.5f;
+	// 攻撃間隔
+	const float ATTACK_INTERVAL = 1.0f;
+private:// privateメンバ変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 敵AI

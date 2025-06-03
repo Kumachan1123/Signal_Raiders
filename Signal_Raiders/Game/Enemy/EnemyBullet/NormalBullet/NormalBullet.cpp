@@ -23,8 +23,10 @@ NormalBullet::NormalBullet()
 */
 NormalBullet::~NormalBullet()
 {
-	m_pCommonResources = nullptr; // ‹¤’ÊƒŠƒ\[ƒX‚Ìƒ|ƒCƒ“ƒ^[‚ðnullptr‚ÉÝ’è
-	m_pEnemyBullet = nullptr; // “G’e‚Ìƒ|ƒCƒ“ƒ^[‚ðnullptr‚ÉÝ’è
+	// ‹¤’ÊƒŠƒ\[ƒX‚Ìƒ|ƒCƒ“ƒ^[‚ðnullptr‚ÉÝ’è
+	m_pCommonResources = nullptr;
+	// “G’e‚Ìƒ|ƒCƒ“ƒ^[‚ðnullptr‚ÉÝ’è
+	m_pEnemyBullet = nullptr;
 }
 /*
 *	@brief ‰Šú‰»ŠÖ”
@@ -34,12 +36,18 @@ NormalBullet::~NormalBullet()
 */
 void NormalBullet::Initialize()
 {
-	m_position = m_pEnemyBullet->GetPosition();// ’e‚ÌÀ•W
-	m_velocity = m_pEnemyBullet->GetVelocity();// ’e‚Ì‘¬“x
-	m_direction = m_pEnemyBullet->GetDirection();// ’e‚Ì•ûŒü
-	m_boundingSphere = m_pEnemyBullet->GetBoundingSphere();// u’ev‹«ŠE‹…
-	m_toPlayer = m_pEnemyBullet->GetTarget() - m_position;// // ƒvƒŒƒCƒ„[‚Ì•ûŒüƒxƒNƒgƒ‹‚ðŒvŽZ
-	m_toPlayer.Normalize();// ƒxƒNƒgƒ‹‚ð³‹K‰»
+	// ’e‚ÌÀ•W‚ðÝ’è
+	m_position = m_pEnemyBullet->GetPosition();
+	// ’e‚Ì‘¬“x‚ðÝ’è
+	m_velocity = m_pEnemyBullet->GetVelocity();
+	// ’e‚Ì•ûŒü‚ðÝ’è
+	m_direction = m_pEnemyBullet->GetDirection();
+	// ‹«ŠE‹…‚ðÝ’è
+	m_boundingSphere = m_pEnemyBullet->GetBoundingSphere();
+	// ƒvƒŒƒCƒ„[‚Ö‚Ì•ûŒüƒxƒNƒgƒ‹‚ðŒvŽZ
+	m_toPlayer = m_pEnemyBullet->GetTarget() - m_position;
+	// ƒxƒNƒgƒ‹‚ð³‹K‰»
+	m_toPlayer.Normalize();
 }
 /*
 *	@brief XVŠÖ”
@@ -49,14 +57,22 @@ void NormalBullet::Initialize()
 */
 void NormalBullet::Update(float elapsedTime)
 {
-	m_direction = m_toPlayer;// ƒvƒŒƒCƒ„[‚Ì•ûŒü‚ðŒü‚©‚¹‚é
-	m_direction.y -= BulletParameters::STRAIGHT_ADJUST_DIRECTION;// ‰º‚ÉŽáŠ±‚¸‚ç‚·
-	m_velocity = m_direction * BulletParameters::STRAIGHT_BULLET_SPEED * elapsedTime;	// ’e‚Ì‘¬“x‚ð’x‚­‚·‚é
-	m_position += m_velocity;// ƒvƒŒƒCƒ„[‚Ì•ûŒü‚ÉŒü‚©‚Á‚Ä’e‚ð”ò‚Î‚·
-	m_boundingSphere.Center = m_position;//‹«ŠE‹…‚ÉÀ•W‚ð“n‚·
-	// ’e‚ÌŠeŽíî•ñ‚ðXV
-	m_pEnemyBullet->SetDirection(m_direction);// ’e‚Ì•ûŒü
-	m_pEnemyBullet->SetVelocity(m_velocity);// ’e‚Ì‘¬“x
-	m_pEnemyBullet->SetPosition(m_position);// ’e‚ÌÀ•W
-	m_pEnemyBullet->SetBoundingSphere(m_boundingSphere);// u’ev‹«ŠE‹…
+	// ƒvƒŒƒCƒ„[‚Ì•ûŒü‚ðŒü‚©‚¹‚é
+	m_direction = m_toPlayer;
+	// ‰º‚ÉŽáŠ±‚¸‚ç‚·
+	m_direction.y -= BulletParameters::STRAIGHT_ADJUST_DIRECTION;
+	// ’e‚Ì‘¬“x‚ð’x‚­‚·‚é
+	m_velocity = m_direction * BulletParameters::STRAIGHT_BULLET_SPEED * elapsedTime;
+	// ƒvƒŒƒCƒ„[‚Ì•ûŒü‚ÉŒü‚©‚Á‚Ä’e‚ð”ò‚Î‚·
+	m_position += m_velocity;
+	//‹«ŠE‹…‚ÉÀ•W‚ð“n‚·
+	m_boundingSphere.Center = m_position;
+	// ’e‚Ì•ûŒü‚ðXV
+	m_pEnemyBullet->SetDirection(m_direction);
+	// ’e‚Ì‘¬“xXV
+	m_pEnemyBullet->SetVelocity(m_velocity);
+	// ’e‚ÌÀ•W‚ðXV
+	m_pEnemyBullet->SetPosition(m_position);
+	// ’e‚Ì‹«ŠE‹…‚ðXV
+	m_pEnemyBullet->SetBoundingSphere(m_boundingSphere);
 }

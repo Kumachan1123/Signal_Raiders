@@ -30,24 +30,34 @@ private:
 		DirectX::SimpleMath::Matrix matView;    // ビュー行列
 		DirectX::SimpleMath::Matrix matProj;    // プロジェクション行列
 		DirectX::SimpleMath::Vector4 colors;    // カラー
-		DirectX::SimpleMath::Vector4 time;    // 時間	
+		DirectX::SimpleMath::Vector4 time;		// 時間	
 	};
 public:// アクセサ
-	void SetSEVolume(float volume) { m_seVolume = volume; } // SE音量の設定
+	// SE音量の設定
+	void SetSEVolume(float volume) { m_seVolume = volume; }
 public:// publicメンバ関数
-	BossAppear();//	コンストラクタ
-	~BossAppear();//	デストラクタ
-	void Initialize(CommonResources* resources);// 初期化
-	void Update(float elapsedTime);// 更新
-	void Render();// 描画
-	void Finalize();// 終了処理
-private:	// privateメンバ関数
-	void SettingShader();// シェーダーの設定
-	void LoadTexture(const wchar_t* path);// テクスチャの読み込み
-	void DrawMain();// メインの演出を描画
-	void DrawBack();// 背景の演出を描画
+	// コンストラクタ
+	BossAppear();
+	// デストラクタ
+	~BossAppear();
+	// 初期化
+	void Initialize(CommonResources* resources);
+	// 更新
+	void Update(float elapsedTime);
+	// 描画
+	void Render();
+	// 終了処理
+	void Finalize();
+private:// privateメンバ関数
+	// シェーダーの設定
+	void SettingShader();
+	// メインの演出を描画
+	void DrawMain();
+	// 背景の演出を描画
+	void DrawBack();
 private:// 定数
-	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;// インプットレイアウト
+	// インプットレイアウト
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 private:// privateメンバ変数
 	//	頂点シェーダ(Main)
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_pVertexShader;

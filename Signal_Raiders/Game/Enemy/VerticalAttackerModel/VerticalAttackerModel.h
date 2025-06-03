@@ -22,24 +22,31 @@ class CommonResources;
 class IState;
 class VerticalAttackerModel : public IModel
 {
-public:
-	// public関数
-	VerticalAttackerModel();// コンストラクタ
-	~VerticalAttackerModel()override;// デストラクタ
-	void Initialize(CommonResources* resources)override;// 初期化
-	void SetState(IState::EnemyState State)override { m_nowState = State; }// 状態設定
-	void Render(ID3D11DeviceContext1* context,// 描画
+public:	// public関数
+	// コンストラクタ
+	VerticalAttackerModel();
+	// デストラクタ
+	~VerticalAttackerModel()override;
+	// 初期化
+	void Initialize(CommonResources* resources)override;
+	// 状態設定
+	void SetState(IState::EnemyState State)override { m_nowState = State; }
+	// 描画
+	void Render(ID3D11DeviceContext1* context,
 		DirectX::DX11::CommonStates* states,
-		DirectX::SimpleMath::Matrix world,
-		DirectX::SimpleMath::Matrix view,
-		DirectX::SimpleMath::Matrix proj)override;
-private:
-	// private変数
-	CommonResources* m_pCommonResources;	// 共通リソース
-	// モデル
-	DirectX::Model* m_pBodyModel;//胴体
-	std::unordered_map<IState::EnemyState, DirectX::Model*> m_pFaceModelMap;// 表情によって変わる顔のモデルのマップ
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;	// モデルの影用のピクセルシェーダー
-	IState::EnemyState m_nowState;	// 現在のステータス
+		const DirectX::SimpleMath::Matrix& world,
+		const DirectX::SimpleMath::Matrix& view,
+		const DirectX::SimpleMath::Matrix& proj)	override;
+private:// private変数
+	// 共通リソース
+	CommonResources* m_pCommonResources;
+	// 胴体モデル
+	DirectX::Model* m_pBodyModel;
+	// 表情によって変わる顔のモデルのマップ
+	std::unordered_map<IState::EnemyState, DirectX::Model*> m_pFaceModelMap;
+	// モデルの影用のピクセルシェーダー
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
+	// 現在のステータス
+	IState::EnemyState m_nowState;
 };
 #endif //AREA_ATTACKER_MODEL_DEFINED

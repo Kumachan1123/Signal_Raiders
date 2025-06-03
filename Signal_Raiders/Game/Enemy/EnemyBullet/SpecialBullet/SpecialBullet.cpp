@@ -35,8 +35,10 @@ SpecialBullet::SpecialBullet()
 */
 SpecialBullet::~SpecialBullet()
 {
-	m_pCommonResources = nullptr; // 共通リソースのポインターをnullptrに設定
-	m_pEnemyBullet = nullptr; // 敵弾のポインターをnullptrに設定
+	// 共通リソースのポインターをnullptrに設定
+	m_pCommonResources = nullptr;
+	// 敵弾のポインターをnullptrに設定
+	m_pEnemyBullet = nullptr;
 }
 /*
 *	@brief 初期化関数
@@ -46,11 +48,16 @@ SpecialBullet::~SpecialBullet()
 */
 void SpecialBullet::Initialize()
 {
-	m_position = m_pEnemyBullet->GetPosition();// 弾の座標
-	m_velocity = m_pEnemyBullet->GetVelocity();// 弾の速度
-	m_direction = m_pEnemyBullet->GetDirection();// 弾の方向
-	m_spiralAngle = m_pEnemyBullet->GetAngle();// 回転弾の角度
-	m_boundingSphere = m_pEnemyBullet->GetBoundingSphere();// 「弾」境界球
+	// 弾の座標を設定
+	m_position = m_pEnemyBullet->GetPosition();
+	// 弾の速度を設定
+	m_velocity = m_pEnemyBullet->GetVelocity();
+	// 弾の方向を設定
+	m_direction = m_pEnemyBullet->GetDirection();
+	// 回転弾の角度を設定
+	m_spiralAngle = m_pEnemyBullet->GetAngle();
+	// 弾の境界球を設定
+	m_boundingSphere = m_pEnemyBullet->GetBoundingSphere();
 }
 /*
 *	@brief 更新関数
@@ -61,27 +68,42 @@ void SpecialBullet::Initialize()
 void SpecialBullet::Update(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
-	m_pCommonResources->GetAudioManager()->Update();// オーディオマネージャーの更新
-	m_time += elapsedTime;// 時間の加算
-	m_elapsedTime = elapsedTime;// 経過時間を保存
-	m_spiralAngle += m_rotationSpeed * elapsedTime;	// 時計回りに回転するための角度
+	// オーディオマネージャーの更新
+	m_pCommonResources->GetAudioManager()->Update();
+	// 時間の加算
+	m_time += elapsedTime;
+	// 経過時間を保存
+	m_elapsedTime = elapsedTime;
+	// 時計回りに回転するための角度
+	m_spiralAngle += m_rotationSpeed * elapsedTime;
 	// XY平面上で円運動 (時計回り)
-	float xOffset = cosf(m_spiralAngle) * m_distance;// X座標のオフセット
-	float zOffset = sinf(m_spiralAngle) * m_distance;// Z座標のオフセット
-	m_positionOffSet = Vector3(xOffset, m_basePos.y - 3.5f, zOffset);	// もともとのY座標の動きは変更しない
-	Expand();// 子オブジェクトを展開
-	Shot();// 子オブジェクトを発射
-	StopExpand();// 子オブジェクトを収納
-	ComeBack();// 子オブジェクトを戻す
-	m_position = m_basePos + m_positionOffSet;	// プレイヤーに向かいつつスパイラルを描いて移動
-	m_boundingSphere.Center = m_position;	// 境界球の中心座標を弾の座標に更新
-	if (m_time >= BulletParameters::SPECIAL_ATTACK_WAIT_TIME)	// 弾の寿命に応じてフラグを切り替える
-		m_pEnemyBullet->SetIsShot(true);// 弾を発射する
-	// 弾の各種情報を更新
-	m_pEnemyBullet->SetDirection(m_direction);// 弾の方向
-	m_pEnemyBullet->SetVelocity(m_velocity);// 弾の速度
-	m_pEnemyBullet->SetPosition(m_position);// 弾の座標
-	m_pEnemyBullet->SetBoundingSphere(m_boundingSphere);// 「弾」境界球
+	// X座標のオフセット
+	float xOffset = cosf(m_spiralAngle) * m_distance;
+	// Z座標のオフセット
+	float zOffset = sinf(m_spiralAngle) * m_distance;
+	// もともとのY座標の動きは変更しない
+	m_positionOffSet = Vector3(xOffset, m_basePos.y - 3.5f, zOffset);
+	// 子オブジェクトを展開
+	Expand();
+	// 子オブジェクトを発射
+	Shot();
+	// 子オブジェクトを収納
+	StopExpand();
+	// 子オブジェクトを戻す
+	ComeBack();
+	// プレイヤーに向かいつつスパイラルを描いて移動
+	m_position = m_basePos + m_positionOffSet;
+	// 境界球の中心座標を弾の座標に更新
+	m_boundingSphere.Center = m_position;
+	if (m_time >= BulletParameters::SPECIAL_ATTACK_WAIT_TIME)m_pEnemyBullet->SetIsShot(true);// 待機時間を過ぎたら発射
+	// 弾の方向を更新
+	m_pEnemyBullet->SetDirection(m_direction);
+	// 弾の速度を更新
+	m_pEnemyBullet->SetVelocity(m_velocity);
+	// 弾の座標を更新
+	m_pEnemyBullet->SetPosition(m_position);
+	// 弾の境界球を更新
+	m_pEnemyBullet->SetBoundingSphere(m_boundingSphere);
 }
 /*
 *	@brief 回転弾を展開する
@@ -91,16 +113,22 @@ void SpecialBullet::Update(float elapsedTime)
 */
 void SpecialBullet::Expand()
 {
-	if (!m_pEnemyBullet->GetIsExpand())return;// 展開していない場合は何もしない
-	m_rotationSpeed = 1.0f; // 速度調整用（値を大きくすると速く回転する）
-	m_distance = Lerp(m_distance, 15.0f, m_elapsedTime);// 弾の距離を補完
-	m_height = 2.0f; // 弾の高さを補完
-	if (!m_isPlayChargeSE)// SEが再生されていない場合
+	// 展開していない場合は何もしない
+	if (!m_pEnemyBullet->GetIsExpand())return;
+	// 回転速度を設定
+	m_rotationSpeed = 1.0f;
+	// 弾の距離を補完
+	m_distance = Lerp(m_distance, 15.0f, m_elapsedTime);
+	// 弾の高さを補完
+	m_height = 2.0f;
+	// SEが再生されていない場合
+	if (!m_isPlayChargeSE)
 	{
-		m_pCommonResources->GetAudioManager()->PlaySound("ChargeSpecial", m_seVolume);// SEを再生
-		m_isPlayChargeSE = true;// SE再生フラグを立てる
+		// 展開音を再生
+		m_pCommonResources->GetAudioManager()->PlaySound("ChargeSpecial", m_seVolume);
+		// SE再生フラグを立てる
+		m_isPlayChargeSE = true;
 	}
-
 }
 /*
 *	@brief 回転弾を発射する
@@ -110,14 +138,21 @@ void SpecialBullet::Expand()
 */
 void SpecialBullet::Shot()
 {
-	if (!m_pEnemyBullet->GetIsShot()) return;// 発射していない場合は何もしない
-	m_rotationSpeed = 3.0f; // 速度調整用（値を大きくすると速く回転する）
-	m_distance = Lerp(m_distance, 5.0f, m_elapsedTime);// 弾の距離を補完
-	m_basePos = Lerp(m_basePos, m_pEnemyBullet->GetCurrentTarget(), m_elapsedTime * 2);// 基準点を目的地に向かって線形補完
-	if (!m_isPlayShotSE)// SEが再生されていない場合
+	// 発射していない場合は何もしない
+	if (!m_pEnemyBullet->GetIsShot()) return;
+	// 回転速度を設定
+	m_rotationSpeed = 3.0f;
+	// 弾の距離を補完
+	m_distance = Lerp(m_distance, 5.0f, m_elapsedTime);
+	// 基準点を目的地に向かって線形補完
+	m_basePos = Lerp(m_basePos, m_pEnemyBullet->GetCurrentTarget(), m_elapsedTime * 2);
+	// SEが再生されていない場合
+	if (!m_isPlayShotSE)
 	{
-		m_pCommonResources->GetAudioManager()->PlaySound("SpecialAttack", m_seVolume);// SEを再生
-		m_isPlayShotSE = true;// SE再生フラグを立てる
+		// 発射音を再生
+		m_pCommonResources->GetAudioManager()->PlaySound("SpecialAttack", m_seVolume);
+		// SE再生フラグを立てる
+		m_isPlayShotSE = true;
 	}
 }
 /*
@@ -128,10 +163,14 @@ void SpecialBullet::Shot()
 */
 void SpecialBullet::StopExpand()
 {
-	if (m_pEnemyBullet->GetIsExpand())return;// 展開していない場合は何もしない
-	m_rotationSpeed = 0.0f; // 速度調整用（値を大きくすると速く回転する）
-	m_distance = Lerp(m_distance, 0.0f, m_elapsedTime * 20);// 弾の距離を補完
-	m_height = 1.50f; // 弾の高さを補正
+	// 展開していない場合は何もしない
+	if (m_pEnemyBullet->GetIsExpand())return;
+	// 回転を止める
+	m_rotationSpeed = 0.0f;
+	// 弾の距離を補完
+	m_distance = Lerp(m_distance, 0.0f, m_elapsedTime * 20);
+	// 弾の高さを補正
+	m_height = 1.50f;
 }
 /*
 *	@brief 回転弾を自分の周りに戻す
@@ -141,7 +180,10 @@ void SpecialBullet::StopExpand()
 */
 void SpecialBullet::ComeBack()
 {
-	if (m_pEnemyBullet->GetIsShot()) return;// 発射していない場合は何もしない
-	m_distance = Lerp(m_distance, 3.0f, m_elapsedTime);	// 基準点を親が向いている方向に動かす
-	m_basePos = Lerp(m_basePos, m_pEnemyBullet->GetEnemyPosition(), m_elapsedTime * 50);// 基準点を目的地に向かって線形補完
+	// 発射していない場合は何もしない
+	if (m_pEnemyBullet->GetIsShot()) return;
+	// 基準点を親が向いている方向に動かす
+	m_distance = Lerp(m_distance, 3.0f, m_elapsedTime);
+	// 基準点を目的地に向かって線形補完
+	m_basePos = Lerp(m_basePos, m_pEnemyBullet->GetEnemyPosition(), m_elapsedTime * 50);
 }

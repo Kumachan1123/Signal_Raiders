@@ -25,10 +25,15 @@ EnemyAI::EnemyAI(IEnemy* pEnemy)
 	, m_pEnemy(pEnemy)// 敵
 	, m_isAttack(false)// 攻撃中か
 {
-	m_pEnemy = pEnemy;// 敵を取得
-	m_pEnemyAttack = std::make_unique<EnemyAttack>(this);// 攻撃クラスを生成
-	m_pEnemyIdling = std::make_unique<EnemyIdling>(this);// 徘徊クラスを生成
-	m_pEnemySpin = std::make_unique<EnemySpin>(this); // スピンクラスを生成
+	// 各種ポインターを初期化
+	// 敵のポインターを設定
+	m_pEnemy = pEnemy;
+	// 攻撃クラスを生成
+	m_pEnemyAttack = std::make_unique<EnemyAttack>(this);
+	// 徘徊クラスを生成
+	m_pEnemyIdling = std::make_unique<EnemyIdling>(this);
+	// スピンクラスを生成
+	m_pEnemySpin = std::make_unique<EnemySpin>(this);
 }
 
 /*
@@ -39,11 +44,16 @@ EnemyAI::EnemyAI(IEnemy* pEnemy)
 */
 EnemyAI::~EnemyAI()
 {
-	m_pEnemyAttack.reset(); // 攻撃クラスの解放
-	m_pEnemyIdling.reset(); // 徘徊クラスの解放
-	m_pEnemySpin.reset(); // スピンクラスの解放
-	m_pCurrentState = nullptr; // 現在の状態をnullptrに設定
-	m_pEnemy = nullptr; // 敵のポインターをnullptrに設定
+	// 攻撃クラスの解放
+	m_pEnemyAttack.reset();
+	// 徘徊クラスの解放
+	m_pEnemyIdling.reset();
+	// スピンクラスの解放
+	m_pEnemySpin.reset();
+	// 現在の状態をnullptrに設定
+	m_pCurrentState = nullptr;
+	// 敵のポインターをnullptrに設定
+	m_pEnemy = nullptr;
 }
 
 /*
@@ -55,15 +65,24 @@ EnemyAI::~EnemyAI()
 void EnemyAI::Initialize()
 {
 	using namespace DirectX::SimpleMath;
-	m_initialPosition = Vector3::Zero;  // 初期位置を初期化
-	m_initialPosition.y = GenerateRandomMultiplier(EnemyParameters::RANDOM_MIN, EnemyParameters::RANDOM_MAX); // 初期位置のY座標を設定
-	m_rotation.y = GenerateRandomMultiplier(EnemyParameters::RANDOM_MIN, EnemyParameters::RANDOM_MAX); // Y軸の回転を設定
-	m_velocity = EnemyParameters::INITIAL_VELOCITY; // 浮遊の初期速度
-	m_scale = Vector3::One; // スケール初期化
-	m_position = m_initialPosition;// 位置初期化
-	m_pCurrentState = m_pEnemyIdling.get(); // 徘徊態勢にする
-	m_pCurrentState->Initialize();// 状態を初期化
-	m_enemyState = IState::EnemyState::IDLING;// 待機態勢
+	// 初期位置を初期化
+	m_initialPosition = Vector3::Zero;
+	// 初期位置のY座標を設定
+	m_initialPosition.y = GenerateRandomMultiplier(EnemyParameters::RANDOM_MIN, EnemyParameters::RANDOM_MAX);
+	// Y軸の回転を設定
+	m_rotation.y = GenerateRandomMultiplier(EnemyParameters::RANDOM_MIN, EnemyParameters::RANDOM_MAX);
+	// 浮遊の初期速度
+	m_velocity = EnemyParameters::INITIAL_VELOCITY;
+	// スケール初期化
+	m_scale = Vector3::One;
+	// 位置を初期化
+	m_position = m_initialPosition;
+	// 徘徊態勢にする
+	m_pCurrentState = m_pEnemyIdling.get();
+	// 状態を初期化
+	m_pCurrentState->Initialize();
+	// 表情差分を徘徊状態のものにする
+	m_enemyState = IState::EnemyState::IDLING;
 }
 /*
 *	@brief	更新
@@ -74,35 +93,49 @@ void EnemyAI::Initialize()
 void EnemyAI::Update(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
-	m_position = m_pEnemy->GetPosition();// 位置を取得
-	if (m_pEnemy->GetEnemyHitByPlayerBullet())m_isHitPlayerBullet = true;// プレイヤーの弾に当たったかどうかを取得
-	m_time += elapsedTime; // 時間の加算
-	m_position.y = m_initialPosition.y + EnemyParameters::AMPLITUDE * std::sin(EnemyParameters::FREQUENCY * m_time);	// 敵をふわふわ浮遊させる
-	m_position.y += m_velocity.y * elapsedTime; // 敵のY座標を更新
+	// 位置を取得
+	m_position = m_pEnemy->GetPosition();
+	// プレイヤーの弾に当たったかどうかを取得
+	if (m_pEnemy->GetEnemyHitByPlayerBullet())m_isHitPlayerBullet = true;
+	// 時間の加算
+	m_time += elapsedTime;
+	// 敵をふわふわ浮遊させる
+	m_position.y = m_initialPosition.y + EnemyParameters::AMPLITUDE * std::sin(EnemyParameters::FREQUENCY * m_time);
+	// 敵のY座標を更新
+	m_position.y += m_velocity.y * elapsedTime;
 	// 敵がプレイヤーの一定範囲内に入っている場合
 	if ((m_pEnemy->GetHitToPlayer() || m_isHitPlayerBullet))
 	{
-		ChangeState(m_pEnemyAttack.get());//攻撃態勢にする
-		m_enemyState = IState::EnemyState::ATTACK;// 徘徊態勢
-		SetIsAttack(true);// 攻撃中にする
+		//攻撃態勢にする
+		ChangeState(m_pEnemyAttack.get());
+		// 攻撃態勢にする
+		m_enemyState = IState::EnemyState::ATTACK;
+		// 攻撃中にする
+		SetIsAttack(true);
 	}
 	else// 敵がプレイヤーの一定範囲外にいる場合
 	{
-		ChangeState(m_pEnemyIdling.get());//徘徊態勢にする
-		m_enemyState = IState::EnemyState::IDLING;// 徘徊態勢
-		SetIsAttack(false);// 攻撃中でない
+		//徘徊態勢にする
+		ChangeState(m_pEnemyIdling.get());
+		// 徘徊態勢
+		m_enemyState = IState::EnemyState::IDLING;
+		// 攻撃中でない
+		SetIsAttack(false);
 	}
 	// プレイヤーの弾に当たった場合
 	if (m_pEnemy->GetEnemyHitByPlayerBullet())
 	{
-		//KnockBack(elapsedTime);// ノックバックする
-		//ChangeState(m_pEnemyKnockBack.get());// ノックバック状態にする
-		ChangeState(m_pEnemySpin.get());//スピンする
-		m_enemyState = IState::EnemyState::HIT;// 攻撃を食らった状態にする
-		SetIsAttack(false);// 攻撃中でない
+		//スピンする
+		ChangeState(m_pEnemySpin.get());
+		// 攻撃を食らった状態にする
+		m_enemyState = IState::EnemyState::HIT;
+		// 攻撃中でない
+		SetIsAttack(false);
 	}
-	m_pCurrentState->Update(elapsedTime); // 現在の状態を更新
-	m_pEnemy->SetPosition(m_position); // 敵の位置を更新
+	// 現在の状態を更新
+	m_pCurrentState->Update(elapsedTime);
+	// 敵の位置を更新
+	m_pEnemy->SetPosition(m_position);
 }
 /*
 *	@brief	状態変更
@@ -112,10 +145,12 @@ void EnemyAI::Update(float elapsedTime)
 */
 void EnemyAI::ChangeState(IState* newState)
 {
-	if (m_pCurrentState != newState)// 新しい状態が現在の状態と異なる場合
+	// 新しい状態が現在の状態と異なる場合
+	if (m_pCurrentState != newState)
 	{
-		m_pCurrentState = newState;// 新しい状態に変更
-		m_pCurrentState->Initialize(); // 新しい状態を初期化
+		// 新しい状態に変更
+		m_pCurrentState = newState;
+		// 新しい状態を初期化
+		m_pCurrentState->Initialize();
 	}
 }
-

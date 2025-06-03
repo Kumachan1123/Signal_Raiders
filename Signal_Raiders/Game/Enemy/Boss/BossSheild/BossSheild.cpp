@@ -29,10 +29,14 @@ BossSheild::BossSheild()
 */
 BossSheild::~BossSheild()
 {
-	m_pCommonResources = nullptr;// 共通リソースをnullptrに設定
-	m_pSheildModel = nullptr;// シールドモデルをnullptrに設定
-	m_pBoss = nullptr;// ボスクラスのポインタをnullptrに設定
-	m_pParticle = nullptr;// パーティクルをnullptrに設定 
+	// 共通リソースをnullptrに設定
+	m_pCommonResources = nullptr;
+	// シールドモデルをnullptrに設定
+	m_pSheildModel = nullptr;
+	// ボスクラスのポインタをnullptrに設定
+	m_pBoss = nullptr;
+	// パーティクルをnullptrに設定
+	m_pParticle = nullptr;
 }
 
 /*
@@ -44,13 +48,17 @@ BossSheild::~BossSheild()
 void BossSheild::SetUp(int sheildHP, IEnemy* pBoss)
 {
 	using namespace DirectX::SimpleMath;
-	m_sheildHP = sheildHP;// シールドのHP
-	m_pBoss = pBoss;// ボスクラスのポインタ
-	m_isSheild = false;// シールド展開フラグを立てる
-	m_sheildSize = Vector3::Zero;// シールドのサイズを初期化
-	m_sheildPosition = pBoss->GetPosition();// ボスの位置をシールドの位置に設定
+	// シールドのHPを設定
+	m_sheildHP = sheildHP;
+	// ボスクラスのポインタを設定
+	m_pBoss = pBoss;
+	// シールド展開フラグを立てる
+	m_isSheild = false;
+	// シールドのサイズを初期化
+	m_sheildSize = Vector3::Zero;
+	// ボスの位置をシールドの位置に設定
+	m_sheildPosition = pBoss->GetPosition();
 }
-
 /*
 *	@brief	初期化
 *	@param resources 共通リソース
@@ -58,10 +66,14 @@ void BossSheild::SetUp(int sheildHP, IEnemy* pBoss)
 */
 void BossSheild::Initialize(CommonResources* resources)
 {
-	m_pCommonResources = resources;// 共通リソースを設定
-	m_pParticle = std::make_unique<Particle>(ParticleUtility::Type::BARRIERBREAK, 0.0f);// 0.0fなのはすでに内部で設定されているから
-	m_pParticle->Initialize(m_pCommonResources);// パーティクル初期化
-	m_pSheildModel = m_pCommonResources->GetModelManager()->GetModel("Barrier");// マネージャーからシールドモデルを取得
+	// 共通リソースを設定
+	m_pCommonResources = resources;
+	// パーティクルを生成
+	m_pParticle = std::make_unique<Particle>(ParticleUtility::Type::BARRIERBREAK, 0.0f);
+	// パーティクル初期化
+	m_pParticle->Initialize(m_pCommonResources);
+	// マネージャーからシールドモデルを取得
+	m_pSheildModel = m_pCommonResources->GetModelManager()->GetModel("Barrier");
 }
 
 /*
@@ -72,23 +84,37 @@ void BossSheild::Initialize(CommonResources* resources)
 void BossSheild::Update(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
-	auto pBoss = dynamic_cast<BossBase*>(m_pBoss);// ボスクラスのポインタを取得
-	if (m_isSheild)// シールドが展開されている間
+	// ボスクラスのポインタを取得
+	auto pBoss = dynamic_cast<BossBase*>(m_pBoss);
+	// シールドが展開されている間
+	if (m_isSheild)
 	{
-		pBoss->PlayBarrierSE();// シールドSE再生
-		m_sheildSize = Vector3::SmoothStep(m_sheildSize, Vector3(0.4f), EnemyParameters::BOSS_SHIELD_SCALE_SPEED);// シールドのサイズを拡大
-		pBoss->GetBoundingSphere().Radius = pBoss->GetDefensiveHitRadius();// ボスの境界球をシールドの大きさに合わせる
-		pBoss->SetBulletCooldown(EnemyParameters::BOSS_SHIELD_ATTACK_COOLDOWN);// 攻撃の間隔を速くする
-		pBoss->SetInitSpecialAttacCooldown(EnemyParameters::SPECIAL_ATTACK_COOLDOWN / 2);// 特殊攻撃の間隔を速くする
+		// シールド展開音を再生する
+		pBoss->PlayBarrierSE();
+		// シールドのサイズを滑らかに拡大していく
+		m_sheildSize = Vector3::SmoothStep(m_sheildSize, Vector3(0.4f), EnemyParameters::BOSS_SHIELD_SCALE_SPEED);
+		// ボスの境界球を防御モードのサイズに設定
+		pBoss->GetBoundingSphere().Radius = pBoss->GetDefensiveHitRadius();
+		// 通常攻撃のクールダウンを短くして攻撃速度を上げる
+		pBoss->SetBulletCooldown(EnemyParameters::BOSS_SHIELD_ATTACK_COOLDOWN);
+		// 特殊攻撃のクールダウンも短縮する
+		pBoss->SetInitSpecialAttacCooldown(EnemyParameters::SPECIAL_ATTACK_COOLDOWN / 2);
 	}
-	if (m_sheildHP <= 0)// シールドが破壊されたら
+	// シールドが破壊されたら
+	if (m_sheildHP <= 0)
 	{
-		m_isParticle = true;// パーティクル再生
-		m_isSheild = false;// シールド破壊
-		pBoss->GetBoundingSphere().Radius = pBoss->GetDefaultHitRadius();// ボスの境界球を元に戻す
-		m_pParticle->SetBossPosition(m_pBoss->GetPosition());// ボスの位置を設定
+		// パーティクル再生フラグを立てる
+		m_isParticle = true;
+		// シールド無効化
+		m_isSheild = false;
+		// 境界球のサイズを通常時の大きさに戻す
+		pBoss->GetBoundingSphere().Radius = pBoss->GetDefaultHitRadius();
+		// パーティクルの発生位置をボスの現在位置に設定
+		m_pParticle->SetBossPosition(m_pBoss->GetPosition());
+		// パーティクルのサイズをボスの設定値に合わせる
 		m_pParticle->SetBarrierBreakSize(pBoss->GetBarrierBreakSize());
-		m_pParticle->Update(elapsedTime);// パーティクル更新
+		// パーティクルの更新
+		m_pParticle->Update(elapsedTime);
 	}
 }
 /*
@@ -102,26 +128,36 @@ void BossSheild::Update(float elapsedTime)
 */
 void BossSheild::Render(ID3D11DeviceContext1* context,
 	DirectX::DX11::CommonStates* states,
-	DirectX::SimpleMath::Matrix world,
-	DirectX::SimpleMath::Matrix view,
-	DirectX::SimpleMath::Matrix proj)
+	const DirectX::SimpleMath::Matrix& world,
+	const DirectX::SimpleMath::Matrix& view,
+	const DirectX::SimpleMath::Matrix& proj)
 {
-
 	using namespace DirectX::SimpleMath;
-	auto pBoss = dynamic_cast<BossBase*>(m_pBoss);// m_pBossをBossクラスのポインタにキャスト
-	if (m_isSheild)// シールドが展開されている間
+	// m_pBossをBossクラスのポインタにキャスト
+	auto pBoss = dynamic_cast<BossBase*>(m_pBoss);
+	// シールドが展開されている間
+	if (m_isSheild)
 	{
-		Matrix shieldWorld = Matrix::CreateScale(m_sheildSize) * world;// シールドのワールド行列
-		m_pSheildModel->Draw(context, *states, shieldWorld, view, proj, false, [&]()// シールド描画
+		// シールドのワールド行列を作成（スケーリング＋親のワールド行列）
+		Matrix shieldWorld = Matrix::CreateScale(m_sheildSize) * world;
+		// シールド描画
+		m_pSheildModel->Draw(context, *states, shieldWorld, view, proj, false, [&]()
 			{
-				context->OMSetDepthStencilState(states->DepthRead(), 0);// 深度ステンシルステート設定
-				context->RSSetState(states->CullClockwise());// ラスタライザーステート設定
-				context->OMSetBlendState(states->Additive(), nullptr, 0xffffffff);// ブレンドステート設定
+				// 深度ステンシルステート設定（読み込みのみ）
+				context->OMSetDepthStencilState(states->DepthRead(), 0);
+				// 時計回りカリング設定（裏面をカリング）
+				context->RSSetState(states->CullClockwise());
+				// 加算合成ブレンドステート設定（発光エフェクト用）
+				context->OMSetBlendState(states->Additive(), nullptr, 0xffffffff);
 			});
 	}
-	if (m_isParticle)// パーティクル再生フラグが立っている間
+	// パーティクル再生フラグが立っている間
+	if (m_isParticle)
 	{
-		m_pParticle->CreateBillboard(pBoss->GetCameraTarget(), pBoss->GetCameraEye(), pBoss->GetCameraUp());// ビルボード作成
-		m_pParticle->Render(view, proj);// パーティクル描画
+		// ボスのカメラ情報を使ってビルボード作成
+		m_pParticle->CreateBillboard(pBoss->GetCameraTarget(), pBoss->GetCameraEye(), pBoss->GetCameraUp());
+		// パーティクル描画
+		m_pParticle->Render(view, proj);
 	}
 }
+

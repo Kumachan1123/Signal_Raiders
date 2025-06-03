@@ -14,10 +14,11 @@
 
 class EnemyFactory
 {
-public:
-	static std::unique_ptr<IEnemy> CreateEnemy(EnemyType type, Player* player, CommonResources* resources, int HP);// 敵生成
-	static std::unique_ptr<IBossLogic> CreateBoss(BossType type, BossBase* pBoss, CommonResources* resources);// ボス生成
-
+public:// public関数
+	// 敵生成
+	static std::unique_ptr<IEnemy> CreateEnemy(EnemyType type, Player* player, CommonResources* resources, int HP);
+	// ボス生成
+	static std::unique_ptr<IBossLogic> CreateBoss(BossType type, BossBase* pBoss, CommonResources* resources);
 };
 
 

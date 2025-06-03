@@ -4,7 +4,6 @@
 */
 #include <pch.h>
 #include "Effect.h"
-
 /*
 *	@brief	入力レイアウト
 */
@@ -28,7 +27,7 @@ const 	float Effect::m_vertexMaxY = 1.0f;// 最大Y座標
 *	@param world ワールド行列
 *	@return	なし
 */
-Effect::Effect(CommonResources* resources, EffectType type, DirectX::SimpleMath::Vector3 playPos, float scale, DirectX::SimpleMath::Matrix world)
+Effect::Effect(CommonResources* resources, EffectType type, const DirectX::SimpleMath::Vector3& playPos, float scale, const DirectX::SimpleMath::Matrix& world)
 	: m_position(playPos)// エフェクトを再生する座標
 	, m_type(type)// エフェクトの種類
 	, m_scale(scale)// エフェクトのスケール
@@ -114,7 +113,7 @@ void Effect::Update(float elapsedTime)
 *	@param proj プロジェクション行列
 *	@return なし
 */
-void Effect::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void Effect::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
@@ -123,7 +122,9 @@ void Effect::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matri
 	m_vertices[1] = { VertexPositionTexture(Vector3(m_vertexMaxX, m_vertexMaxY, 0), Vector2(1, 1)) };// 右上
 	m_vertices[2] = { VertexPositionTexture(Vector3(m_vertexMaxX,m_vertexMinY, 0),  Vector2(1, 0)) };// 右下
 	m_vertices[3] = { VertexPositionTexture(Vector3(m_vertexMinX,m_vertexMinY, 0),  Vector2(0, 0)) }; // 左下
-	VertexPositionTexture billboardVertex[4]{};// ビルボード用の頂点情報
+	// ビルボード用の頂点情報
+	VertexPositionTexture billboardVertex[4]{};
+	// ビルボードの高さを調整
 	for (int i = 0; i < 4; i++)
 	{
 		billboardVertex[i] = m_vertices[i];		// 頂点情報をコピー
@@ -132,32 +133,50 @@ void Effect::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matri
 		billboardVertex[i].position.y -= m_offSetY;// 高さ
 	}
 	// ビルボード行列を作成
-	Matrix billboardMatrix = view.Invert();// ビュー行列の逆行列
+	// ビュー行列の逆行列
+	Matrix billboardMatrix = view.Invert();
 	billboardMatrix._41 = 0.0f;
 	billboardMatrix._42 = 0.0f;
 	billboardMatrix._43 = 0.0f;
-	Matrix worldBillboard = m_world * billboardMatrix;	// ビルボードをアフィン変換
-	worldBillboard *= Matrix::CreateTranslation(m_position);// 位置
-	m_constBuffer.matWorld = worldBillboard.Transpose();// ワールド行列
-	m_constBuffer.matView = view.Transpose();// ビュー行列
-	m_constBuffer.matProj = proj.Transpose();// プロジェクション行列
-	m_constBuffer.count = Vector4((float)(m_anim));// アニメーションカウント
-	m_constBuffer.height = Vector4((float)(m_frameRows));// 高さ
-	m_constBuffer.width = Vector4((float)(m_frameCols));// 幅
-	m_pDrawPolygon->UpdateSubResources(m_pCBuffer.Get(), &m_constBuffer);// コンスタントバッファの更新
-	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };	// シェーダーにバッファを渡す
-	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);	// 頂点シェーダもピクセルシェーダも、同じ値を渡す
-	m_pDrawPolygon->DrawSetting(// 描画前設定
+	// ビルボードをアフィン変換
+	Matrix worldBillboard = m_world * billboardMatrix;
+	// ビルボードの位置を設定
+	worldBillboard *= Matrix::CreateTranslation(m_position);
+	// コンスタントバッファの更新
+	// ワールド行列を転置して設定
+	m_constBuffer.matWorld = worldBillboard.Transpose();
+	// ビュー行列を転置して設定
+	m_constBuffer.matView = view.Transpose();
+	// プロジェクション行列を転置して設定
+	m_constBuffer.matProj = proj.Transpose();
+	// アニメーションの設定
+	// アニメーションのコマ数を設定
+	m_constBuffer.count = Vector4((float)(m_anim));
+	// テクスチャの列を設定
+	m_constBuffer.height = Vector4((float)(m_frameRows));
+	// テクスチャの行を設定
+	m_constBuffer.width = Vector4((float)(m_frameCols));
+	// コンスタントバッファの更新
+	m_pDrawPolygon->UpdateSubResources(m_pCBuffer.Get(), &m_constBuffer);
+	// シェーダーにバッファを渡す
+	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };
+	// シェーダーにコンスタントバッファを設定
+	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
+	// 描画前設定
+	m_pDrawPolygon->DrawSetting(
 		DrawPolygon::SamplerStates::LINEAR_WRAP,// テクスチャのサンプラーステート(リニア、ラップ)
 		DrawPolygon::BlendStates::NONPREMULTIPLIED,// ブレンドステート(非乗算)
 		DrawPolygon::RasterizerStates::CULL_NONE,// ラスタライザーステート(カリングなし)
 		DrawPolygon::DepthStencilStates::DEPTH_READ);// 深度ステンシルステート(読み取りのみ)
-	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pTextures);	// 描画準備
-	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);// シェーダーの登録
-	m_pDrawPolygon->DrawTexture(billboardVertex);// テクスチャの描画
-	m_pDrawPolygon->ReleaseShader();// シェーダーの解放
+	// 描画準備
+	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pTextures);
+	// シェーダーの登録
+	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);
+	// テクスチャの描画
+	m_pDrawPolygon->DrawTexture(billboardVertex);
+	// シェーダーの解放
+	m_pDrawPolygon->ReleaseShader();
 }
-
 /*
 *	@brief	終了処理
 *	@details エフェクトのリソースを解放する
@@ -166,9 +185,14 @@ void Effect::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matri
 */
 void Effect::Finalize()
 {
-	m_pVertexShader.Reset();// 頂点シェーダの解放
-	m_pPixelShader.Reset();// ピクセルシェーダの解放
-	m_pInputLayout.Reset();	// インプットレイアウトの解放
-	m_pCBuffer.Reset();// コンスタントバッファの解放
-	m_pTextures.clear();// テクスチャの解放
+	// 頂点シェーダの解放
+	m_pVertexShader.Reset();
+	// ピクセルシェーダの解放
+	m_pPixelShader.Reset();
+	// インプットレイアウトの解放
+	m_pInputLayout.Reset();
+	// コンスタントバッファの解放
+	m_pCBuffer.Reset();
+	// テクスチャの解放
+	m_pTextures.clear();
 }

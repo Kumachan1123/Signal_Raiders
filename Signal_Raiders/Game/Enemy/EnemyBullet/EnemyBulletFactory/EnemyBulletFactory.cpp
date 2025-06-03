@@ -15,13 +15,13 @@ std::unique_ptr<IEnemyBullet> EnemyBulletFactory::CreateBullet(BulletType type)
 	// ’e‚Ìí—Ş‚É‰‚¶‚Ä’e‚ğ¶¬
 	switch (type)
 	{
-	case BulletType::NORMAL:// ’Êí’e
+	case BulletType::NORMAL:// ’Êí’e‚ğ¶¬
 		return std::make_unique<NormalBullet>();
-	case BulletType::SPECIAL:// “Áê’e
+	case BulletType::SPECIAL:// “Áê’e‚ğ¶¬
 		return std::make_unique<SpecialBullet>();
-	case BulletType::SPEED:// ‘¬‚¢’e
+	case BulletType::SPEED:// ‘¬‚¢’e‚ğ¶¬
 		return std::make_unique<SpeedBullet>();
-	default:// •s³‚È’e‚Ìí—Ş
+	default:// •s³‚È’e‚Ìí—Ş‚Ìê‡Anullptr
 		return nullptr;
 	}
 };

@@ -37,79 +37,138 @@ class EnemyManager;
 class FPS_Camera;
 class Enemy : public IEnemy
 {
-public:
-	// アクセサ
-	DirectX::BoundingSphere& GetBoundingSphere() override { return m_enemyBS; }// 敵の境界球取得
-	DirectX::BoundingSphere& GetBulletBoundingSphere() override { return m_enemyBulletBS; }// 敵の弾の境界球取得
-	void SetBulletBoundingSphere(DirectX::BoundingSphere& bs)override { m_enemyBulletBS = bs; }// 敵の弾の境界球設定
-	DirectX::BoundingSphere& GetPlayerBoundingSphere() override { return m_playerBS; }// プレイヤーの境界球取得
-	void SetPlayerBoundingSphere(DirectX::BoundingSphere playerBS)override { m_playerBS = playerBS; }// プレイヤーの境界球設定
-	const DirectX::SimpleMath::Matrix& GetMatrix() override { return m_matrix; }// マトリクス取得
-	const DirectX::SimpleMath::Vector3& GetPosition() override { return m_position; }// 座標取得
-	void SetPosition(DirectX::SimpleMath::Vector3& pos)override { m_position = pos; }// 座標設定
-	const DirectX::SimpleMath::Vector3& GetVelocity()override { return m_velocity; }// 速度取得
-	const DirectX::SimpleMath::Vector3& GetRotate() override { return m_rotate; }// 回転取得
-	Player* GetPlayer()const override { return m_pPlayer; }// プレイヤー取得
-	FPS_Camera* GetCamera()const override { return m_pCamera; }// カメラ取得
-	void SetCamera(FPS_Camera* camera) { m_pCamera = camera; }// カメラ設定
-	int GetEnemyHP() const override { return m_currentHP; }// 敵のHP取得
-	bool GetEnemyIsDead() const override { return m_isDead; }// 死亡フラグ取得
-	void SetEnemyIsDead(bool isDead)override { m_isDead = isDead; }// 死亡フラグ設定
-	bool GetHitToPlayer()const override { return m_isHitToPlayer; }// プレイヤーとの当たり判定取得
-	void SetHitToPlayer(bool isHitToPlayer)override { m_isHitToPlayer = isHitToPlayer; }// プレイヤーとの当たり判定設定
-	bool GetHitToOtherEnemy() const override { return m_isHitToOtherEnemy; }// その他の敵との当たり判定取得
-	void SetHitToOtherEnemy(bool isHitToOtherEnemy) override { m_isHitToOtherEnemy = isHitToOtherEnemy; }// その他の敵との当たり判定設定
-	bool GetPlayerHitByEnemyBullet() const override { return m_isPlayerHitByEnemyBullet; }// 敵の弾がプレイヤーに当たったか取得
-	void SetPlayerHitByEnemyBullet(bool hit)override { m_isPlayerHitByEnemyBullet = hit; }// 敵の弾がプレイヤーに当たったか設定
-	bool GetEnemyHitByPlayerBullet()const override { return m_isEnemyHitByPlayerBullet; }// 敵がプレイヤーの弾に当たったか取得
-	void SetEnemyHitByPlayerBullet(bool hit) override { m_isEnemyHitByPlayerBullet = hit; }// 敵がプレイヤーの弾に当たったか設定
-	float GetToPlayerDamage() const override { return EnemyParameters::NORMAL_ENEMY_DAMAGE; }// プレイヤーに与えるダメージ取得
-	bool GetCanAttack() const override { return m_canAttack; }// 攻撃可能か取得
-	void SetCanAttack(bool canAttack)override { m_canAttack = canAttack; }// 攻撃可能か設定
-	void ApplyDamageToEnemy(int hp)override { m_currentHP -= hp; }// 敵のHP設定(ダメージ適用)
-	void SetPlayerHP(float& HP) const override { HP -= EnemyParameters::NORMAL_ENEMY_DAMAGE; }// プレイヤーのHP設定
-	BulletManager* GetBulletManager()const override { return m_pBulletManager; }// 弾管理クラス取得
-	void SetBulletManager(BulletManager* bulletManager) override { m_pBulletManager = bulletManager; }// 弾管理クラス設定
-	bool GetIsAttack() const override { return m_isAttack; }// 攻撃中か取得
-	void SetIsAttack(bool isAttack) override { m_isAttack = isAttack; }// 攻撃中か設定
-public:
-	//	public関数
-	Enemy(Player* pPlayer, CommonResources* resources, int hp);// コンストラクタ
-	~Enemy();// デストラクタ
-	void Initialize() override;// 初期化
-	void Update(float elapsedTime) override;// 更新
-	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;// 描画
-	void DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) override;// 当たり判定描画
-private:
-	// private関数
-	void ShootBullet();// 弾を撃つ
-private:
-	// メンバ変数
-	CommonResources* m_pCommonResources;	// 共通リソース
-	std::unique_ptr<EnemyModel>		m_pEnemyModel;// 敵のモデル
-	std::unique_ptr<EnemyAI>		m_pEnemyAI;// 敵のAI
-	std::unique_ptr<EnemyHPBar>		m_pHPBar;// 敵のHPバー
-	Player* m_pPlayer;	// プレイヤーのポインター
-	FPS_Camera* m_pCamera;	// カメラのポインター
-	// 敵の情報
-	DirectX::SimpleMath::Vector3 m_position;		// 座標
-	DirectX::SimpleMath::Vector3 m_velocity;		// 速度
-	DirectX::SimpleMath::Vector3 m_rotate;		// 回転
-	// 砲塔境界球
-	DirectX::BoundingSphere m_enemyBS;	//敵の境界球
-	DirectX::BoundingSphere m_enemyBSToPlayerArea;// 敵とPlayerとの一定範囲の当たり判定に使う
-	DirectX::BoundingSphere m_enemyBulletBS;// 敵の弾の境界球
-	DirectX::BoundingSphere m_playerBS;// プレイヤーの境界球
-	DirectX::SimpleMath::Matrix m_matrix;// マトリクス
-	int m_currentHP;//敵の体力
-	bool m_isDead;//敵のHPが0になったらTrue
-	bool m_isHitToPlayer;// プレイヤーとの判定
-	bool m_isHitToOtherEnemy;// その他の敵との判定
-	bool m_isEnemyHitByPlayerBullet;// 敵がプレイヤーの弾に当たったか
-	bool m_isPlayerHitByEnemyBullet;// 敵の弾がプレイヤーに当たったか
-	bool m_canAttack;// 攻撃可能か
-	bool m_isAttack;// 攻撃中か
-	float m_attackCooldown;  // 攻撃のクールダウンタイム
+public:	// アクセサ
+	// 敵の当たり判定を取得する
+	DirectX::BoundingSphere& GetBoundingSphere() override { return m_enemyBS; }
+	// 敵の弾の当たり判定を取得する
+	DirectX::BoundingSphere& GetBulletBoundingSphere() override { return m_enemyBulletBS; }
+	// 敵の弾の当たり判定を設定する
+	void SetBulletBoundingSphere(const DirectX::BoundingSphere& bs) override { m_enemyBulletBS = bs; }
+	// プレイヤーの当たり判定を取得する
+	DirectX::BoundingSphere& GetPlayerBoundingSphere() override { return m_playerBS; }
+	// プレイヤーの当たり判定を設定する
+	void SetPlayerBoundingSphere(const DirectX::BoundingSphere& playerBS) override { m_playerBS = playerBS; }
+	// 敵のワールド行列を取得する
+	const DirectX::SimpleMath::Matrix& GetMatrix() override { return m_matrix; }
+	// 敵の現在の座標を取得する
+	const DirectX::SimpleMath::Vector3& GetPosition() override { return m_position; }
+	// 敵の座標を設定する
+	void SetPosition(const DirectX::SimpleMath::Vector3& pos) override { m_position = pos; }
+	// 敵の移動速度を取得する
+	const DirectX::SimpleMath::Vector3& GetVelocity() override { return m_velocity; }
+	// 敵の回転角度を取得する
+	const DirectX::SimpleMath::Vector3& GetRotate() override { return m_rotate; }
+	// 対象となるプレイヤーのポインタを取得する
+	Player* GetPlayer() const override { return m_pPlayer; }
+	// 使用するカメラのポインタを取得する
+	FPS_Camera* GetCamera() const override { return m_pCamera; }
+	// カメラのポインタを設定する
+	void SetCamera(FPS_Camera* camera) { m_pCamera = camera; }
+	// 敵の現在HPを取得する
+	int GetEnemyHP() const override { return m_currentHP; }
+	// 敵が死亡状態かどうかを取得する
+	bool GetEnemyIsDead() const override { return m_isDead; }
+	// 敵の死亡状態を設定する
+	void SetEnemyIsDead(bool isDead) override { m_isDead = isDead; }
+	// プレイヤーに当たったかどうかを取得する
+	bool GetHitToPlayer() const override { return m_isHitToPlayer; }
+	// プレイヤーに当たったかどうかを設定する
+	void SetHitToPlayer(bool isHitToPlayer) override { m_isHitToPlayer = isHitToPlayer; }
+	// 他の敵に当たったかどうかを取得する
+	bool GetHitToOtherEnemy() const override { return m_isHitToOtherEnemy; }
+	// 他の敵に当たったかどうかを設定する
+	void SetHitToOtherEnemy(bool isHitToOtherEnemy) override { m_isHitToOtherEnemy = isHitToOtherEnemy; }
+	// 敵の弾がプレイヤーに命中したか取得する
+	bool GetPlayerHitByEnemyBullet() const override { return m_isPlayerHitByEnemyBullet; }
+	// 敵の弾がプレイヤーに命中したか設定する
+	void SetPlayerHitByEnemyBullet(bool hit) override { m_isPlayerHitByEnemyBullet = hit; }
+	// プレイヤーの弾が敵に命中したか取得する
+	bool GetEnemyHitByPlayerBullet() const override { return m_isEnemyHitByPlayerBullet; }
+	// プレイヤーの弾が敵に命中したか設定する
+	void SetEnemyHitByPlayerBullet(bool hit) override { m_isEnemyHitByPlayerBullet = hit; }
+	// プレイヤーに与えるダメージ量を取得する
+	float GetToPlayerDamage() const override { return EnemyParameters::NORMAL_ENEMY_DAMAGE; }
+	// 現在攻撃可能な状態かどうかを取得する
+	bool GetCanAttack() const override { return m_canAttack; }
+	// 攻撃可能状態かどうかを設定する
+	void SetCanAttack(bool canAttack) override { m_canAttack = canAttack; }
+	// 敵にダメージを与えてHPを減らす
+	void ApplyDamageToEnemy(int hp) override { m_currentHP -= hp; }
+	// プレイヤーのHPにダメージを反映する
+	void SetPlayerHP(float& HP) const override { HP -= EnemyParameters::NORMAL_ENEMY_DAMAGE; }
+	// 弾の管理クラスを取得する
+	BulletManager* GetBulletManager() const override { return m_pBulletManager; }
+	// 弾の管理クラスを設定する
+	void SetBulletManager(BulletManager* bulletManager) override { m_pBulletManager = bulletManager; }
+	// 敵が現在攻撃中かどうかを取得する
+	bool GetIsAttack() const override { return m_isAttack; }
+	// 敵が攻撃中かどうかを設定する
+	void SetIsAttack(bool isAttack) override { m_isAttack = isAttack; }
+public:	//	public関数
+	// コンストラクタ
+	Enemy(Player* pPlayer, CommonResources* resources, int hp);
+	// デストラクタ
+	~Enemy();
+	// 初期化
+	void Initialize() override;
+	// 更新
+	void Update(float elapsedTime) override;
+	// 描画
+	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj) override;
+	// 当たり判定描画
+	void DrawCollision(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj) override;
+private:// private関数
+	// 弾を撃つ
+	void ShootBullet();
+private:// private変数
+	// 共通リソース
+	CommonResources* m_pCommonResources;
+	// 敵のモデル
+	std::unique_ptr<EnemyModel>		m_pEnemyModel;
+	// 敵のAI
+	std::unique_ptr<EnemyAI>		m_pEnemyAI;
+	// 敵のHPバー
+	std::unique_ptr<EnemyHPBar>		m_pHPBar;
+	// プレイヤーのポインター
+	Player* m_pPlayer;
+	// カメラのポインター
+	FPS_Camera* m_pCamera;
+	// 弾管理クラス
+	BulletManager* m_pBulletManager;
+	// 敵の座標
+	DirectX::SimpleMath::Vector3 m_position;
+	// 敵の速度
+	DirectX::SimpleMath::Vector3 m_velocity;
+	// 敵の回転角度
+	DirectX::SimpleMath::Vector3 m_rotate;
+	// 敵の境界球
+	DirectX::BoundingSphere m_enemyBS;
+	// 敵とPlayerとの一定範囲の当たり判定に使う
+	DirectX::BoundingSphere m_enemyBSToPlayerArea;
+	// 敵の弾の境界球
+	DirectX::BoundingSphere m_enemyBulletBS;
+	// プレイヤーの境界球
+	DirectX::BoundingSphere m_playerBS;
+	// マトリクス
+	DirectX::SimpleMath::Matrix m_matrix;
+	//敵の体力
+	int m_currentHP;
+	//敵のHPが0になったらTrue
+	bool m_isDead;
+	// プレイヤーとの判定
+	bool m_isHitToPlayer;
+	// その他の敵との判定
+	bool m_isHitToOtherEnemy;
+	// 敵がプレイヤーの弾に当たったか
+	bool m_isEnemyHitByPlayerBullet;
+	// 敵の弾がプレイヤーに当たったか
+	bool m_isPlayerHitByEnemyBullet;
+	// 攻撃可能か
+	bool m_canAttack;
+	// 攻撃中か
+	bool m_isAttack;
+	// 攻撃のクールダウンタイム
+	float m_attackCooldown;
 
 
 };

@@ -28,13 +28,20 @@ class LastBoss : public IBossLogic
 {
 public:// public関数
 
-	LastBoss(BossBase* pBoss, CommonResources* commonResources);// コンストラクタ
-	~LastBoss()override;// デストラクタ
-	void Initialize()override;                                             // Boss, LastBossにてモデルを生成
-	void ChangeState()override;                                // Boss,LastBossにて状態を変更
-	void Draw(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)override;        // Boss, LastBossにて描画
-	void BulletPositioning()override;	// 弾の発射位置を決定
-	void CreateBullet()override;// 弾を生成
+	// コンストラクタ
+	LastBoss(BossBase* pBoss, CommonResources* commonResources);
+	// デストラクタ
+	~LastBoss()override;
+	// 初期化
+	void Initialize()override;
+	// 状態を変更
+	void ChangeState()override;
+	// 描画
+	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)override;
+	// 弾の発射位置を決定
+	void BulletPositioning()override;
+	// 弾を生成
+	void CreateBullet()override;
 private:// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
@@ -42,25 +49,28 @@ private:// private変数
 	std::unique_ptr<LastBossModel>		m_pBossModel;
 	// HPバー
 	std::unique_ptr<EnemyHPBar>		m_pHPBar;
-	// 敵の情報
-	DirectX::SimpleMath::Vector3 m_position;		// 座標
-	DirectX::SimpleMath::Vector3 m_velocity;		// 速度
-	DirectX::SimpleMath::Vector3 m_rotate;		// 回転
-	DirectX::BoundingSphere m_bossBS;	//敵の境界球
-	DirectX::SimpleMath::Matrix m_matrix;// マトリクス
-	// 弾の発射位置
-	// 右上
+	// 敵の座標
+	DirectX::SimpleMath::Vector3 m_position;
+	// 敵の速度
+	DirectX::SimpleMath::Vector3 m_velocity;
+	// 敵の回転
+	DirectX::SimpleMath::Vector3 m_rotate;
+	//敵の境界球
+	DirectX::BoundingSphere m_bossBS;
+	// マトリクス
+	DirectX::SimpleMath::Matrix m_matrix;
+	// 弾の発射位置:右上
 	DirectX::SimpleMath::Vector3 m_bulletPosRightUp;
-	// 右下
+	// 弾の発射位置:右下
 	DirectX::SimpleMath::Vector3 m_bulletPosRightDown;
-	// 左上
+	// 弾の発射位置:左上
 	DirectX::SimpleMath::Vector3 m_bulletPosLeftUp;
-	// 左下
+	// 弾の発射位置:左下
 	DirectX::SimpleMath::Vector3 m_bulletPosLeftDown;
 	// 発射位置を回転させるためのクォータニオン
 	DirectX::SimpleMath::Quaternion m_bulletQuaternion;
-	// 弾のタイプ
-	BulletType m_bulletType;// EnemyBulletクラスに送る
+	// EnemyBulletクラスに送る弾のタイプ
+	BulletType m_bulletType;
 	// 弾の飛ぶ方向
 	DirectX::SimpleMath::Vector3 m_bulletDirection;
 	// 時間
@@ -73,5 +83,4 @@ private:// private変数
 	DirectX::SimpleMath::Vector3 m_cameraUp;
 	// ボスのベースクラス
 	BossBase* m_pBossBase;
-
 };

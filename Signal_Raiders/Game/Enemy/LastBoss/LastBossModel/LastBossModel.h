@@ -26,21 +26,22 @@ class IState;
 
 class LastBossModel : public IModel
 {
-
-
-public:
-	// publicメンバ関数
-	LastBossModel();// コンストラクタ
-	~LastBossModel()override;// デストラクタ
-	void Initialize(CommonResources* resources)override;// 初期化
-	void SetState(IState::EnemyState State) { m_nowState = State; }// ステートの設定
-	void Render(ID3D11DeviceContext1* context,// 描画
+public:	// publicメンバ関数
+	// コンストラクタ
+	LastBossModel();
+	// デストラクタ
+	~LastBossModel()override;
+	// 初期化
+	void Initialize(CommonResources* resources)override;
+	// ステートの設定
+	void SetState(IState::EnemyState State) { m_nowState = State; }
+	// 描画
+	void Render(ID3D11DeviceContext1* context,
 		DirectX::DX11::CommonStates* states,
-		DirectX::SimpleMath::Matrix world,
-		DirectX::SimpleMath::Matrix view,
-		DirectX::SimpleMath::Matrix proj)override;
-
-private:
+		const DirectX::SimpleMath::Matrix& world,
+		const DirectX::SimpleMath::Matrix& view,
+		const DirectX::SimpleMath::Matrix& proj)	override;
+private:// privateメンバ変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 胴体

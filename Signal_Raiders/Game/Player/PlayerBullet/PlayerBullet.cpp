@@ -29,7 +29,7 @@ PlayerBullet::PlayerBullet()
 */
 PlayerBullet::~PlayerBullet()
 {
- 	m_pPixelShader.Reset();// ピクセルシェーダーの解放
+	m_pPixelShader.Reset();// ピクセルシェーダーの解放
 	m_pBulletTrail.reset();// 軌跡ポインターの解放
 	m_pCommonResources = nullptr;// 共通リソースの解放
 	m_pModel = nullptr;// モデルポインターの解放
@@ -88,7 +88,7 @@ void PlayerBullet::Update(float elapsedTime)
 *	@param DirectX::SimpleMath::Vector3& dir 弾の移動方向
 *	@return	なし
 */
-void PlayerBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Vector3& dir)
+void PlayerBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Vector3& dir)
 {
 	using namespace DirectX::SimpleMath;
 	m_position = pos + BulletParameters::INITIAL_POSITION;	// 初期位置を設定
@@ -102,7 +102,7 @@ void PlayerBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, DirectX::Si
 *	@param DirectX::SimpleMath::Matrix proj プロジェクション行列
 * 	@return	なし
 */
-void PlayerBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void PlayerBullet::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストの取得
 	auto states = m_pCommonResources->GetCommonStates();// 共通ステートの取得
@@ -117,7 +117,7 @@ void PlayerBullet::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath:
 * 	@param DirectX::SimpleMath::Matrix proj プロジェクション行列
 *	@return	なし
 */
-void PlayerBullet::RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void PlayerBullet::RenderShadow(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
 	using namespace DirectX::SimpleMath;
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストの取得
@@ -141,7 +141,7 @@ void PlayerBullet::RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::Simpl
 *	@param DirectX::SimpleMath::Matrix proj プロジェクション行列
 *	@return	なし
 */
-void PlayerBullet::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void PlayerBullet::DrawCollision(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
 	UNREFERENCED_PARAMETER(view);// 未使用警告非表示
 	UNREFERENCED_PARAMETER(proj);// 未使用警告非表示

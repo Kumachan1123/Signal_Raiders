@@ -35,9 +35,12 @@ Boss::Boss(BossBase* pBoss, CommonResources* commonResources)
 */
 Boss::~Boss()
 {
-	m_pBossModel.reset();	// ボスモデルの解放
-	m_pHPBar.reset();		// HPバーの解放
-	m_pCommonResources = nullptr;// 共通リソースのポインタをnullptrに設定
+	// ボスモデルの解放
+	m_pBossModel.reset();
+	// HPバーの解放
+	m_pHPBar.reset();
+	// 共通リソースのポインタをnullptrに設定
+	m_pCommonResources = nullptr;
 }
 /*
 *	@brief	初期化処理
@@ -47,16 +50,26 @@ Boss::~Boss()
 */
 void Boss::Initialize()
 {
-	m_pBossModel = std::make_unique<BossModel>();	// ボスモデル生成
-	m_pBossModel->Initialize(m_pCommonResources);// ボスモデル初期化
-	m_position = EnemyParameters::INITIAL_BOSS_POSITION;// ラスボスの初期位置を設定
-	m_pBossBase->SetPosition(m_position);// ベースクラスに初期位置を設定
-	m_pBossBase->SetDefaultHitRadius(EnemyParameters::NORMAL_BOSS_RADIUS);// 通常時ボスの当たり判定を設定
-	m_pBossBase->SetDefensiveHitRadius(EnemyParameters::BOSS_SHIELD_RADIUS);// シールド展開時のボスの当たり判定を設定
-	m_pBossBase->SetBulletSize(EnemyParameters::BOSS_BULLET_SIZE);// 弾のサイズを設定
-	m_pBossBase->SetToPlayerDamage(EnemyParameters::BOSS_DAMAGE);// ボスがプレイヤーに与えるダメージを設定
-	m_pBossBase->SetBarrierBreakSize(EnemyParameters::BOSS_BARRIERBREAK_SIZE);// バリア破壊パーティクルのサイズ設定
-	m_pBossBase->SetDeadEffectSize(EnemyParameters::BOSS_DEADEFFECT_SCALE);// 死亡エフェクトのサイズ
+	// ボスモデル生成
+	m_pBossModel = std::make_unique<BossModel>();
+	// ボスモデル初期化
+	m_pBossModel->Initialize(m_pCommonResources);
+	// ラスボスの初期位置を設定
+	m_position = EnemyParameters::INITIAL_BOSS_POSITION;
+	// ベースクラスに初期位置を設定
+	m_pBossBase->SetPosition(m_position);
+	// 通常時ボスの当たり判定を設定
+	m_pBossBase->SetDefaultHitRadius(EnemyParameters::NORMAL_BOSS_RADIUS);
+	// シールド展開時のボスの当たり判定を設定
+	m_pBossBase->SetDefensiveHitRadius(EnemyParameters::BOSS_SHIELD_RADIUS);
+	// 弾のサイズを設定
+	m_pBossBase->SetBulletSize(EnemyParameters::BOSS_BULLET_SIZE);
+	// ボスがプレイヤーに与えるダメージを設定
+	m_pBossBase->SetToPlayerDamage(EnemyParameters::BOSS_DAMAGE);
+	// バリア破壊パーティクルのサイズ設定
+	m_pBossBase->SetBarrierBreakSize(EnemyParameters::BOSS_BARRIERBREAK_SIZE);
+	// 死亡エフェクトのサイズ
+	m_pBossBase->SetDeadEffectSize(EnemyParameters::BOSS_DEADEFFECT_SCALE);
 }
 /*
 *	@brief	更新処理
@@ -66,7 +79,8 @@ void Boss::Initialize()
 */
 void Boss::ChangeState()
 {
-	m_pBossModel->SetState(m_pBossBase->GetBossAI()->GetState());// モデルのアニメーション更新
+	// モデルの状態を更新
+	m_pBossModel->SetState(m_pBossBase->GetBossAI()->GetState());
 }
 /*
 *	@brief	描画処理
@@ -75,26 +89,35 @@ void Boss::ChangeState()
 *	@param proj プロジェクション行列
 *	@return	なし
 */
-void Boss::Draw(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void Boss::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
 	using namespace DirectX::SimpleMath;
-	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキスト
-	auto states = m_pCommonResources->GetCommonStates();// ステート
-	// ワールド行列を設定
-	Matrix enemyWorld = Matrix::CreateScale(m_pBossBase->GetScale())// スケール
-		* Matrix::CreateFromQuaternion(m_pBossBase->GetQuaternion())// 回転
-		* Matrix::CreateTranslation(m_pBossBase->GetPosition());// 位置
-	// シールドのワールド行列を設定
-	Matrix sheildWorld = Matrix::CreateScale(m_pBossBase->GetScale() * 3)// スケール(シールドの大きさ)
-		* Matrix::CreateFromQuaternion(m_pBossBase->GetQuaternion())// 回転
-		* Matrix::CreateTranslation(m_pBossBase->GetPosition());// 位置
-	m_pBossBase->GetBossSheild()->SetPosition(m_bossBS.Center);// シールドの座標を設定
-	m_pBossBase->GetBossSheild()->SetRotation(m_pBossBase->GetQuaternion());// シールドの回転を設定
-	m_pBossModel->Render(context, states, enemyWorld, view, proj);// モデル描画
-	m_pBossBase->GetBossSheild()->Render(context, states, sheildWorld, view, proj);// シールド描画
-	Vector3 hpBarPos = m_pBossBase->GetPosition() - EnemyParameters::BOSS_HPBAR_OFFSET;// HPバーの位置を設定
-	m_pBossBase->GetHPBar()->SetScale(Vector3(EnemyParameters::BOSS_HPBAR_SCALE));// HPバーのスケールを設定
-	m_pBossBase->GetHPBar()->Render(view, proj, hpBarPos, m_rotate);// HPバー描画
+	// デバイスコンテキストを取得
+	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+	// コモンステートを取得
+	auto states = m_pCommonResources->GetCommonStates();
+	// ワールド行列を設定（スケール → 回転 → 位置）
+	Matrix enemyWorld = Matrix::CreateScale(m_pBossBase->GetScale())
+		* Matrix::CreateFromQuaternion(m_pBossBase->GetQuaternion())
+		* Matrix::CreateTranslation(m_pBossBase->GetPosition());
+	// シールドのワールド行列を設定（スケール → 回転 → 位置）
+	Matrix sheildWorld = Matrix::CreateScale(m_pBossBase->GetScale() * EnemyParameters::BOSS_SHIELD_SIZE)
+		* Matrix::CreateFromQuaternion(m_pBossBase->GetQuaternion())
+		* Matrix::CreateTranslation(m_pBossBase->GetPosition());
+	// シールドの座標を設定
+	m_pBossBase->GetBossSheild()->SetPosition(m_bossBS.Center);
+	// シールドの回転を設定
+	m_pBossBase->GetBossSheild()->SetRotation(m_pBossBase->GetQuaternion());
+	// モデル描画
+	m_pBossModel->Render(context, states, enemyWorld, view, proj);
+	// シールド描画
+	m_pBossBase->GetBossSheild()->Render(context, states, sheildWorld, view, proj);
+	// HPバーの位置を設定
+	Vector3 hpBarPos = m_pBossBase->GetPosition() - EnemyParameters::BOSS_HPBAR_OFFSET;
+	// HPバーのスケールを設定
+	m_pBossBase->GetHPBar()->SetScale(Vector3(EnemyParameters::BOSS_HPBAR_SCALE));
+	// HPバー描画
+	m_pBossBase->GetHPBar()->Render(view, proj, hpBarPos, m_rotate);
 }
 /*
 *	@brief	弾の位置設定
@@ -105,11 +128,14 @@ void Boss::Draw(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix pr
 void Boss::BulletPositioning()
 {
 	using namespace DirectX::SimpleMath;
-	Matrix transform = Matrix::CreateFromQuaternion(m_pBossBase->GetBossAI()->GetRotation())// 弾の発射位置を設定
-		* Matrix::CreateTranslation(m_pBossBase->GetPosition());
-	m_bulletPosCenter = Vector3::Transform(EnemyParameters::BOSS_HEAD_OFFSET, transform);// 中央の座標に回転を適用
-	m_bulletPosLeft = Vector3::Transform(EnemyParameters::BOSS_LEFT_GUN_OFFSET, transform);// 左の座標に回転を適用
-	m_bulletPosRight = Vector3::Transform(EnemyParameters::BOSS_RIGHT_GUN_OFFSET, transform);// 右の座標に回転を適用
+	// 弾の発射位置を設定
+	Matrix transform = Matrix::CreateFromQuaternion(m_pBossBase->GetBossAI()->GetRotation()) * Matrix::CreateTranslation(m_pBossBase->GetPosition());
+	// 中央の座標に回転を適用
+	m_bulletPosCenter = Vector3::Transform(EnemyParameters::BOSS_HEAD_OFFSET, transform);
+	// 左の座標に回転を適用
+	m_bulletPosLeft = Vector3::Transform(EnemyParameters::BOSS_LEFT_GUN_OFFSET, transform);
+	// 右の座標に回転を適用
+	m_bulletPosRight = Vector3::Transform(EnemyParameters::BOSS_RIGHT_GUN_OFFSET, transform);
 }
 /*
 *	@brief	弾の生成
@@ -119,24 +145,32 @@ void Boss::BulletPositioning()
 */
 void Boss::CreateBullet()
 {
-	m_pBossBase->GetBulletManager()->SetEnemyBulletSize(EnemyParameters::BOSS_BULLET_SIZE);// 弾のサイズを設定
-	m_pBossBase->GetBulletManager()->SetShooter(m_pBossBase);// 弾を発射したオブジェクトを設定
-	switch (m_pBossBase->GetBulletType())	// Enemiesクラスで設定した弾のタイプによって処理を分岐
+	// 弾のサイズを設定
+	m_pBossBase->GetBulletManager()->SetEnemyBulletSize(EnemyParameters::BOSS_BULLET_SIZE);
+	// 弾を発射したオブジェクトを設定
+	m_pBossBase->GetBulletManager()->SetShooter(m_pBossBase);
+	// Enemiesクラスで設定した弾のタイプによって処理を分岐
+	switch (m_pBossBase->GetBulletType())
 	{
 	case BossBase::BossBulletType::STAGE_1:// 通常弾
-		CreateCenterBullet(BulletType::NORMAL);// 中央の弾を発射
+		// 中央の弾を発射
+		CreateCenterBullet(BulletType::NORMAL);
 		break;
 	case BossBase::BossBulletType::STAGE_2:// 二発
 
-		CreateLeftBullet(BulletType::NORMAL);// 左の弾を発射
-		CreateRightBullet(BulletType::NORMAL);// 右の弾を発射
+		// 左の弾を発射
+		CreateLeftBullet(BulletType::NORMAL);
+		// 右の弾を発射
+		CreateRightBullet(BulletType::NORMAL);
 		break;
 	case BossBase::BossBulletType::STAGE_3:// 三発
-		CreateCenterBullet(BulletType::NORMAL);// 中央の弾を発射
-		CreateLeftBullet(BulletType::NORMAL);// 左の弾を発射
-		CreateRightBullet(BulletType::NORMAL);// 右の弾を発射
+		// 中央の弾を発射
+		CreateCenterBullet(BulletType::NORMAL);
+		// 左の弾を発射
+		CreateLeftBullet(BulletType::NORMAL);
+		// 右の弾を発射
+		CreateRightBullet(BulletType::NORMAL);
 		break;
-
 	}
 }
 /*
@@ -147,8 +181,10 @@ void Boss::CreateBullet()
 */
 void Boss::CreateCenterBullet(BulletType type)
 {
-	m_pBossBase->GetBulletManager()->SetEnemyBulletType(type);// 弾の種類を設定
-	m_pBossBase->GetBulletManager()->CreateEnemyBullet(m_bulletPosCenter, m_bulletDirection);// 弾を生成
+	// 弾の種類を設定
+	m_pBossBase->GetBulletManager()->SetEnemyBulletType(type);
+	// 弾を生成
+	m_pBossBase->GetBulletManager()->CreateEnemyBullet(m_bulletPosCenter, m_bulletDirection);
 }
 /*
 *	@brief	左の弾を発射
@@ -158,7 +194,9 @@ void Boss::CreateCenterBullet(BulletType type)
 */
 void Boss::CreateLeftBullet(BulletType type)
 {
-	m_pBossBase->GetBulletManager()->SetEnemyBulletType(type);// 弾の種類を設定
+	// 弾の種類を設定
+	m_pBossBase->GetBulletManager()->SetEnemyBulletType(type);
+	// 弾を生成
 	m_pBossBase->GetBulletManager()->CreateEnemyBullet(m_bulletPosLeft, m_bulletDirection);// 弾を生成
 }
 /*
@@ -169,6 +207,8 @@ void Boss::CreateLeftBullet(BulletType type)
 */
 void Boss::CreateRightBullet(BulletType type)
 {
-	m_pBossBase->GetBulletManager()->SetEnemyBulletType(type);// 弾の種類を設定
+	// 弾の種類を設定
+	m_pBossBase->GetBulletManager()->SetEnemyBulletType(type);
+	// 弾を生成
 	m_pBossBase->GetBulletManager()->CreateEnemyBullet(m_bulletPosRight, m_bulletDirection);// 弾を生成
 }
