@@ -37,11 +37,16 @@ BulletGauge::~BulletGauge() {/*do nothing*/ }
 void BulletGauge::Initialize(CommonResources* resources, int width, int height)
 {
 	using namespace DirectX::SimpleMath;
-	m_pCommonResources = resources; // 共通リソースを設定
-	m_pDR = resources->GetDeviceResources();// デバイスリソース取得
-	m_windowWidth = width;// ウィンドウ幅
-	m_windowHeight = height;// ウィンドウ高さ
-	Add(m_pGauge// ゲージの追加
+	// 共通リソースを設定
+	m_pCommonResources = resources;
+	// デバイスリソース取得
+	m_pDR = resources->GetDeviceResources();
+	// ウィンドウ幅
+	m_windowWidth = width;
+	// ウィンドウ高さ
+	m_windowHeight = height;
+	// ゲージの追加
+	Add(m_pGauge
 		, "BulletGauge"
 		, Vector2(640, 360)
 		, Vector2(0.8f, 0.8f)
@@ -56,9 +61,12 @@ void BulletGauge::Initialize(CommonResources* resources, int width, int height)
 */
 void BulletGauge::Update(float bulletPoint)
 {
-	float bp = bulletPoint * 0.02f;// 弾のポイントを0.02倍する
-	bp = std::max(0.f, bp); // 0未満にならないようにする
-	m_pGauge->SetRenderRatio(bp);// ゲージのレンダリング比を設定
+	// 弾のポイントを0.02倍する
+	float bp = bulletPoint * 0.02f;
+	// 0未満にならないようにする
+	bp = std::max(0.f, bp);
+	// ゲージのレンダリング比を設定
+	m_pGauge->SetRenderRatio(bp);
 }
 /*
 *	@brief ゲージの描画
@@ -68,7 +76,8 @@ void BulletGauge::Update(float bulletPoint)
 */
 void BulletGauge::Render()
 {
-	m_pGauge->SetShaderType(PlayerUI::ShaderType::CIRCLE), m_pGauge->Render();// シェーダータイプを設定したうえで描画
+	// シェーダータイプを設定したうえで描画
+	m_pGauge->SetShaderType(PlayerUI::ShaderType::CIRCLE), m_pGauge->Render();
 }
 /*
 *	@brief プレイヤーUIを追加する
@@ -80,17 +89,19 @@ void BulletGauge::Render()
 *	@param anchor アンカーの種類
 */
 void BulletGauge::Add(std::unique_ptr<PlayerUI>& pPlayerUI
-	, std::string key
-	, DirectX::SimpleMath::Vector2 position
-	, DirectX::SimpleMath::Vector2 scale
+	, const std::string& key
+	, const DirectX::SimpleMath::Vector2& position
+	, const DirectX::SimpleMath::Vector2& scale
 	, KumachiLib::ANCHOR anchor)
 {
-	pPlayerUI = std::make_unique<PlayerUI>(m_pCommonResources);// プレイヤーUIのユニークポインタを生成
+	// プレイヤーUIのユニークポインタを生成
+	pPlayerUI = std::make_unique<PlayerUI>(m_pCommonResources);
 	// プレイヤーUIの作成
 	pPlayerUI->Create(m_pDR	// デバイスリソース
 		, key				// テクスチャのパス
 		, position			// プレイヤーUIの位置
 		, scale				// プレイヤーUIのスケール
 		, anchor);			// アンカーの種類
-	pPlayerUI->SetWindowSize(m_windowWidth, m_windowHeight);// ウィンドウサイズを設定
+	// ウィンドウサイズを設定
+	pPlayerUI->SetWindowSize(m_windowWidth, m_windowHeight);
 }

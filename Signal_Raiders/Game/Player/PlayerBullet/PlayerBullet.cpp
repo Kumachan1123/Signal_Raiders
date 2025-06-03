@@ -29,10 +29,14 @@ PlayerBullet::PlayerBullet()
 */
 PlayerBullet::~PlayerBullet()
 {
-	m_pPixelShader.Reset();// ピクセルシェーダーの解放
-	m_pBulletTrail.reset();// 軌跡ポインターの解放
-	m_pCommonResources = nullptr;// 共通リソースの解放
-	m_pModel = nullptr;// モデルポインターの解放
+	// ピクセルシェーダーの解放
+	m_pPixelShader.Reset();
+	// 軌跡ポインターの解放
+	m_pBulletTrail.reset();
+	// 共通リソースの解放
+	m_pCommonResources = nullptr;
+	// モデルポインターの解放
+	m_pModel = nullptr;
 }
 /*
 *	@brief	初期化
@@ -44,19 +48,32 @@ void PlayerBullet::Initialize(CommonResources* resources)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	m_pCommonResources = resources;// 共通リソースの設定
-	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();// デバイスの取得
-	DrawCollision::Initialize(m_pCommonResources);// 当たり判定可視化用クラスの初期化
-	m_pBulletTrail = std::make_unique<Particle>(ParticleUtility::Type::PLAYERTRAIL, BulletParameters::PLAYER_BULLET_SIZE);// 弾の軌道生成
-	m_pBulletTrail->Initialize(m_pCommonResources);// 弾の軌道生成の初期化
-	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_Shadow.cso");// 影用のピクセルシェーダー読み込み
-	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pPixelShader.ReleaseAndGetAddressOf()));// ピクセルシェーダーの作成
-	m_pModel = m_pCommonResources->GetModelManager()->GetModel("PlayerBullet");// マネージャーからモデルを取得
-	m_direction = Vector3::Zero;// 弾の移動方向
-	m_velocity = Vector3::Zero;// 弾の移動量
-	m_position = Vector3::Zero;// 弾の位置
-	m_boundingSphere.Center = m_position;// 弾の中心座標
-	m_boundingSphere.Radius = BulletParameters::COLLISION_RADIUS;// 弾の半径
+	// 共通リソースの設定
+	m_pCommonResources = resources;
+	// デバイスの取得
+	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
+	// 当たり判定可視化用クラスの初期化
+	DrawCollision::Initialize(m_pCommonResources);
+	// 弾の軌道生成
+	m_pBulletTrail = std::make_unique<Particle>(ParticleUtility::Type::PLAYERTRAIL, BulletParameters::PLAYER_BULLET_SIZE);
+	// 弾の軌道生成の初期化
+	m_pBulletTrail->Initialize(m_pCommonResources);
+	// 影用のピクセルシェーダー読み込み
+	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_Shadow.cso");
+	// ピクセルシェーダーの作成
+	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pPixelShader.ReleaseAndGetAddressOf()));
+	// マネージャーからモデルを取得
+	m_pModel = m_pCommonResources->GetModelManager()->GetModel("PlayerBullet");
+	// 弾の移動方向
+	m_direction = Vector3::Zero;
+	// 弾の移動量
+	m_velocity = Vector3::Zero;
+	// 弾の位置
+	m_position = Vector3::Zero;
+	// 弾の中心座標
+	m_boundingSphere.Center = m_position;
+	// 弾の半径
+	m_boundingSphere.Radius = BulletParameters::COLLISION_RADIUS;
 }
 /*
 *	@brief	更新
@@ -67,19 +84,32 @@ void PlayerBullet::Initialize(CommonResources* resources)
 void PlayerBullet::Update(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
-	m_angle += BulletParameters::BULLET_ROTATION_SPEED;// 弾の回転速度を加算
-	Clamp(m_angle, BulletParameters::ANGLE_MIN, BulletParameters::ANGLE_MAX);// 角度を0～360度に制限する
-	m_velocity += m_direction;// カメラが向いている方向に速度を与える
-	if (m_velocity.LengthSquared() > 0)m_velocity.Normalize();// 速度を正規化
-	m_velocity *= BulletParameters::ADJUST_MOVE * elapsedTime;// 移動量を補正する
-	m_position += m_velocity;// 実際に移動する
-	m_boundingSphere.Center = m_position;// バウンディングスフィアの位置更新
-	m_pBulletTrail->SetBulletPosition(m_position);// 現在の弾の位置を軌跡リストに追加
-	m_pBulletTrail->Update(elapsedTime);// 軌跡の更新
-	m_time += elapsedTime;// 時間計測
-	m_worldMatrix = Matrix::CreateScale(BulletParameters::PLAYER_BULLET_SIZE);// 弾のサイズを設定
-	m_worldMatrix *= Matrix::CreateRotationX(DirectX::XMConvertToRadians(m_angle));// 弾の回転を設定
-	m_worldMatrix *= Matrix::CreateTranslation(m_position);// 弾の座標を設定
+	// 弾の回転速度を加算
+	m_angle += BulletParameters::BULLET_ROTATION_SPEED;
+	// 角度を0～360度に制限する
+	Clamp(m_angle, BulletParameters::ANGLE_MIN, BulletParameters::ANGLE_MAX);
+	// カメラが向いている方向に速度を与える
+	m_velocity += m_direction;
+	// 速度を正規化
+	if (m_velocity.LengthSquared() > 0)m_velocity.Normalize();
+	// 移動量を補正する
+	m_velocity *= BulletParameters::ADJUST_MOVE * elapsedTime;
+	// 実際に移動する
+	m_position += m_velocity;
+	// バウンディングスフィアの位置更新
+	m_boundingSphere.Center = m_position;
+	// 現在の弾の位置を軌跡リストに追加
+	m_pBulletTrail->SetBulletPosition(m_position);
+	// 軌跡の更新
+	m_pBulletTrail->Update(elapsedTime);
+	// 時間計測
+	m_time += elapsedTime;
+	// 弾のサイズを設定
+	m_worldMatrix = Matrix::CreateScale(BulletParameters::PLAYER_BULLET_SIZE);
+	// 弾の回転を設定
+	m_worldMatrix *= Matrix::CreateRotationX(DirectX::XMConvertToRadians(m_angle));
+	// 弾の座標を設定
+	m_worldMatrix *= Matrix::CreateTranslation(m_position);
 }
 /*
 *	@brief	弾を生成
@@ -91,9 +121,12 @@ void PlayerBullet::Update(float elapsedTime)
 void PlayerBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Vector3& dir)
 {
 	using namespace DirectX::SimpleMath;
-	m_position = pos + BulletParameters::INITIAL_POSITION;	// 初期位置を設定
-	m_direction = dir;										// 方向を設定
-	m_direction.y += BulletParameters::ADJUST_DIRECTION;	// 上方向に補正
+	// 初期位置を設定
+	m_position = pos + BulletParameters::INITIAL_POSITION;
+	// 方向を設定
+	m_direction = dir;
+	// 上方向に補正
+	m_direction.y += BulletParameters::ADJUST_DIRECTION;
 }
 /*
 *	@brief	描画
@@ -104,11 +137,16 @@ void PlayerBullet::MakeBall(const DirectX::SimpleMath::Vector3& pos, const Direc
 */
 void PlayerBullet::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
-	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストの取得
-	auto states = m_pCommonResources->GetCommonStates();// 共通ステートの取得
-	m_pBulletTrail->CreateBillboard(m_cameraTarget, m_cameraEye, m_cameraUp);// 軌跡のビルボード行列を作成
-	m_pBulletTrail->Render(view, proj);// 軌跡描画
-	m_pModel->Draw(context, *states, m_worldMatrix, view, proj);// 弾描画
+	// デバイスコンテキストの取得
+	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+	// 共通ステートの取得
+	auto states = m_pCommonResources->GetCommonStates();
+	// 軌跡のビルボード行列を作成
+	m_pBulletTrail->CreateBillboard(m_cameraTarget, m_cameraEye, m_cameraUp);
+	// 軌跡描画
+	m_pBulletTrail->Render(view, proj);
+	// 弾描画
+	m_pModel->Draw(context, *states, m_worldMatrix, view, proj);
 }
 /*
 *	@brief	影の描画
@@ -120,18 +158,29 @@ void PlayerBullet::Render(const DirectX::SimpleMath::Matrix& view, const DirectX
 void PlayerBullet::RenderShadow(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
 	using namespace DirectX::SimpleMath;
-	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストの取得
-	auto states = m_pCommonResources->GetCommonStates();// 共通ステートの取得
-	Vector3 lightDir = Vector3::UnitY;// ライトの方向
-	lightDir.Normalize();// 正規化
-	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, BulletParameters::SHADOW_PLANE);// 影行列の元を作る
-	shadowMatrix = m_worldMatrix * shadowMatrix;// ワールド行列と影行列を掛け算
-	m_pModel->Draw(context, *states, shadowMatrix, view, proj, true, [&]()// 影描画
+	// デバイスコンテキストの取得
+	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+	// 共通ステートの取得
+	auto states = m_pCommonResources->GetCommonStates();
+	// ライトの方向
+	Vector3 lightDir = Vector3::UnitY;
+	// ライトの方向を設定
+	lightDir.Normalize();
+	// 影行列の元を作る
+	Matrix shadowMatrix = Matrix::CreateShadow(Vector3::UnitY, BulletParameters::SHADOW_PLANE);
+	// ワールド行列と影行列を掛ける
+	shadowMatrix = m_worldMatrix * shadowMatrix;
+	// 影を描画
+	m_pModel->Draw(context, *states, shadowMatrix, view, proj, true, [&]()
 		{
-			context->OMSetBlendState(states->Opaque(), nullptr, 0xffffffff);// ブレンドステートの設定
-			context->OMSetDepthStencilState(states->DepthNone(), 0);// 深度ステンシルステートの設定
-			context->RSSetState(states->CullNone());	// ラスタライザーステートの設定
-			context->PSSetShader(m_pPixelShader.Get(), nullptr, 0);// ピクセルシェーダーの設定
+			// ブレンドステートの設定
+			context->OMSetBlendState(states->Opaque(), nullptr, 0xffffffff);
+			// 深度ステンシルステートの設定
+			context->OMSetDepthStencilState(states->DepthNone(), 0);
+			// ラスタライザーステートの設定
+			context->RSSetState(states->CullNone());
+			// ピクセルシェーダーの設定
+			context->PSSetShader(m_pPixelShader.Get(), nullptr, 0);
 		});
 }
 /*
@@ -143,13 +192,17 @@ void PlayerBullet::RenderShadow(const DirectX::SimpleMath::Matrix& view, const D
 */
 void PlayerBullet::DrawCollision(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
-	UNREFERENCED_PARAMETER(view);// 未使用警告非表示
-	UNREFERENCED_PARAMETER(proj);// 未使用警告非表示
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
+	// 未使用警告非表示
+	UNREFERENCED_PARAMETER(view);
+	UNREFERENCED_PARAMETER(proj);
 #ifdef _DEBUG// デバッグビルド時のみ実行
-	DrawCollision::DrawStart(view, proj);// 当たり判定の描画開始
-	DrawCollision::DrawBoundingSphere(m_boundingSphere, Colors::Blue);// 当たり判定の描画
-	DrawCollision::DrawEnd();// 当たり判定の描画終了
+	// 当たり判定の描画開始
+	DrawCollision::DrawStart(view, proj);
+	// 当たり判定の描画
+	DrawCollision::DrawBoundingSphere(m_boundingSphere, Colors::Blue);
+	// 当たり判定の描画終了
+	DrawCollision::DrawEnd();
 #endif
 }

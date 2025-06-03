@@ -16,10 +16,14 @@ struct UpdateContext
 
 class IUI
 {
-public:
-	virtual ~IUI() = default;// デストラクタ
-	virtual void Initialize(CommonResources* resources, int width, int height) = 0;// 初期化
-	virtual void Update(const UpdateContext& data) = 0;// 更新
-	virtual void Render() = 0;// 描画
+public:// public関数
+	// デストラクタ
+	virtual ~IUI() = default;
+	// 初期化
+	virtual void Initialize(CommonResources* resources, int width, int height) = 0;
+	// 更新
+	virtual void Update(const UpdateContext& data) = 0;
+	// 描画
+	virtual void Render() = 0;
 };
 #endif		// IUI_DEFINED

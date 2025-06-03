@@ -13,19 +13,21 @@
 class CommonResources;
 class IMenuUI : public IUI
 {
-public:
-	// 列挙型
-	enum class UIType//UIの種類
+public:	// 列挙型
+	//UIの種類
+	enum class UIType
 	{
 		SELECT,		// 選択可能UI
 		NON_SELECT	// 選択不可能UI
 	};
-public:
-	virtual ~IMenuUI() = default;// デストラクタ
-	virtual void Add(							// UI追加	
+public:// public関数
+	// デストラクタ
+	virtual ~IMenuUI() = default;
+	// UI追加	
+	virtual void Add(
 		std::string key					// テクスチャのキー
-		, DirectX::SimpleMath::Vector2 position	// 位置
-		, DirectX::SimpleMath::Vector2 scale	// スケール
+		, const DirectX::SimpleMath::Vector2& position	// 位置
+		, const DirectX::SimpleMath::Vector2& scale	// スケール
 		, KumachiLib::ANCHOR anchor				// アンカー
 		, IMenuUI::UIType type) = 0;			// UIの種類	
 };

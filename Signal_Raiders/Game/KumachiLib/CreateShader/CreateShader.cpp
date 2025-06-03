@@ -5,11 +5,9 @@
 */
 #include <pch.h>
 #include "CreateShader.h"
-
 using namespace KumachiLib;
 // シングルトンインスタンスの初期化
 std::unique_ptr<CreateShader> CreateShader::m_pInstance = nullptr;
-
 /*
 *	@brief シングルトンインスタンスを取得
 *	@details CreateShaderクラスのシングルトンインスタンスを取得する
@@ -18,11 +16,14 @@ std::unique_ptr<CreateShader> CreateShader::m_pInstance = nullptr;
 */
 CreateShader* const CreateShader::GetInstance()
 {
-	if (m_pInstance == nullptr)// インスタンスがない場合
+	// インスタンスがない場合
+	if (m_pInstance == nullptr)
 	{
-		m_pInstance.reset(new CreateShader());// インスタンスを生成
+		// インスタンスを生成
+		m_pInstance.reset(new CreateShader());
 	}
-	return m_pInstance.get();// インスタンスを返す
+	// インスタンスを返す
+	return m_pInstance.get();
 }
 /*
 *	@brief コンストラクタ
@@ -32,7 +33,7 @@ CreateShader* const CreateShader::GetInstance()
 */
 CreateShader::CreateShader()
 	: m_pDevice(nullptr)// デバイス
-	, m_pIDE(nullptr)// 入力レイアウト
+	, m_pIED(nullptr)// インプットエレメントディスクリプタ
 	, m_NumElements(0)// 要素数
 	, m_pInputLayout(nullptr)// レイアウト
 {
@@ -45,25 +46,32 @@ CreateShader::CreateShader()
 */
 CreateShader::~CreateShader()
 {
-	m_pInputLayout.Reset();// インプットレイアウトの解放
-	m_pIDE = nullptr;// 入力レイアウトの解放
-	m_pDevice = nullptr;// デバイスの解放
+	// インプットレイアウトの解放
+	m_pInputLayout.Reset();
+	// インプットエレメントディスクリプタの解放
+	m_pIED = nullptr;
+	// デバイスの解放
+	m_pDevice = nullptr;
 }
 /*
 *	@brief 初期化
 *	@details シェーダーを作成するための初期化を行う
 *	@param device デバイス
-*	@param pIDE 入力レイアウト
+*	@param pIED  インプットエレメントディスクリプタ
 *	@param NumElements 要素数
 *	@param InputLayout レイアウト
 *	@return なし
 */
-void CreateShader::Initialize(ID3D11Device1* device, const D3D11_INPUT_ELEMENT_DESC* pIDE, UINT NumElements, Microsoft::WRL::ComPtr<ID3D11InputLayout> InputLayout)
+void CreateShader::Initialize(ID3D11Device1* device, const D3D11_INPUT_ELEMENT_DESC* pIED, UINT NumElements, Microsoft::WRL::ComPtr<ID3D11InputLayout> InputLayout)
 {
-	m_pDevice = device;// デバイス
-	m_pIDE = pIDE;// 入力レイアウト
-	m_NumElements = NumElements;// 要素数
-	m_pInputLayout = InputLayout;// レイアウト
+	// デバイスを設定
+	m_pDevice = device;
+	// インプットエレメントディスクリプタを設定
+	m_pIED = pIED;
+	// 要素数を設定
+	m_NumElements = NumElements;
+	// インプットレイアウト
+	m_pInputLayout = InputLayout;
 }
 /*
 *	@brief 頂点シェーダーを作成
@@ -76,13 +84,18 @@ void CreateShader::CreateVertexShader(const wchar_t* fileName,
 	Microsoft::WRL::ComPtr<ID3D11VertexShader>& vs)
 {
 
-	BinaryFile VS = BinaryFile::LoadFile(fileName);// バイナリファイルを読み込む
-	if (FAILED(m_pDevice->CreateVertexShader(VS.GetData(), VS.GetSize(), NULL, vs.ReleaseAndGetAddressOf())))//シェーダーを作成
+	// バイナリファイルを読み込む
+	BinaryFile VS = BinaryFile::LoadFile(fileName);
+	//シェーダーを作成
+	if (FAILED(m_pDevice->CreateVertexShader(VS.GetData(), VS.GetSize(), NULL, vs.ReleaseAndGetAddressOf())))
 	{
-		MessageBox(0, L"CreateVertexShader Failed.", NULL, MB_OK);// エラー処理
-		return;// 終了
+		// エラー処理
+		MessageBox(0, L"CreateVertexShader Failed.", NULL, MB_OK);
+		// 終了
+		return;
 	}
-	m_pDevice->CreateInputLayout(&m_pIDE[0], m_NumElements, VS.GetData(), VS.GetSize(), m_pInputLayout.GetAddressOf());// 入力レイアウトを作成
+	// 入力レイアウトを作成
+	m_pDevice->CreateInputLayout(&m_pIED[0], m_NumElements, VS.GetData(), VS.GetSize(), m_pInputLayout.GetAddressOf());
 }
 /*
 *	@brief ピクセルシェーダーを作成
@@ -93,11 +106,15 @@ void CreateShader::CreateVertexShader(const wchar_t* fileName,
 */
 void CreateShader::CreatePixelShader(const wchar_t* fileName, Microsoft::WRL::ComPtr<ID3D11PixelShader>& ps)
 {
-	BinaryFile PS = BinaryFile::LoadFile(fileName);// バイナリファイルを読み込む
-	if (FAILED(m_pDevice->CreatePixelShader(PS.GetData(), PS.GetSize(), NULL, ps.ReleaseAndGetAddressOf())))// ピクセルシェーダ作成
+	// バイナリファイルを読み込む
+	BinaryFile PS = BinaryFile::LoadFile(fileName);
+	// ピクセルシェーダ作成
+	if (FAILED(m_pDevice->CreatePixelShader(PS.GetData(), PS.GetSize(), NULL, ps.ReleaseAndGetAddressOf())))
 	{
-		MessageBox(0, L"CreatePixelShader Failed.", NULL, MB_OK);// エラー処理
-		return;// 終了
+		// エラー処理
+		MessageBox(0, L"CreatePixelShader Failed.", NULL, MB_OK);
+		// 終了
+		return;
 	}
 }
 /*
@@ -109,13 +126,16 @@ void CreateShader::CreatePixelShader(const wchar_t* fileName, Microsoft::WRL::Co
 */
 void CreateShader::CreateGeometryShader(const wchar_t* fileName, Microsoft::WRL::ComPtr<ID3D11GeometryShader>& gs)
 {
-	BinaryFile GS = BinaryFile::LoadFile(fileName);// バイナリファイルを読み込む
-	if (FAILED(m_pDevice->CreateGeometryShader(GS.GetData(), GS.GetSize(), NULL, gs.ReleaseAndGetAddressOf())))// ジオメトリシェーダ作成
+	// バイナリファイルを読み込む
+	BinaryFile GS = BinaryFile::LoadFile(fileName);
+	// ジオメトリシェーダ作成
+	if (FAILED(m_pDevice->CreateGeometryShader(GS.GetData(), GS.GetSize(), NULL, gs.ReleaseAndGetAddressOf())))
 	{
-		MessageBox(0, L"CreateGeometryShader Failed.", NULL, MB_OK);// エラー処理
-		return;// 終了
+		// エラー処理
+		MessageBox(0, L"CreateGeometryShader Failed.", NULL, MB_OK);
+		// 終了
+		return;
 	}
-
 }
 /*
 *	@brief コンスタントバッファを作成
@@ -126,11 +146,18 @@ void CreateShader::CreateGeometryShader(const wchar_t* fileName, Microsoft::WRL:
 */
 void CreateShader::CreateConstantBuffer(Microsoft::WRL::ComPtr<ID3D11Buffer>& cBuffer, UINT bufferSize)
 {
-	D3D11_BUFFER_DESC bd;// バッファの説明
-	ZeroMemory(&bd, sizeof(bd));// バッファの説明を初期化
-	bd.Usage = D3D11_USAGE_DEFAULT;// 使用法
-	bd.ByteWidth = bufferSize;// バッファのサイズ
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;// バインドフラグ
-	bd.CPUAccessFlags = 0;// CPUアクセスフラグ
-	m_pDevice->CreateBuffer(&bd, nullptr, &cBuffer);// バッファを作成
+	// バッファの説明
+	D3D11_BUFFER_DESC bd;
+	// バッファの説明を初期化
+	ZeroMemory(&bd, sizeof(bd));
+	// 使用法
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	// バッファのサイズ
+	bd.ByteWidth = bufferSize;
+	// バインドフラグ
+	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	// CPUアクセスフラグ
+	bd.CPUAccessFlags = 0;
+	// バッファを作成
+	m_pDevice->CreateBuffer(&bd, nullptr, &cBuffer);
 }

@@ -13,13 +13,15 @@
 class CommonResources;
 class IPlayUI : public IUI
 {
-public:
-	virtual ~IPlayUI() = default;// デストラクタ
-	virtual void Add// UI追加
-	(std::unique_ptr<PlayerUI>& pPlayerUI// プレイヤーUI
-		, std::string key// テクスチャパス
-		, DirectX::SimpleMath::Vector2 position// 位置
-		, DirectX::SimpleMath::Vector2 scale// スケール
+public:// public関数
+	// デストラクタ
+	virtual ~IPlayUI() = default;
+	// UI追加
+	virtual void Add(
+		std::unique_ptr<PlayerUI>& pPlayerUI// プレイヤーUI
+		, const std::string& key// テクスチャパス
+		, const DirectX::SimpleMath::Vector2& position// 位置
+		, const DirectX::SimpleMath::Vector2& scale// スケール
 		, KumachiLib::ANCHOR anchor) = 0;// アンカー
 };
 #endif		// IPLAYUI_DEFINED

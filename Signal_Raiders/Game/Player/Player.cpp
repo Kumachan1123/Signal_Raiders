@@ -32,8 +32,10 @@ Player::Player(CommonResources* commonResources)
 	, m_isKillAll{ false }// チートコマンド：敵を一掃するフラグ
 	, m_isCheat{ false }// チートコマンドが有効か
 {
-	m_inPlayerArea.Radius = IN_PLAYER_AREA_RADIUS;// プレイヤーと敵との一定範囲の境界球の半径
-	m_playerSphere.Radius = PLAYER_SPHERE_RADIUS;// プレイヤーの境界球の半径
+	// プレイヤーと敵との一定範囲の境界球の半径
+	m_inPlayerArea.Radius = IN_PLAYER_AREA_RADIUS;
+	// プレイヤーの境界球の半径
+	m_playerSphere.Radius = PLAYER_SPHERE_RADIUS;
 }
 /*
 *	@brief	デストラクタ
@@ -43,11 +45,16 @@ Player::Player(CommonResources* commonResources)
 */
 Player::~Player()
 {
-	m_pPlayerController.reset();// プレイヤーコントローラーの解放
-	m_pCamera.reset();// カメラの解放
-	m_pWarningEffects.reset();// ダメージエフェクトの解放
-	m_pBulletManager = nullptr;// 弾マネージャーの解放
-	m_pEnemyManager = nullptr;// 敵マネージャーの解放
+	// プレイヤーコントローラーの解放
+	m_pPlayerController.reset();
+	// カメラの解放
+	m_pCamera.reset();
+	// ダメージエフェクトの解放
+	m_pWarningEffects.reset();
+	// 弾マネージャーの解放
+	m_pBulletManager = nullptr;
+	// 敵マネージャーの解放
+	m_pEnemyManager = nullptr;
 }
 /*
 *	@brief	初期化
@@ -57,15 +64,24 @@ Player::~Player()
 */
 void Player::Initialize(EnemyManager* pEnemiyManager)
 {
-	m_playerHP = PLAYER_HP;// プレイヤーのHPを設定
-	m_maxPlayerHP = m_playerHP;// プレイヤーの最大HPを設定
-	m_pEnemyManager = pEnemiyManager;// 敵マネージャーのポインターを渡す
-	m_pCamera = std::make_unique<FPS_Camera>();// FPSカメラを作成する
-	m_pPlayerController = std::make_unique<PlayerController>(this);// プレイヤーのコントローラーを作成する
-	m_pPlayerController->Initialize(m_pCommonResources);// プレイヤーコントローラーの初期化
-	m_pPlayerController->SetPlayetPosition(m_pCamera->GetEyePosition());// プレイヤーの位置を設定
-	m_pWarningEffects = std::make_unique<WarningEffects>(m_pCommonResources);// ダメージエフェクトを管理するクラスを作成する
-	m_pWarningEffects->Initialize(this, m_pEnemyManager);// ダメージエフェクトの初期化
+	// プレイヤーのHPを設定
+	m_playerHP = PLAYER_HP;
+	// プレイヤーの最大HPを設定
+	m_maxPlayerHP = m_playerHP;
+	// 敵マネージャーのポインターを渡す
+	m_pEnemyManager = pEnemiyManager;
+	// FPSカメラを作成する
+	m_pCamera = std::make_unique<FPS_Camera>();
+	// プレイヤーのコントローラーを作成する
+	m_pPlayerController = std::make_unique<PlayerController>(this);
+	// プレイヤーコントローラーの初期化
+	m_pPlayerController->Initialize(m_pCommonResources);
+	// プレイヤーの位置を設定
+	m_pPlayerController->SetPlayetPosition(m_pCamera->GetEyePosition());
+	// ダメージエフェクトを管理するクラスを作成する
+	m_pWarningEffects = std::make_unique<WarningEffects>(m_pCommonResources);
+	// ダメージエフェクトの初期化
+	m_pWarningEffects->Initialize(this, m_pEnemyManager);
 }
 /*
 *	@brief	プレイヤーの更新
@@ -75,24 +91,38 @@ void Player::Initialize(EnemyManager* pEnemiyManager)
 */
 void Player::Update(float elapsedTime)
 {
-	m_timer += elapsedTime;// 経過時間を加算
-	m_playerDir = m_pCamera->GetDirection();// カメラが向いている方向を取得する
-	m_pCamera->Update(m_pPlayerController->GetPlayerPosition(), m_pPlayerController->GetYaw());// カメラ更新
-	m_pPlayerController->Update(elapsedTime);// プレイヤーコントローラー更新
-	InComingEnemy();// 敵が攻撃してきた時の処理
-	PlayerDamage(elapsedTime);// ダメージを食らった時の処理
-	m_playerPos = m_pPlayerController->GetPlayerPosition();// プレイヤーの位置を取得
-	m_dashTime = m_pPlayerController->GetDashTime();// 走れる時間を更新
+	// 経過時間を加算
+	m_timer += elapsedTime;
+	// カメラが向いている方向を取得する
+	m_playerDir = m_pCamera->GetDirection();
+	// カメラ更新
+	m_pCamera->Update(m_pPlayerController->GetPlayerPosition(), m_pPlayerController->GetYaw());
+	// プレイヤーコントローラー更新
+	m_pPlayerController->Update(elapsedTime);
+	// 敵が攻撃してきた時の処理
+	InComingEnemy();
+	// ダメージを食らった時の処理
+	PlayerDamage(elapsedTime);
+	// プレイヤーの位置を取得
+	m_playerPos = m_pPlayerController->GetPlayerPosition();
+	// 走れる時間を更新
+	m_dashTime = m_pPlayerController->GetDashTime();
 #ifdef _DEBUG// デバッグ チートコマンド
-	m_pPlayerController->DebugCommand();// デバッグコマンドを実行
+	// デバッグコマンドを実行
+	m_pPlayerController->DebugCommand();
 #endif
-	m_pBulletManager->SetAdditionalDamage(m_pEnemyManager->GetWifi()->GetCurrentWifiSSIDLength());// Wi-Fiから得た追加ダメージをプレイヤーの弾に反映
-	m_pPlayerController->Shoot();// 弾発射
-	m_pPlayerController->Reload();// 弾のリロード
-	m_pWarningEffects->Update(elapsedTime);// ダメージエフェクトを更新する
+	// Wi-Fiから得た追加ダメージをプレイヤーの弾に反映
+	m_pBulletManager->SetAdditionalDamage(m_pEnemyManager->GetWifi()->GetCurrentWifiSSIDLength());
+	// 弾を発射する
+	m_pPlayerController->Shoot();
+	// 弾のリロードする
+	m_pPlayerController->Reload();
+	// ダメージエフェクトを更新する
+	m_pWarningEffects->Update(elapsedTime);
 	// プレイヤーの境界球を更新
-	m_inPlayerArea.Center = GetPlayerController()->GetPlayerPosition();// プレイヤーの位置を取得
-	m_playerSphere.Center = m_inPlayerArea.Center;// プレイヤーの位置を取得
+	// プレイヤーの位置を取得し、境界球の中心を設定
+	m_inPlayerArea.Center = GetPlayerController()->GetPlayerPosition();
+	m_playerSphere.Center = m_inPlayerArea.Center;
 }
 /*
 *	@brief	プレイヤーの描画
@@ -102,7 +132,8 @@ void Player::Update(float elapsedTime)
 */
 void Player::Render()
 {
-	m_pWarningEffects->Render();// ダメージエフェクトを更新する
+	// ダメージエフェクトを更新する
+	m_pWarningEffects->Render();
 }
 /*
 *	@brief	弾を生成する
@@ -112,7 +143,8 @@ void Player::Render()
 */
 void Player::CreateBullet()
 {
-	m_pBulletManager->CreatePlayerBullet(GetPlayerController()->GetPlayerPosition(), m_playerDir);// 弾を生成する
+	// 弾を生成する
+	m_pBulletManager->CreatePlayerBullet(GetPlayerController()->GetPlayerPosition(), m_playerDir);
 }
 /*
 *	@brief	プレイヤーがダメージを受けた時の処理
@@ -122,25 +154,37 @@ void Player::CreateBullet()
 */
 void Player::PlayerDamage(float elapsedTime)
 {
-	if (m_isDamage)// プレイヤーがダメージを受けた時
+	// プレイヤーがダメージを受けた時
+	if (m_isDamage)
 	{
-		if (m_isPlayEffect == true)// 攻撃を食らったらダメージエフェクトを生成
+		// 攻撃を食らったらダメージエフェクトを生成
+		if (m_isPlayEffect == true)
 		{
-			m_pWarningEffects->CreateDamageEffects();// ダメージエフェクト生成
-			m_isPlayEffect = false;// ダメージエフェクトを生成したらfalse
+			// ダメージエフェクト生成
+			m_pWarningEffects->CreateDamageEffects();
+			// ダメージエフェクトを生成したらfalse
+			m_isPlayEffect = false;
 		}
 		// ダメージを受けた時のカメラの処理
-		float shakeOffset = sin(m_damageTime * DAMAGE_SHAKE_FREQUENCY) * DAMAGE_SHAKE_AMPLITUDE;// sin波を使って上下に揺らす
-		m_pCamera->SetTargetPositionY(m_pPlayerController->GetPitch() + shakeOffset);// カメラの注視点を設定
-		m_damageTime += elapsedTime;// ダメージ時間を加算
-		if (m_damageTime >= DAMAGE_DURATION)// ダメージを受けた時間が0.25秒を超えたら
+		// sin波を使って上下に揺らす
+		float shakeOffset = sin(m_damageTime * DAMAGE_SHAKE_FREQUENCY) * DAMAGE_SHAKE_AMPLITUDE;
+		// カメラの注視点を設定
+		m_pCamera->SetTargetPositionY(m_pPlayerController->GetPitch() + shakeOffset);
+		// ダメージ時間を加算
+		m_damageTime += elapsedTime;
+		// ダメージを受けた時間が0.25秒を超えたら
+		if (m_damageTime >= DAMAGE_DURATION)
 		{
-			m_isDamage = false;// ダメージフラグをfalseにする
-			m_pCamera->SetTargetPositionY(m_pPlayerController->GetPitch());// カメラの注視点を設定
-			m_damageTime = 0.0f;// ダメージ時間を0にする
+			// ダメージフラグをfalseにする
+			m_isDamage = false;
+			// カメラの注視点を設定
+			m_pCamera->SetTargetPositionY(m_pPlayerController->GetPitch());
+			// ダメージ時間を0にする
+			m_damageTime = 0.0f;
 		}
 	}
-	else m_pCamera->SetTargetPositionY(m_pPlayerController->GetPitch());// カメラの注視点を設定
+	// カメラの注視点を設定
+	else m_pCamera->SetTargetPositionY(m_pPlayerController->GetPitch());
 }
 /*
 *	@brief	攻撃しようとしている敵に関する処理
@@ -150,17 +194,26 @@ void Player::PlayerDamage(float elapsedTime)
 */
 void Player::InComingEnemy()
 {
-	bool isPlayEffect = false;// これがtureなら実行
-	int count = 0;// 攻撃しようとしている敵の数
-	for (auto& enemy : m_pEnemyManager->GetEnemies())// 攻撃しようとしている敵がいたら実行
+	// これがtureなら実行
+	bool isPlayEffect = false;
+	// 攻撃しようとしている敵の数
+	int count = 0;
+	// 攻撃しようとしている敵がいたら実行
+	for (auto& enemy : m_pEnemyManager->GetEnemies())
 	{
-		if (!enemy->GetIsAttack())continue;// 攻撃していない敵はスルー
-		isPlayEffect = true;// 攻撃している敵がいたらtrue
-		count++;// 攻撃している敵の数をカウント
+		// 攻撃していない敵はスルー
+		if (!enemy->GetIsAttack())continue;
+		// 攻撃している敵がいたらtrue
+		isPlayEffect = true;
+		// 攻撃している敵の数をカウント
+		count++;
 	}
-	if (isPlayEffect)// ダメージエフェクト生成
+	// ダメージエフェクト生成
+	if (isPlayEffect)
 	{
-		m_pWarningEffects->SetWarningEffectCount(count);// 攻撃している敵の数を設定
-		m_pWarningEffects->CreateInComingEnemy();// ダメージエフェクト生成
+		// 攻撃している敵の数を設定
+		m_pWarningEffects->SetWarningEffectCount(count);
+		// ダメージエフェクト生成
+		m_pWarningEffects->CreateInComingEnemy();
 	}
 }

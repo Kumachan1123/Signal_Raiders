@@ -14,18 +14,20 @@
 class CommonResources;
 class TextureManager
 {
-public:
-	// アクセサ
-	ID3D11ShaderResourceView* GetTexture(const std::string& key); // テクスチャの取得
+public:	// アクセサ
+	// テクスチャの取得
+	ID3D11ShaderResourceView* GetTexture(const std::string& key);
 public:// public関数
-	TextureManager(); // コンストラクタ
-	~TextureManager(); // デストラクタ
-	void Initialize(ID3D11Device1* pDevice); // テクスチャの初期化
-private:
-	void LoadTexture(const std::string& key, const wchar_t* path); // テクスチャの読み込み
-private:// 定数
-	const std::string m_textureJsonPath = "Resources/Jsons/textures.json"; // テクスチャデータのJSONファイルパス
-private:
+	// コンストラクタ
+	TextureManager();
+	// デストラクタ
+	~TextureManager();
+	// テクスチャの初期化
+	void Initialize(ID3D11Device1* pDevice);
+private:// private関数
+	// テクスチャの読み込み
+	void LoadTexture(const std::string& key, const wchar_t* path);
+private:// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// デバイス

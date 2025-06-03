@@ -7,9 +7,9 @@
 class EnemyAI;
 class IState
 {
-public:
-	// 列挙型
-	enum  EnemyState//敵の状態
+public:	// 列挙型
+	//敵の状態
+	enum  EnemyState
 	{
 		IDLING = 0,//徘徊
 		ATTACK,// 攻撃
@@ -17,9 +17,12 @@ public:
 		ANGRY,// 怒り
 		KNOCKBACK,// ノックバック
 	};
-public:
-	virtual ~IState() = default;	// デストラクタ
-	virtual void Initialize() = 0;	// 初期化
-	virtual void Update(float elapsedTime) = 0;	// 更新
+public:// public関数
+	// デストラクタ
+	virtual ~IState() = default;
+	// 初期化
+	virtual void Initialize() = 0;
+	// 更新
+	virtual void Update(float elapsedTime) = 0;
 };
 #endif		// ISTATE_DEFINED

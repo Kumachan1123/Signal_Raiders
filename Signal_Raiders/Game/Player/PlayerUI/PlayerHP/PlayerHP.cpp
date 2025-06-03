@@ -11,15 +11,16 @@
 *	@return なし
 */
 PlayerHP::PlayerHP()
-	: m_windowHeight(0)		// ウィンドウの高さ
-	, m_windowWidth(0)		// ウィンドウの幅
-	, m_maxHP(100.0f)		// 最大HP
-	, m_currentHP(100.0f)	// 現在のHP
-	, m_pDR(nullptr)		// デバイスリソース
-	, m_pGauge(nullptr)		// HPゲージ
-	, m_pFrame(nullptr)		// HPゲージの枠
-	, m_pBack(nullptr)		// HPゲージの背景
-	, m_pHeartIcon(nullptr)	// ハートアイコン
+	: m_windowHeight(0)				// ウィンドウの高さ
+	, m_windowWidth(0)				// ウィンドウの幅
+	, m_maxHP(100.0f)				// 最大HP
+	, m_currentHP(100.0f)			// 現在のHP
+	, m_pCommonResources(nullptr)	// 共通リソースへのポインタ
+	, m_pDR(nullptr)				// デバイスリソース
+	, m_pGauge(nullptr)				// HPゲージ
+	, m_pFrame(nullptr)				// HPゲージの枠
+	, m_pBack(nullptr)				// HPゲージの背景
+	, m_pHeartIcon(nullptr)			// ハートアイコン
 {
 }
 /*
@@ -40,16 +41,21 @@ PlayerHP::~PlayerHP() {/*do nothing*/ }
 void PlayerHP::Initialize(CommonResources* resources, int width, int height)
 {
 	using namespace DirectX::SimpleMath;
-	m_pCommonResources = resources; // 共通リソースを設定
-	m_pDR = resources->GetDeviceResources();// デバイスリソースを取得
-	m_windowWidth = width;// ウィンドウの幅を設定
-	m_windowHeight = height;// ウィンドウの高さを設定
+	// 共通リソースを設定
+	m_pCommonResources = resources;
+	// デバイスリソースを取得
+	m_pDR = resources->GetDeviceResources();
+	// ウィンドウの幅を設定
+	m_windowWidth = width;
+	// ウィンドウの高さを設定
+	m_windowHeight = height;
 	// HPバー
 	Add(m_pGauge, "HPBar"
 		, Vector2(328, 40)
 		, Vector2(.50f, .50f)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER);
-	m_pGauge->SetRenderRatioOffset(0);// ゲージのオフセットを0に設定
+	// ゲージのオフセットを0に設定
+	m_pGauge->SetRenderRatioOffset(0);
 	// HPバーの背景
 	Add(m_pBack, "HPBarBase"
 		, Vector2(328, 40)
@@ -74,10 +80,14 @@ void PlayerHP::Initialize(CommonResources* resources, int width, int height)
 */
 void PlayerHP::Update(float PlayerHP)
 {
-	if (m_maxHP <= 0.0f) return; // 最大HPが0以下にならないようチェック
-	float hp = PlayerHP / m_maxHP; // 最大HPを考慮して正規化
-	hp = Clamp(hp, 0.0f, 1.0f); // 0.0～1.0の範囲に収める
-	m_pGauge->SetRenderRatio(hp);// ゲージの比率を設定
+	// 最大HPが0以下にならないようチェック
+	if (m_maxHP <= 0.0f) return;
+	// 最大HPを考慮して正規化
+	float hp = PlayerHP / m_maxHP;
+	// 0.0～1.0の範囲に収める
+	hp = Clamp(hp, 0.0f, 1.0f);
+	// ゲージの比率を設定
+	m_pGauge->SetRenderRatio(hp);
 }
 /*
 *	@brief 描画関数
@@ -88,10 +98,14 @@ void PlayerHP::Update(float PlayerHP)
 void PlayerHP::Render()
 {
 	//シェーダーの種類を設定して描画
-	m_pBack->SetShaderType(PlayerUI::ShaderType::OTHER), m_pBack->Render();// 背景を描画
-	m_pGauge->SetShaderType(PlayerUI::ShaderType::HP), m_pGauge->Render();// ゲージを描画
-	m_pFrame->SetShaderType(PlayerUI::ShaderType::OTHER), m_pFrame->Render(); // 枠を描画
-	m_pHeartIcon->SetShaderType(PlayerUI::ShaderType::OTHER), m_pHeartIcon->Render();// ハートアイコンを描画
+	// 背景を描画
+	m_pBack->SetShaderType(PlayerUI::ShaderType::OTHER), m_pBack->Render();
+	// ゲージを描画
+	m_pGauge->SetShaderType(PlayerUI::ShaderType::HP), m_pGauge->Render();
+	// 枠を描画
+	m_pFrame->SetShaderType(PlayerUI::ShaderType::OTHER), m_pFrame->Render();
+	// ハートアイコンを描画
+	m_pHeartIcon->SetShaderType(PlayerUI::ShaderType::OTHER), m_pHeartIcon->Render();
 }
 /*
 *	@brief UIの追加関数
@@ -103,14 +117,19 @@ void PlayerHP::Render()
 *	@param anchor UIのアンカー
 *	@return なし
 */
-void PlayerHP::Add(std::unique_ptr<PlayerUI>& pPlayerUI, std::string key, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
+void PlayerHP::Add(std::unique_ptr<PlayerUI>& pPlayerUI, const std::string& key,
+	const DirectX::SimpleMath::Vector2& position,
+	const DirectX::SimpleMath::Vector2& scale,
+	KumachiLib::ANCHOR anchor)
 {
-	pPlayerUI = std::make_unique<PlayerUI>(m_pCommonResources);// PlayerUIのインスタンスを生成
+	// PlayerUIのインスタンスを生成
+	pPlayerUI = std::make_unique<PlayerUI>(m_pCommonResources);
 	// UIの初期化
 	pPlayerUI->Create(m_pDR	// デバイスリソース
 		, key				// テクスチャのパス
 		, position			// UIの位置
 		, scale				// UIのスケール
 		, anchor);			// UIのアンカーを設定
-	pPlayerUI->SetWindowSize(m_windowWidth, m_windowHeight);// ウィンドウのサイズを設定
+	// ウィンドウのサイズを設定
+	pPlayerUI->SetWindowSize(m_windowWidth, m_windowHeight);
 }

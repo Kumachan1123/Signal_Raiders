@@ -27,29 +27,48 @@ class CommonResources;
 
 class PlayerBullet : public IBullet
 {
-public:
-	// アクセサ
+public:// アクセサ
+	// 弾の座標を取得する
 	DirectX::SimpleMath::Vector3 GetBulletPosition()const { return m_position; }
-	void SetBulletPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }
-	DirectX::BoundingSphere& GetBoundingSphere() { return m_boundingSphere; }
+	// 弾の座標を設定する
+	void SetBulletPosition(const DirectX::SimpleMath::Vector3& pos) { m_position = pos; }
+	// 弾の境界球を取得する
+	const DirectX::BoundingSphere& GetBoundingSphere() { return m_boundingSphere; }
+	// プレイヤーのY座標を取得する
 	float GetPlayerPositionY()const { return m_position.y; }
+	// 時間を取得する
 	float GetTime()const { return m_time; }
-	void SetCameraEye(DirectX::SimpleMath::Vector3 eye) { m_pBulletTrail->SetCameraPosition(eye); m_cameraEye = eye; }
-	void SetCameraTarget(DirectX::SimpleMath::Vector3 target) { m_pBulletTrail->SetCameraTarget(target); m_cameraTarget = target; }
-	void SetCameraUp(DirectX::SimpleMath::Vector3 up) { m_pBulletTrail->SetCameraUp(up); m_cameraUp = up; }
-	void SetAdditionalDamage(int damage) { m_additionalDamage = damage; }
+	// カメラの視点を設定する
+	void SetCameraEye(const DirectX::SimpleMath::Vector3& eye) { m_pBulletTrail->SetCameraPosition(eye); m_cameraEye = eye; }
+	// カメラの注視点を設定する
+	void SetCameraTarget(const DirectX::SimpleMath::Vector3& target) { m_pBulletTrail->SetCameraTarget(target); m_cameraTarget = target; }
+	// カメラの上方向を設定する
+	void SetCameraUp(const DirectX::SimpleMath::Vector3& up) { m_pBulletTrail->SetCameraUp(up); m_cameraUp = up; }
+	// 追加ダメージを取得する
 	int GetAdditionalDamage()const { return m_additionalDamage; }
-	// public関数
+	// 追加ダメージを設定する
+	void SetAdditionalDamage(int damage) { m_additionalDamage = damage; }
+public:// public関数
+	// コンストラクタ
 	PlayerBullet();
+	// デストラクタ
 	~PlayerBullet()override;
-	void Initialize(CommonResources* resources)override;// 初期化
-	void Update(float elapsedTime)override;// 更新
-	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)override;// 描画
-	void RenderShadow(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)override;// 影の描画
-	void DrawCollision(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);// 当たり判定の描画
-	void MakeBall(const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Vector3& dir);// 弾を生成
-	bool IsExpired() const { return m_time >= BulletParameters::PLAYER_BULLET_LIFETIME; }// 弾が生成されてからの経過時間が寿命を超えたかどうかを判定する
-	int Damage()const { return BulletParameters::DAMAGE + m_additionalDamage; }// 敵にダメージを与える
+	// 初期化
+	void Initialize(CommonResources* resources)override;
+	// 更新
+	void Update(float elapsedTime)override;
+	// 描画
+	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)override;
+	// 影の描画
+	void RenderShadow(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)override;
+	// 当たり判定の描画
+	void DrawCollision(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+	// 弾を生成
+	void MakeBall(const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Vector3& dir);
+	// 弾が生成されてからの経過時間が寿命を超えたかどうかを判定する
+	bool IsExpired() const { return m_time >= BulletParameters::PLAYER_BULLET_LIFETIME; }
+	// 敵にダメージを与える
+	int Damage()const { return BulletParameters::DAMAGE + m_additionalDamage; }
 private:// private変数
 	// 軌跡用の履歴を保存する配列
 	std::vector<DirectX::SimpleMath::Vector3> m_trailPositions;
@@ -67,15 +86,20 @@ private:// private変数
 	std::unique_ptr<Particle> m_pBulletTrail;
 	// 追加ダメージ
 	int m_additionalDamage;
-	// カメラ
-	DirectX::SimpleMath::Vector3 m_cameraEye;// カメラの位置
-	DirectX::SimpleMath::Vector3 m_cameraTarget;	// カメラの向き
-	DirectX::SimpleMath::Vector3 m_cameraUp;	// カメラの上方向
-	// 弾のパラメータ
-	DirectX::SimpleMath::Vector3 m_position;		// 弾の座標
-	DirectX::SimpleMath::Vector3 m_velocity;		// 弾の速さ
-	DirectX::SimpleMath::Vector3 m_direction;		// 弾が飛ぶ方向
-	float m_time;									// 生存時間
+	// カメラの位置
+	DirectX::SimpleMath::Vector3 m_cameraEye;
+	// カメラの向き
+	DirectX::SimpleMath::Vector3 m_cameraTarget;
+	// カメラの上方向
+	DirectX::SimpleMath::Vector3 m_cameraUp;
+	// 弾の座標
+	DirectX::SimpleMath::Vector3 m_position;
+	// 弾の速さ
+	DirectX::SimpleMath::Vector3 m_velocity;
+	// 弾が飛ぶ方向
+	DirectX::SimpleMath::Vector3 m_direction;
+	// 生存時間
+	float m_time;
 	// 弾モデル
-	DirectX::Model* m_pModel;					// 弾のモデル
+	DirectX::Model* m_pModel;
 };

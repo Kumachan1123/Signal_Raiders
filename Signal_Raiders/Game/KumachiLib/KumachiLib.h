@@ -24,7 +24,8 @@
 template <typename T>
 inline T Lerp(const T& start, const T& end, float t)
 {
-	return start + t * (end - start);// 線形補間
+	// 線形補間
+	return start + t * (end - start);
 }
 /*
 *	@brief   2Dベクトルのクランプ
@@ -37,7 +38,8 @@ inline T Lerp(const T& start, const T& end, float t)
 template <typename T>
 inline T Clamp(T value, T min, T max)
 {
-	return (value < min) ? min : (value > max) ? max : value;// クランプ
+	// クランプ
+	return (value < min) ? min : (value > max) ? max : value;
 }
 /*
 *	@brief   2Dベクトルのスフェリカル補間
@@ -50,12 +52,18 @@ inline T Clamp(T value, T min, T max)
 template <typename T>
 inline T Slerp(const T& start, const T& end, float t)
 {
-	float dot = start.Dot(end);// 内積
-	dot = Clamp(dot, -1.0f, 1.0f);// クランプ
-	float theta = std::acos(dot) * t;// 角度
-	T relative = end - start * dot;// 相対ベクトル
-	relative.Normalize();// 正規化
-	return ((start * std::cos(theta)) + (relative * std::sin(theta)));// スフェリカル補間
+	// 内積
+	float dot = start.Dot(end);
+	// クランプ
+	dot = Clamp(dot, -1.0f, 1.0f);
+	// 角度
+	float theta = std::acos(dot) * t;
+	// 相対ベクトル
+	T relative = end - start * dot;
+	// 正規化
+	relative.Normalize();
+	// スフェリカル補間
+	return ((start * std::cos(theta)) + (relative * std::sin(theta)));
 }
 /*
 *	@brief   2Dベクトルの角度を計算
@@ -67,23 +75,36 @@ inline T Slerp(const T& start, const T& end, float t)
 inline float CalculateAngle(const DirectX::SimpleMath::Vector3& eye,
 	const DirectX::SimpleMath::Vector3& target)
 {
-	DirectX::SimpleMath::Vector3 direction = target - eye;// ベクトルの差分
-	direction.Normalize();// 正規化
-	float angle = std::atan2(direction.x, direction.z);// アークタンジェント
-	return angle;// 角度
+	// ベクトルの差分
+	DirectX::SimpleMath::Vector3 direction = target - eye;
+	// ベクトルを正規化
+	direction.Normalize();
+	// アークタンジェント
+	float angle = std::atan2(direction.x, direction.z);
+	// 角度
+	return angle;
 }
-
-
-// 物体Aが物体Bに向かって動く(高さは無視)
+/*
+*	@brief   物体Aが物体Bに向かって動く(高さは無視)
+*	@details 物体Aが物体Bに向かって動くためのベクトルを計算する関数
+*	@param   A 物体Aの位置
+*	@param   B 物体Bの位置
+*	@param   maxSpeed 最大速度
+*/
 inline DirectX::SimpleMath::Vector3 Seek(const DirectX::SimpleMath::Vector3& A,
 	const DirectX::SimpleMath::Vector3& B,
 	float maxSpeed)
 {
-	DirectX::SimpleMath::Vector3 desired = B - A;// 目標位置
-	desired.Normalize();// 正規化
-	desired *= maxSpeed;// 最大速度
-	desired.y = 0;// 高さを無視
-	return desired;// 目標位置
+	// 方向ベクトルを計算
+	DirectX::SimpleMath::Vector3 desired = B - A;
+	// 方向ベクトルを正規化
+	desired.Normalize();
+	// 最大速度
+	desired *= maxSpeed;
+	// 高さを無視
+	desired.y = 0;
+	// 目標位置
+	return desired;
 }
 
 /*
@@ -95,10 +116,14 @@ inline DirectX::SimpleMath::Vector3 Seek(const DirectX::SimpleMath::Vector3& A,
 */
 inline int GenerateRandomMultiplier(int min, int max)
 {
-	std::random_device rd;// 乱数生成器
-	std::mt19937 gen(rd());// メルセンヌ・ツイスタ法
-	std::uniform_int_distribution<int> dis(min, max);// 一様分布
-	return dis(gen);// ランダムな倍率を生成
+	// 乱数生成器
+	std::random_device rd;
+	// メルセンヌ・ツイスタ法
+	std::mt19937 gen(rd());
+	// 一様分布
+	std::uniform_int_distribution<int> dis(min, max);
+	// ランダムな倍率を生成
+	return dis(gen);
 }
 
 /*
@@ -110,10 +135,14 @@ inline int GenerateRandomMultiplier(int min, int max)
 */
 inline float GenerateRandomMultiplier(float min, float max)
 {
-	std::random_device rd;// 乱数生成器
-	std::mt19937 gen(rd());// メルセンヌ・ツイスタ法
-	std::uniform_real_distribution<float> dis(min, max);// 一様分布
-	return dis(gen);// ランダムな倍率を生成
+	// 乱数生成器
+	std::random_device rd;
+	// メルセンヌ・ツイスタ法
+	std::mt19937 gen(rd());
+	// 一様分布
+	std::uniform_real_distribution<float> dis(min, max);
+	// ランダムな倍率を生成
+	return dis(gen);
 }
 
 /*
@@ -127,15 +156,24 @@ inline DirectX::SimpleMath::Vector3 CheckHitOtherObject(DirectX::BoundingSphere 
 {
 	using namespace DirectX::SimpleMath;
 	// 押し戻す処理
-	Vector3 diffVector = A.Center - B.Center;	// Ａの中心とＢの中心との差分ベクトル（ＢからＡに向かうベクトル）…①
-	float distance = diffVector.Length();	// Ａの中心とＢの中心との距離（①の長さ）…②
-	float sumRadius = A.Radius + B.Radius;	// Ａの半径とＢの半径の合計…③
-	float penetrationDistance = sumRadius - distance;// （ＡがＢに）めり込んだ距離（③－②）…④
-	diffVector.Normalize();// ①を正規化する…⑤
-	Vector3 pushBackVec = diffVector * penetrationDistance;// 押し戻すベクトルを計算する（⑤と④で表現する）…⑥
-	Vector3 newPosition = A.Center + pushBackVec;// ⑥を使用して、Ａの座標とＡのコライダー座標を更新する（実際に押し戻す）
-	A.Center = newPosition;// Ａの座標を更新する
-	return newPosition;// 更新されたＡの座標を返す
+	// Aの中心とBの中心との差分ベクトル
+	Vector3 diffVector = A.Center - B.Center;
+	// 差分ベクトルの長さを計算
+	float distance = diffVector.Length();
+	// Aの半径とBの半径の合計を計算
+	float sumRadius = A.Radius + B.Radius;
+	// AがBにめり込んだ距離
+	float penetrationDistance = sumRadius - distance;
+	// 差分ベクトルを正規化
+	diffVector.Normalize();
+	// 押し戻すベクトルを計算する
+	Vector3 pushBackVec = diffVector * penetrationDistance;
+	// 押し戻すベクトルを使用して、Aの座標とAのコライダー座標を更新（実際に押し戻す）
+	Vector3 newPosition = A.Center + pushBackVec;
+	// Aの座標を更新する
+	A.Center = newPosition;
+	// 更新されたAの座標を返す
+	return newPosition;
 }
 /*
 *	@brief   オブジェクト同士が衝突したら押し戻す(境界球と境界ボックスの場合）
@@ -147,23 +185,33 @@ inline DirectX::SimpleMath::Vector3 CheckHitOtherObject(DirectX::BoundingSphere 
 inline DirectX::SimpleMath::Vector3 CheckHitWall(DirectX::BoundingSphere A, DirectX::BoundingBox& B)
 {
 	using namespace DirectX::SimpleMath;
-	Vector3 pushBackVec = Vector3::Zero;// 押し戻しベクトルを計算
-	Vector3 closestPoint; // ボックスの最も近い点
+	// 押し戻しベクトルを計算
+	Vector3 pushBackVec = Vector3::Zero;
+	// ボックスの最も近い点
+	Vector3 closestPoint;
 	// 各軸でクランプして、最も近い位置を取得
 	closestPoint.x = std::max(B.Center.x - B.Extents.x, std::min(A.Center.x, B.Center.x + B.Extents.x));// X軸
 	closestPoint.y = std::max(B.Center.y - B.Extents.y, std::min(A.Center.y, B.Center.y + B.Extents.y));// Y軸
 	closestPoint.z = std::max(B.Center.z - B.Extents.z, std::min(A.Center.z, B.Center.z + B.Extents.z));// Z軸
-	Vector3 diffVector = A.Center - closestPoint;// 球体の中心と最も近い点のベクトル差
-	float distance = diffVector.Length();// 距離を計算
-	if (distance < A.Radius)// 距離が球体の半径より小さい場合は押し戻し処理
-	{
-		float penetrationDistance = A.Radius - distance;// 押し戻し量を計算 (正規化して押し戻しベクトルを作成)
-		diffVector.Normalize();// 正規化
-		pushBackVec = diffVector * penetrationDistance;// 押し戻しベクトルを計算
-		Vector3 newPosition = A.Center + pushBackVec; // 新しい位置を計算
-		A.Center = newPosition; // 球体の位置を更新
-		return newPosition; // 更新された位置を返す
-	}
-	return A.Center;// 衝突していない場合は元の位置を返す
+	// 球体の中心と最も近い点のベクトル差
+	Vector3 diffVector = A.Center - closestPoint;
+	// 距離を計算
+	float distance = diffVector.Length();
+	// 衝突していない場合は元の位置を返す
+	if (distance > A.Radius)return A.Center;
+	// 距離が球体の半径より小さい場合は押し戻し処理
+	// 押し戻し量を計算 (正規化して押し戻しベクトルを作成)
+	float penetrationDistance = A.Radius - distance;
+	// 差分ベクトルを正規化
+	diffVector.Normalize();
+	// 押し戻しベクトルを計算
+	pushBackVec = diffVector * penetrationDistance;
+	// 押し戻しベクトルを使用して、Aの座標を更新
+	Vector3 newPosition = A.Center + pushBackVec;
+	// 球体の位置を更新
+	A.Center = newPosition;
+	// 更新された位置を返す
+	return newPosition;
 }
+
 

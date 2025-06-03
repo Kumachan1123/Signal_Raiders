@@ -41,10 +41,14 @@ WifiLoading::~WifiLoading() { /*do nothing*/ }
 */
 void WifiLoading::Initialize(CommonResources* resources, int width, int height)
 {
-	m_pDR = resources->GetDeviceResources();// デバイスリソースを取得
-	m_pCommonResources = resources;// 共通リソースを設定
-	m_windowWidth = width;// ウィンドウの幅
-	m_windowHeight = height;// ウィンドウの高さ
+	// デバイスリソースを取得
+	m_pDR = resources->GetDeviceResources();
+	// 共通リソースを設定
+	m_pCommonResources = resources;
+	// ウィンドウの幅
+	m_windowWidth = width;
+	// ウィンドウの高さ
+	m_windowHeight = height;
 	// ローディング画像
 	Add(m_pLoading, "Loading",
 		DirectX::SimpleMath::Vector2((float)(m_windowWidth), (float)(m_windowHeight)),
@@ -56,8 +60,10 @@ void WifiLoading::Initialize(CommonResources* resources, int width, int height)
 		DirectX::SimpleMath::Vector2(.4f, .4f),
 		KumachiLib::ANCHOR::BOTTOM_RIGHT);
 	// ローディング画像のアニメーション設定
-	m_pLoading->SetFrameRows(m_frameRows);// フレームの行数を設定
-	m_pLoading->SetFrameCols(m_frameCols);// フレームの列数を設定
+	// フレームの行数を設定
+	m_pLoading->SetFrameRows(m_frameRows);
+	// フレームの列数を設定
+	m_pLoading->SetFrameCols(m_frameCols);
 }
 /*
 *	@brief 更新関数(内部用)
@@ -67,10 +73,14 @@ void WifiLoading::Initialize(CommonResources* resources, int width, int height)
 */
 void WifiLoading::Update(float elapsedTime)
 {
-	m_animTime += elapsedTime * m_animSpeed;// 経過時間を加算
-	if (m_animTime > 1.25f)m_animTime = 0.0f;// 一定期間を超えたらタイマーをリセット
-	float stepRatio = floor(m_animTime * m_frameCols) / m_frameCols;// 0.25 刻みに調整
-	m_pLoading->SetRenderRatio(stepRatio);// アニメーションの比率を設定
+	// 経過時間を加算
+	m_animTime += elapsedTime * m_animSpeed;
+	// 一定期間を超えたらタイマーをリセット
+	if (m_animTime > 1.25f)m_animTime = 0.0f;
+	// 0.25 刻みに調整
+	float stepRatio = floor(m_animTime * m_frameCols) / m_frameCols;
+	// アニメーションの比率を設定
+	m_pLoading->SetRenderRatio(stepRatio);
 }
 /*
 *	@brief 描画関数
@@ -80,10 +90,14 @@ void WifiLoading::Update(float elapsedTime)
 */
 void WifiLoading::Render()
 {
-	m_pLoading->SetShaderType(PlayerUI::ShaderType::ANIM);// シェーダータイプをアニメーションに設定
-	m_pLoading->Render();// ローディング画像を描画
-	m_pLoadgingText->SetShaderType(PlayerUI::ShaderType::OTHER);// シェーダータイプをその他に設定
-	m_pLoadgingText->Render();// ローディングテキストを描画
+	// シェーダータイプをアニメーションに設定
+	m_pLoading->SetShaderType(PlayerUI::ShaderType::ANIM);
+	// ローディング画像を描画
+	m_pLoading->Render();
+	// シェーダータイプをその他に設定
+	m_pLoadgingText->SetShaderType(PlayerUI::ShaderType::OTHER);
+	// ローディングテキストを描画
+	m_pLoadgingText->Render();
 }
 /*
 *	@brief UIの追加関数
@@ -95,14 +109,18 @@ void WifiLoading::Render()
 *	@param anchor UIのアンカー
 *	@return なし
 */
-void WifiLoading::Add(std::unique_ptr<PlayerUI>& pPlayerUI, std::string key, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
+void WifiLoading::Add(std::unique_ptr<PlayerUI>& pPlayerUI, const std::string& key,
+	const DirectX::SimpleMath::Vector2& position,
+	const DirectX::SimpleMath::Vector2& scale, KumachiLib::ANCHOR anchor)
 {
-	pPlayerUI = std::make_unique<PlayerUI>(m_pCommonResources);// PlayerUIのインスタンスを生成
+	// PlayerUIのインスタンスを生成
+	pPlayerUI = std::make_unique<PlayerUI>(m_pCommonResources);
 	// UIの初期化
 	pPlayerUI->Create(m_pDR	// デバイスリソース
 		, key				// テクスチャのキー
 		, position			// UIの位置
 		, scale				// UIのスケール
 		, anchor);			// UIのアンカーを設定
-	pPlayerUI->SetWindowSize(m_windowWidth, m_windowHeight);// ウィンドウのサイズを設定
+	// ウィンドウのサイズを設定
+	pPlayerUI->SetWindowSize(m_windowWidth, m_windowHeight);
 }

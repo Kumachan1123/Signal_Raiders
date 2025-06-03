@@ -154,8 +154,8 @@ void SettingBar::Render()
 *	@param type メニューアイテムの種類
 */
 void SettingBar::Add(std::string key
-	, DirectX::SimpleMath::Vector2 position
-	, DirectX::SimpleMath::Vector2 scale
+	, const DirectX::SimpleMath::Vector2& position
+	, const DirectX::SimpleMath::Vector2& scale
 	, KumachiLib::ANCHOR anchor
 	, UIType type)
 {

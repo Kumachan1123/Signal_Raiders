@@ -23,27 +23,35 @@
 class CommonResources;
 class MousePointer : public IMenuUI
 {
-public:
-	// public関数
-	MousePointer();// コンストラクタ
-	~MousePointer();// デストラクタ
-	void Initialize(CommonResources* resources, int width, int height)override;// 初期化
-	void Update(const UpdateContext& context)override { Update(context.elapsedTime); };// 更新
-	void Render()override;// 描画
-	void Add(std::string key// UI追加
-		, DirectX::SimpleMath::Vector2 position
-		, DirectX::SimpleMath::Vector2 scale
+public:// public関数
+	// コンストラクタ
+	MousePointer();
+	// デストラクタ
+	~MousePointer();
+	// 初期化
+	void Initialize(CommonResources* resources, int width, int height)override;
+	// 更新
+	void Update(const UpdateContext& context)override { Update(context.elapsedTime); }
+	// 描画
+	void Render()override;
+	// UI追加
+	void Add(std::string key
+		, const DirectX::SimpleMath::Vector2& position
+		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor
 		, IMenuUI::UIType type)override;
-private:
-	// private関数
-	void Update(float elapsedTime);// 更新（private）
-private:
-	// private変数
-	unsigned int m_menuIndex;// メニューのインデックス
-	DX::DeviceResources* m_pDR;// デバイスリソース
-	CommonResources* m_pCommonResources;// 共通リソース
-	std::unique_ptr<UI> m_pMousePointer;// マウスポインター
-	int m_windowWidth, m_windowHeight;// ウィンドウの幅と高さ
-	DirectX::Keyboard::KeyboardStateTracker m_tracker;// キーボードのトラッカー
+private:// private関数
+	// 更新（private）
+	void Update(float elapsedTime);
+private:// private変数
+	// メニューのインデックス
+	unsigned int m_menuIndex;
+	// デバイスリソース
+	DX::DeviceResources* m_pDR;
+	// 共通リソース
+	CommonResources* m_pCommonResources;
+	// マウスポインター
+	std::unique_ptr<UI> m_pMousePointer;
+	// ウィンドウの幅と高さ
+	int m_windowWidth, m_windowHeight;
 };

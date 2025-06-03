@@ -20,17 +20,24 @@ class CommonResources;
 class DashGauge : public IPlayUI
 {
 public:// public関数
-	DashGauge();// コンストラクタ
-	~DashGauge();// デストラクタ
-	void Initialize(CommonResources* resources, int width, int height)override;// 初期化
-	void Update(const UpdateContext& context)override { Update(context.dashStamina); }// 更新
-	void Render()override;// 描画
-	void Add(std::unique_ptr<PlayerUI>& pPlayerUI, std::string key// UI追加
-		, DirectX::SimpleMath::Vector2 position
-		, DirectX::SimpleMath::Vector2 scale
+	// コンストラクタ
+	DashGauge();
+	// デストラクタ
+	~DashGauge();
+	// 初期化
+	void Initialize(CommonResources* resources, int width, int height)override;
+	// 更新
+	void Update(const UpdateContext& context)override { Update(context.dashStamina); }
+	// 描画
+	void Render()override;
+	// UI追加
+	void Add(std::unique_ptr<PlayerUI>& pPlayerUI, const std::string& key
+		, const DirectX::SimpleMath::Vector2& position
+		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor)override;
 private:// private関数
-	void Update(float dashStamina);// 更新
+	// 更新
+	void Update(float dashStamina);
 private:// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;

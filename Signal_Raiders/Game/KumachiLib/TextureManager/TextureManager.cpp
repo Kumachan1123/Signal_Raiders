@@ -26,9 +26,10 @@ TextureManager::TextureManager()
 */
 TextureManager::~TextureManager()
 {
-	for (auto& pair : m_pTextureMap)// テクスチャマップの解放
-		pair.second.Reset(); // ComPtrのリセット
-	m_pTextureMap.clear(); // マップのクリア
+	// テクスチャマップの解放
+	for (auto& pair : m_pTextureMap)pair.second.Reset();
+	// マップのクリア
+	m_pTextureMap.clear();
 }
 /*
 *	@brief テクスチャの初期化
@@ -38,21 +39,35 @@ TextureManager::~TextureManager()
 */
 void TextureManager::Initialize(ID3D11Device1* pDevice)
 {
-	using json = nlohmann::json;// nlohmann::jsonのエイリアスを定義
-	using namespace std;// 標準名前空間を使用
-	m_pDevice = pDevice; // デバイスの設定
-	string filename = "Resources/Jsons/Textures.json";//読み込むファイルの名前を作成
-	ifstream ifs(filename.c_str());//ファイルを開く
-	if (!ifs.good())return;// ファイルが正常に開けなかったら強制終了
-	json j;							//jsonオブジェクト
-	ifs >> j;						//ファイルから読み込む
-	ifs.close();					//ファイルを閉じる
-	for (const auto& item : j.items())// JSONの各アイテムに対してループ
+	// nlohmann::jsonのエイリアスを定義
+	using json = nlohmann::json;
+	// 標準名前空間を使用
+	using namespace std;
+	// デバイスの設定
+	m_pDevice = pDevice;
+	//読み込むファイルの名前を作成
+	string filename = "Resources/Jsons/textures.json";
+	//ファイルを開く
+	ifstream ifs(filename.c_str());
+	// ファイルが正常に開けなかったら強制終了
+	if (!ifs.good())return;
+	//jsonオブジェクト
+	json j;
+	//ファイルから読み込む
+	ifs >> j;
+	//ファイルを閉じる
+	ifs.close();
+	// JSONの各アイテムに対してループ
+	for (const auto& item : j.items())
 	{
-		std::string key = item.key();                    // キー
-		std::string path = item.value();                 // 値（ファイルパス）
-		std::wstring wpath(path.begin(), path.end());    // 文字列変換
-		LoadTexture(key, wpath.c_str());                 // 読み込み関数
+		// キー
+		std::string key = item.key();
+		// 値（ファイルパス）
+		std::string path = item.value();
+		// 文字列変換
+		std::wstring wpath(path.begin(), path.end());
+		// 読み込み関数
+		LoadTexture(key, wpath.c_str());
 	}
 }
 /*
@@ -64,9 +79,12 @@ void TextureManager::Initialize(ID3D11Device1* pDevice)
 */
 void TextureManager::LoadTexture(const std::string& key, const wchar_t* path)
 {
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;// テクスチャ格納用
-	DirectX::CreateWICTextureFromFile(m_pDevice, path, nullptr, texture.ReleaseAndGetAddressOf());// テクスチャ読み込み
-	m_pTextureMap[key] = texture;           // マップに追加
+	// テクスチャ格納用
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;
+	// テクスチャ読み込み
+	DirectX::CreateWICTextureFromFile(m_pDevice, path, nullptr, texture.ReleaseAndGetAddressOf());
+	// マップに追加
+	m_pTextureMap[key] = texture;
 
 }
 /*
@@ -75,4 +93,8 @@ void TextureManager::LoadTexture(const std::string& key, const wchar_t* path)
 *	@param key テクスチャのキー
 *	@return 指定されたキーのテクスチャへのポインタ
 */
-ID3D11ShaderResourceView* TextureManager::GetTexture(const std::string& key) { return m_pTextureMap[key].Get(); }// 指定されたキーのテクスチャを取得
+ID3D11ShaderResourceView* TextureManager::GetTexture(const std::string& key)
+{
+	// 指定されたキーのテクスチャを取得
+	return m_pTextureMap[key].Get();
+}

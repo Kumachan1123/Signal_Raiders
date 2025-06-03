@@ -1,7 +1,7 @@
 /*
-	@file	DrawPolygon.h
-	@brief	板ポリゴン描画用クラス
-	@details 板ポリゴンを描画するためのクラス
+*	@file	DrawPolygon.h
+*	@brief	板ポリゴン描画用クラス
+*	@details 板ポリゴンを描画するためのクラス
 */
 #pragma once
 // 標準ライブラリ
@@ -18,7 +18,6 @@
 #include <Libraries/Microsoft/DebugDraw.h>
 // 前方宣言
 class CommonResources;
-
 class DrawPolygon
 {
 public:// 構造体
@@ -66,30 +65,44 @@ public:// 列挙型
 		DEPTH_REVERSE_Z,// 逆Z
 	};
 
-public:
-	static DrawPolygon* const GetInstance();// シングルトンインスタンスを取得
-public:
-	// public関数
-	~DrawPolygon();	// デストラクタ
-	void InitializePositionTexture(DX::DeviceResources* pDR);// 初期化（頂点、テクスチャ）
-	void InitializePositionColorTexture(DX::DeviceResources* pDR);// 初期化（頂点、色、テクスチャ）
-	void DrawStart(ID3D11InputLayout* pInputLayout, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures);// 描画開始
-	void DrawSetting(SamplerStates ss, BlendStates bs, RasterizerStates rs, DepthStencilStates dss);// 描画前設定
-	void UpdateSubResources(ID3D11Resource* resource, const void* pSrcData);// サブリソースの更新
-	void DrawTexture(const DirectX::DX11::VertexPositionTexture* vertices);// 板ポリゴン描画（頂点、テクスチャ）
-	void DrawColorTexture(D3D_PRIMITIVE_TOPOLOGY topology, const DirectX::DX11::VertexPositionColorTexture* vertices, size_t count);// 板ポリゴン描画（頂点、色、テクスチャ）
-	void ReleasePositionTexture();// 解放（頂点、テクスチャ）
-	void ReleasePositionColorTexture();// 解放（頂点、色、テクスチャ）
-	void SetShaderBuffer(UINT startSlot, UINT numBuffers, ID3D11Buffer* const* ppBuffer);// シェーダーにバッファを送る
-	void SetShader(const Shaders& shaders, ID3D11ClassInstance* const* ppClassInstances, UINT nubClassInstances);// シェーダーをセットする
-	void ReleaseShader();// シェーダーを解放する
-private:
-	// private関数
-	DrawPolygon();// コンストラクタ
-	DrawPolygon(const DrawPolygon&) = delete;// コピーコンストラクタ
-	DrawPolygon& operator=(const DrawPolygon&) = delete;// コピーコンストラクタと代入演算子の禁止
-private:
-	// private変数
+public:// シングルトンインスタンス
+	// シングルトンインスタンスを取得
+	static DrawPolygon* const GetInstance();
+public:// public関数
+	// デストラクタ
+	~DrawPolygon();
+	// 初期化（頂点、テクスチャ）
+	void InitializePositionTexture(DX::DeviceResources* pDR);
+	// 初期化（頂点、色、テクスチャ）
+	void InitializePositionColorTexture(DX::DeviceResources* pDR);
+	// 描画開始
+	void DrawStart(ID3D11InputLayout* pInputLayout, const std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& textures);
+	// 描画前設定
+	void DrawSetting(SamplerStates ss, BlendStates bs, RasterizerStates rs, DepthStencilStates dss);
+	// サブリソースの更新
+	void UpdateSubResources(ID3D11Resource* resource, const void* pSrcData);
+	// 板ポリゴン描画（頂点、テクスチャ）
+	void DrawTexture(const DirectX::DX11::VertexPositionTexture* vertices);
+	// 板ポリゴン描画（頂点、色、テクスチャ）
+	void DrawColorTexture(D3D_PRIMITIVE_TOPOLOGY topology, const DirectX::DX11::VertexPositionColorTexture* vertices, size_t count);
+	// 解放（頂点、テクスチャ）
+	void ReleasePositionTexture();
+	// 解放（頂点、色、テクスチャ）
+	void ReleasePositionColorTexture();
+	// シェーダーにバッファを送る
+	void SetShaderBuffer(UINT startSlot, UINT numBuffers, ID3D11Buffer* const* ppBuffer);
+	// シェーダーをセットする
+	void SetShader(const Shaders& shaders, ID3D11ClassInstance* const* ppClassInstances, UINT nubClassInstances);
+	// シェーダーを解放する
+	void ReleaseShader();
+private:// private関数
+	// コンストラクタ
+	DrawPolygon();
+	// コピーコンストラクタ
+	DrawPolygon(const DrawPolygon&) = delete;
+	// コピーコンストラクタと代入演算子の禁止
+	DrawPolygon& operator=(const DrawPolygon&) = delete;
+private:// private変数
 	// 共通リソース
 	ID3D11DeviceContext1* m_pDeviceContext;
 	// デバイスリソース

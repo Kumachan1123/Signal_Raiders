@@ -36,11 +36,16 @@ Reticle::~Reticle() {/*do nothing*/ }
 void Reticle::Initialize(CommonResources* resources, int width, int height)
 {
 	using namespace DirectX::SimpleMath;
-	m_pCommonResources = resources; // 共通リソースを設定
-	m_pDR = resources->GetDeviceResources();// デバイスリソースを取得
-	m_windowWidth = width;// ウィンドウの幅を設定
-	m_windowHeight = height;// ウィンドウの高さを設定
-	Add(m_pReticle// 照準UIの追加
+	// 共通リソースを設定
+	m_pCommonResources = resources;
+	// デバイスリソースを取得
+	m_pDR = resources->GetDeviceResources();
+	// ウィンドウの幅を設定
+	m_windowWidth = width;
+	// ウィンドウの高さを設定
+	m_windowHeight = height;
+	// 照準UIの追加
+	Add(m_pReticle
 		, "Reticle"
 		, Vector2(640, 360)
 		, Vector2(0.25f, 0.25f)
@@ -55,7 +60,8 @@ void Reticle::Initialize(CommonResources* resources, int width, int height)
 */
 void Reticle::Update(const UpdateContext& context)
 {
-	UNREFERENCED_PARAMETER(context);// 更新コンテキストは使用しないので無視する
+	// 更新コンテキストは使用しないので無視する
+	UNREFERENCED_PARAMETER(context);
 }
 /*
 *	@brief 更新関数(内部用)
@@ -72,8 +78,10 @@ void Reticle::Update() { /*do nothing*/ }
 */
 void Reticle::Render()
 {
-	m_pReticle->SetShaderType(PlayerUI::ShaderType::OTHER);// シェーダータイプを設定
-	m_pReticle->Render();// 照準の描画を行う
+	// シェーダータイプを設定
+	m_pReticle->SetShaderType(PlayerUI::ShaderType::OTHER);
+	// 照準の描画を行う
+	m_pReticle->Render();
 }
 /*
 *	@brief UIの追加関数
@@ -85,16 +93,20 @@ void Reticle::Render()
 *	@param anchor UIのアンカー
 *	@return なし
 */
-void Reticle::Add(std::unique_ptr<PlayerUI>& pPlayerUI, std::string key, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
+void Reticle::Add(std::unique_ptr<PlayerUI>& pPlayerUI, const std::string& key,
+	const DirectX::SimpleMath::Vector2& position,
+	const DirectX::SimpleMath::Vector2& scale, KumachiLib::ANCHOR anchor)
 {
-	pPlayerUI = std::make_unique<PlayerUI>(m_pCommonResources);// PlayerUIのインスタンスを生成
+	// PlayerUIのインスタンスを生成
+	pPlayerUI = std::make_unique<PlayerUI>(m_pCommonResources);
 	// UIの初期化
 	pPlayerUI->Create(m_pDR	// デバイスリソース
 		, key				// テクスチャのパス
 		, position			// UIの位置
 		, scale				// UIのスケール
 		, anchor);			// UIのアンカーを設定
-	pPlayerUI->SetWindowSize(m_windowWidth, m_windowHeight);// ウィンドウのサイズを設定
+	// ウィンドウのサイズを設定
+	pPlayerUI->SetWindowSize(m_windowWidth, m_windowHeight);
 }
 
 

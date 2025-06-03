@@ -19,6 +19,5 @@ namespace KumachiLib
 		BOTTOM_LEFT,// ¶‰º
 		BOTTOM_CENTER,// ’†‰›‰º
 		BOTTOM_RIGHT,// ‰E‰º
-
 	};
 }

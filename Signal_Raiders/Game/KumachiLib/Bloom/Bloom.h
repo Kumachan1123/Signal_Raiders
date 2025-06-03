@@ -16,31 +16,33 @@
 class CommonResources;
 class Bloom
 {
-public:
+public:// シングルトンインスタンス
 	// シングルトンインスタンスを取得
 	static Bloom* const GetInstance();
-public:
-	// 構造体
-	struct Blur// ブラー
+public:	// 構造体
+	// ブラー
+	struct Blur
 	{
 		ID3D11RenderTargetView* RTV;// レンダーターゲットビュー
 		ID3D11ShaderResourceView* SRV;// シェーダーリソースビュー
 	};
 
-public:
-	// public関数
-	~Bloom();// デストラクタ
-	void CreatePostProcess(CommonResources* resources);// ポストプロセスを生成
-	void ChangeOffScreenRT();// オフスクリーン描画用にRTVを切り替える
-	void PostProcess();// ポストプロセスに必要な設定を準備する
+public:	// public関数
+	// デストラクタ
+	~Bloom();
+	// ポストプロセスを生成
+	void CreatePostProcess(CommonResources* resources);
+	// オフスクリーン描画用にRTVを切り替える
+	void ChangeOffScreenRT();
+	// ポストプロセスに必要な設定を準備する
+	void PostProcess();
 private:
 	// private関数
 	Bloom();// コンストラクタ
 	void CreateRenderTexture();// レンダーテクスチャを作成する
 	Bloom(const Bloom&) = delete;// コピーコンストラクタ
 	Bloom& operator=(const Bloom&) = delete;// 代入演算子の禁止
-private:
-	//private変数
+private://private変数
 	// シングルトンインスタンス
 	static std::unique_ptr<Bloom> m_pInstance;
 	// 共通リソース
@@ -62,11 +64,14 @@ private:
 	std::unique_ptr<DirectX::DualPostProcess> m_pDualPostProcess;
 	// スクリーンサイズ
 	RECT m_screenSize;
-	// レンダーテクスチャ
-	std::unique_ptr<DX::RenderTexture> m_pOffScreenRT;// オフスクリーン用のRT
-	std::unique_ptr<DX::RenderTexture> m_pBlur1RT;// ブラー1用のRT
-	std::unique_ptr<DX::RenderTexture> m_pBlur2RT;// ブラー2用のRT
-	std::unique_ptr<DX::RenderTexture> m_pSavedOffScreenRT;// 保存されたオフスクリーン用のRT
+	// オフスクリーン用のレンダーテクスチャ
+	std::unique_ptr<DX::RenderTexture> m_pOffScreenRT;
+	// ブラー1用のレンダーテクスチャ
+	std::unique_ptr<DX::RenderTexture> m_pBlur1RT;
+	// ブラー2用のレンダーテクスチャ
+	std::unique_ptr<DX::RenderTexture> m_pBlur2RT;
+	// 保存されたオフスクリーン用のレンダーテクスチャ
+	std::unique_ptr<DX::RenderTexture> m_pSavedOffScreenRT;
 	// オフスクリーン用のレンダーターゲットビュー
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_pOffScreenRTV;
 	// オフスクリーン用のシェーダーリソースビュー
@@ -77,6 +82,5 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_pDefaultRTV;
 	// スプライトバッチ
 	std::unique_ptr<DirectX::SpriteBatch> m_pSpriteBatch;
-
 };
 

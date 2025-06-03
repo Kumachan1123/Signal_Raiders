@@ -21,8 +21,10 @@ KumachiLib::BinaryFile::BinaryFile(BinaryFile&& in) noexcept
 	: m_pData{}// ムーブ元のデータを初期化
 	, m_size{ 0 }// サイズを0に初期化
 {
-	m_pData = std::move(in.m_pData);// ムーブ元のデータを移動
-	m_size = in.m_size;// サイズをコピー
+	// ムーブ元のデータを移動
+	m_pData = std::move(in.m_pData);
+	// サイズをコピー
+	m_size = in.m_size;
 }
 
 /*
@@ -33,19 +35,32 @@ KumachiLib::BinaryFile::BinaryFile(BinaryFile&& in) noexcept
 */
 KumachiLib::BinaryFile KumachiLib::BinaryFile::LoadFile(const wchar_t* fileName)
 {
-	BinaryFile bin;// バイナリファイルクラスのインスタンスを作成
-	std::ifstream ifs;// 入力ファイルストリームを作成
-	ifs.open(fileName, std::ios::in | std::ios::binary);// ファイルオープン
-	assert(ifs);// 読み込み失敗時、強制終了
-	ifs.seekg(0, std::fstream::end);// ファイルサイズを取得
-	std::streamoff eofPos = ifs.tellg();// ファイルの終端位置を取得
-	ifs.clear();// ストリームの状態をクリア
-	ifs.seekg(0, std::fstream::beg);// ファイルの先頭位置を取得
-	std::streamoff begPos = ifs.tellg();// ファイルの先頭位置を取得
-	bin.m_size = (unsigned int)(eofPos - begPos);// ファイルサイズを計算
-	bin.m_pData.reset(new char[bin.m_size]);// 読み込むためのメモリを確保
-	ifs.read(bin.m_pData.get(), bin.m_size);// ファイル先頭からバッファへコピー
-	ifs.close();// ファイルクローズ
-	//	return std::move(bin);// バイナリファイルを返す
-	return bin;// バイナリファイルを返す
+	// バイナリファイルクラスのインスタンスを作成
+	BinaryFile bin;
+	// 入力ファイルストリームを作成
+	std::ifstream ifs;
+	// ファイルオープン
+	ifs.open(fileName, std::ios::in | std::ios::binary);
+	// 読み込み失敗時、強制終了
+	assert(ifs);
+	// ファイルサイズを取得
+	ifs.seekg(0, std::fstream::end);
+	// ファイルの終端位置を取得
+	std::streamoff eofPos = ifs.tellg();
+	// ストリームの状態をクリア
+	ifs.clear();
+	// ファイルの先頭位置を取得
+	ifs.seekg(0, std::fstream::beg);
+	// ファイルの先頭位置を取得
+	std::streamoff begPos = ifs.tellg();
+	// ファイルサイズを計算
+	bin.m_size = (unsigned int)(eofPos - begPos);
+	// 読み込むためのメモリを確保
+	bin.m_pData.reset(new char[bin.m_size]);
+	// ファイル先頭からバッファへコピー
+	ifs.read(bin.m_pData.get(), bin.m_size);
+	// ファイルクローズ
+	ifs.close();
+	// バイナリファイルを返す
+	return bin;
 }

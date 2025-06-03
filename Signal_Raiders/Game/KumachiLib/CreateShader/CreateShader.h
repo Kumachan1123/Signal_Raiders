@@ -12,32 +12,37 @@
 
 class CreateShader
 {
-public:
-	static CreateShader* const GetInstance();	// シングルトンインスタンス
-public:
-	// public関数
-	~CreateShader();	// デストラクタ
-	void Initialize(ID3D11Device1* device, // 初期化
-		const D3D11_INPUT_ELEMENT_DESC* pIDE,
-		UINT NumElements,
-		Microsoft::WRL::ComPtr<ID3D11InputLayout> InputLayout);
-	void CreateVertexShader(const wchar_t* fileName, Microsoft::WRL::ComPtr<ID3D11VertexShader>& vs);// 頂点シェーダを作成
-	void CreatePixelShader(const wchar_t* fileName, Microsoft::WRL::ComPtr<ID3D11PixelShader>& ps);// ピクセルシェーダーを作成
-	void CreateGeometryShader(const wchar_t* fileName, Microsoft::WRL::ComPtr<ID3D11GeometryShader>& gs);// ジオメトリシェーダーを作成
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> GetInputLayout() { return m_pInputLayout; }// 作ったインプットレイアウトを返す
-	void CreateConstantBuffer(Microsoft::WRL::ComPtr<ID3D11Buffer>& cBuffer, UINT bufferSize);// コンスタントバッファを作成
-private:
-	// private関数
-	CreateShader();// コンストラクタ
-	CreateShader(const CreateShader&) = delete;// コピーコンストラクタ
-	CreateShader& operator=(const CreateShader&) = delete;// 代入演算子の禁止
-private:
+public:// シングルトンインスタンス
+	static CreateShader* const GetInstance();	// シングルトンインスタンスを取得
+public:// public関数
+	// デストラクタ
+	~CreateShader();
+	// 初期化
+	void Initialize(ID3D11Device1* device, const D3D11_INPUT_ELEMENT_DESC* pIDE, UINT NumElements, Microsoft::WRL::ComPtr<ID3D11InputLayout> InputLayout);
+	// 頂点シェーダを作成
+	void CreateVertexShader(const wchar_t* fileName, Microsoft::WRL::ComPtr<ID3D11VertexShader>& vs);
+	// ピクセルシェーダーを作成
+	void CreatePixelShader(const wchar_t* fileName, Microsoft::WRL::ComPtr<ID3D11PixelShader>& ps);
+	// ジオメトリシェーダーを作成
+	void CreateGeometryShader(const wchar_t* fileName, Microsoft::WRL::ComPtr<ID3D11GeometryShader>& gs);
+	// 作ったインプットレイアウトを返す
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> GetInputLayout() { return m_pInputLayout; }
+	// コンスタントバッファを作成
+	void CreateConstantBuffer(Microsoft::WRL::ComPtr<ID3D11Buffer>& cBuffer, UINT bufferSize);
+private:// private関数
+	// コンストラクタ
+	CreateShader();
+	// コピーコンストラクタ
+	CreateShader(const CreateShader&) = delete;
+	// 代入演算子の禁止
+	CreateShader& operator=(const CreateShader&) = delete;
+private:// private変数
 	// シングルトンインスタンス
 	static std::unique_ptr<CreateShader> m_pInstance;
 	// デバイス
 	ID3D11Device1* m_pDevice;
 	// 入力レイアウト
-	const D3D11_INPUT_ELEMENT_DESC* m_pIDE;
+	const D3D11_INPUT_ELEMENT_DESC* m_pIED;
 	// 要素数
 	UINT m_NumElements;
 	// レイアウト

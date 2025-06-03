@@ -49,8 +49,8 @@ public:// publicä÷êî
 	void Update(const UpdateContext& context)override { Update(context.elapsedTime); }// çXêV
 	void Render();// ï`âÊ
 	void Add(std::string key// UIí«â¡
-		, DirectX::SimpleMath::Vector2 position
-		, DirectX::SimpleMath::Vector2 scale
+		, const DirectX::SimpleMath::Vector2& position
+		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor
 		, IMenuUI::UIType type);
 private:// privateä÷êî

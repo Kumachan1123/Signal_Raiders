@@ -4,14 +4,15 @@
 */
 #include <pch.h>
 #include "DrawCollision.h"
-
-
 // 静的メンバーの初期化
-std::unique_ptr<DirectX::BasicEffect> DrawCollision::m_pBasicEffect = nullptr;// ベーシックエフェクト
-Microsoft::WRL::ComPtr<ID3D11InputLayout> DrawCollision::m_pInputLayout = nullptr;// 入力レイアウト
-std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> DrawCollision::m_pPrimitiveBatch = nullptr;// プリミティブバッチ
-CommonResources* DrawCollision::m_pCommonResources = nullptr;// 共通リソース
-
+// ベーシックエフェクト
+std::unique_ptr<DirectX::BasicEffect> DrawCollision::m_pBasicEffect = nullptr;
+// 入力レイアウト
+Microsoft::WRL::ComPtr<ID3D11InputLayout> DrawCollision::m_pInputLayout = nullptr;
+// プリミティブバッチ
+std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> DrawCollision::m_pPrimitiveBatch = nullptr;
+// 共通リソース
+CommonResources* DrawCollision::m_pCommonResources = nullptr;
 /*
 *	@brief 初期化
 *	@details 当たり判定描画用クラスの初期化を行う
@@ -22,14 +23,20 @@ void DrawCollision::Initialize(CommonResources* commonResources)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	m_pCommonResources = commonResources;// 共通リソースを設定
-	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();// デバイスを取得
-	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストを取得
-	m_pBasicEffect = std::make_unique<BasicEffect>(device);// ベーシックエフェクトを作成する
-	m_pBasicEffect->SetVertexColorEnabled(true);// 頂点カラーを有効にする
-	DX::ThrowIfFailed(CreateInputLayoutFromEffect<VertexPositionColor>	// 入力レイアウトを作成する
-		(device, m_pBasicEffect.get(), m_pInputLayout.ReleaseAndGetAddressOf()));
-	m_pPrimitiveBatch = std::make_unique<DX11::PrimitiveBatch<DX11::VertexPositionColor>>(context);	// プリミティブバッチを作成する
+	// 共通リソースを設定
+	m_pCommonResources = commonResources;
+	// デバイスを取得
+	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
+	// デバイスコンテキストを取得
+	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+	// ベーシックエフェクトを作成する
+	m_pBasicEffect = std::make_unique<BasicEffect>(device);
+	// 頂点カラーを有効にする
+	m_pBasicEffect->SetVertexColorEnabled(true);
+	// 入力レイアウトを作成する
+	DX::ThrowIfFailed(CreateInputLayoutFromEffect<VertexPositionColor>(device, m_pBasicEffect.get(), m_pInputLayout.ReleaseAndGetAddressOf()));
+	// プリミティブバッチを作成する
+	m_pPrimitiveBatch = std::make_unique<DX11::PrimitiveBatch<DX11::VertexPositionColor>>(context);
 }
 /*
 *	@brief 描画開始
@@ -38,22 +45,32 @@ void DrawCollision::Initialize(CommonResources* commonResources)
 *	@param proj プロジェクション行列
 *	@return なし
 */
-void DrawCollision::DrawStart(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void DrawCollision::DrawStart(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストを取得
-	auto states = m_pCommonResources->GetCommonStates();// コモンステートを取得
+	// デバイスコンテキストを取得
+	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+	// コモンステートを取得
+	auto states = m_pCommonResources->GetCommonStates();
 	// 各パラメータを設定する
-	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);// ブレンドステートを設定する
-	context->OMSetDepthStencilState(states->DepthRead(), 0);// 深度ステンシルステートを設定する
-	context->RSSetState(states->CullNone());// ラスタライザーステートを設定する
-	context->IASetInputLayout(m_pInputLayout.Get());// 入力レイアウトを設定する
+	// ブレンドステートを設定する
+	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
+	// 深度ステンシルステートを設定する
+	context->OMSetDepthStencilState(states->DepthRead(), 0);
+	// ラスタライザーステートを設定する
+	context->RSSetState(states->CullNone());
+	context->IASetInputLayout(m_pInputLayout.Get());
+	// 入力レイアウトを設定する
 	// ベーシックエフェクトを設定する
-	m_pBasicEffect->SetView(view);// ビュー行列を設定する
-	m_pBasicEffect->SetProjection(proj);// プロジェクション行列を設定する
-	m_pBasicEffect->Apply(context);// デバイスコンテキストに適用する
-	m_pPrimitiveBatch->Begin();// 描画開始
+	// ビュー行列を設定する
+	m_pBasicEffect->SetView(view);
+	// プロジェクション行列を設定する
+	m_pBasicEffect->SetProjection(proj);
+	// デバイスコンテキストに適用する
+	m_pBasicEffect->Apply(context);
+	// 描画開始
+	m_pPrimitiveBatch->Begin();
 }
 /*
 *	@brief 境界球描画
@@ -62,9 +79,10 @@ void DrawCollision::DrawStart(DirectX::SimpleMath::Matrix view, DirectX::SimpleM
 *	@param color 境界球の色
 *	@return なし
 */
-void DrawCollision::DrawBoundingSphere(DirectX::BoundingSphere& bs, DirectX::XMVECTOR color)
+void DrawCollision::DrawBoundingSphere(const DirectX::BoundingSphere& bs, const DirectX::XMVECTOR& color)
 {
-	DX::Draw(m_pPrimitiveBatch.get(), bs, color);// 境界球を描画
+	// 境界球を描画
+	DX::Draw(m_pPrimitiveBatch.get(), bs, color);
 }
 /*
 *	@brief 描画終了
@@ -74,7 +92,8 @@ void DrawCollision::DrawBoundingSphere(DirectX::BoundingSphere& bs, DirectX::XMV
 */
 void DrawCollision::DrawEnd()
 {
-	m_pPrimitiveBatch->End();// 描画終了
+	// 描画終了
+	m_pPrimitiveBatch->End();
 }
 /*
 *	@brief 終了処理
@@ -85,8 +104,12 @@ void DrawCollision::DrawEnd()
 void DrawCollision::Finalize()
 {
 	// 静的メンバーを解放
-	m_pBasicEffect.reset();// ベーシックエフェクトを解放
-	m_pInputLayout.Reset();// 入力レイアウトを解放
-	m_pPrimitiveBatch.reset();// プリミティブバッチを解放
-	m_pCommonResources = nullptr;// 共通リソースを解放
+	// ベーシックエフェクトを解放
+	m_pBasicEffect.reset();
+	// 入力レイアウトを解放
+	m_pInputLayout.Reset();
+	// プリミティブバッチを解放
+	m_pPrimitiveBatch.reset();
+	// 共通リソースを解放
+	m_pCommonResources = nullptr;
 }

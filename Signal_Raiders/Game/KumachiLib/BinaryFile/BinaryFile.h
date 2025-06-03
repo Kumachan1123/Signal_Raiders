@@ -11,17 +11,22 @@ namespace KumachiLib
 {
 	class BinaryFile
 	{
-	public:
-		//	アクセサ
+	public:	//	アクセサ
+		// データを取得
 		char* GetData() { return m_pData.get(); }
+		// ファイルのサイズを取得
 		unsigned int GetSize() const { return m_size; }
-		// publicメンバ関数
-		static KumachiLib::BinaryFile LoadFile(const wchar_t* fileName);		// ファイル名を指定してロード
-		BinaryFile();// コンストラクタ
-		BinaryFile(BinaryFile&& in)noexcept;// ムーブコンストラクタ
-	protected:
-		//protectedメンバ変数
-		std::unique_ptr<char[]> m_pData;		// データ
-		unsigned int m_size;		// サイズ
+	public:	// publicメンバ関数
+		// ファイル名を指定してロード
+		static KumachiLib::BinaryFile LoadFile(const wchar_t* fileName);
+		// コンストラクタ
+		BinaryFile();
+		// ムーブコンストラクタ
+		BinaryFile(BinaryFile&& in)noexcept;
+	protected:	//protectedメンバ変数
+		// データ
+		std::unique_ptr<char[]> m_pData;
+		// サイズ
+		unsigned int m_size;
 	};
 }

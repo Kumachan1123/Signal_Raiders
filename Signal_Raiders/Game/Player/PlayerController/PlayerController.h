@@ -24,34 +24,55 @@ class Mouse;
 class Player;
 class PlayerController
 {
-public:
-	// アクセサ
-	float GetYaw()const { return m_yaw; }// カメラのX軸回転取得
-	float GetPitch()const { return m_pitch; }// カメラのY軸回転取得
-	DirectX::SimpleMath::Vector3 GetPlayerPosition()const { return m_position; }// プレイヤーの位置取得
-	void SetPlayetPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }// プレイヤーの位置設定
-	float GetRotate()const { return m_rotate; }// プレイヤーの回転取得
-	float GetDashTime()const { return m_dashTime; }	// ダッシュ時間取得
-	void SetMouseSensitive(float sensitive) { m_sensitive = sensitive; }	// マウス感度設定
-	// public関数
-	PlayerController(Player* pPlayer);// コンストラクタ
-	~PlayerController();// デストラクタ
-	void Initialize(CommonResources* resources);// 初期化
-	void MoveStop();// 移動停止
-	void Update(float elapsedTime);// 更新
-	void DebugCommand();// デバッグコマンド
-	void Shoot();// プレイヤーが弾を撃つ
-	void Reload();// 弾をリロード（補充）する
+public:// アクセサ
+	// カメラのX軸回転取得
+	float GetYaw()const { return m_yaw; }
+	// カメラのY軸回転取得
+	float GetPitch()const { return m_pitch; }
+	// プレイヤーの位置取得
+	DirectX::SimpleMath::Vector3 GetPlayerPosition()const { return m_position; }
+	// プレイヤーの位置設定
+	void SetPlayetPosition(const DirectX::SimpleMath::Vector3& pos) { m_position = pos; }
+	// プレイヤーの回転取得
+	float GetRotate()const { return m_rotate; }
+	// ダッシュ時間取得
+	float GetDashTime()const { return m_dashTime; }
+	// マウス感度設定
+	void SetMouseSensitive(float sensitive) { m_sensitive = sensitive; }
+public:// public関数
+	// コンストラクタ
+	PlayerController(Player* pPlayer);
+	// デストラクタ
+	~PlayerController();
+	// 初期化
+	void Initialize(CommonResources* resources);
+	// 移動停止
+	void MoveStop();
+	// 更新
+	void Update(float elapsedTime);
+	// デバッグコマンド
+	void DebugCommand();
+	// プレイヤーが弾を撃つ
+	void Shoot();
+	// 弾をリロード（補充）する
+	void Reload();
 public:// 定数
-	static const float MOVE_SPEED;// 通常移動速度
-	static const float DASH_SPEED;// ダッシュ移動速度
-	static const float DASH_TIME;// ダッシュ時間
-	static const float GRAVITY;// 重力
-	static const float PITCH_LIMIT;// ピッチの制限
-	static const float MOUSE_SENSITIVE;// マウス感度
-	static const float MOUSE_X_SENSITIVE;// マウスX軸感度
-	static const float MOUSE_Y_SENSITIVE;// マウスY軸感度
-
+	// 通常移動速度
+	static const float MOVE_SPEED;
+	// ダッシュ移動速度
+	static const float DASH_SPEED;
+	// ダッシュ時間
+	static const float DASH_TIME;
+	// 重力
+	static const float GRAVITY;
+	// ピッチの制限
+	static const float PITCH_LIMIT;
+	// マウス感度
+	static const float MOUSE_SENSITIVE;
+	// マウスX軸感度
+	static const float MOUSE_X_SENSITIVE;
+	// マウスY軸感度
+	static const float MOUSE_Y_SENSITIVE;
 private:// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;

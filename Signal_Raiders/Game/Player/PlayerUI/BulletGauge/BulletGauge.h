@@ -21,17 +21,24 @@ class CommonResources;
 class BulletGauge : public IPlayUI
 {
 public:// public関数
-	BulletGauge();// コンストラクタ
-	~BulletGauge();// デストラクタ
-	void Initialize(CommonResources* resources, int width, int height)override;// 初期化関数
-	void Update(const UpdateContext& context)override { Update(context.bulletPoint); }// 更新関数
-	void Render()override;// 描画関数
-	void Add(std::unique_ptr<PlayerUI>& pPlayerUI, std::string key// 追加関数
-		, DirectX::SimpleMath::Vector2 position
-		, DirectX::SimpleMath::Vector2 scale
+	// コンストラクタ
+	BulletGauge();
+	// デストラクタ
+	~BulletGauge();
+	// 初期化関数
+	void Initialize(CommonResources* resources, int width, int height)override;
+	// 更新関数
+	void Update(const UpdateContext& context)override { Update(context.bulletPoint); }
+	// 描画関数
+	void Render()override;
+	// UI追加関数
+	void Add(std::unique_ptr<PlayerUI>& pPlayerUI, const std::string& key
+		, const DirectX::SimpleMath::Vector2& position
+		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor)override;
 private:// private関数
-	void Update(float bulletPoint);// 更新関数
+	// 更新関数
+	void Update(float bulletPoint);
 private:// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;

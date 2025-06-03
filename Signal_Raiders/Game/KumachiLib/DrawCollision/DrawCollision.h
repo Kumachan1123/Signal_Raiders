@@ -14,15 +14,18 @@ class CommonResources;
 
 class DrawCollision
 {
-public:
-	// public関数
-	static void Initialize(CommonResources* commonResources);// 初期化
-	static void DrawStart(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);// 描画開始
-	static void DrawBoundingSphere(DirectX::BoundingSphere& bs, DirectX::XMVECTOR color);// 境界球描画
-	static void DrawEnd();// 描画終了
-	static void Finalize();// 解放
-private:
-	// private変数
+public:// public関数
+	// 初期化
+	static void Initialize(CommonResources* commonResources);
+	// 描画開始
+	static void DrawStart(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+	// 境界球描画
+	static void DrawBoundingSphere(const DirectX::BoundingSphere& bs, const DirectX::XMVECTOR& color);
+	// 描画終了
+	static void DrawEnd();
+	// 解放
+	static void Finalize();
+private:// private変数
 	// ベーシックエフェクト
 	static std::unique_ptr<DirectX::BasicEffect> m_pBasicEffect;
 	// 入力レイアウト

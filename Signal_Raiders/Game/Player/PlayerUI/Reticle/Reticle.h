@@ -21,17 +21,24 @@ class CommonResources;
 class Reticle : public IPlayUI
 {
 public:// public関数
-	Reticle();// コンストラクタ
-	~Reticle();// デストラクタ
-	void Initialize(CommonResources* resources, int width, int height)override;// 初期化関数
-	void Update(const UpdateContext& context)override;// 更新関数
-	void Render()override;// 描画関数
-	void Add(std::unique_ptr<PlayerUI>& pPlayerUI, std::string key// UIの追加関数
-		, DirectX::SimpleMath::Vector2 position
-		, DirectX::SimpleMath::Vector2 scale
+	// コンストラクタ
+	Reticle();
+	// デストラクタ
+	~Reticle();
+	// 初期化関数
+	void Initialize(CommonResources* resources, int width, int height)override;
+	// 更新関数
+	void Update(const UpdateContext& context)override;
+	// 描画関数
+	void Render()override;
+	// UIの追加関数
+	void Add(std::unique_ptr<PlayerUI>& pPlayerUI, const std::string& key
+		, const DirectX::SimpleMath::Vector2& position
+		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor)override;
 private:// private関数
-	void Update();// 更新関数
+	// 更新関数
+	void Update();
 private:// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;

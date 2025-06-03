@@ -26,9 +26,9 @@
 class CommonResources;
 class Particle
 {
-public:
-	// 構造体
-	struct ConstBuffer//シェーダーに送るコンスタントバッファ
+public:// 構造体
+	//シェーダーに送るコンスタントバッファ
+	struct ConstBuffer
 	{
 		DirectX::SimpleMath::Matrix	 matWorld;	// ワールド行列
 		DirectX::SimpleMath::Matrix	 matView;	// ビュー行列
@@ -38,34 +38,46 @@ public:
 		DirectX::SimpleMath::Vector4 height;    // 高さ
 		DirectX::SimpleMath::Vector4 width;     // 幅
 	};
-public:
-	// アクセサ
-	void SetBulletPosition(DirectX::SimpleMath::Vector3 bulletPos) { m_bulletPosition = bulletPos; }// 弾の座標を設定
-	void SetBossPosition(DirectX::SimpleMath::Vector3 bossPos) { m_bossPosition = bossPos; }// ボスの座標を設定
-	void SetCameraPosition(DirectX::SimpleMath::Vector3 cameraPos) { m_cameraPosition = cameraPos; }// カメラの位置を設定
-	void SetCameraTarget(DirectX::SimpleMath::Vector3 cameraTarget) { m_cameraTarget = cameraTarget; }// カメラの注視点を設定
-	void SetCameraUp(DirectX::SimpleMath::Vector3 cameraUp) { m_cameraUp = cameraUp; }// カメラの上方向を設定
-	void SetBarrierBreakSize(float size) { m_barrierBreakSize = size; }// シールド破壊のサイズを設定
-public:
-	// public関数
-	Particle(ParticleUtility::Type type, float size);// コンストラクタ
-	~Particle();// デストラクタ
-	void Initialize(CommonResources* resources);// 初期化
-	void LoadTexture(const wchar_t* path);// テクスチャの読み込み
-	void Update(float elapsedTime);// 更新
-	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);// 描画
-	void CreateBillboard(// ビルボード行列の作成
-		DirectX::SimpleMath::Vector3 target,
-		DirectX::SimpleMath::Vector3 eye,
-		DirectX::SimpleMath::Vector3 up);
-private:
-	void CreateShaders();// シェーダー作成
-	void Trail();// 軌跡
-	void BarrierBreak();// バリア破壊
+public:	// アクセサ
+	// 弾の座標を設定
+	void SetBulletPosition(const DirectX::SimpleMath::Vector3& bulletPos) { m_bulletPosition = bulletPos; }
+	// ボスの座標を設定
+	void SetBossPosition(const DirectX::SimpleMath::Vector3& bossPos) { m_bossPosition = bossPos; }
+	// カメラの位置を設定
+	void SetCameraPosition(const DirectX::SimpleMath::Vector3& cameraPos) { m_cameraPosition = cameraPos; }
+	// カメラの注視点を設定
+	void SetCameraTarget(const DirectX::SimpleMath::Vector3& cameraTarget) { m_cameraTarget = cameraTarget; }
+	// カメラの上方向を設定
+	void SetCameraUp(const DirectX::SimpleMath::Vector3& cameraUp) { m_cameraUp = cameraUp; }
+	// シールド破壊のサイズを設定
+	void SetBarrierBreakSize(float size) { m_barrierBreakSize = size; }
+public:	// public関数
+	// コンストラクタ
+	Particle(ParticleUtility::Type type, float size);
+	// デストラクタ
+	~Particle();
+	// 初期化
+	void Initialize(CommonResources* resources);
+	// 更新
+	void Update(float elapsedTime);
+	// 描画
+	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+	// ビルボード行列の作成
+	void CreateBillboard(
+		const DirectX::SimpleMath::Vector3& target,
+		const DirectX::SimpleMath::Vector3& eye,
+		const DirectX::SimpleMath::Vector3& up);
+private:// private関数
+	// シェーダー作成
+	void CreateShaders();
+	// 軌跡
+	void Trail();
+	// バリア破壊
+	void BarrierBreak();
 private:// 定数
-	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;// インプットレイアウト
-public:
-	// public変数
+	// インプットレイアウト
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
+public:// public変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// デバイスリソース

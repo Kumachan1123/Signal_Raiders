@@ -39,27 +39,35 @@ DashGauge::~DashGauge() {/*do nothing*/ }
 void DashGauge::Initialize(CommonResources* resources, int width, int height)
 {
 	using namespace DirectX::SimpleMath;
-	m_pCommonResources = resources; // 共通リソースを設定
-	m_pDR = resources->GetDeviceResources();// デバイスリソースを取得
-	m_windowWidth = width;// ウィンドウの幅を設定
-	m_windowHeight = height;// ウィンドウの高さを設定
-	Add(m_pBack,// ゲージの背景
+	// 共通リソースを設定
+	m_pCommonResources = resources;
+	// デバイスリソースを取得
+	m_pDR = resources->GetDeviceResources();
+	// ウィンドウの幅を設定
+	m_windowWidth = width;
+	// ウィンドウの高さを設定
+	m_windowHeight = height;
+	// ゲージの背景
+	Add(m_pBack,
 		"HPBarBase",
 		Vector2(210, 100),
 		Vector2(.250f, .250f),
 		KumachiLib::ANCHOR::MIDDLE_CENTER);
-	Add(m_pFrame,// ゲージの枠
+	// ゲージの枠
+	Add(m_pFrame,
 		"HPBarFrame",
 		Vector2(210, 100),
 		Vector2(.250f, .250f),
 		KumachiLib::ANCHOR::MIDDLE_CENTER);
-	Add(m_pGauge,// ゲージ本体
+	// ゲージ本体
+	Add(m_pGauge,
 		"HPBar",
 		Vector2(210, 100),
 		Vector2(.250f, .250f),
 		KumachiLib::ANCHOR::MIDDLE_CENTER);
 	m_pGauge->SetRenderRatioOffset(0);
-	Add(m_pDashIcon,// ダッシュアイコン
+	// ダッシュアイコン
+	Add(m_pDashIcon,
 		"Dash",
 		Vector2(-5, 75),
 		Vector2(1.0f, 1.0f),
@@ -73,9 +81,12 @@ void DashGauge::Initialize(CommonResources* resources, int width, int height)
 */
 void DashGauge::Update(float dashStamina)
 {
-	float stamina = dashStamina * 0.1f;// ダッシュスタミナを0.1倍して正規化
-	stamina = std::max(0.f, stamina); // 0未満にならないようにチェック
-	m_pGauge->SetRenderRatio(stamina);// ゲージの表示比率を設定
+	// ダッシュスタミナを0.1倍して正規化
+	float stamina = dashStamina * 0.1f;
+	// 0未満にならないようにチェック
+	stamina = std::max(0.f, stamina);
+	// ゲージの表示比率を設定
+	m_pGauge->SetRenderRatio(stamina);
 }
 /*
 *	@brief 描画
@@ -86,10 +97,14 @@ void DashGauge::Update(float dashStamina)
 void DashGauge::Render()
 {
 	//シェーダーの種類を設定して描画
-	m_pBack->SetShaderType(PlayerUI::ShaderType::OTHER), m_pBack->Render();// 背景を描画
-	m_pGauge->SetShaderType(PlayerUI::ShaderType::HP), m_pGauge->Render(); // ゲージ本体を描画
-	m_pFrame->SetShaderType(PlayerUI::ShaderType::OTHER), m_pFrame->Render(); // 枠を描画
-	m_pDashIcon->SetShaderType(PlayerUI::ShaderType::OTHER), m_pDashIcon->Render();// ダッシュアイコンを描画
+	// 背景を描画
+	m_pBack->SetShaderType(PlayerUI::ShaderType::OTHER), m_pBack->Render();
+	// ゲージ本体を描画
+	m_pGauge->SetShaderType(PlayerUI::ShaderType::HP), m_pGauge->Render();
+	// 枠を描画
+	m_pFrame->SetShaderType(PlayerUI::ShaderType::OTHER), m_pFrame->Render();
+	// ダッシュアイコンを描画
+	m_pDashIcon->SetShaderType(PlayerUI::ShaderType::OTHER), m_pDashIcon->Render();
 }
 /*
 *	@brief UI追加
@@ -101,14 +116,19 @@ void DashGauge::Render()
 *	@param anchor UIのアンカー
 *	@return なし
 */
-void DashGauge::Add(std::unique_ptr<PlayerUI>& pPlayerUI, std::string key, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, KumachiLib::ANCHOR anchor)
+void DashGauge::Add(std::unique_ptr<PlayerUI>& pPlayerUI, const std::string& key,
+	const DirectX::SimpleMath::Vector2& position,
+	const DirectX::SimpleMath::Vector2& scale,
+	KumachiLib::ANCHOR anchor)
 {
-	pPlayerUI = std::make_unique<PlayerUI>(m_pCommonResources);// 新しいPlayerUIを作成
+	// 新しいPlayerUIを作成
+	pPlayerUI = std::make_unique<PlayerUI>(m_pCommonResources);
 	// PlayerUIを作成し、指定されたパス、位置、スケール、アンカーで初期化
 	pPlayerUI->Create(m_pDR
 		, key
 		, position
 		, scale
 		, anchor);
+	// ウィンドウサイズを設定
 	pPlayerUI->SetWindowSize(m_windowWidth, m_windowHeight);
 }

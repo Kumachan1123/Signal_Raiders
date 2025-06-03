@@ -5,7 +5,6 @@
 */
 #include <pch.h>
 #include "DrawPolygon.h"
-
 // シングルトンインスタンスの初期化
 std::unique_ptr<DrawPolygon> DrawPolygon::m_pInstance = nullptr;
 /*
@@ -16,11 +15,14 @@ std::unique_ptr<DrawPolygon> DrawPolygon::m_pInstance = nullptr;
 */
 DrawPolygon* const DrawPolygon::GetInstance()
 {
-	if (m_pInstance == nullptr)// インスタンスがない場合
+	// インスタンスがない場合
+	if (m_pInstance == nullptr)
 	{
-		m_pInstance.reset(new DrawPolygon());// インスタンスを生成
+		// インスタンスを生成
+		m_pInstance.reset(new DrawPolygon());
 	}
-	return m_pInstance.get();// インスタンスを返す
+	// インスタンスを返す
+	return m_pInstance.get();
 }
 
 /*
@@ -46,8 +48,10 @@ DrawPolygon::DrawPolygon()
 */
 DrawPolygon::~DrawPolygon()
 {
-	ReleasePositionTexture();	// プリミティブバッチの解放（頂点、テクスチャ）
-	ReleasePositionColorTexture();	// プリミティブバッチの解放（頂点、色、テクスチャ）
+	// プリミティブバッチの解放（頂点、テクスチャ）
+	ReleasePositionTexture();
+	// プリミティブバッチの解放（頂点、色、テクスチャ）
+	ReleasePositionColorTexture();
 }
 /*
 *	@brief 初期化
@@ -59,10 +63,14 @@ void DrawPolygon::InitializePositionTexture(DX::DeviceResources* pDR)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	m_pDevice = pDR->GetD3DDevice();// デバイスを取得
-	m_pDeviceContext = pDR->GetD3DDeviceContext();// デバイスコンテキストを取得
-	m_pPrimitiveBatchTexture = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(pDR->GetD3DDeviceContext());// プリミティブバッチを作成する
-	m_pStates = std::make_unique<CommonStates>(m_pDevice);//	コモンステートを作成する
+	// デバイスを取得
+	m_pDevice = pDR->GetD3DDevice();
+	// デバイスコンテキストを取得
+	m_pDeviceContext = pDR->GetD3DDeviceContext();
+	// プリミティブバッチを作成する
+	m_pPrimitiveBatchTexture = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(pDR->GetD3DDeviceContext());
+	// コモンステートを作成する
+	m_pStates = std::make_unique<CommonStates>(m_pDevice);
 }
 
 /*
@@ -75,10 +83,14 @@ void DrawPolygon::InitializePositionColorTexture(DX::DeviceResources* pDR)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	m_pDevice = pDR->GetD3DDevice();// デバイスを取得
-	m_pDeviceContext = pDR->GetD3DDeviceContext();// デバイスコンテキストを取得
-	m_pPrimitiveBatchColorTexture = std::make_unique<PrimitiveBatch<VertexPositionColorTexture>>(pDR->GetD3DDeviceContext());// プリミティブバッチの作成
-	m_pStates = std::make_unique<CommonStates>(m_pDevice);//	コモンステートを作成する
+	// デバイスを取得
+	m_pDevice = pDR->GetD3DDevice();
+	// デバイスコンテキストを取得
+	m_pDeviceContext = pDR->GetD3DDeviceContext();
+	// プリミティブバッチの作成
+	m_pPrimitiveBatchColorTexture = std::make_unique<PrimitiveBatch<VertexPositionColorTexture>>(pDR->GetD3DDeviceContext());
+	// コモンステートを作成する
+	m_pStates = std::make_unique<CommonStates>(m_pDevice);
 }
 /*
 *	@brief 描画開始
@@ -87,11 +99,12 @@ void DrawPolygon::InitializePositionColorTexture(DX::DeviceResources* pDR)
 *	@param textures テクスチャ配列
 *	@return なし
 */
-void DrawPolygon::DrawStart(ID3D11InputLayout* pInputLayout, std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures)
+void DrawPolygon::DrawStart(ID3D11InputLayout* pInputLayout, const std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& textures)
 {
-	for (int i = 0; i < textures.size(); i++)// ピクセルシェーダにテクスチャを登録する。
-		m_pDeviceContext->PSSetShaderResources(i, 1, textures[i].GetAddressOf());// for文で一気に設定する
-	m_pDeviceContext->IASetInputLayout(pInputLayout);// インプットレイアウトの登録
+	// ピクセルシェーダにテクスチャを登録する
+	for (int i = 0; i < textures.size(); i++)m_pDeviceContext->PSSetShaderResources(i, 1, textures[i].GetAddressOf());
+	// インプットレイアウトの登録
+	m_pDeviceContext->IASetInputLayout(pInputLayout);
 }
 /*
 *	@brief 描画前設定
@@ -104,100 +117,132 @@ void DrawPolygon::DrawStart(ID3D11InputLayout* pInputLayout, std::vector<Microso
 */
 void DrawPolygon::DrawSetting(SamplerStates ss, BlendStates bs, RasterizerStates rs, DepthStencilStates dss)
 {
-	ID3D11SamplerState* sampler[1];//	画像用サンプラーの登録
-	switch (ss)// サンプラーステートの種類を判別して、サンプラーを設定する
+	// 画像用サンプラーの登録
+	ID3D11SamplerState* sampler[1];
+	// サンプラーステートの種類を判別して、サンプラーを設定する
+	switch (ss)
 	{
 	case DrawPolygon::SamplerStates::ANISOTROPIC_CLAMP:// アニソトロピッククランプ
-		sampler[0] = m_pStates->AnisotropicClamp();// アニソトロピッククランプのサンプラーを取得
+		// アニソトロピッククランプのサンプラーを取得
+		sampler[0] = m_pStates->AnisotropicClamp();
 		break;
 	case DrawPolygon::SamplerStates::ANISOTROPIC_WRAP:// アニソトロピックラップ
-		sampler[0] = m_pStates->AnisotropicWrap(); // アニソトロピックラップのサンプラーを取得
+		// アニソトロピックラップのサンプラーを取得
+		sampler[0] = m_pStates->AnisotropicWrap();
 		break;
 	case DrawPolygon::SamplerStates::LINEAR_CLAMP: // リニアクランプ
-		sampler[0] = m_pStates->LinearClamp(); // リニアクランプのサンプラーを取得
+		// リニアクランプのサンプラーを取得
+		sampler[0] = m_pStates->LinearClamp();
 		break;
 	case DrawPolygon::SamplerStates::LINEAR_WRAP: // リニアラップ
-		sampler[0] = m_pStates->LinearWrap(); // リニアラップのサンプラーを取得
+		// リニアラップのサンプラーを取得
+		sampler[0] = m_pStates->LinearWrap();
 		break;
 	case DrawPolygon::SamplerStates::POINT_CLAMP: // ポイントクランプ
-		sampler[0] = m_pStates->PointClamp(); // ポイントクランプのサンプラーを取得
+		// ポイントクランプのサンプラーを取得
+		sampler[0] = m_pStates->PointClamp();
 		break;
 	case DrawPolygon::SamplerStates::POINT_WRAP: // ポイントラップ
-		sampler[0] = m_pStates->PointWrap(); // ポイントラップのサンプラーを取得
+		// ポイントラップのサンプラーを取得
+		sampler[0] = m_pStates->PointWrap();
 		break;
 	default: // デフォルトはnullptr
-		sampler[0] = nullptr; // サンプラーをnullptrに設定
+		// サンプラーをnullptrに設定
+		sampler[0] = nullptr;
 		break;
 	}
-	m_pDeviceContext->PSSetSamplers(0, 1, sampler);// ピクセルシェーダにサンプラーを登録する
-	ID3D11BlendState* blendState;// ブレンドステートの登録
-	switch (bs)// ブレンドステートの種類を判別して、ブレンドステートを設定する
+	// ピクセルシェーダにサンプラーを登録する
+	m_pDeviceContext->PSSetSamplers(0, 1, sampler);
+	// ブレンドステートの登録
+	ID3D11BlendState* blendState;
+	// ブレンドステートの種類を判別して、ブレンドステートを設定する
+	switch (bs)
 	{
 	case DrawPolygon::BlendStates::ALPHA:// アルファブレンド
-		blendState = m_pStates->AlphaBlend(); // アルファブレンドのブレンドステートを取得
+		// アルファブレンドのブレンドステートを取得
+		blendState = m_pStates->AlphaBlend();
 		break;
 	case DrawPolygon::BlendStates::ADDITIVE: // 加算ブレンド
-		blendState = m_pStates->Additive(); // 加算ブレンドのブレンドステートを取得
+		// 加算ブレンドのブレンドステートを取得
+		blendState = m_pStates->Additive();
 		break;
 	case DrawPolygon::BlendStates::OPAQUE: // 不透明
-		blendState = m_pStates->Opaque(); // 不透明のブレンドステートを取得
+		// 不透明のブレンドステートを取得
+		blendState = m_pStates->Opaque();
 		break;
 	case DrawPolygon::BlendStates::NONPREMULTIPLIED: // 非プリマルチプライド
-		blendState = m_pStates->NonPremultiplied(); // 非プリマルチプライドのブレンドステートを取得
+		// 非プリマルチプライドのブレンドステートを取得
+		blendState = m_pStates->NonPremultiplied();
 		break;
 	default: // デフォルトはnullptr
-		blendState = nullptr; // ブレンドステートをnullptrに設定
+		// ブレンドステートをnullptrに設定
+		blendState = nullptr;
 		break;
 	}
-	m_pDeviceContext->OMSetBlendState(blendState, nullptr, 0xFFFFFFFF);// ブレンドステートを設定する
-
-	ID3D11DepthStencilState* depthStencilState;// 深度ステンシルステートの登録
-	switch (dss)// 深度ステンシルステートの種類を判別して、深度ステンシルステートを設定する
+	// ブレンドステートを設定する
+	m_pDeviceContext->OMSetBlendState(blendState, nullptr, 0xFFFFFFFF);
+	// 深度ステンシルステートの登録
+	ID3D11DepthStencilState* depthStencilState;
+	// 深度ステンシルステートの種類を判別して、深度ステンシルステートを設定する
+	switch (dss)
 	{
 	case DrawPolygon::DepthStencilStates::DEPTH_DEFAULT:// デフォルト
-		depthStencilState = m_pStates->DepthDefault(); // デフォルトの深度ステンシルステートを取得
+		// デフォルトの深度ステンシルステートを取得
+		depthStencilState = m_pStates->DepthDefault();
 		break;
 	case DrawPolygon::DepthStencilStates::DEPTH_NONE: // 深度なし
-		depthStencilState = m_pStates->DepthNone(); // 深度なしの深度ステンシルステートを取得
+		// 深度なしの深度ステンシルステートを取得
+		depthStencilState = m_pStates->DepthNone();
 		break;
 	case DrawPolygon::DepthStencilStates::DEPTH_READ: // 深度読み取り
-		depthStencilState = m_pStates->DepthRead(); // 深度読み取りの深度ステンシルステートを取得
+		// 深度読み取りの深度ステンシルステートを取得
+		depthStencilState = m_pStates->DepthRead();
 		break;
 	case DrawPolygon::DepthStencilStates::DEPTH_READ_REVERSE_Z: // 深度読み取り（逆Z）
-		depthStencilState = m_pStates->DepthReadReverseZ(); // 深度読み取り（逆Z）の深度ステンシルステートを取得
+		// 深度読み取り（逆Z）の深度ステンシルステートを取得
+		depthStencilState = m_pStates->DepthReadReverseZ();
 		break;
 	case DrawPolygon::DepthStencilStates::DEPTH_REVERSE_Z: // 逆Z
-		depthStencilState = m_pStates->DepthReverseZ(); // 逆Zの深度ステンシルステートを取得
+		// 逆Zの深度ステンシルステートを取得
+		depthStencilState = m_pStates->DepthReverseZ();
 		break;
 	default: // デフォルトはnullptr
-		depthStencilState = nullptr; // 深度ステンシルステートをnullptrに設定
+		// 深度ステンシルステートをnullptrに設定
+		depthStencilState = nullptr;
 		break;
 	}
-	m_pDeviceContext->OMSetDepthStencilState(depthStencilState, 0);// 深度ステンシルステートを設定する
+	// 深度ステンシルステートを設定する
+	m_pDeviceContext->OMSetDepthStencilState(depthStencilState, 0);
 
-	ID3D11RasterizerState* rasterizerState;// ラスタライザーステートの登録
-	switch (rs)// ラスタライザーステートの種類を判別して、ラスタライザーステートを設定する
+	// ラスタライザーステートの登録
+	ID3D11RasterizerState* rasterizerState;
+	// ラスタライザーステートの種類を判別して、ラスタライザーステートを設定する
+	switch (rs)
 	{
 	case DrawPolygon::RasterizerStates::CULL_CLOCKWISE: // 時計回り
-		rasterizerState = m_pStates->CullClockwise(); // 時計回りのラスタライザーステートを取得
+		// 時計回りのラスタライザーステートを取得
+		rasterizerState = m_pStates->CullClockwise();
 		break;
 	case DrawPolygon::RasterizerStates::CULL_COUNTERCLOCKWISE: // 反時計回り
-		rasterizerState = m_pStates->CullCounterClockwise(); // 反時計回りのラスタライザーステートを取得
+		// 反時計回りのラスタライザーステートを取得
+		rasterizerState = m_pStates->CullCounterClockwise();
 		break;
 	case DrawPolygon::RasterizerStates::CULL_NONE: // カリングなし
-		rasterizerState = m_pStates->CullNone(); // カリングなしのラスタライザーステートを取得
+		// カリングなしのラスタライザーステートを取得
+		rasterizerState = m_pStates->CullNone();
 		break;
 	case DrawPolygon::RasterizerStates::WIREFRAME: // ワイヤーフレーム
-		rasterizerState = m_pStates->Wireframe(); // ワイヤーフレームのラスタライザーステートを取得
+		// ワイヤーフレームのラスタライザーステートを取得
+		rasterizerState = m_pStates->Wireframe();
 		break;
 	default: // デフォルトはnullptr
-		rasterizerState = nullptr; // ラスタライザーステートをnullptrに設定
+		// ラスタライザーステートをnullptrに設定
+		rasterizerState = nullptr;
 		break;
 	}
-	m_pDeviceContext->RSSetState(rasterizerState); // ラスタライザーステートを設定する
-
+	// ラスタライザーステートを設定する
+	m_pDeviceContext->RSSetState(rasterizerState);
 }
-
 /*
 *	@brief リソースの更新
 *	@details リソースの更新を行う
@@ -207,7 +252,8 @@ void DrawPolygon::DrawSetting(SamplerStates ss, BlendStates bs, RasterizerStates
 */
 void DrawPolygon::UpdateSubResources(ID3D11Resource* resource, const void* pSrcData)
 {
-	m_pDeviceContext->UpdateSubresource(resource, 0, NULL, pSrcData, 0, 0);// サブリソースの更新を行う
+	// サブリソースの更新を行う
+	m_pDeviceContext->UpdateSubresource(resource, 0, NULL, pSrcData, 0, 0);
 }
 
 /*
@@ -218,9 +264,12 @@ void DrawPolygon::UpdateSubResources(ID3D11Resource* resource, const void* pSrcD
 */
 void DrawPolygon::DrawTexture(const DirectX::DX11::VertexPositionTexture* vertices)
 {
-	m_pPrimitiveBatchTexture->Begin();// 描画開始
-	m_pPrimitiveBatchTexture->DrawQuad(vertices[0], vertices[1], vertices[2], vertices[3]);// 四角形を描画
-	m_pPrimitiveBatchTexture->End();// 描画終了
+	// 描画開始
+	m_pPrimitiveBatchTexture->Begin();
+	// 四角形を描画
+	m_pPrimitiveBatchTexture->DrawQuad(vertices[0], vertices[1], vertices[2], vertices[3]);
+	// 描画終了
+	m_pPrimitiveBatchTexture->End();
 
 }
 /*
@@ -233,9 +282,12 @@ void DrawPolygon::DrawTexture(const DirectX::DX11::VertexPositionTexture* vertic
 */
 void DrawPolygon::DrawColorTexture(D3D_PRIMITIVE_TOPOLOGY topology, const DirectX::DX11::VertexPositionColorTexture* vertices, size_t count)
 {
-	m_pPrimitiveBatchColorTexture->Begin();// 描画開始
-	m_pPrimitiveBatchColorTexture->Draw(topology, vertices, count); // 頂点を描画
-	m_pPrimitiveBatchColorTexture->End(); // 描画終了
+	// 描画開始
+	m_pPrimitiveBatchColorTexture->Begin();
+	// 頂点を描画
+	m_pPrimitiveBatchColorTexture->Draw(topology, vertices, count);
+	// 描画終了
+	m_pPrimitiveBatchColorTexture->End();
 }
 /*
 *	@brief 解放
@@ -245,11 +297,16 @@ void DrawPolygon::DrawColorTexture(D3D_PRIMITIVE_TOPOLOGY topology, const Direct
 */
 void DrawPolygon::ReleasePositionTexture()
 {
-	m_pPrimitiveBatchTexture.reset();// プリミティブバッチ(頂点、テクスチャ)の解放
-	m_pStates.reset(); // コモンステートの解放
-	m_pDeviceContext = nullptr; // デバイスコンテキストの解放
-	m_pDR = nullptr; // デバイスリソースの解放
-	m_pDevice = nullptr; // デバイスの解放
+	// プリミティブバッチ(頂点、テクスチャ)の解放
+	m_pPrimitiveBatchTexture.reset();
+	// コモンステートの解放
+	m_pStates.reset();
+	// デバイスコンテキストの解放
+	m_pDeviceContext = nullptr;
+	// デバイスリソースの解放
+	m_pDR = nullptr;
+	// デバイスの解放
+	m_pDevice = nullptr;
 }
 /*
 *	@brief 解放
@@ -259,11 +316,16 @@ void DrawPolygon::ReleasePositionTexture()
 */
 void DrawPolygon::ReleasePositionColorTexture()
 {
-	m_pPrimitiveBatchColorTexture.reset();// プリミティブバッチ(頂点、色、テクスチャ)の解放
-	m_pStates.reset(); // コモンステートの解放
-	m_pDeviceContext = nullptr; // デバイスコンテキストの解放
-	m_pDR = nullptr; // デバイスリソースの解放
-	m_pDevice = nullptr; // デバイスの解放
+	// プリミティブバッチ(頂点、色、テクスチャ)の解放
+	m_pPrimitiveBatchColorTexture.reset();
+	// コモンステートの解放
+	m_pStates.reset();
+	// デバイスコンテキストの解放
+	m_pDeviceContext = nullptr;
+	// デバイスリソースの解放
+	m_pDR = nullptr;
+	// デバイスの解放
+	m_pDevice = nullptr;
 }
 /*
 *	@brief シェーダーにバッファを送る
@@ -275,9 +337,12 @@ void DrawPolygon::ReleasePositionColorTexture()
 */
 void DrawPolygon::SetShaderBuffer(UINT startSlot, UINT numBuffers, ID3D11Buffer* const* ppBuffer)
 {
-	m_pDeviceContext->VSSetConstantBuffers(startSlot, numBuffers, ppBuffer);// 頂点シェーダーにバッファを送る
-	m_pDeviceContext->GSSetConstantBuffers(startSlot, numBuffers, ppBuffer); // ジオメトリシェーダーにバッファを送る
-	m_pDeviceContext->PSSetConstantBuffers(startSlot, numBuffers, ppBuffer); // ピクセルシェーダーにバッファを送る
+	// 頂点シェーダーにバッファを送る
+	m_pDeviceContext->VSSetConstantBuffers(startSlot, numBuffers, ppBuffer);
+	// ジオメトリシェーダーにバッファを送る
+	m_pDeviceContext->GSSetConstantBuffers(startSlot, numBuffers, ppBuffer);
+	// ピクセルシェーダーにバッファを送る
+	m_pDeviceContext->PSSetConstantBuffers(startSlot, numBuffers, ppBuffer);
 }
 /*
 *	@brief シェーダーをセットする
@@ -289,9 +354,12 @@ void DrawPolygon::SetShaderBuffer(UINT startSlot, UINT numBuffers, ID3D11Buffer*
 */
 void DrawPolygon::SetShader(const Shaders& shaders, ID3D11ClassInstance* const* ppClassInstances, UINT nubClassInstances)
 {
-	if (shaders.vs.Get() != nullptr) m_pDeviceContext->VSSetShader(shaders.vs.Get(), ppClassInstances, nubClassInstances);// 頂点シェーダーをセットする
-	if (shaders.gs.Get() != nullptr) m_pDeviceContext->GSSetShader(shaders.gs.Get(), ppClassInstances, nubClassInstances); // ジオメトリシェーダーをセットする
-	if (shaders.ps.Get() != nullptr) m_pDeviceContext->PSSetShader(shaders.ps.Get(), ppClassInstances, nubClassInstances); // ピクセルシェーダーをセットする
+	// 頂点シェーダーをセットする
+	if (shaders.vs.Get() != nullptr) m_pDeviceContext->VSSetShader(shaders.vs.Get(), ppClassInstances, nubClassInstances);
+	// ジオメトリシェーダーをセットする
+	if (shaders.gs.Get() != nullptr) m_pDeviceContext->GSSetShader(shaders.gs.Get(), ppClassInstances, nubClassInstances);
+	// ピクセルシェーダーをセットする
+	if (shaders.ps.Get() != nullptr) m_pDeviceContext->PSSetShader(shaders.ps.Get(), ppClassInstances, nubClassInstances);
 }
 /*
 *	@brief シェーダーを解放する
@@ -301,7 +369,10 @@ void DrawPolygon::SetShader(const Shaders& shaders, ID3D11ClassInstance* const* 
 */
 void DrawPolygon::ReleaseShader()
 {
-	m_pDeviceContext->VSSetShader(nullptr, nullptr, 0);// 頂点シェーダーを解放
-	m_pDeviceContext->GSSetShader(nullptr, nullptr, 0); // ジオメトリシェーダーを解放
-	m_pDeviceContext->PSSetShader(nullptr, nullptr, 0);// ピクセルシェーダーを解放
+	// 頂点シェーダーを解放
+	m_pDeviceContext->VSSetShader(nullptr, nullptr, 0);
+	// ジオメトリシェーダーを解放
+	m_pDeviceContext->GSSetShader(nullptr, nullptr, 0);
+	// ピクセルシェーダーを解放
+	m_pDeviceContext->PSSetShader(nullptr, nullptr, 0);
 }

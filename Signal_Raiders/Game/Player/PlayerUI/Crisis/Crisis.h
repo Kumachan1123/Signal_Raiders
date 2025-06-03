@@ -22,7 +22,7 @@ class CommonResources;
 class Crisis
 {
 public:// 構造体
-	// データ受け渡し用コンスタントバッファ(送信側)
+	// シェーダーに渡すデータ構造体
 	struct ConstBuffer
 	{
 		DirectX::SimpleMath::Matrix matWorld;   // ワールド行列
@@ -32,18 +32,24 @@ public:// 構造体
 		DirectX::SimpleMath::Vector4 time;		// 時間                            
 	};
 public:// public関数
-	Crisis(CommonResources* resources);// コンストラクタ
-	~Crisis();// デストラクタ
-	void LoadTexture(const wchar_t* path);// テクスチャリソース読み込み
-	void Create(DX::DeviceResources* pDR);// 生成
-	void Update(float elapsedTime);// 更新
-	void Render();// 描画
+	// コンストラクタ
+	Crisis(CommonResources* resources);
+	// デストラクタ
+	~Crisis();
+	// 生成
+	void Create(DX::DeviceResources* pDR);
+	// 更新
+	void Update(float elapsedTime);
+	// 描画
+	void Render();
 private:// private関数
-	void CreateShaders();// シェーダーの作成
+	// シェーダーの作成
+	void CreateShaders();
 private:// private定数
-	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;// インプットレイアウト
-private:
-	//	変数
+	// インプットレイアウト
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
+private:// private変数
+	// デバイスリソース
 	DX::DeviceResources* m_pDR;
 	// コンスタントバッファ
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_pCBuffer;
@@ -73,5 +79,4 @@ private:
 	DirectX::SimpleMath::Matrix m_proj;
 	// 時間
 	float m_time;
-
 };

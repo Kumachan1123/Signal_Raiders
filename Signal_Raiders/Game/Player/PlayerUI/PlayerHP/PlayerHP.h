@@ -20,29 +20,41 @@
 class PlayerHP : public IPlayUI
 {
 public:// アクセサ
-	void SetMaxHP(float maxHP) { m_maxHP = maxHP; }// 最大HPを設定
+	// 最大HPを設定
+	void SetMaxHP(float maxHP) { m_maxHP = maxHP; }
 public:// public関数
-	PlayerHP();// コンストラクタ
-	~PlayerHP();// デストラクタ
-	void Initialize(CommonResources* resources, int width, int height)override;// 初期化関数
-	void Update(const UpdateContext& context)override { Update(context.playerHP); }// 更新関数
-	void Render()override;// 描画関数
-	void Add(std::unique_ptr<PlayerUI>& pPlayerUI, std::string key// UIの追加関数
-		, DirectX::SimpleMath::Vector2 position
-		, DirectX::SimpleMath::Vector2 scale
+	// コンストラクタ
+	PlayerHP();
+	// デストラクタ
+	~PlayerHP();
+	// 初期化関数
+	void Initialize(CommonResources* resources, int width, int height)override;
+	// 更新関数
+	void Update(const UpdateContext& context)override { Update(context.playerHP); }
+	// 描画関数
+	void Render()override;
+	// UIの追加関数
+	void Add(std::unique_ptr<PlayerUI>& pPlayerUI, const std::string& key
+		, const DirectX::SimpleMath::Vector2& position
+		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor)override;
 private:// private関数
-	void Update(float playerHP);// HP更新関数
+	// HP更新関数
+	void Update(float playerHP);
 private:// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;
 	// UI要素
-	std::unique_ptr<PlayerUI> m_pHeartIcon;// ハートアイコン
-	std::unique_ptr<PlayerUI> m_pGauge; // HPゲージ
-	std::unique_ptr<PlayerUI> m_pFrame; // HPゲージの枠
-	std::unique_ptr<PlayerUI> m_pBack; // HPゲージの背景
+	// ハートアイコン
+	std::unique_ptr<PlayerUI> m_pHeartIcon;
+	// HPゲージ
+	std::unique_ptr<PlayerUI> m_pGauge;
+	// HPゲージの枠
+	std::unique_ptr<PlayerUI> m_pFrame;
+	// HPゲージの背景
+	std::unique_ptr<PlayerUI> m_pBack;
 	// ウィンドウの幅
 	int m_windowWidth;
 	// ウィンドウの高さ
