@@ -25,7 +25,7 @@ public:// public関数
 	virtual ~IMenuUI() = default;
 	// UI追加	
 	virtual void Add(
-		std::string key					// テクスチャのキー
+		const std::string& key					// テクスチャのキー
 		, const DirectX::SimpleMath::Vector2& position	// 位置
 		, const DirectX::SimpleMath::Vector2& scale	// スケール
 		, KumachiLib::ANCHOR anchor				// アンカー

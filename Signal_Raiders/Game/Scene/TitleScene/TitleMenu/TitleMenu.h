@@ -48,7 +48,7 @@ public:// publicŠÖ”
 	void Initialize(CommonResources* resources, int width, int height);// ‰Šú‰»
 	void Update(const UpdateContext& context)override { Update(context.elapsedTime); }// XV
 	void Render();// •`‰æ
-	void Add(std::string key// UI’Ç‰Á
+	void Add(const std::string& key// UI’Ç‰Á
 		, const DirectX::SimpleMath::Vector2& position
 		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor

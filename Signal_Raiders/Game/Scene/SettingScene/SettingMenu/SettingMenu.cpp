@@ -166,7 +166,7 @@ void SettingMenu::Render()
 	@param type メニューの種類（選択可/不可）
 	@return なし
 */
-void SettingMenu::Add(std::string key,
+void SettingMenu::Add(const std::string& key,
 	const DirectX::SimpleMath::Vector2& position,
 	const DirectX::SimpleMath::Vector2& scale,
 	KumachiLib::ANCHOR anchor, UIType type)

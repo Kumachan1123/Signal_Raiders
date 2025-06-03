@@ -153,7 +153,7 @@ void SettingBar::Render()
 *	@param anchor メニューアイテムのアンカー
 *	@param type メニューアイテムの種類
 */
-void SettingBar::Add(std::string key
+void SettingBar::Add(const std::string& key
 	, const DirectX::SimpleMath::Vector2& position
 	, const DirectX::SimpleMath::Vector2& scale
 	, KumachiLib::ANCHOR anchor

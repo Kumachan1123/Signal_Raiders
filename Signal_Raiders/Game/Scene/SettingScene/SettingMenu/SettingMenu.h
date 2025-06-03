@@ -50,7 +50,7 @@ public:// public関数
 	void Initialize(CommonResources* resources, int width, int height)override;// 初期化
 	void Update(const UpdateContext& context)override { Update(context.elapsedTime); }// 更新(contextから時間を取得して更新)
 	void Render()override;// 描画
-	void Add(std::string key// メニューアイテムを追加
+	void Add(const std::string& key// メニューアイテムを追加
 		, const DirectX::SimpleMath::Vector2& position
 		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor

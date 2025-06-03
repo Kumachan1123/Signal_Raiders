@@ -166,15 +166,12 @@ void Particle::Update(float elapsedTime)
 	for (std::list<ParticleUtility>::iterator ite = m_particleUtility.begin(); ite != m_particleUtility.end(); ite++)
 	{
 		// パーティクルの更新
-		if (!(ite->Update(elapsedTime)))
+		if (!(ite)->Update(elapsedTime))
 		{
-			// 更新失敗（寿命切れなど）なら削除して次へ
+			// パーティクルの更新がfalseを返した場合、つまりライフが0以下になった場合
 			ite = m_particleUtility.erase(ite);
-		}
-		else
-		{
-			// 更新成功なら次の要素へ
-			++ite;
+			// イテレータを更新
+			if (ite == m_particleUtility.end()) break;
 		}
 	}
 }

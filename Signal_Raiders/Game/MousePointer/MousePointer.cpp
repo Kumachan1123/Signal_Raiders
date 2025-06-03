@@ -93,7 +93,7 @@ void MousePointer::Render()
 *	@param IMenuUI::UIType type UI‚ÌŽí—Þ
 *	@return ‚È‚µ
 */
-void MousePointer::Add(std::string key,
+void MousePointer::Add(const std::string& key,
 	const DirectX::SimpleMath::Vector2& position,
 	const DirectX::SimpleMath::Vector2& scale,
 	KumachiLib::ANCHOR anchor, IMenuUI::UIType type)

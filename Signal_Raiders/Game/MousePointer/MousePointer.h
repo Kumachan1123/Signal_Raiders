@@ -35,7 +35,7 @@ public:// publicä÷êî
 	// ï`âÊ
 	void Render()override;
 	// UIí«â¡
-	void Add(std::string key
+	void Add(const std::string& key
 		, const DirectX::SimpleMath::Vector2& position
 		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor
