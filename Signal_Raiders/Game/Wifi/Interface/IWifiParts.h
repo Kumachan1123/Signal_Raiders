@@ -18,22 +18,27 @@
 // WlanAPIライブラリをリンク
 #pragma comment(lib, "wlanapi.lib")
 // 構造体
-struct NetworkInfo// Wi-Fiの情報の構造体
+// Wi-Fiの情報の構造体
+struct NetworkInfo
 {
 	std::string ssid;// SSID（名前）
 	DWORD signalQuality;// 電波の強さ
 	DOT11_CIPHER_ALGORITHM defaultCipherAlgorithm;// 暗号アルゴリズム
 	DOT11_AUTH_ALGORITHM defaultAuthAlgorithm;// 認証アルゴリズム
 };
-struct CompareBySignalQuality// 電波の強さで比較するための関数オブジェクト
+// 電波の強さで比較するための関数オブジェクト
+struct CompareBySignalQuality
 {
+	// 比較演算子をオーバーロード
 	bool operator()(const NetworkInfo& a, const NetworkInfo& b) const
 	{
-		return a.signalQuality > b.signalQuality;// 強い順にソート
+		// 強い順にソート
+		return a.signalQuality > b.signalQuality;
 	}
 };
 
-struct Datas// SSIDや電波強度をもとにしたデータ構造体
+// SSIDや電波強度をもとにしたデータ構造体
+struct Datas
 {
 	int SSIDLength;		//SSIDの文字数
 	int SSIDValue;		//SSIDの各文字のASCIIコードの合計
@@ -41,7 +46,8 @@ struct Datas// SSIDや電波強度をもとにしたデータ構造体
 };
 
 // 列挙型
-enum SecurityLevel// セキュリティの評価
+// セキュリティの評価
+enum SecurityLevel
 {
 	VerySecure,// 非常に安全
 	Secure,// 安全
@@ -49,8 +55,8 @@ enum SecurityLevel// セキュリティの評価
 	Unsafe,// 危険
 	VeryUnsafe,// 非常に危険
 };
-
-namespace CipherAlgorithms// Cipher Algorithmの列挙型
+// Cipher Algorithmの列挙型
+namespace CipherAlgorithms
 {
 	enum CipherAlgorithm
 	{
@@ -61,5 +67,3 @@ namespace CipherAlgorithms// Cipher Algorithmの列挙型
 		Unknown = 0xFF// 不明
 	};
 }
-
-

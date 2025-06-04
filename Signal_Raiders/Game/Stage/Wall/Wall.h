@@ -22,7 +22,8 @@
 class Wall
 {
 public:// 構造体
-	struct ConstBuffer// シェーダーに渡す情報
+	// シェーダーに渡す情報
+	struct ConstBuffer
 	{
 		DirectX::SimpleMath::Matrix matWorld;   // ワールド行列
 		DirectX::SimpleMath::Matrix matView;    // ビュー行列
@@ -31,15 +32,23 @@ public:// 構造体
 		DirectX::SimpleMath::Vector4 time;    // 時間
 	};
 public:// public関数
-	Wall(CommonResources* resources);// コンストラクタ
-	~Wall();// デストラクタ
-	void LoadTexture(const wchar_t* path);// テクスチャの読み込み
-	void Create(DX::DeviceResources* pDR);// 初期化
-	void Update(float elapsedTime);// 更新
-	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);// 描画
-	DirectX::BoundingBox& GetBoundingBox(int index) { return m_wallBox[index]; }// 当たり判定の取得
-	int GetWallNum() { return WALL_NUM; }// 壁の数の取得
-private:
+	// コンストラクタ
+	Wall(CommonResources* resources);
+	// デストラクタ
+	~Wall();
+	// テクスチャの読み込み
+	void LoadTexture(const wchar_t* path);
+	// 初期化
+	void Create(DX::DeviceResources* pDR);
+	// 更新
+	void Update(float elapsedTime);
+	// 描画
+	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+	// 当たり判定の取得
+	const DirectX::BoundingBox& GetBoundingBox(int index) { return m_wallBox[index]; }
+	// 壁の数の取得
+	int GetWallNum()const { return WALL_NUM; }
+private:// private関数
 	void CreateWalls();// 壁の初期化
 	void CreateShaders();// シェーダーの作成
 public:// 定数
@@ -51,7 +60,7 @@ public:// 定数
 	static const float WALL_HEIGHT;
 	// 幅
 	static const float WALL_WIDTH;
-private:
+private:// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 変数

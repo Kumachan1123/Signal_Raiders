@@ -258,16 +258,18 @@ void PlayScene::Render()
 	Matrix view = m_pPlayer->GetCamera()->GetViewMatrix();
 	// カメラからプロジェクション行列を取得する
 	Matrix projection = m_pPlayer->GetCamera()->GetProjectionMatrix();
-	// 天球のワールド行列(サイズ10倍)
-	Matrix skyWorld = Matrix::Identity * Matrix::CreateScale(10);
+	// 天球のワールド行列(サイズを10倍してプレイヤーを中心地とする)
+	Matrix skyWorld = Matrix::Identity
+		* Matrix::CreateScale(10)
+		* Matrix::CreateTranslation(m_pPlayer->GetPlayerController()->GetPlayerPosition());
 	// ワールド行列を初期化する
 	Matrix world = Matrix::Identity;
 	// オフスクリーンにオブジェクトを描画する
 	m_pBloom->ChangeOffScreenRT();
 	// 天球描画
-	m_pSky->Render(view, projection, skyWorld, m_pPlayer->GetPlayerController()->GetPlayerPosition());
+	m_pSky->Render(view, projection, skyWorld);
 	// 地面描画
-	m_pStage->Render(view, projection, world, Vector3(0, 0, 0));
+	m_pStage->Render(view, projection, world);
 	// 壁描画
 	m_pWall->Render(view, projection);
 	// 敵を描画する

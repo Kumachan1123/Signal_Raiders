@@ -26,16 +26,21 @@ class CommonResources;
 class Sky
 {
 public:// public関数
-	Sky(int StageID);// コンストラクタ
-	~Sky();// デストラクタ
-	void Initialize(CommonResources* resources);// 初期化
-	void Render(DirectX::SimpleMath::Matrix view,// 描画
-		DirectX::SimpleMath::Matrix proj,
-		DirectX::SimpleMath::Matrix world,
-		DirectX::SimpleMath::Vector3 pos
+	// コンストラクタ
+	Sky(int StageID);
+	// デストラクタ
+	~Sky();
+	// 初期化
+	void Initialize(CommonResources* resources);
+	// 描画
+	void Render(
+		const DirectX::SimpleMath::Matrix& view,
+		const DirectX::SimpleMath::Matrix& proj,
+		const DirectX::SimpleMath::Matrix& world
 	);
 private:// private定数
-	const std::unordered_map<int, const std::string> m_keyMap =// ステージ番号に応じた空のモデルのKey
+	// ステージ番号に応じた空のモデルのKey
+	const std::unordered_map<int, const std::string> m_keyMap =
 	{
 		{0, "Stage1"},// ステージ１
 		{1, "Stage2"},// ステージ２
@@ -44,9 +49,12 @@ private:// private定数
 		{4, "Stage5"} // ステージ５
 	};
 private:// private変数
-	CommonResources* m_pCommonResources;// 共通リソース
-	DirectX::Model* m_pModel;// モデル
-	wchar_t m_texturePath[256];// テクスチャパス
-	int m_stageID;// ステージID
-	std::string Path;
+	// 共通リソース
+	CommonResources* m_pCommonResources;
+	// モデル
+	DirectX::Model* m_pModel;
+	// テクスチャパス
+	wchar_t m_texturePath[256];
+	// ステージID
+	int m_stageID;
 };

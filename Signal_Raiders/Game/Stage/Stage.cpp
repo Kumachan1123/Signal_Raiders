@@ -5,8 +5,10 @@
 #include <pch.h>
 #include "Stage.h"
 
-const float Stage::STAGE_SIZE = 98.5f;	// ステージの広さ
-const float Stage::STAGE_HEIGHT = 3.0f;	// ステージの高さ
+// ステージの広さ
+const float Stage::STAGE_SIZE = 98.5f;
+// ステージの高さ
+const float Stage::STAGE_HEIGHT = 3.0f;
 /*
 *	@brief	コンストラクタ
 *	@details ステージのコンストラクタ
@@ -14,8 +16,8 @@ const float Stage::STAGE_HEIGHT = 3.0f;	// ステージの高さ
 *	@return なし
 */
 Stage::Stage()
-	: m_pCommonResources{}
-	, m_pModel{}
+	: m_pCommonResources{}// 共通リソースポインタ
+	, m_pModel{}// モデルポインタ
 {
 }
 /*
@@ -35,9 +37,12 @@ void Stage::Initialize(CommonResources* resources)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	assert(resources);// リソースがnullptrでないことを確認
-	m_pCommonResources = resources;// リソースを保存
-	m_pModel = m_pCommonResources->GetModelManager()->GetModel("Stage");// モデルマネージャーからステージモデルを取得
+	// リソースがnullptrでないことを確認
+	assert(resources);
+	// リソースを保存
+	m_pCommonResources = resources;
+	// モデルマネージャーからステージモデルを取得
+	m_pModel = m_pCommonResources->GetModelManager()->GetModel("Stage");
 }
 /*
 *	@brief	描画
@@ -48,13 +53,17 @@ void Stage::Initialize(CommonResources* resources)
 *	@param pos ワールド座標
 *	@return なし
 */
-void Stage::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj,
-	DirectX::SimpleMath::Matrix world, DirectX::SimpleMath::Vector3 pos)
+void Stage::Render(
+	const DirectX::SimpleMath::Matrix& view,
+	const DirectX::SimpleMath::Matrix& proj,
+	const DirectX::SimpleMath::Matrix& world)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();// デバイスコンテキストを取得
-	auto states = m_pCommonResources->GetCommonStates();// 共通ステートを取得
-	world *= Matrix::CreateTranslation(pos);// ワールド行列を更新
-	m_pModel->Draw(context, *states, world, view, proj);// モデルを描画する
+	// デバイスコンテキストを取得
+	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+	// 共通ステートを取得
+	auto states = m_pCommonResources->GetCommonStates();
+	// モデルを描画する
+	m_pModel->Draw(context, *states, world, view, proj);
 }

@@ -35,7 +35,6 @@ Wifi::Wifi()
 *	@return なし
 */
 Wifi::~Wifi() {/*do nothing*/ }
-
 /*
 *	@brief 更新処理
 *	@details Wi-Fiクラスの更新処理
@@ -44,65 +43,104 @@ Wifi::~Wifi() {/*do nothing*/ }
 */
 void Wifi::Update(float elapsedTime)
 {
-	if (m_time >= WiFiParameters::MAX_TIME)return;// 五秒経ったら更新終了
-	InitHandle();// Wi-Fiハンドルの初期化
-	Checkversion();// バージョンの確認
-	GetInterfacesList();// インターフェースのリスト取得
-	StartScan();// スキャンの開始
-	GetScanResults();// スキャン結果の取得
-	GetCurrentWifiInfo();// 現在接続しているWi-Fi情報を取得
-	ClearExportInfo();// 出力準備
-	ProcessingScanResults();// スキャン結果の処理
-	std::sort(m_networkInfos.begin(), m_networkInfos.end(), CompareBySignalQuality());// 電波の強さでソート
-	m_time += elapsedTime;// 時間を加算
+	// 五秒経ったら更新終了
+	if (m_time >= WiFiParameters::MAX_TIME)return;
+	// Wi-Fiハンドルの初期化
+	InitHandle();
+	// バージョンの確認
+	Checkversion();
+	// インターフェースのリスト取得
+	GetInterfacesList();
+	// スキャンの開始
+	StartScan();
+	// スキャン結果の取得
+	GetScanResults();
+	// 現在接続しているWi-Fi情報を取得
+	GetCurrentWifiInfo();
+	// 出力準備
+	ClearExportInfo();
+	// スキャン結果の処理
+	ProcessingScanResults();
+	// 電波の強さでソート
+	std::sort(m_networkInfos.begin(), m_networkInfos.end(), CompareBySignalQuality());
+	// 時間を加算
+	m_time += elapsedTime;
+	// Wi-Fiが取得できたかどうかに応じて分岐
 	if (m_dwResult != ERROR_SUCCESS)// Wi-Fiを取得できない状態の時
 	{
-		if (m_preWifilevels.size() < WiFiParameters::MAX_ENEMY)// 設定された敵の最大値未満の場合
+		// 設定された敵の最大値未満の場合
+		if (m_preWifilevels.size() < WiFiParameters::MAX_ENEMY)
 		{
-			for (int index = 0; index < WiFiParameters::MAX_ENEMY; index++)//最大値になるまで繰り返す
+			//最大値になるまで繰り返す
+			for (int index = 0; index < WiFiParameters::MAX_ENEMY; index++)
 			{
-				if (m_time >= WiFiParameters::MAX_TIME)break;// 五秒経ったら更新終了
-				m_preWifilevels.push_back(WiFiParameters::DEFAULT_ENEMY_HP);// 電波の強さを100に設定
-				m_preEnemyTypes.push_back(WiFiParameters::DEFAULT_ENEMY_TYPE);// 敵の種類を0(通常)に設定
+				// 五秒経ったら更新終了
+				if (m_time >= WiFiParameters::MAX_TIME)break;
+				// 電波の強さを100に設定
+				m_preWifilevels.push_back(WiFiParameters::DEFAULT_ENEMY_HP);
+				// 敵の種類を0(通常)に設定
+				m_preEnemyTypes.push_back(WiFiParameters::DEFAULT_ENEMY_TYPE);
 			}
 		}
-		m_wifilevels = m_preWifilevels;// 電波の強さを可変長配列に登録
-		m_enemyTypes = m_preEnemyTypes;// 敵の種類を可変長配列に登録
+		// 電波の強さを可変長配列に登録
+		m_wifilevels = m_preWifilevels;
+		// 敵の種類を可変長配列に登録
+		m_enemyTypes = m_preEnemyTypes;
 	}
 	else// Wi-Fiを取得できる状態の時
 	{
-		if (m_networkInfos.size() == 0)// 取得した数が0の時
+		// 取得した数が0の時
+		if (m_networkInfos.size() == 0)
 		{
-			if (m_preWifilevels.size() < WiFiParameters::MAX_ENEMY)// 設定された敵の最大値未満の場合
+			// 設定された敵の最大値未満の場合
+			if (m_preWifilevels.size() < WiFiParameters::MAX_ENEMY)
 			{
-				for (int index = 0; index < WiFiParameters::MAX_ENEMY; index++)//最大値になるまで繰り返す
+				//最大値になるまで繰り返す
+				for (int index = 0; index < WiFiParameters::MAX_ENEMY; index++)
 				{
-					if (m_time >= WiFiParameters::MAX_TIME)break;// 五秒経ったら更新終了
-					m_preWifilevels.push_back(WiFiParameters::DEFAULT_ENEMY_HP);// 電波の強さを100に設定
-					m_preEnemyTypes.push_back(WiFiParameters::DEFAULT_ENEMY_TYPE);// 敵の種類を0(通常)に設定
+					// 五秒経ったら更新終了
+					if (m_time >= WiFiParameters::MAX_TIME)break;
+					// 電波の強さを100に設定
+					m_preWifilevels.push_back(WiFiParameters::DEFAULT_ENEMY_HP);
+					// 敵の種類を0(通常)に設定
+					m_preEnemyTypes.push_back(WiFiParameters::DEFAULT_ENEMY_TYPE);
 				}
 			}
-			m_wifilevels = m_preWifilevels;// 電波の強さを可変長配列に登録
-			m_enemyTypes = m_preEnemyTypes;// 敵の種類を可変長配列に登録
+			// 電波の強さを可変長配列に登録
+			m_wifilevels = m_preWifilevels;
+			// 敵の種類を可変長配列に登録
+			m_enemyTypes = m_preEnemyTypes;
 		}
 		// 以下、正常にWi-Fiを取得できた場合
-		for (const auto& networkInfo : m_networkInfos)// 取得した数だけ繰り返す
+		// 取得した数だけ繰り返す
+		for (const auto& networkInfo : m_networkInfos)
 		{
-			if (m_time >= WiFiParameters::MAX_TIME)// 一定期間経ったら更新終了
+			// 一定期間経ったら更新終了
+			if (m_time >= WiFiParameters::MAX_TIME)
 			{
-				m_time = WiFiParameters::MAX_TIME;// 時間を最大値に固定
-				break;// ループを抜ける
+				// 時間を最大値に固定
+				m_time = WiFiParameters::MAX_TIME;
+				// ループを抜ける
+				break;
 			}
-			int ssidLength = (int)(networkInfo.ssid.length());// ssidの文字数を可変長配列に登録
-			int ssidValue = ConvertSsidToInt(networkInfo.ssid);// ssidの文字のASCIIコードの合計を可変長配列に登録
-			int enemyType = (ssidValue * ssidLength) % ENEMY_TYPE_MAX;// (文字数×文字のASCIIコードの合計)/ENEMY_TYPE_MAXの余りを敵の種類に変換
-			m_preWifilevels.push_back(networkInfo.signalQuality);// 電波の強さを可変長配列に登録
-			m_preEnemyTypes.push_back(enemyType);// 敵の種類を設定	
-			m_wifilevels = m_preWifilevels;// 電波の強さを可変長配列に登録
-			m_enemyTypes = m_preEnemyTypes;// 敵の種類を可変長配列に登録
+			// ssidの文字数を可変長配列に登録
+			int ssidLength = (int)(networkInfo.ssid.length());
+			// ssidの文字のASCIIコードの合計を可変長配列に登録
+			int ssidValue = ConvertSsidToInt(networkInfo.ssid);
+			// (文字数×文字のASCIIコードの合計)/ENEMY_TYPE_MAXの余りを敵の種類に変換
+			int enemyType = (ssidValue * ssidLength) % ENEMY_TYPE_MAX;
+			// 電波の強さを可変長配列に登録
+			m_preWifilevels.push_back(networkInfo.signalQuality);
+			// 敵の種類を設定	
+			m_preEnemyTypes.push_back(enemyType);
+			// 電波の強さを可変長配列に登録
+			m_wifilevels = m_preWifilevels;
+			// 敵の種類を可変長配列に登録
+			m_enemyTypes = m_preEnemyTypes;
 		}
 	}
-	Clear();// 各種ポインターをクリア
+	// 各種ポインターをクリア
+	Clear();
 }
 /*
 *	@brief	クリア
@@ -112,13 +150,20 @@ void Wifi::Update(float elapsedTime)
 */
 void Wifi::Clear()
 {
-	if (m_dwResult != ERROR_SUCCESS || m_time >= WiFiParameters::MAX_TIME)return;// 五秒経ったら更新終了
-	WlanFreeMemory(m_pInterfaceList);// インターフェースリストのメモリを解放
-	WlanCloseHandle(m_hClient, NULL);// ハンドルをクローズ
-	m_networkInfos.clear();// Wi-Fi情報を格納する可変長配列をクリア
-	m_exportSSIDs.clear();// 表示済みSSIDのセットをクリア
-	m_preWifilevels.clear();// 電波の強さをクリア
-	m_preEnemyTypes.clear();// 敵の種類をクリア
+	// 五秒経ったら更新終了
+	if (m_dwResult != ERROR_SUCCESS || m_time >= WiFiParameters::MAX_TIME)return;
+	// インターフェースリストのメモリを解放
+	WlanFreeMemory(m_pInterfaceList);
+	// ハンドルをクローズ
+	WlanCloseHandle(m_hClient, NULL);
+	// Wi-Fi情報を格納する可変長配列をクリア
+	m_networkInfos.clear();
+	// 表示済みSSIDのセットをクリア
+	m_exportSSIDs.clear();
+	// 電波の強さをクリア
+	m_preWifilevels.clear();
+	// 敵の種類をクリア
+	m_preEnemyTypes.clear();
 }
 /*
 *	@brief	ハンドルの初期化
@@ -128,10 +173,14 @@ void Wifi::Clear()
 */
 void Wifi::InitHandle()
 {
-	m_dwMaxClient = 2; // 最大のクライアント数
-	m_hClient = NULL;// クライアントハンドル
-	m_dwCurVersion = 0;// WLANのバージョン
-	m_dwResult = 0;// 結果
+	// 最大のクライアント数
+	m_dwMaxClient = 2;
+	// クライアントハンドル
+	m_hClient = NULL;
+	// WLANのバージョン
+	m_dwCurVersion = 0;
+	// 結果
+	m_dwResult = 0;
 }
 /*
 *	@brief	バージョンの確認
@@ -141,12 +190,14 @@ void Wifi::InitHandle()
 */
 void Wifi::Checkversion()
 {
-	m_dwResult = WlanOpenHandle(// WlanAPIのクライアントバージョンを確認
+	// WlanAPIのクライアントバージョンを確認
+	m_dwResult = WlanOpenHandle(
 		m_dwMaxClient,     // 要求するクライアントのバージョン（入力）
 		NULL,              // 予約（NULLでOK）
 		&m_dwCurVersion,   // 実際に使えるバージョンがここに返る（出力）
 		&m_hClient);       // 取得されたクライアントハンドル（出力）
-	if (m_dwResult != ERROR_SUCCESS) return;// エラー処理
+	// バージョンの確認結果が成功でない場合は処理を中止
+	if (m_dwResult != ERROR_SUCCESS) return;
 }
 /*
 *	@brief インターフェースのリスト取得
@@ -154,12 +205,17 @@ void Wifi::Checkversion()
 */
 void Wifi::GetInterfacesList()
 {
-	m_pInterfaceList = NULL;// リストポインターを初期化
-	m_dwResult = WlanEnumInterfaces(m_hClient, NULL, &m_pInterfaceList);// インターフェースのリスト取得
-	if (m_dwResult != ERROR_SUCCESS)// エラー処理
+	// リストポインターを初期化
+	m_pInterfaceList = NULL;
+	// インターフェースのリスト取得
+	m_dwResult = WlanEnumInterfaces(m_hClient, NULL, &m_pInterfaceList);
+	// インターフェースのリスト取得に失敗した場合は処理を中止
+	if (m_dwResult != ERROR_SUCCESS)
 	{
-		WlanCloseHandle(m_hClient, NULL);// ハンドルのクローズ
-		return;// 処理の中止
+		// ハンドルのクローズ
+		WlanCloseHandle(m_hClient, NULL);
+		// 処理の中止
+		return;
 	}
 }
 
@@ -171,17 +227,22 @@ void Wifi::GetInterfacesList()
 */
 void Wifi::StartScan()
 {
-	m_dwResult = WlanScan(// 指定したインターフェースでWi-Fiスキャンを開始
+	// 指定したインターフェースでWi-Fiスキャンを開始
+	m_dwResult = WlanScan(
 		m_hClient, // Wi-Fiクライアントのハンドル
 		&m_pInterfaceList->InterfaceInfo[0].InterfaceGuid, // 使用するアダプタのGUID
 		NULL,// スキャンのオプション（特に指定なし）
 		NULL, // 予約引数（不使用）
 		NULL);// 予約引数（不使用）
-	if (m_dwResult != ERROR_SUCCESS)// エラー処理
+	// スキャンの開始結果が成功でない場合は処理を中止
+	if (m_dwResult != ERROR_SUCCESS)
 	{
-		WlanFreeMemory(m_pInterfaceList);// メモリの解放
-		WlanCloseHandle(m_hClient, NULL);// ハンドルのクローズ
-		return;// 処理の中止
+		// メモリの解放
+		WlanFreeMemory(m_pInterfaceList);
+		// ハンドルのクローズ
+		WlanCloseHandle(m_hClient, NULL);
+		// 処理の中止
+		return;
 	}
 }
 /*
@@ -192,14 +253,17 @@ void Wifi::StartScan()
 */
 void Wifi::GetScanResults()
 {
-	m_pNetworkList = NULL; // ネットワークリストのポインターを初期化
-	m_dwResult = WlanGetAvailableNetworkList(// 使用可能なネットワークの一覧を取得
+	// ネットワークリストのポインターを初期化
+	m_pNetworkList = NULL;
+	// 使用可能なネットワークの一覧を取得
+	m_dwResult = WlanGetAvailableNetworkList(
 		m_hClient,// Wi-Fiクライアントのハンドル
 		&m_pInterfaceList->InterfaceInfo[0].InterfaceGuid,// 使うインターフェースのGUID
 		0,// オプションのフラグ（特に指定なし）
 		NULL,// 使用する言語（基本はNULL）
 		&m_pNetworkList);// ネットワークリスト
-	if (m_dwResult != ERROR_SUCCESS)return;// エラー処理
+	// スキャン結果の取得に失敗した場合は処理を中止
+	if (m_dwResult != ERROR_SUCCESS)return;
 }
 
 /*
@@ -210,8 +274,10 @@ void Wifi::GetScanResults()
 */
 void Wifi::ClearExportInfo()
 {
-	m_exportSSIDs.clear();// 表示するSSIDをクリア
-	m_networkInfos.clear();// ネットワーク情報をクリア
+	// 表示するSSIDをクリア
+	m_exportSSIDs.clear();
+	// ネットワーク情報をクリア
+	m_networkInfos.clear();
 }
 /*
 *	@brief	現在接続しているWi-Fi情報を取得
@@ -221,11 +287,16 @@ void Wifi::ClearExportInfo()
 */
 void Wifi::GetCurrentWifiInfo()
 {
-	if (m_isGotCurrentWifiInfo)return;// すでに取得済みなら終了
-	PWLAN_CONNECTION_ATTRIBUTES pConnectInfo = NULL;// 接続情報のポインター
-	DWORD connectInfoSize = 0;// 接続情報のサイズ
-	WLAN_OPCODE_VALUE_TYPE opCode = wlan_opcode_value_type_invalid;// データの種類
-	m_dwResult = WlanQueryInterface(// 現在接続しているWi-Fi情報を取得
+	// すでに取得済みなら終了
+	if (m_isGotCurrentWifiInfo)return;
+	// 接続情報のポインター
+	PWLAN_CONNECTION_ATTRIBUTES pConnectInfo = NULL;
+	// 接続情報のサイズ
+	DWORD connectInfoSize = 0;
+	// データの種類
+	WLAN_OPCODE_VALUE_TYPE opCode = wlan_opcode_value_type_invalid;
+	// 現在接続しているWi-Fi情報を取得
+	m_dwResult = WlanQueryInterface(
 		m_hClient,// Wi-Fiクライアントのハンドル
 		&m_pInterfaceList->InterfaceInfo[0].InterfaceGuid,// 使用するインターフェースのGUID
 		wlan_intf_opcode_current_connection,// 現在の接続情報を取得
@@ -233,25 +304,36 @@ void Wifi::GetCurrentWifiInfo()
 		&connectInfoSize,// 接続情報のサイズ（出力）
 		(PVOID*)&pConnectInfo,// 接続情報のポインター（出力）
 		&opCode); // データの種類（不使用）
-	if (m_dwResult == ERROR_SUCCESS && pConnectInfo != NULL)// 情報の取得に成功した場合
+	// 接続状態やハンドルの状態に応じて分岐
+	if (m_dwResult == ERROR_SUCCESS && pConnectInfo != NULL)// 接続情報の取得結果が成功した場合
 	{
-		std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;// ssidをstd::wstringに変換
-		std::wstring wssid = std::wstring(// SSIDをstd::wstringに変換
+		// ssidをstd::wstringに変換
+		std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+		// SSIDをstd::wstringに変換
+		std::wstring wssid = std::wstring(
 			pConnectInfo->wlanAssociationAttributes.dot11Ssid.ucSSID,		// SSIDのポインター
 			pConnectInfo->wlanAssociationAttributes.dot11Ssid.ucSSID +		// SSIDのポインターの長さ
 			pConnectInfo->wlanAssociationAttributes.dot11Ssid.uSSIDLength); // SSIDの長さ
-		std::string ssid = m_converter.to_bytes(wssid);// ssidをstd::stringに変換
-		m_currentWifiInfo.ssidLenght = (int)(ssid.length());// SSIDの長さを取得して数値化
-		m_currentWifiInfo.signalQuality = pConnectInfo->wlanAssociationAttributes.wlanSignalQuality;// 電波の強さを取得
+		// ssidをstd::stringに変換
+		std::string ssid = m_converter.to_bytes(wssid);
+		// SSIDの長さを取得して数値化
+		m_currentWifiInfo.ssidLenght = (int)(ssid.length());
+		// 電波の強さを取得
+		m_currentWifiInfo.signalQuality = pConnectInfo->wlanAssociationAttributes.wlanSignalQuality;
 	}
 	else// 情報の取得に失敗した場合
 	{
-		m_currentWifiInfo.ssidLenght = 0;// SSIDの長さを0に設定
-		m_currentWifiInfo.signalQuality = 0; // 電波の強さを0に設定
-		return;// 処理の中止
+		// SSIDの長さを0に設定
+		m_currentWifiInfo.ssidLenght = 0;
+		// 電波の強さを0に設定
+		m_currentWifiInfo.signalQuality = 0;
+		// 処理の中止
+		return;
 	}
-	m_isGotCurrentWifiInfo = true;// 取得済みフラグをtrueに設定
-	WlanFreeMemory(pConnectInfo); // メモリの解放
+	// 取得済みフラグをtrueに設定
+	m_isGotCurrentWifiInfo = true;
+	// メモリの解放
+	WlanFreeMemory(pConnectInfo);
 }
 /*
 *	@brief	スキャン結果の処理
@@ -261,23 +343,32 @@ void Wifi::GetCurrentWifiInfo()
 */
 void Wifi::ProcessingScanResults()
 {
-	if (m_dwResult == ERROR_INVALID_PARAMETER ||	// パラメータが不正な時や
-		m_dwResult == ERROR_INVALID_HANDLE)return;	// ハンドルが不正な時は処理を中止
-	for (DWORD i = 0; i < m_pNetworkList->dwNumberOfItems; i++)// 取得した結果の数処理
+	// パラメータが不正な時やハンドルが不正な時は処理を中止
+	if (m_dwResult == ERROR_INVALID_PARAMETER || m_dwResult == ERROR_INVALID_HANDLE)return;
+	// 取得した結果の数処理
+	for (DWORD i = 0; i < m_pNetworkList->dwNumberOfItems; i++)
 	{
-		m_network = m_pNetworkList->Network[i];// スキャン結果を取得
-		m_ssid = (m_network.dot11Ssid.uSSIDLength == 0) // SSIDの長さが0の時
+		// スキャン結果を取得
+		m_network = m_pNetworkList->Network[i];
+		// SSIDの長さが0の時
+		m_ssid = (m_network.dot11Ssid.uSSIDLength == 0)
 			? "非公開のネットワーク"// SSIDを非公開のネットワークに設定
 			: m_converter.to_bytes(// SSIDを文字列に変換
 				std::wstring(// SSIDをstd::wstringに変換
 					m_network.dot11Ssid.ucSSID, // SSIDの先頭ポインター
 					m_network.dot11Ssid.ucSSID + m_network.dot11Ssid.uSSIDLength));// 終点を計算して範囲指定
-		if (m_exportSSIDs.find(m_ssid) != m_exportSSIDs.end())continue;// すでに表示したSSIDの時はスキップ
-		m_exportSSIDs.insert(m_ssid); // 表示したSSIDをセット
-		NetworkInfo networkInfo;// ネットワーク情報の構造体を初期化
-		networkInfo.ssid = m_ssid; // SSIDをセット
-		networkInfo.signalQuality = m_network.wlanSignalQuality; // 電波の強さをセット
-		m_networkInfos.push_back(networkInfo); // ネットワーク情報をベクターに追加
+		// すでに表示したSSIDの時はスキップ
+		if (m_exportSSIDs.find(m_ssid) != m_exportSSIDs.end())continue;
+		// 表示したSSIDをセット
+		m_exportSSIDs.insert(m_ssid);
+		// ネットワーク情報の構造体を初期化
+		NetworkInfo networkInfo;
+		// SSIDをセット
+		networkInfo.ssid = m_ssid;
+		// 電波の強さをセット
+		networkInfo.signalQuality = m_network.wlanSignalQuality;
+		// ネットワーク情報をベクターに追加
+		m_networkInfos.push_back(networkInfo);
 	}
 }
 /*
@@ -288,7 +379,10 @@ void Wifi::ProcessingScanResults()
 */
 int Wifi::ConvertSsidToInt(const std::string& ssid)
 {
-	int sum = 0;// 合計値
-	for (char c : ssid)sum += static_cast<int>(c); // 文字ごとのASCIIコードを合計
-	return abs(sum);// 合計値を絶対値に変換して返す
+	// 合計値
+	int sum = 0;
+	// 文字ごとのASCIIコードを合計
+	for (char c : ssid)sum += static_cast<int>(c);
+	// 合計値を絶対値に変換して返す
+	return abs(sum);
 }

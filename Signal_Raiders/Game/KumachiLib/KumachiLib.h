@@ -182,7 +182,7 @@ inline DirectX::SimpleMath::Vector3 CheckHitOtherObject(DirectX::BoundingSphere 
 *	@param   B ボックスB
 *	@return  押し戻された位置
 */
-inline DirectX::SimpleMath::Vector3 CheckHitWall(DirectX::BoundingSphere A, DirectX::BoundingBox& B)
+inline DirectX::SimpleMath::Vector3 CheckHitWall(DirectX::BoundingSphere A, const DirectX::BoundingBox& B)
 {
 	using namespace DirectX::SimpleMath;
 	// 押し戻しベクトルを計算

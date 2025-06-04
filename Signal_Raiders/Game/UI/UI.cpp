@@ -50,18 +50,28 @@ UI::~UI() {/*do nothing*/ }
 */
 void UI::LoadTexture(std::string key)
 {
-	m_pTexture = m_pCommonResources->GetTextureManager()->GetTexture(key);// テクスチャマネージャーからテクスチャを取得
+	// テクスチャマネージャーからテクスチャを取得
+	m_pTexture = m_pCommonResources->GetTextureManager()->GetTexture(key);
 	// サイズ取得のための準備
-	Microsoft::WRL::ComPtr<ID3D11Resource> resource;// 一時保存用リソースハンドル
-	m_pTexture->GetResource(resource.GetAddressOf());// テクスチャからリソースを取得
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> texture2D;// 一時保存用テクスチャハンドル
-	DX::ThrowIfFailed(resource.As(&texture2D));// リソースをテクスチャに変換
+	// 一時保存用リソースハンドル
+	Microsoft::WRL::ComPtr<ID3D11Resource> resource;
+	// テクスチャからリソースを取得
+	m_pTexture->GetResource(resource.GetAddressOf());
+	// 一時保存用テクスチャハンドル
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> texture2D;
+	// リソースをテクスチャに変換
+	DX::ThrowIfFailed(resource.As(&texture2D));
 	// テクスチャの情報を取得
-	D3D11_TEXTURE2D_DESC desc;// テクスチャの情報を格納する構造体
-	texture2D->GetDesc(&desc);// テクスチャの情報を取得
-	m_pTextures.push_back(m_pTexture.Get()); // テクスチャを配列に追加
-	m_textureWidth = desc.Width; // テクスチャの幅を取得
-	m_textureHeight = desc.Height; // テクスチャの高さを取得
+	// テクスチャの情報を格納する構造体
+	D3D11_TEXTURE2D_DESC desc;
+	// テクスチャの情報を取得
+	texture2D->GetDesc(&desc);
+	// テクスチャを配列に追加
+	m_pTextures.push_back(m_pTexture.Get());
+	// テクスチャの幅を取得
+	m_textureWidth = desc.Width;
+	// テクスチャの高さを取得
+	m_textureHeight = desc.Height;
 }
 /*
 *	@brief	初期化
@@ -73,21 +83,27 @@ void UI::LoadTexture(std::string key)
 *	@param anchor UIのアンカー
 *	@return なし
 */
-void UI::Create(DX::DeviceResources* pDR, std::string key
-	, DirectX::SimpleMath::Vector2 position
-	, DirectX::SimpleMath::Vector2 scale
+void UI::Create(DX::DeviceResources* pDR, const std::string& key
+	, const DirectX::SimpleMath::Vector2& position
+	, const  DirectX::SimpleMath::Vector2& scale
 	, KumachiLib::ANCHOR anchor)
 {
-
-	m_pDR = pDR;// デバイスリソース
-	m_position = position;// 位置
-	m_baseScale = m_scale = scale;// スケール
-	m_anchor = anchor;// アンカー
-	m_pCreateShader->Initialize(m_pDR->GetD3DDevice(), &INPUT_LAYOUT[0], // シェーダー作成クラスの初期化
-		static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
-	CreateShaders();// シェーダーの作成
-	LoadTexture(key);// テクスチャを読み込む
-	m_pDrawPolygon->InitializePositionColorTexture(m_pDR);	// 板ポリゴン描画用
+	// デバイスリソース
+	m_pDR = pDR;
+	// 位置
+	m_position = position;
+	// スケール
+	m_baseScale = m_scale = scale;
+	// アンカー
+	m_anchor = anchor;
+	// シェーダー作成クラスの初期化
+	m_pCreateShader->Initialize(m_pDR->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
+	// シェーダーの作成
+	CreateShaders();
+	// テクスチャを読み込む
+	LoadTexture(key);
+	// 板ポリゴン描画用
+	m_pDrawPolygon->InitializePositionColorTexture(m_pDR);
 }
 /*
 *	@brief	当たり判定
@@ -97,16 +113,14 @@ void UI::Create(DX::DeviceResources* pDR, std::string key
 */
 bool UI::IsHit(const DirectX::SimpleMath::Vector2& pos) const
 {
-
-	DirectX::SimpleMath::Vector2 leftTop = // 画像の左上の座標を取得
-		m_position - DirectX::SimpleMath::Vector2(float(m_textureWidth), float(m_textureHeight)) * m_scale.x / 2;
-	DirectX::SimpleMath::Vector2 rightBottom =// 画像の右下の座標を取得
-		m_position + DirectX::SimpleMath::Vector2(float(m_textureWidth), float(m_textureHeight)) * m_scale.y / 2;
-
-	if (leftTop.x <= pos.x && pos.x <= rightBottom.x	// 画像の左上の座標と右下の座標を比較して、
-		&& leftTop.y <= pos.y && pos.y <= rightBottom.y)// 	マウスの座標が範囲内にあるかを判定する
-		return true;// 当たり判定あり
-	return false;// 当たり判定なし
+	// 画像の左上の座標を取得
+	DirectX::SimpleMath::Vector2 leftTop = m_position - DirectX::SimpleMath::Vector2(float(m_textureWidth), float(m_textureHeight)) * m_scale.x / 2;
+	// 画像の右下の座標を取得
+	DirectX::SimpleMath::Vector2 rightBottom = m_position + DirectX::SimpleMath::Vector2(float(m_textureWidth), float(m_textureHeight)) * m_scale.y / 2;
+	// マウスの座標が画像の範囲内にあるならtrueを返す
+	if (leftTop.x <= pos.x && pos.x <= rightBottom.x && leftTop.y <= pos.y && pos.y <= rightBottom.y)return true;
+	// 当たり判定なしならfalseを返す
+	return false;
 }
 /*
 *	@brief	シェーダーの作成
@@ -116,21 +130,30 @@ bool UI::IsHit(const DirectX::SimpleMath::Vector2& pos) const
 */
 void UI::CreateShaders()
 {
-	// シェーダーを作成する
-	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Menu/VS_Menu.cso", m_pVertexShader);// 頂点シェーダー作成
-	m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/Menu/GS_Menu.cso", m_pGeometryShader);// ジオメトリシェーダー作成
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Menu/PS_Menu.cso", m_pPixelShader);// ピクセルシェーダ作成
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Menu/PS_StageMenu.cso", m_pPixelShaderStageSelect);// ピクセルシェーダ作成(ステージセレクト用)
-	m_pInputLayout = m_pCreateShader->GetInputLayout();// インプットレイアウトを受け取る
-	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));// シェーダーにデータを渡すためのコンスタントバッファ生成
-	// シェーダーの構造体にシェーダーを渡す
-	m_shaders.vs = m_pVertexShader.Get();// 頂点シェーダー
-	m_shaders.gs = m_pGeometryShader.Get();// ジオメトリシェーダー
-	m_shaders.ps = m_pPixelShader.Get();// ピクセルシェーダー
-	// ステージセレクト用のシェーダーの構造体にシェーダーを渡す
-	m_StageSelectShaders.vs = m_pVertexShader.Get();// 頂点シェーダー
-	m_StageSelectShaders.gs = m_pGeometryShader.Get();// ジオメトリシェーダー
-	m_StageSelectShaders.ps = m_pPixelShaderStageSelect.Get();// ピクセルシェーダー
+	// 頂点シェーダー作成する
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Menu/VS_Menu.cso", m_pVertexShader);
+	// ジオメトリシェーダー作成する
+	m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/Menu/GS_Menu.cso", m_pGeometryShader);
+	// ピクセルシェーダー作成する(普通のメニュー用)
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Menu/PS_Menu.cso", m_pPixelShader);
+	// ピクセルシェーダー作成する(ステージセレクト用)
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Menu/PS_StageMenu.cso", m_pPixelShaderStageSelect);
+	// インプットレイアウトを受け取る
+	m_pInputLayout = m_pCreateShader->GetInputLayout();
+	// シェーダーにデータを渡すためのコンスタントバッファ生成
+	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));
+	// シェーダーの構造体に頂点シェーダーを渡す
+	m_shaders.vs = m_pVertexShader.Get();
+	// シェーダーの構造体にジオメトリシェーダーを渡す
+	m_shaders.gs = m_pGeometryShader.Get();
+	// シェーダーの構造体にピクセルシェーダーを渡す
+	m_shaders.ps = m_pPixelShader.Get();
+	// ステージセレクト用のシェーダーの構造体に頂点シェーダーを渡す
+	m_StageSelectShaders.vs = m_pVertexShader.Get();
+	// ステージセレクト用のシェーダーの構造体にジオメトリシェーダーを渡す
+	m_StageSelectShaders.gs = m_pGeometryShader.Get();
+	// ステージセレクト用のシェーダーの構造体にピクセルシェーダーを渡す
+	m_StageSelectShaders.ps = m_pPixelShaderStageSelect.Get();
 }
 /*
 *	@brief	更新
@@ -138,7 +161,11 @@ void UI::CreateShaders()
 *	@param elapsedTime 経過時間
 *	@return なし
 */
-void UI::Update(float elapsedTime) { m_time += elapsedTime; }
+void UI::Update(float elapsedTime)
+{
+	// 時間を更新
+	m_time += elapsedTime;
+}
 /*
 *	@brief	描画
 *	@details UIの描画
@@ -149,31 +176,48 @@ void UI::Render()
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	VertexPositionColorTexture vertex[1] = {// 頂点情報
+	// 頂点情報
+	VertexPositionColorTexture vertex[1] = {
 		VertexPositionColorTexture(Vector3(m_scale.x, m_scale.y, static_cast<float>(m_anchor))// 大きさとアンカー
 		, Vector4(m_position.x, m_position.y, static_cast<float>(m_textureWidth), static_cast<float>(m_textureHeight))// 位置と幅と高さ
 		, Vector2(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight)))// ウィンドウの幅と高さ
 	};
-	//	シェーダーに渡す追加のバッファを作成する
-	m_constBuffer.windowSize = Vector4(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 1, 1);// ウィンドウサイズ
-	m_constBuffer.time = m_time;// 時間
-	m_constBuffer.color = Vector3(0.5, 0.5, 0.5);// 色
-	m_pDrawPolygon->UpdateSubResources(m_pCBuffer.Get(), &m_constBuffer);// 受け渡し用バッファの内容更新
-	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };// ConstBufferからID3D11Bufferへの変換
-	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);// シェーダーにバッファを渡す
-	m_pDrawPolygon->DrawSetting(// 描画前設定
+	// シェーダーに渡す追加のバッファを作成する
+	// ウィンドウサイズを設定
+	m_constBuffer.windowSize = Vector4(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 1, 1);
+	// 時間を設定
+	m_constBuffer.time = m_time;
+	// 色を設定
+	m_constBuffer.color = Vector3(0.5, 0.5, 0.5);
+	// 受け渡し用バッファの内容更新
+	m_pDrawPolygon->UpdateSubResources(m_pCBuffer.Get(), &m_constBuffer);
+	// ConstBufferからID3D11Bufferへの変換
+	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };
+	// シェーダーにバッファを渡す
+	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
+	// 描画前設定
+	m_pDrawPolygon->DrawSetting(
 		DrawPolygon::SamplerStates::LINEAR_WRAP,// サンプラーステート
 		DrawPolygon::BlendStates::NONPREMULTIPLIED,// ブレンドステート
 		DrawPolygon::RasterizerStates::CULL_NONE,// ラスタライザーステート
 		DrawPolygon::DepthStencilStates::DEPTH_NONE);// 深度ステンシルステート
-	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pTextures);// 描画開始
-	if (m_shaderType == ShaderType::NORMAL)	// 普通のメニューだったら
-		m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);			//	普通のシェーダをセットする
-	else									// ステージセレクトだったら
-		m_pDrawPolygon->SetShader(m_StageSelectShaders, nullptr, 0);// 	ステージセレクト用のシェーダをセットする
-	m_pDrawPolygon->DrawColorTexture(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex[0], 1);// 板ポリゴンを描画
-	m_pDrawPolygon->ReleaseShader();// シェーダの登録を解除しておく
-
+	// 描画開始
+	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pTextures);
+	// シェーダータイプで分岐
+	if (m_shaderType == ShaderType::NORMAL)// 普通のメニューだったら
+	{
+		// 普通のシェーダをセットする
+		m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);
+	}
+	else// ステージセレクトだったら									
+	{
+		// ステージセレクト用のシェーダをセットする
+		m_pDrawPolygon->SetShader(m_StageSelectShaders, nullptr, 0);
+	}
+	// 板ポリゴンを描画
+	m_pDrawPolygon->DrawColorTexture(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex[0], 1);
+	// シェーダの登録を解除しておく
+	m_pDrawPolygon->ReleaseShader();
 }
 /*
 *	@brief	ウィンドウのサイズを設定
@@ -184,6 +228,8 @@ void UI::Render()
 */
 void UI::SetWindowSize(const int& width, const int& height)
 {
-	m_windowWidth = width;// ウィンドウの幅
-	m_windowHeight = height;// ウィンドウの高さ
+	// ウィンドウの幅
+	m_windowWidth = width;
+	// ウィンドウの高さ
+	m_windowHeight = height;
 }

@@ -9,7 +9,6 @@
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/KumachiLib/ModelManager/ModelManager.h"
 #include "Game/KumachiLib/TextureManager/TextureManager.h"
-
 // 前方宣言
 namespace DX
 {
@@ -26,18 +25,29 @@ class TextureManager;
 class CommonResources
 {
 public:// アクセサ
-	DX::StepTimer* GetStepTimer() const { return m_stepTimer; }// タイマーを取得する
-	DX::DeviceResources* GetDeviceResources() const { return m_deviceResources; }// デバイスリソースを取得する
-	DirectX::CommonStates* GetCommonStates() const { return m_commonStates; }// コモンステートを取得する
-	mylib::DebugString* GetDebugString() const { return m_debugString; }// デバッグ文字列を取得する
-	mylib::InputManager* GetInputManager() const { return m_inputManager; }// 入力マネージャを取得する
-	AudioManager* GetAudioManager() const { return m_audioManager; }// オーディオマネージャを取得する
-	ModelManager* GetModelManager() const { return m_modelManager; }// モデルマネージャを取得する
-	TextureManager* GetTextureManager() const { return m_textureManager; }// テクスチャマネージャを取得する
+	// タイマーを取得する
+	DX::StepTimer* GetStepTimer() const { return m_stepTimer; }
+	// デバイスリソースを取得する
+	DX::DeviceResources* GetDeviceResources() const { return m_deviceResources; }
+	// コモンステートを取得する
+	DirectX::CommonStates* GetCommonStates() const { return m_commonStates; }
+	// デバッグ文字列を取得する
+	mylib::DebugString* GetDebugString() const { return m_debugString; }
+	// 入力マネージャを取得する
+	mylib::InputManager* GetInputManager() const { return m_inputManager; }
+	// オーディオマネージャを取得する
+	AudioManager* GetAudioManager() const { return m_audioManager; }
+	// モデルマネージャを取得する
+	ModelManager* GetModelManager() const { return m_modelManager; }
+	// テクスチャマネージャを取得する
+	TextureManager* GetTextureManager() const { return m_textureManager; }
 public:// publicメソッド
-	CommonResources();// コンストラクタ
-	~CommonResources() = default;// デストラクタ defaultで定義
-	void Initialize(// 初期化する
+	// コンストラクタ
+	CommonResources();
+	// デストラクタ defaultで定義
+	~CommonResources() = default;
+	// 初期化する
+	void Initialize(
 		DX::StepTimer* timer,// 受け渡しするタイマー
 		DX::DeviceResources* dr,// 受け渡しするデバイスリソース
 		DirectX::CommonStates* commonStates,// 受け渡しするコモンステート
@@ -45,8 +55,7 @@ public:// publicメソッド
 		mylib::InputManager* inputManager,// 受け渡しする入力マネージャ
 		AudioManager* audioManager,// 受け渡しするオーディオマネージャ
 		ModelManager* modelManager,// 受け渡しするモデルマネージャ
-		TextureManager* textureManager  // 受け渡しするテクスチャマネージャ (デフォルトはnullptr, モデルマネージャから取得するため)
-
+		TextureManager* textureManager  // 受け渡しするテクスチャマネージャ
 	);
 private:// privateメンバ変数
 	// 受け渡しするリソース一覧

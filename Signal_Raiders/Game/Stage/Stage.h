@@ -21,17 +21,22 @@ class CommonResources;
 class Stage
 {
 public:// public関数
-	Stage();// コンストラクタ
-	~Stage();// デストラクタ
-	void Initialize(CommonResources* resources);// 初期化
-	void Render(DirectX::SimpleMath::Matrix view,// 描画
-		DirectX::SimpleMath::Matrix proj,
-		DirectX::SimpleMath::Matrix world,
-		DirectX::SimpleMath::Vector3 pos
-	);
+	// コンストラクタ
+	Stage();
+	// デストラクタ
+	~Stage();
+	// 初期化
+	void Initialize(CommonResources* resources);
+	// 描画
+	void Render(
+		const DirectX::SimpleMath::Matrix& view,
+		const DirectX::SimpleMath::Matrix& proj,
+		const DirectX::SimpleMath::Matrix& world);
 public:// 定数
-	static const float STAGE_SIZE;	// ステージの広さ
-	static const float STAGE_HEIGHT;	// ステージの高さ
+	// ステージの広さ
+	static const float STAGE_SIZE;
+	// ステージの高さ
+	static const float STAGE_HEIGHT;
 private:// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;

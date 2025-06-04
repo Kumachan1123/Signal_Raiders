@@ -4,12 +4,10 @@
 */
 #include <pch.h>
 #include "Wall.h"
-
 // 壁の幅
 const float Wall::WALL_WIDTH = 100.0f;
 // 壁の高さ
 const float Wall::WALL_HEIGHT = 5.0f;
-
 // インプットレイアウト
 const std::vector<D3D11_INPUT_ELEMENT_DESC>  Wall::INPUT_LAYOUT =
 {
@@ -34,8 +32,6 @@ Wall::Wall(CommonResources* resources)
 	, m_wallBox()// 壁の当たり判定
 	, m_pCreateShader{ CreateShader::GetInstance() }// シェーダー作成クラス
 {
-	m_pCreateShader->Initialize(m_pCommonResources->GetDeviceResources()->GetD3DDevice(), // シェーダー作成クラスの初期化
-		&INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
 }
 /*
 *	@brief	デストラクタ
@@ -65,25 +61,50 @@ void  Wall::LoadTexture(const wchar_t* path)
 void  Wall::Create(DX::DeviceResources* pDR)
 {
 	using namespace DirectX;
-	auto pTexture = m_pCommonResources->GetTextureManager();// テクスチャマネージャーを取得
-	m_pDR = pDR;// デバイスリソースを保存
-	CreateShaders();// シェーダーの作成
-	CreateWalls();// 壁の初期化
-	m_pWallTexture.push_back(pTexture->GetTexture("Wall"));// 壁のテクスチャを追加 
-	m_pDrawPolygon->InitializePositionTexture(m_pDR);// 板ポリゴン描画用
+	// テクスチャマネージャーを取得
+	auto pTexture = m_pCommonResources->GetTextureManager();
+	// デバイスリソースを保存
+	m_pDR = pDR;
+	// シェーダー作成クラスの初期化
+	m_pCreateShader->Initialize(m_pDR->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
+	// シェーダーの作成
+	CreateShaders();
+	// 壁の初期化
+	CreateWalls();
+	// 壁のテクスチャを追加 
+	m_pWallTexture.push_back(pTexture->GetTexture("Wall"));
+	// 板ポリゴン描画用
+	m_pDrawPolygon->InitializePositionTexture(m_pDR);
 }
+/*
+*	@brief	シェーダーの作成
+*	@details 壁のシェーダーを作成する
+*	@param なし
+*	@return なし
+*/
 void Wall::CreateShaders()
 {
-	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/TitleScene/VS_Title.cso", m_pVertexShader);// 頂点シェーダー作成
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/TitleScene/PS_Title.cso", m_pPixelShader);// ピクセルシェーダ作成
-	m_pInputLayout = m_pCreateShader->GetInputLayout();// インプットレイアウトを受け取る
-	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));	// シェーダーにデータを渡すためのコンスタントバッファ生成
-	// シェーダーの構造体にシェーダーを渡す
-	m_shaders.vs = m_pVertexShader.Get();// 頂点シェーダー
-	m_shaders.ps = m_pPixelShader.Get();// ピクセルシェーダー
-	m_shaders.gs = nullptr;// ジオメトリシェーダー（使わないのでnullptr）
-
+	// 頂点シェーダー作成
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/TitleScene/VS_Title.cso", m_pVertexShader);
+	// ピクセルシェーダ作成
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/TitleScene/PS_Title.cso", m_pPixelShader);
+	// インプットレイアウトを受け取る
+	m_pInputLayout = m_pCreateShader->GetInputLayout();
+	// シェーダーにデータを渡すためのコンスタントバッファ生成
+	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));
+	// シェーダーの構造体に頂点シェーダーを渡す
+	m_shaders.vs = m_pVertexShader.Get();
+	// シェーダーの構造体にピクセルシェーダーを渡す
+	m_shaders.ps = m_pPixelShader.Get();
+	// ジオメトリシェーダーは使わないのでnullptrをセット
+	m_shaders.gs = nullptr;
 }
+/*
+*	@brief	壁の初期化
+*	@details 壁の頂点情報を初期化する
+*	@param なし
+*	@return なし
+*/
 void Wall::CreateWalls()
 {
 	using namespace DirectX;
@@ -117,17 +138,26 @@ void Wall::CreateWalls()
 		}
 	};
 
-	for (int i = 0; i < WALL_NUM; i++)for (int j = 0; j < WALL_NUM; j++) m_wall[i][j] = wall[i][j];// 壁の頂点をコピー
+	// 壁の頂点をコピー
+	for (int i = 0; i < WALL_NUM; i++)for (int j = 0; j < WALL_NUM; j++) m_wall[i][j] = wall[i][j];
 
 	// 壁の中心座標を求める
-	m_wallBox[0].Center = Vector3(0.0f, Wall::WALL_HEIGHT, Wall::WALL_WIDTH);	// 後ろの壁の中心座標
-	m_wallBox[0].Extents = Vector3(Wall::WALL_WIDTH, Wall::WALL_HEIGHT, 0.0f);	// 後ろの壁の大きさ
-	m_wallBox[1].Center = Vector3(0.0f, Wall::WALL_HEIGHT, -Wall::WALL_WIDTH);	// 前の壁の中心座標
-	m_wallBox[1].Extents = Vector3(Wall::WALL_WIDTH, Wall::WALL_HEIGHT, 0.0f);	// 前の壁の大きさ
-	m_wallBox[2].Center = Vector3(Wall::WALL_WIDTH, Wall::WALL_HEIGHT, 0.0f);	// 右の壁の中心座標
-	m_wallBox[2].Extents = Vector3(0.0f, Wall::WALL_HEIGHT, Wall::WALL_WIDTH);	// 右の壁の大きさ
-	m_wallBox[3].Center = Vector3(-Wall::WALL_WIDTH, Wall::WALL_HEIGHT, 0.0f);	// 左の壁の中心座標
-	m_wallBox[3].Extents = Vector3(0.0f, Wall::WALL_HEIGHT, Wall::WALL_WIDTH);	// 左の壁の大きさ
+	// 後ろの壁の中心座標
+	m_wallBox[0].Center = Vector3(0.0f, Wall::WALL_HEIGHT, Wall::WALL_WIDTH);
+	// 後ろの壁の大きさ
+	m_wallBox[0].Extents = Vector3(Wall::WALL_WIDTH, Wall::WALL_HEIGHT, 0.0f);
+	// 前の壁の中心座標
+	m_wallBox[1].Extents = Vector3(Wall::WALL_WIDTH, Wall::WALL_HEIGHT, 0.0f);
+	// 前の壁の大きさ
+	m_wallBox[1].Center = Vector3(0.0f, Wall::WALL_HEIGHT, -Wall::WALL_WIDTH);
+	// 右の壁の中心座標
+	m_wallBox[2].Center = Vector3(Wall::WALL_WIDTH, Wall::WALL_HEIGHT, 0.0f);
+	// 右の壁の大きさ
+	m_wallBox[2].Extents = Vector3(0.0f, Wall::WALL_HEIGHT, Wall::WALL_WIDTH);
+	// 左の壁の中心座標
+	m_wallBox[3].Center = Vector3(-Wall::WALL_WIDTH, Wall::WALL_HEIGHT, 0.0f);
+	// 左の壁の大きさ
+	m_wallBox[3].Extents = Vector3(0.0f, Wall::WALL_HEIGHT, Wall::WALL_WIDTH);
 }
 /*
 *	@brief	更新
@@ -135,7 +165,11 @@ void Wall::CreateWalls()
 *	@param elapsedTime 経過時間
 *	@return なし
 */
-void Wall::Update(float elapsedTime) { m_time += elapsedTime; }
+void Wall::Update(float elapsedTime)
+{
+	// 時間をカウント
+	m_time += elapsedTime;
+}
 /*
 *	@brief	描画
 *	@details 壁の描画
@@ -143,26 +177,39 @@ void Wall::Update(float elapsedTime) { m_time += elapsedTime; }
 *	@param proj プロジェクション行列
 *	@return なし
 */
-void Wall::Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void Wall::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	// シェーダーに渡す追加のバッファを作成する(ConstBuffer)
-	m_constBuffer.matView = view.Transpose();// ビュー行列
-	m_constBuffer.matProj = proj.Transpose();// プロジェクション行列
-	m_constBuffer.matWorld = m_world.Transpose();// ワールド行列
-	m_constBuffer.colors = DirectX::SimpleMath::Vector4(0, 1.0f, 1.0f, 0.0f);// 色（水色）
-	m_constBuffer.time = DirectX::SimpleMath::Vector4(m_time);// 時間
-	m_pDrawPolygon->UpdateSubResources(m_pCBuffer.Get(), &m_constBuffer);// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };// シェーダーにバッファを渡す
-	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);// 頂点シェーダもピクセルシェーダも、同じ値を渡す
-	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);// シェーダをセットする
-	m_pDrawPolygon->DrawSetting(// 描画前設定
+	// ビュー行列を転置してセット
+	m_constBuffer.matView = view.Transpose();
+	// プロジェクション行列を転置してセット
+	m_constBuffer.matProj = proj.Transpose();
+	// ワールド行列を転置してセット
+	m_constBuffer.matWorld = m_world.Transpose();
+	// 色の設定
+	m_constBuffer.colors = DirectX::SimpleMath::Vector4(0, 1.0f, 1.0f, 0.0f);
+	// 時間の設定
+	m_constBuffer.time = DirectX::SimpleMath::Vector4(m_time);
+	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
+	m_pDrawPolygon->UpdateSubResources(m_pCBuffer.Get(), &m_constBuffer);
+	// ConstBufferからID3D11Bufferへの変換
+	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };
+	// シェーダーにバッファを渡す
+	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
+	// シェーダをセットする
+	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);
+	// 描画前設定
+	m_pDrawPolygon->DrawSetting(
 		DrawPolygon::SamplerStates::LINEAR_WRAP,// サンプラーステート
 		DrawPolygon::BlendStates::NONPREMULTIPLIED,// ブレンドステート
 		DrawPolygon::RasterizerStates::CULL_NONE,// ラスタライザーステート
 		DrawPolygon::DepthStencilStates::DEPTH_NONE);// 深度ステンシルステート
-	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pWallTexture);// 描画
-	for (int i = 0; i < WALL_NUM; i++)	m_pDrawPolygon->DrawTexture(m_wall[i]);	// 壁を描画
-	m_pDrawPolygon->ReleaseShader();	// シェーダの登録を解除しておく
+	// 描画
+	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pWallTexture);
+	// 壁を描画
+	for (int i = 0; i < WALL_NUM; i++)	m_pDrawPolygon->DrawTexture(m_wall[i]);
+	// シェーダの登録を解除しておく
+	m_pDrawPolygon->ReleaseShader();
 }
