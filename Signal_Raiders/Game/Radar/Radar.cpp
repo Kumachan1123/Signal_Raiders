@@ -105,6 +105,13 @@ void Radar::Initialize(Player* pPlayer, EnemyManager* pEnemyManager)
 	m_shaders.ps = m_pPixelShader.Get();
 	// ジオメトリシェーダーは使わないのでnullptrを設定
 	m_shaders.gs = nullptr;
+	// 背景テクスチャを渡す
+	m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("RadarBack"));
+	// プレイヤーピンテクスチャを渡す
+	m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("PlayerPin"));
+	// 敵ピンテクスチャを渡す
+	m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("EnemyPin"));
+
 }
 /*
 *	@brief	更新
@@ -181,7 +188,7 @@ void Radar::DrawBackground()
 	// 画像引き渡し
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures;
 	// 背景画像を取得
-	textures.push_back(m_pCommonResources->GetTextureManager()->GetTexture("RadarBack"));
+	textures.push_back(m_pTexture[(int)(RadarState::Background)].Get());
 	// 描画準備
 	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), textures);
 	// ポリゴンを描画
@@ -216,7 +223,7 @@ void Radar::DrawPlayer()
 	// 画像引き渡し
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures;
 	// プレイヤーピン画像を取得
-	textures.push_back(m_pCommonResources->GetTextureManager()->GetTexture("PlayerPin"));
+	textures.push_back(m_pTexture[(int)(RadarState::Player)].Get());
 	// 描画準備
 	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), textures);
 	// 板ポリゴンを描画
@@ -270,7 +277,7 @@ void Radar::DrawEnemy()
 			// 画像引き渡し
 			std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> textures;
 			// 敵ピン画像を取得
-			textures.push_back(m_pCommonResources->GetTextureManager()->GetTexture("EnemyPin"));
+			textures.push_back(m_pTexture[(int)(RadarState::Enemy)].Get());
 			// 描画準備
 			m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), textures);
 			// 敵ピンの描画位置を設定

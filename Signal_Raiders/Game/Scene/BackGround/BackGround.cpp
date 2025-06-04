@@ -60,16 +60,16 @@ void  BackGround::Create(DX::DeviceResources* pDR)
 */
 void  BackGround::CreateShaders()
 {
+	// デバイスの取得
+	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
+	// シェーダー作成クラスの初期化
+	m_pCreateShader->Initialize(device, &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
 	// 頂点シェーダーの作成
 	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/CRT/VS_CRT.cso", m_pVertexShader);
 	// ピクセルシェーダーの作成
 	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/CRT/PS_CRT.cso", m_pPixelShader);
 	// インプットレイアウトを受け取る
 	m_pInputLayout = m_pCreateShader->GetInputLayout();
-	// デバイスの取得
-	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
-	// シェーダー作成クラスの初期化
-	m_pCreateShader->Initialize(device, &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
 	// シェーダーにデータを渡すためのコンスタントバッファ生成
 	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));
 	// シェーダーの構造体に頂点シェーダーを渡す

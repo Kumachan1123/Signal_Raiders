@@ -144,4 +144,6 @@ private:// private変数
 	CreateShader* m_pCreateShader;
 	// シェーダーに渡す定数バッファ
 	ConstBuffer m_constBuffer;
+	// テクスチャ配列
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_pTexture;
 };
