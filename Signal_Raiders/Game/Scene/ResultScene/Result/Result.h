@@ -11,6 +11,7 @@
 #include <Libraries/MyLib/InputManager.h>
 #include <Libraries/MyLib/MemoryLeakDetector.h>
 // 自作ヘッダーファイル
+#include "Game/Scene/IScene.h"
 #include "Game/CommonResources.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
@@ -21,7 +22,6 @@ class CommonResources;
 class Result final
 {
 public:	// 構造体
-
 	struct ConstBuffer// シェーダーに渡す情報の構造体
 	{
 		DirectX::SimpleMath::Matrix		matWorld;	// ワールド行列
@@ -31,16 +31,29 @@ public:	// 構造体
 		float time;									// 時間
 		DirectX::SimpleMath::Vector3 padding;		// パディング
 	};
+public:// アクセサ
+	// シーンIDを取得
+	IScene::SceneID GetSceneID() const { return m_sceneID; }
+	// シーンIDを設定
+	void SetSceneID(IScene::SceneID sceneID) { m_sceneID = sceneID; }
 public:// public関数
-	Result(CommonResources* resources);// コンストラクタ
-	~Result();// デストラクタ
-	void LoadTexture(const wchar_t* path);// テクスチャリソース読み込み
-	void Create(DX::DeviceResources* pDR, const wchar_t* path);// 初期化
-	void Update(float elapsedTime);// 更新
-	void Render();// 描画
+	// コンストラクタ
+	Result(CommonResources* resources);
+	// デストラクタ
+	~Result();
+	//// テクスチャリソース読み込み
+	//void LoadTexture(const wchar_t* path);
+	// 初期化
+	void Create(DX::DeviceResources* pDR);
+	// 更新
+	void Update(float elapsedTime);
+	// 描画
+	void Render();
 private:// private関数
-	void CreateShaders();//	シェーダーを作成
+	// シェーダーを作成
+	void CreateShaders();
 public:// 定数
+	// インプットレイアウト
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 private:// private変数
 	// 共通リソース
@@ -77,6 +90,6 @@ private:// private変数
 	DirectX::SimpleMath::Matrix m_proj;
 	// 頂点情報
 	DirectX::VertexPositionTexture m_vertex[4];
-
-
+	// シーンID
+	IScene::SceneID m_sceneID;
 };

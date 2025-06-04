@@ -20,7 +20,7 @@
 class CommonResources;
 class BackGround
 {
-public:
+public:// 構造体
 	// シェーダーに渡す構造体
 	struct ConstBuffer
 	{
@@ -31,16 +31,22 @@ public:
 		DirectX::SimpleMath::Vector4 time;		// 時間
 	};
 public:// public関数
-	BackGround(CommonResources* resources);// コンストラクタ
-	~BackGround();// デストラクタ
-	void LoadTexture(const wchar_t* path);// テクスチャリソース読み込み
-	void Create(DX::DeviceResources* pDR);// 生成
-	void Update(float elapsedTime); // 更新
-	void Render();// 描画
+	// コンストラクタ
+	BackGround(CommonResources* resources);
+	// デストラクタ
+	~BackGround();
+	//void LoadTexture(const wchar_t* path);// テクスチャリソース読み込み
+	// 生成
+	void Create(DX::DeviceResources* pDR);
+	// 更新
+	void Update(float elapsedTime);
+	// 描画
+	void Render();
 private:// private関数
 	void CreateShaders();// シェーダー作成
 public:// 定数
-	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;// インプットレイアウト
+	// インプットレイアウト
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 private:// private変数
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;

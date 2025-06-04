@@ -20,8 +20,8 @@ class CommonResources;
 
 class StageSelect final
 {
-public:
-	//	データ受け渡し用コンスタントバッファ(送信側)
+public:// 構造体
+	// シェーダーに渡す定数バッファ構造体
 	struct ConstBuffer
 	{
 		DirectX::SimpleMath::Matrix		matWorld;//	ワールド行列
@@ -31,16 +31,23 @@ public:
 		DirectX::SimpleMath::Vector4	time;	//	時間
 	};
 public:// public関数
-	StageSelect(CommonResources* resources);// コンストラクタ
-	~StageSelect();// デストラクタ
-	void LoadTexture(const wchar_t* path);// テクスチャ読み込み
-	void Create(DX::DeviceResources* pDR);// 初期化
-	void Update(float elapsedTime);// 更新
-	void Render();// 描画
+	// コンストラクタ
+	StageSelect(CommonResources* resources);
+	// デストラクタ
+	~StageSelect();
+	// テクスチャ読み込み
+	void LoadTexture(const wchar_t* path);
+	// 初期化
+	void Create(DX::DeviceResources* pDR);
+	// 更新
+	void Update(float elapsedTime);
+	// 描画
+	void Render();
 private:// private関数
-	void CreateShaders();// シェーダーを作成
-public:
-	// public定数
+	// シェーダーを作成
+	void CreateShaders();
+public:// public定数
+	// インプットレイアウト
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 private:// private定数
 	// 共通リソース

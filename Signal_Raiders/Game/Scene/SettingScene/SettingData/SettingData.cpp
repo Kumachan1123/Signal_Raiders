@@ -31,18 +31,29 @@ SettingData::~SettingData() {/*do nothing*/ }
 */
 void SettingData::Load()
 {
+	// nlohmann::jsonライブラリを使用してJSONファイルを読み込む
 	using json = nlohmann::json;
+	// 標準ライブラリを使用
 	using namespace std;
-	string filename = "Resources/Setting/Setting.json";//読み込むファイルの名前を作成
-	ifstream ifs(filename.c_str());//ファイルを開く
-	if (ifs.good())// ファイルが正常に開けたら
+	//読み込むファイルの名前を作成
+	string filename = "Resources/Setting/Setting.json";
+	//ファイルを開く
+	ifstream ifs(filename.c_str());
+	// ファイルが正常に開けたら
+	if (ifs.good())
 	{
-		json j;							//jsonオブジェクト
-		ifs >> j;						//ファイルから読み込む
-		m_bgmVolume = j["BGM"];			// BGMの音量
-		m_seVolume = j["SE"];			// SEの音量
-		m_mouseSensitivity = j["Mouse"];// マウス感度
-		ifs.close();					//ファイルを閉じる
+		//jsonオブジェクト
+		json j;
+		//ファイルから読み込む
+		ifs >> j;
+		// BGMの音量
+		m_bgmVolume = j["BGM"];
+		// SEの音量
+		m_seVolume = j["SE"];
+		// マウス感度
+		m_mouseSensitivity = j["Mouse"];
+		//ファイルを閉じる
+		ifs.close();
 	}
 }
 /*
@@ -55,17 +66,28 @@ void SettingData::Load()
 */
 void SettingData::Save(int BGM, int SE, int Mouse)
 {
+	// nlohmann::jsonライブラリを使用してJSONファイルに書き込む
 	using json = nlohmann::json;
+	// 標準ライブラリを使用
 	using namespace std;
-	string filename = "Resources/Setting/Setting.json";//書き込むファイルの名前を作成
-	ofstream ofs(filename.c_str());//ファイルを開く
-	if (ofs.good())// ファイルが正常に開けたら
+	//書き込むファイルの名前を作成
+	string filename = "Resources/Setting/Setting.json";
+	//ファイルを開く
+	ofstream ofs(filename.c_str());
+	// ファイルが正常に開けたら
+	if (ofs.good())
 	{
-		json j;					//jsonオブジェクト
-		j["BGM"] = BGM;			// BGMの音量
-		j["SE"] = SE;			// SEの音量
-		j["Mouse"] = Mouse;		// マウス感度
-		ofs << j;				//ファイルに書き込む
-		ofs.close();			//ファイルを閉じる
+		//jsonオブジェクト
+		json j;
+		// BGMの音量
+		j["BGM"] = BGM;
+		// SEの音量
+		j["SE"] = SE;
+		// マウス感度
+		j["Mouse"] = Mouse;
+		//ファイルに書き込む
+		ofs << j;
+		//ファイルを閉じる
+		ofs.close();
 	}
 }

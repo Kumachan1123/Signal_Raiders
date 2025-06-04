@@ -24,39 +24,54 @@
 class CommonResources;
 class TitleMenu : public IMenuUI
 {
-public:
-	struct UITransForm// UIの変形
+public:// 構造体
+	// UIの変形
+	struct UITransForm
 	{
 		DirectX::SimpleMath::Vector2 position;// 位置
 		DirectX::SimpleMath::Vector2 scale;// スケール
 	};
-	enum SceneID// シーン番号
+	// シーン番号
+	enum SceneID
 	{
 		STAGESELECT = 0,// ステージ選択
 		SETTING,// 設定画面
 		END// ゲーム終了
 	};
 public:// アクセサ
-	SceneID GetSceneNum() const { return m_num; }// シーン番号取得
-	void SetSceneNum(SceneID num) { m_num = num; }// シーン番号設定
-	bool GetIsHit()const { return m_hit; }// UIにヒットしたかどうか取得
-	void SetIsHit(bool hit) { m_hit = hit; }// UIにヒットしたかどうか設定
-	void SetSEVolume(float volume) { m_SEVolume = volume; }// SEの音量設定
+	// シーン番号取得
+	SceneID GetSceneNum() const { return m_num; }
+	// シーン番号設定
+	void SetSceneNum(SceneID num) { m_num = num; }
+	// UIにヒットしたかどうか取得
+	bool GetIsHit()const { return m_hit; }
+	// UIにヒットしたかどうか設定
+	void SetIsHit(bool hit) { m_hit = hit; }
+	// SEの音量設定
+	void SetSEVolume(float volume) { m_SEVolume = volume; }
 public:// public関数
-	TitleMenu();// コンストラクタ
-	~TitleMenu();// デストラクタ
-	void Initialize(CommonResources* resources, int width, int height);// 初期化
-	void Update(const UpdateContext& context)override { Update(context.elapsedTime); }// 更新
-	void Render();// 描画
-	void Add(const std::string& key// UI追加
+	// コンストラクタ
+	TitleMenu();
+	// デストラクタ
+	~TitleMenu();
+	// 初期化
+	void Initialize(CommonResources* resources, int width, int height);
+	// 更新
+	void Update(const UpdateContext& context)override { Update(context.elapsedTime); }
+	// 描画
+	void Render();
+	// UI追加
+	void Add(const std::string& key
 		, const DirectX::SimpleMath::Vector2& position
 		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor
 		, IMenuUI::UIType type);
 private:// private関数
-	void Update(float elapsedTime);// 更新
+	// 更新
+	void Update(float elapsedTime);
 private:// private定数
-	static const int INVALID_MENU_INDEX;// 無効なメニューインデックス
+	// 無効なメニューインデックス
+	static const int INVALID_MENU_INDEX;
 private:// private変数
 	// メニューのインデックス
 	unsigned int m_menuIndex;

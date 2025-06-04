@@ -30,26 +30,39 @@
 // 前方宣言
 class CommonResources;
 class Fade;
-
 class SettingScene final : public IScene
 {
 public:// public関数
-	SettingScene(IScene::SceneID sceneID);	// コンストラクタ
-	~SettingScene() override;// デストラクタ
-	void Initialize(CommonResources* resources) override;// 初期化
-	void Update(float elapsedTime)override;// 更新
-	void Render() override;// 描画
-	void Finalize() override;// 終了処理
-	SceneID GetNextSceneID() const;// 次のシーンIDを取得
+	// コンストラクタ
+	SettingScene(IScene::SceneID sceneID);
+	// デストラクタ
+	~SettingScene() override;
+	// 初期化
+	void Initialize(CommonResources* resources) override;
+	// 更新
+	void Update(float elapsedTime)override;
+	// 描画
+	void Render() override;
+	// 終了処理
+	void Finalize() override;
+	// 次のシーンIDを取得
+	SceneID GetNextSceneID() const;
 private:// private関数
-	void SetVolume();// 音量設定
-	void UpdateSettingBars(const UpdateContext& ctx);// 設定バーの更新
-	void UpdateFadeAndMouse(const UpdateContext& ctx);// フェードとマウスの更新
-	void UpdateBackgroundAndFade(float elapsedTime);// 背景とフェードの更新
-	void UpdateMousePointers(const UpdateContext& ctx);// マウスポインターの更新
-	void HandleMenuSelection(const UpdateContext& ctx);// メニュー選択の処理
+	// 音量設定
+	void SetVolume();
+	// 設定バーの更新
+	void UpdateSettingBars(const UpdateContext& ctx);
+	// フェードとマウスの更新
+	void UpdateFadeAndMouse(const UpdateContext& ctx);
+	// 背景とフェードの更新
+	void UpdateBackgroundAndFade(float elapsedTime);
+	// マウスポインターの更新
+	void UpdateMousePointers(const UpdateContext& ctx);
+	// メニュー選択の処理
+	void HandleMenuSelection(const UpdateContext& ctx);
 private:// private定数
-	static const float VOLUME;// 音量の基準
+	// 音量の基準
+	static const float VOLUME;
 private:// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
@@ -81,6 +94,4 @@ private:// private変数
 	bool m_isFade;
 	// 現在のシーンID
 	IScene::SceneID m_nowSceneID;
-
-
 };

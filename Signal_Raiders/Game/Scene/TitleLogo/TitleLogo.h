@@ -19,7 +19,7 @@
 class CommonResources;
 class TitleLogo final
 {
-public:
+public:// 構造体
 	// シェーダーに渡すデータ構造体
 	struct ConstBuffer
 	{
@@ -29,17 +29,23 @@ public:
 		DirectX::SimpleMath::Vector4	Colors;// 色
 		DirectX::SimpleMath::Vector4	time;	//	時間
 	};
-public:
-	TitleLogo(CommonResources* resources);// コンストラクタ
-	~TitleLogo();// デストラクタ
-	void LoadTexture(const wchar_t* path);// テクスチャ読み込み
-	void Create(DX::DeviceResources* pDR);// 初期化
-	void Update(float elapsedTime);// 更新
-	void Render();// 描画
+public:// public関数
+	// コンストラクタ
+	TitleLogo(CommonResources* resources);
+	// デストラクタ
+	~TitleLogo();
+	// 初期化
+	void Create(DX::DeviceResources* pDR);
+	// 更新
+	void Update(float elapsedTime);
+	// 描画
+	void Render();
 private:// private関数
-	void CreateShaders();// シェーダーを作成
+	// シェーダーを作成
+	void CreateShaders();
 public:// public定数
-	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;// インプットレイアウト
+	// インプットレイアウト
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 private:// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;

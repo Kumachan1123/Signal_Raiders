@@ -33,10 +33,7 @@ class Enemy;
 class EnemyAI;
 class Radar
 {
-public:
-	// レーダーの大きさの定義
-
-
+public:// 構造体
 	// シェーダーに渡す定数バッファの構造体
 	struct ConstBuffer
 	{
@@ -45,7 +42,7 @@ public:
 		DirectX::SimpleMath::Matrix matProj;    // プロジェクション行列
 		DirectX::SimpleMath::Vector4 colors;    // カラー
 		DirectX::SimpleMath::Vector4 time;      // 時間
-	}m_constBuffer;
+	};
 private:// 列挙型
 	enum class RadarState// レーダーの状態
 	{
@@ -54,34 +51,58 @@ private:// 列挙型
 		Enemy,		// 敵
 	};
 public:// publicメンバ関数
-	Radar(CommonResources* commonResources);// コンストラクタ
-	~Radar();// デストラクタ
-	void Initialize(Player* pPlayer, EnemyManager* pEnemyManager);// 初期化
-	void Update(float elapsedTime);// 更新
-	void Render();// 描画
+	// コンストラクタ
+	Radar(CommonResources* commonResources);
+	// デストラクタ
+	~Radar();
+	// 初期化
+	void Initialize(Player* pPlayer, EnemyManager* pEnemyManager);
+	// 更新
+	void Update(float elapsedTime);
+	// 描画
+	void Render();
 private:// privateメンバ関数
-	void LoadTexture(const wchar_t* path);// テクスチャの読み込み
-	void DrawBackground();// 背景を描画する
-	void DrawPlayer();// プレイヤーを描画する
-	void DrawEnemy();// 敵を描画する
-	void CreateBuffer();// バッファを作成する
-	void DrawSetting();// 描画前設定
+	// 背景を描画する
+	void DrawBackground();
+	// プレイヤーを描画する
+	void DrawPlayer();
+	// 敵を描画する
+	void DrawEnemy();
+	// バッファを作成する
+	void CreateBuffer();
+	// 描画前設定
+	void DrawSetting();
 public:// 定数
-	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;// インプットレイアウト
-	static const float RADAR_SIZE_L;//レーダーの左端
-	static const float RADAR_SIZE_R;//レーダーの右端
-	static const float RADAR_SIZE_T;//レーダーの上端
-	static const float RADAR_SIZE_B;//レーダーの下端
-	static const float ENEMY_SIZE_W;// 敵の点の幅
-	static const float ENEMY_SIZE_H;// 敵の点の高さ
-	static const float RADAR_POSITION_X;// レーダーの位置X
-	static const float RADAR_POSITION_Y;// レーダーの位置Y
-	static const float PLAYER_SIZE_X;// プレイヤーのXサイズ
-	static const float PLAYER_SIZE_Y;// プレイヤーのYサイズ
-	static const float ENEMY_SIZE_X;// 敵のXサイズ
-	static const float ENEMY_SIZE_Y;// 敵のYサイズ
-	static const float RADAR_RANGE;// レーダーの範囲
-	static const float DISTANCE;// プレイヤーとの距離
+	// インプットレイアウト
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
+	//レーダーの左端
+	static const float RADAR_SIZE_L;
+	//レーダーの右端
+	static const float RADAR_SIZE_R;
+	//レーダーの上端
+	static const float RADAR_SIZE_T;
+	//レーダーの下端
+	static const float RADAR_SIZE_B;
+	// 敵の点の幅
+	static const float ENEMY_SIZE_W;
+	// 敵の点の高さ
+	static const float ENEMY_SIZE_H;
+	// レーダーの位置X
+	static const float RADAR_POSITION_X;
+	// レーダーの位置Y
+	static const float RADAR_POSITION_Y;
+	// プレイヤーのXサイズ
+	static const float PLAYER_SIZE_X;
+	// プレイヤーのYサイズ
+	static const float PLAYER_SIZE_Y;
+	// 敵のXサイズ
+	static const float ENEMY_SIZE_X;
+	// 敵のYサイズ
+	static const float ENEMY_SIZE_Y;
+	// レーダーの範囲
+	static const float RADAR_RANGE;
+	// プレイヤーとの距離
+	static const float DISTANCE;
 private:// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
@@ -111,11 +132,9 @@ private:// private変数
 	DirectX::SimpleMath::Vector2 m_enemySize;
 	// 時間
 	float m_time;
-	// テクスチャ
-	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_pTextures;
-	//	頂点シェーダ
+	// 頂点シェーダ
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_pVertexShader;
-	//	ピクセルシェーダ
+	// ピクセルシェーダ
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
@@ -123,5 +142,6 @@ private:// private変数
 	DrawPolygon* m_pDrawPolygon;
 	// シェーダー作成クラス
 	CreateShader* m_pCreateShader;
-
+	// シェーダーに渡す定数バッファ
+	ConstBuffer m_constBuffer;
 };

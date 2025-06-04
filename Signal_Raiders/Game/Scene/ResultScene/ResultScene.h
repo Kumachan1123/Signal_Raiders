@@ -28,26 +28,34 @@
 class CommonResources;
 class Fade;
 class BackGround;
-
 class ResultScene final : public IScene
 {
 public:// アクセサ
-	int GetStageNumber() const { return m_stageNumber; }// ステージ番号を取得
-	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; }// ステージ番号を設定
-	SceneID GetNextSceneID() const;// 次のシーンIDを取得
+	// ステージ番号を取得
+	int GetStageNumber() const { return m_stageNumber; }
+	// ステージ番号を設定
+	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; }
+	// 次のシーンIDを取得
+	SceneID GetNextSceneID() const;
 public:// public関数
-	ResultScene(IScene::SceneID sceneID);// コンストラクタ
-	~ResultScene() override;// デストラクタ
-	void Initialize(CommonResources* resources) override;// 初期化
-	void Update(float elapsedTime)override;// 更新
-	void Render() override;// 描画
-	void Finalize() override;// 終了
-public:
+	// コンストラクタ
+	ResultScene(IScene::SceneID sceneID);
+	// デストラクタ
+	~ResultScene() override;
+	// 初期化
+	void Initialize(CommonResources* resources) override;
+	// 更新
+	void Update(float elapsedTime)override;
+	// 描画
+	void Render() override;
+	// 終了
+	void Finalize() override;
+public:// 定数
 	// 音量の基準
 	static const float VOLUME;
 	// ステージ選択に移動する値
 	static const int STAGE_SELECT;
-private:
+private:// メンバ変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 設定データ

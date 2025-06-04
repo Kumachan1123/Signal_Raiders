@@ -5,7 +5,7 @@
 #include <pch.h>
 #include "StageSelectMenu.h"
 // 無効なメニューインデックス
-const int StageSelectMenu::INVALID_MENU_INDEX = 6;// 無効なメニューインデックス
+const int StageSelectMenu::INVALID_MENU_INDEX = 6;
 /*
 *	@brief コンストラクタ
 *	@details ステージセレクトメニュークラスのコンストラクタ
@@ -47,11 +47,16 @@ StageSelectMenu::~StageSelectMenu() {/*do nothing*/ }
 void StageSelectMenu::Initialize(CommonResources* resources, int width, int height)
 {
 	using namespace DirectX::SimpleMath;
-	m_pCommonResources = resources;// 共通リソースをセット
-	m_pDR = m_pCommonResources->GetDeviceResources();// デバイスリソース取得
-	m_windowWidth = width;// ウィンドウ幅
-	m_windowHeight = height;// ウィンドウ高さ
-	m_pSelectTexturePath = L"Resources/Textures/StageSelect.png";// 選択枠のテクスチャパス設定
+	// 共通リソースをセット
+	m_pCommonResources = resources;
+	// デバイスリソース取得
+	m_pDR = m_pCommonResources->GetDeviceResources();
+	// ウィンドウ幅
+	m_windowWidth = width;
+	// ウィンドウ高さ
+	m_windowHeight = height;
+	// 選択枠のテクスチャパス設定
+	m_pSelectTexturePath = L"Resources/Textures/StageSelect.png";
 	//「ステージ1の写真」を読み込む
 	Add("Stage1"
 		, Vector2(Screen::CENTER_X - 550, Screen::CENTER_Y - 70)
@@ -104,47 +109,76 @@ void StageSelectMenu::Initialize(CommonResources* resources, int width, int heig
 void StageSelectMenu::Update(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
-	auto& mtracker = m_pCommonResources->GetInputManager()->GetMouseTracker();// マウスのトラッカーを取得する
-	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();// マウスの状態を取得
-	m_hit = false;// 何かにヒットしたか
-	Vector2 mousePos = Vector2(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));// マウスの座標を取得
-	for (int i = 0; i < m_pUI.size(); i++)// メニューアイテムの数だけ繰り返す
+	// マウストラッカーを取得する
+	auto& mtracker = m_pCommonResources->GetInputManager()->GetMouseTracker();
+	// マウスの現在の状態を取得する
+	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
+	// 未選択状態にする
+	m_hit = false;
+	// マウス座標を2Dベクトルで取得する
+	Vector2 mousePos = Vector2(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
+	// UIの各要素に対してヒット判定を行う
+	for (int i = 0; i < m_pUI.size(); i++)
 	{
-		if (m_pUI[i]->IsHit(mousePos))// マウスの座標がアイテムの範囲内にあるかどうかを判定
+		// マウスの座標がUIに重なっているか確認する
+		if (m_pUI[i]->IsHit(mousePos))
 		{
-			m_hit = true;	// ヒットフラグを立てる
-			if ((int(m_menuIndex)) != i) m_isSEPlay = false;// 前回選択したメニューと違う場合はSEを再生するフラグを立てる
-			if (!m_isSEPlay)// SEが再生されていない場合
+			// ヒットフラグを立てる
+			m_hit = true;
+			// 選択メニューが前回と違う場合、SE再生フラグをリセット
+			if ((int(m_menuIndex)) != i)m_isSEPlay = false;
+			// SEが未再生なら
+			if (!m_isSEPlay)
 			{
-				m_pCommonResources->GetAudioManager()->PlaySound("Select", m_SEVolume);// SEの再生
-				m_isSEPlay = true;// 再生フラグを立てる
+				// 効果音を再生する
+				m_pCommonResources->GetAudioManager()->PlaySound("Select", m_SEVolume);
+				// SE再生フラグを立てる
+				m_isSEPlay = true;
 			}
-			m_menuIndex = i;// ヒットしたメニューのインデックスを保存
-			break;	// ヒットしたらループを抜ける
+			// 現在選択されているメニューのインデックスを更新する
+			m_menuIndex = i;
+			// 1つでもヒットしたら他は無視する（選択は1つだけ）
+			break;
 		}
 	}
-	m_time += elapsedTime;// 時間を加算する
-	if (!m_hit)m_menuIndex = INVALID_MENU_INDEX;// もし一個もヒットしてなかったら選択なしにする
-	if (mtracker->GetLastState().leftButton)m_num = static_cast<SceneID>(m_menuIndex);// 左クリックされたら選択メニューのシーンIDを更新
-	for (int i = 0; i < m_pUI.size(); i++)// メニューアイテムの選択先を更新
+	// 経過時間を加算する
+	m_time += elapsedTime;
+	// 何もヒットしていなければインデックスを無効にする
+	if (!m_hit)	m_menuIndex = INVALID_MENU_INDEX;
+	// 左クリックされたら選択されたメニューに対応するシーンIDを設定する
+	if (mtracker->GetLastState().leftButton)m_num = static_cast<SceneID>(m_menuIndex);
+	// UI要素の状態を更新する 
+	for (int i = 0; i < m_pUI.size(); i++)
 	{
-		//  アイテムの選択状態を更新
-		m_pSelect[i]->SetScale(m_pSelect[i]->GetSelectScale());// 選択状態のスケールを取得
-		m_pSelect[i]->SetTime(m_pSelect[i]->GetTime() + elapsedTime);// アイテムの選択状態を更新
-		m_pUI[i]->SetScale(m_pUI[i]->GetSelectScale());// 選択状態のスケールを取得
-		m_pUI[i]->SetTime(m_pUI[i]->GetTime() + elapsedTime);// アイテムの選択状態を更新
+		// 背景用の選択ウィンドウのスケールを更新する
+		m_pSelect[i]->SetScale(m_pSelect[i]->GetSelectScale());
+		// 経過時間を渡してアニメ進行
+		m_pSelect[i]->SetTime(m_pSelect[i]->GetTime() + elapsedTime);
+		// メニュー本体のスケールを更新する
+		m_pUI[i]->SetScale(m_pUI[i]->GetSelectScale());
+		// 経過時間を渡してアニメ進行
+		m_pUI[i]->SetTime(m_pUI[i]->GetTime() + elapsedTime);
 	}
-	for (int i = 0; i < m_pGuide.size(); i++)// 選択不可能なアイテムの選択状態を更新
+	// 非選択対象のUIのアニメ状態も更新する
+	for (int i = 0; i < m_pGuide.size(); i++)
 	{
-		m_pGuide[i]->SetScale(m_pGuide[i]->GetSelectScale());// スケールを取得
-		m_pGuide[i]->SetTime(m_pGuide[i]->GetTime() + elapsedTime);// 時間を加算
+		// スケール更新する
+		m_pGuide[i]->SetScale(m_pGuide[i]->GetSelectScale());
+		// 経過時間を更新する
+		m_pGuide[i]->SetTime(m_pGuide[i]->GetTime() + elapsedTime);
 	}
-	if (m_menuIndex == INVALID_MENU_INDEX)return;// なにも選択されていない場合は何もしない
-	Vector2 select = m_pUI[m_menuIndex]->GetSelectScale();// 選択中の初期サイズを取得する
-	Vector2 selectScale = Vector2::Lerp(m_pUI[m_menuIndex]->GetSelectScale(), Vector2::One, 1);// 選択状態とするための変化用サイズを算出する
-	select = Vector2((sin(m_time) * 0.1f) + 1.0f);// 選択状態は初期状態より大きくする
-	m_pUI[m_menuIndex]->SetScale(select);// 算出後のサイズを現在のサイズとして設定する
-	m_pSelect[m_menuIndex]->SetScale(select);// 背景用のウィンドウ画像にも同じ割合の値を設定する
+	// 選択されたメニューがない場合は何もしないで戻る
+	if (m_menuIndex == INVALID_MENU_INDEX)	return;
+	// 選択されたUIの元のスケールを取得する
+	Vector2 select = m_pUI[m_menuIndex]->GetSelectScale();
+	// スケールの補間
+	Vector2 selectScale = Vector2::Lerp(m_pUI[m_menuIndex]->GetSelectScale(), Vector2::One, 1);
+	// 時間に応じてsin波で変化するスケールを生成する（選択中の演出）
+	select = Vector2((sin(m_time) * 0.1f) + 1.0f);
+	// UI本体に変化スケールを反映する
+	m_pUI[m_menuIndex]->SetScale(select);
+	// 背景ウィンドウにも同様のスケールを適用する
+	m_pSelect[m_menuIndex]->SetScale(select);
 }
 /*
 *	@brief メニューを描画する
@@ -154,15 +188,21 @@ void StageSelectMenu::Update(float elapsedTime)
 */
 void StageSelectMenu::Render()
 {
-	for (unsigned int i = 0; i < m_pUI.size(); i++)// UIの数だけ繰り返す
+	// UIの数だけ繰り返す
+	for (unsigned int i = 0; i < m_pUI.size(); i++)
 	{
-		m_pUI[i]->SetShaderType(UI::ShaderType::STAGE_SELECT);// シェーダータイプを設定
-		m_pUI[i]->Render();	// 描画
+		// シェーダータイプを設定
+		m_pUI[i]->SetShaderType(UI::ShaderType::STAGE_SELECT);
+		// 描画
+		m_pUI[i]->Render();
 	}
-	for (unsigned int i = 0; i < m_pGuide.size(); i++)// 選択不可能なアイテムの画像を表示
+	// 選択不可能なアイテムの画像を表示
+	for (unsigned int i = 0; i < m_pGuide.size(); i++)
 	{
-		m_pGuide[i]->SetShaderType(UI::ShaderType::NORMAL);// シェーダータイプを設定
-		m_pGuide[i]->Render();// 描画
+		// シェーダータイプを設定
+		m_pGuide[i]->SetShaderType(UI::ShaderType::NORMAL);
+		// 描画
+		m_pGuide[i]->Render();
 	}
 }
 /*
@@ -180,20 +220,30 @@ void StageSelectMenu::Add(const std::string& key,
 	const DirectX::SimpleMath::Vector2& scale,
 	KumachiLib::ANCHOR anchor, UIType type)
 {
-	std::unique_ptr<UI> userInterface = std::make_unique<UI>(m_pCommonResources);// UIオブジェクトの生成
-	userInterface->Create(m_pDR, key, position, scale, anchor);// 指定画像でUI作成
-	userInterface->SetWindowSize(m_windowWidth, m_windowHeight);// ウィンドウサイズを設定
+	// UIオブジェクトの生成
+	std::unique_ptr<UI> userInterface = std::make_unique<UI>(m_pCommonResources);
+	// 指定画像でUI作成
+	userInterface->Create(m_pDR, key, position, scale, anchor);
+	// ウィンドウサイズを設定
+	userInterface->SetWindowSize(m_windowWidth, m_windowHeight);
+	// UIの種類に応じて処理を分岐
 	if (type == UIType::SELECT)// 選択可能なアイテムなら
 	{
-		m_pUI.push_back(std::move(userInterface));// アイテムを新しく追加		
-		std::unique_ptr<UI> base = std::make_unique<UI>(m_pCommonResources);// 背景用のウィンドウ画像も追加する
-		base->Create(m_pDR, "StageSelect", position, scale, anchor);// 指定画像でUI作成
-		base->SetWindowSize(m_windowWidth, m_windowHeight);// ウィンドウサイズを設定
-		m_pSelect.push_back(std::move(base));// 背景用のアイテムも新しく追加する
+		// アイテムを新しく追加		
+		m_pUI.push_back(std::move(userInterface));
+		// 背景用のウィンドウ画像も追加する
+		std::unique_ptr<UI> base = std::make_unique<UI>(m_pCommonResources);
+		// 指定画像でUI作成
+		base->Create(m_pDR, "StageSelect", position, scale, anchor);
+		// ウィンドウサイズを設定
+		base->SetWindowSize(m_windowWidth, m_windowHeight);
+		// 背景用のアイテムも新しく追加する
+		m_pSelect.push_back(std::move(base));
 	}
 	else// 選択不可なアイテムなら
 	{
-		m_pGuide.push_back(std::move(userInterface));// 選択不可能なアイテムを追加
+		// 選択不可能なアイテムを追加
+		m_pGuide.push_back(std::move(userInterface));
 		return;
 	}
 }

@@ -53,16 +53,24 @@ class Fade;
 class PlayScene final : public IScene
 {
 public:// アクセサ
-	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; }// ステージ番号を設定する
-	SceneID GetNextSceneID() const;// 次のシーンIDを取得する
+	// ステージ番号を設定する
+	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; }
+	// 次のシーンIDを取得する
+	SceneID GetNextSceneID() const;
 public:// public関数
-	PlayScene(IScene::SceneID sceneID);// コンストラクタ
-	~PlayScene() override;// デストラクタ
-	void Initialize(CommonResources* resources) override;// 初期化
-	void Update(float elapsedTime)override;// 更新
-	void Render() override;// 描画
-	void Finalize() override;// 終了
-public:
+	// コンストラクタ
+	PlayScene(IScene::SceneID sceneID);
+	// デストラクタ
+	~PlayScene() override;
+	// 初期化
+	void Initialize(CommonResources* resources) override;
+	// 更新
+	void Update(float elapsedTime)override;
+	// 描画
+	void Render() override;
+	// 終了
+	void Finalize() override;
+public:// 定数
 	// 音量の基準
 	static const float VOLUME;
 	// ゲームスタート時間

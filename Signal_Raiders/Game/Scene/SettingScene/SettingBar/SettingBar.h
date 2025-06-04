@@ -26,29 +26,45 @@ class CommonResources;
 class SettingBar : public IMenuUI
 {
 public:// アクセサ
-	SettingMenu* GetSettingMenu() { return m_pSettingMenu; }// 設定メニュー取得
-	void SetSettingMenu(SettingMenu* menu) { m_pSettingMenu = menu; }// 設定メニュー設定
-	void SetStateIDNum(SettingMenu::SettingID num) { m_num = num; }// 状態ID設定
-	int GetSetting(int index) const { return m_setting[index]; }// 設定取得
+	// 設定メニュー取得
+	SettingMenu* GetSettingMenu() { return m_pSettingMenu; }
+	// 設定メニュー設定
+	void SetSettingMenu(SettingMenu* menu) { m_pSettingMenu = menu; }
+	// 状態ID設定
+	void SetStateIDNum(SettingMenu::SettingID num) { m_num = num; }
+	// 設定取得
+	int GetSetting(int index) const { return m_setting[index]; }
 public:// public関数
-	SettingBar();// コンストラクタ
-	~SettingBar();// デストラクタ
-	void Initialize(CommonResources* resources, int width, int height)override;// 初期化
-	void Update(const UpdateContext& context)override { Update(context.elapsedTime); }// 更新(contextから時間を取得して更新)
-	void Render()override;// 描画
-	void Add(const std::string& key// メニューアイテムを追加
+	// コンストラクタ
+	SettingBar();
+	// デストラクタ
+	~SettingBar();
+	// 初期化
+	void Initialize(CommonResources* resources, int width, int height)override;
+	// 更新(contextから時間を取得して更新)
+	void Update(const UpdateContext& context)override { Update(context.elapsedTime); }
+	// 描画
+	void Render()override;
+	// メニューアイテムを追加
+	void Add(const std::string& key
 		, const DirectX::SimpleMath::Vector2& position
 		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor
 		, UIType type)override;
 private:// private関数
-	void Update(float elapsedTime);// 更新
+	// 更新
+	void Update(float elapsedTime);
 private:// private定数
-	static const DirectX::SimpleMath::Vector2 BGM_POSITION;	// BGMの位置
-	static const DirectX::SimpleMath::Vector2 SE_POSITION;	// SEの位置
-	static const DirectX::SimpleMath::Vector2 SENSITIVITY_POSITION;	// 感度の位置
-	static const float BAR_WIDTH;	// バーの幅
-	static const float BAR_POINTER_DIVISION;// 玉の位置に除算する値
+	// BGMの位置
+	static const DirectX::SimpleMath::Vector2 BGM_POSITION;
+	// SEの位置
+	static const DirectX::SimpleMath::Vector2 SE_POSITION;
+	// 感度の位置
+	static const DirectX::SimpleMath::Vector2 SENSITIVITY_POSITION;
+	// バーの幅
+	static const float BAR_WIDTH;
+	// 玉の位置に除算する値
+	static const float BAR_POINTER_DIVISION;
 private:// private変数
 	// セッティングメニュー
 	SettingMenu* m_pSettingMenu;
@@ -60,10 +76,6 @@ private:// private変数
 	std::vector<std::unique_ptr<UI>> m_pBar;
 	// 設定バーの玉
 	std::vector<std::unique_ptr<UI>> m_pBarPointer;
-	// 設定バーテクスチャパス
-	const wchar_t* m_pSettingBarTexturePath;
-	// 設定バーの玉テクスチャパス
-	const wchar_t* m_pSettingBarPointerTexturePath;
 	// ウィンドウの幅と高さ
 	int m_windowWidth, m_windowHeight;
 	// 設定データ
@@ -76,6 +88,4 @@ private:// private変数
 	unsigned int m_setting[3];
 	// 時間
 	float m_time;
-
-
 };

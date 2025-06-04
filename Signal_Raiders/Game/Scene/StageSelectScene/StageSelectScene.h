@@ -30,22 +30,31 @@ class BackGround;
 class StageSelectScene final : public IScene
 {
 public:// アクセサ
-	SceneID GetNextSceneID()const override;// 次のシーンIDを取得
-	int GetStageNumber() const { return m_stageNumber; }// ステージ番号を取得
-	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; } // ステージ番号を設定
-public:
-	StageSelectScene(IScene::SceneID sceneID);// コンストラクタ
-	~StageSelectScene() override;// デストラクタ
-	void Initialize(CommonResources* resources) override;// 初期化
-	void Update(float elapsedTime)override;// 更新
-	void Render() override;// 描画
-	void Finalize() override;// 終了
-private:
+	// 次のシーンIDを取得
+	SceneID GetNextSceneID()const override;
+	// ステージ番号を取得
+	int GetStageNumber() const { return m_stageNumber; }
+	// ステージ番号を設定
+	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; }
+public:// public関数
+	// コンストラクタ
+	StageSelectScene(IScene::SceneID sceneID);
+	// デストラクタ
+	~StageSelectScene() override;
+	// 初期化
+	void Initialize(CommonResources* resources) override;
+	// 更新
+	void Update(float elapsedTime)override;
+	// 描画
+	void Render() override;
+	// 終了
+	void Finalize() override;
+private:// 定数
 	// 音量の基準
 	static const float VOLUME;
 	// タイトルに戻る値
 	static const int TITLE;
-private:
+private:// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 設定データ
@@ -80,5 +89,4 @@ private:
 	IScene::SceneID m_nowSceneID;
 	// ステージ番号
 	int m_stageNumber;
-
 };

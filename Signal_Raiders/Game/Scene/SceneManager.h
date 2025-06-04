@@ -1,6 +1,6 @@
 /*
-	@file	SceneManager.h
-	@brief	シーンマネージャクラス
+*	@file	SceneManager.h
+*	@brief	シーンマネージャクラス
 */
 #pragma once
 // 標準ライブラリ
@@ -23,24 +23,40 @@ class CommonResources;
 class SceneManager
 {
 public:// publicメンバ関数
-	SceneManager();// コンストラクタ
-	~SceneManager();// デストラクタ
-	void Initialize(CommonResources* resources);// 初期化
-	void Update(float elapsedTime);// 更新
-	void Render();// 描画
-	void Finalize();// 終了
+	// コンストラクタ
+	SceneManager();
+	// デストラクタ
+	~SceneManager();
+	// 初期化
+	void Initialize(CommonResources* resources);
+	// 更新
+	void Update(float elapsedTime);
+	// 描画
+	void Render();
+	// 終了
+	void Finalize();
 private:// privateメンバ関数
-	void ChangeScene(IScene::SceneID sceneID);// シーン変更
-	void CreateScene(IScene::SceneID sceneID);// シーン作成
-	void DeleteScene();// シーン削除
-	IScene::SceneID GetSceneID() const { return m_nowSceneID; }// シーンID取得
-	void SetSceneID(IScene::SceneID sceneID) { m_nowSceneID = sceneID; }// シーンID設定
+	// シーン変更
+	void ChangeScene(IScene::SceneID sceneID);
+	// シーン作成
+	void CreateScene(IScene::SceneID sceneID);
+	// シーン削除
+	void DeleteScene();
+	// シーンID取得
+	IScene::SceneID GetSceneID() const { return m_nowSceneID; }
+	// シーンID設定
+	void SetSceneID(IScene::SceneID sceneID) { m_nowSceneID = sceneID; }
 private:// private定数
-	static const int STAGE_MAX;// ステージ数
+	// ステージ数
+	static const int STAGE_MAX;
 private:// privateメンバ変数
-	std::unique_ptr<IScene> m_pCurrentScene;// 現在のシーン
-	CommonResources* m_pCommonResources;// 共通リソース
-	IScene::SceneID m_nowSceneID;// 現在のシーンID
-	int m_stageNumber;// プレイシーンにステージ番号を渡すための変数
+	// 現在のシーン
+	std::unique_ptr<IScene> m_pCurrentScene;
+	// 共通リソース
+	CommonResources* m_pCommonResources;
+	// 現在のシーンID
+	IScene::SceneID m_nowSceneID;
+	// プレイシーンにステージ番号を渡すための変数
+	int m_stageNumber;
 
 };

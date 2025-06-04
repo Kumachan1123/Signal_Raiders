@@ -30,9 +30,7 @@ BackGround::BackGround(CommonResources* resources)
 	, m_pCreateShader(CreateShader::GetInstance())// シェーダー作成クラス
 {
 
-	m_pCreateShader->Initialize(m_pCommonResources->GetDeviceResources()->GetD3DDevice(), // シェーダー作成クラスの初期化
-		&INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
-	m_color = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);// 色の初期化
+
 }
 /*
 *	@brief デストラクタ
@@ -41,18 +39,6 @@ BackGround::BackGround(CommonResources* resources)
 *	@return なし
 */
 BackGround::~BackGround() {/* do nothing */ }
-/*
-*	@brief テクスチャリソース読み込み
-*	@details テクスチャリソースを読み込む
-*	@param path 読み込むテクスチャのパス
-*	@return なし
-*/
-void  BackGround::LoadTexture(const wchar_t* path)
-{
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;// テクスチャハンドル
-	DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, nullptr, texture.ReleaseAndGetAddressOf());// テクスチャの読み込み
-	m_pTexture.push_back(texture);// テクスチャを読み込む
-}
 /*
 *	@brief 生成
 *	@details 背景クラスで使う画像やシェーダーの生成・作成
@@ -74,14 +60,26 @@ void  BackGround::Create(DX::DeviceResources* pDR)
 */
 void  BackGround::CreateShaders()
 {
-	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/CRT/VS_CRT.cso", m_pVertexShader);// 頂点シェーダーの作成
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/CRT/PS_CRT.cso", m_pPixelShader);// ピクセルシェーダーの作成
-	m_pInputLayout = m_pCreateShader->GetInputLayout();	// インプットレイアウトを受け取る
-	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));// シェーダーにデータを渡すためのコンスタントバッファ生成
-	// シェーダーの構造体にシェーダーを渡す
-	m_shaders.vs = m_pVertexShader.Get();// 頂点シェーダー
-	m_shaders.ps = m_pPixelShader.Get();// ピクセルシェーダー
-	m_shaders.gs = nullptr;// ジオメトリシェーダー(使わないのでnullptr)
+	// 頂点シェーダーの作成
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/CRT/VS_CRT.cso", m_pVertexShader);
+	// ピクセルシェーダーの作成
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/CRT/PS_CRT.cso", m_pPixelShader);
+	// インプットレイアウトを受け取る
+	m_pInputLayout = m_pCreateShader->GetInputLayout();
+	// デバイスの取得
+	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
+	// シェーダー作成クラスの初期化
+	m_pCreateShader->Initialize(device, &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
+	// シェーダーにデータを渡すためのコンスタントバッファ生成
+	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));
+	// シェーダーの構造体に頂点シェーダーを渡す
+	m_shaders.vs = m_pVertexShader.Get();
+	// シェーダーの構造体にピクセルシェーダーを渡す
+	m_shaders.ps = m_pPixelShader.Get();
+	// ジオメトリシェーダーは使わないのでnullptrを設定
+	m_shaders.gs = nullptr;
+	// 色の初期化
+	m_color = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 /*
 *	@brief 更新
@@ -91,7 +89,8 @@ void  BackGround::CreateShaders()
 */
 void  BackGround::Update(float elapsedTime)
 {
-	m_time += elapsedTime;// 時間更新
+	// 時間更新
+	m_time += elapsedTime;
 }
 /*
 *	@brief 描画
@@ -103,30 +102,44 @@ void  BackGround::Render()
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	VertexPositionTexture vertex[4] =// 頂点情報とUV情報を格納する配列
+	// 頂点情報とUV情報を格納する配列
+	VertexPositionTexture vertex[4] =
 	{
 		//	頂点情報													UV情報
-		VertexPositionTexture(Vector3(-1.0f,  1.0f, 0.0f),Vector2(0.0f, 0.0f)),
-		VertexPositionTexture(Vector3(1.0f,  1.0f, 0.0f), Vector2(1.0f, 0.0f)),
-		VertexPositionTexture(Vector3(1.0, -1.0f, 0.0f),  Vector2(1.0f, 1.0f)),
-		VertexPositionTexture(Vector3(-1.0, -1.0f, 0.0f), Vector2(0.0f, 1.0f)),
+		VertexPositionTexture(Vector3(-1.0f,  1.0f, 0.0f),Vector2(0.0f, 0.0f)),// 左上
+		VertexPositionTexture(Vector3(1.0f,  1.0f, 0.0f), Vector2(1.0f, 0.0f)),// 右上
+		VertexPositionTexture(Vector3(1.0, -1.0f, 0.0f),  Vector2(1.0f, 1.0f)),// 右下
+		VertexPositionTexture(Vector3(-1.0, -1.0f, 0.0f), Vector2(0.0f, 1.0f)),// 左下
 	};
 	// シェーダーに渡す追加のバッファを作成する(ConstBuffer)
-	m_constBuffer.matView = m_view.Transpose();// ビュー行列
-	m_constBuffer.matProj = m_proj.Transpose();// プロジェクション行列
-	m_constBuffer.matWorld = m_world.Transpose();// ワールド行列
-	m_constBuffer.colors = Vector4(m_color);// 色
-	m_constBuffer.time = Vector4(m_time);// 時間
-	m_pDrawPolygon->UpdateSubResources(m_pCBuffer.Get(), &m_constBuffer);// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };// シェーダーにバッファを渡す
-	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);// 頂点シェーダもピクセルシェーダも、同じ値を渡す
-	m_pDrawPolygon->DrawSetting(	// 描画前設定
+	// ビュー行列を転置して格納する
+	m_constBuffer.matView = m_view.Transpose();
+	// プロジェクション行列を転置して格納する
+	m_constBuffer.matProj = m_proj.Transpose();
+	// ワールド行列を転置して格納する
+	m_constBuffer.matWorld = m_world.Transpose();
+	// 色を格納する
+	m_constBuffer.colors = Vector4(m_color);
+	// 時間を格納する
+	m_constBuffer.time = Vector4(m_time);
+	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
+	m_pDrawPolygon->UpdateSubResources(m_pCBuffer.Get(), &m_constBuffer);
+	// シェーダーにバッファを渡す
+	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };
+	// 頂点シェーダもピクセルシェーダも、同じ値を渡す
+	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
+	// 描画前設定
+	m_pDrawPolygon->DrawSetting(
 		DrawPolygon::SamplerStates::LINEAR_WRAP,// サンプラーステート
 		DrawPolygon::BlendStates::NONPREMULTIPLIED,// ブレンドステート
 		DrawPolygon::RasterizerStates::CULL_NONE,// ラスタライザーステート
 		DrawPolygon::DepthStencilStates::DEPTH_NONE);//	デプスステンシルステート
-	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pTexture);// 描画準備
-	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);// シェーダをセットする
-	m_pDrawPolygon->DrawTexture(vertex);// 板ポリゴンを描画
-	m_pDrawPolygon->ReleaseShader();// シェーダの登録を解除しておく
+	// 描画準備
+	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pTexture);
+	// シェーダをセットする
+	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);
+	// 板ポリゴンを描画
+	m_pDrawPolygon->DrawTexture(vertex);
+	// シェーダの登録を解除しておく
+	m_pDrawPolygon->ReleaseShader();
 }

@@ -25,34 +25,50 @@ class CommonResources;
 class StageSelectMenu : public IMenuUI
 {
 public:// 列挙型
-	enum SceneID// シーンID
+	// シーンID
+	enum SceneID
 	{
 		PLAY = 0,// プレイシーン
 		END// タイトルに戻る
 	};
 public:// アクセサ
-	SceneID GetSceneNum() const { return m_num; }// シーン番号取得
-	void SetSceneNum(SceneID num) { m_num = num; }// シーン番号設定
-	int GetMenuIndex() const { return m_menuIndex; }// メニューインデックス取得
-	void SetMenuIndex(int index) { m_menuIndex = index; }// メニューインデックス設定
-	bool GetIsHit()const { return m_hit; }// UIにヒットしたかどうか取得
-	void SetIsHit(bool hit) { m_hit = hit; }// UIにヒットしたかどうか設定
-	void SetSEVolume(float volume) { m_SEVolume = volume; }// SEの音量設定
+	// シーン番号取得
+	SceneID GetSceneNum() const { return m_num; }
+	// シーン番号設定
+	void SetSceneNum(SceneID num) { m_num = num; }
+	// メニューインデックス取得
+	int GetMenuIndex() const { return m_menuIndex; }
+	// メニューインデックス設定
+	void SetMenuIndex(int index) { m_menuIndex = index; }
+	// UIにヒットしたかどうか取得
+	bool GetIsHit()const { return m_hit; }
+	// UIにヒットしたかどうか設定
+	void SetIsHit(bool hit) { m_hit = hit; }
+	// SEの音量設定
+	void SetSEVolume(float volume) { m_SEVolume = volume; }
 public:// public関数
-	StageSelectMenu();// コンストラクタ
-	~StageSelectMenu();// デストラクタ
-	void Initialize(CommonResources* resources, int width, int height)override;// 初期化
-	void Update(const UpdateContext& context)override { Update(context.elapsedTime); }// 更新(contextから時間を取得して更新)
-	void Render()override;// 描画
-	void Add(const std::string& key// メニューアイテムを追加
+	// コンストラクタ
+	StageSelectMenu();
+	// デストラクタ
+	~StageSelectMenu();
+	// 初期化
+	void Initialize(CommonResources* resources, int width, int height)override;
+	// 更新(contextから時間を取得して更新)
+	void Update(const UpdateContext& context)override { Update(context.elapsedTime); }
+	// 描画
+	void Render()override;
+	// メニューアイテムを追加
+	void Add(const std::string& key
 		, const DirectX::SimpleMath::Vector2& position
 		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor
 		, UIType type)override;
 private:// private関数
-	void Update(float elapsedTime);// 更新
+	// 更新
+	void Update(float elapsedTime);
 private:// private定数
-	static const int INVALID_MENU_INDEX;// 無効なメニューインデックス
+	// 無効なメニューインデックス
+	static const int INVALID_MENU_INDEX;
 private:// private変数
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;

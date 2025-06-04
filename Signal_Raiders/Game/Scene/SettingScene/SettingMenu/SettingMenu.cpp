@@ -1,11 +1,11 @@
 /*
-	@file	SettingMenu.cpp
-	@brief	セッティングメニュークラス
+*	@file	SettingMenu.cpp
+*	@brief	セッティングメニュークラス
 */
 #include <pch.h>
 #include "SettingMenu.h"
 // 無効なメニューインデックス
-const int SettingMenu::INVALID_MENU_INDEX = 6;// 無効なメニューインデックス
+const int SettingMenu::INVALID_MENU_INDEX = 6;
 /*
 *	@brief コンストラクタ
 *	@details セッティングメニュークラスのコンストラクタ
@@ -19,7 +19,6 @@ SettingMenu::SettingMenu()
 	, m_pCommonResources{ nullptr }// 共通リソースへのポインタ
 	, m_pUI{}// UI
 	, m_pSelect{}// 選択された時に表示する背景UI
-	, m_pSelectTexturePath{ nullptr }// 選択背景のテクスチャパス
 	, m_pSelectWindow{ nullptr }// 選択ウィンドウ
 	, m_windowWidth{ 0 }// ウィンドウ幅
 	, m_windowHeight{ 0 }// ウィンドウ高さ
@@ -56,24 +55,27 @@ SettingMenu::~SettingMenu()
 void SettingMenu::Initialize(CommonResources* resources, int width, int height)
 {
 	using namespace DirectX::SimpleMath;
-	m_pCommonResources = resources;// 共通リソースをセット
-	m_pDR = m_pCommonResources->GetDeviceResources();// デバイスリソース取得
-	m_windowWidth = width;// ウィンドウ幅
-	m_windowHeight = height;// ウィンドウ高さ
-	m_pSelectTexturePath = L"Resources/Textures/Select.png";// 選択枠のテクスチャパス設定
-	//  「BGM」を読み込む
+	// 共通リソースをセット
+	m_pCommonResources = resources;
+	// デバイスリソース取得
+	m_pDR = m_pCommonResources->GetDeviceResources();
+	// ウィンドウ幅
+	m_windowWidth = width;
+	// ウィンドウ高さ
+	m_windowHeight = height;
+	// 「BGM」を読み込む
 	Add("BGM"
 		, Vector2(Screen::LEFT + 400, Screen::CENTER_Y - 300)
 		, Vector2(.75, .75)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::NON_SELECT);
-	//  「SE」を読み込む
+	// 「SE」を読み込む
 	Add("SE"
 		, Vector2(Screen::LEFT + 400, Screen::CENTER_Y - 150)
 		, Vector2(.75, .75)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::NON_SELECT);
-	//  「マウスかんど」を読み込む
+	// 「マウスかんど」を読み込む
 	Add("Mouse"
 		, Vector2(Screen::LEFT + 400, Screen::CENTER_Y)
 		, Vector2(.75, .75)
@@ -85,7 +87,7 @@ void SettingMenu::Initialize(CommonResources* resources, int width, int height)
 		, Vector2(.75, .75)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
-	//  「おわる」を読み込む
+	// 「おわる」を読み込む
 	Add("Cancel"
 		, Vector2(Screen::LEFT + 400, Screen::CENTER_Y + 300)
 		, Vector2(.75, .75)
@@ -107,43 +109,70 @@ void SettingMenu::Initialize(CommonResources* resources, int width, int height)
 void SettingMenu::Update(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
-	auto& mtracker = m_pCommonResources->GetInputManager()->GetMouseTracker();// マウスのトラッカーを取得する
-	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();// マウスの状態を取得
-	m_time += elapsedTime;// 時間を加算する
-	bool hit = false; // 何かにヒットしたかどうか
-	Vector2 mousePos = Vector2(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));// マウスの座標を取得
-	for (int i = 0; i < m_pUI.size(); i++)// メニューアイテムの数だけ繰り返す
+	// マウスのトラッカーを取得する
+	auto& mtracker = m_pCommonResources->GetInputManager()->GetMouseTracker();
+	// マウスの状態を取得
+	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
+	// 時間を加算する
+	m_time += elapsedTime;
+	// 何かにヒットしたかどうか
+	bool hit = false;
+	// マウスの座標を取得
+	Vector2 mousePos = Vector2(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
+	// メニューアイテムの数だけ繰り返す
+	for (int i = 0; i < m_pUI.size(); i++)
 	{
-		if (m_pUI[i]->IsHit(mousePos))// マウスの座標がアイテムの範囲内にあるかどうかを判定
+		// マウスの座標がアイテムの範囲内にあるかどうかを判定
+		if (m_pUI[i]->IsHit(mousePos))
 		{
-			hit = true;	// ヒットフラグを立てる
-			if ((int(m_menuIndex)) != i) m_isSEPlay = false;// 前回選択したメニューと違う場合はSEを再生するフラグを立てる
-			if (!m_isSEPlay)// SEが再生されていない場合
+			// ヒットフラグを立てる
+			hit = true;
+			// 前回選択したメニューと違う場合はSEを再生するフラグを立てる
+			if ((int(m_menuIndex)) != i) m_isSEPlay = false;
+			// SEが再生されていない場合
+			if (!m_isSEPlay)
 			{
-				m_pCommonResources->GetAudioManager()->PlaySound("Select", m_SEVolume);// SEの再生
-				m_isSEPlay = true;// 再生フラグを立てる
+				// SEの再生
+				m_pCommonResources->GetAudioManager()->PlaySound("Select", m_SEVolume);
+				// 再生フラグを立てる
+				m_isSEPlay = true;
 			}
-			m_menuIndex = i;// ヒットしたメニューのインデックスを保存
-			break;	// ヒットしたらループを抜ける
+			// ヒットしたメニューのインデックスを保存
+			m_menuIndex = i;
+			// ヒットしたらループを抜ける
+			break;
 		}
 	}
-	if (!hit) { m_menuIndex = INVALID_MENU_INDEX; }// もし一個もヒットしてなかったら、選択なしにする
-	if (mtracker->GetLastState().leftButton)m_selectNum = static_cast<SelectID>(m_menuIndex);// 左クリックされたら選択メニューのシーンIDを更新
-	for (int i = 0; i < m_pUI.size(); i++)//  メニューアイテムの選択先を更新
+	// もし一個もヒットしてなかったら、選択なしにする
+	if (!hit) { m_menuIndex = INVALID_MENU_INDEX; }
+	// 左クリックされたら選択メニューのシーンIDを更新
+	if (mtracker->GetLastState().leftButton)m_selectNum = static_cast<SelectID>(m_menuIndex);
+	//  メニューアイテムの選択先を更新
+	for (int i = 0; i < m_pUI.size(); i++)
 	{
-		m_pUI[i]->SetScale(m_pUI[i]->GetSelectScale());// 選択状態のスケールを取得
-		m_pUI[i]->SetTime(m_pUI[i]->GetTime() + elapsedTime);// アイテムの選択状態を更新
+		// 選択状態のスケールを取得
+		m_pUI[i]->SetScale(m_pUI[i]->GetSelectScale());
+		// アイテムの選択状態を更新
+		m_pUI[i]->SetTime(m_pUI[i]->GetTime() + elapsedTime);
 	}
-	for (int i = 0; i < m_pGuide.size(); i++)// 選択不可能なアイテムの選択状態を更新
+	// 選択不可能なアイテムの選択状態を更新
+	for (int i = 0; i < m_pGuide.size(); i++)
 	{
-		m_pGuide[i]->SetScale(m_pGuide[i]->GetSelectScale());// スケールを取得
-		m_pGuide[i]->SetTime(m_pGuide[i]->GetTime() + elapsedTime);// 時間を加算
+		// スケールを取得
+		m_pGuide[i]->SetScale(m_pGuide[i]->GetSelectScale());
+		// 時間を加算
+		m_pGuide[i]->SetTime(m_pGuide[i]->GetTime() + elapsedTime);
 	}
-	if (!hit)return;// 当たってなかったら終了
-	Vector2 select = m_pUI[m_menuIndex]->GetSelectScale();// 選択中の初期サイズを取得する
-	Vector2 selectScale = Vector2::Lerp(m_pUI[m_menuIndex]->GetSelectScale(), Vector2::One, 1);// 選択状態とするための変化用サイズを算出する
-	select = Vector2((sin(m_time) * 0.1f) + 1.0f);// 選択状態は初期状態＋50％の大きさとする
-	m_pUI[m_menuIndex]->SetScale(select);// 算出後のサイズを現在のサイズとして設定する
+	// 当たってなかったら終了
+	if (!hit)return;
+	// 選択中の初期サイズを取得する
+	Vector2 select = m_pUI[m_menuIndex]->GetSelectScale();
+	// 選択状態とするための変化用サイズを算出する
+	Vector2 selectScale = Vector2::Lerp(m_pUI[m_menuIndex]->GetSelectScale(), Vector2::One, 1);
+	// 選択状態は初期状態＋50％の大きさとする
+	select = Vector2((sin(m_time) * 0.1f) + 1.0f);
+	// 算出後のサイズを現在のサイズとして設定する
+	m_pUI[m_menuIndex]->SetScale(select);
 }
 /*
 *	@brief メニューを描画する
@@ -153,8 +182,10 @@ void SettingMenu::Update(float elapsedTime)
 */
 void SettingMenu::Render()
 {
-	for (unsigned int i = 0; i < m_pUI.size(); i++)m_pUI[i]->Render();// メニューアイテムの数だけ繰り返す
-	for (unsigned int i = 0; i < m_pGuide.size(); i++)m_pGuide[i]->Render();// 選択不可能なアイテムの数だけ繰り返す
+	// メニューアイテムの数だけ繰り返す
+	for (unsigned int i = 0; i < m_pUI.size(); i++)m_pUI[i]->Render();
+	// 選択不可能なアイテムの数だけ繰り返す
+	for (unsigned int i = 0; i < m_pGuide.size(); i++)m_pGuide[i]->Render();
 }
 /*
 	@brief メニューアイテムを追加する
@@ -171,19 +202,28 @@ void SettingMenu::Add(const std::string& key,
 	const DirectX::SimpleMath::Vector2& scale,
 	KumachiLib::ANCHOR anchor, UIType type)
 {
-	std::unique_ptr<UI> userInterface = std::make_unique<UI>(m_pCommonResources);// UIオブジェクトの生成
-	userInterface->Create(m_pDR, key, position, scale, anchor);// 指定画像でUI作成
-	userInterface->SetWindowSize(m_windowWidth, m_windowHeight);// ウィンドウサイズを設定
+	// UIオブジェクトの生成
+	std::unique_ptr<UI> userInterface = std::make_unique<UI>(m_pCommonResources);
+	// 指定画像でUI作成
+	userInterface->Create(m_pDR, key, position, scale, anchor);
+	// ウィンドウサイズを設定
+	userInterface->SetWindowSize(m_windowWidth, m_windowHeight);
+	// UIの種類に応じて処理を分岐
 	if (type == UIType::SELECT)// 選択可能なアイテムなら
 	{
-		m_pUI.push_back(std::move(userInterface));// アイテムを新しく追加
-		std::unique_ptr<UI> base = std::make_unique<UI>(m_pCommonResources);// 背景用の選択枠も追加する
-		base->Create(m_pDR, "Select", position, scale, anchor);// 指定画像でUI作成
-		base->SetWindowSize(m_windowWidth, m_windowHeight);// ウィンドウサイズを設定
+		// アイテムを新しく追加
+		m_pUI.push_back(std::move(userInterface));
+		// 背景用の選択枠も追加する
+		std::unique_ptr<UI> base = std::make_unique<UI>(m_pCommonResources);
+		// 指定画像でUI作成
+		base->Create(m_pDR, "Select", position, scale, anchor);
+		// ウィンドウサイズを設定
+		base->SetWindowSize(m_windowWidth, m_windowHeight);
 	}
 	else// 選択不可なアイテムなら
 	{
-		m_pGuide.push_back(std::move(userInterface));//  選択不可能なアイテムを追加
+		// 選択不可能なアイテムを追加
+		m_pGuide.push_back(std::move(userInterface));
 		return;
 	}
 }
