@@ -16,6 +16,8 @@ public:	// 列挙型
 		HIT,// 攻撃を食らった
 		ANGRY,// 怒り
 		KNOCKBACK,// ノックバック
+		CHASE,// 追跡
+		SHADOWSTEP,//回り込み
 	};
 public:// public関数
 	// デストラクタ

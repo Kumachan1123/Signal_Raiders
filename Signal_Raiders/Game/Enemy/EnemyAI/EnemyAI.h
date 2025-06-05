@@ -57,6 +57,8 @@ public:// アクセサ
 	void SetState(IState::EnemyState state) { m_enemyState = state; }
 	// 攻撃可能フラグを設定
 	void SetCanAttack(bool canAttack) { m_canAttack = canAttack; }
+	// プレイヤーの弾に当たったかのフラグを取得
+	bool GetHitPlayerBullet() const { return m_isHitPlayerBullet; }
 	// プレイヤーの弾に当たったかのフラグを設定
 	void SetHitPlayerBullet(bool hit) { m_isHitPlayerBullet = hit; }
 	// 敵の攻撃クラスを取得

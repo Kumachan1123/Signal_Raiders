@@ -179,7 +179,7 @@ void EnemyManager::HandleEnemySpawning(float elapsedTime)
 	// 敵生成タイマーを更新
 	m_enemyBornTimer += elapsedTime;
 	// 敵の数を取得
-	int enemyNum = static_cast<int>(m_pWifi->GetWifiLevels().size());
+	int enemyNum = 3; //static_cast<int>(m_pWifi->GetWifiLevels().size());
 	// 敵の数が敵の生成上限を超えたら敵の生成上限に設定
 	if (enemyNum > m_enemyMax) enemyNum = m_enemyMax;
 	// ゲーム開始時間が敵生成開始時間を超えたらザコ敵を生成可能にする

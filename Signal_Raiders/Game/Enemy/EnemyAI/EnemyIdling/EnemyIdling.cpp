@@ -38,6 +38,8 @@ EnemyIdling::~EnemyIdling()
 */
 void EnemyIdling::Initialize()
 {
+	// AIから位置を取得して設定する
+	m_position = m_pEnemyAI->GetPosition();
 	// AIから回転を取得して設定する
 	m_rotation = m_pEnemyAI->GetRotation();
 	// AIから移動速度を取得して設定する
@@ -58,6 +60,28 @@ void EnemyIdling::Initialize()
 void EnemyIdling::Update(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
+	// 敵がプレイヤーの一定範囲内に入っている場合
+	if ((m_pEnemyAI->GetEnemy()->GetHitToPlayer() || m_pEnemyAI->GetHitPlayerBullet()))
+	{
+		//攻撃態勢にする
+		m_pEnemyAI->ChangeState(m_pEnemyAI->GetEnemyAttack());
+		// 攻撃態勢にする
+		m_pEnemyAI->SetState(IState::EnemyState::ATTACK);
+		// 攻撃中にする
+		m_pEnemyAI->SetIsAttack(true);
+	}
+	// プレイヤーの弾に当たった場合
+	if (m_pEnemyAI->GetEnemy()->GetEnemyHitByPlayerBullet())
+	{
+		//スピンする
+		m_pEnemyAI->ChangeState(m_pEnemyAI->GetEnemySpin());
+		// 攻撃を食らった状態にする
+		m_pEnemyAI->SetState(IState::EnemyState::HIT);
+		// 攻撃中でない
+		m_pEnemyAI->SetIsAttack(false);
+	}
+	// AIから位置を取得
+	m_position = m_pEnemyAI->GetEnemy()->GetPosition();
 	// ランダムな回転倍率を生成する
 	float randomMultiplier = GenerateRandomMultiplier(EnemyParameters::RANDOM_ROTATION_MIN, EnemyParameters::RANDOM_ROTATION_MAX);
 	// sin波を使って回転速度を変化させる
@@ -70,8 +94,10 @@ void EnemyIdling::Update(float elapsedTime)
 	m_rotation.Normalize();
 	// 回転後の前方ベクトルを取得する（後ろ向き×速度）
 	Vector3 forward = Vector3::Transform(Vector3::Backward * EnemyParameters::MOVE_SPEED, m_rotation);
+	// 新しい位置を設定する
+	Vector3 newPosition = Vector3(m_pEnemyAI->GetPosition().x, m_position.y, m_pEnemyAI->GetPosition().z);
 	// 敵の位置を更新する
-	m_pEnemyAI->SetPosition(m_pEnemyAI->GetPosition() + forward * (m_velocity.Length()) * elapsedTime);
+	m_pEnemyAI->SetPosition(newPosition + forward * (m_velocity.Length()) * elapsedTime);
 	// 敵の回転を更新する
 	m_pEnemyAI->SetRotation(m_rotation);
 	// 敵の速度を更新する

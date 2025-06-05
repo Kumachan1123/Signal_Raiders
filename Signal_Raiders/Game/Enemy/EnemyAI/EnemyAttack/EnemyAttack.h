@@ -61,6 +61,8 @@ private:
 	DirectX::SimpleMath::Vector3 m_position;
 	// 回転
 	DirectX::SimpleMath::Quaternion m_rotation;
+	// 初期位置
+	DirectX::SimpleMath::Vector3 m_initialPosition;
 	// 移動速度
 	DirectX::SimpleMath::Vector3 m_velocity;
 	// サイズ
@@ -69,5 +71,7 @@ private:
 	float m_rotationSpeed;
 	// 攻撃のクールダウンタイム
 	float m_attackCooldown;
+	// 時間
+	float m_time;
 };
 #endif //ENEMY_ATTACK_DEFINED

@@ -66,6 +66,8 @@ void EnemySpin::Update(float elapsedTime)
 	using namespace DirectX::SimpleMath;
 	// 時間の加算
 	m_time += elapsedTime;
+	// AIから位置を取得
+	m_position = m_pEnemyAI->GetEnemy()->GetPosition();
 	// スピンの更新
 	UpdateSpin(elapsedTime);
 	// ノックバックの更新
@@ -129,6 +131,7 @@ void EnemySpin::UpdateKnockBack(float elapsedTime)
 	float decayFactor = std::exp(EnemyParameters::KNOCKBACK_DECAY_RATE * Progression);
 	// 減衰後の速度で位置を更新
 	Vector3 velocity = m_initialVelocity * decayFactor;
+	velocity.y = 0;
 	// 実際に位置を変化させる
 	m_position += velocity * elapsedTime;
 	// 状態が「怒り」でない場合は「ヒット状態」に遷移させる
@@ -146,5 +149,9 @@ void EnemySpin::UpdateKnockBack(float elapsedTime)
 		m_pEnemyAI->GetEnemy()->SetEnemyHitByPlayerBullet(false);
 		// 状態を待機状態に戻す
 		m_pEnemyAI->SetState(IState::EnemyState::IDLING);
+		// 攻撃中でない状態にする
+		m_pEnemyAI->SetIsAttack(false);
+		// 徘徊状態にする
+		m_pEnemyAI->ChangeState(m_pEnemyAI->GetEnemyIdling());
 	}
 }

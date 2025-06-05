@@ -16,6 +16,7 @@ EnemyAttack::EnemyAttack(EnemyAI* pEnemyAI)
 	, m_attackCooldown(EnemyParameters::ATTACK_COOLDOWN)// 攻撃のクールダウンタイム
 	, m_rotationSpeed{}// 回転速度
 	, m_pCommonResources{}// 共通リソース
+	, m_time(0.0f)// 時間
 {
 }
 /*
@@ -54,6 +55,27 @@ void EnemyAttack::Initialize()
 */
 void EnemyAttack::Update(float elapsedTime)
 {
+	if ((m_pEnemyAI->GetEnemy()->GetHitToPlayer() || m_pEnemyAI->GetHitPlayerBullet()))
+	{
+		//攻撃態勢にする
+		m_pEnemyAI->ChangeState(m_pEnemyAI->GetEnemyAttack());
+		// 攻撃態勢にする
+		m_pEnemyAI->SetState(IState::EnemyState::ATTACK);
+		// 攻撃中にする
+		m_pEnemyAI->SetIsAttack(true);
+	}
+	// プレイヤーの弾に当たった場合
+	if (m_pEnemyAI->GetEnemy()->GetEnemyHitByPlayerBullet())
+	{
+		//スピンする
+		m_pEnemyAI->ChangeState(m_pEnemyAI->GetEnemySpin());
+		// 攻撃を食らった状態にする
+		m_pEnemyAI->SetState(IState::EnemyState::HIT);
+		// 攻撃中でない
+		m_pEnemyAI->SetIsAttack(false);
+	}
+	// AIから位置を取得
+	m_position = m_pEnemyAI->GetEnemy()->GetPosition();
 	// 回転速度を減少させる
 	m_rotationSpeed -= (elapsedTime / EnemyParameters::ROTATION_SPEED_DIVISOR);
 	// 回転速度が最低値を下回ったら、最低値に固定する
@@ -95,9 +117,14 @@ void EnemyAttack::Update(float elapsedTime)
 	{
 		// 敵の状態を怒り状態に変更する
 		m_pEnemyAI->SetState(IState::EnemyState::ANGRY);
-		// 0以下になったらクールダウンをリセットする
+		// 0以下になったら
 		if (m_attackCooldown <= 0.0f)
+		{
+			// 攻撃態勢にする
+			m_pEnemyAI->SetState(IState::EnemyState::ATTACK);
+			// クールダウンをリセットする
 			m_attackCooldown = EnemyParameters::ATTACK_COOLDOWN;
+		}
 	}
 	// 回転と速度をAIに反映させる
 	m_pEnemyAI->SetRotation(m_rotation);

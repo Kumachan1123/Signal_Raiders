@@ -93,35 +93,30 @@ void EnemyAI::Initialize()
 void EnemyAI::Update(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
-	// ˆÊ’u‚ðŽæ“¾
-	m_position = m_pEnemy->GetPosition();
+
 	// ƒvƒŒƒCƒ„[‚Ì’e‚É“–‚½‚Á‚½‚©‚Ç‚¤‚©‚ðŽæ“¾
 	if (m_pEnemy->GetEnemyHitByPlayerBullet())m_isHitPlayerBullet = true;
-	// ŽžŠÔ‚Ì‰ÁŽZ
-	m_time += elapsedTime;
-	// “G‚ð‚Ó‚í‚Ó‚í•‚—V‚³‚¹‚é
-	m_position.y = m_initialPosition.y + EnemyParameters::AMPLITUDE * std::sin(EnemyParameters::FREQUENCY * m_time);
-	// “G‚ÌYÀ•W‚ðXV
-	m_position.y += m_velocity.y * elapsedTime;
-	// “G‚ªƒvƒŒƒCƒ„[‚Ìˆê’è”ÍˆÍ“à‚É“ü‚Á‚Ä‚¢‚éê‡
-	if ((m_pEnemy->GetHitToPlayer() || m_isHitPlayerBullet))
-	{
-		//UŒ‚‘Ô¨‚É‚·‚é
-		ChangeState(m_pEnemyAttack.get());
-		// UŒ‚‘Ô¨‚É‚·‚é
-		m_enemyState = IState::EnemyState::ATTACK;
-		// UŒ‚’†‚É‚·‚é
-		SetIsAttack(true);
-	}
-	else// “G‚ªƒvƒŒƒCƒ„[‚Ìˆê’è”ÍˆÍŠO‚É‚¢‚éê‡
-	{
-		//œpœj‘Ô¨‚É‚·‚é
-		ChangeState(m_pEnemyIdling.get());
-		// œpœj‘Ô¨
-		m_enemyState = IState::EnemyState::IDLING;
-		// UŒ‚’†‚Å‚È‚¢
-		SetIsAttack(false);
-	}
+
+
+	//// “G‚ªƒvƒŒƒCƒ„[‚Ìˆê’è”ÍˆÍ“à‚É“ü‚Á‚Ä‚¢‚éê‡
+	//if ((m_pEnemy->GetHitToPlayer() || m_isHitPlayerBullet))
+	//{
+	//	//UŒ‚‘Ô¨‚É‚·‚é
+	//	ChangeState(m_pEnemyAttack.get());
+	//	// UŒ‚‘Ô¨‚É‚·‚é
+	//	m_enemyState = IState::EnemyState::ATTACK;
+	//	// UŒ‚’†‚É‚·‚é
+	//	SetIsAttack(true);
+	//}
+	//else// “G‚ªƒvƒŒƒCƒ„[‚Ìˆê’è”ÍˆÍŠO‚É‚¢‚éê‡
+	//{
+	//	//œpœj‘Ô¨‚É‚·‚é
+	//	ChangeState(m_pEnemyIdling.get());
+	//	// œpœj‘Ô¨
+	//	m_enemyState = IState::EnemyState::IDLING;
+	//	// UŒ‚’†‚Å‚È‚¢
+	//	SetIsAttack(false);
+	//}
 	// ƒvƒŒƒCƒ„[‚Ì’e‚É“–‚½‚Á‚½ê‡
 	if (m_pEnemy->GetEnemyHitByPlayerBullet())
 	{
@@ -134,6 +129,12 @@ void EnemyAI::Update(float elapsedTime)
 	}
 	// Œ»Ý‚Ìó‘Ô‚ðXV
 	m_pCurrentState->Update(elapsedTime);
+	// ŽžŠÔ‚Ì‰ÁŽZ
+	m_time += elapsedTime;
+	// “G‚ð‚Ó‚í‚Ó‚í•‚—V‚³‚¹‚é
+	m_position.y = m_initialPosition.y + EnemyParameters::AMPLITUDE * std::sin(EnemyParameters::FREQUENCY * m_time);
+	// “G‚ÌYÀ•W‚ðXV
+	m_position.y += m_velocity.y * elapsedTime;
 	// “G‚ÌˆÊ’u‚ðXV
 	m_pEnemy->SetPosition(m_position);
 }
