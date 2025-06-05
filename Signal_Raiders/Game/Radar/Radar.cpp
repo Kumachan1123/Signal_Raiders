@@ -263,7 +263,7 @@ void Radar::DrawEnemy()
 		Vector3 rotatedPos = Vector3::Transform(relativePos, rotationMatrix);
 		// レーダーの中心からの相対位置を計算
 		Vector2 radarPos = Vector2(
-			rotatedPos.x / m_range * (RADAR_SIZE_L - RADAR_SIZE_R), // ミニマップの横幅
+			rotatedPos.x / m_range * (RADAR_SIZE_R - RADAR_SIZE_L), // ミニマップの横幅
 			rotatedPos.z / m_range * (RADAR_SIZE_B - RADAR_SIZE_T) // ミニマップの高さ
 		);
 		// ミニマップの中心位置を加算
