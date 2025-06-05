@@ -60,6 +60,8 @@ void EnemyChase::Initialize()
 void EnemyChase::Update(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
+
+
 	// プレイヤーのポインターを取得
 	Player* player = m_pEnemyAI->GetEnemy()->GetPlayer();
 	// プレイヤーの座標を取得
@@ -71,13 +73,19 @@ void EnemyChase::Update(float elapsedTime)
 	// プレイヤーとの距離に応じて処理を分岐
 	if (distance > STOP_DISTANCE)// 停止距離より長い場合
 	{
-		// プレイヤーに近づく
-		m_velocity = Seek(m_position, playerPos, elapsedTime * 10);
+		// プレイヤーに近づくための速度を計算
+		m_velocity = Seek(m_position, playerPos, elapsedTime * 5);
 	}
 	else// 停止距離以下の場合
 	{
 		// プレイヤーとの距離が近いので停止
 		m_velocity = Vector3::Zero;
+		////攻撃態勢にする
+		//m_pEnemyAI->ChangeState(m_pEnemyAI->GetEnemyAttack());
+		//// 攻撃態勢にする
+		//m_pEnemyAI->SetState(IState::EnemyState::ATTACK);
+		//// 攻撃中にする
+		//m_pEnemyAI->SetIsAttack(true);
 	}
 	// 進行方向に回転
 	if (m_velocity.LengthSquared() > 0.0f) // 速度がゼロでない場合
@@ -95,14 +103,9 @@ void EnemyChase::Update(float elapsedTime)
 	float dot = playerLook.Dot(toPlayer);
 	// ドット積から角度を計算
 	m_angle = acosf(dot);
-	// 視界に入ったら回り込みに遷移
-	if (m_angle < DirectX::XM_PIDIV2)
-	{
-		// 回り込み状態に遷移
-		m_pEnemyAI->ChangeState(m_pEnemyAI->GetEnemyChase());
-		return; // 更新を終了
-	}
 
+	// 位置を更新
+	m_position += m_velocity;
 
 	// 敵の位置を更新
 	m_pEnemyAI->SetPosition(m_position);
@@ -110,4 +113,11 @@ void EnemyChase::Update(float elapsedTime)
 	m_pEnemyAI->SetRotation(m_rotation);
 	// 敵の速度を更新
 	m_pEnemyAI->SetVelocity(m_velocity);
+	// 視界に入ったら回り込みに遷移
+	if (m_angle > DirectX::XM_PI / 2)
+	{
+		//攻撃態勢にする
+		m_pEnemyAI->ChangeState(m_pEnemyAI->GetEnemyShadowStep());
+
+	}
 }

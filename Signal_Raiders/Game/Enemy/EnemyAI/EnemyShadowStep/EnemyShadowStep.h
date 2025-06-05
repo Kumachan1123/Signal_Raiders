@@ -1,13 +1,14 @@
 /*
-*	@file	EnemySpin.h
-*	@brief	敵スピンクラス
+*	@file	EnemyShadowStep.h
+*	@brief	敵シャドウステップクラス
 */
 #pragma once
-#ifndef ENEMY_SPIN_DEFINED
-#define ENEMY_SPIN_DEFINED
+#ifndef ENEMY_SHADOWSTEP_DEFINED
+#define ENEMY_SHADOWSTEP_DEFINED
 // 標準ライブラリ
 #include <cassert>
 #include <random>  
+// DirectX
 #include <SimpleMath.h>
 // 外部ライブラリ
 #include <Libraries/MyLib/DebugString.h>
@@ -17,11 +18,15 @@
 #include "Game/Enemy/EnemyAI/EnemyAI.h"
 #include "Game/KumachiLib/KumachiLib.h"
 #include "Game/Interface/IState.h"
+
 //前方宣言
 class EnemyAI;
-class EnemySpin : public IState
+
+// 敵シャドウステップクラス
+class EnemyShadowStep : public IState
 {
-public:// アクセサ
+public:
+	// アクセサ
 	// 現在の位置を取得する
 	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
 	// 位置を設定する
@@ -32,21 +37,18 @@ public:// アクセサ
 	void SetRotation(const DirectX::SimpleMath::Quaternion& rot) { m_rotation = rot; }
 	// モデルのスケールを設定する
 	void SetScale(const DirectX::SimpleMath::Vector3& sca) { m_scale = sca; }
-public:// publicメンバ関数
+public:
+	// publicメンバ関数
 	// コンストラクタ
-	EnemySpin(EnemyAI* enemyAI);
+	EnemyShadowStep(EnemyAI* enemyAI);
 	// デストラクタ
-	~EnemySpin();
+	~EnemyShadowStep();
 	// 初期化
 	void Initialize() override;
 	// 更新
 	void Update(float elapsedTime) override;
-private:// privateメンバ関数
-	// スピンの更新
-	void UpdateSpin(float elapsedTime);
-	// ノックバックの更新
-	void UpdateKnockBack(float elapsedTime);
-private:// privateメンバ変数
+private:
+	// privateメンバ変数
 	// 敵AI
 	EnemyAI* m_pEnemyAI;
 	// 現在の位置
@@ -69,7 +71,19 @@ private:// privateメンバ変数
 	float m_angle;
 	// 経過時間
 	float m_time;
-	// ノックバックの持続時間
-	float m_knockTime;
+	// ターゲット位置
+	DirectX::SimpleMath::Vector3 m_targetPos;
+	// プレイヤーの初期位置
+	DirectX::SimpleMath::Vector3 m_centerPos;
+	// 初期化フラグ
+	bool m_initialized = false;
+	// 累積角度
+	float m_elapsedAngle = 0.0f;
+	// +1 なら反時計回り, -1 なら時計回り
+	int m_rotateDirection = 1;
+	// ランダムな半径
+	float m_randomRadius = 0.0f;
+	// 回り込みの半径
+	float m_evadeRadius = 0.0f;
 };
-#endif //ENEMY_SPIN_DEFINED
+#endif //ENEMY_SHADOWSTEP_DEFINED

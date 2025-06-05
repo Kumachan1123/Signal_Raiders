@@ -202,8 +202,7 @@ void PlayerController::Update(float elapsedTime)
 		// ダッシュ時間を増やす
 		m_dashTime += elapsedTime / 2;
 		// ダッシュ時間が上限を超えたときこれ以上増やさない
-		m_dashTime = std::max(m_dashTime, PlayerController::DASH_TIME);
-		//if (m_dashTime >= PlayerController::DASH_TIME)m_dashTime = PlayerController::DASH_TIME;
+		if (m_dashTime >= PlayerController::DASH_TIME)m_dashTime = PlayerController::DASH_TIME;
 	}
 	// 移動量があるとき正規化する
 	if (m_velocity.LengthSquared() > 0)	m_velocity.Normalize();

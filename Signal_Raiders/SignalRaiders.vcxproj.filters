@@ -296,6 +296,8 @@
     <ClInclude Include="Libraries\Microsoft\RenderTexture\RenderTexture.h" />
     <ClInclude Include="Game\KumachiLib\ModelManager\ModelManager.h" />
     <ClInclude Include="Game\KumachiLib\TextureManager\TextureManager.h" />
+    <ClInclude Include="Game\Enemy\EnemyAI\EnemyChase\EnemyChase.h" />
+    <ClInclude Include="Game\Enemy\EnemyAI\EnemyShadowStep\EnemyShadowStep.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -431,6 +433,8 @@
     <ClCompile Include="Libraries\Microsoft\RenderTexture\RenderTexture.cpp" />
     <ClCompile Include="Game\KumachiLib\ModelManager\ModelManager.cpp" />
     <ClCompile Include="Game\KumachiLib\TextureManager\TextureManager.cpp" />
+    <ClCompile Include="Game\Enemy\EnemyAI\EnemyChase\EnemyChase.cpp" />
+    <ClCompile Include="Game\Enemy\EnemyAI\EnemyShadowStep\EnemyShadowStep.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

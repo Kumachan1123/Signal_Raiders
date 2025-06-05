@@ -43,7 +43,7 @@ public:// publicƒƒ“ƒoŠÖ”
 	void Update(float elapsedTime) override;
 private:// ’è”
 	// ’â~‹——£
-	const float STOP_DISTANCE = 5.0f;
+	const float STOP_DISTANCE = 10.0f;
 private:// privateƒƒ“ƒo•Ï”
 	// “GAI
 	EnemyAI* m_pEnemyAI;

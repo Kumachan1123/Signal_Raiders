@@ -21,6 +21,8 @@
 #include "Game/Enemy/EnemyAI/EnemyAttack/EnemyAttack.h"
 #include "Game/Enemy/EnemyAI/EnemyIdling/EnemyIdling.h"
 #include "Game/Enemy/EnemyAI/EnemySpin/EnemySpin.h"
+#include "Game/Enemy/EnemyAI/EnemyChase/EnemyChase.h"
+#include "Game/Enemy/EnemyAI/EnemyShadowStep/EnemyShadowStep.h"
 #include "Game/Interface/IState.h"
 #include "Game/Interface/IEnemy.h"
 #include "Game/Player/Player.h"
@@ -30,6 +32,8 @@ class CommonResources;
 class EnemyAttack;
 class EnemySpin;
 class EnemyIdling;
+class EnemyChase;
+class EnemyShadowStep;
 class IEnemy;
 
 // 敵AIクラス
@@ -71,6 +75,10 @@ public:
 	EnemyIdling* GetEnemyIdling() const { return m_pEnemyIdling.get(); }
 	// 敵の回転クラス（スピン）を取得
 	EnemySpin* GetEnemySpin() const { return m_pEnemySpin.get(); }
+	// 敵の追跡クラスを取得
+	EnemyChase* GetEnemyChase() const { return m_pEnemyChase.get(); }
+	// 敵のシャドウステップクラスを取得
+	EnemyShadowStep* GetEnemyShadowStep() const { return m_pEnemyShadowStep.get(); }
 	// 実体となる敵キャラの情報を取得
 	IEnemy* GetEnemy() const { return m_pEnemy; }
 	// 現在のステート（状態クラス）を取得
@@ -99,6 +107,10 @@ private:
 	std::unique_ptr<EnemyAttack> m_pEnemyAttack;
 	// スピン状態のポインター
 	std::unique_ptr<EnemySpin>	 m_pEnemySpin;
+	// 追跡状態のポインター
+	std::unique_ptr<EnemyChase> m_pEnemyChase;
+	// シャドウステップ状態のポインター
+	std::unique_ptr<EnemyShadowStep> m_pEnemyShadowStep;
 	// 現在の状態
 	IState* m_pCurrentState;
 	// 敵の状態

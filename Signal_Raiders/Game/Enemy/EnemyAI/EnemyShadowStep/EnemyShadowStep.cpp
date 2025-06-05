@@ -1,23 +1,22 @@
 /*
-*	@file	EnemySpin.cpp
-*	@brief	敵スピンクラス
+*	@file	EnemyShadowStep.cpp
+*	@brief	敵シャドウステップクラス
 */
 #include <pch.h>
-#include "EnemySpin.h"
+#include "EnemyShadowStep.h"
 /*
 *	@brief	コンストラクタ
-*	@details 敵スピンクラスのコンストラクタ
+*	@details 敵シャドウステップクラスのコンストラクタ
 *	@param	EnemyAI* pEnemyAI 敵AI
 *	@return	なし
 */
-EnemySpin::EnemySpin(EnemyAI* pEnemyAI)
+EnemyShadowStep::EnemyShadowStep(EnemyAI* pEnemyAI)
 	: m_pEnemyAI(pEnemyAI)// 敵AIのポインター
 	, m_rotation(DirectX::SimpleMath::Quaternion::Identity) // 回転の初期化
 	, m_velocity(DirectX::SimpleMath::Vector3::Zero) // 速度の初期化
 	, m_scale(DirectX::SimpleMath::Vector3::One) // スケールの初期化
 	, m_initialPosition(DirectX::SimpleMath::Vector3::Zero) // 初期位置の初期化
 	, m_position(DirectX::SimpleMath::Vector3::Zero) // 現在位置の初期化
-	, m_knockTime(0.0f) // ノックバック時間の初期化
 	, m_knockStartPosition(DirectX::SimpleMath::Vector3::Zero) // ノックバック開始位置の初期化
 	, m_knockEndPosition(DirectX::SimpleMath::Vector3::Zero) // ノックバック終了位置の初期化
 	, m_initialVelocity(DirectX::SimpleMath::Vector3::Zero) // ノックバックの初期速度の初期化
@@ -31,18 +30,18 @@ EnemySpin::EnemySpin(EnemyAI* pEnemyAI)
 *	@param	なし
 *	@return	なし
 */
-EnemySpin::~EnemySpin()
+EnemyShadowStep::~EnemyShadowStep()
 {
 	// 敵AIのポインターをnullptrに設定
 	m_pEnemyAI = nullptr;
 }
 /*
 *	@brief	初期化
-*	@details 敵スピンクラスの初期化
+*	@details 敵シャドウステップクラスの初期化
 *	@param	なし
 *	@return	なし
 */
-void EnemySpin::Initialize()
+void EnemyShadowStep::Initialize()
 {
 	// AIから位置を取得して設定する
 	m_position = m_pEnemyAI->GetPosition();
@@ -61,90 +60,73 @@ void EnemySpin::Initialize()
 *	@param	float elapsedTime　経過時間
 *	@return	なし
 */
-void EnemySpin::Update(float elapsedTime)
+void EnemyShadowStep::Update(float elapsedTime)
 {
+	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	// 時間の加算
 	m_time += elapsedTime;
-	// スピンの更新
-	UpdateSpin(elapsedTime);
-	// ノックバックの更新
-	UpdateKnockBack(elapsedTime);
-	// 敵の位置を更新
-	m_pEnemyAI->SetPosition(m_position);
-	// 敵の回転を更新
-	m_pEnemyAI->SetRotation(m_rotation);
-	// 敵の速度を更新
-	m_pEnemyAI->SetVelocity(m_velocity);
-}
-/*
-*	@brief	スピンの更新
-*	@details 敵スピンクラスのスピンの部分の処理
-*	@param	float elapsedTime　経過時間
-*	@return	なし
-*/
-void EnemySpin::UpdateSpin(float elapsedTime)
-{
-	using namespace DirectX::SimpleMath;
-	// 引数の未使用警告を抑制
-	UNREFERENCED_PARAMETER(elapsedTime);
-	// 敵からプレイヤーへの方向の角度を取得
-	m_angle = CalculateAngle(m_pEnemyAI->GetPosition(), m_pEnemyAI->GetEnemy()->GetPlayer()->GetPlayerPos());
-	// プレイヤーから敵への角度を取得し、それと現在の角度を補間(ノックバック中の回転演出)
-	m_angle = Lerp(m_angle, CalculateAngle(m_pEnemyAI->GetEnemy()->GetPlayer()->GetPlayerPos(), m_pEnemyAI->GetPosition()), m_time);
-	// 計算した角度を使って、敵のY軸方向（Yaw）の回転を設定
-	m_rotation = Quaternion::CreateFromYawPitchRoll(m_angle, 0.0f, 0.0f);
-}
-
-/*
-*	@brief	ノックバックの更新
-*	@details 敵スピンクラスのノックバックの部分の処理
-*	@param	float elapsedTime　経過時間
-*	@return	なし
-*/
-void EnemySpin::UpdateKnockBack(float elapsedTime)
-{
-	using namespace DirectX::SimpleMath;
-	// ノックバックが始まったばかりのとき、初期化処理を行う
-	if (m_knockTime == 0.0f)
+	// プレイヤーのポインターを取得
+	Player* player = m_pEnemyAI->GetEnemy()->GetPlayer();
+	// プレイヤーの座標を取得
+	Vector3 playerPos = player->GetPlayerPos();
+	// AIから位置を取得して設定する
+	m_position = m_pEnemyAI->GetPosition();
+	// ChaseからShadowStepになったとき
+	if (!m_initialized)
 	{
-		// 現在位置をノックバックの開始位置として記録
-		m_knockStartPosition = m_position;
-		// プレイヤーから敵への方向をベクトルとして取得
-		Vector3 knockBackDirection = (m_position - m_pEnemyAI->GetEnemy()->GetPlayer()->GetPlayerPos());
-		//ノックバックする方向を正規化
-		knockBackDirection.Normalize();
-		// ノックバックの仮の終了位置を設定
-		m_knockEndPosition = m_position + knockBackDirection;
-		// 初期の速度ベクトルを設定
-		m_initialVelocity = knockBackDirection * EnemyParameters::FIXED_INITIAL_SPEED;
-		// ノックバック中は攻撃できないようにする
-		m_pEnemyAI->GetEnemy()->SetCanAttack(false);
+		// 10から30の範囲
+		m_randomRadius = 30.0f + static_cast<float>(rand() % 41); // 10から30の範囲
+		// 回り込みの半径を設定
+		m_evadeRadius = m_randomRadius;
+		// 回り込みの中心はプレイヤーの初期位置
+		m_centerPos = player->GetPlayerPos();
+		// 敵の位置からプレイヤーの初期位置までのベクトルを計算
+		Vector3 toPlayer = m_position - m_centerPos;
+		// 求めたベクトルから角度を計算
+		m_angle = atan2f(toPlayer.z, toPlayer.x);
+		// 回転の途中経過を初期化
+		m_elapsedAngle = 0.0f;
+		// 回り込みのための角度をランダムに設定
+		m_rotateDirection = (rand() % 2 == 0) ? 1 : -1;
+		// 初期化フラグをtrueに設定
+		m_initialized = true;
 	}
-	// ノックバック経過時間を加算
-	m_knockTime += elapsedTime;
-	// ノックバックの進行度を計算（0.0～1.0の範囲、上限はKNOCKBACK_PROGRESS_MAX）
-	float Progression = std::min(m_knockTime / EnemyParameters::KNOCKBACK_DURATION, EnemyParameters::KNOCKBACK_PROGRESS_MAX);
-	// 減衰係数を指数関数で計算（時間が経つごとに速度が小さくなる）
-	float decayFactor = std::exp(EnemyParameters::KNOCKBACK_DECAY_RATE * Progression);
-	// 減衰後の速度で位置を更新
-	Vector3 velocity = m_initialVelocity * decayFactor;
-	// 実際に位置を変化させる
-	m_position += velocity * elapsedTime;
-	// 状態が「怒り」でない場合は「ヒット状態」に遷移させる
-	if (m_pEnemyAI->GetState() != IState::EnemyState::ANGRY)m_pEnemyAI->SetState(IState::EnemyState::HIT);
-	// 一定時間経過後、攻撃を再び許可する
-	if (Progression >= EnemyParameters::KNOCKBACK_TIME.canAttackTime)m_pEnemyAI->GetEnemy()->SetCanAttack(true);
-	// ノックバックが完全に終了したかを判定
-	if (Progression >= EnemyParameters::KNOCKBACK_TIME.endKnockTime)
+	// 回転角度更新
+	float deltaAngle = XM_PI * elapsedTime;
+	// 回り込みの角度を更新
+	m_angle += deltaAngle * m_rotateDirection;
+	// 回り込みの位置を計算
+	m_elapsedAngle += deltaAngle;
+	// プレイヤーの初期位置を中心とした円上の目標座標
+	float x = cosf(m_angle) * m_evadeRadius;// X座標
+	float z = sinf(m_angle) * m_evadeRadius;// Z座標
+	// 目標座標を計算
+	m_targetPos = m_centerPos + Vector3(x, 0.0f, z);
+	// 現在位置からその目標地点へのベクトル
+	Vector3 direction = m_targetPos - m_position;
+	// 方向ベクトルを正規化
+	direction.Normalize();
+	// 方向ベクトルに速度を掛けて移動量を計算
+	m_velocity = direction * 50.0f * elapsedTime;
+	// 敵の回転を更新
+	if (m_velocity.LengthSquared() > 0.0f)
 	{
-		// 最終的な位置をノックバック終了地点として記録
-		m_knockEndPosition = m_position;
-		// ノックバック経過時間をリセット
-		m_knockTime = 0.0f;
-		// ノックバック状態を解除
-		m_pEnemyAI->GetEnemy()->SetEnemyHitByPlayerBullet(false);
-		// 状態を待機状態に戻す
-		m_pEnemyAI->SetState(IState::EnemyState::IDLING);
+		// 進行方向を向く
+		m_rotation = Quaternion::CreateFromYawPitchRoll(atan2f(m_velocity.x, m_velocity.z), 0.0f, 0.0f);
+		// 敵AIに回転を設定
+		m_pEnemyAI->SetRotation(m_rotation);
+	}
+	// 位置を更新
+	m_position += m_velocity;
+	// 新しい位置を設定
+	m_pEnemyAI->SetPosition(m_position);
+	// 半周したら終了
+	if (m_elapsedAngle >= XM_PI * 3.5)
+	{
+		// 初期化フラグをfalseに設定
+		m_initialized = false;
+		// プレイヤーの位置を取得
+		m_pEnemyAI->ChangeState(m_pEnemyAI->GetEnemyChase());
 	}
 }
