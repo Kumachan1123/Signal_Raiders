@@ -1,6 +1,6 @@
 /*
 *	@file	EnemyAttack.h
-*	@brief	敵Attackクラス
+*	@brief	敵攻撃クラス
 */
 #pragma once
 #ifndef ENEMY_ATTACK_DEFINED
@@ -21,12 +21,16 @@
 #include "Game/KumachiLib/KumachiLib.h"
 #include "Game/Enemy/EnemyAI/EnemyAI.h"
 #include "Game/Enemy/Parameters/EnemyParameters.h"
+
 //前方宣言
 class CommonResources;
 class EnemyAI;
+
+// 敵攻撃クラス
 class EnemyAttack : public IState
 {
-public:	// アクセサ
+public:
+	// アクセサ
 	// 現在の位置を取得する
 	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
 	// 位置を設定する
@@ -43,7 +47,8 @@ public:	// アクセサ
 	void SetScale(const DirectX::SimpleMath::Vector3& sca) { m_scale = sca; }
 	// 回転スピードを設定する
 	void SetRotationSpeed(float speed) { m_rotationSpeed = speed; }
-public:// publicメンバ関数
+public:
+	// publicメンバ関数
 	// コンストラクタ
 	EnemyAttack(EnemyAI* enemyAI);
 	// デストラクタ
@@ -53,6 +58,7 @@ public:// publicメンバ関数
 	// 更新する
 	void Update(float elapsedTime) override;
 private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 敵AI

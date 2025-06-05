@@ -3,6 +3,8 @@
 *	@brief	シーンマネージャクラス
 */
 #pragma once
+#ifndef SCENEMANAGER_DEFINED
+#define SCENEMANAGER_DEFINED
 // 標準ライブラリ
 #include <cassert>
 // DirectX
@@ -18,11 +20,15 @@
 #include "Game/Scene/PlayScene/PlayScene.h"
 #include "Game/Scene/ResultScene/ResultScene.h"
 #include "Game/Scene/StageSelectScene/StageSelectScene.h"
+
 // 前方宣言
 class CommonResources;
+
+// シーンマネージャクラス
 class SceneManager
 {
-public:// publicメンバ関数
+public:
+	// publicメンバ関数
 	// コンストラクタ
 	SceneManager();
 	// デストラクタ
@@ -35,7 +41,8 @@ public:// publicメンバ関数
 	void Render();
 	// 終了
 	void Finalize();
-private:// privateメンバ関数
+private:
+	// privateメンバ関数
 	// シーン変更
 	void ChangeScene(IScene::SceneID sceneID);
 	// シーン作成
@@ -46,7 +53,8 @@ private:// privateメンバ関数
 	IScene::SceneID GetSceneID() const { return m_nowSceneID; }
 	// シーンID設定
 	void SetSceneID(IScene::SceneID sceneID) { m_nowSceneID = sceneID; }
-private:// private定数
+private:
+	// private定数
 	// ステージ数
 	static const int STAGE_MAX;
 private:// privateメンバ変数
@@ -58,5 +66,5 @@ private:// privateメンバ変数
 	IScene::SceneID m_nowSceneID;
 	// プレイシーンにステージ番号を渡すための変数
 	int m_stageNumber;
-
 };
+#endif // SCENEMANAGER_DEFINED

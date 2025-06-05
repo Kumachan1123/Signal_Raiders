@@ -3,6 +3,8 @@
 *	@file	Sky.h
 */
 #pragma once
+#ifndef SKY_DEFINED
+#define SKY_DEFINED
 // 標準ライブラリ
 #include <cassert>
 #include <memory>
@@ -21,11 +23,15 @@
 #include <Libraries/MyLib/MemoryLeakDetector.h>
 // 自作ヘッダーファイル
 #include "Game/CommonResources.h"
+
 // 前方宣言
 class CommonResources;
+
+// スカイクラス
 class Sky
 {
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	Sky(int StageID);
 	// デストラクタ
@@ -38,7 +44,8 @@ public:// public関数
 		const DirectX::SimpleMath::Matrix& proj,
 		const DirectX::SimpleMath::Matrix& world
 	);
-private:// private定数
+private:
+	// private定数
 	// ステージ番号に応じた空のモデルのKey
 	const std::unordered_map<int, const std::string> m_keyMap =
 	{
@@ -48,7 +55,8 @@ private:// private定数
 		{3, "Stage4"},// ステージ４
 		{4, "Stage5"} // ステージ５
 	};
-private:// private変数
+private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// モデル
@@ -58,3 +66,4 @@ private:// private変数
 	// ステージID
 	int m_stageID;
 };
+#endif //SKY_DEFINED

@@ -3,6 +3,8 @@
 *	@brief	Wi-Fiの情報を取得するクラス
 */
 #pragma once
+#ifndef WIFI_DEFINED
+#define WIFI_DEFINED
 // 標準ライブラリ
 #include <memory>
 // 外部ライブラリ
@@ -12,20 +14,25 @@
 #include "Game/Wifi/Interface/IWifiParts.h"
 #include "Game/Wifi/Wifi.h"
 #include "Game/Wifi/Parameters/WiFiParameters.h"
+
 // 前方宣言
 class CommonResources;
 class Output;
 class ReleaseMemory;
+
+// Wi-Fiの情報を取得するクラス
 class Wifi
 {
-public:// 構造体
+public:
+	// 構造体
 	// 現在接続しているWi-Fi情報の構造体
 	struct CurrentWifiInfo
 	{
 		int ssidLenght;// SSIDの長さ
 		int signalQuality;// 電波の強さ
 	};
-public:// アクセサ
+public:
+	// アクセサ
 	//電波の強さを渡す
 	std::vector<int> GetWifiLevels()const { return m_wifilevels; }
 	//敵の種類を渡す
@@ -34,7 +41,8 @@ public:// アクセサ
 	int GetCurrentWifiSSIDLength()const { return m_currentWifiInfo.ssidLenght; }
 	// 接続しているWi-Fiの電波の強さを渡す
 	int GetCurrentWifiSignalQuality()const { return m_currentWifiInfo.signalQuality; }
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	Wifi();
 	// デストラクタ
@@ -43,7 +51,8 @@ public:// public関数
 	void Update(float elapsedTime);
 	// クリア
 	void Clear();
-private:// private関数
+private:
+	// private関数
 	// ハンドルの初期化
 	void InitHandle();
 	// バージョンの確認
@@ -62,7 +71,8 @@ private:// private関数
 	void ProcessingScanResults();
 	// SSIDを無理やり数値に変換する関数（各文字のASCIIコードの合計）
 	int ConvertSsidToInt(const std::string& ssid);
-private:// private変数
+private:
+	// private変数
 	// 最大のクライアント数
 	DWORD  m_dwMaxClient;
 	// クライアントハンドル
@@ -106,3 +116,4 @@ private:// private変数
 	// ザコ敵の種類の最大値
 	const int ENEMY_TYPE_MAX = 2;
 };
+#endif // WIFI_DEFINED

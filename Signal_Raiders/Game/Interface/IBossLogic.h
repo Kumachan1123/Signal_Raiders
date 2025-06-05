@@ -1,15 +1,23 @@
+/*
+*	@file IBossLogic.h
+*	@brief ボスロジックのインターフェースクラス
+*/
 #pragma once
 #ifndef IBOSSLOGIC_DEFINED
 #define IBOSSLOGIC_DEFINED
 // 標準ライブラリ
 #include <SimpleMath.h>
+
 // 前方宣言
 class Player;
 class CommonResources;
 class BulletManager;
+
+// ボスロジックのインターフェースクラス
 class IBossLogic
 {
 public:
+	// publicメンバ関数
 	// デストラクタ
 	virtual ~IBossLogic() = default;
 	// 初期化

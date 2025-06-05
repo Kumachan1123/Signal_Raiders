@@ -3,6 +3,8 @@
 *	@brief		UIクラス(タイトル・リザルト・セッティング)
 */
 #pragma once
+#ifndef UI_DEFINED
+#define UI_DEFINED
 // 標準ライブラリ
 #include <vector>
 // DirectX
@@ -16,18 +18,23 @@
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
+
 // 前方宣言
 class CommonResources;
+
+// UIクラス(タイトル・リザルト・セッティング)
 class  UI
 {
-public:// 列挙型
+public:
+	// 列挙型
 	// シェーダータイプ
 	enum class ShaderType
 	{
 		NORMAL = 0,// 通常のメニュー用
 		STAGE_SELECT// ステージセレクト用
 	};
-public:// 構造体
+public:
+	// 構造体
 	// シェーダーに渡す値
 	struct ConstBuffer
 	{
@@ -36,7 +43,8 @@ public:// 構造体
 		DirectX::SimpleMath::Vector3 color;// 色
 	};
 
-public:// アクセサ
+public:
+	// アクセサ
 	// ウィンドウのサイズを設定
 	void SetWindowSize(const int& width, const int& height);
 	// シェーダータイプを設定
@@ -61,7 +69,8 @@ public:// アクセサ
 	void SetTime(float time) { m_time = time; }
 	// 指定位置にヒットしたかどうかを取得
 	bool IsHit(const DirectX::SimpleMath::Vector2& pos) const;
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	UI(CommonResources* pCommonResources);
 	// デストラクタ
@@ -78,13 +87,16 @@ public:// public関数
 	void Update(float elapsedTime);
 	// 描画
 	void Render();
-private:// private関数
+private:
+	// private関数
 	// シェーダーの作成
 	void CreateShaders();
-public:// 定数
+public:
+	// 定数
 	// インプットレイアウト
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
-private:// private変数
+private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// デバイスリソース
@@ -134,3 +146,4 @@ private:// private変数
 	// アンカー
 	KumachiLib::ANCHOR m_anchor;
 };
+#endif // UI_DEFINED

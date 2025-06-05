@@ -3,6 +3,8 @@
 *	@brief ダメージエフェクトや警告エフェクトの管理クラスのヘッダーファイル
 */
 #pragma once
+#ifndef WARNING_EFFECTS_DEFINED
+#define WARNING_EFFECTS_DEFINED
 // 標準ライブラリ
 #include <vector>
 #include <unordered_map>
@@ -12,20 +14,25 @@
 #include "Game/Player/Player.h"
 #include "Game/Enemy/EnemyManager/EnemyManager.h"
 #include "Game/WarningEffect/DamageEffect/DamageEffect.h"
+
 // 前方宣言
 class Player;
 class EnemyManager;
 class CommonResources;
 class DamageEffect;
 class IEnemy;
+
+// ダメージエフェクトや警告エフェクトの管理クラス
 class WarningEffects
 {
-public:	// アクセサ
+public:
+	// アクセサ
 	// 攻撃しようとしている敵の数取得
 	int GetWarningEffectCount()const { return m_warningEffectCount; }
 	// 攻撃しようとしている敵の数設定
 	void SetWarningEffectCount(int count) { m_warningEffectCount = count; }
-public:	// publicメンバ関数
+public:
+	// publicメンバ関数
 	// コンストラクタ
 	WarningEffects(CommonResources* resources);
 	// デストラクタ
@@ -40,7 +47,8 @@ public:	// publicメンバ関数
 	void Update(float elapsedTime);
 	// 描画
 	void Render();
-private:// privateメンバ変数
+private:
+	// privateメンバ変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// プレイヤー
@@ -56,3 +64,4 @@ private:// privateメンバ変数
 	// 敵とエフェクトのマップ
 	std::unordered_map<IEnemy*, DamageEffect*> m_enemyEffectMap;
 };
+#endif // WARNING_EFFECTS_DEFINED

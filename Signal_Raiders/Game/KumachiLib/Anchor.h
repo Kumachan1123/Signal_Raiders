@@ -3,6 +3,8 @@
 *	@brief UIのアンカーポイントの列挙クラス
 */
 #pragma once
+#ifndef ANCHOR_DEFINED
+#define ANCHOR_DEFINED
 namespace KumachiLib
 {
 	//UIのアンカーポイントの列挙数
@@ -21,3 +23,4 @@ namespace KumachiLib
 		BOTTOM_RIGHT,// 右下
 	};
 }
+#endif // ANCHOR_DEFINED

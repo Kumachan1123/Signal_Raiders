@@ -3,6 +3,8 @@
 *	@brief HPゲージクラス
 */
 #pragma once
+#ifndef PLAYER_HP_DEFINED
+#define PLAYER_HP_DEFINED
 // 標準ライブラリ
 #include <vector>
 #include <string>
@@ -16,13 +18,16 @@
 #include "Game/Interface/IPlayUI.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "Game/KumachiLib/KumachiLib.h"
-// 前方宣言
+
+// プレイヤーのHPゲージクラス
 class PlayerHP : public IPlayUI
 {
-public:// アクセサ
+public:
+	// アクセサ
 	// 最大HPを設定
 	void SetMaxHP(float maxHP) { m_maxHP = maxHP; }
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	PlayerHP();
 	// デストラクタ
@@ -38,10 +43,12 @@ public:// public関数
 		, const DirectX::SimpleMath::Vector2& position
 		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor)override;
-private:// private関数
+private:
+	// private関数
 	// HP更新関数
 	void Update(float playerHP);
-private:// private変数
+private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// デバイスリソース
@@ -64,3 +71,4 @@ private:// private変数
 	// 現在のHP
 	float m_currentHP;
 };
+#endif // PLAYER_HP_DEFINED

@@ -14,15 +14,19 @@
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 #include "Game/Interface/IEnemyBullet.h"
 #include "Game/Enemy/EnemyBullet/EnemyBulletType/EnemyBulletType.h"
+
 // 前方宣言
 class IEnemyBullet;
 class NormalBullet;
 class SpeedBullet;
 class SpecialBullet;
 class EnemyBullet;
+
+// 敵弾ファクトリークラス
 class EnemyBulletFactory
 {
-public:// public静的関数
+public:
+	// public静的関数
 	// 弾の生成
 	static std::unique_ptr<IEnemyBullet> CreateBullet(BulletType type);
 };

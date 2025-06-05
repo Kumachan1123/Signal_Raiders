@@ -3,6 +3,8 @@
 *	@brief	敵HPBarクラス
 */
 #pragma once
+#ifndef ENEMY_HP_BAR_DEFINED
+#define ENEMY_HP_BAR_DEFINED
 // 標準ライブラリ
 #include <cassert>
 #include <random>
@@ -23,13 +25,17 @@
 #include "Game/KumachiLib/KumachiLib.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
+
 //前方宣言
 class CommonResources;
 class PlayScene;
 class Enemy;
+
+// 敵HPバークラス
 class EnemyHPBar
 {
-private:// 構造体
+private:
+	// 構造体
 	// シェーダーに渡す定数バッファ
 	struct ConstBuffer
 	{
@@ -39,22 +45,36 @@ private:// 構造体
 		DirectX::SimpleMath::Vector4	colors;//		色
 		DirectX::SimpleMath::Vector4	hp;//		HP
 	};
-
-public:// アクセサ
-	DirectX::BoundingSphere& GetBoundingSphere() { return m_enemyBoundingSphere; }// 敵の境界球を取得
-	void SetBoundingSphereCenter(const DirectX::SimpleMath::Vector3& cen) { m_enemyBoundingSphere.Center = cen; }// 敵の境界球の中心を設定
-	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }// 位置を取得
-	void SetPosition(const DirectX::SimpleMath::Vector3& pos) { m_position = pos; }// 位置を設定
-	DirectX::SimpleMath::Vector3 GetVelocity() const { return m_velocity; }// 速度を取得
-	DirectX::SimpleMath::Vector3 GetAccele() const { return m_accele; }// 加速度を取得
-	DirectX::SimpleMath::Vector3 GetScale() const { return m_scale; }// スケールを取得
-	void SetScale(const DirectX::SimpleMath::Vector3& scale) { m_scale = scale; }// スケールを設定
-	DirectX::SimpleMath::Vector3 GetRotate() const { return m_rotate; } // 回転を取得
-	int GetCurrentHP() const { return m_currentHP; } // 現在のHPを取得
-	void SetCurrentHP(int& hp) { m_currentHP = hp; } // 現在のHPを設定
-	void SetEnemyMaxHP(int& hp) { m_maxHP = hp; } // 敵の最大HPを設定
-	bool GetIsDead() const { return m_isDead; } // 敵が死んでいるかどうかを取得
-public:// public関数
+public:
+	// アクセサ
+	// 敵の境界球を取得
+	DirectX::BoundingSphere& GetBoundingSphere() { return m_enemyBoundingSphere; }
+	// 敵の境界球の中心を設定
+	void SetBoundingSphereCenter(const DirectX::SimpleMath::Vector3& cen) { m_enemyBoundingSphere.Center = cen; }
+	// 位置を取得
+	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
+	// 位置を設定
+	void SetPosition(const DirectX::SimpleMath::Vector3& pos) { m_position = pos; }
+	// 速度を取得
+	DirectX::SimpleMath::Vector3 GetVelocity() const { return m_velocity; }
+	// 加速度を取得
+	DirectX::SimpleMath::Vector3 GetAccele() const { return m_accele; }
+	// スケールを取得
+	DirectX::SimpleMath::Vector3 GetScale() const { return m_scale; }
+	// スケールを設定
+	void SetScale(const DirectX::SimpleMath::Vector3& scale) { m_scale = scale; }
+	// 回転を取得
+	DirectX::SimpleMath::Vector3 GetRotate() const { return m_rotate; }
+	// 現在のHPを取得
+	int GetCurrentHP() const { return m_currentHP; }
+	// 現在のHPを設定
+	void SetCurrentHP(int& hp) { m_currentHP = hp; }
+	// 敵の最大HPを設定
+	void SetEnemyMaxHP(int& hp) { m_maxHP = hp; }
+	// 敵が死んでいるかどうかを取得
+	bool GetIsDead() const { return m_isDead; }
+public:
+	// public関数
 	// コンストラクタ
 	EnemyHPBar();
 	// デストラクタ
@@ -69,12 +89,14 @@ public:// public関数
 		const DirectX::SimpleMath::Matrix& proj,
 		const DirectX::SimpleMath::Vector3& pos,
 		const DirectX::SimpleMath::Vector3& rot);
-private:// private関数
+private:
+	// private関数
 	// バッファ作成
 	void CreateBuffer();
 	// シェーダー作成
 	void CreateShaders();
-public:// public定数
+public:
+	// public定数
 	// 頂点レイアウト
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 	// 頂点数
@@ -97,7 +119,8 @@ public:// public定数
 	const float HPBARBACK_Y_MIN = 2.98f;
 	// HPバーの幅
 	const float BAR_LEFT = -1.50f;
-private:// private変数
+private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 描画クラス
@@ -149,5 +172,4 @@ private:// private変数
 	//敵のHPが0になったらTrue
 	bool m_isDead;
 };
-
-
+#endif // ENEMY_HP_BAR_DEFINED

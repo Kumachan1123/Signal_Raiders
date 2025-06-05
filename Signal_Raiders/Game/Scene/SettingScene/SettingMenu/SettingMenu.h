@@ -3,6 +3,8 @@
 *	@brief	セッティングメニュークラス
 */
 #pragma once
+#ifndef SETTING_MENU_DEFINED
+#define SETTING_MENU_DEFINED
 // 標準ライブラリ
 #include <vector>
 #include <string>
@@ -20,11 +22,15 @@
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "Game/CommonResources.h"
 #include "Game/Interface/IMenuUI.h"
+
 // 前方宣言
 class CommonResources;
+
+// セッティングメニュークラス
 class SettingMenu : public IMenuUI
 {
-public:// 列挙型
+public:
+	// 列挙型
 	// 設定項目 
 	enum SettingID
 	{
@@ -40,7 +46,8 @@ public:// 列挙型
 		APPLY = 0,// 適用
 		END = 1// 何もせず終了
 	};
-public:// アクセサ
+public:
+	// アクセサ
 	// 選択ID取得
 	SelectID GetSelectIDNum() const { return m_selectNum; }
 	// 選択ID設定
@@ -50,7 +57,8 @@ public:// アクセサ
 	// SEの音量設定
 	void SetSEVolume(float volume) { m_SEVolume = volume; }
 
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	SettingMenu();
 	// デストラクタ
@@ -67,13 +75,16 @@ public:// public関数
 		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor
 		, UIType type);
-private:// private関数
+private:
+	// private関数
 	// 更新
 	void Update(float elapsedTime);
-private:// private定数
+private:
+	// private定数
 	// 無効なメニューインデックス
 	static const int INVALID_MENU_INDEX;
-private:// 変数
+private:
+	// 変数
 	// メニューのインデックス
 	int m_menuIndex;
 	// デバイスリソース
@@ -99,3 +110,4 @@ private:// 変数
 	// 再生フラグ
 	bool m_isSEPlay;
 };
+#endif // SETTING_MENU_DEFINED

@@ -3,11 +3,17 @@
 *	@brief	シーンのインターフェイスクラス
 */
 #pragma once
+#ifndef ISCENE_DEFINED
+#define ISCENE_DEFINED
+
 // 前方宣言
 class CommonResources;
+
+// シーンのインターフェイスクラス
 class IScene
 {
-public:	// 列挙型
+public:
+	// 列挙型
 	// シーンＩＤ
 	enum class SceneID : unsigned int
 	{
@@ -19,7 +25,8 @@ public:	// 列挙型
 		CLEAR,// クリア
 		GAMEOVER// ゲームオーバー
 	};
-public:// 関数
+public:
+	// 関数
 	// デストラクタ
 	virtual ~IScene() = default;
 	// 初期化
@@ -33,3 +40,4 @@ public:// 関数
 	// 次のシーンIDを取得
 	virtual SceneID GetNextSceneID() const = 0;
 };
+#endif // ISCENE_DEFINED

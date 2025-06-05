@@ -3,24 +3,27 @@
 	@brief	敵AI用パラメータークラス
 */
 #pragma once
+#ifndef ENEMY_PARAMETERS_DEFINED
+#define ENEMY_PARAMETERS_DEFINED
+// 敵AI用パラメータークラス
 class EnemyParameters
 {
-public:// 定数用構造体
+public:
+	// 定数用構造体
 	// ノックバック開始から経過した時間
 	struct KnockBackTime
 	{
 		float canAttackTime;    // 開始から一定経って攻撃できるようになる時間
 		float endKnockTime;     // ノックバック処理をやめる時間
 	};
-
 	// 内積をclampするときに使う値
 	struct DotClamp
 	{
 		float max;  // 最大値
 		float min;  // 最小値
 	};
-public:// 定数
-
+public:
+	// 定数
 	// ===== 共通（ザコ・ボス両方に関係するもの） =====
 	// ランダム値の最大値
 	static const float RANDOM_MAX;
@@ -100,7 +103,6 @@ public:// 定数
 	static const float BOSS_CHASE_SPEED;
 	// ボスのスポーン待機時間
 	static const float BOSS_SPAWN_WAIT_TIME;
-
 	// ===== ボス専用 =====
 	// ボスの初期位置
 	static const DirectX::SimpleMath::Vector3 INITIAL_BOSS_POSITION;
@@ -128,8 +130,6 @@ public:// 定数
 	static const float BOSS_BARRIERBREAK_SIZE;
 	// ボスのデスエフェクトのスケール
 	static const float BOSS_DEADEFFECT_SCALE;
-
-
 	// ===== ラスボス専用 =====
 	// ボスの初期位置
 	static const DirectX::SimpleMath::Vector3 INITIAL_LASTBOSS_POSITION;
@@ -161,9 +161,8 @@ public:// 定数
 	static const float LASTBOSS_BARRIERBREAK_SIZE;
 	// ラスボスのデスエフェクトのスケール
 	static const float LASTBOSS_DEADEFFECT_SCALE;
-
 	// ===== 浮遊・特殊な初期状態など =====
 	// 浮遊用の初速度
 	static const DirectX::SimpleMath::Vector3 INITIAL_VELOCITY;
-
 };
+#endif // ENEMY_PARAMETERS_DEFINED

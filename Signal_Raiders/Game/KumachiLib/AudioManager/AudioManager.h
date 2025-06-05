@@ -3,6 +3,8 @@
 *	@brief	音声管理クラス
 */
 #pragma once
+#ifndef AUDIOMANAGER_DEFINED
+#define AUDIOMANAGER_DEFINED
 // 標準ライブラリ
 #include <string>
 #include <unordered_map>
@@ -11,6 +13,7 @@
 // FMOD(外部ライブラリ)
 #include "Libraries/FMOD/inc/fmod.hpp"
 #include "Libraries/FMOD/inc/fmod_errors.h"
+
 // 前方宣言
 namespace FMOD
 {
@@ -18,9 +21,12 @@ namespace FMOD
 	class Sound;
 	class Channel;
 }
+
+// 音声管理クラス
 class AudioManager
 {
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	AudioManager();
 	// デストラクタ
@@ -39,7 +45,8 @@ public:// public関数
 	void Update();
 	// 解放
 	void Shutdown();
-private:// private変数
+private:
+	// private変数
 	// FMODシステム
 	FMOD::System* m_pFMODSystem;
 	// チャンネル
@@ -51,3 +58,4 @@ private:// private変数
 	// ボリューム
 	float m_volume;
 };
+#endif // AUDIOMANAGER_DEFINED

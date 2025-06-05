@@ -3,14 +3,19 @@
 *	@brief	設定データの読み書きを管理するクラス
 */
 #pragma once
+#ifndef SETTING_DATA_DEFINED
+#define SETTING_DATA_DEFINED
 // 標準ライブラリ
 #include <string>
 #include <fstream>
 // 外部ライブラリ
 #include "Libraries/nlohmann/json.hpp"
+
+// 設定データクラス
 class SettingData
 {
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	SettingData();
 	// デストラクタ
@@ -31,7 +36,8 @@ public:// public関数
 	int GetMouseSensitivity() const { return m_mouseSensitivity; }
 	// マウス感度を設定
 	void SetMouseSensitivity(int sensitivity) { m_mouseSensitivity = sensitivity; }
-private://	private変数
+private:
+	//	private変数
 	// BGMの音量
 	int m_bgmVolume;
 	// SEの音量
@@ -39,3 +45,4 @@ private://	private変数
 	// マウス感度
 	int m_mouseSensitivity;
 };
+#endif // SETTING_DATA_DEFINED

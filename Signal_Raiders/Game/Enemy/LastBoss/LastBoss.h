@@ -3,6 +3,8 @@
 *  @brief ラスボスクラス
 */
 #pragma once
+#ifndef LAST_BOSS_DEFINED
+#define LAST_BOSS_DEFINED
 // 標準ライブラリ
 #include <SimpleMath.h>
 // 外部ライブラリ
@@ -24,10 +26,12 @@ class CommonResources;
 class BossAI;
 class LastBossModel;
 class BossBase;
+
+// ラスボスクラス
 class LastBoss : public IBossLogic
 {
-public:// public関数
-
+public:
+	// public関数
 	// コンストラクタ
 	LastBoss(BossBase* pBoss, CommonResources* commonResources);
 	// デストラクタ
@@ -42,7 +46,8 @@ public:// public関数
 	void BulletPositioning()override;
 	// 弾を生成
 	void CreateBullet()override;
-private:// private変数
+private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	//モデル
@@ -84,3 +89,4 @@ private:// private変数
 	// ボスのベースクラス
 	BossBase* m_pBossBase;
 };
+#endif // LAST_BOSS_DEFINED

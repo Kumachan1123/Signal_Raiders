@@ -3,6 +3,8 @@
 *	@brief	ステージセレクトシーンクラス
 */
 #pragma once
+#ifndef STAGE_SELECT_SCENE_DEFINED
+#define STAGE_SELECT_SCENE_DEFINED
 // 標準ライブラリ
 #include <cassert>
 // DirectX
@@ -23,20 +25,25 @@
 #include "Game/Scene/StageSelectScene/Stage/StageSelect.h"
 #include "Game/MousePointer/MousePointer.h"
 #include "Game/Interface/IMenuUI.h"
+
 // 前方宣言
 class CommonResources;
 class Fade;
 class BackGround;
+
+// ステージセレクトシーンクラス
 class StageSelectScene final : public IScene
 {
-public:// アクセサ
+public:
+	// アクセサ
 	// 次のシーンIDを取得
 	SceneID GetNextSceneID()const override;
 	// ステージ番号を取得
 	int GetStageNumber() const { return m_stageNumber; }
 	// ステージ番号を設定
 	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; }
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	StageSelectScene(IScene::SceneID sceneID);
 	// デストラクタ
@@ -49,12 +56,14 @@ public:// public関数
 	void Render() override;
 	// 終了
 	void Finalize() override;
-private:// 定数
+private:
+	// 定数
 	// 音量の基準
 	static const float VOLUME;
 	// タイトルに戻る値
 	static const int TITLE;
-private:// private変数
+private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 設定データ
@@ -90,3 +99,4 @@ private:// private変数
 	// ステージ番号
 	int m_stageNumber;
 };
+#endif // STAGE_SELECT_SCENE_DEFINED

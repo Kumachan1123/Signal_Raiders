@@ -17,11 +17,15 @@
 #include "Game/Interface/IState.h"
 #include "Game/Enemy/EnemyAI/EnemyAI.h"
 #include "Game/KumachiLib/KumachiLib.h"
+
 //前方宣言
 class EnemyAI;
+
+// 敵徘徊クラス
 class EnemyIdling : public IState
 {
-public:	// アクセサ
+public:
+	// アクセサ
 	// 現在の位置を取得する
 	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
 	// 位置を設定する
@@ -32,7 +36,8 @@ public:	// アクセサ
 	void SetRotation(const DirectX::SimpleMath::Quaternion& rot) { m_rotation = rot; }
 	// モデルのスケールを設定する
 	void SetScale(const DirectX::SimpleMath::Vector3& sca) { m_scale = sca; }
-public:// publicメンバ関数
+public:
+	// publicメンバ関数
 	// コンストラクタ
 	EnemyIdling(EnemyAI* enemyAI);
 	// デストラクタ
@@ -41,7 +46,8 @@ public:// publicメンバ関数
 	void Initialize() override;
 	// 更新
 	void Update(float elapsedTime) override;
-private:// private変数
+private:
+	// private変数
 	// 敵AIへのポインタ
 	EnemyAI* m_pEnemyAI;
 	// 現在の位置

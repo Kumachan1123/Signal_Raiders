@@ -5,6 +5,7 @@
 */
 #ifndef ENEMY_BULLET_TYPE_DEFINED
 #define ENEMY_BULLET_TYPE_DEFINED
+
 // ’e‚ÌŽí—Þ‚Ì—ñ‹“Œ^
 enum class BulletType
 {

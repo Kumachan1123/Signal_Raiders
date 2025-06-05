@@ -3,6 +3,8 @@
 *	@brief Wi-Fiの情報を取得するためのインターフェース
 */
 #pragma once
+#ifndef I_WIFI_PARTS_DEFINED
+#define I_WIFI_PARTS_DEFINED
 // Windows APIを使うためのヘッダー
 #include <windows.h>
 #include <wlanapi.h>
@@ -17,6 +19,8 @@
 #include <string>
 // WlanAPIライブラリをリンク
 #pragma comment(lib, "wlanapi.lib")
+
+
 // 構造体
 // Wi-Fiの情報の構造体
 struct NetworkInfo
@@ -67,3 +71,5 @@ namespace CipherAlgorithms
 		Unknown = 0xFF// 不明
 	};
 }
+
+#endif // I_WIFI_PARTS_DEFINED

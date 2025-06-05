@@ -4,6 +4,8 @@
 *	@details 関数を呼ぶだけでブルームエフェクトを実装できる
 */
 #pragma once
+#ifndef BLOOM_DEFINED
+#define BLOOM_DEFINED
 // DirectXのヘッダファイル
 #include <PostProcess.h>
 #include <CommonStates.h>
@@ -12,14 +14,19 @@
 #include <Libraries/Microsoft/RenderTexture/RenderTexture.h>
 // 自作ヘッダーファイル
 #include "Game/CommonResources.h"
+
 //前方宣言
 class CommonResources;
+
+// ブルームエフェクトクラス
 class Bloom
 {
-public:// シングルトンインスタンス
+public:
+	// シングルトンインスタンス
 	// シングルトンインスタンスを取得
 	static Bloom* const GetInstance();
-public:	// 構造体
+public:
+	// 構造体
 	// ブラー
 	struct Blur
 	{
@@ -27,7 +34,8 @@ public:	// 構造体
 		ID3D11ShaderResourceView* SRV;// シェーダーリソースビュー
 	};
 
-public:	// public関数
+public:
+	// public関数
 	// デストラクタ
 	~Bloom();
 	// ポストプロセスを生成
@@ -38,11 +46,16 @@ public:	// public関数
 	void PostProcess();
 private:
 	// private関数
-	Bloom();// コンストラクタ
-	void CreateRenderTexture();// レンダーテクスチャを作成する
-	Bloom(const Bloom&) = delete;// コピーコンストラクタ
-	Bloom& operator=(const Bloom&) = delete;// 代入演算子の禁止
-private://private変数
+	// コンストラクタ
+	Bloom();
+	// レンダーテクスチャを作成する
+	void CreateRenderTexture();
+	// コピーコンストラクタ
+	Bloom(const Bloom&) = delete;
+	// 代入演算子の禁止
+	Bloom& operator=(const Bloom&) = delete;
+private:
+	//private変数
 	// シングルトンインスタンス
 	static std::unique_ptr<Bloom> m_pInstance;
 	// 共通リソース
@@ -55,8 +68,9 @@ private://private変数
 	ID3D11Device1* m_pDevice;
 	// ブルームエフェクトのコモンステート
 	std::unique_ptr<DirectX::CommonStates> m_pStates;
-	// ブラー
+	// ブラー1
 	Blur m_blur1;
+	// ブラー2
 	Blur m_blur2;
 	// ポストプロセス
 	std::unique_ptr<DirectX::BasicPostProcess> m_pBasicPostProcess;
@@ -83,4 +97,4 @@ private://private変数
 	// スプライトバッチ
 	std::unique_ptr<DirectX::SpriteBatch> m_pSpriteBatch;
 };
-
+#endif //BLOOM_DEFINED

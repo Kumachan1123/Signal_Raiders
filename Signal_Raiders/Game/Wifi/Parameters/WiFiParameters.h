@@ -3,6 +3,10 @@
 *	@brief	Wi-Fiに関するパラメータを定義するヘッダーファイル
 */
 #pragma once
+#ifndef WIFI_PARAMETERS_DEFINED
+#define WIFI_PARAMETERS_DEFINED
+
+// Wi-Fiに関するパラメータを定義する
 class WiFiParameters
 {
 public:// public定数
@@ -15,3 +19,4 @@ public:// public定数
 	// 更新を終える時間
 	static constexpr float MAX_TIME = 1.0f;
 };
+#endif // WIFI_PARAMETERS_DEFINED

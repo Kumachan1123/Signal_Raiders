@@ -3,6 +3,8 @@
 	@brief	タイトルシーンクラス
 */
 #pragma once
+#ifndef TITLE_SCENE_DEFINED
+#define TITLE_SCENE_DEFINED
 // 標準ライブラリ
 #include <cassert>
 // DirectX
@@ -26,12 +28,16 @@
 #include "Game/Screen.h"
 #include "Game/CommonResources.h"
 #include "Game/KumachiLib//BinaryFile/BinaryFile.h"
+
 // 前方宣言
 class CommonResources;
 class Fade;
+
+// タイトルシーンクラス
 class TitleScene final :public IScene
 {
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	TitleScene(IScene::SceneID sceneID);
 	// デストラクタ
@@ -46,10 +52,12 @@ public:// public関数
 	void Finalize() override;
 	// 次のシーンIDを取得
 	SceneID GetNextSceneID() const override;
-private:// 定数
+private:
+	// 定数
 	// 音量の基準
 	static	const float VOLUME;
-private:// private変数
+private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	//	変数
@@ -77,3 +85,4 @@ private:// private変数
 	// 現在のシーンID
 	IScene::SceneID m_nowSceneID;
 };
+#endif // TITLE_SCENE_DEFINED

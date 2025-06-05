@@ -1,13 +1,21 @@
+/*
+*	@file		IBullet.h
+*	@brief	弾のインターフェースクラス
+*/
 #pragma once
 #ifndef IBULLET_DEFINED
 #define IBULLET_DEFINED
 // 標準ライブラリ
 #include <SimpleMath.h>
+
 // 前方宣言
 class CommonResources;
+
+// 弾のインターフェースクラス
 class IBullet
 {
-public:	// public関数
+public:
+	// public関数
 	// デストラクタ
 	virtual ~IBullet() = default;
 	// 初期化

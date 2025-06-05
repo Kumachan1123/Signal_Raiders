@@ -1,10 +1,16 @@
+/*
+*	@file IUI.h
+*	@brief UIのインターフェースクラス
+*/
 #pragma once
 #ifndef IUI_DEFINED
 #define IUI_DEFINED
 // 標準ライブラリ
 #include <SimpleMath.h>
+
 // 前方宣言
 class CommonResources;
+
 // UI共通の更新情報構造体
 struct UpdateContext
 {
@@ -14,9 +20,11 @@ struct UpdateContext
 	float playerHP;// プレイヤーHP
 };
 
+// UIのインターフェースクラス
 class IUI
 {
-public:// public関数
+public:
+	// public関数
 	// デストラクタ
 	virtual ~IUI() = default;
 	// 初期化

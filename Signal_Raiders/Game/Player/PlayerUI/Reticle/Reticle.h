@@ -3,6 +3,8 @@
 *	@brief 照準クラス
 */
 #pragma once
+#ifndef RETICLE_DEFINED
+#define RETICLE_DEFINED
 // 標準ライブラリ
 #include <vector>
 #include <string>
@@ -16,11 +18,15 @@
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "Game/Screen.h"
 #include "Game/Interface/IPlayUI.h"
+
 // 前方宣言
 class CommonResources;
+
+// 照準クラス
 class Reticle : public IPlayUI
 {
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	Reticle();
 	// デストラクタ
@@ -36,10 +42,12 @@ public:// public関数
 		, const DirectX::SimpleMath::Vector2& position
 		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor)override;
-private:// private関数
+private:
+	// private関数
 	// 更新関数
 	void Update();
-private:// private変数
+private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// デバイスリソース
@@ -50,5 +58,5 @@ private:// private変数
 	int m_windowWidth;
 	// ウィンドウの高さ
 	int m_windowHeight;
-
 };
+#endif // RETICLE_DEFINED

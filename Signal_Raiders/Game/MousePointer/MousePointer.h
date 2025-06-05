@@ -3,6 +3,8 @@
 *	@brief	タイトル画面のメニュークラス
 */
 #pragma once
+#ifndef MOUSEPOINTER_DEFINED
+#define MOUSEPOINTER_DEFINED
 //	標準ライブラリ
 #include <vector>
 #include <string>
@@ -19,11 +21,15 @@
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "Game/UI/UI.h"
 #include "Game/Interface/IMenuUI.h"
+
 // 前方宣言
 class CommonResources;
+
+// マウスポインタークラス
 class MousePointer : public IMenuUI
 {
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	MousePointer();
 	// デストラクタ
@@ -40,10 +46,12 @@ public:// public関数
 		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor
 		, IMenuUI::UIType type)override;
-private:// private関数
+private:
+	// private関数
 	// 更新（private）
 	void Update(float elapsedTime);
-private:// private変数
+private:
+	// private変数
 	// メニューのインデックス
 	unsigned int m_menuIndex;
 	// デバイスリソース
@@ -55,3 +63,4 @@ private:// private変数
 	// ウィンドウの幅と高さ
 	int m_windowWidth, m_windowHeight;
 };
+#endif // MOUSEPOINTER_DEFINED

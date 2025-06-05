@@ -3,6 +3,8 @@
 *	@brief		プレイヤークラス
 */
 #pragma once
+#ifndef PLAYER_DEFINED
+#define PLAYER_DEFINED
 // DirectXTK
 #include <DeviceResources.h>
 #include <Mouse.h>
@@ -16,6 +18,7 @@
 #include "Game/WarningEffect/WarningEffects/WarningEffects.h"
 #include "Game/Enemy/EnemyManager/EnemyManager.h"
 #include "Game/FPS_Camera/FPS_Camera.h"
+
 // 前方宣言
 class CommonResources;
 class PlayerController;
@@ -26,9 +29,12 @@ class PlayerHP;
 class Crisis;
 class WarningEffects;
 class FPS_Camera;
+
+// プレイヤークラス
 class Player
 {
-public:// アクセサ
+public:
+	// アクセサ
 	// プレイヤーのHP
 	float GetPlayerHP() const { return m_playerHP; }
 	// プレイヤーのHP
@@ -89,7 +95,8 @@ public:// アクセサ
 	void SetisCheat(bool isCheat) { m_isCheat = isCheat; }
 	// 弾マネージャーをセット
 	void SetBulletManager(BulletManager* pBulletManager) { m_pBulletManager = pBulletManager; }
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	Player(CommonResources* commonResources);
 	// デストラクタ
@@ -102,12 +109,14 @@ public:// public関数
 	void Render();
 	// 弾を生成する
 	void CreateBullet();
-private:// private関数
+private:
+	// private関数
 	// プレイヤーがダメージを受けた時の処理
 	void PlayerDamage(float elapsedTime);
 	// 攻撃しようとしている敵に関する処理
 	void InComingEnemy();
-private:// 定数
+private:
+	// 定数
 	// プレイヤーのHP初期値
 	const float PLAYER_HP = 100.0f;
 	// マウス感度初期値
@@ -123,7 +132,8 @@ private:// 定数
 	const float DAMAGE_SHAKE_AMPLITUDE = 0.15f;
 	// ダメージエフェクトの継続時間
 	const float DAMAGE_DURATION = 0.25f;
-private: // private変数
+private:
+	// private変数
 	// コモンリソース
 	CommonResources* m_pCommonResources;
 	// 敵
@@ -171,3 +181,4 @@ private: // private変数
 	// 経過時間
 	float m_timer;
 };
+#endif // PLAYER_DEFINED

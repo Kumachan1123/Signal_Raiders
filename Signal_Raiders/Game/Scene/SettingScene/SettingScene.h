@@ -3,6 +3,8 @@
 *	@brief	メニュークラス
 */
 #pragma once
+#ifndef SETTING_SCENE_DEFINED
+#define SETTING_SCENE_DEFINED
 // 標準ライブラリ
 #include <cassert>
 #include <vector>
@@ -27,12 +29,16 @@
 #include "Game/Screen.h"
 #include "Game/CommonResources.h"
 #include "Game/KumachiLib//BinaryFile/BinaryFile.h"
+
 // 前方宣言
 class CommonResources;
 class Fade;
+
+// 設定シーンクラス
 class SettingScene final : public IScene
 {
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	SettingScene(IScene::SceneID sceneID);
 	// デストラクタ
@@ -47,7 +53,8 @@ public:// public関数
 	void Finalize() override;
 	// 次のシーンIDを取得
 	SceneID GetNextSceneID() const;
-private:// private関数
+private:
+	// private関数
 	// 音量設定
 	void SetVolume();
 	// 設定バーの更新
@@ -60,10 +67,12 @@ private:// private関数
 	void UpdateMousePointers(const UpdateContext& ctx);
 	// メニュー選択の処理
 	void HandleMenuSelection(const UpdateContext& ctx);
-private:// private定数
+private:
+	// private定数
 	// 音量の基準
 	static const float VOLUME;
-private:// private変数
+private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	//	変数
@@ -95,3 +104,4 @@ private:// private変数
 	// 現在のシーンID
 	IScene::SceneID m_nowSceneID;
 };
+#endif // SETTING_SCENE_DEFINED

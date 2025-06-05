@@ -29,12 +29,15 @@
 #include "Game/Interface/IBullet.h"
 #include "Game/Enemy/EnemyBullet/EnemyBulletFactory/EnemyBulletFactory.h"
 #include "Game/Enemy/EnemyBullet/EnemyBulletType/EnemyBulletType.h"
+
 // ‘O•ûéŒ¾
 class CommonResources;
 class IEnemyBullet;
 class NormalBullet;
 class SpeedBullet;
 class SpecialBullet;
+
+// “G‚Ì’eƒNƒ‰ƒX
 class EnemyBullet : public IBullet
 {
 public:
@@ -151,4 +154,3 @@ private:
 	float m_seVolume; // SE‰¹—Ê
 };
 #endif //ENEMY_BULLET_DEFINED
-

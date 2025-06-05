@@ -1,3 +1,7 @@
+/*
+*	@file		IMenuUI.h
+*	@brief	メニューUIのインターフェースクラス
+*/
 #pragma once
 #ifndef IMENUUI_DEFINED
 #define IMENUUI_DEFINED
@@ -9,18 +13,23 @@
 // 自作ヘッダーファイル
 #include "Game/KumachiLib/Anchor.h"
 #include "Game/Interface/IUI.h"
+
 // 前方宣言
 class CommonResources;
+
+// インターフェースクラス：メニューUI
 class IMenuUI : public IUI
 {
-public:	// 列挙型
+public:
+	// 列挙型
 	//UIの種類
 	enum class UIType
 	{
 		SELECT,		// 選択可能UI
 		NON_SELECT	// 選択不可能UI
 	};
-public:// public関数
+public:
+	// public関数
 	// デストラクタ
 	virtual ~IMenuUI() = default;
 	// UI追加	

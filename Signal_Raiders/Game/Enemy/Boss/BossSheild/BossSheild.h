@@ -18,22 +18,27 @@
 #include "Game/Particle/Particle.h"
 #include "Game/Interface/IEnemy.h"
 #include "Game/Enemy/BossBase/BossBase.h"
+
 // クラスの前方宣言
 class IEnemy;
 class Player;
 class CommonResources;
 class IState;
 class BossBase;
+
+// ボスシールドクラス
 class BossSheild
 {
-public:// 列挙型
+public:
+	// 列挙型
 	// ボスの種類
 	enum class BossShieldType
 	{
 		BOSS = 0,	// ボス
 		LASTBOSS,	// ラスボス
 	};
-public:// アクセサ
+public:
+	// アクセサ
 	// シールド展開フラグ取得
 	bool GetSheild() const { return m_isSheild; }
 	// シールド展開フラグ設定
@@ -49,7 +54,8 @@ public:// アクセサ
 	// シールドの初期化
 	void SetUp(int sheildHP, IEnemy* pBoss);
 
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	BossSheild();
 	// デストラクタ
@@ -64,7 +70,8 @@ public:// public関数
 		const DirectX::SimpleMath::Matrix& world,
 		const DirectX::SimpleMath::Matrix& view,
 		const DirectX::SimpleMath::Matrix& proj);
-private:// privateメンバ変数
+private:
+	// privateメンバ変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// シールドモデル

@@ -4,6 +4,7 @@
 */
 #include <pch.h>
 #include "PlayScene.h"
+
 // 音量の基準
 const float PlayScene::VOLUME = 0.05f;
 // ゲームスタート時間
@@ -12,6 +13,7 @@ const float PlayScene::GAME_START_TIME = 5.0f;
 const float PlayScene::WAIT_TIME = 1.0f;
 // 危険信号を表示するプレイヤーの体力
 const float PlayScene::CRISIS_HP = 20.0f;
+
 /*
 *	@brief コンストラクタ
 *	@details プレイシーンクラスのコンストラクタ
@@ -260,7 +262,7 @@ void PlayScene::Render()
 	Matrix projection = m_pPlayer->GetCamera()->GetProjectionMatrix();
 	// 天球のワールド行列(サイズを10倍してプレイヤーを中心地とする)
 	Matrix skyWorld = Matrix::Identity
-		* Matrix::CreateScale(10)
+		* Matrix::CreateScale(10.0f)
 		* Matrix::CreateTranslation(m_pPlayer->GetPlayerController()->GetPlayerPosition());
 	// ワールド行列を初期化する
 	Matrix world = Matrix::Identity;

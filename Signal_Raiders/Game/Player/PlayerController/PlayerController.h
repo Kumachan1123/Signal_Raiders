@@ -3,6 +3,8 @@
 *	@brief	プレイヤーコントローラークラス
 */
 #pragma once
+#ifndef PLAYERCONTROLLER_DEFINED
+#define PLAYERCONTROLLER_DEFINED
 // 標準ライブラリ
 #include <cassert>
 #include <memory>
@@ -18,13 +20,17 @@
 #include "Game/CommonResources.h"
 #include "Game/Player/Player.h"
 #include "Game/Stage/Stage.h"
+
 //前方宣言
 class CommonResources;
 class Mouse;
 class Player;
+
+// プレイヤーコントローラークラス
 class PlayerController
 {
-public:// アクセサ
+public:
+	// アクセサ
 	// カメラのX軸回転取得
 	float GetYaw()const { return m_yaw; }
 	// カメラのY軸回転取得
@@ -39,7 +45,8 @@ public:// アクセサ
 	float GetDashTime()const { return m_dashTime; }
 	// マウス感度設定
 	void SetMouseSensitive(float sensitive) { m_sensitive = sensitive; }
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	PlayerController(Player* pPlayer);
 	// デストラクタ
@@ -56,7 +63,8 @@ public:// public関数
 	void Shoot();
 	// 弾をリロード（補充）する
 	void Reload();
-public:// 定数
+public:
+	// 定数
 	// 通常移動速度
 	static const float MOVE_SPEED;
 	// ダッシュ移動速度
@@ -73,7 +81,8 @@ public:// 定数
 	static const float MOUSE_X_SENSITIVE;
 	// マウスY軸感度
 	static const float MOUSE_Y_SENSITIVE;
-private:// private変数
+private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 一人称視点カメラの座標
@@ -103,4 +112,5 @@ private:// private変数
 	// 走れる時間
 	float m_dashTime;
 };
+#endif // PLAYERCONTROLLER_DEFINED
 

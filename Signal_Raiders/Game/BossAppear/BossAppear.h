@@ -3,6 +3,8 @@
 *  @brief ボス出現演出クラス
 */
 #pragma once
+#ifndef BOSS_APPEAR_DEFINED
+#define BOSS_APPEAR_DEFINED
 // 標準ライブラリ
 #include <Effects.h>
 #include <WICTextureLoader.h>
@@ -19,11 +21,12 @@
 // クラスの前方宣言
 class CommonResources;
 
+// ボスの出現演出クラス
 class BossAppear
 {
-	// 構造体
 private:
-	//	データ受け渡し用コンスタントバッファ(送信側)
+	// 構造体
+	// データ受け渡し用コンスタントバッファ(送信側)
 	struct ConstBuffer
 	{
 		DirectX::SimpleMath::Matrix matWorld;   // ワールド行列
@@ -32,10 +35,12 @@ private:
 		DirectX::SimpleMath::Vector4 colors;    // カラー
 		DirectX::SimpleMath::Vector4 time;		// 時間	
 	};
-public:// アクセサ
+public:
+	// アクセサ
 	// SE音量の設定
 	void SetSEVolume(float volume) { m_seVolume = volume; }
-public:// publicメンバ関数
+public:
+	// publicメンバ関数
 	// コンストラクタ
 	BossAppear();
 	// デストラクタ
@@ -48,17 +53,20 @@ public:// publicメンバ関数
 	void Render();
 	// 終了処理
 	void Finalize();
-private:// privateメンバ関数
+private:
+	// privateメンバ関数
 	// シェーダーの設定
 	void SettingShader();
 	// メインの演出を描画
 	void DrawMain();
 	// 背景の演出を描画
 	void DrawBack();
-private:// 定数
+private:
+	// 定数
 	// インプットレイアウト
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
-private:// privateメンバ変数
+private:
+	// privateメンバ変数
 	//	頂点シェーダ(Main)
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_pVertexShader;
 	//	ピクセルシェーダ(Main)
@@ -100,3 +108,4 @@ private:// privateメンバ変数
 	// 再生フラグ
 	bool m_isPlaying;
 };
+#endif // BOSS_APPEAR_DEFINED

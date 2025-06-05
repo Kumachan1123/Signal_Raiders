@@ -3,6 +3,8 @@
 *	@brief 攻撃を受けた時の演出クラス
 */
 #pragma once
+#ifndef DAMAGE_EFFECT_DEFINED
+#define DAMAGE_EFFECT_DEFINED
 // 標準ライブラリ
 #include <SimpleMath.h>
 #include <Effects.h>
@@ -19,20 +21,25 @@
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
+
 // クラスの前方宣言
 class Player;
 class IEnemy;
 class CommonResources;
+
+// 攻撃を受けた時の演出クラス
 class DamageEffect
 {
-public:// 列挙型
+public:
+	// 列挙型
 	// エフェクトの種類
 	enum class EffectType
 	{
 		DAMAGE = 0,	// ダメージを受けた時
 		INCOMINGENEMY,// 敵が攻撃しようとしている時		
 	};
-public:// 構造体
+public:
+	// 構造体
 	// シェーダーに渡す定数バッファの構造体
 	struct ConstBuffer
 	{
@@ -44,7 +51,8 @@ public:// 構造体
 		DirectX::SimpleMath::Vector4 uv;		// uv座標
 		DirectX::SimpleMath::Vector4 alpha;		// アルファ値
 	};
-public:// アクセサ
+public:
+	// アクセサ
 	// プレイヤーのポインタ取得
 	Player* GetPlayer()const { return m_pPlayer; }
 	// プレイヤーのポインタ設定
@@ -60,32 +68,34 @@ public:// アクセサ
 	// エフェクトタイプ設定
 	void SetEffectType(EffectType type) { m_effectType = type; }
 
-public:	// public関数
+public:
+	// public関数
 	// コンストラクタ
 	DamageEffect(CommonResources* resources);
 	// デストラクタ
 	~DamageEffect();
 	// 初期化
 	void Initialize();
-	//// テクスチャリソース読み込み関数
-	//void LoadTexture(const wchar_t* path);
 	// 更新
 	void Update(float elapsedTime);
 	// 描画
 	void Render();
 	// エフェクトの破棄判定
 	bool Destroy()const;
-private:// private関数
+private:
+	// private関数
 	// シェーダー作成
 	void MakeShader();
 	// 角度計算
 	float CalculateAngle()const;
 	// 角度からUV座標を求める
 	DirectX::SimpleMath::Vector4 GetUVFromAngle(float angle)const;
-public:// public定数
+public:
+	// public定数
 	// 頂点情報
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
-private:// private定数
+private:
+	// private定数
 	// 板ポリゴンのXサイズ
 	const float SIZE_X = 0.0625;
 	// 板ポリゴンのYサイズ
@@ -106,7 +116,8 @@ private:// private定数
 	const float PLAY_TIME = 1.75f;
 	// 破棄時間
 	const float DESTROY_TIME = 2.0f;
-private:// private変数
+private:
+	// private変数
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;
 	// コンスタントバッファ
@@ -156,3 +167,4 @@ private:// private変数
 	// エフェクトタイプ
 	EffectType m_effectType;
 };
+#endif //DAMAGE_EFFECT_DEFINED

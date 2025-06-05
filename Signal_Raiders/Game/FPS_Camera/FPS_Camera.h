@@ -3,13 +3,18 @@
 *	@brief	FPSカメラクラス
 */
 #pragma once
+#ifndef FPS_CAMERA_DEFINED
+#define FPS_CAMERA_DEFINED
 // DirectxX
 #include <SimpleMath.h>
 // 自作ヘッダーファイル
 #include "Game/Screen.h"
+
+// FPSカメラクラス
 class FPS_Camera
 {
-public:	// アクセサ
+public:
+	// アクセサ
 	// ビュー行列取得
 	const DirectX::SimpleMath::Matrix& GetViewMatrix() const { return m_view; }
 	// プロジェクション行列取得
@@ -26,7 +31,8 @@ public:	// アクセサ
 	const DirectX::SimpleMath::Vector3& GetUpVector() const { return m_up; }
 	// カメラの方向ベクトル取得
 	DirectX::SimpleMath::Vector3 GetDirection() const;
-public:	//public関数
+public:
+	//public関数
 	// コンストラクタ
 	FPS_Camera(
 		const DirectX::SimpleMath::Vector3& eye = DirectX::SimpleMath::Vector3{ 0.0f,4.0f,10.0f },// カメラ座標
@@ -37,19 +43,22 @@ public:	//public関数
 	~FPS_Camera() = default;
 	// 更新処理
 	void Update(const DirectX::SimpleMath::Vector3& newEye, float pitch);
-private://private関数
+private:
+	//private関数
 	// ビュー行列を計算する
 	void CalculateViewMatrix();
 	// プロジェクション行列を計算する
 	void CalculateProjectionMatrix();
-private:// private定数
+private:
+	// private定数
 	// 画角
 	const float FOV = DirectX::XMConvertToRadians(45.0f);
 	// 近い投影面
 	const float NEAR_PLANE = 1.0f;
 	// 遠い投影面
 	const float FAR_PLANE = 1000.0f;
-private:// private変数
+private:
+	// private変数
 	// ビュー行列
 	DirectX::SimpleMath::Matrix m_view;
 	// プロジェクション行列
@@ -63,3 +72,4 @@ private:// private変数
 	// ヨー、ピッチ（回転角度）
 	float m_yaw, m_pitch;
 };
+#endif // FPS_CAMERA_DEFINED

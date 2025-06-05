@@ -3,6 +3,8 @@
 *	@brief ダッシュゲージクラス
 */
 #pragma once
+#ifndef DASHGAUGE_DEFINED
+#define DASHGAUGE_DEFINED
 // 標準ライブラリ
 #include <vector>
 #include <string>
@@ -15,11 +17,15 @@
 #include "Game/Player/PlayerUI/PlayerUI.h"
 #include "Game/Interface/IPlayUI.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
+
 // 前方宣言
 class CommonResources;
+
+// ダッシュゲージクラス
 class DashGauge : public IPlayUI
 {
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	DashGauge();
 	// デストラクタ
@@ -35,7 +41,8 @@ public:// public関数
 		, const DirectX::SimpleMath::Vector2& position
 		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor)override;
-private:// private関数
+private:
+	// private関数
 	// 更新
 	void Update(float dashStamina);
 private:// private変数
@@ -56,3 +63,4 @@ private:// private変数
 	// ウィンドウの高さ
 	int m_windowHeight;
 };
+#endif // DASHGAUGE_DEFINED

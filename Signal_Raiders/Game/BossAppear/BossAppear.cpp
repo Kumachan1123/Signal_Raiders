@@ -5,8 +5,7 @@
 #include <pch.h>
 #include "BossAppear.h"
 
-using namespace DirectX;
-using namespace DirectX::SimpleMath;
+
 
 /*
 *	@brief インプットレイアウト
@@ -14,7 +13,7 @@ using namespace DirectX::SimpleMath;
 const std::vector<D3D11_INPUT_ELEMENT_DESC> BossAppear::INPUT_LAYOUT =
 {
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(DirectX::SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
 
 /*
@@ -23,7 +22,7 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> BossAppear::INPUT_LAYOUT =
 *  @return なし
 */
 BossAppear::BossAppear()
-	: m_world(Matrix::Identity)// ワールド行列
+	: m_world(DirectX::SimpleMath::Matrix::Identity)// ワールド行列
 	, m_pDrawPolygon{ DrawPolygon::GetInstance() }// 板ポリゴン描画クラス
 	, m_pCreateShader{ CreateShader::GetInstance() }// シェーダー作成クラス
 	, m_timer(0.0f)// タイマー
@@ -156,6 +155,8 @@ void BossAppear::Finalize()
 */
 void BossAppear::DrawMain()
 {
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
 	VertexPositionTexture vertex[4] =
 	{
 		//	頂点情報													UV情報
@@ -218,6 +219,8 @@ void BossAppear::DrawMain()
 */
 void BossAppear::DrawBack()
 {
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
 	VertexPositionTexture vertex[4] =
 	{
 		//	頂点情報													UV情報

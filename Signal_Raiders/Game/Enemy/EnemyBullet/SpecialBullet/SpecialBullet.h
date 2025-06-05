@@ -3,14 +3,20 @@
 *	@brief 敵弾クラス(特殊弾)
 */
 #pragma once
+#ifndef SPECIAL_BULLET_DEFINED
+#define SPECIAL_BULLET_DEFINED
+
 // 自作ヘッダーファイル
 #include "Game/CommonResources.h"
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 #include "Game/Interface/IEnemyBullet.h"
 #include "Game/KumachiLib/KumachiLib.h"
+
+// 敵弾クラス(特殊弾)
 class SpecialBullet : public IEnemyBullet
 {
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	SpecialBullet();
 	// デストラクタ
@@ -25,7 +31,8 @@ public:// public関数
 	void SetCommonResources(CommonResources* commonResources) override { m_pCommonResources = commonResources; }
 	// SE音量をセットする関数
 	void SetSEVolume(float volume) override { m_seVolume = volume; }
-private:// private関数
+private:
+	// private関数
 	// 回転弾を展開する
 	void Expand();
 	// 回転弾を発射する
@@ -34,7 +41,8 @@ private:// private関数
 	void StopExpand();
 	// 回転弾を自分の周りに戻す
 	void ComeBack();
-private:// privateメンバ変数	
+private:
+	// privateメンバ変数	
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 敵弾ポインター
@@ -74,3 +82,4 @@ private:// privateメンバ変数
 	// 発射SE再生フラグ
 	bool m_isPlayShotSE;
 };
+#endif // SPECIAL_BULLET_DEFINED

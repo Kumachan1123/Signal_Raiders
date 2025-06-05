@@ -3,6 +3,9 @@
 *	@brief	弾パラメータークラス
 */
 #pragma once
+#ifndef BULLET_PARAMETERS_DEFINED
+#define BULLET_PARAMETERS_DEFINED
+// 弾パラメータークラス
 class BulletParameters
 {
 public:
@@ -42,3 +45,4 @@ public:
 	static const int MAX_PLAYER_BULLET_COUNT;// プレイヤーの弾の最大数
 	static const float HIT_VOLUME;// ヒット音のボリューム
 };
+#endif // BULLET_PARAMETERS_DEFINED

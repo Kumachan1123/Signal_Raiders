@@ -3,6 +3,8 @@
 	@brief	リザルトシーンクラス
 */
 #pragma once
+#ifndef RESULT_SCENE_DEFINED
+#define RESULT_SCENE_DEFINED
 // 標準ライブラリ
 #include <cassert>
 #include <unordered_map>
@@ -24,20 +26,25 @@
 #include "Game/Scene/ResultScene/Result/Result.h"
 #include "Game/MousePointer/MousePointer.h"
 #include "Game/Interface/IMenuUI.h"
+
 // 前方宣言
 class CommonResources;
 class Fade;
 class BackGround;
+
+// リザルトシーンクラス
 class ResultScene final : public IScene
 {
-public:// アクセサ
+public:
+	// アクセサ
 	// ステージ番号を取得
 	int GetStageNumber() const { return m_stageNumber; }
 	// ステージ番号を設定
 	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; }
 	// 次のシーンIDを取得
 	SceneID GetNextSceneID() const;
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	ResultScene(IScene::SceneID sceneID);
 	// デストラクタ
@@ -50,12 +57,14 @@ public:// public関数
 	void Render() override;
 	// 終了
 	void Finalize() override;
-public:// 定数
+public:
+	// 定数
 	// 音量の基準
 	static const float VOLUME;
 	// ステージ選択に移動する値
 	static const int STAGE_SELECT;
-private:// メンバ変数
+private:
+	// メンバ変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 設定データ
@@ -85,3 +94,4 @@ private:// メンバ変数
 	// 現在のシーンID
 	IScene::SceneID m_nowSceneID;
 };
+#endif // RESULT_SCENE_DEFINED

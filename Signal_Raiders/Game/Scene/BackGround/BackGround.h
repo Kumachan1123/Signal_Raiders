@@ -3,6 +3,8 @@
 *	@brief 背景クラス
 */
 #pragma once
+#ifndef BACKGROUND_DEFINED
+#define BACKGROUND_DEFINED
 // 標準ライブラリ
 #include <vector>
 // DirectX
@@ -16,11 +18,15 @@
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
+
 // 前方宣言
 class CommonResources;
+
+// 背景クラス
 class BackGround
 {
-public:// 構造体
+public:
+	// 構造体
 	// シェーダーに渡す構造体
 	struct ConstBuffer
 	{
@@ -30,7 +36,8 @@ public:// 構造体
 		DirectX::SimpleMath::Vector4 colors;    // カラー
 		DirectX::SimpleMath::Vector4 time;		// 時間
 	};
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	BackGround(CommonResources* resources);
 	// デストラクタ
@@ -42,12 +49,15 @@ public:// public関数
 	void Update(float elapsedTime);
 	// 描画
 	void Render();
-private:// private関数
+private:
+	// private関数
 	void CreateShaders();// シェーダー作成
-public:// 定数
+public:
+	// 定数
 	// インプットレイアウト
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
-private:// private変数
+private:
+	// private変数
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;
 	// デバイスコンテキスト
@@ -82,3 +92,4 @@ private:// private変数
 	DirectX::SimpleMath::Vector4 m_color;
 
 };
+#endif // BACKGROUND_DEFINED

@@ -3,6 +3,8 @@
 *	@brief	リザルトメニュークラス
 */
 #pragma once
+#ifndef STAGE_SELECT_MENU_DEFINED
+#define STAGE_SELECT_MENU_DEFINED
 // 標準ライブラリ
 #include <vector>
 #include <string>
@@ -20,18 +22,23 @@
 #include "Game/Screen.h"
 #include "Game/UI/UI.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
+
 // 前方宣言
 class CommonResources;
+
+// リザルトメニュークラス
 class StageSelectMenu : public IMenuUI
 {
-public:// 列挙型
+public:
+	// 列挙型
 	// シーンID
 	enum SceneID
 	{
 		PLAY = 0,// プレイシーン
 		END// タイトルに戻る
 	};
-public:// アクセサ
+public:
+	// アクセサ
 	// シーン番号取得
 	SceneID GetSceneNum() const { return m_num; }
 	// シーン番号設定
@@ -46,7 +53,8 @@ public:// アクセサ
 	void SetIsHit(bool hit) { m_hit = hit; }
 	// SEの音量設定
 	void SetSEVolume(float volume) { m_SEVolume = volume; }
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	StageSelectMenu();
 	// デストラクタ
@@ -63,10 +71,12 @@ public:// public関数
 		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor
 		, UIType type)override;
-private:// private関数
+private:
+	// private関数
 	// 更新
 	void Update(float elapsedTime);
-private:// private定数
+private:
+	// private定数
 	// 無効なメニューインデックス
 	static const int INVALID_MENU_INDEX;
 private:// private変数
@@ -97,3 +107,4 @@ private:// private変数
 	// 再生フラグ
 	bool m_isSEPlay;
 };
+#endif // STAGE_SELECT_MENU_DEFINED

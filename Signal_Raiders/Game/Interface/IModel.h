@@ -1,3 +1,7 @@
+/*
+*	@file IModel.h
+*	@brief モデルのインターフェースクラス
+*/
 #pragma once
 #ifndef IMODEL_DEFINED
 #define IMODEL_DEFINED
@@ -6,12 +10,16 @@
 #include <Model.h>
 // 自作ヘッダーファイル
 #include "Game/Interface/IState.h"
+
 // 前方宣言
 class CommonResources;
 class IState;
+
+// モデルのインターフェースクラス
 class IModel
 {
-public:// public関数
+public:
+	// public関数
 	// デストラクタ
 	virtual ~IModel() = default;
 	// 初期化

@@ -18,13 +18,17 @@
 #include "Game/KumachiLib/KumachiLib.h"
 #include "Game/Interface/IState.h"
 #include "Game/Interface/IModel.h"
+
 // 前方宣言
 class Boss;
 class CommonResources;
 class IState;
+
+// ボスモデルクラス
 class BossModel : public IModel
 {
-public:// publicメンバ関数
+public:
+	// publicメンバ関数
 	// コンストラクタ
 	BossModel();
 	// デストラクタ
@@ -40,6 +44,7 @@ public:// publicメンバ関数
 		const DirectX::SimpleMath::Matrix& view,
 		const DirectX::SimpleMath::Matrix& proj)override;
 private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 胴体

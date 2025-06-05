@@ -24,9 +24,11 @@ class Boss;
 class CommonResources;
 class IState;
 
+// ラスボスモデルクラス
 class LastBossModel : public IModel
 {
-public:	// publicメンバ関数
+public:
+	// publicメンバ関数
 	// コンストラクタ
 	LastBossModel();
 	// デストラクタ
@@ -41,7 +43,8 @@ public:	// publicメンバ関数
 		const DirectX::SimpleMath::Matrix& world,
 		const DirectX::SimpleMath::Matrix& view,
 		const DirectX::SimpleMath::Matrix& proj)	override;
-private:// privateメンバ変数
+private:
+	// privateメンバ変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 胴体

@@ -4,17 +4,23 @@
 *	@details 板ポリゴンを描画する際に使用するシェーダーを作成する
 */
 #pragma once
+#ifndef CREATESHADER_DEFINED
+#define CREATESHADER_DEFINED
 // 標準ライブラリ
 #include <memory>
 #include <utility>
 // 自作ヘッダーファイル
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 
+// シェーダーを作成するシングルトンクラス
 class CreateShader
 {
-public:// シングルトンインスタンス
-	static CreateShader* const GetInstance();	// シングルトンインスタンスを取得
-public:// public関数
+public:
+	// シングルトンインスタンス
+	// シングルトンインスタンスを取得
+	static CreateShader* const GetInstance();
+public:
+	// public関数
 	// デストラクタ
 	~CreateShader();
 	// 初期化
@@ -29,14 +35,16 @@ public:// public関数
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> GetInputLayout() { return m_pInputLayout; }
 	// コンスタントバッファを作成
 	void CreateConstantBuffer(Microsoft::WRL::ComPtr<ID3D11Buffer>& cBuffer, UINT bufferSize);
-private:// private関数
+private:
+	// private関数
 	// コンストラクタ
 	CreateShader();
 	// コピーコンストラクタ
 	CreateShader(const CreateShader&) = delete;
 	// 代入演算子の禁止
 	CreateShader& operator=(const CreateShader&) = delete;
-private:// private変数
+private:
+	// private変数
 	// シングルトンインスタンス
 	static std::unique_ptr<CreateShader> m_pInstance;
 	// デバイス
@@ -48,6 +56,4 @@ private:// private変数
 	// レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 };
-
-
-
+#endif // CREATESHADER_DEFINED

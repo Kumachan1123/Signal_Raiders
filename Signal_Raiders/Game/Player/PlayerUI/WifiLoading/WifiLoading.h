@@ -3,6 +3,8 @@
 *	@brief	Wi-Fiローディングクラス
 */
 #pragma once
+#ifndef WIFI_LOADING_DEFINED
+#define WIFI_LOADING_DEFINED
 // 標準ライブラリ
 #include <vector>
 #include <memory>
@@ -16,9 +18,12 @@
 #include "Game/Interface/IPlayUI.h"
 #include "Game/Player/PlayerUI/PlayerUI.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
+
+// Wi-Fiローディングクラス
 class WifiLoading : public IPlayUI
 {
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	WifiLoading();
 	// デストラクタ
@@ -34,10 +39,12 @@ public:// public関数
 		, const DirectX::SimpleMath::Vector2& position
 		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor)override;
-private:// private関数
+private:
+	// private関数
 	// 更新関数
 	void Update(float elapsedTime);
-private:// private変数
+private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// デバイスリソース
@@ -61,3 +68,4 @@ private:// private変数
 	// アニメーション時間
 	float m_animTime;
 };
+#endif // WIFI_LOADING_DEFINED

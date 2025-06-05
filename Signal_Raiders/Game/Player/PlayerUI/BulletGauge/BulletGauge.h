@@ -3,6 +3,8 @@
 *	@brief 弾ゲージクラス
 */
 #pragma once
+#ifndef BULLETGAUGE_DEFINED
+#define BULLETGAUGE_DEFINED
 // 標準ライブラリ
 #include <vector>
 #include <string>
@@ -16,11 +18,15 @@
 #include "Game/Interface/IPlayUI.h"
 #include "Game/Player/PlayerUI/PlayerUI.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
+
 // 前方宣言
 class CommonResources;
+
+// 弾ゲージクラス
 class BulletGauge : public IPlayUI
 {
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	BulletGauge();
 	// デストラクタ
@@ -36,10 +42,12 @@ public:// public関数
 		, const DirectX::SimpleMath::Vector2& position
 		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor)override;
-private:// private関数
+private:
+	// private関数
 	// 更新関数
 	void Update(float bulletPoint);
-private:// private変数
+private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// デバイスリソース
@@ -51,3 +59,4 @@ private:// private変数
 	// ウィンドウの幅と高さ
 	int m_windowWidth, m_windowHeight;
 };
+#endif // BULLETGAUGE_DEFINED

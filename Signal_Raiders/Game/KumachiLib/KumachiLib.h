@@ -4,13 +4,15 @@
 *	@details C++14で標準搭載されていない関数やその他便利な関数のテンプレートなどをまとめたもの
 */
 #pragma once
+#ifndef KUMACHILIB_DEFINED
+#define KUMACHILIB_DEFINED
 // 標準ライブラリ
 #include <SimpleMath.h>
 #include <cmath>
 #include <algorithm>
 #include <random>
 #include <type_traits> 
-// 外部ライブラリ
+// 自作ヘッダーファイル
 #include "Game/Screen.h"
 
 /*
@@ -213,5 +215,4 @@ inline DirectX::SimpleMath::Vector3 CheckHitWall(DirectX::BoundingSphere A, cons
 	// 更新された位置を返す
 	return newPosition;
 }
-
-
+#endif // KUMACHILIB_DEFINED

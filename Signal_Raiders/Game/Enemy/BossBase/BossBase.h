@@ -22,6 +22,7 @@
 #include "Game/Enemy/Boss/BossSheild/BossSheild.h"
 #include "Game/Enemy/EnemyFactory/EnemyFactory.h"
 #include "Game/Enemy/EnemyType/EnemyType.h"
+
 //前方宣言
 class CommonResources;
 class PlayScene;
@@ -33,10 +34,12 @@ class BossSheild;
 class EnemyHPBar;
 class EnemyBullet;
 class EnemyManager;
-/// ボスベースクラス(ここからBossやLastBossが派生)
+
+// ボスベースクラス(ここからBossやLastBossが派生)
 class BossBase : public IEnemy
 {
-public:// 列挙型
+public:
+	// 列挙型
 	// ボスの弾の種類
 	enum class BossBulletType
 	{
@@ -46,7 +49,8 @@ public:// 列挙型
 		STAGE_4,		// ステージ4
 		STAGE_5,		// ステージ5
 	};
-public:	// アクセサ
+public:
+	// アクセサ
 	// ボスの境界球取得
 	DirectX::BoundingSphere& GetBoundingSphere() override { return m_bossBS; }
 	// 弾の境界球取得
@@ -167,7 +171,8 @@ public:	// アクセサ
 	float GetDeadEffectSize() const { return m_deadEffectSize; }
 	// 死亡エフェクトのサイズ設定
 	void SetDeadEffectSize(float size) { m_deadEffectSize = size; }
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	BossBase(Player* pPlayer, CommonResources* resources, int hp);
 	// デストラクタ
@@ -186,14 +191,16 @@ public:// public関数
 	BossBulletType GetBulletType() const { return m_bossBulletType; }
 	// バリアSE再生
 	void PlayBarrierSE();
-private:// private関数
+private:
+	// private関数
 	// 弾発射
 	void ShootBullet();
 	// 垂直の弾を生成
 	void CreateVerticalBullet();
 	// 螺旋弾を生成
 	void CreateSpiralBullet();
-private:// privateメンバ変数
+private:
+	// privateメンバ変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// AI

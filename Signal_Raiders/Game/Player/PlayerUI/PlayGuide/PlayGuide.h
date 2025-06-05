@@ -3,6 +3,8 @@
 *	@brief プレイ操作説明クラス
 */
 #pragma once
+#ifndef PLAYGUIDE_DEFINED
+#define PLAYGUIDE_DEFINED
 // 標準ライブラリ
 #include <vector>
 #include <string>
@@ -16,11 +18,15 @@
 #include "Game/Interface/IPlayUI.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "Game/Screen.h"
+
 // 前方宣言
 class CommonResources;
+
+// プレイ操作説明クラス
 class PlayGuide : public IPlayUI
 {
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	PlayGuide();
 	// デストラクタ
@@ -41,10 +47,12 @@ public:// public関数
 		, const DirectX::SimpleMath::Vector2& position
 		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor);
-private:// private関数
+private:
+	// private関数
 	// 更新関数
 	void Update();
-private:// private変数
+private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// デバイスリソース
@@ -56,3 +64,4 @@ private:// private変数
 	// ウィンドウの高さ
 	int m_windowHeight;
 };
+#endif // PLAYGUIDE_DEFINED

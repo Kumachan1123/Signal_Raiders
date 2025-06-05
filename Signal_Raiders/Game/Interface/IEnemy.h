@@ -1,3 +1,7 @@
+/*
+*	@file IEnemy.h
+*	@brief 敵のインターフェースクラス
+*/
 #pragma once
 #ifndef IENEMY_DEFINED
 #define IENEMY_DEFINED
@@ -5,14 +9,18 @@
 #include <SimpleMath.h>
 // 自作ヘッダーファイル
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
+
 // 前方宣言
 class Player;
 class BulletManager;
 class FPS_Camera;
 class CommonResources;
+
+// 敵のインターフェースクラス
 class IEnemy
 {
-public:// アクセサ										  
+public:
+	// アクセサ										  
 	// 行列を取得する
 	virtual const DirectX::SimpleMath::Matrix& GetMatrix() = 0;
 	// 現在の位置を取得する
@@ -79,7 +87,8 @@ public:// アクセサ
 	virtual BulletManager* GetBulletManager()const = 0;
 	// 弾管理クラス設定
 	virtual void SetBulletManager(BulletManager* bulletManager) = 0;
-public:	// public関数
+public:
+	// public関数
 	// デストラクタ
 	virtual ~IEnemy() = default;
 	// 初期化

@@ -1,14 +1,23 @@
+/*
+*	@file IEnemyBullet.h
+*	@brief 敵弾のインターフェースクラス
+*/
 #pragma once
 #ifndef IENEMYBULLET_DEFINED
 #define IENEMYBULLET_DEFINED
 // 自作ヘッダーファイル
 #include "Game/CommonResources.h"
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
+
 // 前方宣言
 class EnemyBullet;
+class CommonResources;
+
+// 敵弾のインターフェースクラス
 class IEnemyBullet
 {
-public:// public関数
+public:
+	// public関数
 	virtual ~IEnemyBullet() = default;// デストラクタ
 	virtual void Initialize() = 0;// 初期化
 	virtual void Update(float elapsedTime) = 0;//	更新

@@ -3,6 +3,8 @@
 *	@brief エフェクトクラス
 */
 #pragma once
+#ifndef EFFECT_DEFINED
+#define EFFECT_DEFINED
 // DirectX
 #include <PrimitiveBatch.h>
 #include <VertexTypes.h> 
@@ -14,11 +16,15 @@
 // 自作ヘッダーファイル
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
+
 // 前方宣言
 class CommonResources;
+
+// エフェクトクラス
 class Effect
 {
-public:	// 列挙型
+public:
+	// 列挙型
 	// エフェクトの種類
 	enum class EffectType
 	{
@@ -26,7 +32,8 @@ public:	// 列挙型
 		ENEMY_HIT,// 敵ヒットエフェクト
 		NONE,// なし
 	};
-public:// 構造体
+public:
+	// 構造体
 	// シェーダーに渡す定数バッファ
 	struct ConstBuffer
 	{
@@ -37,11 +44,13 @@ public:// 構造体
 		DirectX::SimpleMath::Vector4 height;    // 高さ
 		DirectX::SimpleMath::Vector4 width;     // 幅
 	};
-public:	// アクセサ
+public:
+	// アクセサ
 	// 再生中かのフラグ取得
 	bool IsPlaying() const { return m_isPlaying; }
 	// 座標取得
 	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
+public:
 	// publicメンバ関数
 	// コンストラクタ
 	Effect(CommonResources* resources,// 共通リソース
@@ -57,10 +66,12 @@ public:	// アクセサ
 	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
 	// 終了処理
 	void Finalize();
-private:// privateメンバ関数
+private:
+	// privateメンバ関数
 	// 画像を読み込む
 	void LoadTexture(const wchar_t* path);
-private:// 定数
+private:
+	// 定数
 	// 入力レイアウト
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 	// 板ポリゴンの頂点座標
@@ -68,7 +79,8 @@ private:// 定数
 	static const float m_vertexMaxX;//右
 	static const float m_vertexMinY;//下
 	static const float m_vertexMaxY;//上
-private:// privateメンバ変数
+private:
+	// privateメンバ変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// エフェクトを再生する座標
@@ -117,3 +129,4 @@ private:// privateメンバ変数
 	// エフェクトによって高さを変える
 	float m_offSetY;
 };
+#endif // EFFECT_DEFINED

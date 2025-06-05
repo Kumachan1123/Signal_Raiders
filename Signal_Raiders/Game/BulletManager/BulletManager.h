@@ -4,6 +4,8 @@
 *	@brief	弾管理クラス
 */
 #pragma once
+#ifndef BULLET_MANAGER_DEFINED
+#define BULLET_MANAGER_DEFINED
 // 標準ライブラリ
 #include <vector>
 #include <unordered_map>
@@ -24,15 +26,19 @@
 #include "Game/KumachiLib/KumachiLib.h"
 #include "Game/Player/Player.h"
 #include "Game/Enemy/EnemyManager/EnemyManager.h"
+
 // 前方宣言
 class CommonResources;
 class Player;
 class IEnemy;
 class EnemyManager;
 class BulletParameters;
+
+// 弾マネージャークラス
 class BulletManager
 {
-public:// アクセサ
+public:
+	// アクセサ
 	// 敵の弾の種類設定
 	void SetEnemyBulletType(BulletType type) { m_enemyBulletType = type; }
 	// 敵の弾の大きさ設定
@@ -57,6 +63,7 @@ public:// アクセサ
 	bool GetIsReloading() const { return m_isReloading; }
 	// リロード中フラグ設定
 	void SetIsReloading(bool isReloading) { m_isReloading = isReloading; }
+public:
 	// publicメンバ関数
 	// コンストラクタ
 	BulletManager(CommonResources* commonResources);
@@ -78,7 +85,8 @@ public:// アクセサ
 	void ReLoadPlayerBullet();
 	// 弾の消費
 	void ConsumePlayerBullet();
-private:// privateメンバ関数
+private:
+	// privateメンバ関数
 	// プレイヤーの弾更新
 	void UpdatePlayerBullets(float elapsedTime);
 	// 敵の弾更新
@@ -89,7 +97,8 @@ private:// privateメンバ関数
 	bool CheckCollisionWithPlayer(const std::unique_ptr<EnemyBullet>& bullet, const std::unique_ptr<IEnemy>& enemy);
 	// 敵の弾とプレイヤーの弾の当たり判定
 	void CheckCollisionWithBullets();
-private:// privateメンバ変数
+private:
+	// privateメンバ変数
 	// コモンリソース
 	CommonResources* m_pCommonResources;
 	// プレイヤー
@@ -119,3 +128,4 @@ private:// privateメンバ変数
 	// ボスが出す特殊攻撃の数
 	int m_specialAttackCount;
 };
+#endif // BULLET_MANAGER_DEFINED

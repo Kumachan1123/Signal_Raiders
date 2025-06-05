@@ -3,6 +3,8 @@
 	@brief	垂直攻撃敵クラス
 */
 #pragma once
+#ifndef VERTICAL_ATTACKER_DEFINED
+#define VERTICAL_ATTACKER_DEFINED
 // 標準ライブラリ
 #include <cassert>
 #include <random>
@@ -23,6 +25,7 @@
 #include <Game/KumachiLib/DrawCollision/DrawCollision.h>
 #include "Game/Enemy/VerticalAttackerModel/VerticalAttackerModel.h"
 #include "Game/Enemy/EnemyHPBar/EnemyHPBar.h"
+
 //前方宣言
 class CommonResources;
 class PlayScene;
@@ -33,9 +36,12 @@ class EnemyBullet;
 class VerticalAttackerModel;
 class EnemyManager;
 class FPS_Camera;
+
+// 垂直攻撃敵クラス
 class VerticalAttacker : public IEnemy
 {
-public:// アクセサ
+public:
+	// アクセサ
 	// 敵の境界球取得
 	DirectX::BoundingSphere& GetBoundingSphere() override { return m_enemyBS; }
 	// 敵の弾の境界球取得
@@ -102,7 +108,8 @@ public:// アクセサ
 	bool GetIsAttack() const override { return m_isAttack; }
 	// 攻撃中か設定
 	void SetIsAttack(bool isAttack) override { m_isAttack = isAttack; }
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	VerticalAttacker(Player* pPlayer, CommonResources* resources, int hp);
 	// デストラクタ
@@ -115,10 +122,12 @@ public:// public関数
 	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj) override;
 	// 当たり判定描画
 	void DrawCollision(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj) override;
-private:// private関数
+private:
+	// private関数
 	// 弾を撃つ
 	void ShootBullet();
-private:// privateメンバ変数
+private:
+	// privateメンバ変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 敵のモデル
@@ -168,4 +177,5 @@ private:// privateメンバ変数
 	// 攻撃のクールダウンタイム
 	float m_attackCooldown;
 };
+#endif // VERTICAL_ATTACKER_DEFINED
 

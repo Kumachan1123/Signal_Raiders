@@ -3,6 +3,8 @@
 *	@brief ステージクラス
 */
 #pragma once
+#ifndef STAGE_DEFINED
+#define STAGE_DEFINED
 // 標準ライブラリ
 #include <cassert>
 #include <memory>
@@ -16,11 +18,15 @@
 #include <Libraries/MyLib/MemoryLeakDetector.h>
 // 自作ヘッダーファイル
 #include "Game/CommonResources.h"
+
 // 前方宣言
 class CommonResources;
+
+// ステージクラス
 class Stage
 {
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	Stage();
 	// デストラクタ
@@ -32,14 +38,17 @@ public:// public関数
 		const DirectX::SimpleMath::Matrix& view,
 		const DirectX::SimpleMath::Matrix& proj,
 		const DirectX::SimpleMath::Matrix& world);
-public:// 定数
+public:
+	// 定数
 	// ステージの広さ
 	static const float STAGE_SIZE;
 	// ステージの高さ
 	static const float STAGE_HEIGHT;
-private:// private変数
+private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// モデルポインタ
 	DirectX::Model* m_pModel;
 };
+#endif // STAGE_DEFINED

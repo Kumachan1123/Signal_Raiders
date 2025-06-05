@@ -3,6 +3,8 @@
 	@brief	ボスクラス
 */
 #pragma once
+#ifndef BOSS_DEFINED
+#define BOSS_DEFINED
 // DirectX
 #include <SimpleMath.h>
 #include <DeviceResources.h>
@@ -85,3 +87,4 @@ private:// privateメンバ変数
 	// ボスベースクラスのポインタ
 	BossBase* m_pBossBase;
 };
+#endif // BOSS_DEFINED

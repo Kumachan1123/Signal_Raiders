@@ -3,6 +3,8 @@
 *	@brief	敵カウントクラス
 */
 #pragma once
+#ifndef ENEMY_COUNTER_DEFINED
+#define ENEMY_COUNTER_DEFINED
 // 標準ライブラリ
 #include <vector>
 #include <cassert>
@@ -20,11 +22,15 @@
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
+
 // 前方宣言
 class CommonResources;
+
+// 敵カウントクラス
 class EnemyCounter
 {
-private:// private構造体
+private:
+	// private構造体
 	// シェーダーに渡す定数バッファ
 	struct ConstBuffer
 	{
@@ -35,7 +41,8 @@ private:// private構造体
 		DirectX::SimpleMath::Vector4 height;    // 高さ
 		DirectX::SimpleMath::Vector4 width;     // 幅
 	};
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	EnemyCounter();
 	// デストラクタ
@@ -50,7 +57,8 @@ public:// public関数
 	void SetEnemyIndex(int enemyIndex) { m_enemyIndex = enemyIndex; }
 	// 現在の敵の数を設定する
 	void SetNowEnemy(int nowEnemy) { m_nowEnemy = nowEnemy; }
-private:// private関数
+private:
+	// private関数
 	// 総数の10の位を描画
 	void DrawEnemyIndex10();
 	// 総数の1の位を描画
@@ -64,7 +72,8 @@ private:// private関数
 		DirectX::VertexPositionTexture* vertices,
 		float startX, float startY, float width, float height,
 		int frameIndex, int frameCols, int frameRows);
-public:	// public定数
+public:
+	// public定数
 	// 頂点数
 	static const int VERTEX_COUNT = 4;
 	// インプットレイアウト
@@ -94,7 +103,8 @@ public:	// public定数
 	const float ENEMY_INDEX_1_POS_Y = 1.0f;// 敵の総数の1の位の表示位置Y
 	const float ENEMY_INDEX_SIZE_X = 0.08f;// 敵の総数の表示サイズX
 	const float ENEMY_INDEX_SIZE_Y = 0.18f;// 敵の総数の表示サイズY
-private:// private変数
+private:
+	// private変数
 	// 共通リソースへのポインタ
 	CommonResources* m_pCommonResources;
 	// 敵の総数(保存用）
@@ -154,3 +164,4 @@ private:// private変数
 	// プロジェクション行列
 	DirectX::SimpleMath::Matrix m_proj;
 };
+#endif //ENEMY_COUNTER_DEFINED

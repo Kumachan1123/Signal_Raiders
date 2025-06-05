@@ -3,6 +3,8 @@
 *	@brief	フェードクラス
 */
 #pragma once
+#ifndef FADE_DEFINED
+#define FADE_DEFINED
 // 標準ライブラリ
 #include <SimpleMath.h>
 #include <Effects.h>
@@ -20,8 +22,11 @@
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "Game/KumachiLib/KumachiLib.h"
+
 // 前方宣言
 class CommonResources;
+
+// フェードクラス
 class Fade
 {
 public:
@@ -36,7 +41,8 @@ public:
 		FadeInEnd,// フェードイン終了
 		FadeOutEnd,// フェードアウト終了
 	};
-public:// 構造体
+public:
+	// 構造体
 	// シェーダーに渡す定数バッファの構造体
 	struct ConstBuffer
 	{
@@ -44,12 +50,14 @@ public:// 構造体
 		float fadeAmount = 0;                       // フェードの進行度（0.0～1.0）
 		DirectX::SimpleMath::Vector2 padding;							// パディング
 	};
-public:	// アクセサ
+public:
+	// アクセサ
 	// フェード状態の取得
 	void SetState(FadeState state) { m_fadeState = state; }
 	// フェード状態の設定
 	FadeState GetState() const { return m_fadeState; }
-public:	// public関数
+public:
+	// public関数
 	//	コンストラクタ
 	Fade(CommonResources* commonResources);
 	//	デストラクタ
@@ -60,14 +68,16 @@ public:	// public関数
 	void Update(float elapsedTime);
 	// 描画
 	void Render();
-private:// private関数
+private:
+	// private関数
 	// シェーダーの作成
 	void CreateShaders();
 	// フェードアウト
 	void FadeOut(float elapsedTime);
 	// フェードイン
 	void FadeIn(float elapsedTime);
-public:	// public定数
+public:
+	// public定数
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 	// フェード最小値
 	static const float FADE_MIN;
@@ -80,7 +90,8 @@ public:	// public定数
 	// フェードの滑らかさ
 	static const float FADE_SMOOTHNESS;
 private:
-	// 変数
+	// private変数
+	// デバイスリソース
 	DX::DeviceResources* m_pDR;
 	// 定数バッファ
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_pCBuffer;
@@ -111,3 +122,4 @@ private:
 	// フェード時間
 	float m_fadeTime;
 };
+#endif //FADE_DEFINED

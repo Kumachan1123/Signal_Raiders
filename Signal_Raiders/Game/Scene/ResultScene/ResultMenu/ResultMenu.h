@@ -3,6 +3,8 @@
 	@brief	リザルトメニュークラス
 */
 #pragma once
+#ifndef RESULTMENU_DEFINED
+#define RESULTMENU_DEFINED
 // 標準ライブラリ
 #include <vector>
 #include <string>
@@ -19,18 +21,23 @@
 #include "Game/Interface/IMenuUI.h"
 #include "Game/Screen.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
+
 // 前方宣言
 class CommonResources;
+
+// リザルトメニュークラス
 class ResultMenu : public IMenuUI
 {
-public:// 列挙型
+public:
+	// 列挙型
 	// シーンID
 	enum SceneID
 	{
 		REPLAY = 0,// リプレイ
 		SELECT_STAGE,// ステージ選択
 	};
-public:// アクセサ
+public:
+	// アクセサ
 	// シーン番号取得
 	SceneID GetSceneNum() const { return m_num; }
 	// シーン番号設定
@@ -41,7 +48,8 @@ public:// アクセサ
 	void SetIsHit(bool hit) { m_hit = hit; }
 	// SEの音量設定
 	void SetSEVolume(float volume) { m_SEVolume = volume; }
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	ResultMenu();
 	// デストラクタ
@@ -58,13 +66,16 @@ public:// public関数
 		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor
 		, UIType type)override;
-private:// private関数
+private:
+	// private関数
 	// 更新
 	void Update(float elapsedTime);
-private:// private定数
+private:
+	// private定数
 	// 無効なメニューインデックス
 	static const int INVALID_MENU_INDEX;
-private:// private変数
+private:
+	// private変数
 	// メニューアイテムの数
 	unsigned int m_menuIndex;
 	// デバイスリソース
@@ -90,3 +101,4 @@ private:// private変数
 	// 再生フラグ
 	bool m_isSEPlay;
 };
+#endif // RESULTMENU_DEFINED

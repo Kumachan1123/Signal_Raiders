@@ -3,10 +3,14 @@
 *	@brief	画面にまつわる定数をまとめたクラス
 */
 #pragma once
+#ifndef SCREEN_DEFINED
+#define SCREEN_DEFINED
+
+// 画面に関する定数をまとめたクラス
 class Screen
 {
-
-public:// 定数
+public:
+	// 定数
 	// UIにおける画面サイズ
 	// 幅
 	static const int UI_WIDTH = 1280;
@@ -41,9 +45,11 @@ public:// 定数
 	static const int LEFT = 0;
 	// 右端
 	static const int RIGHT = WIDTH;
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	Screen() = default;
 	// デストラクタ
 	~Screen() = default;
 };
+#endif // SCREEN_DEFINED

@@ -3,6 +3,8 @@
 *	@brief	レーダークラス
 */
 #pragma once
+#ifndef RADAR_DEFINED
+#define RADAR_DEFINED
 // 標準ライブラリ
 #include <vector>
 #include <cassert>
@@ -25,15 +27,19 @@
 #include "Game/Enemy/EnemyAI/EnemyAI.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
+
 // 前方宣言
 class CommonResources;
 class Player;
 class EnemyManager;
 class Enemy;
 class EnemyAI;
+
+// レーダークラス
 class Radar
 {
-public:// 構造体
+public:
+	// 構造体
 	// シェーダーに渡す定数バッファの構造体
 	struct ConstBuffer
 	{
@@ -43,14 +49,16 @@ public:// 構造体
 		DirectX::SimpleMath::Vector4 colors;    // カラー
 		DirectX::SimpleMath::Vector4 time;      // 時間
 	};
-private:// 列挙型
+private:
+	// 列挙型
 	enum class RadarState// レーダーの状態
 	{
 		Background,	// 背景
 		Player,		// プレイヤー
 		Enemy,		// 敵
 	};
-public:// publicメンバ関数
+public:
+	// publicメンバ関数
 	// コンストラクタ
 	Radar(CommonResources* commonResources);
 	// デストラクタ
@@ -61,7 +69,8 @@ public:// publicメンバ関数
 	void Update(float elapsedTime);
 	// 描画
 	void Render();
-private:// privateメンバ関数
+private:
+	// privateメンバ関数
 	// 背景を描画する
 	void DrawBackground();
 	// プレイヤーを描画する
@@ -72,7 +81,8 @@ private:// privateメンバ関数
 	void CreateBuffer();
 	// 描画前設定
 	void DrawSetting();
-public:// 定数
+public:
+	// 定数
 	// インプットレイアウト
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 	//レーダーの左端
@@ -103,7 +113,8 @@ public:// 定数
 	static const float RADAR_RANGE;
 	// プレイヤーとの距離
 	static const float DISTANCE;
-private:// private変数
+private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// プレイヤー
@@ -147,3 +158,4 @@ private:// private変数
 	// テクスチャ配列
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_pTexture;
 };
+#endif // RADAR_DEFINED

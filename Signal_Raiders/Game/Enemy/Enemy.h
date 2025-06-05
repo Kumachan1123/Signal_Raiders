@@ -3,6 +3,8 @@
 *	@brief	敵クラス
 */
 #pragma once
+#ifndef ENEMY_DEFINED
+#define ENEMY_DEFINED
 // 標準ライブラリ
 #include <cassert>
 #include <random>
@@ -25,6 +27,7 @@
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/Enemy/Parameters/EnemyParameters.h"
 #include "Game/Interface/IEnemy.h"
+
 //前方宣言
 class CommonResources;
 class PlayScene;
@@ -35,9 +38,12 @@ class EnemyBullet;
 class EnemyModel;
 class EnemyManager;
 class FPS_Camera;
+
+// 敵クラス
 class Enemy : public IEnemy
 {
-public:	// アクセサ
+public:
+	// アクセサ
 	// 敵の当たり判定を取得する
 	DirectX::BoundingSphere& GetBoundingSphere() override { return m_enemyBS; }
 	// 敵の弾の当たり判定を取得する
@@ -104,7 +110,8 @@ public:	// アクセサ
 	bool GetIsAttack() const override { return m_isAttack; }
 	// 敵が攻撃中かどうかを設定する
 	void SetIsAttack(bool isAttack) override { m_isAttack = isAttack; }
-public:	//	public関数
+public:
+	//	public関数
 	// コンストラクタ
 	Enemy(Player* pPlayer, CommonResources* resources, int hp);
 	// デストラクタ
@@ -117,10 +124,12 @@ public:	//	public関数
 	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj) override;
 	// 当たり判定描画
 	void DrawCollision(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj) override;
-private:// private関数
+private:
+	// private関数
 	// 弾を撃つ
 	void ShootBullet();
-private:// private変数
+private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 敵のモデル
@@ -169,6 +178,5 @@ private:// private変数
 	bool m_isAttack;
 	// 攻撃のクールダウンタイム
 	float m_attackCooldown;
-
-
 };
+#endif // ENEMY_DEFINED

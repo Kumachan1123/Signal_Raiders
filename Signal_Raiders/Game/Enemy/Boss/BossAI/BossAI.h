@@ -23,13 +23,17 @@
 #include "Game/Enemy/Boss/BossAI/BossKnockBacking/BossKnockBacking.h"
 #include "Game/Player/Player.h"
 #include "Game/Interface/IState.h"
+
 //前方宣言
 class CommonResources;
 class BossAttack;
 class BossKnockBacking;
+
+// ボスAIクラス
 class BossAI
 {
-public:	// アクセサ
+public:
+	// アクセサ
 	// 初期位置を取得
 	DirectX::SimpleMath::Vector3 GetInitialPosition() const { return m_initialPosition; }
 	// 位置を取得
@@ -72,7 +76,8 @@ public:	// アクセサ
 	bool GetIsKnockBack() const { return m_isKnockBack; }
 	// ノックバックが完了したか設定
 	void SetIsKnockBack(bool isKnockBack) { m_isKnockBack = isKnockBack; }
-public:	// public関数
+public:
+	// public関数
 	// コンストラクタ
 	BossAI(IEnemy* pBoss);
 	// デストラクタ
@@ -83,7 +88,8 @@ public:	// public関数
 	void Update(float elapsedTime);
 	// 状態変更
 	void ChangeState(IState* newState);
-private:// private変数
+private:
+	// private変数
 	//攻撃時
 	std::unique_ptr<BossAttack> m_pBossAttack;
 	//ノックバック時

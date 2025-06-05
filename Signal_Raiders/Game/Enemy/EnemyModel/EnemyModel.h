@@ -17,13 +17,17 @@
 #include "Game/Enemy/Enemy.h"
 #include "Game/Interface/IState.h"
 #include "Game/Interface/IModel.h"
+
 // 前方宣言
 class Enemy;
 class CommonResources;
 class IState;
+
+// 敵モデルクラス
 class EnemyModel : public IModel
 {
-public:	// public関数
+public:
+	// public関数
 	// コンストラクタ
 	EnemyModel();
 	// デストラクタ
@@ -38,7 +42,8 @@ public:	// public関数
 		const DirectX::SimpleMath::Matrix& world,
 		const DirectX::SimpleMath::Matrix& view,
 		const DirectX::SimpleMath::Matrix& proj)override;
-private:// private変数
+private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 頭モデル

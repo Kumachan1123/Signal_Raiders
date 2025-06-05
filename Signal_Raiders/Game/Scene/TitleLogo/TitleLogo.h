@@ -3,6 +3,8 @@
 *	@brief	タイトルロゴクラス
 */
 #pragma once
+#ifndef TITLE_LOGO_DEFINED
+#define TITLE_LOGO_DEFINED
 // 標準ライブラリ
 #include <cassert>
 // DirectX
@@ -15,11 +17,15 @@
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/KumachiLib//BinaryFile/BinaryFile.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
+
 // 前方宣言
 class CommonResources;
+
+// タイトルロゴクラス
 class TitleLogo final
 {
-public:// 構造体
+public:
+	// 構造体
 	// シェーダーに渡すデータ構造体
 	struct ConstBuffer
 	{
@@ -29,7 +35,8 @@ public:// 構造体
 		DirectX::SimpleMath::Vector4	Colors;// 色
 		DirectX::SimpleMath::Vector4	time;	//	時間
 	};
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	TitleLogo(CommonResources* resources);
 	// デストラクタ
@@ -40,13 +47,16 @@ public:// public関数
 	void Update(float elapsedTime);
 	// 描画
 	void Render();
-private:// private関数
+private:
+	// private関数
 	// シェーダーを作成
 	void CreateShaders();
-public:// public定数
+public:
+	// public定数
 	// インプットレイアウト
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
-private:// private変数
+private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 頂点シェーダ
@@ -78,3 +88,4 @@ private:// private変数
 	// プロジェクション行列
 	DirectX::SimpleMath::Matrix m_proj;
 };
+#endif // TITLE_LOGO_DEFINED

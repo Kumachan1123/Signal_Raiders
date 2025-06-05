@@ -3,6 +3,8 @@
 *	@brief	結果クラス
 */
 #pragma once
+#ifndef RESULT_DEFINED
+#define RESULT_DEFINED
 // 標準ライブラリ
 #include <cassert>
 // DirectX
@@ -16,12 +18,15 @@
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/KumachiLib//BinaryFile/BinaryFile.h"
+
 // 前方宣言
 class CommonResources;
 
+// 結果クラス
 class Result final
 {
-public:	// 構造体
+public:
+	// 構造体
 	struct ConstBuffer// シェーダーに渡す情報の構造体
 	{
 		DirectX::SimpleMath::Matrix		matWorld;	// ワールド行列
@@ -31,12 +36,14 @@ public:	// 構造体
 		float time;									// 時間
 		DirectX::SimpleMath::Vector3 padding;		// パディング
 	};
-public:// アクセサ
+public:
+	// アクセサ
 	// シーンIDを取得
 	IScene::SceneID GetSceneID() const { return m_sceneID; }
 	// シーンIDを設定
 	void SetSceneID(IScene::SceneID sceneID) { m_sceneID = sceneID; }
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	Result(CommonResources* resources);
 	// デストラクタ
@@ -49,13 +56,16 @@ public:// public関数
 	void Update(float elapsedTime);
 	// 描画
 	void Render();
-private:// private関数
+private:
+	// private関数
 	// シェーダーを作成
 	void CreateShaders();
-public:// 定数
+public:
+	// 定数
 	// インプットレイアウト
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
-private:// private変数
+private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 頂点シェーダ
@@ -93,3 +103,4 @@ private:// private変数
 	// シーンID
 	IScene::SceneID m_sceneID;
 };
+#endif // RESULT_DEFINED

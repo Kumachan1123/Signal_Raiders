@@ -3,6 +3,8 @@
 *	@brief	パーティクルクラス
 */
 #pragma once
+#ifndef PARTICLE_DEFINED
+#define PARTICLE_DEFINED
 // 標準ライブラリ
 #include <vector>
 #include <algorithm>
@@ -22,11 +24,15 @@
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/ParticleUtility/ParticleUtility.h"
 #include  "Game/KumachiLib/BinaryFile/BinaryFile.h"
+
 //前方宣言
 class CommonResources;
+
+// パーティクルクラス
 class Particle
 {
-public:// 構造体
+public:
+	// 構造体
 	//シェーダーに送るコンスタントバッファ
 	struct ConstBuffer
 	{
@@ -38,7 +44,8 @@ public:// 構造体
 		DirectX::SimpleMath::Vector4 height;    // 高さ
 		DirectX::SimpleMath::Vector4 width;     // 幅
 	};
-public:	// アクセサ
+public:
+	// アクセサ
 	// 弾の座標を設定
 	void SetBulletPosition(const DirectX::SimpleMath::Vector3& bulletPos) { m_bulletPosition = bulletPos; }
 	// ボスの座標を設定
@@ -51,7 +58,8 @@ public:	// アクセサ
 	void SetCameraUp(const DirectX::SimpleMath::Vector3& cameraUp) { m_cameraUp = cameraUp; }
 	// シールド破壊のサイズを設定
 	void SetBarrierBreakSize(float size) { m_barrierBreakSize = size; }
-public:	// public関数
+public:
+	// public関数
 	// コンストラクタ
 	Particle(ParticleUtility::Type type, float size);
 	// デストラクタ
@@ -67,17 +75,20 @@ public:	// public関数
 		const DirectX::SimpleMath::Vector3& target,
 		const DirectX::SimpleMath::Vector3& eye,
 		const DirectX::SimpleMath::Vector3& up);
-private:// private関数
+private:
+	// private関数
 	// シェーダー作成
 	void CreateShaders();
 	// 軌跡
 	void Trail();
 	// バリア破壊
 	void BarrierBreak();
-private:// 定数
+private:
+	// 定数
 	// インプットレイアウト
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
-public:// public変数
+public:
+	// public変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// デバイスリソース
@@ -144,3 +155,4 @@ public:// public変数
 	// シールド破壊のサイズ
 	float m_barrierBreakSize;
 };
+#endif // PARTICLE_DEFINED

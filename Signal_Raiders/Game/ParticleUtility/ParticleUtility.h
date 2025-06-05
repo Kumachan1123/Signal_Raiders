@@ -3,6 +3,8 @@
 *	@brief	パーティクルユーティリティクラス
 */
 #pragma once
+#ifndef PARTICLEUTILITY_DEFINED
+#define PARTICLEUTILITY_DEFINED
 // 標準ライブラリ
 #include <vector>
 #include <cmath>
@@ -11,9 +13,12 @@
 #include <SimpleMath.h>
 // 外部ライブラリ
 #include <DeviceResources.h>
+
+// パーティクルユーティリティクラス
 class ParticleUtility
 {
-public:// 列挙型
+public:
+	// 列挙型
 	// パーティクルの種類
 	enum class Type
 	{
@@ -21,23 +26,8 @@ public:// 列挙型
 		PLAYERTRAIL,//	プレイヤーの弾の軌跡
 		BARRIERBREAK,//	バリア破壊
 	};
-public:// public関数
-	// コンストラクタ　
-	ParticleUtility(
-		float life,// 生存時間
-		const DirectX::SimpleMath::Vector3& pos,//	座標
-		const DirectX::SimpleMath::Vector3& velocity,// 速度
-		const DirectX::SimpleMath::Vector3& accele,// 加速度
-		const DirectX::SimpleMath::Vector3& rotateAccele,// 回転加速度
-		const DirectX::SimpleMath::Vector3& rotate,// 回転
-		const DirectX::SimpleMath::Vector3& startScale, const DirectX::SimpleMath::Vector3& endScale,// スケール(最初の大きさ、最後の大きさ)
-		const DirectX::SimpleMath::Color& startColor, const DirectX::SimpleMath::Color& endColor,// カラー(最初の色、最後の色)
-		Type type);// タイプ
-	// デストラクタ
-	~ParticleUtility();
-	// 更新
-	bool Update(float elapsedTime);
-public:// アクセサ
+public:
+	// アクセサ
 	// 座標取得
 	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
 	// 速度取得
@@ -60,7 +50,25 @@ public:// アクセサ
 	DirectX::SimpleMath::Color GetStartColor() const { return m_startColor; }
 	// 終了色取得
 	DirectX::SimpleMath::Color GetEndColor() const { return m_endColor; }
-private:// private関数
+public:
+	// public関数
+	// コンストラクタ　
+	ParticleUtility(
+		float life,// 生存時間
+		const DirectX::SimpleMath::Vector3& pos,//	座標
+		const DirectX::SimpleMath::Vector3& velocity,// 速度
+		const DirectX::SimpleMath::Vector3& accele,// 加速度
+		const DirectX::SimpleMath::Vector3& rotateAccele,// 回転加速度
+		const DirectX::SimpleMath::Vector3& rotate,// 回転
+		const DirectX::SimpleMath::Vector3& startScale, const DirectX::SimpleMath::Vector3& endScale,// スケール(最初の大きさ、最後の大きさ)
+		const DirectX::SimpleMath::Color& startColor, const DirectX::SimpleMath::Color& endColor,// カラー(最初の色、最後の色)
+		Type type);// タイプ
+	// デストラクタ
+	~ParticleUtility();
+	// 更新
+	bool Update(float elapsedTime);
+private:
+	// private関数
 	// タイプの切り替え
 	void SwitchType(float elapsedTime);
 	// タイプごとの処理
@@ -68,7 +76,8 @@ private:// private関数
 	void Trail(float elapsedTime);
 	//	バリア破壊
 	void BarrierDestroyed(float elapsedTime);
-private:// private変数
+private:
+	// private変数
 	// 座標
 	DirectX::SimpleMath::Vector3 m_position;
 	// 初期位置
@@ -102,3 +111,4 @@ private:// private変数
 	// タイプ
 	Type m_type;
 };
+#endif // PARTICLEUTILITY_DEFINED

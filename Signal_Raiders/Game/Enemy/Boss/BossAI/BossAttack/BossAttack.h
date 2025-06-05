@@ -22,12 +22,16 @@
 #include "Game/KumachiLib/KumachiLib.h"
 #include "Game/Enemy/EnemyBullet/EnemyBullet.h"
 #include "Game/Interface/IState.h"
+
 //前方宣言
 class CommonResources;
 class BossAI;
+
+// ボス攻撃クラス
 class BossAttack : public IState
 {
-public:	// アクセサ
+public:
+	// アクセサ
 	// 座標取得
 	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
 	// 座標設定
@@ -44,7 +48,8 @@ public:	// アクセサ
 	void SetScale(const DirectX::SimpleMath::Vector3& sca) { m_scale = sca; }
 	// 回転速度設定
 	void SetRotationSpeed(float speed) { m_rotationSpeed = speed; }
-public:	// publicメンバ関数
+public:
+	// publicメンバ関数
 	// コンストラクタ
 	BossAttack(BossAI* pBoss);
 	// デストラクタ
@@ -53,14 +58,16 @@ public:	// publicメンバ関数
 	void Initialize() override;
 	// 更新
 	void Update(float elapsedTime) override;
-private:// privateメンバ関数
+private:
+	// privateメンバ関数
 	// プレイヤーの方向に回転
 	void RotateTowardsPlayer(const DirectX::SimpleMath::Vector3& playerPos);
 	// プレイヤーの方向に移動
 	void MoveTowardsPlayer(float elapsedTime, const DirectX::SimpleMath::Vector3& playerPos);
 	// 攻撃クールダウンの管理
 	void ManageAttackCooldown(float elapsedTime);
-private:// private定数
+private:
+	// private定数
 	// 回転速度
 	const float ROTATION_SPEED = 5.5f;
 	// ランダムの最大値
@@ -69,7 +76,8 @@ private:// private定数
 	const float RANDOM_MIN = 0.5f;
 	// 攻撃間隔
 	const float ATTACK_INTERVAL = 1.0f;
-private:// privateメンバ変数
+private:
+	// privateメンバ変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 敵AI

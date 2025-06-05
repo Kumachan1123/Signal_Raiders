@@ -3,6 +3,8 @@
 *	@brief プレイヤーUIクラス
 */
 #pragma once
+#ifndef PLAYERUI_DEFINED
+#define PLAYERUI_DEFINED
 // 標準ライブラリ
 #include <vector>
 #include <string>
@@ -16,11 +18,15 @@
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/KumachiLib/Anchor.h"
+
 // 前方宣言
 class CommonResources;
+
+// プレイヤーUIクラス
 class PlayerUI
 {
-public:// 列挙型
+public:
+	// 列挙型
 	// シェーダーの種類
 	enum class ShaderType
 	{
@@ -38,7 +44,8 @@ public:// 列挙型
 		float							animCount = 0.0f;	// アニメーションカウント
 		float							renderRatio = 0.0f;// レンダリング比率
 	};
-public:// アクセサ
+public:
+	// アクセサ
 	// ウィンドウサイズの設定
 	void SetWindowSize(const int& width, const int& height);
 	// スケールの設定
@@ -71,7 +78,8 @@ public:// アクセサ
 	void SetFrameRows(int rows) { m_frameRows = rows; }
 	// フレームの列数の設定
 	void SetFrameCols(int cols) { m_frameCols = cols; }
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	PlayerUI(CommonResources* pCommonResources);
 	// デストラクタ
@@ -86,14 +94,16 @@ public:// public関数
 		, KumachiLib::ANCHOR anchor);
 	// 描画
 	void Render();
-
-private:// private関数
+private:
+	// private関数
 	// シェーダーの作成
 	void CreateShaders();
-private:// 定数
+private:
+	// 定数
 	// インプットレイアウト
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
-private:// private変数
+private:
+	// private変数
 	// 共通リソースへのポインタ
 	CommonResources* m_pCommonResources;
 	// デバイスリソース
@@ -163,5 +173,4 @@ private:// private変数
 	// レンダリング比率のオフセット
 	float m_renderRatioOffset;
 };
-
-
+#endif // PLAYERUI_DEFINED

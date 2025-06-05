@@ -1,6 +1,6 @@
 /*
 *	@file	VerticalAttackerModel.cpp
-*	@brief	範囲攻撃敵モデルクラス
+*	@brief	垂直攻撃敵モデルクラス
 */
 #include <pch.h>
 #include "VerticalAttackerModel.h"

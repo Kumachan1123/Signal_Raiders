@@ -24,15 +24,19 @@
 #include "Game/Interface/IState.h"
 #include "Game/Interface/IEnemy.h"
 #include "Game/Player/Player.h"
+
 //前方宣言
 class CommonResources;
 class EnemyAttack;
 class EnemySpin;
 class EnemyIdling;
 class IEnemy;
+
+// 敵AIクラス
 class EnemyAI
 {
-public:// アクセサ
+public:
+	// アクセサ
 	// 現在の位置を取得
 	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
 	// 現在の位置を設定
@@ -75,7 +79,8 @@ public:// アクセサ
 	bool GetisAttack() const { return m_pEnemy->GetIsAttack(); }
 	// 攻撃中フラグを設定
 	void SetIsAttack(bool isAttack) { m_pEnemy->SetIsAttack(isAttack); }
-public:// publicメンバ関数
+public:
+	// publicメンバ関数
 	// コンストラクタ
 	EnemyAI(IEnemy* pEnemy);
 	// デストラクタ
@@ -86,7 +91,8 @@ public:// publicメンバ関数
 	void Update(float elapsedTime);
 	// 状態変更
 	void ChangeState(IState* newState);
-private:// privateメンバ変数
+private:
+	// privateメンバ変数
 	// 徘徊状態のポインター
 	std::unique_ptr<EnemyIdling> m_pEnemyIdling;
 	// 攻撃状態のポインター

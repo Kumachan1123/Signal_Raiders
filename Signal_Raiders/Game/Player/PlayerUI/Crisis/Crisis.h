@@ -3,6 +3,8 @@
 *	@brief	危険信号クラス（HPが20以下で表示される）
 */
 #pragma once
+#ifndef CRISIS_DEFINED
+#define CRISIS_DEFINED
 // 標準ライブラリ
 #include <vector>
 // DirectX
@@ -17,11 +19,15 @@
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
+
 // 前方宣言
 class CommonResources;
+
+// 危険信号クラス
 class Crisis
 {
-public:// 構造体
+public:
+	// 構造体
 	// シェーダーに渡すデータ構造体
 	struct ConstBuffer
 	{
@@ -31,7 +37,8 @@ public:// 構造体
 		DirectX::SimpleMath::Vector4 colors;    // カラー
 		DirectX::SimpleMath::Vector4 time;		// 時間                            
 	};
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	Crisis(CommonResources* resources);
 	// デストラクタ
@@ -42,13 +49,16 @@ public:// public関数
 	void Update(float elapsedTime);
 	// 描画
 	void Render();
-private:// private関数
+private:
+	// private関数
 	// シェーダーの作成
 	void CreateShaders();
-private:// private定数
+private:
+	// private定数
 	// インプットレイアウト
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
-private:// private変数
+private:
+	// private変数
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;
 	// コンスタントバッファ
@@ -80,3 +90,4 @@ private:// private変数
 	// 時間
 	float m_time;
 };
+#endif // CRISIS_DEFINED

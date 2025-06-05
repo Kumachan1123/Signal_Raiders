@@ -3,6 +3,8 @@
 *	@brief	プレイヤーの弾クラス
 */
 #pragma once
+#ifndef PLAYER_BULLET_DEFINED
+#define PLAYER_BULLET_DEFINED
 // 標準ライブラリ
 #include <cassert>
 // DirectXライブラリ
@@ -22,12 +24,15 @@
 #include "Game/ParticleUtility/ParticleUtility.h"
 #include "Game/BulletParameters/BulletParameters.h"
 #include "Game/Interface/IBullet.h"
+
 //前方宣言
 class CommonResources;
 
+// プレイヤーの弾クラス
 class PlayerBullet : public IBullet
 {
-public:// アクセサ
+public:
+	// アクセサ
 	// 弾の座標を取得する
 	DirectX::SimpleMath::Vector3 GetBulletPosition()const { return m_position; }
 	// 弾の座標を設定する
@@ -48,7 +53,8 @@ public:// アクセサ
 	int GetAdditionalDamage()const { return m_additionalDamage; }
 	// 追加ダメージを設定する
 	void SetAdditionalDamage(int damage) { m_additionalDamage = damage; }
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	PlayerBullet();
 	// デストラクタ
@@ -69,7 +75,8 @@ public:// public関数
 	bool IsExpired() const { return m_time >= BulletParameters::PLAYER_BULLET_LIFETIME; }
 	// 敵にダメージを与える
 	int Damage()const { return BulletParameters::DAMAGE + m_additionalDamage; }
-private:// private変数
+private:
+	// private変数
 	// 軌跡用の履歴を保存する配列
 	std::vector<DirectX::SimpleMath::Vector3> m_trailPositions;
 	// 共通リソース
@@ -103,3 +110,4 @@ private:// private変数
 	// 弾モデル
 	DirectX::Model* m_pModel;
 };
+#endif // PLAYER_BULLET_DEFINED

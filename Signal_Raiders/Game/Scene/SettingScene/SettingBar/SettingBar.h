@@ -3,6 +3,8 @@
 *	@brief	設定バークラス（音量や感度などのスライダー）
 */
 #pragma once
+#ifndef SETTING_BAR_DEFINED
+#define SETTING_BAR_DEFINED
 // 標準ライブラリ
 #include <vector>
 #include <string>
@@ -21,11 +23,15 @@
 #include "Game/Interface/IMenuUI.h"
 #include "Game/Screen.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
+
 // 前方宣言
 class CommonResources;
+
+// 設定バークラス（音量や感度などのスライダー）
 class SettingBar : public IMenuUI
 {
-public:// アクセサ
+public:
+	// アクセサ
 	// 設定メニュー取得
 	SettingMenu* GetSettingMenu() { return m_pSettingMenu; }
 	// 設定メニュー設定
@@ -34,7 +40,8 @@ public:// アクセサ
 	void SetStateIDNum(SettingMenu::SettingID num) { m_num = num; }
 	// 設定取得
 	int GetSetting(int index) const { return m_setting[index]; }
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	SettingBar();
 	// デストラクタ
@@ -51,7 +58,8 @@ public:// public関数
 		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor
 		, UIType type)override;
-private:// private関数
+private:
+	// private関数
 	// 更新
 	void Update(float elapsedTime);
 private:// private定数
@@ -65,7 +73,8 @@ private:// private定数
 	static const float BAR_WIDTH;
 	// 玉の位置に除算する値
 	static const float BAR_POINTER_DIVISION;
-private:// private変数
+private:
+	// private変数
 	// セッティングメニュー
 	SettingMenu* m_pSettingMenu;
 	// デバイスリソース
@@ -89,3 +98,4 @@ private:// private変数
 	// 時間
 	float m_time;
 };
+#endif // SETTING_BAR_DEFINED

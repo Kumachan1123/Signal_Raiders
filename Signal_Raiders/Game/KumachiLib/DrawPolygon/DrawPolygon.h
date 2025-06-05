@@ -4,6 +4,8 @@
 *	@details 板ポリゴンを描画するためのクラス
 */
 #pragma once
+#ifndef DRAW_POLYGON_DEFINED
+#define DRAW_POLYGON_DEFINED
 // 標準ライブラリ
 #include <vector>
 // DirectXのヘッダファイル
@@ -16,11 +18,15 @@
 #include "Game/CommonResources.h"
 #include <DeviceResources.h>
 #include <Libraries/Microsoft/DebugDraw.h>
+
 // 前方宣言
 class CommonResources;
+
+// 板ポリゴン描画用クラス
 class DrawPolygon
 {
-public:// 構造体
+public:
+	// 構造体
 	// 三つのシェーダーをひとまとめにして送るための構造体
 	struct Shaders
 	{
@@ -28,7 +34,8 @@ public:// 構造体
 		Microsoft::WRL::ComPtr<ID3D11PixelShader> ps;// ピクセルシェーダー
 		Microsoft::WRL::ComPtr<ID3D11GeometryShader> gs;// ジオメトリシェーダー
 	};
-public:// 列挙型
+public:
+	// 列挙型
 	// サンプラーステートの種類
 	enum class SamplerStates
 	{
@@ -65,10 +72,12 @@ public:// 列挙型
 		DEPTH_REVERSE_Z,// 逆Z
 	};
 
-public:// シングルトンインスタンス
+public:
+	// シングルトンインスタンス
 	// シングルトンインスタンスを取得
 	static DrawPolygon* const GetInstance();
-public:// public関数
+public:
+	// public関数
 	// デストラクタ
 	~DrawPolygon();
 	// 初期化（頂点、テクスチャ）
@@ -95,14 +104,16 @@ public:// public関数
 	void SetShader(const Shaders& shaders, ID3D11ClassInstance* const* ppClassInstances, UINT nubClassInstances);
 	// シェーダーを解放する
 	void ReleaseShader();
-private:// private関数
+private:
+	// private関数
 	// コンストラクタ
 	DrawPolygon();
 	// コピーコンストラクタ
 	DrawPolygon(const DrawPolygon&) = delete;
 	// コピーコンストラクタと代入演算子の禁止
 	DrawPolygon& operator=(const DrawPolygon&) = delete;
-private:// private変数
+private:
+	// private変数
 	// 共通リソース
 	ID3D11DeviceContext1* m_pDeviceContext;
 	// デバイスリソース
@@ -118,3 +129,4 @@ private:// private変数
 	// シングルトンインスタンス
 	static std::unique_ptr<DrawPolygon> m_pInstance;
 };
+#endif // DRAW_POLYGON_DEFINED

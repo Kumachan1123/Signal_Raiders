@@ -25,9 +25,11 @@
 
 //前方宣言
 class BossAI;
+// ボスのノックバック中の処理クラス
 class BossKnockBacking : public IState
 {
-public:	// アクセサ
+public:
+	// アクセサ
 	// 座標取得
 	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
 	// 座標設定
@@ -38,7 +40,8 @@ public:	// アクセサ
 	void SetRotation(const DirectX::SimpleMath::Quaternion& rot) { m_rotation = rot; }
 	// スケール設定
 	void SetScale(const DirectX::SimpleMath::Vector3& sca) { m_scale = sca; }
-public:	// publicメンバ関数
+public:
+	// publicメンバ関数
 	// コンストラクタ
 	BossKnockBacking(BossAI* pBoss);
 	// デストラクタ
@@ -48,6 +51,7 @@ public:	// publicメンバ関数
 	// 更新
 	void Update(float elapsedTime) override;
 private:
+	// private変数
 	// 敵AI
 	BossAI* m_pBoss;
 	// 移動

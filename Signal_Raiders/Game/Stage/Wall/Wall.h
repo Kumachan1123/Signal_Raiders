@@ -3,6 +3,8 @@
 *	@brief 壁クラス
 */
 #pragma once
+#ifndef WALL_DEFINED
+#define WALL_DEFINED
 // 標準ライブラリ
 #include <cassert>
 // DirectX
@@ -19,9 +21,12 @@
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
+
+// 壁クラス
 class Wall
 {
-public:// 構造体
+public:
+	// 構造体
 	// シェーダーに渡す情報
 	struct ConstBuffer
 	{
@@ -31,7 +36,8 @@ public:// 構造体
 		DirectX::SimpleMath::Vector4 colors;    // カラー
 		DirectX::SimpleMath::Vector4 time;    // 時間
 	};
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	Wall(CommonResources* resources);
 	// デストラクタ
@@ -48,10 +54,12 @@ public:// public関数
 	const DirectX::BoundingBox& GetBoundingBox(int index) { return m_wallBox[index]; }
 	// 壁の数の取得
 	int GetWallNum()const { return WALL_NUM; }
-private:// private関数
+private:
+	// private関数
 	void CreateWalls();// 壁の初期化
 	void CreateShaders();// シェーダーの作成
-public:// 定数
+public:
+	// 定数
 	// 壁の数
 	static const int WALL_NUM = 4;
 	// インプットレイアウト
@@ -60,7 +68,8 @@ public:// 定数
 	static const float WALL_HEIGHT;
 	// 幅
 	static const float WALL_WIDTH;
-private:// private変数
+private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 変数
@@ -95,5 +104,5 @@ private:// private変数
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	// コンスタントバッファ
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_pCBuffer;
-
 };
+#endif // WALL_DEFINED

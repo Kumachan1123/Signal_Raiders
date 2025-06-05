@@ -3,6 +3,8 @@
 *	@brief	プレイシーンクラス
 */
 #pragma once
+#ifndef PLAYSCENE_DEFINED
+#define PLAYSCENE_DEFINED
 // 標準ライブラリ
 #include <vector>
 #include <cassert>
@@ -47,17 +49,22 @@
 #include "Game/Radar/Radar.h"
 #include "Game/KumachiLib/Bloom/Bloom.h"
 #include "Game/Interface/IPlayUI.h"
+
 // 前方宣言
 class CommonResources;
 class Fade;
+
+// プレイシーンクラス
 class PlayScene final : public IScene
 {
-public:// アクセサ
+public:
+	// アクセサ
 	// ステージ番号を設定する
 	void SetStageNumber(int stageNumber) { m_stageNumber = stageNumber; }
 	// 次のシーンIDを取得する
 	SceneID GetNextSceneID() const;
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	PlayScene(IScene::SceneID sceneID);
 	// デストラクタ
@@ -70,7 +77,8 @@ public:// public関数
 	void Render() override;
 	// 終了
 	void Finalize() override;
-public:// 定数
+public:
+	// 定数
 	// 音量の基準
 	static const float VOLUME;
 	// ゲームスタート時間
@@ -80,6 +88,7 @@ public:// 定数
 	// 危険信号を表示するプレイヤーの体力
 	static const float CRISIS_HP;
 private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// プレイヤー
@@ -150,6 +159,5 @@ private:
 	IScene::SceneID m_nowSceneID;
 	// HP再設定フラグ
 	bool m_isResetHP;
-
-
 };
+#endif // PLAYSCENE_DEFINED

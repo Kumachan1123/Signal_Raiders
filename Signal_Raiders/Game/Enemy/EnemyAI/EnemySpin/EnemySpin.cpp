@@ -131,7 +131,6 @@ void EnemySpin::UpdateKnockBack(float elapsedTime)
 	float decayFactor = std::exp(EnemyParameters::KNOCKBACK_DECAY_RATE * Progression);
 	// 減衰後の速度で位置を更新
 	Vector3 velocity = m_initialVelocity * decayFactor;
-	velocity.y = 0;
 	// 実際に位置を変化させる
 	m_position += velocity * elapsedTime;
 	// 状態が「怒り」でない場合は「ヒット状態」に遷移させる

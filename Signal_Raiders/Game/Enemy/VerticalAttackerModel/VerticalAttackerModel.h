@@ -1,10 +1,10 @@
 /*
 	@file	VerticalAttackerModel.h
-	@brief	範囲攻撃敵モデルクラス
+	@brief	垂直攻撃敵モデルクラス
 */
 #pragma once
-#ifndef AREA_ATTACKER_MODEL_DEFINED
-#define AREA_ATTACKER_MODEL_DEFINED
+#ifndef VERTICAL_ATTACKER_MODEL_DEFINED
+#define VERTICAL_ATTACKER_MODEL_DEFINED
 // 標準ライブラリ
 #include <SimpleMath.h>
 #include <unordered_map>
@@ -16,13 +16,17 @@
 #include "Game/Enemy/VerticalAttacker/VerticalAttacker.h"
 #include "Game/Interface/IState.h"
 #include "Game/Interface/IModel.h"
+
 // 前方宣言
 class VerticalAttacker;
 class CommonResources;
 class IState;
+
+// 垂直攻撃敵モデルクラス
 class VerticalAttackerModel : public IModel
 {
-public:	// public関数
+public:
+	// public関数
 	// コンストラクタ
 	VerticalAttackerModel();
 	// デストラクタ
@@ -37,7 +41,8 @@ public:	// public関数
 		const DirectX::SimpleMath::Matrix& world,
 		const DirectX::SimpleMath::Matrix& view,
 		const DirectX::SimpleMath::Matrix& proj)	override;
-private:// private変数
+private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 胴体モデル
@@ -49,4 +54,4 @@ private:// private変数
 	// 現在のステータス
 	IState::EnemyState m_nowState;
 };
-#endif //AREA_ATTACKER_MODEL_DEFINED
+#endif //VERTICAL_ATTACKER_MODEL_DEFINED

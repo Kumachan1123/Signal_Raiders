@@ -3,12 +3,15 @@
 	@brief	シーンへ渡す、ゲーム内で使用する共通リソース
 */
 #pragma once
+#ifndef COMMON_RESOURCES_DEFINED
+#define COMMON_RESOURCES_DEFINED
 // 標準ライブラリ
 #include <cassert>
 // 自作ヘッダーファイル
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/KumachiLib/ModelManager/ModelManager.h"
 #include "Game/KumachiLib/TextureManager/TextureManager.h"
+
 // 前方宣言
 namespace DX
 {
@@ -22,9 +25,12 @@ namespace mylib
 }
 class ModelManager;
 class TextureManager;
+
+// シーンへ渡す、ゲーム内で使用する共通リソース
 class CommonResources
 {
-public:// アクセサ
+public:
+	// アクセサ
 	// タイマーを取得する
 	DX::StepTimer* GetStepTimer() const { return m_stepTimer; }
 	// デバイスリソースを取得する
@@ -41,7 +47,8 @@ public:// アクセサ
 	ModelManager* GetModelManager() const { return m_modelManager; }
 	// テクスチャマネージャを取得する
 	TextureManager* GetTextureManager() const { return m_textureManager; }
-public:// publicメソッド
+public:
+	// publicメソッド
 	// コンストラクタ
 	CommonResources();
 	// デストラクタ defaultで定義
@@ -57,7 +64,8 @@ public:// publicメソッド
 		ModelManager* modelManager,// 受け渡しするモデルマネージャ
 		TextureManager* textureManager  // 受け渡しするテクスチャマネージャ
 	);
-private:// privateメンバ変数
+private:
+	// privateメンバ変数
 	// 受け渡しするリソース一覧
 	// タイマー
 	DX::StepTimer* m_stepTimer;
@@ -76,3 +84,4 @@ private:// privateメンバ変数
 	// テクスチャマネージャ
 	TextureManager* m_textureManager;
 };
+#endif // COMMON_RESOURCES_DEFINED

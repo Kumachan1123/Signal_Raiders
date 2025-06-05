@@ -3,6 +3,8 @@
 *	@brief	メニュークラス
 */
 #pragma once
+#ifndef TITLE_MENU_DEFINED
+#define TITLE_MENU_DEFINED
 // 標準ライブラリ
 #include <vector>
 #include <string>
@@ -20,11 +22,15 @@
 #include "Game/Screen.h"
 #include "Game/UI/UI.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
+
 // 前方宣言
 class CommonResources;
+
+// メニュークラス
 class TitleMenu : public IMenuUI
 {
-public:// 構造体
+public:
+	// 構造体
 	// UIの変形
 	struct UITransForm
 	{
@@ -38,7 +44,8 @@ public:// 構造体
 		SETTING,// 設定画面
 		END// ゲーム終了
 	};
-public:// アクセサ
+public:
+	// アクセサ
 	// シーン番号取得
 	SceneID GetSceneNum() const { return m_num; }
 	// シーン番号設定
@@ -49,7 +56,8 @@ public:// アクセサ
 	void SetIsHit(bool hit) { m_hit = hit; }
 	// SEの音量設定
 	void SetSEVolume(float volume) { m_SEVolume = volume; }
-public:// public関数
+public:
+	// public関数
 	// コンストラクタ
 	TitleMenu();
 	// デストラクタ
@@ -66,13 +74,16 @@ public:// public関数
 		, const DirectX::SimpleMath::Vector2& scale
 		, KumachiLib::ANCHOR anchor
 		, IMenuUI::UIType type);
-private:// private関数
+private:
+	// private関数
 	// 更新
 	void Update(float elapsedTime);
-private:// private定数
+private:
+	// private定数
 	// 無効なメニューインデックス
 	static const int INVALID_MENU_INDEX;
-private:// private変数
+private:
+	// private変数
 	// メニューのインデックス
 	unsigned int m_menuIndex;
 	// デバイスリソース
@@ -102,3 +113,4 @@ private:// private変数
 	// 再生フラグ
 	bool m_isSEPlay;
 };
+#endif // TITLE_MENU_DEFINED

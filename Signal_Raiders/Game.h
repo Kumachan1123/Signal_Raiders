@@ -3,6 +3,8 @@
 *	@brief ゲームのメインクラス
 */
 #pragma once
+#ifndef GAME_DEFINED
+#define GAME_DEFINED
 // 標準ライブラリ
 #include <thread>
 // DirectX
@@ -21,39 +23,67 @@
 #include "Game/KumachiLib/TextureManager/TextureManager.h"
 #include "Game/Screen.h"
 
+// ゲームクラス
 class Game final : public DX::IDeviceNotify
 {
-public:// public関数
-	Game() noexcept(false);// コンストラクタ
-	~Game() = default;// デストラクタ
+public:
+	// public関数
+	// コンストラクタ
+	Game() noexcept(false);
+	// デストラクタ
+	~Game() = default;
 
-	Game(Game&&) = default;// ムーブコンストラクタ
-	Game& operator= (Game&&) = default;// ムーブ代入演算子
+	// ムーブコンストラクタ
+	Game(Game&&) = default;
+	// ムーブ代入演算子
+	Game& operator= (Game&&) = default;
 
-	Game(Game const&) = delete;// コピーコンストラクタ
-	Game& operator= (Game const&) = delete;// コピー代入演算子
+	// コピーコンストラクタ
+	Game(Game const&) = delete;
+	// コピー代入演算子
+	Game& operator= (Game const&) = delete;
 
-	void Initialize(HWND window, int width, int height);// 初期化
-	void Tick();// ゲームループを実行
-	void OnDeviceLost() override;// デバイスが失われたときの処理
-	void OnDeviceRestored() override;// デバイスが復元されたときの処理
+	// 初期化
+	void Initialize(HWND window, int width, int height);
+	// ゲームループを実行
+	void Tick();
+	// デバイスが失われたときの処理
+	void OnDeviceLost() override;
+	// デバイスが復元されたときの処理
+	void OnDeviceRestored() override;
 	// メッセージ
-	void OnActivated();// アクティブ化されたときの処理
-	void OnDeactivated();// 非アクティブ化されたときの処理
-	void OnSuspending();// 一時停止されたときの処理
-	void OnResuming();// 再開されたときの処理
-	void OnWindowMoved();// ウィンドウが移動されたときの処理
-	void OnDisplayChange();// ディスプレイの変更があったときの処理
-	void OnWindowSizeChanged(int width, int height);// ウィンドウサイズが変更されたときの処理
-	void GetDefaultSize(int& width, int& height) const noexcept; // デフォルトのウィンドウサイズを取得
-	void SetFullscreenState(BOOL value);// フルスクリーン状態を設定
-private:// private関数
-	void Update(DX::StepTimer const& timer);// 更新処理
-	void Render();// 描画処理
-	void Clear();// 画面をクリア
-	void CreateDeviceDependentResources();// デバイス依存リソースの作成
-	void CreateWindowSizeDependentResources(); // ウィンドウサイズ依存リソースの作成
-private:// private変数
+	// アクティブ化されたときの処理
+	void OnActivated();
+	// 非アクティブ化されたときの処理
+	void OnDeactivated();
+	// 一時停止されたときの処理
+	void OnSuspending();
+	// 再開されたときの処理
+	void OnResuming();
+	// ウィンドウが移動されたときの処理
+	void OnWindowMoved();
+	// ディスプレイの変更があったときの処理
+	void OnDisplayChange();
+	// ウィンドウサイズが変更されたときの処理
+	void OnWindowSizeChanged(int width, int height);
+	// デフォルトのウィンドウサイズを取得
+	void GetDefaultSize(int& width, int& height) const noexcept;
+	// フルスクリーン状態を設定
+	void SetFullscreenState(BOOL value);
+private:
+	// private関数
+	// 更新処理
+	void Update(DX::StepTimer const& timer);
+	// 描画処理
+	void Render();
+	// 画面をクリア
+	void Clear();
+	// デバイス依存リソースの作成
+	void CreateDeviceDependentResources();
+	// ウィンドウサイズ依存リソースの作成
+	void CreateWindowSizeDependentResources();
+	// private変数
+private:
 	// デバイスリソース
 	std::unique_ptr<DX::DeviceResources>    m_deviceResources;
 	// タイマー
@@ -77,3 +107,4 @@ private:// private変数
 	// テクスチャマネージャ
 	std::unique_ptr<TextureManager>         m_textureManager;
 };
+#endif // GAME_DEFINED

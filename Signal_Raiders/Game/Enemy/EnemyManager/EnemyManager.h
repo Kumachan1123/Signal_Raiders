@@ -3,6 +3,8 @@
 *	@brief	敵マネージャークラス
 */
 #pragma once
+#ifndef ENEMY_MANAGER_DEFINED
+#define ENEMY_MANAGER_DEFINED
 // 標準ライブラリ
 #include <cassert>
 #include <memory>
@@ -25,6 +27,7 @@
 #include "Game/Player/Player.h"
 #include "Game/Stage/Wall/Wall.h"
 #include "Game/Wifi/Wifi.h"
+
 // 前方宣言
 class CommonResources;
 class IEnemy;
@@ -33,9 +36,12 @@ class Player;
 class Effect;
 class Wifi;
 class Wall;
+
+// 敵マネージャークラス
 class EnemyManager
 {
-private:// 構造体
+private:
+	// 構造体
 	// ステージごとの設定
 	struct StageSettings
 	{
@@ -55,7 +61,8 @@ private:// 構造体
 		{4, {40, 1000,10,BossBase::BossBulletType::STAGE_5}}// ステージ5
 
 	};
-public:	// アクセサ
+public:
+	// アクセサ
 	// 敵リスト取得
 	std::vector<std::unique_ptr<IEnemy>>& GetEnemies() { return m_pEnemies; }
 	// 攻撃中の敵リスト取得
@@ -90,7 +97,8 @@ public:	// アクセサ
 	int GetSpecialAttackCount() const { return m_specialAttackCount; }
 	// 特殊攻撃の数設定
 	void SetSpecialAttackCount(int count) { m_specialAttackCount = count; }
-public:	// public関数
+public:
+	// public関数
 	// コンストラクタ
 	EnemyManager(CommonResources* commonResources);
 	// デストラクタ
@@ -101,7 +109,8 @@ public:	// public関数
 	void Update(float elapsedTime);
 	// 描画
 	void Render();
-private:// private関数
+private:
+	// private関数
 	// 敵の生成上限設定
 	void SetEnemyMax();
 	// 更新処理を分割するメソッド
@@ -131,7 +140,8 @@ private:// private関数
 	void RemoveDeadEnemies();
 	// 敵の死亡処理
 	void HandleEnemyDeath(std::unique_ptr<IEnemy>& pEnemy);
-private:// private変数
+private:
+	// private変数
 	// コモンリソース
 	CommonResources* m_pCommonResources;
 	// 敵
@@ -187,3 +197,4 @@ private:// private変数
 	// ボスの弾の種類
 	BossBase::BossBulletType m_bossBulletType;
 };
+#endif // ENEMY_MANAGER_DEFINED
