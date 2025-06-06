@@ -125,12 +125,10 @@ void Wifi::Update(float elapsedTime)
 				// ループを抜ける
 				break;
 			}
-			// ssidの文字数を可変長配列に登録
-			int ssidLength = (int)(networkInfo.ssid.length());
 			// ssidの文字のASCIIコードの合計を可変長配列に登録
 			int ssidValue = ConvertSsidToInt(networkInfo.ssid);
-			// (文字数×文字のASCIIコードの合計)/ENEMY_TYPE_MAXの余りを敵の種類に変換
-			int enemyType = (ssidValue * ssidLength) % ENEMY_TYPE_MAX;
+			// (文字のASCIIコードの合計)/ENEMY_TYPE_MAXの余りを敵の種類に変換
+			int enemyType = ssidValue % ENEMY_TYPE_MAX;
 			// 電波の強さを可変長配列に登録
 			m_preWifilevels.push_back(networkInfo.signalQuality);
 			// 敵の種類を設定	
