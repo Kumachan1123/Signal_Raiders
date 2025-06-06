@@ -87,6 +87,10 @@ public:
 	bool GetisAttack() const { return m_pEnemy->GetIsAttack(); }
 	// 攻撃中フラグを設定
 	void SetIsAttack(bool isAttack) { m_pEnemy->SetIsAttack(isAttack); }
+	// 攻撃のクールダウンタイムを取得
+	float GetAttackCooldown() const { return m_attackCooldown; }
+	// 攻撃のクールダウンタイムを設定
+	void SetAttackCooldown(float cooldown) { m_attackCooldown = cooldown; }
 public:
 	// publicメンバ関数
 	// コンストラクタ

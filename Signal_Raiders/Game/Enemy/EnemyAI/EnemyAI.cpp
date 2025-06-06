@@ -13,7 +13,6 @@
 */
 EnemyAI::EnemyAI(IEnemy* pEnemy)
 	: m_pCurrentState(nullptr)// 現在の状態
-	, m_attackCooldown(0.0f)// 攻撃クールダウン
 	, m_time(0.0f)// 時間
 	, m_isHitPlayerBullet(false)// プレイヤーの弾に当たったか
 	, m_knockTime(0.0f)// ノックバック時間
@@ -22,6 +21,7 @@ EnemyAI::EnemyAI(IEnemy* pEnemy)
 	, m_pEnemyIdling(nullptr)// 徘徊クラス
 	, m_canAttack(true)// 攻撃可能か
 	, m_enemyState(IState::EnemyState::IDLING)// 敵の状態
+	, m_attackCooldown(EnemyParameters::ATTACK_COOLDOWN)// 攻撃のクールダウンタイム
 	, m_pEnemy(pEnemy)// 敵
 	, m_isAttack(false)// 攻撃中か
 {

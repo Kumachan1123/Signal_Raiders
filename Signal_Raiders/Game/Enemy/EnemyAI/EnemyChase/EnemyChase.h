@@ -61,5 +61,7 @@ private:// privateメンバ変数
 	float m_angle;
 	// 経過時間
 	float m_time;
+	// 攻撃のクールダウンタイム
+	float m_attackCooldown;
 };
 #endif //ENEMY_CHASE_DEFINED

@@ -127,7 +127,7 @@ public:
 private:
 	// privateŠÖ”
 	// ’e‚ğŒ‚‚Â
-	void ShootBullet();
+	void ShootBullet(float elapsedTime);
 private:
 	// private•Ï”
 	// ‹¤’ÊƒŠƒ\[ƒX

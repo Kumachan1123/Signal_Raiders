@@ -74,7 +74,7 @@ void EnemyModel::Initialize(CommonResources* resources)
 	// モデルマネージャーから攻撃顔モデルを取得
 	m_pFaceModelMap[IState::EnemyState::ATTACK] = m_pCommonResources->GetModelManager()->GetModel("EnemyAttack");
 	// モデルマネージャーから攻撃顔モデルを取得
-	m_pFaceModelMap[IState::EnemyState::ANGRY] = m_pCommonResources->GetModelManager()->GetModel("EnemyAttack");
+	m_pFaceModelMap[IState::EnemyState::ANGRY] = m_pCommonResources->GetModelManager()->GetModel("EnemyAngry");
 	// モデルマネージャーから攻撃顔モデルを取得
 	m_pFaceModelMap[IState::EnemyState::IDLING] = m_pCommonResources->GetModelManager()->GetModel("EnemyIdling");
 }

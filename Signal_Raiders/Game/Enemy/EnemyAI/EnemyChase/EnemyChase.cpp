@@ -19,6 +19,7 @@ EnemyChase::EnemyChase(EnemyAI* pEnemyAI)
 	, m_position(DirectX::SimpleMath::Vector3::Zero) // 現在位置の初期化
 	, m_time(0.0f) // 時間の初期化
 	, m_angle(0.0f) // 角度の初期化
+	, m_attackCooldown(EnemyParameters::ATTACK_COOLDOWN) // 攻撃のクールダウンタイムの初期化
 {
 }
 /*
@@ -50,6 +51,8 @@ void EnemyChase::Initialize()
 	m_scale = m_pEnemyAI->GetScale();
 	// AIから初期位置を取得して設定する
 	m_initialPosition = m_pEnemyAI->GetPosition();
+	// AIから攻撃のクールダウンタイムを取得して設定する
+	m_attackCooldown = EnemyParameters::ATTACK_COOLDOWN;
 }
 /*
 *	@brief	更新
@@ -60,8 +63,6 @@ void EnemyChase::Initialize()
 void EnemyChase::Update(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
-
-
 	// プレイヤーのポインターを取得
 	Player* player = m_pEnemyAI->GetEnemy()->GetPlayer();
 	// プレイヤーの座標を取得
@@ -80,12 +81,6 @@ void EnemyChase::Update(float elapsedTime)
 	{
 		// プレイヤーとの距離が近いので停止
 		m_velocity = Vector3::Zero;
-		////攻撃態勢にする
-		//m_pEnemyAI->ChangeState(m_pEnemyAI->GetEnemyAttack());
-		//// 攻撃態勢にする
-		//m_pEnemyAI->SetState(IState::EnemyState::ATTACK);
-		//// 攻撃中にする
-		//m_pEnemyAI->SetIsAttack(true);
 	}
 	// 進行方向に回転
 	if (m_velocity.LengthSquared() > 0.0f) // 速度がゼロでない場合
@@ -103,21 +98,45 @@ void EnemyChase::Update(float elapsedTime)
 	float dot = playerLook.Dot(toPlayer);
 	// ドット積から角度を計算
 	m_angle = acosf(dot);
+	// クールダウンを減らす
+	m_attackCooldown -= elapsedTime;
+	// AIにクールダウンタイムを設定
+	m_pEnemyAI->SetAttackCooldown(m_attackCooldown);
+	// クールダウンが閾値を下回ったら
+	if (m_attackCooldown <= EnemyParameters::CHANGE_FACE_TIME)
+	{
+		// 敵の状態を怒り状態に変更する
+		m_pEnemyAI->SetState(IState::EnemyState::ANGRY);
+		// 0以下になったら
+		if (m_attackCooldown <= 0.0f)
+		{
+			// 攻撃態勢にする
+			m_pEnemyAI->SetState(IState::EnemyState::ATTACK);
+			// クールダウンをリセットする
+			m_attackCooldown = EnemyParameters::ATTACK_COOLDOWN;
+			// AIにも設定
+			m_pEnemyAI->SetAttackCooldown(m_attackCooldown);
+			// 攻撃中にする
+			m_pEnemyAI->SetIsAttack(true);
+		}
+	}
+	else
+	{
+		// 視界に入ったら回り込みに遷移
+		if (m_angle > DirectX::XM_PI / 2)
+		{
+			//攻撃態勢にする
+			m_pEnemyAI->ChangeState(m_pEnemyAI->GetEnemyShadowStep());
+		}
+	}
 
 	// 位置を更新
 	m_position += m_velocity;
-
 	// 敵の位置を更新
 	m_pEnemyAI->SetPosition(m_position);
 	// 敵の回転を更新
 	m_pEnemyAI->SetRotation(m_rotation);
 	// 敵の速度を更新
 	m_pEnemyAI->SetVelocity(m_velocity);
-	// 視界に入ったら回り込みに遷移
-	if (m_angle > DirectX::XM_PI / 2)
-	{
-		//攻撃態勢にする
-		m_pEnemyAI->ChangeState(m_pEnemyAI->GetEnemyShadowStep());
 
-	}
 }

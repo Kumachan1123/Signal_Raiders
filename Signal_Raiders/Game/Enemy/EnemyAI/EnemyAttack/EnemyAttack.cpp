@@ -44,6 +44,8 @@ void EnemyAttack::Initialize()
 	m_velocity = m_pEnemyAI->GetVelocity();
 	// AIからスケール（サイズ）を取得して設定する
 	m_scale = m_pEnemyAI->GetScale();
+	// AIからクールダウンタイムを取得して設定する
+	m_attackCooldown = m_pEnemyAI->GetAttackCooldown();
 	// 初期の回転速度を設定する
 	m_rotationSpeed = EnemyParameters::INITIAL_ROTATION_SPEED;
 }
@@ -112,6 +114,8 @@ void EnemyAttack::Update(float elapsedTime)
 	m_pEnemyAI->SetPosition(m_pEnemyAI->GetPosition() + toPlayerVector * (m_velocity.Length() * EnemyParameters::VELOCITY_SCALE_FACTOR) * elapsedTime);
 	// クールダウンを減らす
 	m_attackCooldown -= elapsedTime;
+	// AIにクールダウンタイムを設定する
+	m_pEnemyAI->SetAttackCooldown(m_attackCooldown);
 	// クールダウンが閾値を下回ったら
 	if (m_attackCooldown <= EnemyParameters::CHANGE_FACE_TIME)
 	{
@@ -124,6 +128,7 @@ void EnemyAttack::Update(float elapsedTime)
 			m_pEnemyAI->SetState(IState::EnemyState::ATTACK);
 			// クールダウンをリセットする
 			m_attackCooldown = EnemyParameters::ATTACK_COOLDOWN;
+			m_pEnemyAI->SetAttackCooldown(m_attackCooldown);
 		}
 	}
 	// 回転と速度をAIに反映させる
