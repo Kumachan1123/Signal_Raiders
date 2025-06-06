@@ -191,6 +191,8 @@
     <ClInclude Include="Game\BossAppear\BossAppear.h" />
     <ClInclude Include="Game\BulletParameters\BulletParameters.h" />
     <ClInclude Include="Game\Enemy\BossBase\BossBase.h" />
+    <ClInclude Include="Game\Enemy\CowardlyEnemyModel\CowardlyEnemyModel.h" />
+    <ClInclude Include="Game\Enemy\CowardlyEnemy\CowardlyEnemy.h" />
     <ClInclude Include="Game\Enemy\EnemyAI\EnemyChase\EnemyChase.h" />
     <ClInclude Include="Game\Enemy\EnemyAI\EnemyShadowStep\EnemyShadowStep.h" />
     <ClInclude Include="Game\Enemy\EnemyBullet\EnemyBulletFactory\EnemyBulletFactory.h" />
@@ -239,7 +241,7 @@
     <ClInclude Include="Game\Interface\IEnemy.h" />
     <ClInclude Include="Game\KumachiLib\AudioManager\AudioManager.h" />
     <ClInclude Include="Game\Effect\Effect.h" />
-    <ClInclude Include="Game\Enemy\Enemy.h" />
+    <ClInclude Include="Game\Enemy\Enemy\Enemy.h" />
     <ClInclude Include="Game\Enemy\EnemyAI\EnemyAI.h" />
     <ClInclude Include="Game\Enemy\EnemyAI\EnemyAttack\EnemyAttack.h" />
     <ClInclude Include="Game\Enemy\EnemyAI\EnemyIdling\EnemyIdling.h" />
@@ -306,6 +308,8 @@
     <ClCompile Include="Game\BossAppear\BossAppear.cpp" />
     <ClCompile Include="Game\BulletParameters\BulletParameters.cpp" />
     <ClCompile Include="Game\Enemy\BossBase\BossBase.cpp" />
+    <ClCompile Include="Game\Enemy\CowardlyEnemyModel\CowardlyEnemyModel.cpp" />
+    <ClCompile Include="Game\Enemy\CowardlyEnemy\CowardlyEnemy.cpp" />
     <ClCompile Include="Game\Enemy\EnemyAI\EnemyChase\EnemyChase.cpp" />
     <ClCompile Include="Game\Enemy\EnemyAI\EnemyShadowStep\EnemyShadowStep.cpp" />
     <ClCompile Include="Game\Enemy\EnemyBullet\EnemyBulletFactory\EnemyBulletFactory.cpp" />
@@ -343,7 +347,7 @@
     <ClCompile Include="Game\Fade\Fade.cpp" />
     <ClCompile Include="Game\KumachiLib\AudioManager\AudioManager.cpp" />
     <ClCompile Include="Game\Effect\Effect.cpp" />
-    <ClCompile Include="Game\Enemy\Enemy.cpp" />
+    <ClCompile Include="Game\Enemy\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Enemy\EnemyAI\EnemyAI.cpp" />
     <ClCompile Include="Game\Enemy\EnemyAI\EnemyAttack\EnemyAttack.cpp" />
     <ClCompile Include="Game\Enemy\EnemyAI\EnemyIdling\EnemyIdling.cpp" />

@@ -48,6 +48,14 @@ public:
 	// 更新
 	void Update(float elapsedTime) override;
 private:
+	// 定数
+	// 乱数の最小値
+	const float MinRandomRadius = 10.0f;
+	// 乱数の最大値
+	const float MaxRandomRadius = 30.0f;
+	// ランダムな半径の範囲
+	const float RadiusRange = MaxRandomRadius - MinRandomRadius + 1.0f;
+private:
 	// privateメンバ変数
 	// 敵AI
 	EnemyAI* m_pEnemyAI;
@@ -76,14 +84,14 @@ private:
 	// プレイヤーの初期位置
 	DirectX::SimpleMath::Vector3 m_centerPos;
 	// 初期化フラグ
-	bool m_initialized = false;
+	bool m_initialized;
 	// 累積角度
-	float m_elapsedAngle = 0.0f;
+	float m_elapsedAngle;
 	// +1 なら反時計回り, -1 なら時計回り
-	int m_rotateDirection = 1;
+	int m_rotateDirection;
 	// ランダムな半径
-	float m_randomRadius = 0.0f;
+	float m_randomRadius;
 	// 回り込みの半径
-	float m_evadeRadius = 0.0f;
+	float m_evadeRadius;
 };
 #endif //ENEMY_SHADOWSTEP_DEFINED

@@ -23,7 +23,6 @@
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/Player/Player.h"
 #include "Game/Enemy/EnemyManager/EnemyManager.h"
-#include "Game/Enemy/Enemy.h"
 #include "Game/Enemy/EnemyAI/EnemyAI.h"
 #include "Game/KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
@@ -32,7 +31,6 @@
 class CommonResources;
 class Player;
 class EnemyManager;
-class Enemy;
 class EnemyAI;
 
 // レーダークラス

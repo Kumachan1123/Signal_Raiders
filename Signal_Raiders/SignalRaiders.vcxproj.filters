@@ -186,7 +186,7 @@
     <ClInclude Include="Game\Wifi\Wifi.h">
       <Filter>Game\Wi-Fi</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Enemy\Enemy.h">
+    <ClInclude Include="Game\Enemy\Enemy\Enemy.h">
       <Filter>Game\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Game\Enemy\EnemyAI\EnemyAI.h">
@@ -298,6 +298,8 @@
     <ClInclude Include="Game\KumachiLib\TextureManager\TextureManager.h" />
     <ClInclude Include="Game\Enemy\EnemyAI\EnemyChase\EnemyChase.h" />
     <ClInclude Include="Game\Enemy\EnemyAI\EnemyShadowStep\EnemyShadowStep.h" />
+    <ClInclude Include="Game\Enemy\CowardlyEnemy\CowardlyEnemy.h" />
+    <ClInclude Include="Game\Enemy\CowardlyEnemyModel\CowardlyEnemyModel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -345,7 +347,7 @@
     <ClCompile Include="Game\Wifi\Wifi.cpp">
       <Filter>Game\Wi-Fi</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Enemy\Enemy.cpp">
+    <ClCompile Include="Game\Enemy\Enemy\Enemy.cpp">
       <Filter>Game\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="Game\Enemy\EnemyAI\EnemyAI.cpp">
@@ -435,6 +437,8 @@
     <ClCompile Include="Game\KumachiLib\TextureManager\TextureManager.cpp" />
     <ClCompile Include="Game\Enemy\EnemyAI\EnemyChase\EnemyChase.cpp" />
     <ClCompile Include="Game\Enemy\EnemyAI\EnemyShadowStep\EnemyShadowStep.cpp" />
+    <ClCompile Include="Game\Enemy\CowardlyEnemy\CowardlyEnemy.cpp" />
+    <ClCompile Include="Game\Enemy\CowardlyEnemyModel\CowardlyEnemyModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

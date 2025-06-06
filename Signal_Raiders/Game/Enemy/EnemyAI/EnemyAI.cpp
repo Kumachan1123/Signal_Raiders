@@ -38,6 +38,8 @@ EnemyAI::EnemyAI(IEnemy* pEnemy)
 	m_pEnemyChase = std::make_unique<EnemyChase>(this);
 	// シャドウステップクラスを生成
 	m_pEnemyShadowStep = std::make_unique<EnemyShadowStep>(this);
+	// 初期状態として徘徊態勢にする（敵の種類によってはAIを生成した後ChangeStateで指定した状態にする）
+	m_pCurrentState = m_pEnemyIdling.get();
 }
 
 /*
@@ -81,10 +83,9 @@ void EnemyAI::Initialize()
 	m_scale = Vector3::One;
 	// 位置を初期化
 	m_position = m_initialPosition;
-	//// 徘徊態勢にする
-	//m_pCurrentState = m_pEnemyIdling.get();
-	// 追跡態勢にする
-	m_pCurrentState = m_pEnemyChase.get();
+
+	//// 追跡態勢にする
+	//m_pCurrentState = m_pEnemyChase.get();
 	// 状態を初期化
 	m_pCurrentState->Initialize();
 	// 表情差分を徘徊状態のものにする

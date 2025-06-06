@@ -22,6 +22,11 @@ EnemyShadowStep::EnemyShadowStep(EnemyAI* pEnemyAI)
 	, m_initialVelocity(DirectX::SimpleMath::Vector3::Zero) // ノックバックの初期速度の初期化
 	, m_time(0.0f) // 時間の初期化
 	, m_angle(0.0f) // 角度の初期化
+	, m_initialized(false) // 初期化フラグの初期化
+	, m_randomRadius(0.0f) // ランダムな半径の初期化
+	, m_elapsedAngle(0.0f) // 累積角度の初期化
+	, m_rotateDirection(1) // 回転方向の初期化
+	, m_evadeRadius(0.0f) // 回り込みの半径の初期化
 {
 }
 /*
@@ -76,7 +81,7 @@ void EnemyShadowStep::Update(float elapsedTime)
 	if (!m_initialized)
 	{
 		// 10から30の範囲
-		m_randomRadius = 30.0f + static_cast<float>(rand() % 41); // 10から30の範囲
+		m_randomRadius = MinRandomRadius + rand() % (int)RadiusRange;
 		// 回り込みの半径を設定
 		m_evadeRadius = m_randomRadius;
 		// 回り込みの中心はプレイヤーの初期位置
@@ -122,7 +127,7 @@ void EnemyShadowStep::Update(float elapsedTime)
 	// 新しい位置を設定
 	m_pEnemyAI->SetPosition(m_position);
 	// 半周したら終了
-	if (m_elapsedAngle >= XM_PI * 3.5)
+	if (m_elapsedAngle >= XM_PI * 3)
 	{
 		// 初期化フラグをfalseに設定
 		m_initialized = false;

@@ -114,6 +114,6 @@ private:
 	// Wi-Fi取得時間（５秒過ぎたら５秒で固定）
 	float m_time;
 	// ザコ敵の種類の最大値
-	const int ENEMY_TYPE_MAX = 2;
+	const int ENEMY_TYPE_MAX = 3;
 };
 #endif // WIFI_DEFINED

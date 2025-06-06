@@ -27,7 +27,6 @@
 #include "Game/Scene/SettingScene/SettingData/SettingData.h"
 #include "Game/Sky/Sky.h"
 #include "Game/Player/Player.h"
-#include "Game/Enemy/Enemy.h"
 #include "Game/Enemy/EnemyManager/EnemyManager.h"
 #include "Game/Enemy/EnemyCounter/EnemyCounter.h"
 #include "Game/BulletManager/BulletManager.h"

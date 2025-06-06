@@ -22,6 +22,8 @@ std::unique_ptr<IEnemy> EnemyFactory::CreateEnemy(EnemyType type, Player* player
 		return std::make_unique<Enemy>(player, resources, HP);
 	case EnemyType::VERTICAL_ATTACKER:// ‘¬‚¢’e‚ğŒ‚‚Â“G‚ğ¶¬
 		return std::make_unique<VerticalAttacker>(player, resources, HP);
+	case EnemyType::COWARDLY_ENEMY:// ‚·‚Î‚µ‚Á‚±‚­”Ú‹¯‚È“G‚ğ¶¬
+		return  std::make_unique<CowardlyEnemy>(player, resources, HP);
 	case EnemyType::BOSS:// ƒ{ƒX‚ğ¶¬
 		return std::make_unique<BossBase>(player, resources, HP);
 	default:// ‚»‚êˆÈŠO‚Ì“G‚Í¶¬‚µ‚È‚¢

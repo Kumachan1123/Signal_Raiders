@@ -78,8 +78,10 @@ void Wifi::Update(float elapsedTime)
 				if (m_time >= WiFiParameters::MAX_TIME)break;
 				// “d”g‚Ì‹­‚³‚ğ100‚Éİ’è
 				m_preWifilevels.push_back(WiFiParameters::DEFAULT_ENEMY_HP);
-				// “G‚Ìí—Ş‚ğ0(’Êí)‚Éİ’è
-				m_preEnemyTypes.push_back(WiFiParameters::DEFAULT_ENEMY_TYPE);
+				// 0‚©‚ç2‚Ì—”‚ğ¶¬
+				int enemyType = rand() % ENEMY_TYPE_MAX;
+				// “G‚Ìí—Ş‚ğİ’è
+				m_preEnemyTypes.push_back(enemyType);
 			}
 		}
 		// “d”g‚Ì‹­‚³‚ğ‰Â•Ï’·”z—ñ‚É“o˜^

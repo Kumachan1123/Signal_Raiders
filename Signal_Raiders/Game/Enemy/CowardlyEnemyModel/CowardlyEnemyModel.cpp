@@ -1,16 +1,16 @@
 /*
-*	@file	VerticalAttackerModel.cpp
-*	@brief	垂直攻撃敵モデルクラス
+*	@file	CowardlyEnemyModel.cpp
+*	@brief	すばしっこくて卑怯な敵モデルクラス
 */
 #include <pch.h>
-#include "VerticalAttackerModel.h"
+#include "CowardlyEnemyModel.h"
 
 /*
 *	@brief	コンストラクタ
-*	@details	垂直攻撃敵モデルの初期化を行う
+*	@details	すばしっこくて卑怯な敵モデルクラス
 *	@param	なし
 */
-VerticalAttackerModel::VerticalAttackerModel()
+CowardlyEnemyModel::CowardlyEnemyModel()
 	: m_pCommonResources{}// 共通リソース
 	, m_pBodyModel{}// モデル
 	, m_nowState{ IState::EnemyState::IDLING }// 現在のステータス
@@ -20,7 +20,7 @@ VerticalAttackerModel::VerticalAttackerModel()
 *	@details	垂直攻撃敵モデルの解放を行う
 *	@param	なし
 */
-VerticalAttackerModel::~VerticalAttackerModel()
+CowardlyEnemyModel::~CowardlyEnemyModel()
 {
 	// 共通リソースの解放
 	m_pCommonResources = nullptr;
@@ -35,11 +35,11 @@ VerticalAttackerModel::~VerticalAttackerModel()
 }
 /*
 *	@brief	初期化する
-*	@details	垂直攻撃敵モデルの初期化を行う
+*	@details	すばしっこくて卑怯な敵モデルクラスの初期化を行う
 *	@param	resources	共通リソース
 *	@return	なし
 */
-void VerticalAttackerModel::Initialize(CommonResources* resources)
+void CowardlyEnemyModel::Initialize(CommonResources* resources)
 {
 	// 共通リソースを設定
 	m_pCommonResources = resources;
@@ -50,7 +50,7 @@ void VerticalAttackerModel::Initialize(CommonResources* resources)
 	// シェーダーを作成
 	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pPixelShader.ReleaseAndGetAddressOf()));
 	// モデルマネージャーから垂直攻撃敵のモデルを取得
-	m_pBodyModel = m_pCommonResources->GetModelManager()->GetModel("VerticalAttacker");
+	m_pBodyModel = m_pCommonResources->GetModelManager()->GetModel("CowardlyEnemy");
 	// モデルマネージャーからダメージ顔モデルを取得
 	m_pFaceModelMap[IState::EnemyState::HIT] = m_pCommonResources->GetModelManager()->GetModel("EnemyDamage");
 	// モデルマネージャーから攻撃顔モデルを取得
@@ -69,7 +69,7 @@ void VerticalAttackerModel::Initialize(CommonResources* resources)
 *	@param	proj	プロジェクション行列
 *	@return なし
 */
-void VerticalAttackerModel::Render(ID3D11DeviceContext1* context,
+void CowardlyEnemyModel::Render(ID3D11DeviceContext1* context,
 	DirectX::DX11::CommonStates* states,
 	const DirectX::SimpleMath::Matrix& world,
 	const DirectX::SimpleMath::Matrix& view,

@@ -11,6 +11,7 @@ enum class EnemyType
 {
 	NORMAL,// 通常
 	VERTICAL_ATTACKER,// 速い弾を撃つ敵
+	COWARDLY_ENEMY,// すばしっこく卑怯な敵
 	BOSS,// ボス
 };
 // ボスのタイプ

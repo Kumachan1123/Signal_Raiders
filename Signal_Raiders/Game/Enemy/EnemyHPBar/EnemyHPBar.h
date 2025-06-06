@@ -20,7 +20,6 @@
 #include <Libraries/Microsoft/DebugDraw.h>
 // 自作ヘッダーファイル
 #include "Game/CommonResources.h"
-#include "Game/Enemy/Enemy.h"
 #include "Game/FPS_Camera/FPS_Camera.h"
 #include "Game/KumachiLib/KumachiLib.h"
 #include "Game/KumachiLib/CreateShader/CreateShader.h"
@@ -29,7 +28,6 @@
 //前方宣言
 class CommonResources;
 class PlayScene;
-class Enemy;
 
 // 敵HPバークラス
 class EnemyHPBar
