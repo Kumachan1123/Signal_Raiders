@@ -24,6 +24,8 @@
 #include "Game/Scene/SettingScene/SettingBar/SettingBar.h"
 #include "Game/Scene/SettingScene/SettingData/SettingData.h"
 #include "Game/MousePointer/MousePointer.h"
+#include "Game/Scene/GameEndChecker/GameEndChecker.h"
+#include "Game/KumachiLib/MyMouse/MyMouse.h"
 #include "Game/Interface/IMenuUI.h"
 #include "Game/Fade/Fade.h"
 #include "Game/Screen.h"
@@ -57,16 +59,14 @@ private:
 	// private関数
 	// 音量設定
 	void SetVolume();
-	// 設定バーの更新
-	void UpdateSettingBars(const UpdateContext& ctx);
 	// フェードとマウスの更新
 	void UpdateFadeAndMouse(const UpdateContext& ctx);
 	// 背景とフェードの更新
 	void UpdateBackgroundAndFade(float elapsedTime);
-	// マウスポインターの更新
-	void UpdateMousePointers(const UpdateContext& ctx);
 	// メニュー選択の処理
-	void HandleMenuSelection(const UpdateContext& ctx);
+	void HandleMenuSelection();
+	// ゲーム終了前の確認処理
+	void UpdateCheckGameEnd();
 private:
 	// private定数
 	// 音量の基準
@@ -89,18 +89,18 @@ private:
 	std::unique_ptr<SettingBar> m_pSettingBar;
 	// マウスポインター
 	std::unique_ptr<MousePointer> m_pMousePointer;
-	// 設定画面のUI
-	std::vector < std::unique_ptr<IMenuUI> >m_pUI;
 	// 設定データ
 	std::unique_ptr<SettingData> m_pSettingData;
+	// ゲーム終了前確認画面
+	std::unique_ptr<GameEndChecker> m_pGameEndChecker;
 	// BGMボリューム
 	float m_BGMvolume;
 	// SEボリューム
 	float m_SEvolume;
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
-	// フェードフラグ
-	bool m_isFade;
+	// 経過時間
+	float m_elapsedTime;
 	// 現在のシーンID
 	IScene::SceneID m_nowSceneID;
 };

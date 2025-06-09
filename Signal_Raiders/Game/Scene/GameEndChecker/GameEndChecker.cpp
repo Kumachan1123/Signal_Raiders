@@ -24,6 +24,7 @@ GameEndChecker::GameEndChecker()
 	, m_time{ 0.0f }// 経過時間
 	, m_hit{ false }// ヒットフラグ
 	, m_isEndGame{ false }// ゲームをやめるかどうか
+	, m_isGameEndCheck{ false }// このクラスの処理を行うかのフラグ
 	, m_SEVolume{ 0.0f }// SE音量
 	, m_isSEPlay{ false }// SE再生フラグ
 {
@@ -55,6 +56,12 @@ void GameEndChecker::Initialize(CommonResources* resources, int width, int heigh
 	m_windowWidth = width;
 	// ウィンドウ高さ
 	m_windowHeight = height;
+	// 「背景」を読み込む
+	Add("GameEndBack"
+		, Vector2(Screen::CENTER_X, Screen::CENTER_Y)
+		, Vector2(1.0f, 1.0f)
+		, KumachiLib::ANCHOR::MIDDLE_CENTER
+		, UIType::NON_SELECT);
 	// 「ゲームに戻る」を読み込む
 	Add("BackGame"
 		, Vector2(Screen::CENTER_X - 250, Screen::CENTER_Y + 250)
@@ -73,6 +80,7 @@ void GameEndChecker::Initialize(CommonResources* resources, int width, int heigh
 		, Vector2(1.0f, 1.0f)
 		, KumachiLib::ANCHOR::BOTTOM_RIGHT
 		, UIType::NON_SELECT);
+
 }
 /*
 *	@brief	更新
@@ -136,8 +144,15 @@ void GameEndChecker::Update(float elapsedTime)
 		}
 
 	}
-	//m_num = static_cast<SceneID>(m_menuIndex);
-// メニューアイテムの選択先を更新
+	// 選択不可能なアイテムの選択状態を更新
+	for (int i = 0; i < m_pNonSelectUI.size(); i++)
+	{
+		// スケールを取得
+		m_pNonSelectUI[i]->SetScale(m_pNonSelectUI[i]->GetSelectScale());
+		// 時間を加算
+		m_pNonSelectUI[i]->SetTime(m_pNonSelectUI[i]->GetTime() + elapsedTime);
+	}
+	// メニューアイテムの選択先を更新
 	for (int i = 0; i < m_pUI.size(); i++)
 	{
 		//  アイテムの選択状態を更新
@@ -150,14 +165,7 @@ void GameEndChecker::Update(float elapsedTime)
 		// アイテムの選択状態を更新
 		m_pUI[i]->SetTime(m_pUI[i]->GetTime() + elapsedTime);
 	}
-	// 選択不可能なアイテムの選択状態を更新
-	for (int i = 0; i < m_pGuide.size(); i++)
-	{
-		// スケールを取得
-		m_pGuide[i]->SetScale(m_pGuide[i]->GetSelectScale());
-		// 時間を加算
-		m_pGuide[i]->SetTime(m_pGuide[i]->GetTime() + elapsedTime);
-	}
+
 	// なにも選択されていない場合
 	if (m_menuIndex == INVALID_MENU_INDEX)
 	{
@@ -191,6 +199,8 @@ void GameEndChecker::Update(float elapsedTime)
 */
 void GameEndChecker::Render()
 {
+	// 選択不可能なアイテムを表示
+	for (unsigned int i = 0; i < m_pNonSelectUI.size(); i++)m_pNonSelectUI[i]->Render();
 	// 登録したUIの数ループ
 	for (unsigned int i = 0; i < m_pUI.size(); i++)
 	{
@@ -199,8 +209,7 @@ void GameEndChecker::Render()
 		// 実際に表示したいアイテム画像を表示
 		m_pUI[i]->Render();
 	}
-	// 選択不可能なアイテムを表示
-	for (unsigned int i = 0; i < m_pGuide.size(); i++)m_pGuide[i]->Render();
+
 #ifdef _DEBUG// デバッグモードの時のみ実行する
 	// デバッグ情報を表示する
 	auto debugString = m_pCommonResources->GetDebugString();
@@ -258,7 +267,7 @@ void GameEndChecker::Add(const std::string& key,
 	else // 選択できないUI
 	{
 		// 選択不可UIリストに追加する
-		m_pGuide.push_back(std::move(userInterface));
+		m_pNonSelectUI.push_back(std::move(userInterface));
 		// 処理を終える
 		return;
 	}

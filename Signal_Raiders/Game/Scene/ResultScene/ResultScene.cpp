@@ -20,6 +20,11 @@ ResultScene::ResultScene(IScene::SceneID sceneID)
 	, m_BGMvolume{ VOLUME }// BGM音量
 	, m_SEvolume{ VOLUME }// SE音量
 	, m_pFade{ nullptr }// フェードクラスのポインター
+	, m_elapsedTime{ 0.0f }// 経過時間
+	, m_pSettingData{ nullptr }// 設定データクラスのポインター
+	, m_pResult{}// リザルトクラスのポインター
+	, m_pGameEndChecker{ nullptr }// ゲーム終了前確認画面のポインター
+	, m_pResultMenu{ nullptr }// リザルトメニュークラスのポインター
 	, m_pBackGround{ nullptr }// 背景クラスのポインター
 	, m_nowSceneID{ sceneID }// 現在のシーンID
 	, m_stageNumber{ 0 }// ステージ番号
@@ -68,12 +73,12 @@ void ResultScene::Initialize(CommonResources* resources)
 	m_pResultMenu = std::make_unique<ResultMenu>();
 	// SEの音量を設定
 	m_pResultMenu->SetSEVolume(m_SEvolume);
-	// メニューを作成し、UIに登録
-	m_pUI.push_back(std::move(m_pResultMenu));
-	// マウスポインターを作成し、UIに登録
-	m_pUI.push_back(std::move(std::make_unique<MousePointer>()));
-	// UIの初期化
-	for (int it = 0; it < m_pUI.size(); ++it)m_pUI[it]->Initialize(m_pCommonResources, Screen::WIDTH, Screen::HEIGHT);
+	// リザルトメニューの初期化
+	m_pResultMenu->Initialize(m_pCommonResources, Screen::WIDTH, Screen::HEIGHT);
+	// マウスポインターUIを作成する
+	m_pMousePointer = std::make_unique<MousePointer>();
+	// マウスポインターUIを初期化する
+	m_pMousePointer->Initialize(m_pCommonResources, Screen::WIDTH, Screen::HEIGHT);
 	// 結果に応じて変わるテクスチャパスマップ
 	// ゲームオーバー
 	m_pResultTexturePathMap[IScene::SceneID::GAMEOVER] = L"Resources/Textures/GameOver.png";
@@ -85,6 +90,12 @@ void ResultScene::Initialize(CommonResources* resources)
 	m_pResult->SetSceneID(m_nowSceneID);
 	// 結果クラスの初期化
 	m_pResult->Create(pDR);
+	// ゲーム終了前確認オブジェクトを作成する
+	m_pGameEndChecker = std::make_unique<GameEndChecker>();
+	// ゲーム終了前確認にSEの音量を設定する
+	m_pGameEndChecker->SetSEVolume(m_SEvolume);
+	// ゲーム終了前確認を初期化する
+	m_pGameEndChecker->Initialize(m_pCommonResources, Screen::WIDTH, Screen::HEIGHT);
 	// シーン変更フラグを初期化する
 	m_isChangeScene = false;
 }
@@ -96,10 +107,12 @@ void ResultScene::Initialize(CommonResources* resources)
 */
 void ResultScene::Update(float elapsedTime)
 {
+	// フレーム時間を保存
+	m_elapsedTime = elapsedTime;
 	// オーディオマネージャーを更新する（サウンドの再生や状態の反映など）
 	m_pCommonResources->GetAudioManager()->Update();
-	// マウスの状態を追跡するトラッカーを取得する
-	auto& mtracker = m_pCommonResources->GetInputManager()->GetMouseTracker();
+	// マウスの状態を取得
+	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
 	// UIに渡す更新情報をまとめた構造体を準備する
 	UpdateContext ctx;
 	// 今回は弾の情報は使わないので0にしておく
@@ -110,31 +123,44 @@ void ResultScene::Update(float elapsedTime)
 	ctx.elapsedTime = elapsedTime;
 	// プレイヤーのHPも使わないので0にしておく
 	ctx.playerHP = 0;
-	// 登録されているUIすべてに対して更新処理を行う
-	for (int it = 0; it < m_pUI.size(); ++it)
+	// ゲーム終了前の確認処理
+	if (m_pGameEndChecker->GetIsGameEndCheck())// ゲーム終了前の確認が有効な場合
 	{
-		// UIを更新する
-		m_pUI[it]->Update(ctx);
-		// このUIが結果画面のメニューかどうかを確認する
-		auto pMenu = dynamic_cast<ResultMenu*>(m_pUI[it].get());
-		// メニューUIでなければスキップする
-		if (!pMenu) continue;
-		// 以下の条件がすべて満たされた場合にメニュー選択を処理する：
-		// ・フェードインが完了している
-		// ・マウスの左ボタンが押されている
-		// ・メニュー項目にマウスカーソルがヒットしている
-		if (m_pFade->GetState() == Fade::FadeState::FadeInEnd &&
-			mtracker->GetLastState().leftButton && pMenu->GetIsHit())
+		// ゲーム終了前の確認処理を行う
+		UpdateCheckGameEnd();
+	}
+	else// ゲーム終了前の確認が無効な場合
+	{
+		// キーボードの状態を取得する
+		auto& keyboardState = m_pCommonResources->GetInputManager()->GetKeyboardState();
+		//　ESCキーが押されたらゲーム修了確認を有効にする
+		if (keyboardState.Escape && !m_pGameEndChecker->GetIsGameEndCheck())
 		{
-			// 効果音を再生する
+			// ゲーム終了前の確認処理を有効化する
+			m_pGameEndChecker->SetIsGameEndCheck(true);
+			// ESCキーのSEを再生する
 			m_pCommonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);
-			// フェードアウトに切り替える
-			m_pFade->SetState(Fade::FadeState::FadeOut);
-			// 選択されたシーン番号を取得する
-			ResultMenu::SceneID id = pMenu->GetSceneNum();
-			// ステージセレクトが選ばれた場合はシーン番号を変更する
-			if (id == ResultMenu::SceneID::SELECT_STAGE) m_stageNumber = STAGE_SELECT;
 		}
+	}
+	// メニューの更新
+	m_pResultMenu->Update(ctx);
+	// マウスポインターの更新
+	m_pMousePointer->Update(ctx);
+	// 以下の条件がすべて満たされた場合にメニュー選択を処理する：
+	// ・フェードインが完了している
+	// ・マウスの左ボタンが押されている
+	// ・メニュー項目にマウスカーソルがヒットしている
+	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd &&
+		MyMouse::IsLeftMouseButtonPressed(mouseState) && m_pResultMenu->GetIsHit())
+	{
+		// 効果音を再生する
+		m_pCommonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);
+		// フェードアウトに切り替える
+		m_pFade->SetState(Fade::FadeState::FadeOut);
+		// 選択されたシーン番号を取得する
+		ResultMenu::SceneID id = m_pResultMenu->GetSceneNum();
+		// ステージセレクトが選ばれた場合はシーン番号を変更する
+		if (id == ResultMenu::SceneID::SELECT_STAGE) m_stageNumber = STAGE_SELECT;
 	}
 	// フェードアウトが完了していたら、シーン遷移フラグを立てる
 	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;
@@ -158,14 +184,25 @@ void ResultScene::Render()
 {
 	// 背景の描画
 	m_pBackGround->Render();
-	// メニューと結果を描画
-	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
+	// ゲーム終了前の確認処理が有効な場合
+	if (m_pGameEndChecker->GetIsGameEndCheck())
 	{
-		// 結果の描画
-		m_pResult->Render();
-		// UIの描画
-		for (int it = 0; it < m_pUI.size(); ++it)m_pUI[it]->Render();
+		// ゲーム終了前の確認画面を描画する
+		m_pGameEndChecker->Render();
 	}
+	else
+	{
+		// メニューと結果を描画
+		if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
+		{
+			// 結果の描画
+			m_pResult->Render();
+			// リザルトメニューの描画
+			m_pResultMenu->Render();
+		}
+	}
+	// マウスポインターの描画
+	m_pMousePointer->Render();
 	// フェードの描画
 	m_pFade->Render();
 }
@@ -178,6 +215,40 @@ void ResultScene::Render()
 void ResultScene::Finalize()
 {
 	// do nothing
+}
+/*
+*	@brief ゲーム終了前の確認処理
+*	@details ゲーム終了前の確認処理を行う
+*	@param なし
+*	@return なし
+*/
+void ResultScene::UpdateCheckGameEnd()
+{
+	// マウスの状態を取得する
+	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
+	// UIの更新に必要な情報をまとめた構造体
+	UpdateContext ctx{};
+	// 経過時間を渡す
+	ctx.elapsedTime = m_elapsedTime;
+	// ゲーム終了前の確認画面の更新
+	m_pGameEndChecker->Update(ctx);
+	// 左クリックされていて、UIにカーソルが当たっている場合
+	if (MyMouse::IsLeftMouseButtonPressed(mouseState) && m_pGameEndChecker->GetIsHit())
+	{
+		// SEの再生
+		m_pCommonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);
+		// ゲームをやめるかどうかのフラグを取得
+		if (m_pGameEndChecker->GetIsEndGame())// ゲームをやめる場合
+		{
+			// フェードアウトに移行
+			m_pFade->SetState(Fade::FadeState::FadeOut);
+		}
+		else// ゲームをやめない場合
+		{
+			// ゲーム終了前の確認フラグを無効化する
+			m_pGameEndChecker->SetIsGameEndCheck(false);
+		}
+	}
 }
 /*
 *	@brief シーン変更
@@ -194,28 +265,22 @@ IScene::SceneID ResultScene::GetNextSceneID() const
 		m_pCommonResources->GetAudioManager()->StopSound("ResultBGM");
 		// SE停止
 		m_pCommonResources->GetAudioManager()->StopSound("SE");
-		// 登録したUIの分だけ処理
-		for (int it = 0; it < m_pUI.size(); ++it)
+		// 終了フラグが立ってるならゲームを終了する
+		if (m_pGameEndChecker->GetIsEndGame())PostQuitMessage(0);
+		// 選択されたメニューのIDを取得して、シーンIDを返す
+		switch (m_pResultMenu->GetSceneNum())// 選択されたメニューのIDを取得
 		{
-			// メニューのポインターを取得
-			if (auto pMenu = dynamic_cast<ResultMenu*>(m_pUI[it].get()))
-			{
-				// 選択されたメニューのIDを取得して、シーンIDを返す
-				switch (pMenu->GetSceneNum())// 選択されたメニューのIDを取得
-				{
-				case ResultMenu::SceneID::REPLAY:// もう一回やるが選ばれたら
-					// 同じステージに戻る
-					return IScene::SceneID::PLAY;
-					break;
-				case ResultMenu::SceneID::SELECT_STAGE:// ステージを選ぶが選ばれたら
-					// ステージ選択に戻る
-					return IScene::SceneID::STAGESELECT;
-					break;
-				default:// それ以外の選択肢
-					// 何もしない
-					break;
-				}
-			}
+		case ResultMenu::SceneID::REPLAY:// もう一回やるが選ばれたら
+			// 同じステージに戻る
+			return IScene::SceneID::PLAY;
+			break;
+		case ResultMenu::SceneID::SELECT_STAGE:// ステージを選ぶが選ばれたら
+			// ステージ選択に戻る
+			return IScene::SceneID::STAGESELECT;
+			break;
+		default:// それ以外の選択肢
+			// 何もしない
+			break;
 		}
 	}
 	// シーン変更がない場合は何もしない

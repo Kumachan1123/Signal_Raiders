@@ -24,6 +24,8 @@
 #include "Game/Scene/ResultScene/ResultMenu/ResultMenu.h"
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/Scene/ResultScene/Result/Result.h"
+#include "Game/Scene/GameEndChecker/GameEndChecker.h"
+#include "Game/KumachiLib/MyMouse/MyMouse.h"
 #include "Game/MousePointer/MousePointer.h"
 #include "Game/Interface/IMenuUI.h"
 
@@ -57,6 +59,10 @@ public:
 	void Render() override;
 	// 終了
 	void Finalize() override;
+private:
+	// private関数
+	// ゲーム終了前の確認処理
+	void UpdateCheckGameEnd();
 public:
 	// 定数
 	// 音量の基準
@@ -73,12 +79,12 @@ private:
 	std::unique_ptr<MousePointer> m_pMousePointer;
 	// リザルトメニュー
 	std::unique_ptr<ResultMenu> m_pResultMenu;
-	// リザルトシーンのUI(メニュー、マウスカーソル）
-	std::vector<std::unique_ptr<IMenuUI>> m_pUI;
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
 	// 結果クラス
 	std::unique_ptr<Result> m_pResult;
+	// 終了前確認画面
+	std::unique_ptr<GameEndChecker> m_pGameEndChecker;
 	// 結果に応じて変わるテクスチャパスマップ
 	std::unordered_map<IScene::SceneID, const wchar_t*> m_pResultTexturePathMap;
 	// ステージ番号
@@ -93,5 +99,7 @@ private:
 	std::unique_ptr<BackGround> m_pBackGround;
 	// 現在のシーンID
 	IScene::SceneID m_nowSceneID;
+	// 経過時間
+	float m_elapsedTime;
 };
 #endif // RESULT_SCENE_DEFINED

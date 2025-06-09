@@ -146,9 +146,8 @@ void Game::Update(DX::StepTimer const& timer)
 {
 	// 経過時間を取得する
 	float elapsedTime = float(timer.GetElapsedSeconds());
-	m_inputManager->Update();// 入力マネージャを更新する
-	// キーボードステートを取得する
-	const auto& keyboardState = m_inputManager->GetKeyboardState();
+	// 入力マネージャを更新する
+	m_inputManager->Update();
 	// シーンマネージャを更新する
 	m_sceneManager->Update(elapsedTime);
 }

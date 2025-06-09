@@ -24,6 +24,8 @@
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
 #include "Game/Scene/StageSelectScene/Stage/StageSelect.h"
 #include "Game/MousePointer/MousePointer.h"
+#include "Game/Scene/GameEndChecker/GameEndChecker.h"
+#include "Game/KumachiLib/MyMouse/MyMouse.h"
 #include "Game/Interface/IMenuUI.h"
 
 // 前方宣言
@@ -57,6 +59,10 @@ public:
 	// 終了
 	void Finalize() override;
 private:
+	// private関数
+	// ゲーム終了前の確認処理
+	void UpdateCheckGameEnd();
+private:
 	// 定数
 	// 音量の基準
 	static const float VOLUME;
@@ -72,8 +78,8 @@ private:
 	std::unique_ptr<StageSelectMenu> m_pStageSelectMenu;
 	// マウスポインター
 	std::unique_ptr<MousePointer> m_pMousePointer;
-	// ステージ選択画面のUI(メニュー、マウスカーソル）
-	std::vector<std::unique_ptr<IMenuUI>> m_pUI;
+	// ゲーム終了確認クラス
+	std::unique_ptr<GameEndChecker> m_pGameEndChecker;
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
 	// 結果クラス
@@ -98,5 +104,7 @@ private:
 	IScene::SceneID m_nowSceneID;
 	// ステージ番号
 	int m_stageNumber;
+	// 経過時間
+	float m_elapsedTime;
 };
 #endif // STAGE_SELECT_SCENE_DEFINED

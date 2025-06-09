@@ -7,11 +7,12 @@
 #ifndef KUMACHILIB_DEFINED
 #define KUMACHILIB_DEFINED
 // 標準ライブラリ
-#include <SimpleMath.h>
 #include <cmath>
 #include <algorithm>
 #include <random>
 #include <type_traits> 
+// DirectX
+#include <SimpleMath.h>
 // 自作ヘッダーファイル
 #include "Game/Screen.h"
 
@@ -215,4 +216,8 @@ inline DirectX::SimpleMath::Vector3 CheckHitWall(DirectX::BoundingSphere A, cons
 	// 更新された位置を返す
 	return newPosition;
 }
+
+
+
+
 #endif // KUMACHILIB_DEFINED

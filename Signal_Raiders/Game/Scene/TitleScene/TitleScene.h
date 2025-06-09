@@ -19,6 +19,7 @@
 #include "Game/Scene/BackGround/BackGround.h"
 #include "Game/Scene/TitleLogo/TitleLogo.h"
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
+#include "Game/KumachiLib/MyMouse/MyMouse.h"
 #include "Game/Scene/TitleScene/TitleMenu/TitleMenu.h"
 #include "Game/Interface/IMenuUI.h"
 #include "Game/Scene/SettingScene/SettingBar/SettingBar.h"
@@ -91,8 +92,6 @@ private:
 	float m_SEvolume;
 	// 現在のシーンID
 	IScene::SceneID m_nowSceneID;
-	// ゲーム終了前確認処理のフラグ
-	bool m_isGameEndCheck;
 	// 経過時間
 	float m_elapsedTime;
 };

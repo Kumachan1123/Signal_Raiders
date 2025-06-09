@@ -16,13 +16,15 @@ const float SettingScene::VOLUME = 0.05f;
 SettingScene::SettingScene(IScene::SceneID sceneID)
 	: m_pCommonResources{}// 共通リソース
 	, m_isChangeScene{ false }// シーン変更フラグ
-	, m_isFade{ false }// フェードフラグ
 	, m_BGMvolume{ VOLUME }// BGM音量
 	, m_SEvolume{ VOLUME }// SE音量
 	, m_pDR{}// デバイスリソース
 	, m_pFade{}// フェードクラスのポインター
 	, m_fadeState{ }// フェードの状態
+	, m_elapsedTime{ 0.0f }// 経過時間
 	, m_pBackGround{ nullptr }// 背景クラスのポインター
+	, m_pMousePointer{ nullptr }// マウスポインタークラスのポインター
+	, m_pGameEndChecker{ nullptr }// ゲーム終了前確認画面のポインター
 	, m_nowSceneID{ sceneID }// 現在のシーンID
 	, m_pSettingMenu{}// メニュークラスのポインター
 	, m_pSettingBar{}// 設定バークラスのポインター
@@ -75,21 +77,24 @@ void SettingScene::Initialize(CommonResources* resources)
 	m_pSettingMenu = std::make_unique<SettingMenu>();
 	// メニューに対してSEの音量を適用する
 	m_pSettingMenu->SetSEVolume(m_SEvolume);
+	// メニューの初期化を行う
+	m_pSettingMenu->Initialize(m_pCommonResources, Screen::WIDTH, Screen::HEIGHT);
 	// マウスカーソル用のポインターUIを作成する
 	m_pMousePointer = std::make_unique<MousePointer>();
+	// マウスポインターの初期化を行う
+	m_pMousePointer->Initialize(m_pCommonResources, Screen::WIDTH, Screen::HEIGHT);
 	// 音量バーなどのUIを含むセッティングバーを作成する
 	m_pSettingBar = std::make_unique<SettingBar>();
 	// セッティングバーにセッティングメニューを関連付ける
 	m_pSettingBar->SetSettingMenu(m_pSettingMenu.get());
-	// セッティングメニューをUIリストに追加する
-	m_pUI.push_back(std::move(m_pSettingMenu));
-	// セッティングバーをUIリストに追加する
-	m_pUI.push_back(std::move(m_pSettingBar));
-	// マウスポインターをUIリストに追加する
-	m_pUI.push_back(std::move(m_pMousePointer));
-	// UIすべてに対して初期化処理を行う
-	for (int it = 0; it < m_pUI.size(); ++it)
-		m_pUI[it]->Initialize(m_pCommonResources, Screen::WIDTH, Screen::HEIGHT);
+	// セッティングバーの初期化を行う
+	m_pSettingBar->Initialize(m_pCommonResources, Screen::WIDTH, Screen::HEIGHT);
+	// ゲーム終了前確認のためのクラスを生成する
+	m_pGameEndChecker = std::make_unique<GameEndChecker>();
+	// ゲーム終了前確認にSEの音量を設定する
+	m_pGameEndChecker->SetSEVolume(m_SEvolume);
+	// ゲーム終了前確認の初期化を行う
+	m_pGameEndChecker->Initialize(m_pCommonResources, Screen::WIDTH, Screen::HEIGHT);
 }
 /*
 *	@brief 更新
@@ -99,6 +104,8 @@ void SettingScene::Initialize(CommonResources* resources)
 */
 void SettingScene::Update(float elapsedTime)
 {
+	// フレーム時間を保存する
+	m_elapsedTime = elapsedTime;
 	// 各種UIに渡す情報をまとめた構造体
 	UpdateContext ctx;
 	// 使わない
@@ -109,8 +116,29 @@ void SettingScene::Update(float elapsedTime)
 	ctx.elapsedTime = elapsedTime;
 	//使わない
 	ctx.playerHP = 0;
-	// メニューの更新
-	UpdateSettingBars(ctx);
+	// ゲーム終了前の確認処理
+	if (m_pGameEndChecker->GetIsGameEndCheck())// ゲーム終了前の確認が有効な場合
+	{
+		// ゲーム終了前の確認処理を行う
+		UpdateCheckGameEnd();
+	}
+	else// ゲーム終了前の確認が無効な場合
+	{
+		// キーボードの状態を取得する
+		auto& keyboardState = m_pCommonResources->GetInputManager()->GetKeyboardState();
+		//　ESCキーが押されたらゲーム修了確認を有効にする
+		if (keyboardState.Escape && !m_pGameEndChecker->GetIsGameEndCheck())
+		{
+			// ゲーム終了前の確認処理を有効化する
+			m_pGameEndChecker->SetIsGameEndCheck(true);
+			// ESCキーのSEを再生する
+			m_pCommonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);
+		}
+	}
+	// 設定バーの更新
+	m_pSettingBar->Update(ctx);
+	// 設定メニューの更新
+	m_pSettingMenu->Update(ctx);
 	// フェード状態とマウスの更新
 	UpdateFadeAndMouse(ctx);
 	// 背景とフェードの更新
@@ -126,12 +154,26 @@ void SettingScene::Render()
 {
 	// 背景の描画
 	m_pBackGround->Render();
-	// フェードインが終わったら
-	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
+	// ゲーム終了前の確認処理が有効な場合
+	if (m_pGameEndChecker->GetIsGameEndCheck())
 	{
-		// UIの描画
-		for (int it = 0; it < m_pUI.size(); ++it)m_pUI[it]->Render();
+		// ゲーム終了前の確認画面を描画する
+		m_pGameEndChecker->Render();
 	}
+	else// ゲーム終了前の確認処理が無効な場合
+	{
+		// フェードインが終わったら
+		if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
+		{
+			// 各種UIの描画
+			// 設定メニューの描画
+			m_pSettingMenu->Render();
+			// 設定バーの描画
+			m_pSettingBar->Render();
+		}
+	}
+	// マウスカーソルの描画
+	m_pMousePointer->Render();
 	// フェードの描画
 	m_pFade->Render();
 }
@@ -154,7 +196,6 @@ void SettingScene::Finalize()
 */
 IScene::SceneID SettingScene::GetNextSceneID() const
 {
-
 	// シーン変更がある場合
 	if (m_isChangeScene)
 	{
@@ -164,6 +205,8 @@ IScene::SceneID SettingScene::GetNextSceneID() const
 		m_pCommonResources->GetAudioManager()->StopSound("SE");
 		// 選択音の停止
 		m_pCommonResources->GetAudioManager()->StopSound("Select");
+		// 終了フラグが立ってるならゲームを終了する
+		if (m_pGameEndChecker->GetIsEndGame())PostQuitMessage(0);
 		// タイトルシーンに移行
 		return IScene::SceneID::TITLE;
 	}
@@ -178,60 +221,21 @@ IScene::SceneID SettingScene::GetNextSceneID() const
 */
 void SettingScene::SetVolume()
 {
-	// UIの数だけ処理
-	for (int it = 0; it < m_pUI.size(); ++it)
-	{
-		// 設定バーのポインターを取得
-		if (auto pSettingBar = dynamic_cast<SettingBar*>(m_pUI[it].get()))
-		{
-			// 音量の取得(10分の1で割合を取得)
-			// BGM
-			float BGMvolume = static_cast<float>(pSettingBar->GetSetting(0)) * 0.1f;
-			// SE
-			float SEvolume = static_cast<float>(pSettingBar->GetSetting(1)) * 0.1f;
-			// 設定の変更
-			// BGM
-			m_pSettingData->SetBGMVolume(pSettingBar->GetSetting(0));
-			// SE
-			m_pSettingData->SetSEVolume(pSettingBar->GetSetting(1));
-			// 音量の設定
-			//	BGM音量
-			m_BGMvolume = VOLUME * BGMvolume;
-			// SE音量
-			m_SEvolume = VOLUME * SEvolume;
-			return;
-		}
-	}
-}
-/*
-*	@brief 設定バーの更新
-*	@details 設定バーの更新を行う
-*	@param ctx 更新情報
-*	@return なし
-*/
-void SettingScene::UpdateSettingBars(const UpdateContext& ctx)
-{
-	// SettingMenuをリストアップ
-	std::vector<SettingMenu*> settingMenus;
-	// UIの数だけ繰り返す
-	for (auto& settingMenu : m_pUI)
-	{
-		// SettingMenuのポインターを取得し、成功したら登録
-		if (auto pSettingMenu = dynamic_cast<SettingMenu*>(settingMenu.get()))settingMenus.push_back(pSettingMenu);
-	}
-	// SettingBarをリストアップし、メニュー情報をセット
-	for (auto& settingBar : m_pUI)
-	{
-		// SettingBarのポインターを取得
-		if (auto pSettingBar = dynamic_cast<SettingBar*>(settingBar.get()))
-		{
-			// SettingMenuの数だけ繰り返し、メニューのインデックスを取得
-			for (auto& menu : settingMenus)
-				pSettingBar->SetStateIDNum(static_cast<SettingMenu::SettingID>(menu->GetMenuIndex()));
-		}
-		// UIの更新
-		settingBar->Update(ctx);
-	}
+	// 音量の取得(10分の1で割合を取得)
+	// BGM
+	float BGMvolume = static_cast<float>(m_pSettingBar->GetSetting(0)) * 0.1f;
+	// SE
+	float SEvolume = static_cast<float>(m_pSettingBar->GetSetting(1)) * 0.1f;
+	// 設定の変更
+	// BGM
+	m_pSettingData->SetBGMVolume(m_pSettingBar->GetSetting(0));
+	// SE
+	m_pSettingData->SetSEVolume(m_pSettingBar->GetSetting(1));
+	// 音量の設定
+	//	BGM音量
+	m_BGMvolume = VOLUME * BGMvolume;
+	// SE音量
+	m_SEvolume = VOLUME * SEvolume;
 }
 /*
 *	@brief フェードとマウスの更新
@@ -243,21 +247,18 @@ void SettingScene::UpdateFadeAndMouse(const UpdateContext& ctx)
 {
 	// オーディオマネージャーの更新処理
 	m_pCommonResources->GetAudioManager()->Update();
-	// マウスのトラッカーを取得する
-	auto& mtracker = m_pCommonResources->GetInputManager()->GetMouseTracker();
+	// マウスの状態を取得
+	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
 	// フェードの状態を確認し、フェードインが完了していない場合は何もしない
 	if (m_pFade->GetState() != Fade::FadeState::FadeInEnd)return;
 	// 左クリックされたら
-	if (mtracker->GetLastState().leftButton)
+	if (MyMouse::IsLeftMouseButtonPressed(mouseState))
 	{
 		// メニュー選択の処理を行う
-		HandleMenuSelection(ctx);
+		HandleMenuSelection();
 	}
-	else// 左クリックされていない場合
-	{
-		// マウスポインターの更新
-		UpdateMousePointers(ctx);
-	}
+	// マウスポインターの更新を行う
+	m_pMousePointer->Update(ctx);
 }
 /*
 *	@brief 背景とフェードの更新
@@ -277,53 +278,60 @@ void SettingScene::UpdateBackgroundAndFade(float elapsedTime)
 	m_pFade->Update(elapsedTime);
 }
 /*
-*	@brief マウスポインターの更新
-*	@details マウスポインターの更新を行う
-*	@param ctx 更新情報
-*	@return なし
-*/
-void SettingScene::UpdateMousePointers(const UpdateContext& ctx)
-{
-	// UIの数だけ繰り返す
-	for (int it = 0; it < m_pUI.size(); ++it)
-	{
-		// マウスポインターのポインターを取得
-		if (auto pMousePointer = dynamic_cast<MousePointer*>(m_pUI[it].get()))
-		{
-			// マウスポインターの更新
-			pMousePointer->Update(ctx);
-		}
-	}
-}
-/*
 *	@brief メニュー選択の処理
 *	@details メニュー選択の処理を行う
-*	@param ctx 更新情報
+*	@param なし
 *	@return なし
 */
-void SettingScene::HandleMenuSelection(const UpdateContext& ctx)
+void SettingScene::HandleMenuSelection()
 {
-	// UIの数だけ繰り返す
-	for (int it = 0; it < m_pUI.size(); ++it)
+	// 選択されたメニューのIDを取得
+	auto selectID = m_pSettingMenu->GetSelectIDNum();
+	// 「終わる」か「適用」が選ばれれば
+	if (selectID == SettingMenu::SelectID::END ||
+		selectID == SettingMenu::SelectID::APPLY)
 	{
-		// SettingMenuのポインターを取得		
-		if (auto pSettingMenu = dynamic_cast<SettingMenu*>(m_pUI[it].get()))
+		// SEの再生
+		m_pCommonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);
+		// フェードアウトに移行
+		m_pFade->SetState(Fade::FadeState::FadeOut);
+		// もう他のUIは見なくていいのでこの処理を終える
+		return;
+	}
+
+}
+/*
+*	@brief ゲーム終了前の確認処理
+*	@details ゲーム終了前の確認処理を行う
+*	@param なし
+*	@return なし
+*/
+void SettingScene::UpdateCheckGameEnd()
+{
+	// マウスの状態を取得
+	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
+
+	// UIの更新に必要な情報をまとめた構造体
+	UpdateContext ctx{};
+	// 経過時間を渡す
+	ctx.elapsedTime = m_elapsedTime;
+	// ゲーム終了前の確認画面の更新
+	m_pGameEndChecker->Update(ctx);
+	// 左クリックされていて、UIにカーソルが当たっている場合
+	if (MyMouse::IsLeftMouseButtonPressed(mouseState) && m_pGameEndChecker->GetIsHit())
+	{
+		// SEの再生
+		m_pCommonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);
+		// ゲームをやめるかどうかのフラグを取得
+		if (m_pGameEndChecker->GetIsEndGame())// ゲームをやめる場合
 		{
-			// 選択されたメニューのIDを取得
-			auto selectID = pSettingMenu->GetSelectIDNum();
-			// 「終わる」か「適用」が選ばれれば
-			if (selectID == SettingMenu::SelectID::END ||
-				selectID == SettingMenu::SelectID::APPLY)
-			{
-				// SEの再生
-				m_pCommonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);
-				// フェードアウトに移行
-				m_pFade->SetState(Fade::FadeState::FadeOut);
-				// もう他のUIは見なくていいのでこの処理を終える
-				return;
-			}
-			// マウスポインターの更新
-			UpdateMousePointers(ctx);
+			// フェードアウトに移行
+			m_pFade->SetState(Fade::FadeState::FadeOut);
+		}
+		else// ゲームをやめない場合
+		{
+			// ゲーム終了前の確認フラグを無効化する
+			m_pGameEndChecker->SetIsGameEndCheck(false);
 		}
 	}
 }

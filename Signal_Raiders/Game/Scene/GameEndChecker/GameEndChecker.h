@@ -44,6 +44,10 @@ public:
 	bool GetIsEndGame() const { return m_isEndGame; }
 	// ゲームをやめるかどうか設定
 	void SetIsEndGame(bool isEndGame) { m_isEndGame = isEndGame; }
+	// このクラスの処理を行うか取得
+	bool GetIsGameEndCheck() const { return m_isGameEndCheck; }
+	// このクラスの処理を行うか設定
+	void SetIsGameEndCheck(bool isGameEndCheck) { m_isGameEndCheck = isGameEndCheck; }
 	// UIにヒットしたかどうか取得
 	bool GetIsHit()const { return m_hit; }
 	// UIにヒットしたかどうか設定
@@ -87,7 +91,7 @@ private:
 	// 選択可能UI
 	std::vector<std::unique_ptr<UI>> m_pUI;
 	// 選択不可能UI
-	std::vector<std::unique_ptr<UI>> m_pGuide;
+	std::vector<std::unique_ptr<UI>> m_pNonSelectUI;
 	// 選択中のUIに表示する画像
 	std::vector<std::unique_ptr<UI>> m_pSelect;
 	// 選択中のUIに表示する画像のパス
@@ -106,5 +110,7 @@ private:
 	float m_SEVolume;
 	// 再生フラグ
 	bool m_isSEPlay;
+	// このクラスの処理を行うかのフラグ
+	bool m_isGameEndCheck;
 };
 #endif // GAMEENDCHECKER_DEFINED_DEFINED

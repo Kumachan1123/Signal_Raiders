@@ -22,7 +22,6 @@ extern void ExitGame() noexcept;
 TitleScene::TitleScene(IScene::SceneID sceneID)
 	: m_pCommonResources{}// 共通リソース
 	, m_isChangeScene{ false }// シーン変更フラグ
-	, m_isGameEndCheck{ false }// ゲーム終了確認フラグ
 	, m_pDR{}// デバイスリソース
 	, m_pFade{}// フェード
 	, m_fadeState{}// フェード状態
@@ -96,12 +95,6 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_pGameEndChecker->SetSEVolume(m_SEvolume);
 	// ゲーム終了前確認を初期化する
 	m_pGameEndChecker->Initialize(m_pCommonResources, Screen::WIDTH, Screen::HEIGHT);
-	//// タイトルメニューをUIリストに追加する
-	//m_pUI.push_back(std::move(m_pTitleMenu));
-	//// マウスポインターUIを作成してUIリストに追加する
-	//m_pUI.push_back(std::move(std::make_unique<MousePointer>()));
-	//// UIリストの各UIを一括で初期化する
-	//for (int it = 0; it < m_pUI.size(); ++it)m_pUI[it]->Initialize(m_pCommonResources, Screen::WIDTH, Screen::HEIGHT);
 }
 /*
 *	@brief 更新する
@@ -115,24 +108,26 @@ void TitleScene::Update(float elapsedTime)
 	m_elapsedTime = elapsedTime;
 	// オーディオマネージャーの更新処理
 	m_pCommonResources->GetAudioManager()->Update();
-	// マウスのトラッカーを取得する
-	auto& mtracker = m_pCommonResources->GetInputManager()->GetMouseTracker();
+	// マウスの状態を取得する
+	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
 	// キーボードの状態を取得する
 	auto& keyboardState = m_pCommonResources->GetInputManager()->GetKeyboardState();
 	//　ESCキーが押されたらゲーム修了確認を有効にする
-	if (keyboardState.Escape && !m_isGameEndCheck)
+	if (keyboardState.Escape && !m_pGameEndChecker->GetIsGameEndCheck())
 	{
 		// ゲーム終了前の確認処理を有効化する
-		m_isGameEndCheck = true;
+		m_pGameEndChecker->SetIsGameEndCheck(true);
 		// ESCキーのSEを再生する
 		m_pCommonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);
+		// 次のシーンIDをENDに設定する
+		m_pTitleMenu->SetSceneNum(TitleMenu::SceneID::END);
 	}
 	// UIの更新に必要な情報をまとめた構造体
 	UpdateContext ctx{};
 	// フレーム時間を代入
 	ctx.elapsedTime = elapsedTime;
 	// ゲーム終了前の確認処理
-	if (m_isGameEndCheck)
+	if (m_pGameEndChecker->GetIsGameEndCheck())
 	{
 		// ゲーム終了前の確認処理を行う
 		UpdateCheckGameEnd();
@@ -145,11 +140,10 @@ void TitleScene::Update(float elapsedTime)
 			// メニューの更新を行う
 			m_pTitleMenu->Update(ctx);
 			// 左クリックされていて、UIにカーソルが当たっている場合
-			if (mtracker->GetLastState().leftButton && m_pTitleMenu->GetIsHit())
+			if (MyMouse::IsLeftMouseButtonPressed(mouseState) && m_pTitleMenu->GetIsHit())
 			{
 				// SEの再生
 				m_pCommonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);
-
 				// 選択されたメニューのシーンIDを取得
 				if (m_pTitleMenu->GetSceneNum() != TitleMenu::SceneID::END)// 終了以外なら
 				{
@@ -158,8 +152,8 @@ void TitleScene::Update(float elapsedTime)
 				}
 				else// 終了なら
 				{
-					// 終了前処理を有効化する
-					m_isGameEndCheck = true;
+					// ゲーム終了前の確認処理を有効化する
+					m_pGameEndChecker->SetIsGameEndCheck(true);
 				}
 			}
 		}
@@ -190,11 +184,8 @@ void TitleScene::Render()
 	using namespace DirectX::SimpleMath;
 	// 背景の描画
 	m_pBackGround->Render();
-	// タイトルロゴの描画
-	m_pTitleLogo->Render();
-
 	// ゲーム終了前の確認処理が有効な場合
-	if (m_isGameEndCheck)
+	if (m_pGameEndChecker->GetIsGameEndCheck())
 	{
 		// ゲーム終了前の確認画面を描画する
 		m_pGameEndChecker->Render();
@@ -204,6 +195,8 @@ void TitleScene::Render()
 		// フェードインが終了したらUIを描画する
 		if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
 		{
+			// タイトルロゴの描画
+			m_pTitleLogo->Render();
 			// タイトルメニューの描画
 			m_pTitleMenu->Render();
 		}
@@ -221,6 +214,8 @@ void TitleScene::Render()
 	Vector2 pos = Vector2(static_cast<float>(mousestate.x), static_cast<float>(mousestate.y));
 	// マウス座標を表示する
 	debugString->AddString("MouseX:%f  MouseY:%f", pos.x, pos.y);
+	// 左クリックの状態を表示する	
+	debugString->AddString("LeftButton:%s", MyMouse::IsLeftMouseButtonPressed(mousestate) ? "true" : "false");
 #endif
 }
 /*
@@ -276,8 +271,8 @@ IScene::SceneID TitleScene::GetNextSceneID() const
 */
 void TitleScene::UpdateCheckGameEnd()
 {
-	// マウスのトラッカーを取得する
-	auto& mtracker = m_pCommonResources->GetInputManager()->GetMouseTracker();
+	// マウスステートを取得する
+	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
 	// UIの更新に必要な情報をまとめた構造体
 	UpdateContext ctx{};
 	// 経過時間を渡す
@@ -285,7 +280,7 @@ void TitleScene::UpdateCheckGameEnd()
 	// ゲーム終了前の確認画面の更新
 	m_pGameEndChecker->Update(ctx);
 	// 左クリックされていて、UIにカーソルが当たっている場合
-	if (mtracker->GetLastState().leftButton && m_pGameEndChecker->GetIsHit())
+	if (MyMouse::IsLeftMouseButtonPressed(mouseState) && m_pGameEndChecker->GetIsHit())
 	{
 		// SEの再生
 		m_pCommonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);
@@ -298,7 +293,7 @@ void TitleScene::UpdateCheckGameEnd()
 		else// ゲームをやめない場合
 		{
 			// ゲーム終了前の確認フラグを無効化する
-			m_isGameEndCheck = false;
+			m_pGameEndChecker->SetIsGameEndCheck(false);
 		}
 	}
 }
