@@ -19,7 +19,6 @@
 #include <Libraries/MyLib/DebugString.h>
 #include <Libraries/Microsoft/DebugDraw.h> 
 #include <Libraries/MyLib/InputManager.h>
-#include "Libraries/MyLib/GridFloor.h"
 // 自作ヘッダーファイル
 #include "Game/Screen.h"
 #include "Game/CommonResources.h"
@@ -45,6 +44,9 @@
 #include "Game/Effect/Effect.h"
 #include "Game/Fade/Fade.h"
 #include "Game/KumachiLib/AudioManager/AudioManager.h"
+#include "Game/KumachiLib/MyMouse/MyMouse.h"
+#include "Game/MousePointer/MousePointer.h"
+#include "Game/Scene/GameEndChecker/GameEndChecker.h"
 #include "Game/Radar/Radar.h"
 #include "Game/KumachiLib/Bloom/Bloom.h"
 #include "Game/Interface/IPlayUI.h"
@@ -76,6 +78,12 @@ public:
 	void Render() override;
 	// 終了
 	void Finalize() override;
+private:
+	// private関数
+	// ゲームの更新処理
+	void UpdateGame(float elapsedTime);
+	// ゲームを終了する前の確認処理
+	void UpdateCheckGameEnd(float elapsedTime);
 public:
 	// 定数
 	// 音量の基準
@@ -136,6 +144,10 @@ private:
 	std::unique_ptr<Fade> m_pFade;
 	// 設定データ
 	std::unique_ptr<SettingData> m_pSettingData;
+	// マウスカーソル
+	std::unique_ptr<MousePointer> m_pMousePointer;
+	// ゲーム終了前確認画面
+	std::unique_ptr<GameEndChecker> m_pGameEndChecker;
 	// ブルーム
 	Bloom* m_pBloom;
 	// フェードの状態

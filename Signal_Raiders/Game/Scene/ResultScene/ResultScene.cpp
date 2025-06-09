@@ -114,7 +114,7 @@ void ResultScene::Update(float elapsedTime)
 	// マウスの状態を取得
 	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
 	// UIに渡す更新情報をまとめた構造体を準備する
-	UpdateContext ctx;
+	UpdateContext ctx{};
 	// 今回は弾の情報は使わないので0にしておく
 	ctx.bulletPoint = 0;
 	// 今回はダッシュのスタミナも使わないので0にしておく
@@ -133,7 +133,7 @@ void ResultScene::Update(float elapsedTime)
 	{
 		// キーボードの状態を取得する
 		auto& keyboardState = m_pCommonResources->GetInputManager()->GetKeyboardState();
-		//　ESCキーが押されたらゲーム修了確認を有効にする
+		//　ESCキーが押されたらゲーム終了確認を有効にする
 		if (keyboardState.Escape && !m_pGameEndChecker->GetIsGameEndCheck())
 		{
 			// ゲーム終了前の確認処理を有効化する
@@ -190,7 +190,7 @@ void ResultScene::Render()
 		// ゲーム終了前の確認画面を描画する
 		m_pGameEndChecker->Render();
 	}
-	else
+	else// ゲーム終了前の確認処理が無効な場合
 	{
 		// メニューと結果を描画
 		if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)

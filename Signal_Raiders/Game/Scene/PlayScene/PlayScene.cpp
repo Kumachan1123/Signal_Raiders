@@ -152,6 +152,14 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pBossAppear->SetSEVolume(m_SEvolume);
 	// ブルームエフェクトのポストプロセス生成
 	m_pBloom->CreatePostProcess(resources);
+	// マウスカーソルの生成
+	m_pMousePointer = std::make_unique<MousePointer>();
+	// マウスカーソルの初期化
+	m_pMousePointer->Initialize(m_pCommonResources, Screen::WIDTH, Screen::HEIGHT);
+	// ゲーム終了前確認画面を生成
+	m_pGameEndChecker = std::make_unique<GameEndChecker>();
+	// ゲーム終了前確認画面を初期化
+	m_pGameEndChecker->Initialize(m_pCommonResources, Screen::WIDTH, Screen::HEIGHT);
 }
 /*
 *	@brief 更新する
@@ -161,12 +169,147 @@ void PlayScene::Initialize(CommonResources* resources)
 */
 void PlayScene::Update(float elapsedTime)
 {
-	// 経過時間を加算する
-	m_time += elapsedTime;
+
 	// オーディオマネージャーの更新
 	m_pCommonResources->GetAudioManager()->Update();
 	// BGMを再生する
 	m_pCommonResources->GetAudioManager()->PlaySound("PlayBGM", m_BGMvolume);
+	// ゲーム終了前の確認が有効な場合
+	if (m_pGameEndChecker->GetIsGameEndCheck())
+	{
+		// ゲーム終了前の確認処理を行う
+		UpdateCheckGameEnd(elapsedTime);
+		// UIに渡す更新情報をまとめた構造体を準備する
+		UpdateContext ctx{};
+		ctx.elapsedTime = elapsedTime;
+		// マウスポインターを更新する
+		m_pMousePointer->Update(ctx);
+	}
+	else// ゲーム終了前の確認が無効な場合
+	{
+		// キーボードの状態を取得する
+		auto& keyboardState = m_pCommonResources->GetInputManager()->GetKeyboardState();
+		//　ESCキーが押されたらゲーム終了確認を有効にする
+		if (keyboardState.Escape && !m_pGameEndChecker->GetIsGameEndCheck())
+		{
+			// ゲーム終了前の確認処理を有効化する
+			m_pGameEndChecker->SetIsGameEndCheck(true);
+			// ESCキーのSEを再生する
+			m_pCommonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);
+		}
+		// ゲームを更新する
+		UpdateGame(elapsedTime);
+	}
+	// 画面遷移フェード処理
+	m_pFade->Update(elapsedTime);
+	// フェードアウトが終了したらシーン変更を可能にする
+	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)m_isChangeScene = true;
+}
+/*
+*	@brief 描画する
+*	@details プレイシーンクラスの描画
+*	@param なし
+*	@return なし
+*/
+void PlayScene::Render()
+{
+	using namespace DirectX::SimpleMath;
+
+	// カメラからビュー行列を取得する
+	Matrix view = m_pPlayer->GetCamera()->GetViewMatrix();
+	// カメラからプロジェクション行列を取得する
+	Matrix projection = m_pPlayer->GetCamera()->GetProjectionMatrix();
+	// 天球のワールド行列(サイズを10倍してプレイヤーを中心地とする)
+	Matrix skyWorld = Matrix::Identity
+		* Matrix::CreateScale(10.0f)
+		* Matrix::CreateTranslation(m_pPlayer->GetPlayerController()->GetPlayerPosition());
+	// ワールド行列を初期化する
+	Matrix world = Matrix::Identity;
+	// オフスクリーンにオブジェクトを描画する
+	m_pBloom->ChangeOffScreenRT();
+	// 天球描画
+	m_pSky->Render(view, projection, skyWorld);
+	// 地面描画
+	m_pStage->Render(view, projection, world);
+	// 壁描画
+	m_pWall->Render(view, projection);
+	// 敵を描画する
+	m_pEnemyManager->Render();
+	// プレイヤーを描画する
+	m_pPlayer->Render();
+	// 弾を描画する
+	m_pBulletManager->Render();
+	// ブルームエフェクトをかける
+	m_pBloom->PostProcess();
+	// ゲーム終了前の確認処理が有効な場合
+	if (m_pGameEndChecker->GetIsGameEndCheck())
+	{
+		// ゲーム終了前の確認画面を描画する
+		m_pGameEndChecker->Render();
+		// マウスポインターを描画する
+		m_pMousePointer->Render();
+	}
+	else// ゲーム終了前の確認処理が無効な場合
+	{
+		// ゲーム開始プレイシーンに切り替えてから5秒間は猶予時間	
+		if (m_time >= PlayScene::GAME_START_TIME)
+		{
+			// HPが10以下で危機状態描画
+			if (m_pPlayer->GetPlayerHP() <= 10.0f)m_pCrisis->Render();
+			// UIを描画する
+			for (int it = 0; it < m_pPlayerUI.size(); ++it)m_pPlayerUI[it]->Render();
+			// 敵カウンターを描画する
+			m_pEnemyCounter->Render();
+			// レーダーを描画する
+			m_pRadar->Render();
+			// ボス登場演出が有効な場合、更新する
+			if (m_pEnemyManager->GetIsBossAppear() == true)m_pBossAppear->Render();
+		}
+		else // ゲーム開始から5秒間
+		{
+			// 指示画像を表示
+			m_pGoal->Render();
+			// Wi-Fiローディングを表示
+			m_pWifiLoading->Render();
+		}
+	}
+
+	// フェードの描画
+	m_pFade->Render();
+#ifdef _DEBUG// デバッグモードでのみ実行
+	// デバッグ情報を表示する
+	auto debugString = m_pCommonResources->GetDebugString();
+	// 接続しているWi-Fiの電波強度
+	debugString->AddString("Power:%i", m_pEnemyManager->GetWifi()->GetCurrentWifiSignalQuality());
+	// 接続しているWi-FiのSSIDの長さ
+	debugString->AddString("SSID:%i", m_pEnemyManager->GetWifi()->GetCurrentWifiSSIDLength());
+	// プレイヤーHP
+	debugString->AddString("HP:%f", m_pPlayer->GetPlayerHP());
+	// プレイヤーHPの最大値
+	debugString->AddString("MAXHP:%f", m_pPlayer->GetMaxPlayerHP());
+#endif
+}
+/*
+*	@brief 終了する
+*	@details プレイシーンクラスの終了
+*	@param なし
+*	@return なし
+*/
+void PlayScene::Finalize()
+{
+	// 空を解放する
+	m_pSky.reset();
+}
+/*
+*	@brief ゲームの更新
+*	@details ゲームの更新処理を行う
+*	@param elapsedTime 経過時間
+*	@return なし
+*/
+void PlayScene::UpdateGame(float elapsedTime)
+{
+	// 経過時間を加算する
+	m_time += elapsedTime;
 	// カメラが向いている方向を取得する
 	DirectX::SimpleMath::Vector3 cameraDirection = m_pPlayer->GetCamera()->GetDirection();
 	// 壁の更新
@@ -176,7 +319,7 @@ void PlayScene::Update(float elapsedTime)
 	// プレイヤーの更新
 	m_pPlayer->Update(elapsedTime);
 	// 各種UIに渡す情報をまとめた構造体
-	UpdateContext ctx;
+	UpdateContext ctx{};
 	// 経過時間
 	ctx.elapsedTime = elapsedTime;
 	// ダッシュ時間
@@ -241,94 +384,42 @@ void PlayScene::Update(float elapsedTime)
 		// ボス登場演出を更新する
 		if (m_pEnemyManager->GetIsBossAppear() == true)m_pBossAppear->Update(elapsedTime);
 	}
-	// 画面遷移フェード処理
-	m_pFade->Update(elapsedTime);
-	// フェードアウトが終了したらシーン変更を可能にする
-	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)m_isChangeScene = true;
 }
 /*
-*	@brief 描画する
-*	@details プレイシーンクラスの描画
-*	@param なし
+*	@brief ゲーム終了前の確認処理
+*	@details ゲーム終了前の確認処理を行う
+*	@param elapsedTime	経過時間
 *	@return なし
 */
-void PlayScene::Render()
+void PlayScene::UpdateCheckGameEnd(float elapsedTime)
 {
-	using namespace DirectX::SimpleMath;
+	// マウスの状態を取得する
+	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
+	// UIの更新に必要な情報をまとめた構造体
+	UpdateContext ctx{};
+	// 経過時間を渡す
+	ctx.elapsedTime = elapsedTime;
+	// ゲーム終了前の確認画面の更新
+	m_pGameEndChecker->Update(ctx);
+	// 左クリックされていて、UIにカーソルが当たっている場合
+	if (MyMouse::IsLeftMouseButtonPressed(mouseState) && m_pGameEndChecker->GetIsHit())
+	{
+		// SEの再生
+		m_pCommonResources->GetAudioManager()->PlaySound("SE", m_SEvolume);
+		// ゲームをやめるかどうかのフラグを取得
+		if (m_pGameEndChecker->GetIsEndGame())// ゲームをやめる場合
+		{
+			// フェードアウトに移行
+			m_pFade->SetState(Fade::FadeState::FadeOut);
+		}
+		else// ゲームをやめない場合
+		{
+			// ゲーム終了前の確認フラグを無効化する
+			m_pGameEndChecker->SetIsGameEndCheck(false);
+		}
+	}
+}
 
-	// カメラからビュー行列を取得する
-	Matrix view = m_pPlayer->GetCamera()->GetViewMatrix();
-	// カメラからプロジェクション行列を取得する
-	Matrix projection = m_pPlayer->GetCamera()->GetProjectionMatrix();
-	// 天球のワールド行列(サイズを10倍してプレイヤーを中心地とする)
-	Matrix skyWorld = Matrix::Identity
-		* Matrix::CreateScale(10.0f)
-		* Matrix::CreateTranslation(m_pPlayer->GetPlayerController()->GetPlayerPosition());
-	// ワールド行列を初期化する
-	Matrix world = Matrix::Identity;
-	// オフスクリーンにオブジェクトを描画する
-	m_pBloom->ChangeOffScreenRT();
-	// 天球描画
-	m_pSky->Render(view, projection, skyWorld);
-	// 地面描画
-	m_pStage->Render(view, projection, world);
-	// 壁描画
-	m_pWall->Render(view, projection);
-	// 敵を描画する
-	m_pEnemyManager->Render();
-	// プレイヤーを描画する
-	m_pPlayer->Render();
-	// 弾を描画する
-	m_pBulletManager->Render();
-	// ブルームエフェクトをかける
-	m_pBloom->PostProcess();
-	// ゲーム開始プレイシーンに切り替えてから5秒間は猶予時間	
-	if (m_time >= PlayScene::GAME_START_TIME)
-	{
-		// HPが10以下で危機状態描画
-		if (m_pPlayer->GetPlayerHP() <= 10.0f)m_pCrisis->Render();
-		// UIを描画する
-		for (int it = 0; it < m_pPlayerUI.size(); ++it)m_pPlayerUI[it]->Render();
-		// 敵カウンターを描画する
-		m_pEnemyCounter->Render();
-		// レーダーを描画する
-		m_pRadar->Render();
-		// ボス登場演出が有効な場合、更新する
-		if (m_pEnemyManager->GetIsBossAppear() == true)m_pBossAppear->Render();
-	}
-	else // ゲーム開始から5秒間
-	{
-		// 指示画像を表示
-		m_pGoal->Render();
-		// Wi-Fiローディングを表示
-		m_pWifiLoading->Render();
-	}
-	// フェードの描画
-	m_pFade->Render();
-#ifdef _DEBUG// デバッグモードでのみ実行
-	// デバッグ情報を表示する
-	auto debugString = m_pCommonResources->GetDebugString();
-	// 接続しているWi-Fiの電波強度
-	debugString->AddString("Power:%i", m_pEnemyManager->GetWifi()->GetCurrentWifiSignalQuality());
-	// 接続しているWi-FiのSSIDの長さ
-	debugString->AddString("SSID:%i", m_pEnemyManager->GetWifi()->GetCurrentWifiSSIDLength());
-	// プレイヤーHP
-	debugString->AddString("HP:%f", m_pPlayer->GetPlayerHP());
-	// プレイヤーHPの最大値
-	debugString->AddString("MAXHP:%f", m_pPlayer->GetMaxPlayerHP());
-#endif
-}
-/*
-*	@brief 終了する
-*	@details プレイシーンクラスの終了
-*	@param なし
-*	@return なし
-*/
-void PlayScene::Finalize()
-{
-	// 空を解放する
-	m_pSky.reset();
-}
 /*
 *	@brief シーン変更
 *	@details シーン変更の有無を取得する
@@ -340,6 +431,8 @@ IScene::SceneID PlayScene::GetNextSceneID() const
 	// シーン変更がある場合
 	if (m_isChangeScene)
 	{
+		// 終了フラグが立ってるならゲームを終了する
+		if (m_pGameEndChecker->GetIsEndGame())PostQuitMessage(0);
 		// BGMを停止する
 		m_pCommonResources->GetAudioManager()->StopSound("PlayBGM");
 		// プレイヤーのHPが0以下なら

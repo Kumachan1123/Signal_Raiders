@@ -132,7 +132,7 @@ void StageSelectScene::Update(float elapsedTime)
 	{
 		// キーボードの状態を取得する
 		auto& keyboardState = m_pCommonResources->GetInputManager()->GetKeyboardState();
-		//　ESCキーが押されたらゲーム修了確認を有効にする
+		//　ESCキーが押されたらゲーム終了確認を有効にする
 		if (keyboardState.Escape && !m_pGameEndChecker->GetIsGameEndCheck())
 		{
 			// ゲーム終了前の確認処理を有効化する
