@@ -34,8 +34,10 @@ Game::Game() noexcept(false)
 	, m_textureManager{}// テクスチャマネージャ
 	, m_fullscreen{ FALSE }// フルスクリーン状態
 {
-	m_deviceResources = std::make_unique<DX::DeviceResources>();// デバイスリソースを作成する
-	m_deviceResources->RegisterDeviceNotify(this);// デバイス通知を登録する
+	// デバイスリソースを作成する
+	m_deviceResources = std::make_unique<DX::DeviceResources>();
+	// デバイス通知を登録する
+	m_deviceResources->RegisterDeviceNotify(this);
 }
 
 
@@ -51,35 +53,58 @@ void Game::Initialize(HWND window, int width, int height)
 {
 	using namespace DirectX;
 	// デバイスリソース関連を設定する
-	m_deviceResources->SetWindow(window, width, height);// ウィンドウを設定する
-	m_deviceResources->CreateDeviceResources();// デバイスリソースを作成する
-	CreateDeviceDependentResources();// デバイス依存リソースを作成する
-	m_deviceResources->CreateWindowSizeDependentResources();// ウィンドウサイズ依存リソースを作成する
-	CreateWindowSizeDependentResources();// ウィンドウサイズ依存リソースを作成する
-	auto device = m_deviceResources->GetD3DDevice();// デバイスを取得する
-	auto context = m_deviceResources->GetD3DDeviceContext();// デバイスコンテキストを取得する
-	m_inputManager = std::make_unique<mylib::InputManager>(window);// 入力マネージャを作成する
-	m_commonStates = std::make_unique<CommonStates>(device);// コモンステートを作成する
-	m_debugString = std::make_unique<mylib::DebugString>(// デバッグ文字列を作成する
+	// ウィンドウを設定する
+	m_deviceResources->SetWindow(window, width, height);
+	// デバイスリソースを作成する
+	m_deviceResources->CreateDeviceResources();
+	// デバイス依存リソースを作成する
+	CreateDeviceDependentResources();
+	// ウィンドウサイズ依存リソースを作成する
+	m_deviceResources->CreateWindowSizeDependentResources();
+	// ウィンドウサイズ依存リソースを作成する
+	CreateWindowSizeDependentResources();
+	// デバイスを取得する
+	auto device = m_deviceResources->GetD3DDevice();
+	// デバイスコンテキストを取得する
+	auto context = m_deviceResources->GetD3DDeviceContext();
+	// 入力マネージャを作成する
+	m_inputManager = std::make_unique<mylib::InputManager>(window);
+	// コモンステートを作成する
+	m_commonStates = std::make_unique<CommonStates>(device);
+	// デバッグ文字列を作成する
+	m_debugString = std::make_unique<mylib::DebugString>(
 		device,		// デバイス
 		context,	// デバイスコンテキスト
 		L"Resources/Fonts/SegoeUI_18.spritefont"// フォントファイルのパス
 	);
-	m_audioManager = std::make_unique<AudioManager>();// オーディオマネージャーを作成する
-	m_pCommonResources = std::make_unique<CommonResources>();// 共通リソースを作成する
-	m_modelManager = std::make_unique<ModelManager>();// モデルマネージャを作成する
-	m_textureManager = std::make_unique<TextureManager>();// テクスチャマネージャを作成する
-	std::thread modelInitializeThread([this, device]() {// モデルマネージャの初期化を別スレッドで行う
-		m_modelManager->Initialize(m_deviceResources->GetD3DDevice());// モデルマネージャを初期化する
+	// オーディオマネージャーを作成する
+	m_audioManager = std::make_unique<AudioManager>();
+	// 共通リソースを作成する
+	m_pCommonResources = std::make_unique<CommonResources>();
+	// モデルマネージャを作成する
+	m_modelManager = std::make_unique<ModelManager>();
+	// テクスチャマネージャを作成する
+	m_textureManager = std::make_unique<TextureManager>();
+	// モデルマネージャの初期化を別スレッドで行う
+	std::thread modelInitializeThread([this, device]()
+		{
+			// モデルマネージャを初期化する
+			m_modelManager->Initialize(m_deviceResources->GetD3DDevice());
 		});
-	std::thread textureInitializeThread([this, device]() {// テクスチャマネージャの初期化を別スレッドで行う
-		m_textureManager->Initialize(m_deviceResources->GetD3DDevice());// テクスチャマネージャを初期化する
+	// テクスチャマネージャの初期化を別スレッドで行う
+	std::thread textureInitializeThread([this, device]()
+		{
+			// テクスチャマネージャを初期化する
+			m_textureManager->Initialize(m_deviceResources->GetD3DDevice());
 		});
-	modelInitializeThread.join();// モデルマネージャの初期化が完了するまで待機する
-	textureInitializeThread.join();// テクスチャマネージャの初期化が完了するまで待機する
+	// モデルマネージャの初期化が完了するまで待機する
+	modelInitializeThread.join();
+	// テクスチャマネージャの初期化が完了するまで待機する
+	textureInitializeThread.join();
 	//m_modelManager->Initialize(m_deviceResources->GetD3DDevice());// モデルマネージャを初期化する
 	//m_textureManager->Initialize(m_deviceResources->GetD3DDevice());// テクスチャマネージャを初期化する
-	m_pCommonResources->Initialize(// シーンへ渡す共通リソースを設定する
+		// シーンへ渡す共通リソースを設定する
+	m_pCommonResources->Initialize(
 		&m_timer,				// タイマー
 		m_deviceResources.get(),// デバイスリソース
 		m_commonStates.get(),	// コモンステート
@@ -87,11 +112,14 @@ void Game::Initialize(HWND window, int width, int height)
 		m_inputManager.get(),	// 入力マネージャ
 		m_audioManager.get(),	// オーディオマネージャ
 		m_modelManager.get(),	// モデルマネージャ
-		m_textureManager.get()	// テクスチャマネージャ (デフォルトはnullptr, モデルマネージャから取得する
+		m_textureManager.get()	// テクスチャマネージャ 
 	);
-	m_sceneManager = std::make_unique<SceneManager>();	// シーンマネージャを作成する
-	m_sceneManager->Initialize(m_pCommonResources.get());// シーンマネージャを初期化する
-	ShowCursor(FALSE);//カーソルを見えるようにする
+	// シーンマネージャを作成する
+	m_sceneManager = std::make_unique<SceneManager>();
+	// シーンマネージャを初期化する
+	m_sceneManager->Initialize(m_pCommonResources.get());
+	//カーソルを見えるようにする
+	ShowCursor(FALSE);
 }
 
 #pragma region Frame Update
@@ -103,8 +131,10 @@ void Game::Initialize(HWND window, int width, int height)
 */
 void Game::Tick()
 {
-	m_timer.Tick([&]() { Update(m_timer); });// タイマーを更新し、Update関数を呼び出す
-	Render();// 描画処理を呼び出す
+	// タイマーを更新し、Update関数を呼び出す
+	m_timer.Tick([&]() { Update(m_timer); });
+	// 描画処理を呼び出す
+	Render();
 }
 /*
 *	@brief ゲームの更新処理
@@ -114,11 +144,19 @@ void Game::Tick()
 */
 void Game::Update(DX::StepTimer const& timer)
 {
-	float elapsedTime = float(timer.GetElapsedSeconds());// 経過時間を取得する
+	// 経過時間を取得する
+	float elapsedTime = float(timer.GetElapsedSeconds());
 	m_inputManager->Update();// 入力マネージャを更新する
-	const auto& keyboardState = m_inputManager->GetKeyboardState();// キーボードステートを取得する
-	if (keyboardState.Escape) ExitGame();// 「ECS」キーで終了する
-	m_sceneManager->Update(elapsedTime);// シーンマネージャを更新する
+	// キーボードステートを取得する
+	const auto& keyboardState = m_inputManager->GetKeyboardState();
+	// ESCキーが押されたかどうかを確認する
+	if (keyboardState.Escape)
+	{
+		// 「ECS」キーで終了する
+		ExitGame();
+	}
+	// シーンマネージャを更新する
+	m_sceneManager->Update(elapsedTime);
 }
 #pragma endregion
 
@@ -131,18 +169,28 @@ void Game::Update(DX::StepTimer const& timer)
 */
 void Game::Render()
 {
-	if (m_timer.GetFrameCount() == 0)return;// 最初のUpdate前は何も描画しない
+	// 最初のUpdate前は何も描画しない
+	if (m_timer.GetFrameCount() == 0)
+		return;
 	Clear();// 画面をクリアする
-	m_deviceResources->PIXBeginEvent(L"Render");// PIXイベントを開始する
-	auto context = m_deviceResources->GetD3DDeviceContext();// デバイスコンテキストを取得する
-	UNREFERENCED_PARAMETER(context);// デバイスコンテキストの未使用警告を抑制する
-	m_sceneManager->Render();// シーンマネージャを描画する
+	// PIXイベントを開始する
+	m_deviceResources->PIXBeginEvent(L"Render");
+	// デバイスコンテキストを取得する
+	auto context = m_deviceResources->GetD3DDeviceContext();
+	// デバイスコンテキストの未使用警告を抑制する
+	UNREFERENCED_PARAMETER(context);
+	// シーンマネージャを描画する
+	m_sceneManager->Render();
 #ifdef _DEBUG
-	m_debugString->Render(m_commonStates.get());// デバッグ文字列を描画する
-	m_debugString->AddString("fps : %d", m_timer.GetFramesPerSecond());// デバッグ文字列を作成する：FPS
+	// デバッグ文字列を描画する
+	m_debugString->Render(m_commonStates.get());
+	// デバッグ文字列を作成する：FPS
+	m_debugString->AddString("fps : %d", m_timer.GetFramesPerSecond());
 #endif
-	m_deviceResources->PIXEndEvent();// PIXイベントを終了する
-	m_deviceResources->Present();// 新しいフレームを表示する
+	// PIXイベントを終了する
+	m_deviceResources->PIXEndEvent();
+	// 新しいフレームを表示する
+	m_deviceResources->Present();
 }
 
 /*
@@ -154,16 +202,26 @@ void Game::Render()
 void Game::Clear()
 {
 	using namespace DirectX;
-	m_deviceResources->PIXBeginEvent(L"Clear");// PIXイベントを開始する
-	auto context = m_deviceResources->GetD3DDeviceContext();// デバイスコンテキストを取得する
-	auto renderTarget = m_deviceResources->GetRenderTargetView();// レンダーターゲットビューを取得する
-	auto depthStencil = m_deviceResources->GetDepthStencilView();// 深度ステンシルビューを取得する
-	context->ClearRenderTargetView(renderTarget, Colors::CornflowerBlue);// レンダリングターゲットビューをクリアする
-	context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);// 深度ステンシルビューをクリアする
-	context->OMSetRenderTargets(1, &renderTarget, depthStencil);// レンダーターゲットと深度ステンシルビューを設定する
-	auto const viewport = m_deviceResources->GetScreenViewport();// スクリーンビューポートを取得する
-	context->RSSetViewports(1, &viewport); // ビューポートを設定する
-	m_deviceResources->PIXEndEvent(); // PIXイベントを終了する
+	// PIXイベントを開始する
+	m_deviceResources->PIXBeginEvent(L"Clear");
+	// デバイスコンテキストを取得する
+	auto context = m_deviceResources->GetD3DDeviceContext();
+	// レンダーターゲットビューを取得する
+	auto renderTarget = m_deviceResources->GetRenderTargetView();
+	// 深度ステンシルビューを取得する
+	auto depthStencil = m_deviceResources->GetDepthStencilView();
+	// レンダリングターゲットビューをクリアする
+	context->ClearRenderTargetView(renderTarget, Colors::CornflowerBlue);
+	// 深度ステンシルビューをクリアする
+	context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	// レンダーターゲットと深度ステンシルビューを設定する
+	context->OMSetRenderTargets(1, &renderTarget, depthStencil);
+	// スクリーンビューポートを取得する
+	auto const viewport = m_deviceResources->GetScreenViewport();
+	// ビューポートを設定する
+	context->RSSetViewports(1, &viewport);
+	// PIXイベントを終了する
+	m_deviceResources->PIXEndEvent();
 }
 #pragma endregion
 
@@ -195,7 +253,11 @@ void Game::OnSuspending() {/*do nothing*/ }
 *	@param なし
 *	@return なし
 */
-void Game::OnResuming() { m_timer.ResetElapsedTime(); }// タイマーをリセットする
+void Game::OnResuming()
+{
+	// タイマーをリセットする
+	m_timer.ResetElapsedTime();
+}
 /*
 *	@brief ウィンドウが移動されたときの処理
 *	@detail ウィンドウが移動されたときの処理
@@ -204,14 +266,20 @@ void Game::OnResuming() { m_timer.ResetElapsedTime(); }// タイマーをリセットする
 */
 void Game::OnWindowMoved()
 {
-	auto const r = m_deviceResources->GetOutputSize();// ウィンドウのサイズを取得する
-	m_deviceResources->WindowSizeChanged(r.right, r.bottom);// ウィンドウサイズが変更されたことを通知する
-	BOOL fullscreen = FALSE;// フルスクリーンか調べる
-	m_deviceResources->GetSwapChain()->GetFullscreenState(&fullscreen, nullptr);// フルスクリーン状態を取得する
+	// ウィンドウのサイズを取得する
+	auto const r = m_deviceResources->GetOutputSize();
+	// ウィンドウサイズが変更されたことを通知する
+	m_deviceResources->WindowSizeChanged(r.right, r.bottom);
+	// フルスクリーンか調べる
+	BOOL fullscreen = FALSE;
+	m_deviceResources->GetSwapChain()->GetFullscreenState(&fullscreen, nullptr);
+	// フルスクリーン状態を取得する
 	if (m_fullscreen != fullscreen)// フルスクリーンが解除されてしまった時の処理
 	{
-		m_fullscreen = fullscreen;// フルスクリーン状態を更新する
-		m_deviceResources->CreateWindowSizeDependentResources();// ウィンドウサイズ依存リソースを作成する
+		// フルスクリーン状態を更新する
+		m_fullscreen = fullscreen;
+		// ウィンドウサイズ依存リソースを作成する
+		m_deviceResources->CreateWindowSizeDependentResources();
 	}
 }
 /*
@@ -220,7 +288,11 @@ void Game::OnWindowMoved()
 *	@param なし
 *	@return なし
 */
-void Game::OnDisplayChange() { m_deviceResources->UpdateColorSpace(); }// カラースペースを更新する
+void Game::OnDisplayChange()
+{
+	// カラースペースを更新する
+	m_deviceResources->UpdateColorSpace();
+}
 /*
 *	@brief ウィンドウサイズが変更されたときの処理
 *	@detail ウィンドウサイズが変更されたときの処理
@@ -230,8 +302,10 @@ void Game::OnDisplayChange() { m_deviceResources->UpdateColorSpace(); }// カラー
 */
 void Game::OnWindowSizeChanged(int width, int height)
 {
-	if (!m_deviceResources->WindowSizeChanged(width, height))return;// ウィンドウサイズが変更されていない場合は何もしない
-	CreateWindowSizeDependentResources();// ウィンドウサイズ依存リソースを作成する
+	// ウィンドウサイズが変更されていない場合は何もしない
+	if (!m_deviceResources->WindowSizeChanged(width, height))return;
+	// ウィンドウサイズ依存リソースを作成する
+	CreateWindowSizeDependentResources();
 }
 
 /*
@@ -243,8 +317,10 @@ void Game::OnWindowSizeChanged(int width, int height)
 */
 void Game::GetDefaultSize(int& width, int& height) const noexcept
 {
-	width = Screen::WIDTH;// デフォルトのウィンドウの幅を設定
-	height = Screen::HEIGHT;// デフォルトのウィンドウの高さを設定
+	// デフォルトのウィンドウの幅を設定
+	width = Screen::WIDTH;
+	// デフォルトのウィンドウの高さを設定
+	height = Screen::HEIGHT;
 }
 #pragma endregion
 
@@ -257,8 +333,10 @@ void Game::GetDefaultSize(int& width, int& height) const noexcept
 */
 void Game::CreateDeviceDependentResources()
 {
-	auto device = m_deviceResources->GetD3DDevice();// デバイスを取得する
-	UNREFERENCED_PARAMETER(device);// デバイスの未使用警告を抑制する
+	// デバイスを取得する
+	auto device = m_deviceResources->GetD3DDevice();
+	// デバイスの未使用警告を抑制する
+	UNREFERENCED_PARAMETER(device);
 }
 /*
 *	@brief ウィンドウサイズ依存リソースを作成する
@@ -282,8 +360,10 @@ void Game::OnDeviceLost() {/*do nothing*/ }
 */
 void Game::OnDeviceRestored()
 {
-	CreateDeviceDependentResources();// デバイス依存リソースを作成
-	CreateWindowSizeDependentResources();// ウィンドウサイズ依存リソースを作成
+	// デバイス依存リソースを作成
+	CreateDeviceDependentResources();
+	// ウィンドウサイズ依存リソースを作成
+	CreateWindowSizeDependentResources();
 }
 /*
 *	@brief フルスクリーン状態を設定する
@@ -293,8 +373,11 @@ void Game::OnDeviceRestored()
 */
 void Game::SetFullscreenState(BOOL value)
 {
-	m_fullscreen = value;// フルスクリーン状態を更新
-	m_deviceResources->GetSwapChain()->SetFullscreenState(m_fullscreen, nullptr);// フルスクリーン状態を設定
-	if (value) m_deviceResources->CreateWindowSizeDependentResources();// フルスクリーン状態に応じてウィンドウサイズ依存リソースを作成
+	// フルスクリーン状態を更新
+	m_fullscreen = value;
+	// フルスクリーン状態を設定
+	m_deviceResources->GetSwapChain()->SetFullscreenState(m_fullscreen, nullptr);
+	// フルスクリーン状態に応じてウィンドウサイズ依存リソースを作成
+	if (value) m_deviceResources->CreateWindowSizeDependentResources();
 }
 #pragma endregion

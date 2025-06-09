@@ -82,8 +82,8 @@ private:
 	void CreateDeviceDependentResources();
 	// ウィンドウサイズ依存リソースの作成
 	void CreateWindowSizeDependentResources();
-	// private変数
 private:
+	// private変数
 	// デバイスリソース
 	std::unique_ptr<DX::DeviceResources>    m_deviceResources;
 	// タイマー

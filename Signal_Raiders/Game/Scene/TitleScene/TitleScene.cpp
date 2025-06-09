@@ -212,7 +212,7 @@ IScene::SceneID TitleScene::GetNextSceneID() const
 			break;
 		case TitleMenu::SceneID::END:// ゲーム終了だったら
 			// ゲームを終了する
-			ExitGame();
+			PostQuitMessage(0);
 			break;
 		default:// それ以外
 			// 何もしない
