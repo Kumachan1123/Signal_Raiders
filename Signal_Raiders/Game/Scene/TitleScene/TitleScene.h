@@ -11,7 +11,7 @@
 #include <DeviceResources.h>
 // 外部ライブラリ
 #include <Libraries/MyLib/InputManager.h>
-#include "Libraries/Microsoft/DebugDraw.h"
+#include <Libraries/Microsoft/DebugDraw.h>
 #include <Libraries/MyLib/DebugString.h>
 // 自作ヘッダーファイル
 #include "Game/Scene/IScene.h"
@@ -24,6 +24,7 @@
 #include "Game/Scene/SettingScene/SettingBar/SettingBar.h"
 #include "Game/Scene/SettingScene/SettingData/SettingData.h"
 #include "Game/MousePointer/MousePointer.h"
+#include "Game/Scene/GameEndChecker/GameEndChecker.h"
 #include "Game/Fade/Fade.h"
 #include "Game/Screen.h"
 #include "Game/CommonResources.h"
@@ -53,6 +54,10 @@ public:
 	// 次のシーンIDを取得
 	SceneID GetNextSceneID() const override;
 private:
+	// private関数
+	// ゲーム終了前の確認処理
+	void UpdateCheckGameEnd();
+private:
 	// 定数
 	// 音量の基準
 	static	const float VOLUME;
@@ -72,10 +77,12 @@ private:
 	std::unique_ptr<TitleLogo> m_pTitleLogo;
 	// タイトルメニュー
 	std::unique_ptr<TitleMenu> m_pTitleMenu;
-	// タイトル画面のUI(メニュー、マウスカーソル）
-	std::vector<std::unique_ptr<IMenuUI>> m_pUI;
+	// マウスカーソル
+	std::unique_ptr<MousePointer> m_pMousePointer;
 	// 設定データ
 	std::unique_ptr<SettingData> m_pSettingData;
+	// 終了前確認画面
+	std::unique_ptr<GameEndChecker> m_pGameEndChecker;
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
 	// BGM音量
@@ -84,5 +91,9 @@ private:
 	float m_SEvolume;
 	// 現在のシーンID
 	IScene::SceneID m_nowSceneID;
+	// ゲーム終了前確認処理のフラグ
+	bool m_isGameEndCheck;
+	// 経過時間
+	float m_elapsedTime;
 };
 #endif // TITLE_SCENE_DEFINED

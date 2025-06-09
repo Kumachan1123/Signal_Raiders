@@ -1,18 +1,18 @@
 /*
-*	@file	TitleMenu.cpp
-*	@brief	タイトルメニュークラス
+*	@file	GameEndChecker.cpp
+*	@brief	ゲーム終了前に再確認するUIクラス
 */
 #include <pch.h>
-#include "TitleMenu.h"
+#include "GameEndChecker.h"
 // 無効なメニューインデックス
-const int TitleMenu::INVALID_MENU_INDEX = 6;
+const int GameEndChecker::INVALID_MENU_INDEX = 6;
 /*
 *	@brief コンストラクタ
-*	@details タイトルメニュークラスのコンストラクタ
+*	@details 再確認クラスのコンストラクタ
 *	@param なし
 *	@return なし
 */
-TitleMenu::TitleMenu()
+GameEndChecker::GameEndChecker()
 	: m_menuIndex{ 0 }// 現在選択中のメニューインデックス
 	, m_pDR{ nullptr }// デバイスリソースへのポインタ
 	, m_pCommonResources{ nullptr }// 共通リソースへのポインタ
@@ -23,18 +23,18 @@ TitleMenu::TitleMenu()
 	, m_windowHeight{ 0 }// ウィンドウ高さ
 	, m_time{ 0.0f }// 経過時間
 	, m_hit{ false }// ヒットフラグ
-	, m_num{ SceneID::STAGESELECT }// シーンID
+	, m_isEndGame{ false }// ゲームをやめるかどうか
 	, m_SEVolume{ 0.0f }// SE音量
 	, m_isSEPlay{ false }// SE再生フラグ
 {
 }
 /*
 *	@brief デストラクタ
-*	@details タイトルメニュークラスのデストラクタ(ここでは何もしない)
+*	@details 再確認クラスのデストラクタ(ここでは何もしない)
 *	@param なし
 *	@return なし
 */
-TitleMenu::~TitleMenu() {/*do nothing*/ }
+GameEndChecker::~GameEndChecker() {/*do nothing*/ }
 /*
 *	@brief メニューを初期化する
 *	@details メニューアイテムの画像を読み込み、位置・スケール・アンカーを設定する
@@ -43,7 +43,7 @@ TitleMenu::~TitleMenu() {/*do nothing*/ }
 *	@param height ウィンドウの高さ
 *	@return なし
 */
-void TitleMenu::Initialize(CommonResources* resources, int width, int height)
+void GameEndChecker::Initialize(CommonResources* resources, int width, int height)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
@@ -55,38 +55,32 @@ void TitleMenu::Initialize(CommonResources* resources, int width, int height)
 	m_windowWidth = width;
 	// ウィンドウ高さ
 	m_windowHeight = height;
-	// 「プレイ」を読み込む
-	Add("Play"
-		, Vector2(Screen::CENTER_X, Screen::CENTER_Y + 250)
-		, Vector2(.5, .5)
+	// 「ゲームに戻る」を読み込む
+	Add("BackGame"
+		, Vector2(Screen::CENTER_X - 250, Screen::CENTER_Y + 250)
+		, Vector2(1.0f, 1.0f)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
-	// 「せってい」を読み込む
-	Add("Setting"
-		, Vector2(Screen::CENTER_X, Screen::CENTER_Y + 350)
-		, Vector2(.5, .5)
-		, KumachiLib::ANCHOR::MIDDLE_CENTER
-		, UIType::SELECT);
-	// 「おわる」を読み込む
-	Add("Cancel"
-		, Vector2(Screen::CENTER_X, Screen::CENTER_Y + 450)
-		, Vector2(.5, .5)
+	// 「ゲームを終了する」を読み込む
+	Add("EndGame"
+		, Vector2(Screen::CENTER_X + 250, Screen::CENTER_Y + 250)
+		, Vector2(1.0f, 1.0f)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
 	// 「操作説明」を読み込む
 	Add("Guide"
 		, Vector2(Screen::RIGHT, Screen::BOTTOM)
-		, Vector2(1, 1)
+		, Vector2(1.0f, 1.0f)
 		, KumachiLib::ANCHOR::BOTTOM_RIGHT
 		, UIType::NON_SELECT);
 }
 /*
 *	@brief	更新
-*	@details タイトルメニューの更新
+*	@details 再確認メニューの更新
 *	@param elapsedTime 経過時間
 *	@return なし
 */
-void TitleMenu::Update(float elapsedTime)
+void GameEndChecker::Update(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
 	// マウスのトラッカーを取得する
@@ -126,9 +120,24 @@ void TitleMenu::Update(float elapsedTime)
 	// もし一個もヒットしてなかったら、選択なしにする
 	if (!m_hit) { m_menuIndex = INVALID_MENU_INDEX; }
 	// 左クリックされたら選択メニューのシーンIDを更新
-	if (mtracker->GetLastState().leftButton)
-		m_num = static_cast<SceneID>(m_menuIndex);
-	// メニューアイテムの選択先を更新
+	if (mtracker->GetLastState().leftButton && m_hit)
+	{
+		// 選択中のメニューアイテムが「ゲームに戻る」だった場合
+		if (m_menuIndex == 0)
+		{
+			// ゲームをやめないフラグを立てる
+			m_isEndGame = false;
+		}
+		// 選択中のメニューアイテムが「ゲームを終了する」だった場合
+		else
+		{
+			// ゲームをやめるフラグを立てる
+			m_isEndGame = true;
+		}
+
+	}
+	//m_num = static_cast<SceneID>(m_menuIndex);
+// メニューアイテムの選択先を更新
 	for (int i = 0; i < m_pUI.size(); i++)
 	{
 		//  アイテムの選択状態を更新
@@ -149,8 +158,20 @@ void TitleMenu::Update(float elapsedTime)
 		// 時間を加算
 		m_pGuide[i]->SetTime(m_pGuide[i]->GetTime() + elapsedTime);
 	}
-	// なにも選択されていない場合は何もしない
-	if (m_menuIndex == INVALID_MENU_INDEX)return;
+	// なにも選択されていない場合
+	if (m_menuIndex == INVALID_MENU_INDEX)
+	{
+		// 選択可能UIのサイズを初期状態に戻す
+		for (unsigned int i = 0; i < m_pUI.size(); i++)
+		{
+			// 選択状態のスケールを初期状態に戻す
+			m_pUI[i]->SetScale(m_pUI[i]->GetSelectScale());
+			// 背景用のウィンドウ画像も初期状態に戻す
+			m_pSelect[i]->SetScale(Vector2::One);
+		}
+		// これ以降の処理をしない
+		return;
+	}
 	// 選択中の初期サイズを取得する
 	Vector2 select = m_pUI[m_menuIndex]->GetSelectScale();
 	// 選択状態とするための変化用サイズを算出する
@@ -164,11 +185,11 @@ void TitleMenu::Update(float elapsedTime)
 }
 /*
 *	@brief	描画
-*	@detail タイトルのUIを描画する
+*	@detail 再確認UIを描画する
 *	@param なし
 *	@return なし
 */
-void TitleMenu::Render()
+void GameEndChecker::Render()
 {
 	// 登録したUIの数ループ
 	for (unsigned int i = 0; i < m_pUI.size(); i++)
@@ -192,6 +213,8 @@ void TitleMenu::Render()
 			m_transforms[i].position.y,// Y座標
 			m_transforms[i].scale.x,	// Xスケール
 			m_transforms[i].scale.y);	// Yスケール
+		// メニューインデックスを表示
+		debugString->AddString("MenuIndex:%d", m_menuIndex);
 	}
 #endif
 }
@@ -205,7 +228,7 @@ void TitleMenu::Render()
 	@param type メニューの種類（選択可/不可）
 	@return なし
 */
-void TitleMenu::Add(const std::string& key,
+void GameEndChecker::Add(const std::string& key,
 	const DirectX::SimpleMath::Vector2& position,
 	const DirectX::SimpleMath::Vector2& scale,
 	KumachiLib::ANCHOR anchor, UIType type)

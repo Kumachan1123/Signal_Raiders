@@ -15,7 +15,7 @@
 #include <Libraries/MyLib/InputManager.h>
 #include <Libraries/MyLib/MemoryLeakDetector.h>
 #include <Libraries/Microsoft/ReadData.h>
-#include "Libraries/Microsoft/DebugDraw.h"
+#include <Libraries/Microsoft/DebugDraw.h>
 // 自作ヘッダーファイル
 #include "Game/BulletParameters/BulletParameters.h"
 #include "Game/KumachiLib/KumachiLib.h"

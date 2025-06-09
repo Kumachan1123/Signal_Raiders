@@ -149,12 +149,6 @@ void Game::Update(DX::StepTimer const& timer)
 	m_inputManager->Update();// 入力マネージャを更新する
 	// キーボードステートを取得する
 	const auto& keyboardState = m_inputManager->GetKeyboardState();
-	// ESCキーが押されたかどうかを確認する
-	if (keyboardState.Escape)
-	{
-		// 「ECS」キーで終了する
-		ExitGame();
-	}
 	// シーンマネージャを更新する
 	m_sceneManager->Update(elapsedTime);
 }

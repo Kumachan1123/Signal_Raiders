@@ -12,7 +12,7 @@
 #include <WICTextureLoader.h> 
 #include <SimpleMath.h>
 // ŠO•”ƒ‰ƒCƒuƒ‰ƒŠ
-#include "Libraries/Microsoft/DebugDraw.h"
+#include <Libraries/Microsoft/DebugDraw.h>
 #include <Libraries/MyLib/DebugString.h>
 #include <Libraries/MyLib/InputManager.h>
 #include <Libraries/MyLib/MemoryLeakDetector.h>

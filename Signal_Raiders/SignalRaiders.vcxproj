@@ -207,6 +207,7 @@
     <ClInclude Include="Game\Interface\IUI.h" />
     <ClInclude Include="Game\KumachiLib\ModelManager\ModelManager.h" />
     <ClInclude Include="Game\KumachiLib\TextureManager\TextureManager.h" />
+    <ClInclude Include="Game\Scene\GameEndChecker\GameEndChecker.h" />
     <ClInclude Include="Game\WarningEffect\WarningEffects\WarningEffects.h" />
     <ClInclude Include="Game\Enemy\Boss\BossSheild\BossSheild.h" />
     <ClInclude Include="Game\BulletManager\BulletManager.h" />
@@ -317,6 +318,7 @@
     <ClCompile Include="Game\Enemy\LastBoss\LastBossModel\LastBossModel.cpp" />
     <ClCompile Include="Game\KumachiLib\ModelManager\ModelManager.cpp" />
     <ClCompile Include="Game\KumachiLib\TextureManager\TextureManager.cpp" />
+    <ClCompile Include="Game\Scene\GameEndChecker\GameEndChecker.cpp" />
     <ClCompile Include="Game\WarningEffect\WarningEffects\WarningEffects.cpp" />
     <ClCompile Include="Game\Enemy\Boss\BossSheild\BossSheild.cpp" />
     <ClCompile Include="Game\BulletManager\BulletManager.cpp" />

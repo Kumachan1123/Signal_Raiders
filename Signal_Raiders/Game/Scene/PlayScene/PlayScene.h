@@ -17,7 +17,7 @@
 // 外部ライブラリ
 #include <DeviceResources.h>
 #include <Libraries/MyLib/DebugString.h>
-#include "Libraries/Microsoft/DebugDraw.h" 
+#include <Libraries/Microsoft/DebugDraw.h> 
 #include <Libraries/MyLib/InputManager.h>
 #include "Libraries/MyLib/GridFloor.h"
 // 自作ヘッダーファイル

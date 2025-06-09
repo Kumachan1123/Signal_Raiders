@@ -300,6 +300,7 @@
     <ClInclude Include="Game\Enemy\EnemyAI\EnemyShadowStep\EnemyShadowStep.h" />
     <ClInclude Include="Game\Enemy\CowardlyEnemy\CowardlyEnemy.h" />
     <ClInclude Include="Game\Enemy\CowardlyEnemyModel\CowardlyEnemyModel.h" />
+    <ClInclude Include="Game\Scene\GameEndChecker\GameEndChecker.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -439,6 +440,7 @@
     <ClCompile Include="Game\Enemy\EnemyAI\EnemyShadowStep\EnemyShadowStep.cpp" />
     <ClCompile Include="Game\Enemy\CowardlyEnemy\CowardlyEnemy.cpp" />
     <ClCompile Include="Game\Enemy\CowardlyEnemyModel\CowardlyEnemyModel.cpp" />
+    <ClCompile Include="Game\Scene\GameEndChecker\GameEndChecker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
