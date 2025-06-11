@@ -118,7 +118,8 @@ void EnemyShadowStep::Update(float elapsedTime)
 	if (m_velocity.LengthSquared() > 0.0f)
 	{
 		// is•ûŒü‚ðŒü‚­
-		m_rotation = Quaternion::CreateFromYawPitchRoll(atan2f(m_velocity.x, m_velocity.z), 0.0f, 0.0f);
+		m_rotation = Quaternion::CreateFromYawPitchRoll
+		(atan2f(m_velocity.x, m_velocity.z), 0.0f, 0.0f);
 		// “GAI‚É‰ñ“]‚ðÝ’è
 		m_pEnemyAI->SetRotation(m_rotation);
 	}
