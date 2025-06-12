@@ -156,9 +156,11 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 		// リザルトシーンを取得
 		auto resultScene = dynamic_cast<ResultScene*>(m_pCurrentScene.get());
 		// リザルトシーンが取得できていることを確認
-		assert(resultScene);
-		// ステージ番号をセット
-		resultScene->SetStageNumber(m_stageNumber);
+		if (resultScene)
+		{
+			// ステージ番号をセット
+			resultScene->SetStageNumber(m_stageNumber);
+		}
 	}
 	// シーンの初期化
 	m_pCurrentScene->Initialize(m_pCommonResources);

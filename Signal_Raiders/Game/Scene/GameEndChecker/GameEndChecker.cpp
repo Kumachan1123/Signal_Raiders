@@ -24,6 +24,7 @@ GameEndChecker::GameEndChecker()
 	, m_time{ 0.0f }// 経過時間
 	, m_hit{ false }// ヒットフラグ
 	, m_isEndGame{ false }// ゲームをやめるかどうか
+	, m_isStageSelect{ false }// ステージを選びなおすかどうかのフラグ
 	, m_isGameEndCheck{ false }// このクラスの処理を行うかのフラグ
 	, m_SEVolume{ 0.0f }// SE音量
 	, m_isSEPlay{ false }// SE再生フラグ
@@ -68,8 +69,9 @@ void GameEndChecker::Initialize(CommonResources* resources, int width, int heigh
 		, Vector2(1.0f, 1.0f)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
-	// 「ゲームを終了する」を読み込む
-	Add("EndGame"
+	// 「ゲームを終了する」か「ステージを選びなおす」を読み込む
+	std::string buttonText = m_isStageSelect ? "ReSelectStage" : "EndGame";
+	Add(buttonText
 		, Vector2(Screen::CENTER_X + 250, Screen::CENTER_Y + 250)
 		, Vector2(1.0f, 1.0f)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER

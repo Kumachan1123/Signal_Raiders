@@ -158,6 +158,8 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pMousePointer->Initialize(m_pCommonResources, Screen::WIDTH, Screen::HEIGHT);
 	// ゲーム終了前確認画面を生成
 	m_pGameEndChecker = std::make_unique<GameEndChecker>();
+	// 修了確認画面のUIを「ステージを選びなおす」に変更
+	m_pGameEndChecker->SetIsStageSelect(true);
 	// ゲーム終了前確認画面を初期化
 	m_pGameEndChecker->Initialize(m_pCommonResources, Screen::WIDTH, Screen::HEIGHT);
 }
@@ -432,7 +434,8 @@ IScene::SceneID PlayScene::GetNextSceneID() const
 	if (m_isChangeScene)
 	{
 		// 終了フラグが立ってるならゲームを終了する
-		if (m_pGameEndChecker->GetIsEndGame())PostQuitMessage(0);
+		if (m_pGameEndChecker->GetIsEndGame())//PostQuitMessage(0);
+			return IScene::SceneID::STAGESELECT;
 		// BGMを停止する
 		m_pCommonResources->GetAudioManager()->StopSound("PlayBGM");
 		// プレイヤーのHPが0以下なら

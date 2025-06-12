@@ -48,6 +48,10 @@ public:
 	bool GetIsGameEndCheck() const { return m_isGameEndCheck; }
 	// このクラスの処理を行うか設定
 	void SetIsGameEndCheck(bool isGameEndCheck) { m_isGameEndCheck = isGameEndCheck; }
+	// ステージを選びなおすかどうか取得
+	bool GetIsStageSelect() const { return m_isStageSelect; }
+	// ステージを選びなおすかどうか設定
+	void SetIsStageSelect(bool isStageSelect) { m_isStageSelect = isStageSelect; }
 	// UIにヒットしたかどうか取得
 	bool GetIsHit()const { return m_hit; }
 	// UIにヒットしたかどうか設定
@@ -112,5 +116,7 @@ private:
 	bool m_isSEPlay;
 	// このクラスの処理を行うかのフラグ
 	bool m_isGameEndCheck;
+	// ステージを選びなおすかどうかのフラグ
+	bool m_isStageSelect;
 };
 #endif // GAMEENDCHECKER_DEFINED_DEFINED
