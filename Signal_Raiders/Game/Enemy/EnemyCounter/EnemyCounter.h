@@ -80,7 +80,7 @@ public:
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 	// 各画像の描画位置とサイズ
 	// 「残り：」の描画位置・サイズ
-	const float REMAINING_POS_X = 0.4f;// 残りの表示位置X
+	const float REMAINING_POS_X = 0.35f;// 残りの表示位置X
 	const float REMAINING_POS_Y = 1.0f;// 残りの表示位置Y
 	const float REMAINING_SIZE_X = 0.25f;// 残りの表示サイズX
 	const float REMAINING_SIZE_Y = 0.18f;//	残りの表示サイズY

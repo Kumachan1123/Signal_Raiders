@@ -146,9 +146,12 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 		// プレイシーンを取得
 		auto playScene = dynamic_cast<PlayScene*>(m_pCurrentScene.get());
 		// プレイシーンが取得できていることを確認
-		assert(playScene);
-		// ステージ番号をセット
-		playScene->SetStageNumber(m_stageNumber);
+		if (playScene)
+		{
+			// ステージ番号をセット
+			playScene->SetStageNumber(m_stageNumber);
+		}
+
 	}
 	// プレイシーンの場合
 	if (GetSceneID() == IScene::SceneID::PLAY)

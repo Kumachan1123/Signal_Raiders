@@ -433,11 +433,11 @@ IScene::SceneID PlayScene::GetNextSceneID() const
 	// シーン変更がある場合
 	if (m_isChangeScene)
 	{
+		// BGMを停止する
+		m_pCommonResources->GetAudioManager()->StopSound("PlayBGM");
 		// 終了フラグが立ってるならゲームを終了する
 		if (m_pGameEndChecker->GetIsEndGame())//PostQuitMessage(0);
 			return IScene::SceneID::STAGESELECT;
-		// BGMを停止する
-		m_pCommonResources->GetAudioManager()->StopSound("PlayBGM");
 		// プレイヤーのHPが0以下なら
 		if (m_pPlayer->GetPlayerHP() <= 0.0f)
 		{
