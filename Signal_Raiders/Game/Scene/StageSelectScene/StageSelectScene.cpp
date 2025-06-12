@@ -117,11 +117,7 @@ void StageSelectScene::Update(float elapsedTime)
 	ctx.dashStamina = 0;
 	// 使わない
 	ctx.playerHP = 0;
-	// UIの更新
-	// ステージセレクトメニューの更新
-	m_pStageSelectMenu->Update(ctx);
-	// マウスポインターの更新
-	m_pMousePointer->Update(ctx);
+
 	// ゲーム終了前の確認処理
 	if (m_pGameEndChecker->GetIsGameEndCheck())// ゲーム終了前の確認が有効な場合
 	{
@@ -158,6 +154,8 @@ void StageSelectScene::Update(float elapsedTime)
 		{
 			// マウスポインターの更新
 			m_pMousePointer->Update(ctx);
+			// ステージセレクトメニューの更新
+			m_pStageSelectMenu->Update(ctx);
 		}
 	}
 	// フェードアウトが終了したらシーン変更を可能にする

@@ -80,26 +80,26 @@ public:
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 	// 各画像の描画位置とサイズ
 	// 「残り：」の描画位置・サイズ
-	const float REMAINING_POS_X = 0.35f;// 残りの表示位置X
-	const float REMAINING_POS_Y = 1.0f;// 残りの表示位置Y
+	const float REMAINING_POS_X = 0.375f;// 残りの表示位置X
+	const float REMAINING_POS_Y = 1.053f;// 残りの表示位置Y
 	const float REMAINING_SIZE_X = 0.25f;// 残りの表示サイズX
-	const float REMAINING_SIZE_Y = 0.18f;//	残りの表示サイズY
+	const float REMAINING_SIZE_Y = 0.275f;//	残りの表示サイズY
 	// 「/」の描画位置・サイズ
-	const float SLASH_POS_X = 0.8f;// 「/」の表示位置X
+	const float SLASH_POS_X = 0.785f;// 「/」の表示位置X
 	const float SLASH_POS_Y = 1.0f;// 「/」の表示位置Y
 	const float SLASH_SIZE_X = 0.05f;// 「/」の表示サイズX
 	const float SLASH_SIZE_Y = 0.18f;// 「/」の表示サイズY
 	// 現在の敵の数の1の位・10の位の描画位置・サイズ
-	const float NOW_ENEMY_10_POS_X = 0.66f;// 現在の敵の数の10の位の表示位置X
+	const float NOW_ENEMY_10_POS_X = 0.63f;// 現在の敵の数の10の位の表示位置X
 	const float NOW_ENEMY_10_POS_Y = 1.0f;// 現在の敵の数の10の位の表示位置Y
-	const float NOW_ENEMY_1_POS_X = 0.72f;// 現在の敵の数の1の位の表示位置X
+	const float NOW_ENEMY_1_POS_X = 0.705f;// 現在の敵の数の1の位の表示位置X
 	const float NOW_ENEMY_1_POS_Y = 1.0f;// 現在の敵の数の1の位の表示位置Y
 	const float NOW_ENEMY_SIZE_X = 0.08f;// 現在の敵の数の表示サイズX
 	const float NOW_ENEMY_SIZE_Y = 0.18f;// 現在の敵の数の表示サイズY
 	// 敵の総数の1の位・10の位の描画位置・サイズ
-	const float ENEMY_INDEX_10_POS_X = 0.86f;// 敵の総数の10の位の表示位置X
+	const float ENEMY_INDEX_10_POS_X = 0.84f;// 敵の総数の10の位の表示位置X
 	const float ENEMY_INDEX_10_POS_Y = 1.0f;// 敵の総数の10の位の表示位置Y
-	const float ENEMY_INDEX_1_POS_X = 0.92f;// 敵の総数の1の位の表示位置X
+	const float ENEMY_INDEX_1_POS_X = 0.915f;// 敵の総数の1の位の表示位置X
 	const float ENEMY_INDEX_1_POS_Y = 1.0f;// 敵の総数の1の位の表示位置Y
 	const float ENEMY_INDEX_SIZE_X = 0.08f;// 敵の総数の表示サイズX
 	const float ENEMY_INDEX_SIZE_Y = 0.18f;// 敵の総数の表示サイズY
