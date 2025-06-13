@@ -113,7 +113,7 @@ void EnemyShadowStep::Update(float elapsedTime)
 	// •ûŒüƒxƒNƒgƒ‹‚ð³‹K‰»
 	direction.Normalize();
 	// •ûŒüƒxƒNƒgƒ‹‚É‘¬“x‚ðŠ|‚¯‚ÄˆÚ“®—Ê‚ðŒvŽZ
-	m_velocity = direction * 50.0f * elapsedTime;
+	m_velocity = direction * 55.0f * elapsedTime;
 	// “G‚Ì‰ñ“]‚ðXV
 	if (m_velocity.LengthSquared() > 0.0f)
 	{
