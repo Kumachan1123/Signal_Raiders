@@ -7,6 +7,7 @@
 #define AUDIOMANAGER_DEFINED
 // •W€ƒ‰ƒCƒuƒ‰ƒŠ
 #include <string>
+#include <fstream>
 #include <unordered_map>
 #include <thread> 
 #include <memory>

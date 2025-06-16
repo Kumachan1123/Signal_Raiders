@@ -477,6 +477,7 @@
     <None Include="Resources\Jsons\Setting.json" />
     <None Include="Resources\Jsons\Models.json" />
     <None Include="Resources\Jsons\SkyModels.json" />
+    <None Include="Resources\Jsons\Audios.json" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Shadow\PS_Shadow.hlsl">

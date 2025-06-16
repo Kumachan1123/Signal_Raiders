@@ -4,6 +4,8 @@
 */
 #include <pch.h>
 #include "AudioManager.h"
+// 外部ライブラリ
+#include "Libraries/nlohmann/json.hpp"
 /*
 *	@brief コンストラクタ
 *	@details FMODシステムの初期化を行い、ゲーム内で使用する全ての効果音とBGMを読み込む
@@ -34,38 +36,54 @@ AudioManager::~AudioManager() { Shutdown(); }// FMODシャットダウン
 */
 void AudioManager::Initialize()
 {
-	FMOD_RESULT result = FMOD::System_Create(&m_pFMODSystem);// FMODシステムの作成
-	if (result != FMOD_OK || !m_pFMODSystem)// エラー処理
+	// nlohmann::jsonのエイリアスを定義
+	using json = nlohmann::json;
+	// 標準名前空間を使用
+	using namespace std;
+	// FMODシステムの作成
+	FMOD_RESULT result = FMOD::System_Create(&m_pFMODSystem);
+	// エラー処理
+	if (result != FMOD_OK || !m_pFMODSystem)
 	{
-		m_pFMODSystem = nullptr;// システムの初期化に失敗
-		return;// 終了
+		// システムの初期化に失敗
+		m_pFMODSystem = nullptr;
+		// 終了
+		return;
 	}
-	result = m_pFMODSystem->init(512, FMOD_INIT_NORMAL, nullptr);// FMODシステムの初期化
-	if (result != FMOD_OK)		// エラー処理
+	// FMODシステムの初期化
+	result = m_pFMODSystem->init(512, FMOD_INIT_NORMAL, nullptr);
+	// エラー処理
+	if (result != FMOD_OK)
 	{
-		m_pFMODSystem = nullptr;// システムの初期化に失敗
-		return;// 終了
+		// システムの初期化に失敗
+		m_pFMODSystem = nullptr;
+		// 終了
+		return;
 	}
-	// 各種効果音・BGMの読み込み
-	LoadSound("Resources/Sounds/playerBullet.mp3", "Shoot", true);// プレイヤーの弾のSE
-	LoadSound("Resources/Sounds/Hit.mp3", "Hit", true);// ヒットのSE
-	LoadSound("Resources/Sounds/enemybullet.mp3", "EnemyBullet", true);// 弾発射音
-	LoadSound("Resources/Sounds/Explosion.mp3", "EnemyDead", true);// 敵死亡音
-	LoadSound("Resources/Sounds/damage.mp3", "Damage", true);// プレイヤーがダメージを食らう音
-	LoadSound("Resources/Sounds/Barrier.mp3", "Barrier", false);// ボスのバリアが出現する音
-	LoadSound("Resources/Sounds/BarrierBreak.mp3", "BarrierBreak", true);// ボスのバリアが破壊される音
-	LoadSound("Resources/Sounds/playbgm.mp3", "PlayBGM", false);// プレイ中のBGM
-	LoadSound("Resources/Sounds/select.mp3", "SE", true);// 選択音
-	LoadSound("Resources/Sounds/result.mp3", "ResultBGM", false);// 結果画面のBGM
-	LoadSound("Resources/Sounds/click.mp3", "Select", true); // タイトル画面の選択音
-	LoadSound("Resources/Sounds/title.mp3", "TitleBGM", false);// タイトル画面のBGM
-	LoadSound("Resources/Sounds/BulletCollision.mp3", "BulletCollision", true);// 弾同士の衝突音
-	LoadSound("Resources/Sounds/BossAppear.mp3", "BossAppear", true);// ボス登場演出音
-	LoadSound("Resources/Sounds/SpecialAttack.mp3", "SpecialAttack", true);// ボスの特殊攻撃音
-	LoadSound("Resources/Sounds/ChargeSpecial.mp3", "ChargeSpecial", true);// ボスの特殊攻撃待機音
-
-
-
+	//読み込むファイルの名前を作成
+	string filename = "Resources/Jsons/Audios.json";
+	//ファイルを開く
+	ifstream ifs(filename.c_str());
+	// ファイルが正常に開けなかったら強制終了
+	if (!ifs.good())return;
+	//jsonオブジェクト
+	json j;
+	//ファイルから読み込む
+	ifs >> j;
+	//ファイルを閉じる
+	ifs.close();
+	// "sounds"配列内の各サウンドを処理する
+	for (const auto& sound : j["sounds"])
+	{
+		// ファイルパス
+		std::string filePath = sound["file"];
+		// キー
+		std::string key = sound["key"];
+		// ループフラグ
+		bool isLoop = sound["loop"];
+		// 各種効果音・BGMの読み込み
+		LoadSound(filePath, key, isLoop);
+	}
 }
 /*
 *	@brief 音を再生する
@@ -77,26 +95,40 @@ void AudioManager::Initialize()
 void AudioManager::PlaySound(const std::string& soundKey, float volume)
 {
 
-	auto soundIt = m_pSounds.find(soundKey);// 指定された音声データのキーを検索
-	if (soundIt != m_pSounds.end())// 音声データが見つかった場合
+	// 指定された音声データのキーを検索
+	auto soundIt = m_pSounds.find(soundKey);
+	// 音声データが見つかった場合
+	if (soundIt != m_pSounds.end())
 	{
-		FMOD::Sound* sound = soundIt->second;// 音声データの取得
+		// 音声データの取得
+		FMOD::Sound* sound = soundIt->second;
 		// 音声データが見つかった場合
-		auto allowIt = m_pAllowMultiplePlayMap.find(soundKey); // 二重再生可否のフラグを取得
-		bool allowMultiple = (allowIt != m_pAllowMultiplePlayMap.end()) ? allowIt->second : false; // 見つからなければデフォルトで false
+		// 二重再生可否のフラグを取得
+		auto allowIt = m_pAllowMultiplePlayMap.find(soundKey);
+		// 見つからなければデフォルトで false
+		bool allowMultiple = (allowIt != m_pAllowMultiplePlayMap.end()) ? allowIt->second : false;
 
-		if (!allowMultiple) // 二重再生を許可していない場合
+		// 二重再生を許可していない場合
+		if (!allowMultiple)
 		{
-			auto channelIt = m_pChannels.find(soundKey); // チャンネルを検索
-			if (channelIt != m_pChannels.end()) // チャンネルが見つかった場合
+			// チャンネルを検索
+			auto channelIt = m_pChannels.find(soundKey);
+			// チャンネルが見つかった場合
+			if (channelIt != m_pChannels.end())
 			{
-				FMOD::Channel* existingChannel = channelIt->second; // チャンネルの取得
-				bool isPlaying = false; // 再生中かどうかを保持する変数
-				existingChannel->isPlaying(&isPlaying); // 再生中か確認
-				if (isPlaying) // もし再生中なら
+				// チャンネルの取得
+				FMOD::Channel* existingChannel = channelIt->second;
+				// 再生中かどうかを保持する変数
+				bool isPlaying = false;
+				// 再生中か確認
+				existingChannel->isPlaying(&isPlaying);
+				// もし再生中なら
+				if (isPlaying)
 				{
-					existingChannel->setVolume(volume); // 音量だけ更新
-					return; // 再生しない（重複再生防止）
+					// 音量だけ更新
+					existingChannel->setVolume(volume);
+					// 再生しない（重複再生防止）
+					return;
 				}
 			}
 		}

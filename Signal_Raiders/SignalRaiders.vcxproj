@@ -431,6 +431,7 @@
     <None Include="HLSL\Stage\Stage.hlsli" />
     <None Include="packages.config" />
     <None Include="HLSL\Menu\Menu.hlsli" />
+    <None Include="Resources\Jsons\Audios.json" />
     <None Include="Resources\Jsons\Models.json" />
     <None Include="Resources\Jsons\Setting.json" />
     <None Include="Resources\Jsons\SkyModels.json" />
