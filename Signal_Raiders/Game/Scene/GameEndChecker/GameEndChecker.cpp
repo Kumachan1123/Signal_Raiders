@@ -57,8 +57,10 @@ void GameEndChecker::Initialize(CommonResources* resources, int width, int heigh
 	m_windowWidth = width;
 	// ウィンドウ高さ
 	m_windowHeight = height;
+	// プレイシーンの場合は背景を変える
+	std::string backgroundTexture = m_isStageSelect ? "ToStageSelectBack" : "GameEndBack";
 	// 「背景」を読み込む
-	Add("GameEndBack"
+	Add(backgroundTexture
 		, Vector2(Screen::CENTER_X, Screen::CENTER_Y)
 		, Vector2(1.0f, 1.0f)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
@@ -69,8 +71,9 @@ void GameEndChecker::Initialize(CommonResources* resources, int width, int heigh
 		, Vector2(1.0f, 1.0f)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
-	// 「ゲームを終了する」か「ステージを選びなおす」を読み込む
+	// プレイシーンの場合はUIの文字を変える
 	std::string buttonText = m_isStageSelect ? "ReSelectStage" : "EndGame";
+	// 「ゲームを終了する」か「ステージを選びなおす」を読み込む
 	Add(buttonText
 		, Vector2(Screen::CENTER_X + 250, Screen::CENTER_Y + 250)
 		, Vector2(1.0f, 1.0f)
