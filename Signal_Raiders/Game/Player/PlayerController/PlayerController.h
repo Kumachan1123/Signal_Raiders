@@ -17,6 +17,7 @@
 #include <Libraries/MyLib/MemoryLeakDetector.h>
 // 自作ヘッダーファイル
 #include "Game/KumachiLib/KumachiLib.h"
+#include "Game/KumachiLib/MyMouse/MyMouse.h"
 #include "Game/CommonResources.h"
 #include "Game/Player/Player.h"
 #include "Game/Stage/Stage.h"

@@ -232,10 +232,10 @@ void PlayerController::DebugCommand()
 {
 	// キーボードステートトラッカーを取得する
 	const auto& kbTracker = m_pCommonResources->GetInputManager()->GetKeyboardTracker();
-	// マウスのトラッカーを取得する
-	auto& mTracker = m_pCommonResources->GetInputManager()->GetMouseTracker();
+	// マウスの状態を取得する
+	const auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
 	// 右クリックで敵を一掃
-	if (mTracker->GetLastState().rightButton && m_pPlayer->GetisCheat() == false)
+	if (MyMouse::IsRightMouseButtonPressed(mouseState) && m_pPlayer->GetisCheat() == false)
 	{
 		// チートフラグを立てる
 		m_pPlayer->SetisCheat(true);
@@ -243,7 +243,7 @@ void PlayerController::DebugCommand()
 		for (auto& enemy : m_pPlayer->GetEnemies()->GetEnemies())enemy->ApplyDamageToEnemy(1000);
 	}
 	// 右クリックされてないときチートコマンドを無効にする
-	if (!mTracker->GetLastState().rightButton)m_pPlayer->SetisCheat(false);
+	if (!MyMouse::IsRightMouseButtonPressed(mouseState))m_pPlayer->SetisCheat(false);
 	// スペースキーでプレイヤーのHPを0にする
 	if (kbTracker->pressed.Space)m_pPlayer->SetPlayerHP(0.0f);
 }
@@ -255,9 +255,9 @@ void PlayerController::DebugCommand()
 */
 void PlayerController::Shoot()
 {
-	// マウスのトラッカーを取得する
-	auto& mTracker = m_pCommonResources->GetInputManager()->GetMouseTracker();
-	if (mTracker->GetLastState().leftButton &&// 左クリックされていて
+	// マウスの状態を取得する
+	const auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
+	if (MyMouse::IsLeftMouseButtonPressed(mouseState) &&// 左クリックされていて
 		m_pPlayer->GetBulletManager()->GetIsPlayerShoot() == false &&// 弾が発射されていなくて
 		m_pPlayer->GetBulletManager()->GetPlayerBulletCount() > 0 && // 弾が残っていて
 		m_pPlayer->GetBulletManager()->GetIsReloading() == false)// リロード中でないとき
@@ -268,7 +268,7 @@ void PlayerController::Shoot()
 		m_pPlayer->GetBulletManager()->ConsumePlayerBullet();
 	}
 	// 左クリックされていないとき弾を撃ったフラグを下ろす
-	if (!mTracker->GetLastState().leftButton)m_pPlayer->GetBulletManager()->SetIsPlayerShoot(false);
+	if (!MyMouse::IsLeftMouseButtonPressed(mouseState))m_pPlayer->GetBulletManager()->SetIsPlayerShoot(false);
 }
 /*
 *	@brief プレイヤーの弾をリロードする
