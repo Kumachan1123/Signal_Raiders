@@ -133,11 +133,14 @@ void AudioManager::PlaySound(const std::string& soundKey, float volume)
 			}
 		}
 		// 音を再生する
-		FMOD::Channel* channel = nullptr;// チャンネルを宣言
-		m_pFMODSystem->playSound(sound, nullptr, false, &channel); // 音声データを再生
-		m_pChannels[soundKey] = channel;		// チャンネルを保存する
-		if (channel)// チャンネルが存在する場合
-			channel->setVolume(volume);// 音量を設定する
+		// チャンネルを宣言
+		FMOD::Channel* channel = nullptr;
+		// 音声データを再生
+		m_pFMODSystem->playSound(sound, nullptr, false, &channel);
+		// チャンネルを保存する
+		m_pChannels[soundKey] = channel;
+		// チャンネルが存在する場合、音量を設定する
+		if (channel)channel->setVolume(volume);
 	}
 }
 /*
@@ -156,33 +159,50 @@ void AudioManager::Update() { m_pFMODSystem->update(); }
 */
 void AudioManager::Shutdown()
 {
-	if (!m_pFMODSystem) return; // m_pFMODSystem が null なら解放しない
-	for (auto& pair : m_pChannels)	// チャンネルの停止と解放
+	// m_pFMODSystem が null なら解放しない
+	if (!m_pFMODSystem) return;
+	// チャンネルの停止と解放
+	for (auto& pair : m_pChannels)
 	{
+		// チャンネルが存在する場合
 		if (pair.second)
 		{
+			// チャンネルを停止
 			pair.second->stop();
+			// チャンネルを解放
 			pair.second = nullptr;
 		}
 	}
-	m_pChannels.clear();	// チャンネルをクリア
-	m_pChannels.rehash(0); // 内部ハッシュを解放
-	for (auto& pair : m_pSounds)// すべてのサウンドを解放
+	// チャンネルをクリア
+	m_pChannels.clear();
+	// 内部ハッシュを解放
+	m_pChannels.rehash(0);
+	// すべてのサウンドを解放
+	for (auto& pair : m_pSounds)
 	{
+		// サウンドが存在する場合
 		if (pair.second)
 		{
+			// サウンドを停止
 			pair.second->release();
+			// サウンドを解放
 			pair.second = nullptr;
 		}
 	}
-	m_pSounds.clear();// サウンドをクリア
+	// サウンドをクリア
+	m_pSounds.clear();
 
-	if (m_pFMODSystem)// FMODシステムが存在する場合
+	// FMODシステムが存在する場合
+	if (m_pFMODSystem)
 	{
-		m_pFMODSystem->update(); // 最終更新
-		m_pFMODSystem->release();// FMODシステムの解放
-		m_pFMODSystem = nullptr; // システムを null に設定
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));// 安全のため、少し待機
+		// 最終更新
+		m_pFMODSystem->update();
+		// FMODシステムの解放
+		m_pFMODSystem->release();
+		// システムを null に設定
+		m_pFMODSystem = nullptr;
+		// 安全のため、少し待機
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 }
 /*
@@ -195,13 +215,20 @@ void AudioManager::Shutdown()
 */
 bool AudioManager::LoadSound(const std::string& filePath, const std::string& key, bool allowMultiplePlay)
 {
-	if (m_pSounds.find(key) != m_pSounds.end()) return false;// 既にロード済みなら終了
-	FMOD::Sound* sound = nullptr;// 音声データを宣言
-	FMOD_RESULT result = m_pFMODSystem->createSound(filePath.c_str(), FMOD_DEFAULT, nullptr, &sound);// 音声データの作成
-	if (result != FMOD_OK || !sound) return false;// エラー処理
-	m_pSounds[key] = sound;// 音声データを保存
-	m_pAllowMultiplePlayMap[key] = allowMultiplePlay; // 二重再生の可否を保存
-	return true;// ここまでこれたら成功
+	// 既にロード済みなら終了
+	if (m_pSounds.find(key) != m_pSounds.end()) return false;
+	// 音声データを宣言
+	FMOD::Sound* sound = nullptr;
+	// 音声データの作成
+	FMOD_RESULT result = m_pFMODSystem->createSound(filePath.c_str(), FMOD_DEFAULT, nullptr, &sound);
+	// エラー処理
+	if (result != FMOD_OK || !sound) return false;
+	// 音声データを保存
+	m_pSounds[key] = sound;
+	// 二重再生の可否を保存
+	m_pAllowMultiplePlayMap[key] = allowMultiplePlay;
+	// ここまでこれたら成功
+	return true;
 }
 /*
 *	@brief 音声データの取得
@@ -211,8 +238,10 @@ bool AudioManager::LoadSound(const std::string& filePath, const std::string& key
 */
 FMOD::Sound* AudioManager::GetSound(const std::string& key)
 {
-	auto it = m_pSounds.find(key);// 指定されたキーを検索
-	return (it != m_pSounds.end()) ? it->second : nullptr;// 音声データが見つからない場合は nullptr を返す
+	// 指定されたキーを検索
+	auto it = m_pSounds.find(key);
+	// 音声データが見つからない場合は nullptr を返す
+	return (it != m_pSounds.end()) ? it->second : nullptr;
 }
 
 /*
@@ -223,10 +252,14 @@ FMOD::Sound* AudioManager::GetSound(const std::string& key)
 */
 void AudioManager::StopSound(const std::string& soundKey)
 {
-	auto channelIt = m_pChannels.find(soundKey);// 指定された音声データのキーを検索
-	if (channelIt != m_pChannels.end())// 音声データが見つかった場合
+	// 指定された音声データのキーを検索
+	auto channelIt = m_pChannels.find(soundKey);
+	// 音声データが見つかった場合
+	if (channelIt != m_pChannels.end())
 	{
-		FMOD::Channel* channel = channelIt->second; // チャンネルを取得
-		channel->stop(); // チャンネルを停止
+		// チャンネルを取得
+		FMOD::Channel* channel = channelIt->second;
+		// チャンネルを停止
+		channel->stop();
 	}
 }

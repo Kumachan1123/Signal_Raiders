@@ -19,6 +19,7 @@
 // 自作ヘッダーファイル
 #include "Game/CommonResources.h"
 #include "Game/KumachiLib//DrawCollision/DrawCollision.h"
+#include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/KumachiLib/KumachiLib.h"
 #include "Game/Particle/Particle.h"
 #include "Game/ParticleUtility/ParticleUtility.h"
@@ -81,6 +82,8 @@ private:
 	std::vector<DirectX::SimpleMath::Vector3> m_trailPositions;
 	// 共通リソース
 	CommonResources* m_pCommonResources;
+	// シェーダー作成クラスのポインター
+	CreateShader* m_pCreateShader;
 	// ワールド行列
 	DirectX::SimpleMath::Matrix m_worldMatrix;
 	// 「弾」境界ボックス

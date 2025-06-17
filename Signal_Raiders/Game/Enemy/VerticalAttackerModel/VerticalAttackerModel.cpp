@@ -12,6 +12,7 @@
 */
 VerticalAttackerModel::VerticalAttackerModel()
 	: m_pCommonResources{}// 共通リソース
+	, m_pCreateShader{ CreateShader::GetInstance() }// シェーダー作成クラスのポインター
 	, m_pBodyModel{}// モデル
 	, m_nowState{ IState::EnemyState::IDLING }// 現在のステータス
 {}
@@ -45,10 +46,10 @@ void VerticalAttackerModel::Initialize(CommonResources* resources)
 	m_pCommonResources = resources;
 	// デバイスを取得
 	auto device = resources->GetDeviceResources()->GetD3DDevice();
-	// 影用のシェーダーを読み込む
-	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_Shadow.cso");
-	// シェーダーを作成
-	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pPixelShader.ReleaseAndGetAddressOf()));
+	// シェーダー作成クラスを初期化
+	m_pCreateShader->Initialize(device);
+	// 影用シェーダーを作成
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Shadow/PS_Shadow.cso", m_pPixelShader);
 	// モデルマネージャーから垂直攻撃敵のモデルを取得
 	m_pBodyModel = m_pCommonResources->GetModelManager()->GetModel("VerticalAttacker");
 	// モデルマネージャーからダメージ顔モデルを取得

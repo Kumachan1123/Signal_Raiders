@@ -9,11 +9,12 @@
 #include <SimpleMath.h>
 #include <unordered_map>
 // 外部ライブラリ
-#include "Game/CommonResources.h"
 #include <DeviceResources.h>
 #include <Libraries/Microsoft/ReadData.h>
 // 自作ヘッダーファイル
+#include "Game/CommonResources.h"
 #include "Game/Enemy/CowardlyEnemy/CowardlyEnemy.h"
+#include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/Interface/IState.h"
 #include "Game/Interface/IModel.h"
 
@@ -45,6 +46,8 @@ private:
 	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
+	// シェーダー作成クラスのポインター
+	CreateShader* m_pCreateShader;
 	// 胴体モデル
 	DirectX::Model* m_pBodyModel;
 	// 表情によって変わる顔のモデルのマップ

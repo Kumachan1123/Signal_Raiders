@@ -14,6 +14,7 @@
 #include <Libraries/Microsoft/ReadData.h>
 // 自作ヘッダーファイル
 #include "Game/CommonResources.h"
+#include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/Enemy/Boss/Boss.h"
 #include "Game/KumachiLib/KumachiLib.h"
 #include "Game/Interface/IState.h"
@@ -47,6 +48,8 @@ private:
 	// privateメンバ変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
+	// シェーダー作成クラスのポインター
+	CreateShader* m_pCreateShader;
 	// 胴体
 	DirectX::Model* m_pBodyModel;
 	// 表情によって変わる顔のモデルのマップ

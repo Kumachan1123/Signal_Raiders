@@ -19,6 +19,7 @@ PlayerBullet::PlayerBullet()
 	, m_additionalDamage{ 0 }// 追加ダメージ
 	, m_angle{ 0.0f }// 弾の角度
 	, m_pModel{ nullptr }// モデルポインター
+	, m_pCreateShader{ CreateShader::GetInstance() }// シェーダー作成クラスのポインター
 {
 }
 /*
@@ -54,14 +55,14 @@ void PlayerBullet::Initialize(CommonResources* resources)
 	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
 	// 当たり判定可視化用クラスの初期化
 	DrawCollision::Initialize(m_pCommonResources);
+	// シェーダー作成クラスの初期化
+	m_pCreateShader->Initialize(device);
 	// 弾の軌道生成
 	m_pBulletTrail = std::make_unique<Particle>(ParticleUtility::Type::PLAYERTRAIL, BulletParameters::PLAYER_BULLET_SIZE);
 	// 弾の軌道生成の初期化
 	m_pBulletTrail->Initialize(m_pCommonResources);
-	// 影用のピクセルシェーダー読み込み
-	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_Shadow.cso");
-	// ピクセルシェーダーの作成
-	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pPixelShader.ReleaseAndGetAddressOf()));
+	// 影用シェーダー作成
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Shadow/PS_Shadow.cso", m_pPixelShader);
 	// マネージャーからモデルを取得
 	m_pModel = m_pCommonResources->GetModelManager()->GetModel("PlayerBullet");
 	// 弾の移動方向

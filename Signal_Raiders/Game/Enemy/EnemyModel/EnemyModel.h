@@ -14,6 +14,7 @@
 #include <Libraries/Microsoft/ReadData.h>
 // 自作ヘッダーファイル
 #include "Game/CommonResources.h"
+#include "Game/KumachiLib/CreateShader/CreateShader.h"
 #include "Game/Enemy/Enemy/Enemy.h"
 #include "Game/Interface/IState.h"
 #include "Game/Interface/IModel.h"
@@ -46,6 +47,8 @@ private:
 	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
+	// シェーダー作成クラスのポインター
+	CreateShader* m_pCreateShader;
 	// 頭モデル
 	DirectX::Model* m_pBodyModel;
 	// アンテナモデル

@@ -12,6 +12,7 @@
 */
 LastBossModel::LastBossModel()
 	: m_pCommonResources{}// 共通リソース
+	, m_pCreateShader{ CreateShader::GetInstance() }// シェーダー作成クラスのポインター
 	, m_pBodyModel{}// 胴体
 	, m_pPixelShader{}// 影用のピクセルシェーダー
 	, m_nowState(IState::EnemyState::IDLING)// 現在のステート
@@ -46,10 +47,10 @@ void LastBossModel::Initialize(CommonResources* resources)
 	m_pCommonResources = resources;
 	// デバイスを取得
 	auto device = resources->GetDeviceResources()->GetD3DDevice();
-	// ピクセルシェーダーの読み込み
-	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_Shadow.cso");
-	// ピクセルシェーダーの作成
-	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pPixelShader.ReleaseAndGetAddressOf()));
+	// シェーダー作成クラスを初期化
+	m_pCreateShader->Initialize(device);
+	// 影用のピクセルシェーダーを読み込み
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Shadow/PS_Shadow.cso", m_pPixelShader);
 	// 胴体モデルをマネージャーから取得
 	m_pBodyModel = m_pCommonResources->GetModelManager()->GetModel("LastBossBody");
 	// ダメージ顔モデルをマネージャーから取得

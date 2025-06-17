@@ -74,6 +74,17 @@ void CreateShader::Initialize(ID3D11Device1* device, const D3D11_INPUT_ELEMENT_D
 	m_pInputLayout = InputLayout;
 }
 /*
+*	@brief 初期化（デバイスのみ）
+*	@details シェーダーを作成するための初期化を行う
+*	@param device デバイス
+*	@return なし
+*/
+void CreateShader::Initialize(ID3D11Device1* device)
+{
+	// デバイスを設定
+	m_pDevice = device;
+}
+/*
 *	@brief 頂点シェーダーを作成
 *	@details 頂点シェーダーを作成する
 *	@param fileName シェーダーのファイル名

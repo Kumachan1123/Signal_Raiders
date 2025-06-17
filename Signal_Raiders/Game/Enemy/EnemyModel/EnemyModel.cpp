@@ -12,6 +12,7 @@
 */
 EnemyModel::EnemyModel()
 	: m_pCommonResources{}// 共通リソース
+	, m_pCreateShader{ CreateShader::GetInstance() }// シェーダー作成クラスのポインター
 	, m_pBodyModel{}// 胴体モデル
 	, m_pAntennaModel{}// アンテナモデル
 	, m_pHandModel{}// 手モデル
@@ -57,10 +58,10 @@ void EnemyModel::Initialize(CommonResources* resources)
 	m_pCommonResources = resources;
 	// デバイス取得
 	auto device = resources->GetDeviceResources()->GetD3DDevice();
-	// 影用のシェーダーを読み込む
-	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/Shadow/PS_Shadow.cso");
-	// シェーダー作成
-	DX::ThrowIfFailed(device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_pPixelShader.ReleaseAndGetAddressOf()));
+	// シェーダー作成クラスを初期化
+	m_pCreateShader->Initialize(device);
+	// 影用シェーダー作成
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Shadow/PS_Shadow.cso", m_pPixelShader);
 	// モデルマネージャーから頭モデルを取得
 	m_pBodyModel = m_pCommonResources->GetModelManager()->GetModel("EnemyHead");
 	// モデルマネージャーからアンテナモデルを取得

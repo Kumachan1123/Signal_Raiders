@@ -25,6 +25,8 @@ public:
 	~CreateShader();
 	// 初期化
 	void Initialize(ID3D11Device1* device, const D3D11_INPUT_ELEMENT_DESC* pIDE, UINT NumElements, Microsoft::WRL::ComPtr<ID3D11InputLayout> InputLayout);
+	// 初期化（デバイスのみ）
+	void Initialize(ID3D11Device1* device);
 	// 頂点シェーダを作成
 	void CreateVertexShader(const wchar_t* fileName, Microsoft::WRL::ComPtr<ID3D11VertexShader>& vs);
 	// ピクセルシェーダーを作成
