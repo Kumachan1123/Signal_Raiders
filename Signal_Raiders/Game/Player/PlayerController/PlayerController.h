@@ -8,6 +8,8 @@
 // 標準ライブラリ
 #include <cassert>
 #include <memory>
+// WindowsAPI
+#include <windows.h>
 // DirectXライブラリ
 #include <SimpleMath.h>
 #include <DeviceResources.h>

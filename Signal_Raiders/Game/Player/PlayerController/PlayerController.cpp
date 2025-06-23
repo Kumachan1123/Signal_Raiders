@@ -36,30 +36,14 @@ PlayerController::PlayerController(Player* pPlayer)
 	, m_dash{}// ダッシュ速度
 	, m_pCommonResources{}// 共通リソース
 	, m_hWnd{ nullptr }// ウィンドウハンドル
+	, m_point{}// マウスの位置
+	, m_lastMouseX{ 0.0f }// マウスのX座標
+	, m_lastMouseY{ 0.0f }// マウスのY座標
 	, m_sensitive{ pPlayer->GetMouseSensitive() + 1.0f }// マウス感度:Player->GetMouseSensitive()のままだと最小値が0.0fになるので + 1.0fする
 	, m_rotate{}// プレイヤーの回転
 	, m_dashTime{ PlayerController::DASH_TIME }// ダッシュ時間
 {
-	// スクリーンの解像度を取得
-	RECT desktopRect;
-	// デスクトップウィンドウのハンドルを取得
-	const HWND hDesktop = GetDesktopWindow();
-	// デスクトップウィンドウのサイズを取得
-	GetWindowRect(hDesktop, &desktopRect);
-	// スクリーンの中央座標を計算
-	// 中央X座標
-	int centerX = (desktopRect.right - desktopRect.left) / 2;
-	// 中央Y座標
-	int centerY = (desktopRect.bottom - desktopRect.top) / 2;
-	// マウス位置を中央に設定
-	// マウス座標
-	m_point = { centerX, centerY };
-	// マウス位置を中央に設定
-	SetCursorPos(m_point.x, m_point.y);
-	// マウスのX座標
-	m_lastMouseX = (float)(m_point.x);
-	// マウスのY座標
-	m_lastMouseY = (float)(m_point.y);
+
 }
 /*
 *	@brief デストラクタ
@@ -96,8 +80,39 @@ void PlayerController::MoveStop()
 */
 void PlayerController::Initialize(CommonResources* resources)
 {
-	// 共通リソースを設定
+	// コモンリソースを保存
 	m_pCommonResources = resources;
+	// windowハンドルを取得
+	HWND hWnd = m_pCommonResources->GetDeviceResources()->GetWindow();
+	// ウィンドウハンドルを保存
+	m_hWnd = hWnd;
+	// ウィンドウが表示されているモニターを取得
+	HMONITOR hMonitor = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
+	// モニター情報を取得
+	MONITORINFO mi = {};
+	// モニター情報のサイズを設定
+	mi.cbSize = sizeof(MONITORINFO);
+	// モニター情報を取得
+	if (GetMonitorInfo(hMonitor, &mi))
+	{
+		// モニター領域の中央
+		// X座標の中央
+		int centerX = (mi.rcMonitor.left + mi.rcMonitor.right) / 2;
+		// Y座標の中央
+		int centerY = (mi.rcMonitor.top + mi.rcMonitor.bottom) / 2;
+		// マウスの位置を中央に設定
+		m_point = { centerX, centerY };
+		// マウスの位置をウィンドウ座標に変換
+		SetCursorPos(centerX, centerY);
+		// クライアント座標で中央を取得
+		POINT clientCenter = { centerX, centerY };
+		// クライアント座標をウィンドウ座標に変換
+		ClientToScreen(hWnd, &clientCenter);
+		// マウスのX座標を保存
+		m_lastMouseX = (float)clientCenter.x;
+		// マウスのY座標を保存
+		m_lastMouseY = (float)clientCenter.y;
+	}
 }
 /*
 *	@brief プレイヤーの移動を更新
@@ -221,6 +236,14 @@ void PlayerController::Update(float elapsedTime)
 	if (m_position.z >= Stage::STAGE_SIZE) m_position.z = Stage::STAGE_SIZE;// 下端
 	// マウス位置を中央に戻す
 	SetCursorPos(m_point.x, m_point.y);
+	// 次のフレーム用にlastMouseX, lastMouseYをクライアント中央にリセット
+	POINT clientCenter = { m_point.x,m_point.y };
+	// クライアント座標をウィンドウ座標に変換
+	ScreenToClient(m_hWnd, &clientCenter);
+	// マウスのX座標を保存
+	m_lastMouseX = static_cast<float>(clientCenter.x);
+	// マウスのY座標を保存
+	m_lastMouseY = static_cast<float>(clientCenter.y);
 }
 /*
 *	@brief デバッグコマンド
