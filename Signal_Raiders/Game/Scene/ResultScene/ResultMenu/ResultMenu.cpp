@@ -131,7 +131,7 @@ void ResultMenu::Update(float elapsedTime)
 	// ヒット無しなら選択インデックスを無効値に設定
 	if (!m_hit) m_menuIndex = INVALID_MENU_INDEX;
 	// 左クリックされたら選択メニューのシーンIDを更新
-	if (mtracker->GetLastState().leftButton)m_num = static_cast<SceneID>(m_menuIndex);
+	if (MyMouse::IsLeftMouseButtonPressed(mouseState))m_num = static_cast<SceneID>(m_menuIndex);
 	//  メニューアイテムの選択先を更新
 	for (int i = 0; i < m_pUI.size(); i++)
 	{

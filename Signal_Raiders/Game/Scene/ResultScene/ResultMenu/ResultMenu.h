@@ -21,6 +21,7 @@
 #include "Game/Interface/IMenuUI.h"
 #include "Game/Screen.h"
 #include "Game/KumachiLib/BinaryFile/BinaryFile.h"
+#include "Game/KumachiLib/MyMouse/MyMouse.h"
 
 // ‘O•ûéŒ¾
 class CommonResources;
